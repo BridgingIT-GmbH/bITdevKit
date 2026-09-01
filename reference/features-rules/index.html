@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#rules-feature-documentation" class="md-skip">
+        <a href="#rules" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1205,15 +1241,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1231,8 +1272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1305,42 +1346,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1424,7 +1437,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1544,6 +1557,61 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1559,7 +1627,7 @@
   <a href="#single-rule-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Single Rule Validation
+        Single rule validation
       
     </span>
   </a>
@@ -1570,7 +1638,7 @@
   <a href="#conditional-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conditional Rules
+        Conditional rules
       
     </span>
   </a>
@@ -1581,7 +1649,435 @@
   <a href="#working-with-collections" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with Collections
+        Working with collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-builder-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule builder patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rule builder patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-basic-rule-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building basic rule chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-rules_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditional rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection processing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collection processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filtering-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtering collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splitting-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Splitting collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rule-static-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule static class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rulebuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RuleBuilder
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ruleset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RuleSet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rule types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#value-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composite-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composite rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-with-the-result-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with the Result pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#complex-rule-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complex rule chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-collections_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working with collections
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with collections">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collection-filtering-with-several-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection filtering with several rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-processing-with-switch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection processing with Switch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-validation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain validation example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-async-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix A: Async usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appendix A: Async usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-async-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic async validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#async-conditional-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Async conditional rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-async-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom async rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#async-collection-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Async collection processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#important-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-b-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix B: scope
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appendix B: scope">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-the-rules-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to use the Rules feature
       
     </span>
   </a>
@@ -1714,6 +2210,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1732,15 +2256,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1758,8 +2287,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1840,6 +2369,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2039,15 +2596,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2065,8 +2627,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2075,6 +2637,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2150,15 +2740,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2176,8 +2771,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2202,6 +2797,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2418,6 +3069,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2485,15 +3164,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2511,8 +3195,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2792,15 +3476,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2818,8 +3507,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2899,6 +3588,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -2938,6 +4158,61 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2953,7 +4228,7 @@
   <a href="#single-rule-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Single Rule Validation
+        Single rule validation
       
     </span>
   </a>
@@ -2964,7 +4239,7 @@
   <a href="#conditional-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conditional Rules
+        Conditional rules
       
     </span>
   </a>
@@ -2975,7 +4250,435 @@
   <a href="#working-with-collections" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Working with Collections
+        Working with collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rule-builder-patterns" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule builder patterns
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rule builder patterns">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#building-basic-rule-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Building basic rule chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#conditional-rules_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Conditional rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#multiple-conditions" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Multiple conditions
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection processing
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Collection processing">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#filtering-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Filtering collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#splitting-collections" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Splitting collections
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#practical-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Practical example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture details">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#component-overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Component overview
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#key-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key components
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Key components">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rule-static-class" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule static class
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rulebuilder" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RuleBuilder
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#ruleset" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RuleSet
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rule-types" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Rule types
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Rule types">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#value-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#composite-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Composite rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#integration-with-the-result-pattern" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Integration with the Result pattern
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#advanced-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Advanced usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Advanced usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#complex-rule-chains" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Complex rule chains
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#working-with-collections_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Working with collections
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Working with collections">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#collection-filtering-with-several-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection filtering with several rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#collection-processing-with-switch" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Collection processing with Switch
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#domain-validation-example" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Domain validation example
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-a-async-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix A: Async usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appendix A: Async usage">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#basic-async-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic async validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#async-conditional-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Async conditional rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#custom-async-rules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Custom async rules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#async-collection-processing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Async collection processing
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#important-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Important notes
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#appendix-b-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Appendix B: scope
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Appendix B: scope">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#when-to-use-the-rules-feature" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        When to use the Rules feature
       
     </span>
   </a>
@@ -3030,10 +4733,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3073,81 +4794,85 @@
   
 
 
-<h1 id="rules-feature-documentation">Rules Feature Documentation<a class="headerlink" href="#rules-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="rules">Rules<a class="headerlink" href="#rules" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Express business rules as composable validations with consistent Result-based outcomes.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#rules-feature-documentation">Rules Feature Documentation</a><ul>
+<li><a href="#rules">Rules</a><ul>
 <li><a href="#overview">Overview</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
 <li><a href="#basic-usage">Basic Usage</a><ul>
-<li><a href="#single-rule-validation">Single Rule Validation</a></li>
-<li><a href="#conditional-rules">Conditional Rules</a></li>
-<li><a href="#working-with-collections">Working with Collections</a></li>
+<li><a href="#single-rule-validation">Single rule validation</a></li>
+<li><a href="#conditional-rules">Conditional rules</a></li>
+<li><a href="#working-with-collections">Working with collections</a></li>
 </ul>
 </li>
+<li><a href="#rule-builder-patterns">Rule builder patterns</a><ul>
+<li><a href="#building-basic-rule-chains">Building basic rule chains</a></li>
+<li><a href="#conditional-rules_1">Conditional rules</a></li>
+<li><a href="#multiple-conditions">Multiple conditions</a></li>
+<li><a href="#collection-processing">Collection processing</a><ul>
+<li><a href="#filtering-collections">Filtering collections</a></li>
+<li><a href="#splitting-collections">Splitting collections</a></li>
 </ul>
 </li>
-<li><a href="#rule-builder-patterns">Rule Builder Patterns</a><ul>
-<li><a href="#building-basic-rule-chains">Building Basic Rule Chains</a></li>
-<li><a href="#conditional-rules_1">Conditional Rules</a></li>
-<li><a href="#multiple-conditions">Multiple Conditions</a></li>
-<li><a href="#collection-processing">Collection Processing</a><ul>
-<li><a href="#filtering-collections">Filtering Collections</a></li>
-<li><a href="#splitting-collections">Splitting Collections</a></li>
+<li><a href="#practical-example">Practical example</a></li>
 </ul>
 </li>
-<li><a href="#practical-example">Practical Example</a></li>
-</ul>
-</li>
-<li><a href="#architecture">Architecture</a><ul>
-<li><a href="#component-overview">Component Overview</a></li>
-<li><a href="#key-components">Key Components</a><ul>
-<li><a href="#rule-static-class">Rule Static Class</a></li>
+<li><a href="#architecture-details">Architecture details</a><ul>
+<li><a href="#component-overview">Component overview</a></li>
+<li><a href="#key-components">Key components</a><ul>
+<li><a href="#rule-static-class">Rule static class</a></li>
 <li><a href="#rulebuilder">RuleBuilder</a></li>
 <li><a href="#ruleset">RuleSet</a></li>
 </ul>
 </li>
-<li><a href="#rule-types">Rule Types</a><ul>
-<li><a href="#value-rules">Value Rules</a></li>
-<li><a href="#collection-rules">Collection Rules</a></li>
-<li><a href="#composite-rules">Composite Rules</a></li>
+<li><a href="#rule-types">Rule types</a><ul>
+<li><a href="#value-rules">Value rules</a></li>
+<li><a href="#collection-rules">Collection rules</a></li>
+<li><a href="#composite-rules">Composite rules</a></li>
 </ul>
 </li>
-<li><a href="#integration-with-result-pattern">Integration with Result Pattern</a></li>
+<li><a href="#integration-with-the-result-pattern">Integration with the Result pattern</a></li>
 </ul>
 </li>
-<li><a href="#advanced-usage">Advanced Usage</a><ul>
-<li><a href="#complex-rule-chains">Complex Rule Chains</a></li>
-<li><a href="#working-with-collections_1">Working with Collections</a><ul>
-<li><a href="#collection-filtering-with-complex-rules">Collection Filtering with Complex Rules</a></li>
-<li><a href="#advanced-collection-processing">Advanced Collection Processing</a></li>
+<li><a href="#advanced-usage">Advanced usage</a><ul>
+<li><a href="#complex-rule-chains">Complex rule chains</a></li>
+<li><a href="#working-with-collections_1">Working with collections</a><ul>
+<li><a href="#collection-filtering-with-several-rules">Collection filtering with several rules</a></li>
+<li><a href="#collection-processing-with-switch">Collection processing with Switch</a></li>
 </ul>
 </li>
-<li><a href="#custom-rules">Custom Rules</a></li>
-<li><a href="#domain-validation-example">Domain Validation Example</a></li>
+<li><a href="#custom-rules">Custom rules</a></li>
+<li><a href="#domain-validation-example">Domain validation example</a></li>
 </ul>
 </li>
-<li><a href="#appendix-a-async-usage">Appendix A: Async Usage</a><ul>
-<li><a href="#basic-async-validation">Basic Async Validation</a></li>
-<li><a href="#async-conditional-rules">Async Conditional Rules</a></li>
-<li><a href="#custom-async-rules">Custom Async Rules</a></li>
-<li><a href="#async-collection-processing">Async Collection Processing</a></li>
-<li><a href="#important-notes">Important Notes</a></li>
+<li><a href="#appendix-a-async-usage">Appendix A: Async usage</a><ul>
+<li><a href="#basic-async-validation">Basic async validation</a></li>
+<li><a href="#async-conditional-rules">Async conditional rules</a></li>
+<li><a href="#custom-async-rules">Custom async rules</a></li>
+<li><a href="#async-collection-processing">Async collection processing</a></li>
+<li><a href="#important-notes">Important notes</a></li>
 </ul>
 </li>
-<li><a href="#appendix-b-disclaimer">Appendix B: Disclaimer</a><ul>
-<li><a href="#when-to-use-the-rules-feature">When to Use the Rules Feature</a></li>
+<li><a href="#appendix-b-scope">Appendix B: scope</a><ul>
+<li><a href="#when-to-use-the-rules-feature">When to use the Rules feature</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Rules feature provides a centralized approach to defining and evaluating business rules in a
-composable and maintainable way. This feature is designed to handle evaluation, business logic
-enforcement, and complex conditional rule chains while integrating seamlessly with the <a href="../features-results/">Result</a>
-pattern.</p>
+<p>The Rules feature defines and evaluates business rules through <code>IRule</code>, the <code>Rule</code> entry point,
+<code>RuleBuilder</code>, and the predefined <code>RuleSet</code>. Every evaluation integrates with the
+<a href="../features-results/">Results feature</a>.</p>
 <p>Key benefits:</p>
 <ul>
 <li>Centralized rule definition and execution</li>
@@ -3156,10 +4881,57 @@ pattern.</p>
 <li>Rich set of predefined rules through RuleSet</li>
 <li>Extensible design for custom rules</li>
 </ul>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Business rules often become scattered conditions with inconsistent failure handling. Applications
+also need to evaluate several rules, collect failures when required, apply rules conditionally, and
+classify collections without duplicating control flow.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>Rules implement <code>IRule</code> and return <code>Result</code>. Use <code>Rule.Check</code> for one rule or <code>RuleBuilder</code> for a
+chain. <code>RuleSet</code> supplies common value, text, date, time, collection, and FluentValidation-backed
+rules. Synchronous and asynchronous base classes support custom rules.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Direct synchronous and asynchronous rule evaluation</li>
+<li>Fluent rule chains with stop-on-failure or failure aggregation</li>
+<li>Conditional rules through <code>When</code>, <code>Unless</code>, and condition-count extensions</li>
+<li>Collection classification through <code>Filter</code>, <code>FilterAsync</code>, <code>Switch</code>, and <code>SwitchAsync</code></li>
+<li>Configurable failure and exception handling</li>
+<li>Custom rules through <code>RuleBase</code>, <code>AsyncRuleBase</code>, and delegate-backed rules</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>IRule</code> defines synchronous and asynchronous evaluation. <code>RuleBase</code> and <code>AsyncRuleBase</code> provide the
+standard enabled-state behavior. The static <code>Rule</code> class evaluates individual rules and creates
+<code>RuleBuilder</code> instances. A builder executes an ordered rule list or classifies items by applying
+item rules. See <a href="#architecture-details">Architecture details</a> for the component diagram.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Validate command and domain inputs with typed result errors.</li>
+<li>Collect several validation failures before returning to a caller.</li>
+<li>Apply shipping, payment, or permission rules only when their conditions hold.</li>
+<li>Separate matching and non-matching collection items for different handlers.</li>
+<li>Wrap application-specific synchronous or asynchronous checks in reusable rules.</li>
+</ul>
 <h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
 <p>The Rules feature provides a fluent API for validating conditions and enforcing business rules. Here
 are the most common usage patterns:</p>
-<h3 id="single-rule-validation">Single Rule Validation<a class="headerlink" href="#single-rule-validation" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="s">&quot;Ada&quot;</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="mi">42</span><span class="p">,</span><span class="w"> </span><span class="mi">17</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
+<span class="w">        </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="n">Environment</span><span class="p">.</span><span class="n">NewLine</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;All rules passed.&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span><code>All rules passed.
+</code></pre></div>
+<h3 id="single-rule-validation">Single rule validation<a class="headerlink" href="#single-rule-validation" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// Basic rule check</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span><span class="p">.</span><span class="n">Check</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">Name</span><span class="p">));</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
@@ -3173,7 +4945,7 @@ are the most common usage patterns:</p>
 <span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="conditional-rules">Conditional Rules<a class="headerlink" href="#conditional-rules" title="Permanent link">&para;</a></h3>
+<h3 id="conditional-rules">Conditional rules<a class="headerlink" href="#conditional-rules" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// Basic conditional rule</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">Id</span><span class="p">))</span>
@@ -3188,24 +4960,24 @@ are the most common usage patterns:</p>
 <span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">ContactEmail</span><span class="p">)))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="working-with-collections">Working with Collections<a class="headerlink" href="#working-with-collections" title="Permanent link">&para;</a></h3>
+<h3 id="working-with-collections">Working with collections<a class="headerlink" href="#working-with-collections" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="c1">// Filter valid items</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">CustomerId</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">CustomerId</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">orders</span><span class="p">);</span>
 
 <span class="c1">// Split and process valid/invalid items</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Switch</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span>
 <span class="w">        </span><span class="n">validOrders</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ProcessValidOrders</span><span class="p">(</span><span class="n">validOrders</span><span class="p">),</span>
 <span class="w">        </span><span class="n">invalidOrders</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">LogInvalidOrders</span><span class="p">(</span><span class="n">invalidOrders</span><span class="p">));</span>
 </code></pre></div>
-<h1 id="rule-builder-patterns">Rule Builder Patterns<a class="headerlink" href="#rule-builder-patterns" title="Permanent link">&para;</a></h1>
+<h2 id="rule-builder-patterns">Rule builder patterns<a class="headerlink" href="#rule-builder-patterns" title="Permanent link">&para;</a></h2>
 <p>The Rule Builder provides a fluent interface for combining multiple rules and conditions into
 expressive evaluation chains. This section covers common patterns for building and composing rules.</p>
-<h2 id="building-basic-rule-chains">Building Basic Rule Chains<a class="headerlink" href="#building-basic-rule-chains" title="Permanent link">&para;</a></h2>
+<h3 id="building-basic-rule-chains">Building basic rule chains<a class="headerlink" href="#building-basic-rule-chains" title="Permanent link">&para;</a></h3>
 <p>Rule chains allow you to combine multiple evaluations in a readable sequence:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">Id</span><span class="p">))</span>
@@ -3220,7 +4992,7 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">    </span><span class="p">.</span><span class="n">ContinueOnFailure</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="conditional-rules_1">Conditional Rules<a class="headerlink" href="#conditional-rules_1" title="Permanent link">&para;</a></h2>
+<h3 id="conditional-rules_1">Conditional rules<a class="headerlink" href="#conditional-rules_1" title="Permanent link">&para;</a></h3>
 <p>Apply rules based on conditions using <code>When</code>, <code>Unless</code>, and other conditional methods:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Single condition</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
@@ -3239,7 +5011,7 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">    </span><span class="p">.</span><span class="n">Unless</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">IsDigital</span><span class="p">,</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">ShippingAddress</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="multiple-conditions">Multiple Conditions<a class="headerlink" href="#multiple-conditions" title="Permanent link">&para;</a></h2>
+<h3 id="multiple-conditions">Multiple conditions<a class="headerlink" href="#multiple-conditions" title="Permanent link">&para;</a></h3>
 <p>Handle complex scenarios with multiple conditions:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// All conditions must be true</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
@@ -3260,30 +5032,34 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">    </span><span class="p">},</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">PaymentDetails</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="collection-processing">Collection Processing<a class="headerlink" href="#collection-processing" title="Permanent link">&para;</a></h2>
+<h3 id="collection-processing">Collection processing<a class="headerlink" href="#collection-processing" title="Permanent link">&para;</a></h3>
 <p>The Rules feature provides two ways to process collections of items:</p>
-<h3 id="filtering-collections">Filtering Collections<a class="headerlink" href="#filtering-collections" title="Permanent link">&para;</a></h3>
+<h4 id="filtering-collections">Filtering collections<a class="headerlink" href="#filtering-collections" title="Permanent link">&para;</a></h4>
 <p>Use Filter to get valid items matching your rules:</p>
+<p><code>Filter</code> and <code>FilterAsync</code> return a successful result containing only matching items. Rejected
+items do not turn the result into a failure. Use <code>Switch</code> when both groups must be handled.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">CustomerId</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">CustomerId</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">orders</span><span class="p">);</span>
 
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">validOrders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
-<span class="w">    </span><span class="c1">// Process valid orders</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">validOrders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+<span class="c1">// Process valid orders. Rejected items do not make Filter fail.</span>
 </code></pre></div>
-<h3 id="splitting-collections">Splitting Collections<a class="headerlink" href="#splitting-collections" title="Permanent link">&para;</a></h3>
+<h4 id="splitting-collections">Splitting collections<a class="headerlink" href="#splitting-collections" title="Permanent link">&para;</a></h4>
 <p>Use Switch to handle valid and invalid items separately:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Switch</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span>
 <span class="w">        </span><span class="n">validOrders</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">ProcessValidOrders</span><span class="p">(</span><span class="n">validOrders</span><span class="p">),</span>
 <span class="w">        </span><span class="n">invalidOrders</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">HandleInvalidOrders</span><span class="p">(</span><span class="n">invalidOrders</span><span class="p">));</span>
 </code></pre></div>
-<h2 id="practical-example">Practical Example<a class="headerlink" href="#practical-example" title="Permanent link">&para;</a></h2>
+<h3 id="practical-example">Practical example<a class="headerlink" href="#practical-example" title="Permanent link">&para;</a></h3>
 <p>Here's a complete example showing multiple patterns together:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">ValidateOrder</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span>
 <span class="p">{</span>
@@ -3308,8 +5084,8 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">        </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
-<h1 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h1>
-<h2 id="component-overview">Component Overview<a class="headerlink" href="#component-overview" title="Permanent link">&para;</a></h2>
+<h2 id="architecture-details">Architecture details<a class="headerlink" href="#architecture-details" title="Permanent link">&para;</a></h2>
+<h3 id="component-overview">Component overview<a class="headerlink" href="#component-overview" title="Permanent link">&para;</a></h3>
 <p>The Rules feature consists of several key components that work together to provide flexible rule evaluation:</p>
 <pre class="mermaid"><code>classDiagram
     %% Interfaces
@@ -3324,14 +5100,14 @@ expressive evaluation chains. This section covers common patterns for building a
     %% Base Classes
     class RuleBase {
         &lt;&lt;abstract&gt;&gt;
-        #Result Execute()*
+        +Result Execute()*
         +Result IsSatisfied()
         +Task~Result~ IsSatisfiedAsync()
     }
 
     class AsyncRuleBase {
         &lt;&lt;abstract&gt;&gt;
-        #Task~Result~ ExecuteAsync()*
+        +Task~Result~ ExecuteAsync(CancellationToken)*
         +Result IsSatisfied()
         +Task~Result~ IsSatisfiedAsync()
     }
@@ -3365,9 +5141,9 @@ expressive evaluation chains. This section covers common patterns for building a
     Rule --&gt; IRule
     RuleBuilder --&gt; IRule
     RuleSet --&gt; IRule</code></pre>
-<h2 id="key-components">Key Components<a class="headerlink" href="#key-components" title="Permanent link">&para;</a></h2>
-<h3 id="rule-static-class">Rule Static Class<a class="headerlink" href="#rule-static-class" title="Permanent link">&para;</a></h3>
-<p>The <code>Rule</code> class serves as the main entry point for rule evaluation:</p>
+<h3 id="key-components">Key components<a class="headerlink" href="#key-components" title="Permanent link">&para;</a></h3>
+<h4 id="rule-static-class"><code>Rule</code> static class<a class="headerlink" href="#rule-static-class" title="Permanent link">&para;</a></h4>
+<p>The <code>Rule</code> class is the main entry point for rule evaluation:</p>
 <ul>
 <li>Provides static methods for rule checking and rule chain building</li>
 <li>Handles rule execution and error aggregation</li>
@@ -3379,7 +5155,7 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="c1">// Start building a rule chain</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span><span class="p">.</span><span class="n">Add</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="rulebuilder">RuleBuilder<a class="headerlink" href="#rulebuilder" title="Permanent link">&para;</a></h3>
+<h4 id="rulebuilder"><code>RuleBuilder</code><a class="headerlink" href="#rulebuilder" title="Permanent link">&para;</a></h4>
 <p>The <code>RuleBuilder</code> enables fluent rule chain construction:</p>
 <ul>
 <li>Combines multiple rules into a single evaluation chain</li>
@@ -3391,7 +5167,7 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">secondRule</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span><span class="w"> </span><span class="n">conditionalRule</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="ruleset">RuleSet<a class="headerlink" href="#ruleset" title="Permanent link">&para;</a></h3>
+<h4 id="ruleset"><code>RuleSet</code><a class="headerlink" href="#ruleset" title="Permanent link">&para;</a></h4>
 <p>The <code>RuleSet</code> class contains predefined rules for common evaluation scenarios:</p>
 <ul>
 <li>Value comparisons (Equal, GreaterThan, etc.)</li>
@@ -3402,39 +5178,39 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="kt">var</span><span class="w"> </span><span class="n">emailRule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsValidEmail</span><span class="p">(</span><span class="n">email</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">rangeRule</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">NumericRange</span><span class="p">(</span><span class="n">amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="rule-types">Rule Types<a class="headerlink" href="#rule-types" title="Permanent link">&para;</a></h2>
-<h3 id="value-rules">Value Rules<a class="headerlink" href="#value-rules" title="Permanent link">&para;</a></h3>
+<h3 id="rule-types">Rule types<a class="headerlink" href="#rule-types" title="Permanent link">&para;</a></h3>
+<h4 id="value-rules">Value rules<a class="headerlink" href="#value-rules" title="Permanent link">&para;</a></h4>
 <p>Rules that validate simple values or properties:</p>
 <ul>
 <li>Equality checks</li>
 <li>Numeric comparisons</li>
 <li>String operations</li>
 </ul>
-<h3 id="collection-rules">Collection Rules<a class="headerlink" href="#collection-rules" title="Permanent link">&para;</a></h3>
+<h4 id="collection-rules">Collection rules<a class="headerlink" href="#collection-rules" title="Permanent link">&para;</a></h4>
 <p>Rules for validating collections or sequences:</p>
 <ul>
 <li>Size evaluation</li>
 <li>Item evaluation</li>
 <li>Aggregation checks</li>
 </ul>
-<h3 id="composite-rules">Composite Rules<a class="headerlink" href="#composite-rules" title="Permanent link">&para;</a></h3>
+<h4 id="composite-rules">Composite rules<a class="headerlink" href="#composite-rules" title="Permanent link">&para;</a></h4>
 <p>Rules that combine multiple evaluations:</p>
 <ul>
 <li>Conditional rules</li>
 <li>Rule chains</li>
 <li>Complex business rules</li>
 </ul>
-<h2 id="integration-with-result-pattern">Integration with Result Pattern<a class="headerlink" href="#integration-with-result-pattern" title="Permanent link">&para;</a></h2>
+<h3 id="integration-with-the-result-pattern">Integration with the Result pattern<a class="headerlink" href="#integration-with-the-result-pattern" title="Permanent link">&para;</a></h3>
 <p>The Rules feature integrates with the Result pattern to provide consistent error handling:</p>
 <ul>
 <li>All rule evaluations return a Result object</li>
 <li>Failed evaluations include detailed error information</li>
 <li>Results can be combined and aggregated</li>
 </ul>
-<h1 id="advanced-usage">Advanced Usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h1>
+<h2 id="advanced-usage">Advanced usage<a class="headerlink" href="#advanced-usage" title="Permanent link">&para;</a></h2>
 <p>This section covers advanced patterns and scenarios for using the Rules feature.</p>
-<h2 id="complex-rule-chains">Complex Rule Chains<a class="headerlink" href="#complex-rule-chains" title="Permanent link">&para;</a></h2>
-<p>Combine multiple evaluation conditions and rules for sophisticated business logic:</p>
+<h3 id="complex-rule-chains">Complex rule chains<a class="headerlink" href="#complex-rule-chains" title="Permanent link">&para;</a></h3>
+<p>Combine several conditions and rules for application-specific business logic:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">ValidateOrder</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Rule</span>
@@ -3463,26 +5239,27 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">        </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="working-with-collections_1">Working with Collections<a class="headerlink" href="#working-with-collections_1" title="Permanent link">&para;</a></h2>
-<h3 id="collection-filtering-with-complex-rules">Collection Filtering with Complex Rules<a class="headerlink" href="#collection-filtering-with-complex-rules" title="Permanent link">&para;</a></h3>
+<h3 id="working-with-collections_1">Working with collections<a class="headerlink" href="#working-with-collections_1" title="Permanent link">&para;</a></h3>
+<h4 id="collection-filtering-with-several-rules">Collection filtering with several rules<a class="headerlink" href="#collection-filtering-with-several-rules" title="Permanent link">&para;</a></h4>
 <p>Apply multiple rules to filter collections:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetValidOrders</span><span class="p">(</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="w"> </span><span class="n">orders</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Id</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">When</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">IsInternational</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
-<span class="w">            </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">CustomsDeclaration</span><span class="p">)))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Id</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">            </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="n">o</span><span class="p">.</span><span class="n">IsInternational</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">CustomsDeclaration</span><span class="p">),</span>
+<span class="w">            </span><span class="s">&quot;International orders require a customs declaration.&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Filter</span><span class="p">(</span><span class="n">orders</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="advanced-collection-processing">Advanced Collection Processing<a class="headerlink" href="#advanced-collection-processing" title="Permanent link">&para;</a></h3>
+<h4 id="collection-processing-with-switch">Collection processing with <code>Switch</code><a class="headerlink" href="#collection-processing-with-switch" title="Permanent link">&para;</a></h4>
 <p>Handle complex collection scenarios with Switch:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">ProcessOrders</span><span class="p">(</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="w"> </span><span class="n">orders</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Id</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Id</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Switch</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span>
 <span class="w">            </span><span class="n">validOrders</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span>
 <span class="w">                </span><span class="c1">// Process valid orders</span>
@@ -3502,13 +5279,13 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">            </span><span class="p">});</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="custom-rules">Custom Rules<a class="headerlink" href="#custom-rules" title="Permanent link">&para;</a></h2>
+<h3 id="custom-rules">Custom rules<a class="headerlink" href="#custom-rules" title="Permanent link">&para;</a></h3>
 <p>Create custom rules by inheriting from RuleBase:</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">BusinessHoursRule</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">RuleBase</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OfficeHoursRule</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">RuleBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">DateTime</span><span class="w"> </span><span class="n">dateTime</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">BusinessHoursRule</span><span class="p">(</span><span class="n">DateTime</span><span class="w"> </span><span class="n">dateTime</span><span class="p">)</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">OfficeHoursRule</span><span class="p">(</span><span class="n">DateTime</span><span class="w"> </span><span class="n">dateTime</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">dateTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dateTime</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
@@ -3516,7 +5293,7 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="s">&quot;Operation must be performed during business hours (9 AM - 5 PM)&quot;</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">Execute</span><span class="p">()</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Result</span><span class="w"> </span><span class="nf">Execute</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">SuccessIf</span><span class="p">(</span>
 <span class="w">            </span><span class="n">dateTime</span><span class="p">.</span><span class="n">Hour</span><span class="w"> </span><span class="o">&gt;=</span><span class="w"> </span><span class="mi">9</span><span class="w"> </span><span class="o">&amp;&amp;</span>
@@ -3528,10 +5305,10 @@ expressive evaluation chains. This section covers common patterns for building a
 
 <span class="c1">// Using custom rule</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">BusinessHoursRule</span><span class="p">(</span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OfficeHoursRule</span><span class="p">(</span><span class="n">DateTime</span><span class="p">.</span><span class="n">Now</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Check</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="domain-validation-example">Domain Validation Example<a class="headerlink" href="#domain-validation-example" title="Permanent link">&para;</a></h2>
+<h3 id="domain-validation-example">Domain validation example<a class="headerlink" href="#domain-validation-example" title="Permanent link">&para;</a></h3>
 <p>Here's a complete example showing how to validate a domain entity with complex rules:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderValidator</span>
 <span class="p">{</span>
@@ -3571,20 +5348,20 @@ expressive evaluation chains. This section covers common patterns for building a
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h1 id="appendix-a-async-usage">Appendix A: Async Usage<a class="headerlink" href="#appendix-a-async-usage" title="Permanent link">&para;</a></h1>
+<h2 id="appendix-a-async-usage">Appendix A: Async usage<a class="headerlink" href="#appendix-a-async-usage" title="Permanent link">&para;</a></h2>
 <p>While the Rules feature is primarily used synchronously, it also supports asynchronous operations.
 This appendix provides a brief overview of async usage patterns.</p>
-<h2 id="basic-async-validation">Basic Async Validation<a class="headerlink" href="#basic-async-validation" title="Permanent link">&para;</a></h2>
+<h3 id="basic-async-validation">Basic async validation<a class="headerlink" href="#basic-async-validation" title="Permanent link">&para;</a></h3>
 <p>Use <code>CheckAsync</code> for async rule evaluation:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ValidateOrderAsync</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Rule</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">IsNotEmpty</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">Id</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ValidateCustomerAsync</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">CustomerId</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ActiveCustomerRule</span><span class="p">(</span><span class="n">order</span><span class="p">.</span><span class="n">CustomerId</span><span class="p">,</span><span class="w"> </span><span class="n">customerService</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">CheckAsync</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="async-conditional-rules">Async Conditional Rules<a class="headerlink" href="#async-conditional-rules" title="Permanent link">&para;</a></h2>
+<h3 id="async-conditional-rules">Async conditional rules<a class="headerlink" href="#async-conditional-rules" title="Permanent link">&para;</a></h3>
 <p>Async conditions can be used with <code>WhenAsync</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ValidateOrderAsync</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">)</span>
 <span class="p">{</span>
@@ -3596,14 +5373,14 @@ This appendix provides a brief overview of async usage patterns.</p>
 <span class="w">        </span><span class="p">.</span><span class="n">CheckAsync</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="custom-async-rules">Custom Async Rules<a class="headerlink" href="#custom-async-rules" title="Permanent link">&para;</a></h2>
+<h3 id="custom-async-rules">Custom async rules<a class="headerlink" href="#custom-async-rules" title="Permanent link">&para;</a></h3>
 <p>Create async rules by inheriting from AsyncRuleBase:</p>
-<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ValidateCustomerAsync</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AsyncRuleBase</span>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ActiveCustomerRule</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AsyncRuleBase</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">customerId</span><span class="p">;</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ICustomerService</span><span class="w"> </span><span class="n">customerService</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">ValidateCustomerAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span><span class="w"> </span><span class="n">ICustomerService</span><span class="w"> </span><span class="n">customerService</span><span class="p">)</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">ActiveCustomerRule</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span><span class="w"> </span><span class="n">ICustomerService</span><span class="w"> </span><span class="n">customerService</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">customerId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerId</span><span class="p">;</span>
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">customerService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerService</span><span class="p">;</span>
@@ -3611,32 +5388,33 @@ This appendix provides a brief overview of async usage patterns.</p>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="s">&quot;Customer evaluation failed&quot;</span><span class="p">;</span>
 
-<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">customerService</span><span class="p">.</span><span class="n">GetCustomerAsync</span><span class="p">(</span><span class="n">customerId</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">SuccessIf</span><span class="p">(</span><span class="n">customer</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="k">null</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">IsActive</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="async-collection-processing">Async Collection Processing<a class="headerlink" href="#async-collection-processing" title="Permanent link">&para;</a></h2>
+<h3 id="async-collection-processing">Async collection processing<a class="headerlink" href="#async-collection-processing" title="Permanent link">&para;</a></h3>
 <p>Both Filter and Switch operations support async rules:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ProcessOrdersAsync</span><span class="p">(</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="w"> </span><span class="n">orders</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="c1">// Async filtering</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">validOrders</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="n">token</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">ValidateCustomerAsync</span><span class="p">(</span><span class="n">token</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="k">async</span><span class="w"> </span><span class="p">(</span><span class="n">o</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">            </span><span class="k">await</span><span class="w"> </span><span class="n">customerService</span><span class="p">.</span><span class="n">ExistsAsync</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">CustomerId</span><span class="p">,</span><span class="w"> </span><span class="n">token</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">FilterAsync</span><span class="p">(</span><span class="n">orders</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Async switch operation</span>
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">Rule</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="p">(</span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Add</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">RuleSet</span><span class="p">.</span><span class="n">GreaterThan</span><span class="p">(</span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">))</span>
 <span class="w">        </span><span class="p">.</span><span class="n">SwitchAsync</span><span class="p">(</span><span class="n">orders</span><span class="p">,</span>
 <span class="w">            </span><span class="k">async</span><span class="w"> </span><span class="n">valid</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">ProcessValidOrdersAsync</span><span class="p">(</span><span class="n">valid</span><span class="p">),</span>
 <span class="w">            </span><span class="k">async</span><span class="w"> </span><span class="n">invalid</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">HandleInvalidOrdersAsync</span><span class="p">(</span><span class="n">invalid</span><span class="p">));</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="important-notes">Important Notes<a class="headerlink" href="#important-notes" title="Permanent link">&para;</a></h2>
+<h3 id="important-notes">Important notes<a class="headerlink" href="#important-notes" title="Permanent link">&para;</a></h3>
 <ol>
 <li>All async methods accept an optional CancellationToken parameter</li>
 <li>Async rules should inherit from AsyncRuleBase</li>
@@ -3644,7 +5422,7 @@ This appendix provides a brief overview of async usage patterns.</p>
 <li>Async and sync rules can be mixed in the same chain</li>
 <li>For best performance, prefer sync rules when async operations aren't required</li>
 </ol>
-<h1 id="appendix-b-disclaimer">Appendix B: Disclaimer<a class="headerlink" href="#appendix-b-disclaimer" title="Permanent link">&para;</a></h1>
+<h2 id="appendix-b-scope">Appendix B: scope<a class="headerlink" href="#appendix-b-scope" title="Permanent link">&para;</a></h2>
 <blockquote>
 <p>The Rules feature is designed to be a lightweight, code-based solution for handling business
 rules and evaluations within your application.</p>
@@ -3655,10 +5433,10 @@ specialized tools. If your project requires visual rule design tools, business u
 rules, complex workflow orchestration, or long-running rule processes, a dedicated workflow or rules
 engine might be more appropriate. Similarly, if you need rule persistence, versioning, or dynamic
 rule compilation, consider exploring specialized solutions.</p>
-<h2 id="when-to-use-the-rules-feature">When to Use the Rules Feature<a class="headerlink" href="#when-to-use-the-rules-feature" title="Permanent link">&para;</a></h2>
-<p>The feature excels through its low barrier to entry, requiring minimal setup and working out of the
-box. Since it's part of your application code with no external dependencies, it integrates
-seamlessly with your existing codebase and other bITdevKit features.</p>
+<h3 id="when-to-use-the-rules-feature">When to use the Rules feature<a class="headerlink" href="#when-to-use-the-rules-feature" title="Permanent link">&para;</a></h3>
+<p>The feature requires no external rule engine or persisted rule model. Because rules remain part of
+the application code, they can use the same types and Results conventions as other bITdevKit
+features.</p>
 <p>Remember: Choose the simplest tool that meets your requirements. The feature provides a
 lightweight, code-based approach to handling business rules, while staying consistent with
 the bITdevKit philosophy of simple, effective solutions to common development problems.</p>
@@ -3740,7 +5518,7 @@ the bITdevKit philosophy of simple, effective solutions to common development pr
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3748,6 +5526,8 @@ the bITdevKit philosophy of simple, effective solutions to common development pr
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

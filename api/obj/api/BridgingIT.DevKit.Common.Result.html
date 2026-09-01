@@ -563,7 +563,8 @@ foreach(var message in result.Messages)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the global factories and behaviors used when creating results.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -689,7 +690,8 @@ foreach(var message in result.Messages)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes an asynchronous value-producing operation and represents its value, cancellation, or thrown exception as a result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -699,21 +701,25 @@ foreach(var message in result.Messages)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TNew&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous operation to execute.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token passed to the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TNew&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task containing a successful value result, or a failed result for a missing operation, cancellation, or exception.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNew</code></dt>
-    <dd></dd>
+    <dd><p>The value type returned by the operation.</p>
+</dd>
   </dl>
 
 
@@ -732,7 +738,8 @@ foreach(var message in result.Messages)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes a synchronous value-producing operation and represents its value or thrown exception as a result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -742,19 +749,22 @@ foreach(var message in result.Messages)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>operation</code> <span class="xref">Func</span>&lt;TNew&gt;</dt>
-    <dd></dd>
+    <dd><p>The operation to execute.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TNew&gt;</dt>
-    <dd></dd>
+    <dd><p>A successful value result, or a failed result when the operation is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or throws.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNew</code></dt>
-    <dd></dd>
+    <dd><p>The value type returned by the operation.</p>
+</dd>
   </dl>
 
 
@@ -2270,7 +2280,8 @@ new ValidationError(&quot;Invalid email&quot;));</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Converts this result to an empty paged result while preserving its state, messages, and errors.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2281,13 +2292,15 @@ new ValidationError(&quot;Invalid email&quot;));</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An empty paged result with the same success state, messages, and errors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The paged item type.</p>
+</dd>
   </dl>
 
 
@@ -2695,7 +2708,8 @@ Console.WriteLine(result.GetError{ExceptionError}().Message);
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an error with the supplied message and marks the result as failed.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2705,13 +2719,15 @@ Console.WriteLine(result.GetError{ExceptionError}().Message);
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>errorMessage</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message stored in the appended <a class="xref" href="BridgingIT.DevKit.Common.Error.html">Error</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
-    <dd></dd>
+    <dd><p>A failed result that preserves the current messages and existing errors.</p>
+</dd>
   </dl>
 
 

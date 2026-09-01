@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#console-commands-feature-documentation" class="md-skip">
+        <a href="#console-commands" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2042,15 +2149,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2068,8 +2180,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2094,6 +2206,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2322,10 +2490,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2335,8 +2502,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2345,13 +2512,14 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Solution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#use-cases" class="md-nav__link">
+  <a href="#use-case-catalog" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Use Cases
+        Use case catalog
       
     </span>
   </a>
@@ -2360,6 +2528,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2379,7 +2558,7 @@
   <a href="#core-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Components
+        Core components
       
     </span>
   </a>
@@ -2392,22 +2571,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
+  <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup
+        Use Cases
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setup">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#register-non-interactive-commands-console" class="md-nav__link">
+  <a href="#register-non-interactive-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Register Non-Interactive Commands (Console)
+        Register non-interactive commands
       
     </span>
   </a>
@@ -2415,10 +2616,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#register-interactive-commands-kestrel" class="md-nav__link">
+  <a href="#register-interactive-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Register Interactive Commands (Kestrel)
+        Register interactive commands
       
     </span>
   </a>
@@ -2429,7 +2630,7 @@
   <a href="#environment-constraints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment Constraints
+        Environment constraints
       
     </span>
   </a>
@@ -2445,19 +2646,19 @@
   <a href="#command-definition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Command Definition
+        Command definition
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Command Definition">
+    <nav class="md-nav" aria-label="Command definition">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#options-arguments" class="md-nav__link">
+  <a href="#options-and-arguments" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Options &amp; Arguments
+        Options and arguments
       
     </span>
   </a>
@@ -2468,7 +2669,7 @@
   <a href="#example-simple-echo-command" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Simple Echo Command
+        Example: simple echo command
       
     </span>
   </a>
@@ -2476,10 +2677,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-grouped-command-history" class="md-nav__link">
+  <a href="#example-grouped-command" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Grouped Command (history)
+        Example: grouped command
       
     </span>
   </a>
@@ -2487,10 +2688,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#life-cycle-hook" class="md-nav__link">
+  <a href="#lifecycle-hook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Life Cycle Hook
+        Lifecycle hook
       
     </span>
   </a>
@@ -2506,12 +2707,12 @@
   <a href="#interactive-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interactive Mode
+        Interactive mode
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Interactive Mode">
+    <nav class="md-nav" aria-label="Interactive mode">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2529,7 +2730,7 @@
   <a href="#help-system" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Help System
+        Help system
       
     </span>
   </a>
@@ -2540,7 +2741,7 @@
   <a href="#history-management" class="md-nav__link">
     <span class="md-ellipsis">
       
-        History Management
+        History management
       
     </span>
   </a>
@@ -2551,7 +2752,7 @@
   <a href="#restart-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Restart Flow
+        Restart flow
       
     </span>
   </a>
@@ -2567,7 +2768,7 @@
   <a href="#diagnostics-diag-group" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Diagnostics (diag Group)
+        Diagnostics (diag group)
       
     </span>
   </a>
@@ -2578,7 +2779,7 @@
   <a href="#non-interactive-invocation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Non-Interactive Invocation
+        Non-interactive invocation
       
     </span>
   </a>
@@ -2586,10 +2787,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-handling-validation" class="md-nav__link">
+  <a href="#error-handling-and-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Handling &amp; Validation
+        Error handling and validation
       
     </span>
   </a>
@@ -2612,7 +2813,7 @@
   <a href="#add-custom-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Add Custom Commands
+        Add custom commands
       
     </span>
   </a>
@@ -2623,7 +2824,7 @@
   <a href="#introduce-new-groups" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Introduce New Groups
+        Introduce new groups
       
     </span>
   </a>
@@ -2634,7 +2835,7 @@
   <a href="#share-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Share Utilities
+        Share utilities
       
     </span>
   </a>
@@ -2650,7 +2851,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -2672,19 +2873,19 @@
   <a href="#advanced-topics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Advanced Topics
+        Advanced topics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced Topics">
+    <nav class="md-nav" aria-label="Advanced topics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#integrating-with-external-scripts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integrating With External Scripts
+        Integrating with external scripts
       
     </span>
   </a>
@@ -2695,7 +2896,7 @@
   <a href="#custom-output-formats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Output Formats
+        Custom output formats
       
     </span>
   </a>
@@ -2706,7 +2907,7 @@
   <a href="#security-considerations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Considerations
+        Security considerations
       
     </span>
   </a>
@@ -2717,7 +2918,7 @@
   <a href="#future-extensions-suggested-roadmap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Future Extensions (Suggested Roadmap)
+        Future extensions (suggested roadmap)
       
     </span>
   </a>
@@ -2733,7 +2934,7 @@
   <a href="#appendix-a-command-lifecycle-interactive" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A: Command Lifecycle (Interactive)
+        Appendix A: command lifecycle (interactive)
       
     </span>
   </a>
@@ -2741,10 +2942,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#appendix-b-key-interfaces-base-class" class="md-nav__link">
+  <a href="#appendix-b-key-interfaces-and-base-class" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix B: Key Interfaces &amp; Base Class
+        Appendix B: key interfaces and base class
       
     </span>
   </a>
@@ -2755,7 +2956,7 @@
   <a href="#appendix-c-example-group-design" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix C: Example Group Design
+        Appendix C: example group design
       
     </span>
   </a>
@@ -2766,7 +2967,7 @@
   <a href="#appendix-d-non-interactive-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix D: Non-Interactive Pattern
+        Appendix D: non-interactive pattern
       
     </span>
   </a>
@@ -2808,6 +3009,34 @@
     
   
     CORS Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
   
 
     
@@ -2895,15 +3124,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2921,8 +3155,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3202,15 +3436,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3228,8 +3467,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3309,6 +3548,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3345,10 +4115,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3358,8 +4127,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3368,13 +4137,14 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Solution">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#use-cases" class="md-nav__link">
+  <a href="#use-case-catalog" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Use Cases
+        Use case catalog
       
     </span>
   </a>
@@ -3383,6 +4153,17 @@
         
       </ul>
     </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3402,7 +4183,7 @@
   <a href="#core-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Components
+        Core components
       
     </span>
   </a>
@@ -3415,22 +4196,44 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#setup" class="md-nav__link">
+  <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup
+        Use Cases
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setup">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed setup">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#register-non-interactive-commands-console" class="md-nav__link">
+  <a href="#register-non-interactive-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Register Non-Interactive Commands (Console)
+        Register non-interactive commands
       
     </span>
   </a>
@@ -3438,10 +4241,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#register-interactive-commands-kestrel" class="md-nav__link">
+  <a href="#register-interactive-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Register Interactive Commands (Kestrel)
+        Register interactive commands
       
     </span>
   </a>
@@ -3452,7 +4255,7 @@
   <a href="#environment-constraints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Environment Constraints
+        Environment constraints
       
     </span>
   </a>
@@ -3468,19 +4271,19 @@
   <a href="#command-definition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Command Definition
+        Command definition
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Command Definition">
+    <nav class="md-nav" aria-label="Command definition">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#options-arguments" class="md-nav__link">
+  <a href="#options-and-arguments" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Options &amp; Arguments
+        Options and arguments
       
     </span>
   </a>
@@ -3491,7 +4294,7 @@
   <a href="#example-simple-echo-command" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Simple Echo Command
+        Example: simple echo command
       
     </span>
   </a>
@@ -3499,10 +4302,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-grouped-command-history" class="md-nav__link">
+  <a href="#example-grouped-command" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Grouped Command (history)
+        Example: grouped command
       
     </span>
   </a>
@@ -3510,10 +4313,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#life-cycle-hook" class="md-nav__link">
+  <a href="#lifecycle-hook" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Life Cycle Hook
+        Lifecycle hook
       
     </span>
   </a>
@@ -3529,12 +4332,12 @@
   <a href="#interactive-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Interactive Mode
+        Interactive mode
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Interactive Mode">
+    <nav class="md-nav" aria-label="Interactive mode">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3552,7 +4355,7 @@
   <a href="#help-system" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Help System
+        Help system
       
     </span>
   </a>
@@ -3563,7 +4366,7 @@
   <a href="#history-management" class="md-nav__link">
     <span class="md-ellipsis">
       
-        History Management
+        History management
       
     </span>
   </a>
@@ -3574,7 +4377,7 @@
   <a href="#restart-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Restart Flow
+        Restart flow
       
     </span>
   </a>
@@ -3590,7 +4393,7 @@
   <a href="#diagnostics-diag-group" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Diagnostics (diag Group)
+        Diagnostics (diag group)
       
     </span>
   </a>
@@ -3601,7 +4404,7 @@
   <a href="#non-interactive-invocation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Non-Interactive Invocation
+        Non-interactive invocation
       
     </span>
   </a>
@@ -3609,10 +4412,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#error-handling-validation" class="md-nav__link">
+  <a href="#error-handling-and-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Handling &amp; Validation
+        Error handling and validation
       
     </span>
   </a>
@@ -3635,7 +4438,7 @@
   <a href="#add-custom-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Add Custom Commands
+        Add custom commands
       
     </span>
   </a>
@@ -3646,7 +4449,7 @@
   <a href="#introduce-new-groups" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Introduce New Groups
+        Introduce new groups
       
     </span>
   </a>
@@ -3657,7 +4460,7 @@
   <a href="#share-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Share Utilities
+        Share utilities
       
     </span>
   </a>
@@ -3673,7 +4476,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3695,19 +4498,19 @@
   <a href="#advanced-topics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Advanced Topics
+        Advanced topics
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced Topics">
+    <nav class="md-nav" aria-label="Advanced topics">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#integrating-with-external-scripts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Integrating With External Scripts
+        Integrating with external scripts
       
     </span>
   </a>
@@ -3718,7 +4521,7 @@
   <a href="#custom-output-formats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Output Formats
+        Custom output formats
       
     </span>
   </a>
@@ -3729,7 +4532,7 @@
   <a href="#security-considerations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Considerations
+        Security considerations
       
     </span>
   </a>
@@ -3740,7 +4543,7 @@
   <a href="#future-extensions-suggested-roadmap" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Future Extensions (Suggested Roadmap)
+        Future extensions (suggested roadmap)
       
     </span>
   </a>
@@ -3756,7 +4559,7 @@
   <a href="#appendix-a-command-lifecycle-interactive" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A: Command Lifecycle (Interactive)
+        Appendix A: command lifecycle (interactive)
       
     </span>
   </a>
@@ -3764,10 +4567,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#appendix-b-key-interfaces-base-class" class="md-nav__link">
+  <a href="#appendix-b-key-interfaces-and-base-class" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix B: Key Interfaces &amp; Base Class
+        Appendix B: key interfaces and base class
       
     </span>
   </a>
@@ -3778,7 +4581,7 @@
   <a href="#appendix-c-example-group-design" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix C: Example Group Design
+        Appendix C: example group design
       
     </span>
   </a>
@@ -3789,7 +4592,7 @@
   <a href="#appendix-d-non-interactive-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix D: Non-Interactive Pattern
+        Appendix D: non-interactive pattern
       
     </span>
   </a>
@@ -3850,10 +4653,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3893,65 +4714,68 @@
   
 
 
-<h1 id="console-commands-feature-documentation">Console Commands Feature Documentation<a class="headerlink" href="#console-commands-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="console-commands">Console Commands<a class="headerlink" href="#console-commands" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Expose operational and administrative actions through discoverable console commands and an interactive shell.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#console-commands-feature-documentation">Console Commands Feature Documentation</a><ul>
-<li><a href="#overview">Overview</a><ul>
+<li><a href="#console-commands">Console Commands</a><ul>
+<li><a href="#overview">Overview</a></li>
 <li><a href="#challenges">Challenges</a></li>
-<li><a href="#solution">Solution</a></li>
-<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#solution">Solution</a><ul>
+<li><a href="#use-case-catalog">Use case catalog</a></li>
 </ul>
 </li>
+<li><a href="#key-features">Key Features</a></li>
 <li><a href="#architecture">Architecture</a><ul>
-<li><a href="#core-components">Core Components</a></li>
+<li><a href="#core-components">Core components</a></li>
 </ul>
 </li>
-<li><a href="#setup">Setup</a><ul>
-<li><a href="#register-non-interactive-commands-console">Register Non-Interactive Commands (Console)</a></li>
-<li><a href="#register-interactive-commands-kestrel">Register Interactive Commands (Kestrel)</a></li>
-<li><a href="#environment-constraints">Environment Constraints</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#detailed-setup">Detailed setup</a><ul>
+<li><a href="#register-non-interactive-commands">Register non-interactive commands</a></li>
+<li><a href="#register-interactive-commands">Register interactive commands</a></li>
+<li><a href="#environment-constraints">Environment constraints</a></li>
 </ul>
 </li>
-<li><a href="#command-definition">Command Definition</a><ul>
-<li><a href="#options-arguments">Options &amp; Arguments</a></li>
-<li><a href="#example-simple-echo-command">Example: Simple Echo Command</a></li>
-<li><a href="#example-grouped-command-history">Example: Grouped Command (history)</a></li>
-<li><a href="#life-cycle-hook">Life Cycle Hook</a></li>
+<li><a href="#command-definition">Command definition</a><ul>
+<li><a href="#options-and-arguments">Options and arguments</a></li>
+<li><a href="#example-simple-echo-command">Example: simple echo command</a></li>
+<li><a href="#example-grouped-command">Example: grouped command</a></li>
+<li><a href="#lifecycle-hook">Lifecycle hook</a></li>
 </ul>
 </li>
-<li><a href="#interactive-mode">Interactive Mode</a><ul>
+<li><a href="#interactive-mode">Interactive mode</a><ul>
 <li><a href="#launch">Launch</a></li>
-<li><a href="#help-system">Help System</a></li>
-<li><a href="#history-management">History Management</a></li>
-<li><a href="#restart-flow">Restart Flow</a></li>
+<li><a href="#help-system">Help system</a></li>
+<li><a href="#history-management">History management</a></li>
+<li><a href="#restart-flow">Restart flow</a></li>
 </ul>
 </li>
-<li><a href="#diagnostics-diag-group">Diagnostics (diag Group)</a></li>
-<li><a href="#non-interactive-invocation">Non-Interactive Invocation</a></li>
-<li><a href="#error-handling-validation">Error Handling &amp; Validation</a></li>
+<li><a href="#diagnostics-diag-group">Diagnostics (diag group)</a></li>
+<li><a href="#non-interactive-invocation">Non-interactive invocation</a></li>
+<li><a href="#error-handling-and-validation">Error handling and validation</a></li>
 <li><a href="#extensibility">Extensibility</a><ul>
-<li><a href="#add-custom-commands">Add Custom Commands</a></li>
-<li><a href="#introduce-new-groups">Introduce New Groups</a></li>
-<li><a href="#share-utilities">Share Utilities</a></li>
+<li><a href="#add-custom-commands">Add custom commands</a></li>
+<li><a href="#introduce-new-groups">Introduce new groups</a></li>
+<li><a href="#share-utilities">Share utilities</a></li>
 </ul>
 </li>
-<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#best-practices">Best practices</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
-<li><a href="#advanced-topics">Advanced Topics</a><ul>
-<li><a href="#integrating-with-external-scripts">Integrating With External Scripts</a></li>
-<li><a href="#custom-output-formats">Custom Output Formats</a></li>
-<li><a href="#security-considerations">Security Considerations</a></li>
-<li><a href="#future-extensions-suggested-roadmap">Future Extensions (Suggested Roadmap)</a></li>
+<li><a href="#advanced-topics">Advanced topics</a><ul>
+<li><a href="#integrating-with-external-scripts">Integrating with external scripts</a></li>
+<li><a href="#custom-output-formats">Custom output formats</a></li>
+<li><a href="#security-considerations">Security considerations</a></li>
+<li><a href="#future-extensions-suggested-roadmap">Future extensions (suggested roadmap)</a></li>
 </ul>
 </li>
-<li><a href="#appendix-a-command-lifecycle-interactive">Appendix A: Command Lifecycle (Interactive)</a></li>
-<li><a href="#appendix-b-key-interfaces-base-class">Appendix B: Key Interfaces &amp; Base Class</a></li>
-<li><a href="#appendix-c-example-group-design">Appendix C: Example Group Design</a></li>
-<li><a href="#appendix-d-non-interactive-pattern">Appendix D: Non-Interactive Pattern</a></li>
+<li><a href="#appendix-a-command-lifecycle-interactive">Appendix A: command lifecycle (interactive)</a></li>
+<li><a href="#appendix-b-key-interfaces-and-base-class">Appendix B: key interfaces and base class</a></li>
+<li><a href="#appendix-c-example-group-design">Appendix C: example group design</a></li>
+<li><a href="#appendix-d-non-interactive-pattern">Appendix D: non-interactive pattern</a></li>
 <li><a href="#disclaimer">Disclaimer</a></li>
 </ul>
 </li>
@@ -3963,8 +4787,8 @@
 <li>Non-interactive command execution ("single-shot") suitable for automation, scripting, diagnostics or administrative tasks at startup.</li>
 <li>Interactive in-process console ("interactive shell") that runs alongside a locally hosted ASP.NET Core application using Kestrel.</li>
 </ol>
-<p>Commands are lightweight classes derived from <code>ConsoleCommandBase</code> and discovered through dependency injection. They expose arguments and options via attributes, support grouped subcommand hierarchies, leverage Spectre.Console for rich terminal output and share a uniform binding &amp; help system managed by the internal <code>ConsoleCommandBinder</code>.</p>
-<h3 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h3>
+<p>Commands are lightweight classes derived from <code>ConsoleCommandBase</code> and registered through dependency injection. They expose arguments and options through attributes, support grouped subcommand hierarchies, use Spectre.Console for terminal output and share binding and help behavior through <code>ConsoleCommandExecutor</code> and <code>ConsoleCommandBinder</code>.</p>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
 <p>Modern local development and operational workflows often face:</p>
 <ul>
 <li>Manual repetition of diagnostic and maintenance tasks (threads, memory, GC, environment info).</li>
@@ -3973,11 +4797,11 @@
 <li>Difficulties in adding structured, option-rich commands without verbose parsing code.</li>
 <li>Need for both interactive exploration and automation-friendly single-run invocation.</li>
 </ul>
-<h3 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h3>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
 <p>The feature addresses these challenges by supplying:</p>
 <ul>
 <li>A unified command abstraction (<code>IConsoleCommand</code>) with a lean base class (<code>ConsoleCommandBase</code>).</li>
-<li>Attribute-driven option &amp; argument binding (<code>ConsoleCommandOptionAttribute</code>, <code>ConsoleCommandArgumentAttribute</code>).</li>
+<li>Attribute-driven option and argument binding (<code>ConsoleCommandOptionAttribute</code>, <code>ConsoleCommandArgumentAttribute</code>).</li>
 <li>Grouped subcommands (<code>IGroupedConsoleCommand</code>) enabling hierarchical organization (e.g. <code>history list</code>, <code>diag perf</code>).</li>
 <li>Automatic help generation and validation errors through a central binder.</li>
 <li>Interactive loop with history persistence and restart support for local development.</li>
@@ -3986,7 +4810,7 @@
 <li>Extensible registration via fluent builders (<code>AddConsoleCommands</code>, <code>AddConsoleCommandsInteractive</code>).</li>
 <li>Spectre.Console-based formatting (tables, markup, rules) for clear developer feedback.</li>
 </ul>
-<h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
+<h3 id="use-case-catalog">Use case catalog<a class="headerlink" href="#use-case-catalog" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4038,6 +4862,15 @@
 </tr>
 </tbody>
 </table>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Shared command contracts for single-shot and interactive execution.</li>
+<li>Attribute-based binding for positional arguments, named options, aliases, required values and defaults.</li>
+<li>Grouped command hierarchies such as <code>history list</code> and <code>diag perf</code>.</li>
+<li>Consistent help, validation and result handling through <code>ConsoleCommandExecutor</code> and <code>ConsoleCommandBinder</code>.</li>
+<li>Persistent history, console themes and development-only restart support for interactive hosts.</li>
+<li>Spectre.Console output for tables, markup and other terminal components.</li>
+</ul>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart LR
  A[Host / WebApplication] --&gt; B[ServiceCollectionExtensions]
@@ -4052,7 +4885,7 @@
  D --&gt; G[Bound Command Instance]
  G --&gt; H[ExecuteAsync]
  H --&gt; I[Spectre.Console Output]</code></pre>
-<h3 id="core-components">Core Components<a class="headerlink" href="#core-components" title="Permanent link">&para;</a></h3>
+<h3 id="core-components">Core components<a class="headerlink" href="#core-components" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4099,8 +4932,35 @@
 </tr>
 </tbody>
 </table>
-<h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
-<h3 id="register-non-interactive-commands-console">Register Non-Interactive Commands (Console)<a class="headerlink" href="#register-non-interactive-commands-console" title="Permanent link">&para;</a></h3>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<p>Use Console Commands to expose local diagnostics, maintenance operations and application-specific developer tools through one command model. Single-shot hosts suit scripts and CI tasks. The interactive loop suits local ASP.NET Core development. The <a href="#use-case-catalog">use case catalog</a> lists representative commands.</p>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>Register a command, build the host and pass the process arguments to <code>ConsoleCommandExecutor</code>. Check the returned result so the process reports failure to its caller.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Presentation</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.Extensions.DependencyInjection</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Spectre.Console</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConsoleCommands</span><span class="p">(</span><span class="n">commands</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">commands</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithCommand</span><span class="o">&lt;</span><span class="n">EchoConsoleCommand</span><span class="o">&gt;</span><span class="p">()));</span>
+
+<span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IAnsiConsole</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConsoleCommandExecutor</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">args</span><span class="p">,</span>
+<span class="w">    </span><span class="n">console</span><span class="p">,</span>
+<span class="w">    </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ConsoleCommandExecutionSource</span><span class="p">.</span><span class="n">Terminal</span><span class="p">);</span>
+
+<span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Succeeded</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+</code></pre></div>
+<p>With the example command defined below, this invocation writes two numbered uppercase lines and exits with code <code>0</code>:</p>
+<div class="highlight"><pre><span></span><code>app<span class="w"> </span><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;hello&quot;</span><span class="w"> </span>--repeat<span class="o">=</span><span class="m">2</span><span class="w"> </span>--upper
+</code></pre></div>
+<p>Unknown commands and binding errors write help or error details and return a failed result, allowing the process to exit with code <code>1</code>.</p>
+<h2 id="detailed-setup">Detailed setup<a class="headerlink" href="#detailed-setup" title="Permanent link">&para;</a></h2>
+<h3 id="register-non-interactive-commands">Register non-interactive commands<a class="headerlink" href="#register-non-interactive-commands" title="Permanent link">&para;</a></h3>
 <p>Use when you need single-run invocation (e.g. hosted service executing a command supplied via args).</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddConsoleCommands</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4109,8 +4969,15 @@
 <span class="w">    </span><span class="p">}));</span>
 
 <span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">host</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IAnsiConsole</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConsoleCommandExecutor</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">args</span><span class="p">,</span>
+<span class="w">    </span><span class="n">console</span><span class="p">,</span>
+<span class="w">    </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ConsoleCommandExecutionSource</span><span class="p">.</span><span class="n">Terminal</span><span class="p">);</span>
 
-<span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">ConsoleCommands</span><span class="p">.</span><span class="n">RunAsync</span><span class="p">(</span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Succeeded</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 </code></pre></div>
 <p><code>DevKitApplication</code> keeps local CLI host advertisement disabled by default, so single-shot console command applications do not need to opt out of descriptor writing.</p>
 <p>The raw generic host remains supported for applications that do not need the DevKit fluent builder:</p>
@@ -4128,7 +4995,7 @@
 <span class="p">});</span>
 </code></pre></div>
 <p>Use <code>docs</code> to open the official documentation in the default browser, or <code>docs --url</code> to write the URL without opening a browser. The packaged <code>bdk docs</code> command uses this same shared command with CLI-specific JSON and CI behavior layered around it.</p>
-<h3 id="register-interactive-commands-kestrel">Register Interactive Commands (Kestrel)<a class="headerlink" href="#register-interactive-commands-kestrel" title="Permanent link">&para;</a></h3>
+<h3 id="register-interactive-commands">Register interactive commands<a class="headerlink" href="#register-interactive-commands" title="Permanent link">&para;</a></h3>
 <p>Enable the interactive loop for local development.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddConsoleCommandsInteractive</span><span class="p">(</span><span class="n">cfg</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -4138,49 +5005,64 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">UseConsoleCommandsInteractive</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="environment-constraints">Environment Constraints<a class="headerlink" href="#environment-constraints" title="Permanent link">&para;</a></h3>
+<h3 id="environment-constraints">Environment constraints<a class="headerlink" href="#environment-constraints" title="Permanent link">&para;</a></h3>
 <p>The interactive loop is automatically bypassed in non-development environments (local checks).</p>
-<h2 id="command-definition">Command Definition<a class="headerlink" href="#command-definition" title="Permanent link">&para;</a></h2>
-<h3 id="options-arguments">Options &amp; Arguments<a class="headerlink" href="#options-arguments" title="Permanent link">&para;</a></h3>
+<h2 id="command-definition">Command definition<a class="headerlink" href="#command-definition" title="Permanent link">&para;</a></h2>
+<h3 id="options-and-arguments">Options and arguments<a class="headerlink" href="#options-and-arguments" title="Permanent link">&para;</a></h3>
 <p>Annotate public properties:</p>
 <ul>
 <li><code>ConsoleCommandOptionAttribute</code>: Named option (<code>--name value</code> or short alias <code>-n value</code>) plus optional default.</li>
 <li><code>ConsoleCommandArgumentAttribute</code>: Positional argument by index.</li>
 </ul>
-<p>Binding Rules:</p>
+<p>Binding rules:</p>
 <ul>
 <li>Booleans are treated as flags (presence =&gt; true unless explicitly <code>false</code>).</li>
 <li>Missing required options/arguments produce binder errors and detailed help output.</li>
 <li>Unrecognized tokens yield validation feedback.</li>
 </ul>
-<h3 id="example-simple-echo-command">Example: Simple Echo Command<a class="headerlink" href="#example-simple-echo-command" title="Permanent link">&para;</a></h3>
+<h3 id="example-simple-echo-command">Example: simple echo command<a class="headerlink" href="#example-simple-echo-command" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EchoConsoleCommand</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ConsoleCommandBase</span>
 <span class="p">{</span>
-<span class="w"> </span><span class="na">[ConsoleCommandArgument(0, Description = &quot;Text to echo&quot;, Required = true)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Text</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="na">[ConsoleCommandOption(&quot;repeat&quot;, Alias = &quot;r&quot;, Description = &quot;Repeat count&quot;, Default =1)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Repeat</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="na">[ConsoleCommandOption(&quot;upper&quot;, Alias = &quot;u&quot;, Description = &quot;Uppercase output&quot;)]</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Upper</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="nf">EchoConsoleCommand</span><span class="p">()</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Echo text with optional repetition&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
-<span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteAsync</span><span class="p">(</span><span class="n">IAnsiConsole</span><span class="w"> </span><span class="n">console</span><span class="p">,</span><span class="w"> </span><span class="n">IServiceProvider</span><span class="w"> </span><span class="n">services</span><span class="p">)</span>
-<span class="w"> </span><span class="p">{</span>
-<span class="w">  </span><span class="kt">var</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Upper</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="n">Text</span><span class="p">.</span><span class="n">ToUpperInvariant</span><span class="p">()</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Text</span><span class="p">;</span>
-<span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">Repeat</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="n">console</span><span class="p">.</span><span class="n">MarkupLine</span><span class="p">(</span><span class="s">$&quot;[green]{Markup.Escape(output)}[/]&quot;</span><span class="p">);</span>
-<span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
-<span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="na">[ConsoleCommandArgument(0, Description = &quot;Text to echo&quot;, Required = true)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Text</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="na">[ConsoleCommandOption(&quot;repeat&quot;, Alias = &quot;r&quot;, Description = &quot;Repeat count&quot;, Default = 1)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">Repeat</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="na">[ConsoleCommandOption(&quot;upper&quot;, Alias = &quot;u&quot;, Description = &quot;Uppercase output&quot;)]</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">Upper</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">EchoConsoleCommand</span><span class="p">()</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="k">base</span><span class="p">(</span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Echo text with optional repetition&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExecuteAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">IAnsiConsole</span><span class="w"> </span><span class="n">console</span><span class="p">,</span>
+<span class="w">        </span><span class="n">IServiceProvider</span><span class="w"> </span><span class="n">services</span><span class="p">,</span>
+<span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">output</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Upper</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Text</span><span class="p">.</span><span class="n">ToUpperInvariant</span><span class="p">()</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Text</span><span class="p">;</span>
+<span class="w">        </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Repeat</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">console</span><span class="p">.</span><span class="n">MarkupLine</span><span class="p">(</span><span class="s">$&quot;[green]{Markup.Escape(output)}[/]&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">CompletedTask</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Usage:</p>
 <div class="highlight"><pre><span></span><code><span class="nb">echo</span><span class="w"> </span><span class="s2">&quot;hello world&quot;</span><span class="w"> </span>--repeat<span class="o">=</span><span class="m">3</span><span class="w"> </span>--upper
 </code></pre></div>
-<h3 id="example-grouped-command-history">Example: Grouped Command (history)<a class="headerlink" href="#example-grouped-command-history" title="Permanent link">&para;</a></h3>
+<h3 id="example-grouped-command">Example: grouped command<a class="headerlink" href="#example-grouped-command" title="Permanent link">&para;</a></h3>
 <p>Grouped commands share a <code>GroupName</code> token followed by subcommand names.</p>
 <div class="highlight"><pre><span></span><code><span class="nb">history</span><span class="w"> </span>list<span class="w"> </span>--max<span class="o">=</span><span class="m">25</span>
 <span class="nb">history</span><span class="w"> </span>clear<span class="w"> </span>--keep-last<span class="o">=</span><span class="m">5</span>
 <span class="nb">history</span><span class="w"> </span>search<span class="w"> </span>restart
 </code></pre></div>
 <p>Each subcommand class implements <code>IGroupedConsoleCommand</code> and supplies its own <code>Name</code> / <code>Description</code> while inheriting group metadata.</p>
-<h3 id="life-cycle-hook">Life Cycle Hook<a class="headerlink" href="#life-cycle-hook" title="Permanent link">&para;</a></h3>
+<h3 id="lifecycle-hook">Lifecycle hook<a class="headerlink" href="#lifecycle-hook" title="Permanent link">&para;</a></h3>
 <p><code>OnAfterBind(console, tokens)</code> allows post-binding adjustment / validation (e.g. deriving repeat count from another option).</p>
-<h2 id="interactive-mode">Interactive Mode<a class="headerlink" href="#interactive-mode" title="Permanent link">&para;</a></h2>
+<h2 id="interactive-mode">Interactive mode<a class="headerlink" href="#interactive-mode" title="Permanent link">&para;</a></h2>
 <h3 id="launch">Launch<a class="headerlink" href="#launch" title="Permanent link">&para;</a></h3>
 <p>When registered and running locally, a banner appears and the loop waits for user input. History is appended after each line. Control signals:</p>
 <ul>
@@ -4188,13 +5070,13 @@
 <li><code>quit</code> / <code>exit</code> / <code>q</code>: graceful shutdown.</li>
 <li><code>restart</code>: development-only restart (spawns new process, sets environment marker).</li>
 </ul>
-<h3 id="help-system">Help System<a class="headerlink" href="#help-system" title="Permanent link">&para;</a></h3>
+<h3 id="help-system">Help system<a class="headerlink" href="#help-system" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>help</code> lists all commands and grouped subcommands.</li>
 <li><code>help history</code> shows group subcommands.</li>
 <li><code>help history list</code> shows detailed option/argument help for a specific subcommand.</li>
 </ul>
-<h3 id="history-management">History Management<a class="headerlink" href="#history-management" title="Permanent link">&para;</a></h3>
+<h3 id="history-management">History management<a class="headerlink" href="#history-management" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4217,9 +5099,9 @@
 </tr>
 </tbody>
 </table>
-<h3 id="restart-flow">Restart Flow<a class="headerlink" href="#restart-flow" title="Permanent link">&para;</a></h3>
+<h3 id="restart-flow">Restart flow<a class="headerlink" href="#restart-flow" title="Permanent link">&para;</a></h3>
 <p><code>restart</code> (development only) sets a transient environment variable to prevent nested restarts, spawns a new instance then stops current process.</p>
-<h2 id="diagnostics-diag-group">Diagnostics (diag Group)<a class="headerlink" href="#diagnostics-diag-group" title="Permanent link">&para;</a></h2>
+<h2 id="diagnostics-diag-group">Diagnostics (<code>diag</code> group)<a class="headerlink" href="#diagnostics-diag-group" title="Permanent link">&para;</a></h2>
 <p>The <code>diag</code> group centralizes point-in-time runtime introspection.</p>
 <table>
 <thead>
@@ -4232,17 +5114,17 @@
 <tbody>
 <tr>
 <td><code>diag gc [--force]</code></td>
-<td>GC memory &amp; collections; optional full collection.</td>
-<td>Heap size, fragmented bytes, gen counts.</td>
+<td>GC memory and collections; optional full collection in Development.</td>
+<td>Heap size, fragmented bytes, generation counts.</td>
 </tr>
 <tr>
 <td><code>diag threads</code></td>
-<td>Thread pool configuration &amp; usage.</td>
+<td>Thread pool configuration and usage.</td>
 <td>Min/max/available/used, pending work items.</td>
 </tr>
 <tr>
 <td><code>diag mem</code></td>
-<td>Detailed process &amp; managed memory summary.</td>
+<td>Detailed process and managed memory summary.</td>
 <td>Working set, private bytes, heap, fragment.</td>
 </tr>
 <tr>
@@ -4252,38 +5134,50 @@
 </tr>
 <tr>
 <td><code>diag env</code></td>
-<td>Runtime &amp; environment info.</td>
-<td>Framework, OS, arch, GC mode, build config.</td>
+<td>Runtime and environment information.</td>
+<td>Framework, OS, architecture, GC mode, build configuration.</td>
 </tr>
 </tbody>
 </table>
 <p>All output is tabular via Spectre.Console for readability and consistent formatting.</p>
-<h2 id="non-interactive-invocation">Non-Interactive Invocation<a class="headerlink" href="#non-interactive-invocation" title="Permanent link">&para;</a></h2>
+<h2 id="non-interactive-invocation">Non-interactive invocation<a class="headerlink" href="#non-interactive-invocation" title="Permanent link">&para;</a></h2>
 <p>You can host commands in a console entry point to perform a single operation based on command-line args:</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">line</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="sc">&#39; &#39;</span><span class="p">,</span><span class="w"> </span><span class="n">args</span><span class="p">);</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">tokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Split</span><span class="p">(</span><span class="n">line</span><span class="p">);</span>
-<span class="c1">// Resolve registered IConsoleCommand services and execute matching command (reuse binder).</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IAnsiConsole</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConsoleCommandExecutor</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">args</span><span class="p">,</span>
+<span class="w">    </span><span class="n">console</span><span class="p">,</span>
+<span class="w">    </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ConsoleCommandExecutionSource</span><span class="p">.</span><span class="n">Terminal</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">result</span><span class="p">.</span><span class="n">Succeeded</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">return</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
 </code></pre></div>
-<p>This approach enables automation (CI tasks, maintenance jobs) while reusing the exact same command implementations as interactive mode.</p>
-<h2 id="error-handling-validation">Error Handling &amp; Validation<a class="headerlink" href="#error-handling-validation" title="Permanent link">&para;</a></h2>
+<p>The executor handles quoted input, grouped commands, scoped dependency resolution, binding, help output, history and execution failures. This approach enables automation (CI tasks, maintenance jobs) while reusing the same command implementations as interactive mode.</p>
+<h2 id="error-handling-and-validation">Error handling and validation<a class="headerlink" href="#error-handling-and-validation" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Binding errors enumerate missing or invalid tokens and automatically print detailed help.</li>
 <li>Execution exceptions are caught and rendered in red markup with the message only (stack framing left to external logging).</li>
 <li>History IO issues are surfaced as a single yellow warning line after <code>history list</code>.</li>
 </ul>
 <h2 id="extensibility">Extensibility<a class="headerlink" href="#extensibility" title="Permanent link">&para;</a></h2>
-<h3 id="add-custom-commands">Add Custom Commands<a class="headerlink" href="#add-custom-commands" title="Permanent link">&para;</a></h3>
+<h3 id="add-custom-commands">Add custom commands<a class="headerlink" href="#add-custom-commands" title="Permanent link">&para;</a></h3>
 <ol>
 <li>Create a class deriving <code>ConsoleCommandBase</code> (or implementing <code>IGroupedConsoleCommand</code> for groups).</li>
 <li>Decorate properties with option / argument attributes.</li>
 <li>Register via builder (<code>cfg.WithCommand&lt;YourCommand&gt;()</code>).</li>
 <li>Implement <code>ExecuteAsync</code> producing Spectre.Console output (tables, markup, panels).</li>
 </ol>
-<h3 id="introduce-new-groups">Introduce New Groups<a class="headerlink" href="#introduce-new-groups" title="Permanent link">&para;</a></h3>
+<h3 id="introduce-new-groups">Introduce new groups<a class="headerlink" href="#introduce-new-groups" title="Permanent link">&para;</a></h3>
 <p>Group multiple related sub-operations (e.g. <code>cache warm</code>, <code>cache stats</code>). Provide a consistent <code>GroupName</code> and optional aliases. Each subcommand remains small and focused.</p>
-<h3 id="share-utilities">Share Utilities<a class="headerlink" href="#share-utilities" title="Permanent link">&para;</a></h3>
+<h3 id="share-utilities">Share utilities<a class="headerlink" href="#share-utilities" title="Permanent link">&para;</a></h3>
 <p>Refactor repeated metrics/data gathering into internal static helper classes (similar to <code>DiagnosticTablesBuilder</code>) to keep execution methods lean.</p>
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h2 id="best-practices">Best practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -4376,32 +5270,32 @@
 </tr>
 <tr>
 <td>High failure counts</td>
-<td>Underlying app endpoints returning5xx</td>
+<td>Underlying application endpoints return 5xx responses</td>
 <td>Investigate application logs; metrics only report counts.</td>
 </tr>
 <tr>
-<td>CPU% shows0</td>
-<td>Very short uptime vs sampling</td>
-<td>Wait a few seconds and re-run <code>diag perf</code>.</td>
+<td>CPU percentage shows zero</td>
+<td>Uptime is too short for a representative sample</td>
+<td>Wait a few seconds and run <code>diag perf</code> again.</td>
 </tr>
 </tbody>
 </table>
-<h2 id="advanced-topics">Advanced Topics<a class="headerlink" href="#advanced-topics" title="Permanent link">&para;</a></h2>
-<h3 id="integrating-with-external-scripts">Integrating With External Scripts<a class="headerlink" href="#integrating-with-external-scripts" title="Permanent link">&para;</a></h3>
+<h2 id="advanced-topics">Advanced topics<a class="headerlink" href="#advanced-topics" title="Permanent link">&para;</a></h2>
+<h3 id="integrating-with-external-scripts">Integrating with external scripts<a class="headerlink" href="#integrating-with-external-scripts" title="Permanent link">&para;</a></h3>
 <p>Non-interactive commands can be wrapped by shell scripts or scheduled tasks (e.g. Windows Task Scheduler) by passing the command tokens as part of process args. Consistent parsing semantics ensure parity with interactive usage.</p>
-<h3 id="custom-output-formats">Custom Output Formats<a class="headerlink" href="#custom-output-formats" title="Permanent link">&para;</a></h3>
+<h3 id="custom-output-formats">Custom output formats<a class="headerlink" href="#custom-output-formats" title="Permanent link">&para;</a></h3>
 <p>While tables are recommended, commands may output JSON for machine consumption. Provide a <code>--json</code> option where appropriate and serialize with indentation for clarity.</p>
-<h3 id="security-considerations">Security Considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h3>
+<h3 id="security-considerations">Security considerations<a class="headerlink" href="#security-considerations" title="Permanent link">&para;</a></h3>
 <p>Do not expose interactive console capabilities in production internet-facing environments. Group names or command names should not leak sensitive operational intentions. Restrict potentially destructive commands via environment checks and role guards if extended.</p>
-<h3 id="future-extensions-suggested-roadmap">Future Extensions (Suggested Roadmap)<a class="headerlink" href="#future-extensions-suggested-roadmap" title="Permanent link">&para;</a></h3>
+<h3 id="future-extensions-suggested-roadmap">Future extensions (suggested roadmap)<a class="headerlink" href="#future-extensions-suggested-roadmap" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Latency distribution and percentiles in <code>diag perf</code>.</li>
 <li>Endpoint-specific HTTP statistics (per route breakdown).</li>
-<li>Snapshot diff &amp; export (<code>diag diff</code>, <code>diag export</code>).</li>
+<li>Snapshot comparison and export (<code>diag diff</code>, <code>diag export</code>).</li>
 <li>Tracing capture (<code>diag trace</code>).</li>
 <li>Pluggable authorization for privileged commands.</li>
 </ul>
-<h2 id="appendix-a-command-lifecycle-interactive">Appendix A: Command Lifecycle (Interactive)<a class="headerlink" href="#appendix-a-command-lifecycle-interactive" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-a-command-lifecycle-interactive">Appendix A: command lifecycle (interactive)<a class="headerlink" href="#appendix-a-command-lifecycle-interactive" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>sequenceDiagram
     participant User
     participant RunLoop as Interactive Loop
@@ -4422,7 +5316,7 @@
         Cmd--&gt;&gt;User: Output
     end
 end</code></pre>
-<h2 id="appendix-b-key-interfaces-base-class">Appendix B: Key Interfaces &amp; Base Class<a class="headerlink" href="#appendix-b-key-interfaces-base-class" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-b-key-interfaces-and-base-class">Appendix B: key interfaces and base class<a class="headerlink" href="#appendix-b-key-interfaces-and-base-class" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -4437,7 +5331,7 @@ end</code></pre>
 </tr>
 <tr>
 <td><code>IGroupedConsoleCommand</code></td>
-<td>Extends command with group identity &amp; aliases for hierarchical invocation.</td>
+<td>Extends a command with a group identity and aliases for hierarchical invocation.</td>
 </tr>
 <tr>
 <td><code>ConsoleCommandBase</code></td>
@@ -4449,25 +5343,24 @@ end</code></pre>
 </tr>
 </tbody>
 </table>
-<h2 id="appendix-c-example-group-design">Appendix C: Example Group Design<a class="headerlink" href="#appendix-c-example-group-design" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-c-example-group-design">Appendix C: example group design<a class="headerlink" href="#appendix-c-example-group-design" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code>Group:<span class="w"> </span>diag
 Subcommands:<span class="w"> </span>gc,<span class="w"> </span>threads,<span class="w"> </span>mem,<span class="w"> </span>perf,<span class="w"> </span>env
 Goal:<span class="w"> </span>Centralize<span class="w"> </span>diagnostics<span class="p">;</span><span class="w"> </span>each<span class="w"> </span>subcommand<span class="w"> </span>returns<span class="w"> </span>one<span class="w"> </span>cohesive<span class="w"> </span>table.
 Additions<span class="w"> </span><span class="o">(</span>future<span class="o">)</span>:<span class="w"> </span>heap,<span class="w"> </span>latency,<span class="w"> </span>http,<span class="w"> </span>allocations,<span class="w"> </span>exceptions.
 </code></pre></div>
-<h2 id="appendix-d-non-interactive-pattern">Appendix D: Non-Interactive Pattern<a class="headerlink" href="#appendix-d-non-interactive-pattern" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-d-non-interactive-pattern">Appendix D: non-interactive pattern<a class="headerlink" href="#appendix-d-non-interactive-pattern" title="Permanent link">&para;</a></h2>
 <p>Minimal bootstrap for executing a single command outside interactive mode:</p>
-<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">scope</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">CreateScope</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">all</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scope</span><span class="p">.</span><span class="n">ServiceProvider</span><span class="p">.</span><span class="n">GetServices</span><span class="o">&lt;</span><span class="n">IConsoleCommand</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">tokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">args</span><span class="p">;</span><span class="w"> </span><span class="c1">// already split</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">primary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokens</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">cmd</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">all</span><span class="p">.</span><span class="n">FirstOrDefault</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Matches</span><span class="p">(</span><span class="n">primary</span><span class="p">));</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">cmd</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">null</span><span class="p">)</span><span class="w"> </span><span class="k">return</span><span class="p">;</span>
-<span class="kt">var</span><span class="w"> </span><span class="n">bindTokens</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tokens</span><span class="p">.</span><span class="n">Skip</span><span class="p">(</span><span class="mi">1</span><span class="p">).</span><span class="n">ToArray</span><span class="p">();</span>
-<span class="kt">var</span><span class="w"> </span><span class="p">(</span><span class="n">ok</span><span class="p">,</span><span class="w"> </span><span class="n">errors</span><span class="p">)</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ConsoleCommandBinder</span><span class="p">.</span><span class="n">TryBind</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span><span class="w"> </span><span class="n">bindTokens</span><span class="p">);</span>
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">ok</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* print help */</span><span class="w"> </span><span class="k">return</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">console</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IAnsiConsole</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">executor</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ConsoleCommandExecutor</span><span class="p">();</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">executor</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">args</span><span class="p">,</span>
+<span class="w">    </span><span class="n">console</span><span class="p">,</span>
+<span class="w">    </span><span class="n">host</span><span class="p">.</span><span class="n">Services</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ConsoleCommandExecutionSource</span><span class="p">.</span><span class="n">Terminal</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 
-<span class="k">await</span><span class="w"> </span><span class="n">cmd</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="p">(</span><span class="n">console</span><span class="p">,</span><span class="w"> </span><span class="n">scope</span><span class="p">.</span><span class="n">ServiceProvider</span><span class="p">);</span>
+<span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Succeeded</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">0</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span>
 </code></pre></div>
 <h2 id="disclaimer">Disclaimer<a class="headerlink" href="#disclaimer" title="Permanent link">&para;</a></h2>
 <p>The Console Commands feature is designed primarily for development, diagnostics and controlled operational scenarios. It is <strong>not</strong> a replacement for full remote administration tooling, nor intended for production exposure without additional security measures.</p>
@@ -4549,7 +5442,7 @@ Additions<span class="w"> </span><span class="o">(</span>future<span class="o">)
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4557,6 +5450,8 @@ Additions<span class="w"> </span><span class="o">(</span>future<span class="o">)
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

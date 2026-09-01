@@ -304,7 +304,8 @@ Class RequestBehaviorsProvider
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Resolves request pipeline behaviors in registration order.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -314,21 +315,25 @@ Class RequestBehaviorsProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>serviceProvider</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service provider used to construct behaviors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IPipelineBehavior-2.html">IPipelineBehavior</a>&lt;TRequest, <a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;TValue&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The resolved pipeline behaviors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TRequest</code></dt>
-    <dd></dd>
+    <dd><p>The request type.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The response value type.</p>
+</dd>
   </dl>
 
 

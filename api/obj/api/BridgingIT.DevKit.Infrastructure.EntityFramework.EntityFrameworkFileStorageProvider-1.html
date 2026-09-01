@@ -517,9 +517,7 @@ from configuration values.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Checks connectivity and basic access to the storage location, returning a Result with success or errors.
-Returns false if the location is unreachable or permissions are insufficient, triggering a health alert.
-Example: <code>var result = await provider.CheckHealthAsync(CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Storage is healthy&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Executes the check health operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -530,14 +528,14 @@ Example: <code>var result = await provider.CheckHealthAsync(CancellationToken.No
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., ConnectionError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -597,8 +595,7 @@ Example: <code>var result = await provider.CheckHealthAsync(CancellationToken.No
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Copies a file or blob from the source path to the destination path, returning a Result with success or errors.
-Example: <code>var result = await provider.CopyFileAsync(&quot;folder/source.txt&quot;, &quot;folder/dest.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File copied&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Executes the copy file operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -609,23 +606,23 @@ Example: <code>var result = await provider.CopyFileAsync(&quot;folder/source.txt
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The source path to copy from (e.g., &quot;folder/source.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>destinationPath</code> <span class="xref">string</span></dt>
-    <dd><p>The destination path to copy to (e.g., &quot;folder/destination.txt&quot;).</p>
+    <dd><p>The destination path used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -646,8 +643,7 @@ Example: <code>var result = await provider.CopyFileAsync(&quot;folder/source.txt
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Creates a directory (or virtual folder) at the specified path, returning a Result with success or errors.
-Example: <code>var result = await provider.CreateDirectoryAsync(&quot;folder/subfolder&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Directory created&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Creates directory.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -658,17 +654,17 @@ Example: <code>var result = await provider.CreateDirectoryAsync(&quot;folder/sub
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to create (e.g., &quot;folder/subfolder&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., DirectoryExistsError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -722,8 +718,7 @@ Example: <code>var result = await provider.CreateDirectoryAsync(&quot;folder/sub
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes the directory (or virtual folder) at the specified path, returning a Result with success or errors.
-Example: <code>var result = await provider.DeleteDirectoryAsync(&quot;folder/subfolder&quot;, true, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Directory deleted&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Deletes directory.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -734,20 +729,20 @@ Example: <code>var result = await provider.DeleteDirectoryAsync(&quot;folder/sub
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to delete (e.g., &quot;folder/subfolder&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>recursive</code> <span class="xref">bool</span></dt>
-    <dd><p>Whether to delete contents recursively.</p>
+    <dd><p>The recursive used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., DirectoryNotEmptyError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -768,8 +763,7 @@ Example: <code>var result = await provider.DeleteDirectoryAsync(&quot;folder/sub
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes the file or blob at the specified path, returning a Result with success or errors.
-Example: <code>var result = await provider.DeleteFileAsync(&quot;folder/file.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File deleted&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Deletes file.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -780,20 +774,20 @@ Example: <code>var result = await provider.DeleteFileAsync(&quot;folder/file.txt
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to delete (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -853,8 +847,7 @@ Example: <code>var result = await provider.DeleteFileAsync(&quot;folder/file.txt
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines if the specified path represents a directory (virtual or actual), returning a Result with success or errors.
-Example: <code>var result = await provider.IsDirectoryAsync(&quot;folder/subfolder&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;Is a directory&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Executes the directory exists operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -865,17 +858,17 @@ Example: <code>var result = await provider.IsDirectoryAsync(&quot;folder/subfold
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to check (e.g., &quot;folder/subfolder&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., PathNotFoundError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -938,8 +931,7 @@ Example: <code>var result = await provider.IsDirectoryAsync(&quot;folder/subfold
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Checks if a file or blob exists at the specified path, returning a Result with success or failure and errors.
-Example: <code>var result = await provider.ExistsAsync(&quot;folder/file.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File exists&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Executes the file exists operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -950,20 +942,20 @@ Example: <code>var result = await provider.ExistsAsync(&quot;folder/file.txt&quo
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to check (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., FileSystemError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -984,8 +976,7 @@ Example: <code>var result = await provider.ExistsAsync(&quot;folder/file.txt&quo
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Computes and returns a checksum (e.g., hash) for the file or blob at the specified path, returning a Result with the checksum or errors.
-Example: <code>var result = await provider.GetChecksumAsync(&quot;folder/file.txt&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine($&quot;Checksum: {result.Value}&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Gets checksum.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -996,17 +987,17 @@ Example: <code>var result = await provider.GetChecksumAsync(&quot;folder/file.tx
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">string</span>&gt;&gt;</dt>
-    <dd><p>A Result containing the checksum on success or failure with typed errors (e.g., FileSystemError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1066,8 +1057,7 @@ Example: <code>var result = await provider.GetChecksumAsync(&quot;folder/file.tx
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Retrieves metadata for the file or blob at the specified path, returning a Result with the metadata or errors.
-Example: <code>var result = await provider.GetFileInfoAsync(&quot;folder/file.txt&quot;, CancellationToken.None); if (result.IsSuccess) Console.WriteLine($&quot;Size: {result.Value.Length}&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Gets file metadata.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1078,17 +1068,17 @@ Example: <code>var result = await provider.GetFileInfoAsync(&quot;folder/file.tx
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;&gt;</dt>
-    <dd><p>A Result containing the metadata on success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1181,8 +1171,7 @@ Example: <code>var result = await provider.GetFileInfoAsync(&quot;folder/file.tx
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Lists directories matching the search pattern under the specified path, returning a Result with the directory list or errors.
-Example: <code>var result = await provider.ListDirectoriesAsync(&quot;folder/&quot;, &quot;*sub*&quot;, true, CancellationToken.None); if (result.IsSuccess) foreach (var dir in result.Value) Console.WriteLine(dir);</code></p>
+  <div class="markdown level1 summary"><p>Executes the list directories operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1193,23 +1182,23 @@ Example: <code>var result = await provider.ListDirectoriesAsync(&quot;folder/&qu
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The base path (e.g., directory or container prefix).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>searchPattern</code> <span class="xref">string</span></dt>
-    <dd><p>Pattern to filter directories (e.g., &quot;<em>sub</em>&quot;).</p>
+    <dd><p>The search pattern used by the operation.</p>
 </dd>
     <dt><code>recursive</code> <span class="xref">bool</span></dt>
-    <dd><p>Whether to include subdirectories.</p>
+    <dd><p>The recursive used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;&gt;</dt>
-    <dd><p>A Result containing the directory list on success or failure with typed errors (e.g., AccessDeniedError, FileSystemError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1230,7 +1219,8 @@ Example: <code>var result = await provider.ListDirectoriesAsync(&quot;folder/&qu
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list files operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1240,21 +1230,27 @@ Example: <code>var result = await provider.ListDirectoriesAsync(&quot;folder/&qu
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The path used by the operation.</p>
+</dd>
     <dt><code>searchPattern</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The search pattern used by the operation.</p>
+</dd>
     <dt><code>recursive</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The recursive used by the operation.</p>
+</dd>
     <dt><code>continuationToken</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The continuation token used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;(<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt; <span class="xref">Files</span>, <span class="xref">string</span> <span class="xref">NextContinuationToken</span>)&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1274,8 +1270,7 @@ Example: <code>var result = await provider.ListDirectoriesAsync(&quot;folder/&qu
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Moves a file or blob from the source path to the destination path, returning a Result with success or errors.
-Example: <code>var result = await provider.MoveFileAsync(&quot;folder/source.txt&quot;, &quot;folder/dest.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File moved&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Executes the move file operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1286,23 +1281,23 @@ Example: <code>var result = await provider.MoveFileAsync(&quot;folder/source.txt
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The source path to move from (e.g., &quot;folder/source.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>destinationPath</code> <span class="xref">string</span></dt>
-    <dd><p>The destination path to move to (e.g., &quot;folder/destination.txt&quot;).</p>
+    <dd><p>The destination path used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1401,9 +1396,7 @@ Example: <code>var result = await provider.MoveFileAsync(&quot;folder/source.txt
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Opens a writable stream for the file or blob at the specified path, returning a Result with the stream or errors.
-Opening failures are returned in the result; write, flush, and dispose failures surface from the returned stream.
-Example: <code>var result = await provider.OpenWriteFileAsync(&quot;folder/file.txt&quot;, false, null, CancellationToken.None); if (result.IsSuccess) await using (var stream = result.Value) { /* Write to stream */ }</code></p>
+  <div class="markdown level1 summary"><p>Executes the open write file operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1414,23 +1407,23 @@ Example: <code>var result = await provider.OpenWriteFileAsync(&quot;folder/file.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to write to (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>useTemporaryWrite</code> <span class="xref">bool</span></dt>
-    <dd><p>Whether the provider should stage writes in a temporary file/blob and publish on successful close.</p>
+    <dd><p>The use temporary write used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Stream</span>&gt;&gt;</dt>
-    <dd><p>A Result containing the writable stream on success or failure with typed errors (e.g., DiskFullError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1451,8 +1444,7 @@ Example: <code>var result = await provider.OpenWriteFileAsync(&quot;folder/file.
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Opens a readable stream for the file or blob at the specified path, returning a Result with the stream or errors.
-Example: <code>var result = await provider.ReadFileAsync(&quot;folder/file.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) using (var stream = result.Value) { /* Read stream */ }</code></p>
+  <div class="markdown level1 summary"><p>Executes the read file operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1463,20 +1455,20 @@ Example: <code>var result = await provider.ReadFileAsync(&quot;folder/file.txt&q
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Stream</span>&gt;&gt;</dt>
-    <dd><p>A Result containing the stream on success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1497,7 +1489,7 @@ Example: <code>var result = await provider.ReadFileAsync(&quot;folder/file.txt&q
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Renames a directory from the specified source path to the destination path asynchronously.</p>
+  <div class="markdown level1 summary"><p>Executes the rename directory operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1508,21 +1500,20 @@ Example: <code>var result = await provider.ReadFileAsync(&quot;folder/file.txt&q
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The full path of the directory to be renamed. Cannot be null or empty.</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>destinationPath</code> <span class="xref">string</span></dt>
-    <dd><p>The new full path for the directory. Cannot be null or empty.</p>
+    <dd><p>The destination path used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to monitor for cancellation requests. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> object indicating the success or failure of the operation. The result contains details
-about any errors encountered during the renaming process.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1532,11 +1523,6 @@ about any errors encountered during the renaming process.</p>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_EntityFrameworkFileStorageProvider_1_RenameDirectoryAsync_System_String_System_String_System_Threading_CancellationToken__remarks">Remarks</h4>
-  <div class="markdown level1 remarks"><p>This method performs the renaming operation asynchronously and does not block the calling
-thread. Ensure that both <code class="paramref">path</code> and <code class="paramref">destinationPath</code> are valid and accessible
-paths.</p>
-</div>
 
 
 
@@ -1548,8 +1534,7 @@ paths.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Renames a file or blob from the old path to the new path, returning a Result with success or errors.
-Example: <code>var result = await provider.RenameFileAsync(&quot;folder/old.txt&quot;, &quot;folder/new.txt&quot;, null, CancellationToken.None); if (result.IsSuccess) Console.WriteLine(&quot;File renamed&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Executes the rename file operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1560,23 +1545,23 @@ Example: <code>var result = await provider.RenameFileAsync(&quot;folder/old.txt&
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The current path of the file (e.g., &quot;folder/old.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>destinationPath</code> <span class="xref">string</span></dt>
-    <dd><p>The new path for the file (e.g., &quot;folder/new.txt&quot;).</p>
+    <dd><p>The destination path used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., FileNotFoundError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1720,8 +1705,7 @@ Example: <code>var result = await provider.RenameFileAsync(&quot;folder/old.txt&
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Sets metadata for the file or blob at the specified path, returning a Result with success or errors.
-Example: <code>var metadata = new FileMetadata(); await provider.SetFileMetadataAsync(&quot;folder/file.txt&quot;, metadata, CancellationToken.None);</code></p>
+  <div class="markdown level1 summary"><p>Executes the set file metadata operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1732,20 +1716,20 @@ Example: <code>var metadata = new FileMetadata(); await provider.SetFileMetadata
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a></dt>
-    <dd><p>The metadata to set.</p>
+    <dd><p>The metadata used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., InvalidMetadataError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1766,8 +1750,7 @@ Example: <code>var metadata = new FileMetadata(); await provider.SetFileMetadata
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Updates specific fields in the metadata for the file or blob at the specified path, returning a Result with the updated metadata or errors.
-Example: <code>var result = await provider.UpdateFileMetadataAsync(&quot;folder/file.txt&quot;, m =&gt; m.WithLength(1024), CancellationToken.None); if (result.IsSuccess) Console.WriteLine($&quot;Updated metadata: {result.Value.Length}&quot;);</code></p>
+  <div class="markdown level1 summary"><p>Executes the update file metadata operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1778,20 +1761,20 @@ Example: <code>var result = await provider.UpdateFileMetadataAsync(&quot;folder/
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to the file (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>metadataUpdate</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>, <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;</dt>
-    <dd><p>A function that updates the existing metadata.</p>
+    <dd><p>The metadata update used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMetadata.html">FileMetadata</a>&gt;&gt;</dt>
-    <dd><p>A Result containing the updated metadata on success or failure with typed errors (e.g., InvalidMetadataError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1852,8 +1835,7 @@ file-storage entities required by this provider.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Writes the provided stream to the file or blob at the specified path, returning a Result with success or errors.
-Example: <code>using (var stream = new MemoryStream()) await provider.WriteFileAsync(&quot;folder/file.txt&quot;, stream, null, CancellationToken.None);</code></p>
+  <div class="markdown level1 summary"><p>Executes the write file operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1864,23 +1846,23 @@ Example: <code>using (var stream = new MemoryStream()) await provider.WriteFileA
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd><p>The path to write to (e.g., &quot;folder/file.txt&quot;).</p>
+    <dd><p>The path used by the operation.</p>
 </dd>
     <dt><code>content</code> <span class="xref">Stream</span></dt>
-    <dd><p>The stream containing the data to write.</p>
+    <dd><p>The content used by the operation.</p>
 </dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProgress.html">FileProgress</a>&gt;</dt>
-    <dd><p>Optional progress reporter for tracking bytes and files processed.</p>
+    <dd><p>The progress used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token to abort the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A Result indicating success or failure with typed errors (e.g., DiskFullError, PermissionError).</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 

@@ -6,13 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-correlationid/">
       
       
+        <link rel="prev" href="../features-presentation-cors/">
+      
+      
+        <link rel="next" href="../features-presentation-exception-handling/">
       
       
         
@@ -23,7 +27,7 @@
     
     
       
-        <title>Presentation Correlation ID Documentation - bITdevKit</title>
+        <title>Correlation IDs - bITdevKit</title>
       
     
     
@@ -74,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#presentation-correlation-id-documentation" class="md-skip">
+        <a href="#presentation-correlation-id" class="md-skip">
           Skip to content
         </a>
       
@@ -86,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -102,19 +107,21 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              Presentation Correlation ID Documentation
+              Correlation IDs
             
           </span>
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -376,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -406,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -427,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -450,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -488,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -503,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -519,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -539,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -620,194 +723,7 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
     
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
   
   
   
@@ -815,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -841,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -866,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -890,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -916,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1130,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1197,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1223,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1297,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1416,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1598,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1616,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1642,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1724,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1923,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1949,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1959,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2028,21 +2141,28 @@
                 
   
   
+    
   
   
+  
     
     
     
     
+      
+      
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2060,8 +2180,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2086,6 +2206,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2299,6 +2475,324 @@
                 
   
   
+    
+  
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#packages-and-components" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Packages and components
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#inbound-http-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Inbound HTTP lifecycle
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Inbound HTTP lifecycle">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#resolution-and-validation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Resolution and validation
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#request-state-and-re-execution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Request state and re-execution
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ambient-correlation-scope" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Ambient correlation scope
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#flow-id-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Flow ID lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#trace-id-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Trace ID lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#outbound-http-lifecycle" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Outbound HTTP lifecycle
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#supported-cross-boundary-propagation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Supported cross-boundary propagation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Supported cross-boundary propagation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#messaging-queueing-outbox-jobs-and-orchestrations" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Messaging, queueing, outbox, jobs, and orchestrations
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#reading-and-logging-the-ids" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Reading and logging the IDs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational guidance
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#testing" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Testing
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#related-documentation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Related documentation
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
   
   
     <li class="md-nav__item">
@@ -2369,15 +2863,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2395,8 +2894,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2676,15 +3175,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2702,8 +3206,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2783,6 +3287,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -2822,10 +3857,76 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#packages-and-components" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Packages And Components
+        Packages and components
       
     </span>
   </a>
@@ -2836,19 +3937,19 @@
   <a href="#inbound-http-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Inbound HTTP Lifecycle
+        Inbound HTTP lifecycle
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Inbound HTTP Lifecycle">
+    <nav class="md-nav" aria-label="Inbound HTTP lifecycle">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#resolution-and-validation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Resolution And Validation
+        Resolution and validation
       
     </span>
   </a>
@@ -2859,7 +3960,7 @@
   <a href="#request-state-and-re-execution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Request State And Re-execution
+        Request state and re-execution
       
     </span>
   </a>
@@ -2875,7 +3976,7 @@
   <a href="#ambient-correlation-scope" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Ambient Correlation Scope
+        Ambient correlation scope
       
     </span>
   </a>
@@ -2886,7 +3987,7 @@
   <a href="#flow-id-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Flow ID Lifecycle
+        Flow ID lifecycle
       
     </span>
   </a>
@@ -2897,7 +3998,7 @@
   <a href="#trace-id-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Trace ID Lifecycle
+        Trace ID lifecycle
       
     </span>
   </a>
@@ -2908,7 +4009,7 @@
   <a href="#outbound-http-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Outbound HTTP Lifecycle
+        Outbound HTTP lifecycle
       
     </span>
   </a>
@@ -2919,19 +4020,19 @@
   <a href="#supported-cross-boundary-propagation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Supported Cross-Boundary Propagation
+        Supported cross-boundary propagation
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Supported Cross-Boundary Propagation">
+    <nav class="md-nav" aria-label="Supported cross-boundary propagation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#messaging-queueing-outbox-jobs-and-orchestrations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Messaging, Queueing, Outbox, Jobs, And Orchestrations
+        Messaging, queueing, outbox, jobs, and orchestrations
       
     </span>
   </a>
@@ -2947,7 +4048,7 @@
   <a href="#reading-and-logging-the-ids" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reading And Logging The IDs
+        Reading and logging the IDs
       
     </span>
   </a>
@@ -2958,7 +4059,7 @@
   <a href="#operational-guidance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operational Guidance
+        Operational guidance
       
     </span>
   </a>
@@ -2980,7 +4081,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -3005,6 +4106,82 @@
   
 
 
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Feature Guides
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../features-presentation/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Presentation and Hosts
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
               
               <article class="md-content__inner md-typeset">
                 
@@ -3015,33 +4192,39 @@
   
 
 
-<h1 id="presentation-correlation-id-documentation">Presentation Correlation ID Documentation<a class="headerlink" href="#presentation-correlation-id-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="presentation-correlation-id">Presentation Correlation ID<a class="headerlink" href="#presentation-correlation-id" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Correlate one application use case across inbound HTTP requests, asynchronous execution, logs,
 activities, outbound HTTP calls, and supported transport boundaries.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#presentation-correlation-id-documentation">Presentation Correlation ID Documentation</a><ul>
+<li><a href="#presentation-correlation-id">Presentation Correlation ID</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#packages-and-components">Packages And Components</a></li>
-<li><a href="#inbound-http-lifecycle">Inbound HTTP Lifecycle</a><ul>
-<li><a href="#resolution-and-validation">Resolution And Validation</a></li>
-<li><a href="#request-state-and-re-execution">Request State And Re-execution</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#packages-and-components">Packages and components</a></li>
+<li><a href="#inbound-http-lifecycle">Inbound HTTP lifecycle</a><ul>
+<li><a href="#resolution-and-validation">Resolution and validation</a></li>
+<li><a href="#request-state-and-re-execution">Request state and re-execution</a></li>
 </ul>
 </li>
-<li><a href="#ambient-correlation-scope">Ambient Correlation Scope</a></li>
-<li><a href="#flow-id-lifecycle">Flow ID Lifecycle</a></li>
-<li><a href="#trace-id-lifecycle">Trace ID Lifecycle</a></li>
-<li><a href="#outbound-http-lifecycle">Outbound HTTP Lifecycle</a></li>
-<li><a href="#supported-cross-boundary-propagation">Supported Cross-Boundary Propagation</a><ul>
-<li><a href="#messaging-queueing-outbox-jobs-and-orchestrations">Messaging, Queueing, Outbox, Jobs, And Orchestrations</a></li>
+<li><a href="#ambient-correlation-scope">Ambient correlation scope</a></li>
+<li><a href="#flow-id-lifecycle">Flow ID lifecycle</a></li>
+<li><a href="#trace-id-lifecycle">Trace ID lifecycle</a></li>
+<li><a href="#outbound-http-lifecycle">Outbound HTTP lifecycle</a></li>
+<li><a href="#supported-cross-boundary-propagation">Supported cross-boundary propagation</a><ul>
+<li><a href="#messaging-queueing-outbox-jobs-and-orchestrations">Messaging, queueing, outbox, jobs, and orchestrations</a></li>
 </ul>
 </li>
-<li><a href="#reading-and-logging-the-ids">Reading And Logging The IDs</a></li>
-<li><a href="#operational-guidance">Operational Guidance</a></li>
+<li><a href="#reading-and-logging-the-ids">Reading and logging the IDs</a></li>
+<li><a href="#operational-guidance">Operational guidance</a></li>
 <li><a href="#testing">Testing</a></li>
-<li><a href="#related-documentation">Related Documentation</a></li>
+<li><a href="#related-documentation">Related documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -3099,7 +4282,53 @@ activities, outbound HTTP calls, and supported transport boundaries.</p>
 
     Outbound --&gt; Remote["Remote use case"]
     TraceHeaders --&gt; Remote</code></pre>
-<h2 id="packages-and-components">Packages And Components<a class="headerlink" href="#packages-and-components" title="Permanent link">&para;</a></h2>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>One use case can cross HTTP calls, asynchronous work, transports, activities, and logs. A trace ID alone does not always represent that application-level lifetime. Route instances and route kinds also need distinct identities. Unvalidated caller values can create malformed headers or unsafe log data.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>DevKit treats <code>CorrelationId</code>, <code>FlowId</code>, and W3C <code>TraceId</code> as separate identifiers. Request middleware validates or creates the correlation ID, derives a route-based flow ID, and scopes both for downstream work. Explicit transport integrations carry correlation values across process or durable boundaries.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>fixed header, query, validation, and generation rules</li>
+<li>ambient <code>CorrelationId.Current</code> based on <code>AsyncLocal</code> and activity baggage</li>
+<li>stable request state across duplicate middleware and pipeline re-execution</li>
+<li>deterministic HTTP flow IDs based on method and logical route</li>
+<li>response headers and structured logger scopes</li>
+<li>per-client or host-wide <code>IHttpClientFactory</code> propagation</li>
+<li>documented propagation contracts for supported durable features</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>CorrelationIdProviderMiddleware</code> runs after routing, creates one request state, and establishes correlation and logging scopes around the remaining pipeline. <code>CorrelationIdPropagationHandler</code> performs the corresponding outbound HTTP work. Messaging, queueing, jobs, and other durable features serialize correlation metadata through their own contracts.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>group logs for one user-visible operation across services</li>
+<li>distinguish one route kind from individual route invocations</li>
+<li>preserve an inbound correlation ID in downstream HTTP calls</li>
+<li>establish a correlation scope around consumed or scheduled work</li>
+<li>inspect correlation, flow, and trace identifiers in diagnostics</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example places correlation middleware after routing and returns the three identifiers visible to an endpoint.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.Diagnostics</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Presentation.Web</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseRequestCorrelation</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/diagnostics/correlation&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">HttpContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">CorrelationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TryGetCorrelationId</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">FlowId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Items</span><span class="p">[</span><span class="s">&quot;FlowId&quot;</span><span class="p">]</span><span class="o">?.</span><span class="n">ToString</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">TraceId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Activity</span><span class="p">.</span><span class="n">Current</span><span class="o">?.</span><span class="n">TraceId</span><span class="p">.</span><span class="n">ToString</span><span class="p">()</span>
+<span class="p">}));</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+</code></pre></div>
+<p>Calling <code>GET /diagnostics/correlation</code> with <code>CorrelationId: order-123</code> returns <code>order-123</code> in the JSON body and the <code>CorrelationId</code> response header. Calls without a valid value receive a generated 12-character lowercase identifier.</p>
+<h2 id="packages-and-components">Packages and components<a class="headerlink" href="#packages-and-components" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -3138,7 +4367,7 @@ activities, outbound HTTP calls, and supported transport boundaries.</p>
 </table>
 <p>Application and domain code should normally use <code>CorrelationId.Current</code>. Direct <code>HttpContext</code> access is
 appropriate only in presentation-bound code.</p>
-<h2 id="inbound-http-lifecycle">Inbound HTTP Lifecycle<a class="headerlink" href="#inbound-http-lifecycle" title="Permanent link">&para;</a></h2>
+<h2 id="inbound-http-lifecycle">Inbound HTTP lifecycle<a class="headerlink" href="#inbound-http-lifecycle" title="Permanent link">&para;</a></h2>
 <p>Register request correlation after routing and before logging, metrics, modules, authentication handlers,
 or endpoints that need the identifiers:</p>
 <div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
@@ -3178,7 +4407,7 @@ or endpoints that need the identifiers:</p>
     Endpoint--&gt;&gt;Middleware: Complete
     Middleware--&gt;&gt;Caller: CorrelationId, FlowId, and optional TraceId headers
     Middleware-&gt;&gt;Middleware: Restore previous ambient scope</code></pre>
-<h3 id="resolution-and-validation">Resolution And Validation<a class="headerlink" href="#resolution-and-validation" title="Permanent link">&para;</a></h3>
+<h3 id="resolution-and-validation">Resolution and validation<a class="headerlink" href="#resolution-and-validation" title="Permanent link">&para;</a></h3>
 <p>The fixed resolution order is:</p>
 <ol>
 <li>One valid <code>CorrelationId</code> request header.</li>
@@ -3200,7 +4429,7 @@ the header for normal service calls because URLs commonly appear in browser hist
 proxies, and monitoring systems.</p>
 <p>Correlation IDs are diagnostic identifiers, not credentials. Do not put secrets, access tokens, or
 personal information in them, and never use possession of a correlation ID for authorization.</p>
-<h3 id="request-state-and-re-execution">Request State And Re-execution<a class="headerlink" href="#request-state-and-re-execution" title="Permanent link">&para;</a></h3>
+<h3 id="request-state-and-re-execution">Request state and re-execution<a class="headerlink" href="#request-state-and-re-execution" title="Permanent link">&para;</a></h3>
 <p>The middleware stores one private request state object in <code>HttpContext.Items</code>. It then exposes:</p>
 <ul>
 <li><code>HttpContext.Items["CorrelationId"]</code>;</li>
@@ -3216,7 +4445,7 @@ personal information in them, and never use possession of a correlation ID for a
 <li>exception handling re-executes the ASP.NET Core pipeline for the same <code>HttpContext</code>.</li>
 </ul>
 <p>The original correlation and flow IDs therefore remain stable for the entire HTTP request.</p>
-<h2 id="ambient-correlation-scope">Ambient Correlation Scope<a class="headerlink" href="#ambient-correlation-scope" title="Permanent link">&para;</a></h2>
+<h2 id="ambient-correlation-scope">Ambient correlation scope<a class="headerlink" href="#ambient-correlation-scope" title="Permanent link">&para;</a></h2>
 <p><code>CorrelationId.Current</code> resolves the explicitly scoped value first and then the current activity's
 <code>correlation_id</code> baggage value:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">correlationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CorrelationId</span><span class="p">.</span><span class="n">Current</span><span class="p">;</span>
@@ -3250,7 +4479,7 @@ baggage.</p>
 </ul>
 <p>At those boundaries, capture the value explicitly, serialize it as transport metadata, and establish a
 new scope or activity baggage value when the work is consumed.</p>
-<h2 id="flow-id-lifecycle">Flow ID Lifecycle<a class="headerlink" href="#flow-id-lifecycle" title="Permanent link">&para;</a></h2>
+<h2 id="flow-id-lifecycle">Flow ID lifecycle<a class="headerlink" href="#flow-id-lifecycle" title="Permanent link">&para;</a></h2>
 <p>The flow ID identifies an HTTP use-case kind rather than one invocation.</p>
 <p>The middleware hashes:</p>
 <div class="highlight"><pre><span></span><code>UPPERCASE_HTTP_METHOD + &quot; &quot; + LOGICAL_ROUTE
@@ -3289,7 +4518,7 @@ action produces a different flow ID.</p>
 routing avoids that less-stable fallback.</p>
 <p>Flow IDs are local classifications. The outbound HTTP propagation handler does not copy them. A remote
 service derives its own flow ID from the remote method and route while preserving the correlation ID.</p>
-<h2 id="trace-id-lifecycle">Trace ID Lifecycle<a class="headerlink" href="#trace-id-lifecycle" title="Permanent link">&para;</a></h2>
+<h2 id="trace-id-lifecycle">Trace ID lifecycle<a class="headerlink" href="#trace-id-lifecycle" title="Permanent link">&para;</a></h2>
 <p>ASP.NET Core creates the inbound request <code>Activity</code>. The middleware reads its W3C <code>TraceId</code> and exposes
 that value in the logger scope and <code>TraceId</code> response header.</p>
 <p>The trace ID remains separate from the application correlation ID:</p>
@@ -3300,7 +4529,7 @@ that value in the logger scope and <code>TraceId</code> response header.</p>
 <li>Use the correlation ID to group one logical use case even when tracing is disabled, sampled, or split
   across transport-specific activities.</li>
 </ul>
-<h2 id="outbound-http-lifecycle">Outbound HTTP Lifecycle<a class="headerlink" href="#outbound-http-lifecycle" title="Permanent link">&para;</a></h2>
+<h2 id="outbound-http-lifecycle">Outbound HTTP lifecycle<a class="headerlink" href="#outbound-http-lifecycle" title="Permanent link">&para;</a></h2>
 <p>Enable propagation on the client that owns the external boundary:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddHttpClient</span><span class="o">&lt;</span><span class="n">IOpenMeteoClient</span><span class="p">,</span><span class="w"> </span><span class="n">OpenMeteoClient</span><span class="o">&gt;</span><span class="p">(</span><span class="n">client</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -3359,12 +4588,12 @@ that use <code>IHttpClientFactory</code>. They cannot intercept a manually const
 case. That fallback is scoped only to the outbound handler pipeline. If logs and other work before or
 after the HTTP call must share it, establish the correlation ID at the enclosing use-case boundary
 instead.</p>
-<h2 id="supported-cross-boundary-propagation">Supported Cross-Boundary Propagation<a class="headerlink" href="#supported-cross-boundary-propagation" title="Permanent link">&para;</a></h2>
+<h2 id="supported-cross-boundary-propagation">Supported cross-boundary propagation<a class="headerlink" href="#supported-cross-boundary-propagation" title="Permanent link">&para;</a></h2>
 <p>Ambient state is process-local, so cross-process and durable features must carry the value explicitly.</p>
 <p>Broadcasting owns its envelope, HTTP transport, receiver, and handler-scope propagation. See
 <a href="../common-utilities/#broadcasting">Common Utilities: Broadcasting</a> for that complete lifecycle and
 sequence diagram.</p>
-<h3 id="messaging-queueing-outbox-jobs-and-orchestrations">Messaging, Queueing, Outbox, Jobs, And Orchestrations<a class="headerlink" href="#messaging-queueing-outbox-jobs-and-orchestrations" title="Permanent link">&para;</a></h3>
+<h3 id="messaging-queueing-outbox-jobs-and-orchestrations">Messaging, queueing, outbox, jobs, and orchestrations<a class="headerlink" href="#messaging-queueing-outbox-jobs-and-orchestrations" title="Permanent link">&para;</a></h3>
 <p>The corresponding feature owns each durable correlation contract:</p>
 <ul>
 <li>Standard messaging and queueing behaviors/providers copy correlation activity baggage into message
@@ -3378,7 +4607,7 @@ sequence diagram.</p>
 </ul>
 <p>Use the feature-specific registration and mapping APIs documented on their pages. Do not rely on
 <code>AsyncLocal</code> alone for delayed, persisted, retried, or remote work.</p>
-<h2 id="reading-and-logging-the-ids">Reading And Logging The IDs<a class="headerlink" href="#reading-and-logging-the-ids" title="Permanent link">&para;</a></h2>
+<h2 id="reading-and-logging-the-ids">Reading and logging the IDs<a class="headerlink" href="#reading-and-logging-the-ids" title="Permanent link">&para;</a></h2>
 <p>Application code:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">correlationId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CorrelationId</span><span class="p">.</span><span class="n">Current</span><span class="p">;</span>
 </code></pre></div>
@@ -3393,7 +4622,7 @@ logging and let the scope enrich each log entry:</p>
 </code></pre></div>
 <p>Avoid repeating IDs in every message template unless the log event is crossing a boundary where the
 normal scope is unavailable.</p>
-<h2 id="operational-guidance">Operational Guidance<a class="headerlink" href="#operational-guidance" title="Permanent link">&para;</a></h2>
+<h2 id="operational-guidance">Operational guidance<a class="headerlink" href="#operational-guidance" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Treat correlation IDs as untrusted diagnostic input.</li>
 <li>Keep the 128-character and character-set validation fixed at every HTTP boundary.</li>
@@ -3425,7 +4654,7 @@ normal scope is unavailable.</p>
 </code></pre></div>
 <p>For outbound HTTP tests, use a recording primary <code>HttpMessageHandler</code> and assert that exactly one
 <code>CorrelationId</code> header reaches it.</p>
-<h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
+<h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-presentation/">Presentation Host</a></li>
 <li><a href="../features-presentation-endpoints/">Presentation Endpoints</a></li>
@@ -3515,7 +4744,7 @@ normal scope is unavailable.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3523,6 +4752,8 @@ normal scope is unavailable.</p>
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class HttpContentExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides JSON deserialization helpers for HTTP content.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class HttpContentExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Serialization.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides JSON deserialization helpers for HTTP content.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class HttpContentExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Deserializes HTTP content using the supplied JSON options, or the DevKit defaults when none are supplied.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,23 +142,28 @@ Class HttpContentExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>content</code> <span class="xref">HttpContent</span></dt>
-    <dd></dd>
+    <dd><p>The HTTP content to read.</p>
+</dd>
     <dt><code>options</code> <span class="xref">JsonSerializerOptions</span></dt>
-    <dd></dd>
+    <dd><p>The JSON options to use, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the DevKit defaults.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel reading or deserialization.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The deserialized value.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The value type to deserialize.</p>
+</dd>
   </dl>
 
 
@@ -175,7 +182,8 @@ Class HttpContentExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Deserializes HTTP content using the DevKit default JSON options.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -185,21 +193,25 @@ Class HttpContentExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>content</code> <span class="xref">HttpContent</span></dt>
-    <dd></dd>
+    <dd><p>The HTTP content to read.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel reading or deserialization.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The deserialized value.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The value type to deserialize.</p>
+</dd>
   </dl>
 
 

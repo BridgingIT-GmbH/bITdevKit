@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RateLimiter | bITdevKit API Reference ">
       
-      <meta name="description" content="Controls the rate of events processed over time, allowing for bursts of activity up to a specified limit.">
+      <meta name="description" content="A simple token-bucket rate limiter that grants permission to process events according to the configured rate and burst size. Callers await  to obtain a token.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class RateLimiter
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Controls the rate of events processed over time, allowing for bursts of activity up to a specified limit.</p>
+  <div class="markdown summary"><p>A simple token-bucket rate limiter that grants permission to process events according to
+the configured rate and burst size. Callers await <a class="xref" href="BridgingIT.DevKit.Application.Storage.RateLimiter.html#BridgingIT_DevKit_Application_Storage_RateLimiter_WaitForTokenAsync_System_Threading_CancellationToken_">WaitForTokenAsync(CancellationToken)</a> to obtain a token.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -264,7 +265,8 @@ Class RateLimiter
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Controls the rate of events processed over time, allowing for bursts of activity up to a specified limit.</p>
+  <div class="markdown level1 summary"><p>A simple token-bucket rate limiter that grants permission to process events according to
+the configured rate and burst size. Callers await <a class="xref" href="BridgingIT.DevKit.Application.Storage.RateLimiter.html#BridgingIT_DevKit_Application_Storage_RateLimiter_WaitForTokenAsync_System_Threading_CancellationToken_">WaitForTokenAsync(CancellationToken)</a> to obtain a token.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -275,10 +277,10 @@ Class RateLimiter
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>eventsPerSecond</code> <span class="xref">int</span></dt>
-    <dd><p>Determines the rate at which tokens are generated for processing events.</p>
+    <dd><p>Number of tokens replenished per second.</p>
 </dd>
     <dt><code>maxBurstSize</code> <span class="xref">int</span></dt>
-    <dd><p>Sets the maximum number of tokens that can be held at any time for processing events.</p>
+    <dd><p>Maximum number of tokens that can be accumulated.</p>
 </dd>
   </dl>
 
@@ -304,7 +306,9 @@ Class RateLimiter
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Waits asynchronously until a token is available and then consumes one token.
+The method observes the provided <code class="paramref">token</code> and will stop waiting if cancellation is requested.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -314,7 +318,8 @@ Class RateLimiter
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>Cancellation token used to cancel waiting for a token.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>

@@ -313,7 +313,7 @@ Class NoOpNotifier
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Returns information about registered notification handlers and behaviors.</p>
+  <div class="markdown level1 summary"><p>Attempts to get registration information from the no-operation notifier.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -325,8 +325,7 @@ Class NoOpNotifier
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.RegistrationInformation.html">RegistrationInformation</a></dt>
-    <dd><p>An object containing handler mappings and behavior types.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -336,6 +335,12 @@ Class NoOpNotifier
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>Registration inspection is not implemented by this fallback notifier.</p>
+</dd>
+  </dl>
 
 
 

@@ -257,7 +257,8 @@ Interface IJobBatchHistoryStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the append operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -267,15 +268,18 @@ Interface IJobBatchHistoryStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entry</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry.html">JobBatchHistoryEntry</a></dt>
-    <dd></dd>
+    <dd><p>The entry used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -295,7 +299,8 @@ Interface IJobBatchHistoryStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -305,15 +310,18 @@ Interface IJobBatchHistoryStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry.html">JobBatchHistoryEntry</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -333,7 +341,8 @@ Interface IJobBatchHistoryStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the purge operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -343,17 +352,21 @@ Interface IJobBatchHistoryStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>olderThanUtc</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>The older than utc used by the operation.</p>
+</dd>
     <dt><code>historyIds</code> <span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">Guid</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The history ids used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

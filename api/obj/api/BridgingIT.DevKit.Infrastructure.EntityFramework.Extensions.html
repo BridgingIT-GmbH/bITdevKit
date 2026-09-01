@@ -131,7 +131,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the as no tracking if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,21 +142,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DbSet</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
   </dl>
 
 
@@ -174,7 +179,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the as no tracking if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -184,21 +190,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The condition used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
   </dl>
 
 
@@ -217,7 +227,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the as no tracking if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -227,25 +238,31 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DbSet</span>&lt;TDatabaseEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>mapper</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityMapper.html">IEntityMapper</a></dt>
-    <dd></dd>
+    <dd><p>The mapper used to transform values.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TDatabaseEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
     <dt><code>TDatabaseEntity</code></dt>
-    <dd></dd>
+    <dd><p>The database entity type.</p>
+</dd>
   </dl>
 
 
@@ -264,7 +281,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the distinct by if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -274,25 +292,31 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TDatabaseEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>mapper</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityMapper.html">IEntityMapper</a></dt>
-    <dd></dd>
+    <dd><p>The mapper used to transform values.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TDatabaseEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
     <dt><code>TDatabaseEntity</code></dt>
-    <dd></dd>
+    <dd><p>The database entity type.</p>
+</dd>
   </dl>
 
 
@@ -311,7 +335,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the distinct if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -321,21 +346,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
   </dl>
 
 
@@ -354,7 +383,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the distinct if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -364,25 +394,31 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TProjection&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>mapper</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityMapper.html">IEntityMapper</a></dt>
-    <dd></dd>
+    <dd><p>The mapper used to transform values.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TProjection&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The projection type.</p>
+</dd>
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
   </dl>
 
 
@@ -634,7 +670,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the order by if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -644,21 +681,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IOrderedQueryable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
   </dl>
 
 
@@ -677,7 +718,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the order by if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -687,25 +729,31 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TDatabaseEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>mapper</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IEntityMapper.html">IEntityMapper</a></dt>
-    <dd></dd>
+    <dd><p>The mapper used to transform values.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IOrderedQueryable</span>&lt;TDatabaseEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
     <dt><code>TDatabaseEntity</code></dt>
-    <dd></dd>
+    <dd><p>The database entity type.</p>
+</dd>
   </dl>
 
 
@@ -724,7 +772,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the skip if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -734,21 +783,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>skip</code> <span class="xref">int</span>?</dt>
-    <dd></dd>
+    <dd><p>The skip used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
   </dl>
 
 
@@ -767,7 +820,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the take if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -777,21 +831,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>take</code> <span class="xref">int</span>?</dt>
-    <dd></dd>
+    <dd><p>The take used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
   </dl>
 
 
@@ -810,7 +868,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the to list async safe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -820,21 +879,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">List</span>&lt;TSource&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
   </dl>
 
 
@@ -853,7 +916,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the where expression if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -863,23 +927,28 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression used by the operation.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>The condition used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
   </dl>
 
 
@@ -898,7 +967,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the where expression operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -908,21 +978,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
   </dl>
 
 
@@ -941,7 +1015,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the where expressions if operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -951,23 +1026,28 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>expressions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expressions used by the operation.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>The condition used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
   </dl>
 
 
@@ -986,7 +1066,8 @@ Class Extensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the where expressions operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -996,21 +1077,25 @@ Class Extensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>expressions</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TSource, <span class="xref">bool</span>&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expressions used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IQueryable</span>&lt;TSource&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
   </dl>
 
 

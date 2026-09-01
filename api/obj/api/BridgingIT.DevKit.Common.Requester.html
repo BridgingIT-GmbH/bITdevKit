@@ -347,7 +347,7 @@ Class Requester
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Dispatches a request to its handler asynchronously, inferring the response type from the request.</p>
+  <div class="markdown level1 summary"><p>Dispatches a request through the runtime generic send path inferred from its concrete type.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -361,24 +361,24 @@ Class Requester
     <dd><p>The request to dispatch.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.SendOptions.html">SendOptions</a></dt>
-    <dd><p>The options for request processing, including context and progress reporting.</p>
+    <dd><p>Optional request processing settings.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token to cancel the operation.</p>
+    <dd><p>A token that can cancel dispatch.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
-    <dd><p>A task representing the result of the request, returning a <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a>.</p>
+    <dd><p>The request result.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the response value.</p>
+    <dd><p>The response value type.</p>
 </dd>
   </dl>
 

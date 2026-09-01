@@ -276,7 +276,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>EventStoreRepository</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -286,19 +287,26 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The serializer used by the operation.</p>
+</dd>
     <dt><code>aggregateEventRepository</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.IAggregateEventRepository.html">IAggregateEventRepository</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate event repository used by the operation.</p>
+</dd>
     <dt><code>snapshotRepository</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.ISnapshotRepository.html">ISnapshotRepository</a></dt>
-    <dd></dd>
+    <dd><p>The snapshot repository used by the operation.</p>
+</dd>
     <dt><code>aggregateRegistration</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Registration.IEventStoreAggregateRegistration.html">IEventStoreAggregateRegistration</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate registration used by the operation.</p>
+</dd>
     <dt><code>aggregateEventRegistration</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Registration.IEventStoreAggregateEventRegistration.html">IEventStoreAggregateEventRegistration</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate event registration used by the operation.</p>
+</dd>
     <dt><code>typeSelector</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.IEventTypeSelector.html">IEventTypeSelector</a></dt>
-    <dd></dd>
+    <dd><p>The type selector used by the operation.</p>
+</dd>
     <dt><code>aggregateTypeSelector</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.IAggregateTypeSelector.html">IAggregateTypeSelector</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate type selector used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -323,7 +331,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -333,21 +342,25 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 
@@ -366,7 +379,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the execute scoped operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -376,13 +390,15 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The operation used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -402,7 +418,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets aggregate ids.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -412,13 +429,15 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">Guid</span>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -438,7 +457,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets aggregate ids.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -448,19 +468,22 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">Guid</span>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 
@@ -479,7 +502,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets events.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -489,21 +513,25 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 
@@ -522,7 +550,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets max version.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -532,21 +561,25 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 
@@ -565,7 +598,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets snapshot.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -575,21 +609,25 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TAggregate&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 
@@ -608,7 +646,8 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Saves snapshot.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -618,21 +657,25 @@ umbenannt werden können, solange sich der &quot;immutable Name&quot; nicht änd
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregate</code> <span class="xref">TAggregate</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 

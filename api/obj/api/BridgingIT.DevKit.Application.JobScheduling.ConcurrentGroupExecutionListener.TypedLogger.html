@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ConcurrentGroupExecutionListener.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ConcurrentGroupExecutionListener.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.JobScheduling.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class ConcurrentGroupExecutionListener.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry after exclusive group access is acquired.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,15 +143,20 @@ public static void LogJobAcquiredExclusiveAccess(ILogger logger, string logKey, 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name.</p>
+</dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job group.</p>
+</dd>
     <dt><code>entryId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler fire-instance identifier.</p>
+</dd>
   </dl>
 
 
@@ -170,7 +177,8 @@ public static void LogJobAcquiredExclusiveAccess(ILogger logger, string logKey, 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry when a vetoed execution releases exclusive group access.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -181,15 +189,20 @@ public static void LogJobExecutionVetoed(ILogger logger, string logKey, string j
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name.</p>
+</dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job group.</p>
+</dd>
     <dt><code>entryId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler fire-instance identifier.</p>
+</dd>
   </dl>
 
 
@@ -210,7 +223,8 @@ public static void LogJobExecutionVetoed(ILogger logger, string logKey, string j
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the job not handled operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -221,15 +235,20 @@ public static void LogJobNotHandled(ILogger logger, string logKey, string jobNam
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job group used by the operation.</p>
+</dd>
     <dt><code>entryId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entry id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -250,7 +269,8 @@ public static void LogJobNotHandled(ILogger logger, string logKey, string jobNam
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry before releasing exclusive group access.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -261,15 +281,20 @@ public static void LogJobReleasingExclusiveAccess(ILogger logger, string logKey,
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name.</p>
+</dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job group.</p>
+</dd>
     <dt><code>entryId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler fire-instance identifier.</p>
+</dd>
   </dl>
 
 
@@ -290,7 +315,8 @@ public static void LogJobReleasingExclusiveAccess(ILogger logger, string logKey,
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry before waiting for exclusive group access.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -301,15 +327,20 @@ public static void LogJobWaitingForExclusiveAccess(ILogger logger, string logKey
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name.</p>
+</dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job group.</p>
+</dd>
     <dt><code>entryId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler fire-instance identifier.</p>
+</dd>
   </dl>
 
 

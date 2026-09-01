@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -76,7 +76,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#choose-a-start-path" class="md-skip">
+        <a href="#start-in-two-commands" class="md-skip">
           Skip to content
         </a>
       
@@ -88,9 +88,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -104,9 +105,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -117,6 +116,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -378,6 +381,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -408,13 +413,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+    
+  
+  
+    <li class="md-tabs__item md-tabs__item--active">
+      <a href="." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -518,10 +640,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#choose-a-start-path" class="md-nav__link">
+  <a href="#start-in-two-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choose a start path
+        Start in two commands
       
     </span>
   </a>
@@ -529,10 +651,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#capabilities-for-real-world-application-needs" class="md-nav__link">
+  <a href="#find-the-part-you-need" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capabilities for real-world application needs
+        Find the part you need
       
     </span>
   </a>
@@ -540,10 +662,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-not-just-plain-aspnet-core-mediatr-ef-core" class="md-nav__link">
+  <a href="#give-your-coding-agent-devkit-context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why not just plain ASP.NET Core + MediatR + EF Core?
+        Give your coding agent DevKit context
       
     </span>
   </a>
@@ -551,32 +673,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#designed-for-modular-maintainable-net-systems" class="md-nav__link">
+  <a href="#continue-from-working-code" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Designed for modular, maintainable .NET systems
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example applications
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#templates-for-solutions-and-modules" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Templates for solutions and modules
+        Continue from working code
       
     </span>
   </a>
@@ -601,6 +701,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -616,7 +721,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -632,7 +737,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -652,35 +757,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -735,215 +812,31 @@
   
   
   
-    <li class="md-nav__item">
-      <a href="agent-support/" class="md-nav__link">
+    
+    
+    
+    
+      
+      
         
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
       
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    
-    
-    
     
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" >
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -954,12 +847,92 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -979,7 +952,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -1003,15 +976,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -1029,8 +1007,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1243,6 +1221,34 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/features-profiling/" class="md-nav__link">
         
   
@@ -1310,15 +1316,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1336,8 +1347,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1410,42 +1421,14 @@
   
   
     <li class="md-nav__item">
-      <a href="reference/features-event-sourcing/" class="md-nav__link">
+      <a href="reference/features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="reference/features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1529,7 +1512,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1711,6 +1694,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1729,15 +1740,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1755,8 +1771,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1837,6 +1853,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2036,15 +2080,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2062,8 +2111,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2072,6 +2121,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2147,15 +2224,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2173,8 +2255,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2199,6 +2281,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2415,6 +2553,34 @@
   
   
     <li class="md-nav__item">
+      <a href="reference/features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="reference/features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2482,15 +2648,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2508,8 +2679,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2789,15 +2960,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2815,8 +2991,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2896,6 +3072,528 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="reference/introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="0">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -2924,10 +3622,10 @@
     <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#choose-a-start-path" class="md-nav__link">
+  <a href="#start-in-two-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choose a start path
+        Start in two commands
       
     </span>
   </a>
@@ -2935,10 +3633,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#capabilities-for-real-world-application-needs" class="md-nav__link">
+  <a href="#find-the-part-you-need" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capabilities for real-world application needs
+        Find the part you need
       
     </span>
   </a>
@@ -2946,10 +3644,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#why-not-just-plain-aspnet-core-mediatr-ef-core" class="md-nav__link">
+  <a href="#give-your-coding-agent-devkit-context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why not just plain ASP.NET Core + MediatR + EF Core?
+        Give your coding agent DevKit context
       
     </span>
   </a>
@@ -2957,32 +3655,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#designed-for-modular-maintainable-net-systems" class="md-nav__link">
+  <a href="#continue-from-working-code" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Designed for modular, maintainable .NET systems
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#example-applications" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Example applications
-      
-    </span>
-  </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#templates-for-solutions-and-modules" class="md-nav__link">
-    <span class="md-ellipsis">
-      
-        Templates for solutions and modules
+        Continue from working code
       
     </span>
   </a>
@@ -3021,262 +3697,69 @@
   
 
 
-  <h1>Home</h1>
+<!-- markdownlint-disable-file MD033 -->
 
 <section class="hero-panel">
   <div class="hero-copy">
     <p class="eyebrow">MODULAR .NET DEVELOPMENT KIT</p>
-    <h4>Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles.</h4>
-    <p class="hero-lead">
-      bITdevKit brings together domain modeling, requests, messaging, queueing, storage, scheduling,
-      and presentation patterns into a practical toolkit for real-world systems built with clean
-      architecture and DDD.
-    </p>
+    <h1>bITdevKit</h1>
+    <p class="hero-statement">Build modular .NET applications with Domain-Driven Design.</p>
+    <p class="hero-lead">Use shared domain types, request handling, messaging, storage, scheduling, and host tooling without rebuilding the same application infrastructure.</p>
+    <div class="hero-actions">
+      <a class="cta-button cta-primary" href="getting-started/">Create a project</a>
+      <a class="cta-button cta-secondary" href="docs/">Browse docs</a>
+      <a class="cta-button cta-ghost" href="api/">API reference</a>
+    </div>
   </div>
   <div class="hero-brand">
-    <img class="brand-light" src="assets/images/bITDevKit_Icon.svg" alt="bITdevKit logo" />
-    <img class="brand-dark" src="assets/images/bITDevKit_Icon.svg" alt="bITdevKit logo" />
+    <img src="assets/images/bITDevKit_Icon.svg" alt="" />
   </div>
 </section>
 
-<div class="hero-actions">
-  <a class="cta-button cta-primary" href="getting-started/">Get Started</a>
-  <a class="cta-button cta-secondary" href="agent-support/">Use AI Agents</a>
-  <a class="cta-button cta-secondary" href="templates/">Use Templates</a>
-  <a class="cta-button cta-secondary" href="reference/">Explore Docs</a>
-  <a class="cta-button cta-ghost" href="https://github.com/bridgingIT/bITdevKit">View Source</a>
-</div>
+<h2 id="start-in-two-commands">Start in two commands<a class="headerlink" href="#start-in-two-commands" title="Permanent link">&para;</a></h2>
+<p>Install the templates, then create a solution with its first module.</p>
+<div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">new</span> <span class="n">install</span> <span class="n">BridgingIT</span><span class="p">.</span><span class="n">DevKit</span><span class="p">.</span><span class="n">Templates</span>
+<span class="n">dotnet</span> <span class="n">new</span> <span class="n">bdksolution</span> <span class="p">-</span><span class="n">-SolutionName</span> <span class="n">SolutionName</span> <span class="p">-</span><span class="n">-ModuleName</span> <span class="n">Core</span> <span class="p">-</span><span class="n">-allow-scripts</span> <span class="n">yes</span> <span class="n">-o</span> <span class="p">./</span><span class="n">projects</span><span class="p">/</span><span class="n">SolutionName</span>
+</code></pre></div>
+<p>The template creates <code>./projects/SolutionName/SolutionName.slnx</code> with application, domain, infrastructure, presentation, and test projects.</p>
+<p class="section-linkout"><a class="inline-link" href="getting-started/">Continue with the Quickstart</a></p>
 
-<!-- <div class="signal-strip">
-  <span>DDD</span>
-  <span>CQRS</span>
-  <span>Modular Monolith</span>
-  <span>Results</span>
-  <span>Messaging</span>
-  <span>Queueing</span>
-  <span>Templates</span>
-</div> -->
-
-<h2 id="choose-a-start-path">Choose a start path<a class="headerlink" href="#choose-a-start-path" title="Permanent link">&para;</a></h2>
-<div class="gateway-grid">
-  <a class="gateway-card" href="getting-started/">
-    <h3>Learn the devkit</h3>
-    <p>Start with the GettingStarted example, the DDD introduction, and the guided first-read path.</p>
+<h2 id="find-the-part-you-need">Find the part you need<a class="headerlink" href="#find-the-part-you-need" title="Permanent link">&para;</a></h2>
+<div class="capability-grid capability-grid--home">
+  <a class="capability-card" href="docs/#model-a-domain">
+    <h3>Domain modeling</h3>
+    <p>Aggregates, value objects, rules, policies, specifications, repositories, and domain events.</p>
   </a>
-  <a class="gateway-card" href="templates/">
-    <h3>Scaffold a solution</h3>
-    <p>Install the templates and create a new solution or module that already follows the expected structure.</p>
+  <a class="capability-card" href="docs/#handle-requests-and-workflows">
+    <h3>Application flow</h3>
+    <p>Commands, queries, results, requester pipelines, events, and durable orchestrations.</p>
   </a>
-  <a class="gateway-card" href="agent-support/">
-    <h3>Work with AI agents</h3>
-    <p>Use the `bdk mcp` server to give coding agents official DevKit docs plus live runtime diagnostics while they implement features.</p>
+  <a class="capability-card" href="docs/#integrate-storage-and-messaging">
+    <h3>Infrastructure integration</h3>
+    <p>Messaging, queueing, files, blobs, documents, databases, and scheduled work.</p>
   </a>
-  <a class="gateway-card" href="developer-dashboards/">
-    <h3>Inspect running hosts</h3>
-    <p>Open the built-in developer dashboard for health, metrics, logs, jobs, queueing, identity, console commands and MCP visibility.</p>
-  </a>
-  <a class="gateway-card" href="examples/">
-    <h3>Explore examples</h3>
-    <p>Move from the focused GettingStarted example to broader scenarios like DoFiesta and EventSourcingDemo.</p>
-  </a>
-  <a class="gateway-card" href="reference/">
-    <h3>Read the docs</h3>
-    <p>Browse the documentation map by capability area and feature-specific guide.</p>
+  <a class="capability-card" href="docs/#operate-and-diagnose-an-application">
+    <h3>Operations and tooling</h3>
+    <p>Dashboards, health, logs, metrics, startup tasks, CLI commands, and MCP diagnostics.</p>
   </a>
 </div>
 
-<!-- ## When bITdevKit fits best
-
-<div class="value-grid">
-  <article class="value-card">
-    <h3>Modular monoliths</h3>
-    <p>Projects that need clear domain boundaries and module composition without splitting into many services too early.</p>
-  </article>
-  <article class="value-card">
-    <h3>Business-heavy applications</h3>
-    <p>Systems where aggregates, policies, results, and specifications matter more than simple DTO-first CRUD code.</p>
-  </article>
-  <article class="value-card">
-    <h3>Operationally realistic platforms</h3>
-    <p>Applications that need queueing, messaging, storage, scheduling, and diagnostic control as first-class concerns.</p>
-  </article>
-  <article class="value-card">
-    <h3>Teams that need consistency</h3>
-    <p>Codebases where shared patterns for handlers, modules, repositories, and endpoints reduce architectural drift.</p>
-  </article>
-</div> -->
-
-<h2 id="capabilities-for-real-world-application-needs">Capabilities for real-world application needs<a class="headerlink" href="#capabilities-for-real-world-application-needs" title="Permanent link">&para;</a></h2>
-<p class="section-linkout">
-  <a class="inline-link" href="reference/">Browse the full documentation overview</a>
-</p>
-
-<div class="capability-grid">
-  <a class="capability-card" href="reference/features-domain/">
-    <h3>Domain</h3>
-    <p>Aggregates, value objects, typed ids, specifications, policies and event-driven domain modeling.</p>
-  </a>
-  <a class="capability-card" href="reference/features-application-commands-queries/">
-    <h3>Application</h3>
-    <p>Commands, queries, handlers, mapping and explicit application orchestration with clear boundaries.</p>
-  </a>
-  <a class="capability-card" href="reference/features-requester-notifier/">
-    <h3>Requester &amp; Notifier</h3>
-    <p>In-process dispatching for request/response and publish/subscribe flows with reusable pipeline behaviors.</p>
-  </a>
-  <a class="capability-card" href="reference/features-messaging/">
-    <h3>Messaging</h3>
-    <p>Durable asynchronous messaging and outbox-backed delivery for decoupled application communication.</p>
-  </a>
-  <a class="capability-card" href="reference/features-queueing/">
-    <h3>Queueing</h3>
-    <p>Single-consumer work processing with operational visibility, retry/archive control and broker abstractions.</p>
-  </a>
-  <a class="capability-card" href="reference/features-pipelines/">
-    <h3>Pipelines</h3>
-    <p>Structured, observable multi-step workflows for in-process execution with low-friction defaults.</p>
-  </a>
-  <a class="capability-card" href="reference/features-orchestrations/">
-    <h3>Orchestrations</h3>
-    <p>Durable, stateful workflows with explicit states, activities, signals, timers and operational endpoints.</p>
-  </a>
-  <a class="capability-card" href="reference/features-storage-blobs/">
-    <h3>Storage</h3>
-    <p>Blob, document and file storage abstractions with monitoring, behaviors and provider-based extensibility.</p>
-  </a>
-  <a class="capability-card" href="reference/features-jobs/">
-    <h3>Jobs</h3>
-    <p>Code-first durable scheduling with triggers, batches, history, maintenance jobs and source-level integrations.</p>
-  </a>
-  <a class="capability-card" href="reference/features-presentation-endpoints/">
-    <h3>Presentation</h3>
-    <p>Minimal API endpoints, console commands, dashboards, CORS, exception handling and Blazor application state support.</p>
-  </a>
-  <a class="capability-card" href="developer-dashboards/">
-    <h3>Dashboards</h3>
-    <p>Live local pages for runtime health, metrics, retained logs, jobs, queueing and MCP handler/session insight.</p>
-  </a>
-  <a class="capability-card" href="agent-support/">
-    <h3>AI &amp; Agents</h3>
-    <p>Local MCP support for coding agents that can read official DevKit docs, follow patterns and inspect the running app while coding.</p>
-  </a>
-</div>
-
-<h2 id="why-not-just-plain-aspnet-core-mediatr-ef-core">Why not just plain ASP.NET Core + MediatR + EF Core?<a class="headerlink" href="#why-not-just-plain-aspnet-core-mediatr-ef-core" title="Permanent link">&para;</a></h2>
-<div class="value-grid">
-  <article class="value-card">
-    <h3>More than a library stack</h3>
-    <p>bITdevKit provides a coherent model for results, rules, request flow, modules, and operational infrastructure instead of leaving each project to compose its own conventions.</p>
-  </article>
-  <article class="value-card">
-    <h3>Developer guidance with reusable defaults</h3>
-    <p>Examples, templates, and aligned documentation reduce the amount of architectural assembly work needed at project start.</p>
-  </article>
-</div>
-
-<p class="section-linkout">
-  <a class="inline-link" href="why/">Read the full why bITdevKit page</a>
-</p>
-
-<h2 id="designed-for-modular-maintainable-net-systems">Designed for modular, maintainable .NET systems<a class="headerlink" href="#designed-for-modular-maintainable-net-systems" title="Permanent link">&para;</a></h2>
-<div class="architecture-panel">
+<h2 id="give-your-coding-agent-devkit-context">Give your coding agent DevKit context<a class="headerlink" href="#give-your-coding-agent-devkit-context" title="Permanent link">&para;</a></h2>
+<aside class="agent-callout">
   <div>
-    <p class="section-kicker">ARCHITECTURE</p>
-    <h3>Clean architecture, modular vertical slices and DDD by default.</h3>
-    <p>
-      bITdevKit is shaped around clear boundaries between domain, application, infrastructure and
-      presentation. It supports modular systems where cross-cutting building blocks stay reusable
-      while business logic remains explicit and testable.
-    </p>
-    <a class="inline-link" href="architecture/">See the architecture map</a>
+    <p class="section-kicker">AI AGENT SUPPORT</p>
+    <h3>Put the docs and a running application in the same conversation.</h3>
+    <p><code>bdk mcp</code> lets MCP-capable coding agents search the official DevKit documentation and inspect diagnostics exposed by a local DevKit host.</p>
   </div>
-  <div class="architecture-stack" aria-label="Architecture layers">
-    <span>Presentation</span>
-    <span>Infrastructure</span>
-    <span>Application</span>
-    <span>Domain</span>
-  </div>
-</div>
+  <a class="cta-button cta-agent" href="agent-support/">Set up AI Agent Support</a>
+</aside>
 
-<h2 id="example-applications">Example applications<a class="headerlink" href="#example-applications" title="Permanent link">&para;</a></h2>
-<div class="examples-grid">
-  <article class="example-card">
-    <h3>GettingStarted</h3>
-    <p>The canonical onboarding project for learning the devkit through a focused end-to-end example before building your own solution.</p>
-    <a class="inline-link" href="https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted">Open example</a>
-  </article>
-  <article class="example-card">
-    <h3>DoFiesta</h3>
-    <p>A richer example application used throughout the repository to show operational, messaging, scheduling and UI integration scenarios.</p>
-    <a class="inline-link" href="https://github.com/bridgingIT/bITdevKit/tree/main/examples/DoFiesta">Open example</a>
-  </article>
-  <article class="example-card">
-    <h3>EventSourcingDemo</h3>
-    <p>A focused example for exploring how event-sourcing-oriented concepts fit into the broader development kit.</p>
-    <a class="inline-link" href="https://github.com/bridgingIT/bITdevKit/tree/main/examples/EventSourcingDemo">Open example</a>
-  </article>
-</div>
-
-<p class="section-linkout">
-  <a class="inline-link" href="examples/">Explore the examples</a>
-</p>
-
-<h2 id="templates-for-solutions-and-modules">Templates for solutions and modules<a class="headerlink" href="#templates-for-solutions-and-modules" title="Permanent link">&para;</a></h2>
-<div class="architecture-panel">
-  <div>
-    <p class="section-kicker">SCAFFOLDING</p>
-    <h3>Start from a working structure instead of assembling it by hand.</h3>
-    <p>
-      `bITdevKit` ships with .NET templates that can scaffold a full solution or add new modules
-      using the kit's architectural conventions. That makes it easier to move from learning to a
-      real project without rebuilding the same structure manually.
-    </p>
-    <a class="inline-link" href="templates/">Explore the templates</a>
-  </div>
-  <div class="architecture-stack" aria-label="Template outputs">
-    <span>Solution</span>
-    <span>Module</span>
-    <span>Tests</span>
-  </div>
-</div>
-
-<!-- ## Common decisions
-
-<div class="gateway-grid">
-  <a class="gateway-card" href="decisions-messaging-vs-queueing/">
-    <h3>Messaging vs Queueing</h3>
-    <p>Choose between event fan-out and single-consumer work ownership based on runtime semantics.</p>
-  </a>
-  <a class="gateway-card" href="decisions-repository-vs-activeentity/">
-    <h3>Repository vs ActiveEntity</h3>
-    <p>Pick between a richer DDD-oriented abstraction and a simpler persistence style for faster CRUD scenarios.</p>
-  </a>
-  <a class="gateway-card" href="packages/">
-    <h3>Package map</h3>
-    <p>Understand the repository as grouped package families instead of a flat project list.</p>
-  </a>
-  <a class="gateway-card" href="why/">
-    <h3>Why bITdevKit</h3>
-    <p>See when the devkit pays off and when a simpler stack may be enough.</p>
-  </a>
-</div> -->
-
-<!-- ## Getting started
-
-<div class="closing-panel">
-  <p>
-    The fastest path into bITdevKit is to start with the GettingStarted example, read the DDD
-    introduction, and then move into the feature docs, templates, and example applications as the
-    implementation questions become more concrete.
-  </p>
-  <div class="hero-actions">
-    <a class="cta-button cta-primary" href="getting-started/">Start Here</a>
-    <a class="cta-button cta-secondary" href="why/">Why bITdevKit</a>
-    <a class="cta-button cta-secondary" href="architecture/">See Architecture</a>
-    <a class="cta-button cta-secondary" href="templates/">Explore Templates</a>
-    <a class="cta-button cta-ghost" href="https://github.com/bridgingIT/bITdevKit">Browse GitHub</a>
-  </div>
-</div> -->
+<h2 id="continue-from-working-code">Continue from working code<a class="headerlink" href="#continue-from-working-code" title="Permanent link">&para;</a></h2>
+<nav class="next-step-strip" aria-label="Next steps">
+  <a href="https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted">Open GettingStarted</a>
+  <a href="examples/">Explore all examples</a>
+  <a href="why/">See when bITdevKit fits</a>
+</nav>
 
 
 
@@ -3360,7 +3843,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": ".", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3368,6 +3851,8 @@
         <script src="assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="assets/javascripts/context7-widget.js"></script>
+      
+        <script src="assets/javascripts/theme-picker.js"></script>
       
     
   </body>

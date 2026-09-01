@@ -514,7 +514,8 @@ Class RepositoryConcurrencyBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the inner.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -549,7 +550,7 @@ Class RepositoryConcurrencyBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the specified criteria.</p>
+  <div class="markdown level1 summary"><p>Executes the count operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -560,18 +561,17 @@ Class RepositoryConcurrencyBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd><p>The criteria that entities must satisfy to be counted.</p>
+    <dd><p>The specification used to filter entities.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains the count of entities that satisfy
-the specified criteria.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -592,7 +592,7 @@ the specified criteria.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously counts the number of entities that satisfy the provided specifications.</p>
+  <div class="markdown level1 summary"><p>Executes the count operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -603,17 +603,17 @@ the specified criteria.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>A collection of specifications to filter the entities.</p>
+    <dd><p>The specifications used to filter entities.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains the count of entities.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -634,7 +634,7 @@ the specified criteria.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously counts the total number of entities of type TEntity in the repository.</p>
+  <div class="markdown level1 summary"><p>Executes the count operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -645,14 +645,14 @@ the specified criteria.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">long</span>&gt;</dt>
-    <dd><p>A task that represents the asynchronous count operation. The task result contains the total count of entities.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -673,7 +673,7 @@ the specified criteria.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes the entity for the provided id.</p>
+  <div class="markdown level1 summary"><p>Deletes .</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -684,17 +684,18 @@ the specified criteria.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd><p>The entity id to delete.</p>
+    <dd><p>The entity identifier.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -714,7 +715,7 @@ the specified criteria.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes the provided entity.</p>
+  <div class="markdown level1 summary"><p>Deletes .</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -725,17 +726,18 @@ the specified criteria.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd><p>The entity to delete.</p>
+    <dd><p>The entity involved in the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -887,7 +889,7 @@ the specified criteria.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Checks if an entity with the specified identifier exists in the repository.</p>
+  <div class="markdown level1 summary"><p>Executes the exists operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -898,18 +900,17 @@ the specified criteria.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd><p>The identifier of the entity to check for existence.</p>
+    <dd><p>The entity identifier.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains a boolean value indicating whether
-the entity exists.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -930,7 +931,7 @@ the entity exists.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Finds all entities that match the specified criteria asynchronously.</p>
+  <div class="markdown level1 summary"><p>Finds all.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -941,21 +942,20 @@ the entity exists.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd><p>The specification to filter the entities.</p>
+    <dd><p>The specification used to filter entities.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional find options for querying the entities.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Optional cancellation token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains an enumerable of entities that
-match the specification.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -976,8 +976,7 @@ match the specification.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously retrieves all entities of type <code class="typeparamref">TEntity</code> based on the specified find options
-and cancellation token.</p>
+  <div class="markdown level1 summary"><p>Finds all.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -988,18 +987,17 @@ and cancellation token.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>An optional set of criteria to filter and sort the results.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains an enumerable collection of
-entities of type <code class="typeparamref">TEntity</code>.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1020,7 +1018,7 @@ entities of type <code class="typeparamref">TEntity</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Finds all entities that match the given specifications.</p>
+  <div class="markdown level1 summary"><p>Finds all.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1031,21 +1029,20 @@ entities of type <code class="typeparamref">TEntity</code>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>The collection of specifications to filter the entities.</p>
+    <dd><p>The specifications used to filter entities.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional find options to apply additional query customization.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains a collection of entities that
-match the given specifications.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1066,7 +1063,7 @@ match the given specifications.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Finds a single entity that matches the specified criteria.</p>
+  <div class="markdown level1 summary"><p>Finds one.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1077,21 +1074,20 @@ match the given specifications.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd><p>The specification that defines the criteria for the entity to be found.</p>
+    <dd><p>The specification used to filter entities.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional find options to customize the search behavior.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to cancel the asynchronous operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
-    <dd><p>A task that represents the asynchronous find operation. The task result contains the found entity, or null if
-no entity matches the criteria.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1112,8 +1108,7 @@ no entity matches the criteria.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously retrieves a single entity of type <code class="typeparamref">TEntity</code> based on the specified
-specifications and find options.</p>
+  <div class="markdown level1 summary"><p>Finds one.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1124,22 +1119,20 @@ specifications and find options.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>A collection of criteria used to filter the entities.</p>
+    <dd><p>The specifications used to filter entities.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional find options to modify query behavior, such as sorting. If null, default options are
-used.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains a single entity of type
-<code class="typeparamref">TEntity</code> if found; otherwise, null.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1160,7 +1153,7 @@ used.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously finds a single entity by its identifier.</p>
+  <div class="markdown level1 summary"><p>Finds one.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1171,21 +1164,20 @@ used.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd><p>The identifier of the entity.</p>
+    <dd><p>The entity identifier.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional query options for finding the entity.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Optional token to cancel the asynchronous operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
-    <dd><p>A Task that represents the asynchronous operation. The task result contains the found entity,
-or null if no entity with the given identifier is found.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1206,7 +1198,7 @@ or null if no entity with the given identifier is found.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Inserts the provided entity.</p>
+  <div class="markdown level1 summary"><p>Executes the insert operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1217,17 +1209,17 @@ or null if no entity with the given identifier is found.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd><p>The entity to insert.</p>
+    <dd><p>The entity involved in the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
-    <dd><p>A task representing the asynchronous operation, with the inserted entity.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1248,7 +1240,7 @@ or null if no entity with the given identifier is found.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Inserts the provided entities.</p>
+  <div class="markdown level1 summary"><p>Executes the insert set operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1259,17 +1251,17 @@ or null if no entity with the given identifier is found.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;TEntity&gt;</dt>
-    <dd><p>The entities to insert.</p>
+    <dd><p>The entities involved in the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>A task representing the asynchronous operation, with the inserted entities.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1290,8 +1282,7 @@ or null if no entity with the given identifier is found.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously projects all entities of type <code class="typeparamref">TEntity</code> to a specified projection type based
-on the given specification, projection expression, options, and cancellation token.</p>
+  <div class="markdown level1 summary"><p>Executes the project all operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1302,31 +1293,30 @@ on the given specification, projection expression, options, and cancellation tok
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd><p>The specification that entities must satisfy.</p>
+    <dd><p>The specification used to filter entities.</p>
 </dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd><p>The expression defining the projection of entities.</p>
+    <dd><p>The projection used by the operation.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional criteria for filtering and sorting results.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains an enumerable collection of
-projected entities of type <code class="typeparamref">TProjection</code>.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd><p>The type to which the entities will be projected.</p>
+    <dd><p>The projection type.</p>
 </dd>
   </dl>
 
@@ -1346,7 +1336,7 @@ projected entities of type <code class="typeparamref">TProjection</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Projects all entities that match the given specifications to a new form as specified by the projection expression.</p>
+  <div class="markdown level1 summary"><p>Executes the project all operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1357,31 +1347,30 @@ projected entities of type <code class="typeparamref">TProjection</code>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd><p>A collection of specifications that entities must satisfy.</p>
+    <dd><p>The specifications used to filter entities.</p>
 </dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd><p>An expression that defines the projection from the entity to the new form.</p>
+    <dd><p>The projection used by the operation.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional find options to customize query behavior.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>A cancellation token to observe while waiting for the task to complete.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation. The task result contains a collection of projected
-entities.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd><p>The type to project each entity to.</p>
+    <dd><p>The projection type.</p>
 </dd>
   </dl>
 
@@ -1401,8 +1390,7 @@ entities.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Projects all entities of type <code class="typeparamref">TEntity</code> to a collection of type
-<code class="typeparamref">TProjection</code>.</p>
+  <div class="markdown level1 summary"><p>Executes the project all operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1413,29 +1401,27 @@ entities.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd><p>Expression defining the projection of <code class="typeparamref">TEntity</code> to
-<code class="typeparamref">TProjection</code>.</p>
+    <dd><p>The projection used by the operation.</p>
 </dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd><p>Optional parameters for customizing the find operation.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to monitor for cancellation requests.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;</dt>
-    <dd><p>A task that represents the asynchronous operation, containing the projected collection of type
-<code class="typeparamref">TProjection</code>.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd><p>The type to which entities should be projected.</p>
+    <dd><p>The projection type.</p>
 </dd>
   </dl>
 
@@ -1455,7 +1441,7 @@ entities.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Updates the provided entity.</p>
+  <div class="markdown level1 summary"><p>Executes the update operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1466,17 +1452,17 @@ entities.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd><p>The entity to update.</p>
+    <dd><p>The entity involved in the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>An optional token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TEntity&gt;</dt>
-    <dd><p>The updated entity.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -1638,7 +1624,7 @@ entities.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Insert or updates the provided entity.</p>
+  <div class="markdown level1 summary"><p>Executes the upsert operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1649,19 +1635,17 @@ entities.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd><p>The entity to insert or update.</p>
+    <dd><p>The entity involved in the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Optional. A <span class="xref">System.Threading.CancellationToken</span> to observe while waiting for the task to
-complete.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;(TEntity <span class="xref">entity</span>, <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a> <span class="xref">action</span>)&gt;</dt>
-    <dd><p>A <span class="xref">System.Threading.Tasks.Task</span> that represents the asynchronous operation, containing a tuple with the entity and the
-action result.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 

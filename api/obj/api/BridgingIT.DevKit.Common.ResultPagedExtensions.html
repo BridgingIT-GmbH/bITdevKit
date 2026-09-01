@@ -558,7 +558,8 @@ cancellationToken
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies a result-producing operation to each paged value and collects successful output while preserving pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -568,23 +569,28 @@ cancellationToken
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result whose values are processed.</p>
+</dd>
     <dt><code>operation</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOutput&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The operation applied independently to each source item.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TOutput&gt;</dt>
-    <dd></dd>
+    <dd><p>A paged success containing all output values when every operation succeeds; otherwise, a failure containing collected errors and messages.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The source item type.</p>
+</dd>
     <dt><code>TOutput</code></dt>
-    <dd></dd>
+    <dd><p>The collected output item type.</p>
+</dd>
   </dl>
 
 

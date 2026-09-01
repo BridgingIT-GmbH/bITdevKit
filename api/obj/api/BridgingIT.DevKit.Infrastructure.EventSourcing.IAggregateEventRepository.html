@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Interface IAggregateEventRepository | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Defines operations for i aggregate event repository.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Interface IAggregateEventRepository
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EventSourcing.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Defines operations for i aggregate event repository.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -256,7 +257,8 @@ Interface IAggregateEventRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the execute scoped operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -266,13 +268,15 @@ Interface IAggregateEventRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>operation</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The operation used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -292,7 +296,8 @@ Interface IAggregateEventRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets aggregate ids.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -302,13 +307,15 @@ Interface IAggregateEventRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">Guid</span>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -328,7 +335,8 @@ Interface IAggregateEventRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets aggregate ids.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -338,19 +346,22 @@ Interface IAggregateEventRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">Guid</span>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 
@@ -369,7 +380,8 @@ Interface IAggregateEventRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets events.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -379,17 +391,21 @@ Interface IAggregateEventRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>immutableAggregateTypeName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The immutable aggregate type name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.EventStoreAggregateEvent.html">EventStoreAggregateEvent</a>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -409,7 +425,8 @@ Interface IAggregateEventRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets max version.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -419,17 +436,21 @@ Interface IAggregateEventRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>immutableAggregateName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The immutable aggregate name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -449,7 +470,8 @@ Interface IAggregateEventRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the insert operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -459,19 +481,24 @@ Interface IAggregateEventRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
     <dt><code>immutableAggregateTypeName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The immutable aggregate type name used by the operation.</p>
+</dd>
     <dt><code>immutableEventTypeName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The immutable event type name used by the operation.</p>
+</dd>
     <dt><code>data</code> <span class="xref">byte</span>[]</dt>
-    <dd></dd>
+    <dd><p>The data used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

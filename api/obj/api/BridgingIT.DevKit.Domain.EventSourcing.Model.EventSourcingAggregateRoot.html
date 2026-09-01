@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EventSourcingAggregateRoot | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents event sourcing aggregate root.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class EventSourcingAggregateRoot
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.EventSourcing.Mediator.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents event sourcing aggregate root.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -294,7 +295,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>EventSourcingAggregateRoot</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -304,7 +306,8 @@ Class EventSourcingAggregateRoot
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -325,7 +328,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>EventSourcingAggregateRoot</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -335,9 +339,11 @@ Class EventSourcingAggregateRoot
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>events</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The events used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -362,7 +368,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the unsaved events.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -393,7 +400,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the version.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -428,7 +436,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the apply event operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -438,7 +447,8 @@ Class EventSourcingAggregateRoot
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -459,7 +469,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the event has been added to event store operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -469,7 +480,8 @@ Class EventSourcingAggregateRoot
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -490,7 +502,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the event has been commited operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -500,15 +513,18 @@ Class EventSourcingAggregateRoot
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>mediator</code> <span class="xref">IMediator</span></dt>
-    <dd></dd>
+    <dd><p>The mediator used by the operation.</p>
+</dd>
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -528,7 +544,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets next version.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -539,7 +556,8 @@ Class EventSourcingAggregateRoot
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -559,7 +577,8 @@ Class EventSourcingAggregateRoot
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the receive event operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -569,7 +588,8 @@ Class EventSourcingAggregateRoot
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
   </dl>
 
 

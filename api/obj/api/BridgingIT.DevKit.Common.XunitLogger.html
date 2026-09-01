@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class XunitLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Writes Microsoft.Extensions.Logging events and active scopes to xUnit test output.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class XunitLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.Xunit.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Writes Microsoft.Extensions.Logging events and active scopes to xUnit test output.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +270,8 @@ Class XunitLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes Microsoft.Extensions.Logging events and active scopes to xUnit test output.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,11 +281,14 @@ Class XunitLogger
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>output</code> <span class="xref">ITestOutputHelper</span></dt>
-    <dd></dd>
+    <dd><p>The xUnit output sink.</p>
+</dd>
     <dt><code>scopeProvider</code> <span class="xref">LoggerExternalScopeProvider</span></dt>
-    <dd></dd>
+    <dd><p>The provider that tracks active logging scopes.</p>
+</dd>
     <dt><code>categoryName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The logger category included in each message.</p>
+</dd>
   </dl>
 
 
@@ -349,7 +354,8 @@ Class XunitLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a non-generic logger with an empty category.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -359,13 +365,15 @@ Class XunitLogger
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>output</code> <span class="xref">ITestOutputHelper</span></dt>
-    <dd></dd>
+    <dd><p>The xUnit output sink.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The created logger.</p>
+</dd>
   </dl>
 
 
@@ -385,7 +393,8 @@ Class XunitLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a logger categorized by a specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -395,19 +404,22 @@ Class XunitLogger
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>output</code> <span class="xref">ITestOutputHelper</span></dt>
-    <dd></dd>
+    <dd><p>The xUnit output sink.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ILogger</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The created typed logger.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The category type.</p>
+</dd>
   </dl>
 
 

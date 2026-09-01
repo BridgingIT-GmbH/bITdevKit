@@ -314,7 +314,7 @@ Class JobSchedulerMaintenanceService
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Archives completed, failed, or cancelled occurrences after a retention window.</p>
+  <div class="markdown level1 summary"><p>Executes the archive occurrences operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -325,17 +325,17 @@ Class JobSchedulerMaintenanceService
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobArchiveOccurrencesJobData.html">JobArchiveOccurrencesJobData</a></dt>
-    <dd><p>The archive options.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceReport.html">JobMaintenanceReport</a>&gt;</dt>
-    <dd><p>The maintenance report.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -356,7 +356,7 @@ Class JobSchedulerMaintenanceService
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Detects runtime-state rows that no longer correspond to active code-first registrations.</p>
+  <div class="markdown level1 summary"><p>Executes the detect orphaned runtime state operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -367,17 +367,17 @@ Class JobSchedulerMaintenanceService
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDetectOrphanedRuntimeStateJobData.html">JobDetectOrphanedRuntimeStateJobData</a></dt>
-    <dd><p>The orphan-detection options.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceReport.html">JobMaintenanceReport</a>&gt;</dt>
-    <dd><p>The maintenance report.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -398,7 +398,7 @@ Class JobSchedulerMaintenanceService
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Purges archived execution history that is older than the configured retention window.</p>
+  <div class="markdown level1 summary"><p>Executes the purge history operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -409,17 +409,17 @@ Class JobSchedulerMaintenanceService
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobPurgeHistoryJobData.html">JobPurgeHistoryJobData</a></dt>
-    <dd><p>The purge options.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceReport.html">JobMaintenanceReport</a>&gt;</dt>
-    <dd><p>The maintenance report.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -440,7 +440,7 @@ Class JobSchedulerMaintenanceService
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Purges retained occurrences and their dependent persisted records.</p>
+  <div class="markdown level1 summary"><p>Executes the purge occurrences operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -451,17 +451,17 @@ Class JobSchedulerMaintenanceService
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobPurgeOccurrencesRequest.html">JobPurgeOccurrencesRequest</a></dt>
-    <dd><p>The purge request.</p>
+    <dd><p>The request used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceReport.html">JobMaintenanceReport</a>&gt;</dt>
-    <dd><p>The maintenance report.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -482,7 +482,7 @@ Class JobSchedulerMaintenanceService
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Recovers stale occurrences that no longer have a valid active lease.</p>
+  <div class="markdown level1 summary"><p>Executes the recover stuck occurrences operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -493,17 +493,17 @@ Class JobSchedulerMaintenanceService
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRecoverStuckOccurrencesJobData.html">JobRecoverStuckOccurrencesJobData</a></dt>
-    <dd><p>The stuck-occurrence recovery options.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceReport.html">JobMaintenanceReport</a>&gt;</dt>
-    <dd><p>The maintenance report.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -524,7 +524,7 @@ Class JobSchedulerMaintenanceService
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Releases expired leases and repairs the affected occurrences.</p>
+  <div class="markdown level1 summary"><p>Executes the release expired leases operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -535,17 +535,17 @@ Class JobSchedulerMaintenanceService
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobReleaseExpiredLeasesJobData.html">JobReleaseExpiredLeasesJobData</a></dt>
-    <dd><p>The lease-release options.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobMaintenanceReport.html">JobMaintenanceReport</a>&gt;</dt>
-    <dd><p>The maintenance report.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 

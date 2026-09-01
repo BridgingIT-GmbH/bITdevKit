@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MessagePackSerializer | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Serializes values with contractless MessagePack options that support private members.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class MessagePackSerializer
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Serialization.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Serializes values with contractless MessagePack options that support private members.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -323,7 +324,7 @@ Class MessagePackSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deserializes the specified input stream.</p>
+  <div class="markdown level1 summary"><p>Deserializes a MessagePack stream as the specified runtime type after rewinding the stream.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -334,17 +335,17 @@ Class MessagePackSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>input</code> <span class="xref">Stream</span></dt>
-    <dd><p>The input stream containing serialized data.</p>
+    <dd><p>The input stream, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd><p>The type of the object to deserialize.</p>
+    <dd><p>The type to deserialize.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">object</span></dt>
-    <dd><p>The deserialized object.</p>
+    <dd><p>The deserialized value, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a null or empty stream.</p>
 </dd>
   </dl>
 
@@ -355,6 +356,12 @@ Class MessagePackSerializer
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">type</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
 
 
 
@@ -365,7 +372,7 @@ Class MessagePackSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deserializes the specified input stream into an object of the specified type.</p>
+  <div class="markdown level1 summary"><p>Deserializes a MessagePack stream as <code class="typeparamref">T</code> after rewinding the stream.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -376,21 +383,22 @@ Class MessagePackSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>input</code> <span class="xref">Stream</span></dt>
-    <dd><p>The input stream.</p>
+    <dd><p>The input stream, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to return the default value.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">T</span></dt>
-    <dd><p>The deserialized object.</p>
+    <dd><p>The deserialized value, or the default value for a null or empty stream.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type to deserialize.</p>
+</dd>
   </dl>
 
 
@@ -409,7 +417,7 @@ Class MessagePackSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Serializes the specified object value.</p>
+  <div class="markdown level1 summary"><p>Serializes a non-null value to a non-null output stream.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -420,10 +428,10 @@ Class MessagePackSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">object</span></dt>
-    <dd><p>The value.</p>
+    <dd><p>The value to serialize. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value is ignored.</p>
 </dd>
     <dt><code>output</code> <span class="xref">Stream</span></dt>
-    <dd><p>The output.</p>
+    <dd><p>The destination stream. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> stream is ignored.</p>
 </dd>
   </dl>
 

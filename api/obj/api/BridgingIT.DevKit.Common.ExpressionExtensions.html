@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ExpressionExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides expression-tree expansion, member discovery, and parameter-free string rendering helpers.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ExpressionExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides expression-tree expansion, member discovery, and parameter-free string rendering helpers.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -174,7 +175,8 @@ Class ExpressionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the referenced member name from a direct member-access expression, including a converted member access.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -184,19 +186,22 @@ Class ExpressionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Expression</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression whose body should be inspected.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The referenced member name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a null expression.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The expression delegate type.</p>
+</dd>
   </dl>
 
 
@@ -205,6 +210,12 @@ Class ExpressionExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotSupportedException</span></dt>
+    <dd><p>Thrown when the expression body is not a supported member access.</p>
+</dd>
+  </dl>
 
 
 
@@ -215,7 +226,8 @@ Class ExpressionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Renders a Boolean lambda body without its parameter declaration or parameter qualification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -225,19 +237,22 @@ Class ExpressionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression to render.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The rendered body, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a null expression.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The lambda input type.</p>
+</dd>
   </dl>
 
 
@@ -256,7 +271,8 @@ Class ExpressionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Renders a double-valued lambda body without its parameter declaration or parameter qualification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -266,19 +282,22 @@ Class ExpressionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T, <span class="xref">double</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression to render.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The rendered body, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a null expression.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The lambda input type.</p>
+</dd>
   </dl>
 
 
@@ -297,7 +316,8 @@ Class ExpressionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Renders a GUID-valued lambda body without its parameter declaration or parameter qualification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -307,19 +327,22 @@ Class ExpressionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T, <span class="xref">Guid</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression to render.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The rendered body, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a null expression.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The lambda input type.</p>
+</dd>
   </dl>
 
 
@@ -338,7 +361,8 @@ Class ExpressionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Renders an object-valued lambda body without its parameter declaration or parameter qualification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -348,19 +372,22 @@ Class ExpressionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T, <span class="xref">object</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression to render.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The rendered body, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a null expression.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The lambda input type.</p>
+</dd>
   </dl>
 
 
@@ -379,7 +406,8 @@ Class ExpressionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Renders a string-valued lambda body without its parameter declaration or parameter qualification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -389,19 +417,22 @@ Class ExpressionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T, <span class="xref">string</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression to render.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The rendered body, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> for a null expression.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The lambda input type.</p>
+</dd>
   </dl>
 
 

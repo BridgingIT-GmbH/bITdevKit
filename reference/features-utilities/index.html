@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#utilities-feature-documentation" class="md-skip">
+        <a href="#utilities" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -898,15 +901,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -924,8 +932,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1138,6 +1146,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1237,22 +1273,88 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-belongs-here" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Belongs Here
+        Challenges
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="What Belongs Here">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package contents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Package contents">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#startup-tasks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Startup Tasks
+        Startup tasks
       
     </span>
   </a>
@@ -1263,7 +1365,7 @@
   <a href="#log-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Log Entries
+        Log entries
       
     </span>
   </a>
@@ -1274,7 +1376,7 @@
   <a href="#time-provider-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Time Provider Integration
+        Time-provider integration
       
     </span>
   </a>
@@ -1290,19 +1392,19 @@
   <a href="#time-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Time Providers
+        Time providers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Time Providers">
+    <nav class="md-nav" aria-label="Time providers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#why-it-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why It Exists
+        Why it exists
       
     </span>
   </a>
@@ -1324,7 +1426,7 @@
   <a href="#using-time-in-di-driven-services" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Time In DI-Driven Services
+        Using time in DI-driven services
       
     </span>
   </a>
@@ -1332,10 +1434,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-time-in-places-without-di" class="md-nav__link">
+  <a href="#using-time-without-di" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Time In Places Without DI
+        Using time without DI
       
     </span>
   </a>
@@ -1357,7 +1459,7 @@
   <a href="#when-to-use-it" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        When to use it
       
     </span>
   </a>
@@ -1373,7 +1475,7 @@
   <a href="#package-boundaries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Package Boundaries
+        Package boundaries
       
     </span>
   </a>
@@ -1384,7 +1486,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -1418,15 +1520,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1444,8 +1551,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1518,42 +1625,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1637,7 +1716,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1819,6 +1898,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1837,15 +1944,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1863,8 +1975,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1945,6 +2057,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2144,15 +2284,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2170,8 +2315,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2180,6 +2325,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2255,15 +2428,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2281,8 +2459,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2307,6 +2485,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2523,6 +2757,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2590,15 +2852,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2616,8 +2883,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2897,15 +3164,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2923,8 +3195,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3004,6 +3276,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3043,22 +3846,88 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-belongs-here" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What Belongs Here
+        Challenges
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="What Belongs Here">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#package-contents" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Package contents
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Package contents">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#startup-tasks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Startup Tasks
+        Startup tasks
       
     </span>
   </a>
@@ -3069,7 +3938,7 @@
   <a href="#log-entries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Log Entries
+        Log entries
       
     </span>
   </a>
@@ -3080,7 +3949,7 @@
   <a href="#time-provider-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Time Provider Integration
+        Time-provider integration
       
     </span>
   </a>
@@ -3096,19 +3965,19 @@
   <a href="#time-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Time Providers
+        Time providers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Time Providers">
+    <nav class="md-nav" aria-label="Time providers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#why-it-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Why It Exists
+        Why it exists
       
     </span>
   </a>
@@ -3130,7 +3999,7 @@
   <a href="#using-time-in-di-driven-services" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Time In DI-Driven Services
+        Using time in DI-driven services
       
     </span>
   </a>
@@ -3138,10 +4007,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-time-in-places-without-di" class="md-nav__link">
+  <a href="#using-time-without-di" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Time In Places Without DI
+        Using time without DI
       
     </span>
   </a>
@@ -3163,7 +4032,7 @@
   <a href="#when-to-use-it" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        When to use it
       
     </span>
   </a>
@@ -3179,7 +4048,7 @@
   <a href="#package-boundaries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Package Boundaries
+        Package boundaries
       
     </span>
   </a>
@@ -3190,7 +4059,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -3240,10 +4109,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3283,31 +4170,37 @@
   
 
 
-<h1 id="utilities-feature-documentation">Utilities Feature Documentation<a class="headerlink" href="#utilities-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="utilities">Utilities<a class="headerlink" href="#utilities" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Group small but essential application-layer support services and contracts in one lightweight package.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#utilities-feature-documentation">Utilities Feature Documentation</a><ul>
+<li><a href="#utilities">Utilities</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#what-belongs-here">What Belongs Here</a><ul>
-<li><a href="#startup-tasks">Startup Tasks</a></li>
-<li><a href="#log-entries">Log Entries</a></li>
-<li><a href="#time-provider-integration">Time Provider Integration</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#package-contents">Package contents</a><ul>
+<li><a href="#startup-tasks">Startup tasks</a></li>
+<li><a href="#log-entries">Log entries</a></li>
+<li><a href="#time-provider-integration">Time-provider integration</a></li>
 </ul>
 </li>
-<li><a href="#time-providers">Time Providers</a><ul>
-<li><a href="#why-it-exists">Why It Exists</a></li>
+<li><a href="#time-providers">Time providers</a><ul>
+<li><a href="#why-it-exists">Why it exists</a></li>
 <li><a href="#registration">Registration</a></li>
-<li><a href="#using-time-in-di-driven-services">Using Time In DI-Driven Services</a></li>
-<li><a href="#using-time-in-places-without-di">Using Time In Places Without DI</a></li>
+<li><a href="#using-time-in-di-driven-services">Using time in DI-driven services</a></li>
+<li><a href="#using-time-without-di">Using time without DI</a></li>
 <li><a href="#testing">Testing</a></li>
-<li><a href="#when-to-use-it">When To Use It</a></li>
+<li><a href="#when-to-use-it">When to use it</a></li>
 </ul>
 </li>
-<li><a href="#package-boundaries">Package Boundaries</a></li>
-<li><a href="#related-documentation">Related Documentation</a></li>
+<li><a href="#package-boundaries">Package boundaries</a></li>
+<li><a href="#related-documentation">Related documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -3325,17 +4218,64 @@
 <li><a href="../features-log-entries/">Log Entries</a></li>
 </ul>
 <p>This page gives the package-level picture and documents the remaining utility feature that lives directly here: time-provider integration.</p>
-<h2 id="what-belongs-here">What Belongs Here<a class="headerlink" href="#what-belongs-here" title="Permanent link">&para;</a></h2>
-<h3 id="startup-tasks">Startup Tasks<a class="headerlink" href="#startup-tasks" title="Permanent link">&para;</a></h3>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Small cross-cutting application concerns can become inconsistent when each feature registers its own clock, startup orchestration, or log-query contract. Time is especially difficult to test when code mixes injected providers, ambient access, and direct <code>DateTime.UtcNow</code> calls.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p><code>Application.Utilities</code> groups the application-facing contracts for startup tasks and persisted log access with <code>AddTimeProvider(...)</code>. The time registration replaces the DI <code>TimeProvider</code> singleton and sets <code>TimeProviderAccessor.Current</code>, allowing DI-aware and ambient callers in the same asynchronous flow to use the same clock.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>startup-task contracts and hosted orchestration</li>
+<li>persisted log-entry query and maintenance contracts</li>
+<li><code>TimeProvider.System</code>, instance, and factory registration overloads</li>
+<li>ambient time access through <code>TimeProviderAccessor</code></li>
+<li>deterministic fake-time support in tests</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>Startup tasks and log entries have their own feature guides. The time integration is a small bridge: the service-collection extension owns DI registration, while <code>TimeProviderAccessor</code> stores the ambient provider in <code>AsyncLocal&lt;TimeProvider&gt;</code> and falls back to <code>TimeProvider.System</code> when no override exists.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>share one testable clock across application services</li>
+<li>make expiration, retention, and scheduling tests deterministic</li>
+<li>keep legacy or domain code that uses the ambient accessor aligned with DI</li>
+<li>locate the package boundaries for startup-task and log-entry contracts</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>Register the system provider once and inject <code>TimeProvider</code> into DI-managed code. This endpoint returns the current UTC time and shows whether DI and the ambient accessor resolve the same provider instance.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTimeProvider</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/system/time&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">TimeProvider</span><span class="w"> </span><span class="n">timeProvider</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">utcNow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">timeProvider</span><span class="p">.</span><span class="n">GetUtcNow</span><span class="p">();</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">UtcNow</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">utcNow</span><span class="p">,</span>
+<span class="w">        </span><span class="n">SameProvider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ReferenceEquals</span><span class="p">(</span>
+<span class="w">            </span><span class="n">timeProvider</span><span class="p">,</span>
+<span class="w">            </span><span class="n">TimeProviderAccessor</span><span class="p">.</span><span class="n">Current</span><span class="p">)</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+</code></pre></div>
+<p><code>GET /system/time</code> returns the current timestamp and <code>SameProvider: true</code>. <code>GetUtcNow()</code> returns a value directly, so there is no <code>Result</code> wrapper to unwrap or failure branch to handle.</p>
+<h2 id="package-contents">Package contents<a class="headerlink" href="#package-contents" title="Permanent link">&para;</a></h2>
+<h3 id="startup-tasks">Startup tasks<a class="headerlink" href="#startup-tasks" title="Permanent link">&para;</a></h3>
 <p>The package contains the hosted-service orchestration for <code>IStartupTask</code>, task definitions, and startup-task behaviors.</p>
 <p>See <a href="../features-startuptasks/">StartupTasks</a> for the full feature documentation.</p>
-<h3 id="log-entries">Log Entries<a class="headerlink" href="#log-entries" title="Permanent link">&para;</a></h3>
+<h3 id="log-entries">Log entries<a class="headerlink" href="#log-entries" title="Permanent link">&para;</a></h3>
 <p>The package defines <code>ILogEntryService</code> plus the DTOs used to query, stream, export, and maintain persisted logs.</p>
 <p>See <a href="../features-log-entries/">Log Entries</a> for the full feature documentation.</p>
-<h3 id="time-provider-integration">Time Provider Integration<a class="headerlink" href="#time-provider-integration" title="Permanent link">&para;</a></h3>
+<h3 id="time-provider-integration">Time-provider integration<a class="headerlink" href="#time-provider-integration" title="Permanent link">&para;</a></h3>
 <p>The remaining direct utility feature is the <code>AddTimeProvider(...)</code> registration API, which connects .NET's <code>TimeProvider</code> with the devkit's ambient <code>TimeProviderAccessor</code>.</p>
-<h2 id="time-providers">Time Providers<a class="headerlink" href="#time-providers" title="Permanent link">&para;</a></h2>
-<h3 id="why-it-exists">Why It Exists<a class="headerlink" href="#why-it-exists" title="Permanent link">&para;</a></h3>
+<h2 id="time-providers">Time providers<a class="headerlink" href="#time-providers" title="Permanent link">&para;</a></h2>
+<h3 id="why-it-exists">Why it exists<a class="headerlink" href="#why-it-exists" title="Permanent link">&para;</a></h3>
 <p>Time-dependent code is hard to test when it reaches directly for <code>DateTime.UtcNow</code> or <code>TimeProvider.System</code>. The utility package solves that by:</p>
 <ul>
 <li>registering a <code>TimeProvider</code> in DI</li>
@@ -3348,9 +4288,13 @@
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTimeProvider</span><span class="p">();</span><span class="w"> </span><span class="c1">// Uses TimeProvider.System</span>
 </code></pre></div>
 <p>Custom or fake provider setup:</p>
-<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTimeProvider</span><span class="p">(</span><span class="n">TimeProvider</span><span class="p">.</span><span class="n">System</span><span class="p">);</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">fakeTimeProvider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FakeTimeProvider</span><span class="p">();</span>
 
-<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTimeProvider</span><span class="p">(</span><span class="n">sp</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FakeTimeProvider</span><span class="p">());</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTimeProvider</span><span class="p">(</span><span class="n">fakeTimeProvider</span><span class="p">);</span>
+
+<span class="c1">// A factory is also supported. Return a stable instance when ambient and DI</span>
+<span class="c1">// callers must observe the same provider.</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddTimeProvider</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">fakeTimeProvider</span><span class="p">);</span>
 </code></pre></div>
 <p>The overloads support:</p>
 <ul>
@@ -3358,15 +4302,15 @@
 <li>registering a concrete provider instance</li>
 <li>registering a provider via factory</li>
 </ul>
-<p>All overloads also update <code>TimeProviderAccessor.Current</code>.</p>
-<h3 id="using-time-in-di-driven-services">Using Time In DI-Driven Services<a class="headerlink" href="#using-time-in-di-driven-services" title="Permanent link">&para;</a></h3>
+<p>All overloads also update <code>TimeProviderAccessor.Current</code>. The factory overload invokes the factory immediately through a temporary service provider and DI invokes it again when the final container resolves <code>TimeProvider</code>. Do not resolve scoped services or create a different clock on each factory call when ambient and injected callers must stay aligned.</p>
+<h3 id="using-time-in-di-driven-services">Using time in DI-driven services<a class="headerlink" href="#using-time-in-di-driven-services" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">SubscriptionCleanupService</span><span class="p">(</span><span class="n">TimeProvider</span><span class="w"> </span><span class="n">timeProvider</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="w"> </span><span class="nf">GetNow</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">timeProvider</span><span class="p">.</span><span class="n">GetUtcNow</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>This is the preferred style when the consuming type already participates in dependency injection.</p>
-<h3 id="using-time-in-places-without-di">Using Time In Places Without DI<a class="headerlink" href="#using-time-in-places-without-di" title="Permanent link">&para;</a></h3>
+<h3 id="using-time-without-di">Using time without DI<a class="headerlink" href="#using-time-without-di" title="Permanent link">&para;</a></h3>
 <p>Some code paths, especially lower-level domain or utility code, may not naturally receive a <code>TimeProvider</code> through the constructor. In those cases the ambient accessor is available:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">now</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeProviderAccessor</span><span class="p">.</span><span class="n">Current</span><span class="p">.</span><span class="n">GetUtcNow</span><span class="p">();</span>
 </code></pre></div>
@@ -3385,7 +4329,7 @@
 <li>date-sensitive validation</li>
 <li>retention and cleanup policies</li>
 </ul>
-<h3 id="when-to-use-it">When To Use It<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h3>
+<h3 id="when-to-use-it">When to use it<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h3>
 <p>Use the application utility time-provider setup when:</p>
 <ul>
 <li>application code needs a testable clock</li>
@@ -3393,7 +4337,7 @@
 <li>existing code uses <code>TimeProviderAccessor</code> and should stay aligned with DI registration</li>
 </ul>
 <p>Avoid mixing direct <code>DateTime.UtcNow</code> calls into the same workflow once you have standardized on this feature.</p>
-<h2 id="package-boundaries">Package Boundaries<a class="headerlink" href="#package-boundaries" title="Permanent link">&para;</a></h2>
+<h2 id="package-boundaries">Package boundaries<a class="headerlink" href="#package-boundaries" title="Permanent link">&para;</a></h2>
 <p>This page intentionally does not document every helper mentioned in older revisions of the utilities docs.</p>
 <p>Those concerns belong elsewhere now:</p>
 <ul>
@@ -3401,7 +4345,7 @@
 <li>startup-task execution belongs to <a href="../features-startuptasks/">StartupTasks</a></li>
 <li>operational log access belongs to <a href="../features-log-entries/">Log Entries</a></li>
 </ul>
-<h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
+<h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-startuptasks/">StartupTasks</a></li>
 <li><a href="../features-log-entries/">Log Entries</a></li>
@@ -3486,7 +4430,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3494,6 +4438,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

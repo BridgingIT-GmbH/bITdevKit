@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FilterModelExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides mutation, inspection, and serialization operations for  instances.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class FilterModelExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides mutation, inspection, and serialization operations for <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a> instances.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -116,6 +117,12 @@ Class FilterModelExtensions
 
 
 
+  <h2 id="BridgingIT_DevKit_Common_FilterModelExtensions_examples">Examples</h2>
+  <pre><code class="lang-csharp">var model = new FilterModel()
+    .AddOrUpdateFilter("Status", FilterOperator.Equal, "Active")
+    .WithPaging(1, 25);
+var queryString = model.ToQueryString();</code></pre>
+
 
 
 
@@ -130,7 +137,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Replaces the top-level filter for a field and operator, then appends the supplied criterion.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,19 +148,24 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to modify.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The field path targeted by the criterion.</p>
+</dd>
     <dt><code>op</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterOperator.html">FilterOperator</a></dt>
-    <dd></dd>
+    <dd><p>The comparison operation applied to the field.</p>
+</dd>
     <dt><code>value</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The value associated with the comparison.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The modified model, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -251,7 +264,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Parses paging, tracking, ordering, filtering, include, and hierarchy values from a query string.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -261,13 +275,15 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>queryString</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The URL query string to parse.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>A populated model; malformed scalar values are left at their model defaults.</p>
+</dd>
   </dl>
 
 
@@ -277,6 +293,12 @@ Class FilterModelExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">JsonException</span></dt>
+    <dd><p>Thrown when a present JSON-encoded collection value is invalid.</p>
+</dd>
+  </dl>
 
 
 
@@ -287,7 +309,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds the first matching top-level filter, falling back to directly nested filters.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -297,17 +320,21 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to search.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive field path to find.</p>
+</dd>
     <dt><code>op</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterOperator.html">FilterOperator</a></dt>
-    <dd></dd>
+    <dd><p>The comparison operation that must match.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterCriteria.html">FilterCriteria</a></dt>
-    <dd></dd>
+    <dd><p>The first matching criterion, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none exists.</p>
+</dd>
   </dl>
 
 
@@ -327,7 +354,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Recursively enumerates all filters that target a specified field.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -337,15 +365,18 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to search.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive field path to find.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FilterCriteria.html">FilterCriteria</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A lazy sequence of matching criteria, or an empty sequence when the model has no filters.</p>
+</dd>
   </dl>
 
 
@@ -365,7 +396,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds the first ordering criterion for a specified field.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -375,15 +407,18 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to search.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive field path to find.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterOrderCriteria.html">FilterOrderCriteria</a></dt>
-    <dd></dd>
+    <dd><p>The first matching ordering, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none exists.</p>
+</dd>
   </dl>
 
 
@@ -403,7 +438,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether the model contains at least one top-level filter.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -413,13 +449,15 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a top-level filter exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -439,7 +477,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a top-level or directly nested filter targets a field.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -449,15 +488,18 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to inspect.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive field path to find.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the field occurs in a top-level or directly nested filter; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -477,7 +519,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether the model contains at least one include path.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -487,13 +530,15 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when an include exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -513,7 +558,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether the model contains a specified include path.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -523,15 +569,18 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to inspect.</p>
+</dd>
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive include path to find.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the path is included; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -551,7 +600,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether the model contains at least one ordering criterion.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -561,13 +611,15 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when an ordering exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -587,7 +639,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether the model orders by a specified field.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -597,15 +650,18 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to inspect.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive field path to find.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a matching ordering exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -625,7 +681,8 @@ Class FilterModelExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether the model has no filters, orderings, includes, hierarchy, or paging values.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -635,13 +692,15 @@ Class FilterModelExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> or contains none of the inspected query criteria; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -703,7 +762,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes matching filters from the top level and from directly nested filter collections.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -713,17 +773,21 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to modify.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive field path to remove.</p>
+</dd>
     <dt><code>op</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterOperator.html">FilterOperator</a></dt>
-    <dd></dd>
+    <dd><p>The comparison operation that must match.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The modified model, or the original value when no filter collection is available.</p>
+</dd>
   </dl>
 
 
@@ -743,7 +807,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Replaces any ordering for a field with one ordering in the requested direction.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -753,17 +818,21 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to modify.</p>
+</dd>
     <dt><code>field</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive field path to order by.</p>
+</dd>
     <dt><code>direction</code> <a class="xref" href="BridgingIT.DevKit.Common.OrderDirection.html">OrderDirection</a></dt>
-    <dd></dd>
+    <dd><p>The ordering direction.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The modified model, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -783,7 +852,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sets the hierarchy path and optionally replaces its maximum traversal depth.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -793,17 +863,21 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to modify.</p>
+</dd>
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The hierarchy path to select.</p>
+</dd>
     <dt><code>maxDepth</code> <span class="xref">int</span>?</dt>
-    <dd></dd>
+    <dd><p>The maximum traversal depth, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to preserve the current value.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The modified model, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -823,7 +897,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all model components into a dictionary keyed by their query-model names.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -833,13 +908,15 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to project.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A dictionary containing every model component, or an empty dictionary for a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> model.</p>
+</dd>
   </dl>
 
 
@@ -859,7 +936,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Serializes the model into URL-encoded query-string key-value pairs.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -869,13 +947,15 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to serialize.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The query string without a leading question mark, or an empty string for a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> model.</p>
+</dd>
   </dl>
 
 
@@ -895,7 +975,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sets paging to the first page with ten items.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -905,13 +986,15 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to modify.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The modified model, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -931,7 +1014,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sets paging values, substituting page <code>1</code> and page size <code>10</code> for non-positive inputs.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -941,17 +1025,21 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to modify.</p>
+</dd>
     <dt><code>page</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The one-based page number.</p>
+</dd>
     <dt><code>pageSize</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The requested number of items per page.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The modified model, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -971,7 +1059,8 @@ Results in a modified source filter model with the other filter models merged in
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Marks the model so consumers can execute the query without change tracking.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -981,13 +1070,15 @@ Results in a modified source filter model with the other filter models merged in
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The model to modify.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The modified model, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">source</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 

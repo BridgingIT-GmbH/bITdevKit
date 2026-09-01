@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DateOnlyExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides calendar arithmetic, range checks, boundary calculations, and timestamp conversions for  values.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class DateOnlyExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides calendar arithmetic, range checks, boundary calculations, and timestamp conversions for <span class="xref">System.DateOnly</span> values.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a number of calendar days, seven-day weeks, calendar months, or calendar years to a date.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,17 +142,21 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to adjust.</p>
+</dd>
     <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
-    <dd></dd>
+    <dd><p>The calendar unit to add.</p>
+</dd>
     <dt><code>amount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The signed number of units to add.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The adjusted date, clamping the day to the last valid day when changing month or year.</p>
+</dd>
   </dl>
 
 
@@ -160,6 +166,12 @@ Class DateOnlyExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">unit</code> is unsupported.</p>
+</dd>
+  </dl>
 
 
 
@@ -267,7 +279,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Moves a date to the next calendar-unit boundary unless it already lies on that boundary.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -277,15 +290,18 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to ceiling.</p>
+</dd>
     <dt><code>dateUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
-    <dd></dd>
+    <dd><p>The day, Monday-based week, month, or year boundary to use.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The source when already aligned; otherwise, the next boundary.</p>
+</dd>
   </dl>
 
 
@@ -295,6 +311,12 @@ Class DateOnlyExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">dateUnit</code> is unsupported.</p>
+</dd>
+  </dl>
 
 
 
@@ -305,7 +327,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Calculates the signed number of whole days from the current local date to a target date.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -315,13 +338,15 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>date</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The target date.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>A positive value for a future date, zero for today, or a negative value for a past date.</p>
+</dd>
   </dl>
 
 
@@ -544,7 +569,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Moves a date to the start of its containing day, Monday-based week, month, or year.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -554,15 +580,18 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to floor.</p>
+</dd>
     <dt><code>dateUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
-    <dd></dd>
+    <dd><p>The calendar boundary to use.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The start of the containing calendar unit.</p>
+</dd>
   </dl>
 
 
@@ -572,6 +601,12 @@ Class DateOnlyExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">dateUnit</code> is unsupported.</p>
+</dd>
+  </dl>
 
 
 
@@ -582,7 +617,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the invariant-culture week number using Monday as the first day and the first-day calendar rule.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -592,13 +628,15 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date whose week number should be calculated.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The calendar week number.</p>
+</dd>
   </dl>
 
 
@@ -618,7 +656,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a date lies between two boundaries.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -628,19 +667,24 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to evaluate.</p>
+</dd>
     <dt><code>start</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The lower boundary.</p>
+</dd>
     <dt><code>end</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The upper boundary.</p>
+</dd>
     <dt><code>inclusive</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether equality with either boundary counts as in range.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the date satisfies the selected boundary comparison.</p>
+</dd>
   </dl>
 
 
@@ -660,7 +704,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a date is within a past or future range relative to the current local date.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -670,21 +715,27 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to evaluate.</p>
+</dd>
     <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
-    <dd></dd>
+    <dd><p>The calendar unit used to calculate the range boundary.</p>
+</dd>
     <dt><code>amount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of units between today and the range boundary.</p>
+</dd>
     <dt><code>direction</code> <a class="xref" href="BridgingIT.DevKit.Common.DateTimeDirection.html">DateTimeDirection</a></dt>
-    <dd></dd>
+    <dd><p>Whether the range extends into the past or future.</p>
+</dd>
     <dt><code>inclusive</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether today and the calculated boundary are included.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the date falls in the calculated range.</p>
+</dd>
   </dl>
 
 
@@ -763,7 +814,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether the date belongs to a leap year in the Gregorian calendar.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -773,13 +825,15 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date whose year should be evaluated.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the year is a leap year.</p>
+</dd>
   </dl>
 
 
@@ -799,7 +853,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Aligns a date to the start of its containing calendar unit.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -809,15 +864,18 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to align.</p>
+</dd>
     <dt><code>dateUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
-    <dd></dd>
+    <dd><p>The calendar unit whose lower boundary should be returned.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The same value as <a class="xref" href="BridgingIT.DevKit.Common.DateOnlyExtensions.html#BridgingIT_DevKit_Common_DateOnlyExtensions_FloorTo_System_DateOnly_BridgingIT_DevKit_Common_DateUnit_">FloorTo(DateOnly, DateUnit)</a>.</p>
+</dd>
   </dl>
 
 
@@ -995,7 +1053,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Calculates the signed midnight-to-midnight duration from one date to another.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1005,15 +1064,18 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The starting date.</p>
+</dd>
     <dt><code>target</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The ending date.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The whole-day duration from <code class="paramref">source</code> to <code class="paramref">target</code>.</p>
+</dd>
   </dl>
 
 
@@ -1033,7 +1095,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Combines a date with midnight using a specified offset.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1043,15 +1106,18 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to convert.</p>
+</dd>
     <dt><code>offset</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The offset to apply, or UTC when omitted.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>A date-time offset at the start of the date.</p>
+</dd>
   </dl>
 
 
@@ -1160,7 +1226,8 @@ Class DateOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Converts midnight UTC on a date to Unix epoch seconds.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1170,13 +1237,15 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd></dd>
+    <dd><p>The date to convert.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The number of seconds since 1970-01-01T00:00:00Z.</p>
+</dd>
   </dl>
 
 

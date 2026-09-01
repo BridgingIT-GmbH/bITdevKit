@@ -438,7 +438,7 @@ of the derived class. If a <span class="xref">Microsoft.Extensions.Logging.ILogg
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Handles the specified notification asynchronously.</p>
+  <div class="markdown level1 summary"><p>Handles a domain event using the supplied publishing options.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -449,20 +449,20 @@ of the derived class. If a <span class="xref">Microsoft.Extensions.Logging.ILogg
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <span class="xref">TEvent</span></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Common.PublishOptions.html">PublishOptions</a></dt>
-    <dd><p>The options for notification processing, including context and progress reporting.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>A task representing the result of the notification handling, returning a <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 

@@ -284,7 +284,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>SequenceNumberGeneratorBase</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -294,11 +295,14 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
     <dt><code>serviceProvider</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service provider used by the operation.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.SequenceNumberGeneratorOptions.html">SequenceNumberGeneratorOptions</a></dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
 
@@ -322,7 +326,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Stores the context type name.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -352,7 +357,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Stores the logger.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -382,7 +388,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Stores the options.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -417,7 +424,7 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Checks if the specified sequence exists.</p>
+  <div class="markdown level1 summary"><p>Executes the exists operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -428,20 +435,20 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the sequence.</p>
+    <dd><p>The sequence name used by the operation.</p>
 </dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd><p>The schema containing the sequence (optional).</p>
+    <dd><p>The schema used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd><p>Result indicating whether the sequence exists.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -462,7 +469,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the exists internal operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -472,19 +480,24 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <span class="xref">TContext</span></dt>
-    <dd></dd>
+    <dd><p>The context for the operation.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -504,7 +517,7 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the current value of the sequence without incrementing it.</p>
+  <div class="markdown level1 summary"><p>Gets current value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -515,20 +528,20 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the sequence.</p>
+    <dd><p>The sequence name used by the operation.</p>
 </dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd><p>The schema containing the sequence (optional).</p>
+    <dd><p>The schema used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd><p>Result containing the current sequence value.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -549,7 +562,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets current value internal.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -559,19 +573,24 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <span class="xref">TContext</span></dt>
-    <dd></dd>
+    <dd><p>The context for the operation.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -591,7 +610,7 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the next value from the specified sequence.</p>
+  <div class="markdown level1 summary"><p>Gets next.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -602,20 +621,20 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the sequence.</p>
+    <dd><p>The sequence name used by the operation.</p>
 </dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd><p>The schema containing the sequence (optional).</p>
+    <dd><p>The schema used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd><p>Result containing the next sequence value or errors.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -636,7 +655,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets next for entity.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -646,21 +666,25 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
   </dl>
 
 
@@ -679,7 +703,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets next internal.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -689,19 +714,24 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <span class="xref">TContext</span></dt>
-    <dd></dd>
+    <dd><p>The context for the operation.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -721,7 +751,7 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the next values from multiple sequences in a single operation.</p>
+  <div class="markdown level1 summary"><p>Gets next multiple.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -732,20 +762,20 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>sequenceNames</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd><p>The names of the sequences.</p>
+    <dd><p>The sequence names used by the operation.</p>
 </dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd><p>The schema containing the sequences (optional).</p>
+    <dd><p>The schema used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <span class="xref">long</span>&gt;&gt;&gt;</dt>
-    <dd><p>Result containing a dictionary of sequence names and their next values.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -766,7 +796,7 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets metadata information about the specified sequence.</p>
+  <div class="markdown level1 summary"><p>Gets sequence info.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -777,20 +807,20 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the sequence.</p>
+    <dd><p>The sequence name used by the operation.</p>
 </dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd><p>The schema containing the sequence (optional).</p>
+    <dd><p>The schema used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.SequenceInfo.html">SequenceInfo</a>&gt;&gt;</dt>
-    <dd><p>Result containing sequence metadata information.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -811,7 +841,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets sequence info internal.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -821,19 +852,24 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <span class="xref">TContext</span></dt>
-    <dd></dd>
+    <dd><p>The context for the operation.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Repositories.SequenceInfo.html">SequenceInfo</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -853,7 +889,7 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Resets the sequence to the specified start value.</p>
+  <div class="markdown level1 summary"><p>Executes the reset sequence operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -864,23 +900,23 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the sequence.</p>
+    <dd><p>The sequence name used by the operation.</p>
 </dd>
     <dt><code>startValue</code> <span class="xref">long</span></dt>
-    <dd><p>The value to reset the sequence to.</p>
+    <dd><p>The start value used by the operation.</p>
 </dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd><p>The schema containing the sequence (optional).</p>
+    <dd><p>The schema used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd><p>Result indicating success or failure of the reset operation.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -901,7 +937,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the reset sequence internal operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -911,21 +948,27 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <span class="xref">TContext</span></dt>
-    <dd></dd>
+    <dd><p>The context for the operation.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>startValue</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The start value used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

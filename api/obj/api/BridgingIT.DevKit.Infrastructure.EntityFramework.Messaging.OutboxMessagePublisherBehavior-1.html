@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OutboxMessagePublisherBehavior&lt;TContext&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides outbox message publisher behavior.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class OutboxMessagePublisherBehavior&lt;TContext&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides outbox message publisher behavior.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -105,7 +106,8 @@ Class OutboxMessagePublisherBehavior&lt;TContext&gt;
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TContext</code></dt>
-    <dd></dd>
+    <dd><p>The context type.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -282,7 +284,8 @@ Class OutboxMessagePublisherBehavior&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>OutboxMessagePublisherBehavior</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -292,13 +295,17 @@ Class OutboxMessagePublisherBehavior&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
     <dt><code>serviceProvider</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service provider used by the operation.</p>
+</dd>
     <dt><code>messageQueue</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.IOutboxMessageQueue.html">IOutboxMessageQueue</a></dt>
-    <dd></dd>
+    <dd><p>The message queue used by the operation.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Messaging.OutboxMessageOptions.html">OutboxMessageOptions</a></dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
 
@@ -323,7 +330,8 @@ Class OutboxMessagePublisherBehavior&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Publishes .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -333,23 +341,28 @@ Class OutboxMessagePublisherBehavior&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <span class="xref">TMessage</span></dt>
-    <dd></dd>
+    <dd><p>The message associated with the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
     <dt><code>next</code> <a class="xref" href="BridgingIT.DevKit.Application.Messaging.MessagePublisherDelegate.html">MessagePublisherDelegate</a></dt>
-    <dd></dd>
+    <dd><p>The next used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TMessage</code></dt>
-    <dd></dd>
+    <dd><p>The message type.</p>
+</dd>
   </dl>
 
 

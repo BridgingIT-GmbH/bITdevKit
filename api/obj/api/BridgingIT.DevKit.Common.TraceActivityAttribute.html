@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TraceActivityAttribute | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Selects a method for activity tracing and optionally controls its activity name and exception recording.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class TraceActivityAttribute
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.Tracing.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Selects a method for activity tracing and optionally controls its activity name and exception recording.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -265,7 +266,8 @@ public class TraceActivityAttribute : Attribute</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Selects a method for activity tracing and optionally controls its activity name and exception recording.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -275,9 +277,11 @@ public class TraceActivityAttribute : Attribute</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>An explicit activity name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the configured naming schema.</p>
+</dd>
     <dt><code>recordExceptions</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether exceptions raised by the invocation are recorded on the activity.</p>
+</dd>
   </dl>
 
 
@@ -302,7 +306,8 @@ public class TraceActivityAttribute : Attribute</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the explicit activity name, when configured.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -333,7 +338,8 @@ public class TraceActivityAttribute : Attribute</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether invocation exceptions are recorded on the activity.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">

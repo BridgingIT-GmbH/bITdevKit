@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AggregateEventOutboxReceiver | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents aggregate event outbox receiver.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class AggregateEventOutboxReceiver
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EventSourcing.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents aggregate event outbox receiver.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +270,8 @@ Class AggregateEventOutboxReceiver
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents aggregate event outbox receiver.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,17 +281,23 @@ Class AggregateEventOutboxReceiver
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>eventStoreAggregateEventRegistration</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Registration.IEventStoreAggregateEventRegistration.html">IEventStoreAggregateEventRegistration</a></dt>
-    <dd></dd>
+    <dd><p>The event store aggregate event registration used by the operation.</p>
+</dd>
     <dt><code>eventStoreAggregateRegistration</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Registration.IEventStoreAggregateRegistration.html">IEventStoreAggregateRegistration</a></dt>
-    <dd></dd>
+    <dd><p>The event store aggregate registration used by the operation.</p>
+</dd>
     <dt><code>aggregateEventMediatorRequestSender</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish.IAggregateEventMediatorRequestSender.html">IAggregateEventMediatorRequestSender</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate event mediator request sender used by the operation.</p>
+</dd>
     <dt><code>aggregateEventMediatorNotificationSender</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.IAggregateEventMediatorNotificationSender.html">IAggregateEventMediatorNotificationSender</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate event mediator notification sender used by the operation.</p>
+</dd>
     <dt><code>eventTypeSelector</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.IEventTypeSelector.html">IEventTypeSelector</a></dt>
-    <dd></dd>
+    <dd><p>The event type selector used by the operation.</p>
+</dd>
     <dt><code>aggregateTypeSelector</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.IAggregateTypeSelector.html">IAggregateTypeSelector</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate type selector used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -314,7 +322,8 @@ Class AggregateEventOutboxReceiver
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the receive and publish operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -324,13 +333,15 @@ Class AggregateEventOutboxReceiver
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Domain.Outbox.OutboxMessage.html">OutboxMessage</a></dt>
-    <dd></dd>
+    <dd><p>The message associated with the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;(<span class="xref">bool</span> <span class="xref">projectionSended</span>, <span class="xref">bool</span> <span class="xref">eventOccuredSended</span>, <span class="xref">bool</span> <span class="xref">eventOccuredNotified</span>)&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

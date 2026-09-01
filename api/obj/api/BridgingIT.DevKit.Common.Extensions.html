@@ -322,7 +322,8 @@ var batches = numbers.Batch(3);
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Retains the first item for each projected key when a key selector is supplied.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -332,21 +333,25 @@ var batches = numbers.Batch(3);
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TProjection&gt;</dt>
-    <dd></dd>
+    <dd><p>The sequence to filter.</p>
+</dd>
     <dt><code>distinct</code> <span class="xref">Func</span>&lt;TProjection, <span class="xref">object</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional key selector; a null selector leaves the source unchanged.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;TProjection&gt;</dt>
-    <dd></dd>
+    <dd><p>The original source or a deferred sequence containing the first item from each key group.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -887,7 +892,8 @@ Returns empty dictionary if source is null.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Awaits an action sequentially for each collection item and returns the original collection.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -897,23 +903,28 @@ Returns empty dictionary if source is null.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to enumerate; null or empty input is returned unchanged.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action to await for each item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token checked before each action invocation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">ICollection</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The original <code class="paramref">source</code> after all actions complete.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The collection element type.</p>
+</dd>
   </dl>
 
 
@@ -932,7 +943,8 @@ Returns empty dictionary if source is null.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Awaits an action sequentially for each item and returns the original enumerable.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -942,23 +954,28 @@ Returns empty dictionary if source is null.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The sequence to enumerate; null or empty input is returned unchanged.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action to await for each item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token checked before each action invocation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The original <code class="paramref">source</code> after all actions complete.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -1035,7 +1052,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies an action to each collection item and returns a new list containing the enumerated items.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1045,23 +1063,28 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to enumerate; null or empty input is returned unchanged.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Action</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The action invoked for each item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token checked before each action invocation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>A list of the source items after processing, or the unchanged source when no work is performed.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The collection element type.</p>
+</dd>
   </dl>
 
 
@@ -1130,7 +1153,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Traverses a sequence depth-first, invoking an action on each item before visiting its selected children.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1140,25 +1164,31 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The root sequence to traverse.</p>
+</dd>
     <dt><code>childSelector</code> <span class="xref">Func</span>&lt;T, <span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional function that selects child nodes for recursive traversal.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Action</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The action invoked for every visited node.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token checked before each node is processed.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The original root sequence.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The node type.</p>
+</dd>
   </dl>
 
 
@@ -1936,7 +1966,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Processes sequence items concurrently using the environment processor count as the maximum concurrency.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1946,21 +1977,25 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The items to process.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action invoked for each item.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that completes when all actions complete.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -1979,7 +2014,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Processes sequence items concurrently with a caller-specified maximum degree of parallelism.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1989,23 +2025,28 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The items to process.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action invoked for each item.</p>
+</dd>
     <dt><code>degreeOfParallelism</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum number of actions scheduled concurrently.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that completes when all actions complete.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -2024,7 +2065,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Processes sequence items concurrently with a caller-specified maximum degree of parallelism.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2034,25 +2076,31 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The items to process; null or empty input completes immediately.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action invoked for each item; a null action completes immediately.</p>
+</dd>
     <dt><code>degreeOfParallelism</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum number of actions scheduled concurrently.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token accepted for API compatibility; the current implementation replaces it with a default token.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that completes when all actions complete.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -2071,7 +2119,8 @@ await items.ParallelForEachAsync(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Processes sequence items concurrently using the environment processor count as the maximum concurrency.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2081,23 +2130,28 @@ await items.ParallelForEachAsync(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The items to process.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;T, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action invoked for each item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token accepted for API compatibility; the current implementation does not apply it to parallel execution.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that completes when all actions complete.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -2315,7 +2369,8 @@ var (nonEmpty, empty) = strings.Partition(s =&gt; !string.IsNullOrEmpty(s));
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Normalizes a null string to <span class="xref">string.Empty</span> while preserving non-null text unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2325,13 +2380,15 @@ var (nonEmpty, empty) = strings.Partition(s =&gt; !string.IsNullOrEmpty(s));
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The string to normalize.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p><code class="paramref">source</code>, or an empty string when it is null.</p>
+</dd>
   </dl>
 
 
@@ -3118,7 +3175,8 @@ Avoids null reference exceptions.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Converts a value to a runtime-selected type using invariant or caller-supplied culture.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3128,21 +3186,27 @@ Avoids null reference exceptions.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The value to convert.</p>
+</dd>
     <dt><code>targetType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The requested result type.</p>
+</dd>
     <dt><code>throws</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether supported format and cast failures should be propagated.</p>
+</dd>
     <dt><code>defaultValue</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The value returned for null input or a suppressed conversion failure.</p>
+</dd>
     <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
-    <dd></dd>
+    <dd><p>The culture used for textual and convertible values; invariant culture is used when omitted.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The converted value; null input converted to <span class="xref">System.Guid</span> returns <span class="xref">System.Guid.Empty</span>.</p>
+</dd>
   </dl>
 
 
@@ -3507,7 +3571,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Converts a value to a requested type using invariant or caller-supplied culture and special handling for common framework types.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3517,25 +3582,31 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The value to convert.</p>
+</dd>
     <dt><code>throws</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether supported format and cast failures should be propagated.</p>
+</dd>
     <dt><code>defaultValue</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value returned for null input or a suppressed conversion failure.</p>
+</dd>
     <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
-    <dd></dd>
+    <dd><p>The culture used for textual and convertible values; invariant culture is used when omitted.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The converted value or <code class="paramref">defaultValue</code> when conversion is suppressed.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The target type.</p>
+</dd>
   </dl>
 
 
@@ -3652,7 +3723,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Attempts to convert a value to a runtime-selected type without propagating format, overflow, or cast failures.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3662,19 +3734,24 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The value to convert.</p>
+</dd>
     <dt><code>targetType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The requested result type.</p>
+</dd>
     <dt><code>result</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The converted value when successful; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
     <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
-    <dd></dd>
+    <dd><p>The culture used for textual and convertible values; invariant culture is used when omitted.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when conversion succeeds.</p>
+</dd>
   </dl>
 
 
@@ -3694,7 +3771,8 @@ var tree = items.ToHierarchy(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Attempts to convert a value to a requested type without propagating format, overflow, or cast failures.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3704,23 +3782,28 @@ var tree = items.ToHierarchy(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The value to convert.</p>
+</dd>
     <dt><code>result</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The converted value when successful; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+</dd>
     <dt><code>cultureInfo</code> <span class="xref">CultureInfo</span></dt>
-    <dd></dd>
+    <dd><p>The culture used for textual and convertible values; invariant culture is used when omitted.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when conversion succeeds.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The target type.</p>
+</dd>
   </dl>
 
 

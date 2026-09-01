@@ -297,7 +297,8 @@ Class ProcessorConfiguration
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Behavior types to attach to the processor. Each type should implement <code>IProcessorBehavior</code>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -328,7 +329,9 @@ Class ProcessorConfiguration
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>An optional delegate that will be called with the constructed processor instance to perform
+custom configuration. The delegate receives the instance as <span class="xref">object</span>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -359,7 +362,8 @@ Class ProcessorConfiguration
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The concrete processor type to instantiate. Must implement <code>IFileEventProcessor</code>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -394,7 +398,8 @@ Class ProcessorConfiguration
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a behavior type to the processor configuration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -405,13 +410,15 @@ Class ProcessorConfiguration
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a></dt>
-    <dd></dd>
+    <dd><p>The current <a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a> for fluent configuration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TBehavior</code></dt>
-    <dd></dd>
+    <dd><p>A type implementing <code>IProcessorBehavior</code>.</p>
+</dd>
   </dl>
 
 
@@ -430,7 +437,8 @@ Class ProcessorConfiguration
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sets a custom configuration action that will be invoked with the processor instance.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -440,13 +448,15 @@ Class ProcessorConfiguration
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>configure</code> <span class="xref">Action</span>&lt;<span class="xref">object</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A delegate that mutates or configures the processor instance.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a></dt>
-    <dd></dd>
+    <dd><p>The current <a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a> for fluent configuration.</p>
+</dd>
   </dl>
 
 

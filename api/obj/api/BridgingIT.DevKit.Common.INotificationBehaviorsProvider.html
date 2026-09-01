@@ -256,7 +256,8 @@ Interface INotificationBehaviorsProvider
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Resolves notification pipeline behaviors in registration order.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -266,19 +267,22 @@ Interface INotificationBehaviorsProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>serviceProvider</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service provider used to construct behaviors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IPipelineBehavior-2.html">IPipelineBehavior</a>&lt;TNotification, <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The resolved pipeline behaviors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNotification</code></dt>
-    <dd></dd>
+    <dd><p>The notification type.</p>
+</dd>
   </dl>
 
 

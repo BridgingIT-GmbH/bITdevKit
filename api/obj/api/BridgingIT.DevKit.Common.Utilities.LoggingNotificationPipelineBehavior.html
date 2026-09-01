@@ -306,7 +306,8 @@ Class LoggingNotificationPipelineBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes behavior logic around the next notification handler.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -316,17 +317,21 @@ Class LoggingNotificationPipelineBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>notification</code> <a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleNotification.html">ISimpleNotification</a></dt>
-    <dd></dd>
+    <dd><p>The notification being handled.</p>
+</dd>
     <dt><code>next</code> <a class="xref" href="BridgingIT.DevKit.Common.Utilities.MessageHandlerDelegate.html">MessageHandlerDelegate</a></dt>
-    <dd></dd>
+    <dd><p>The next handler delegate.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel processing.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span></dt>
-    <dd></dd>
+    <dd><p>A value task representing pipeline completion.</p>
+</dd>
   </dl>
 
 

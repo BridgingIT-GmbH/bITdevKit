@@ -257,7 +257,8 @@ Interface IJobPreviousExecutionStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets previous execution.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -267,17 +268,21 @@ Interface IJobPreviousExecutionStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>currentExecutionId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The current execution id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -297,7 +302,8 @@ Interface IJobPreviousExecutionStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets previous successful execution.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -307,19 +313,24 @@ Interface IJobPreviousExecutionStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>triggerName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The trigger name used by the operation.</p>
+</dd>
     <dt><code>beforeUtc</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>The before utc used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OutboxDomainEvent | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents a persisted domain event row in the Entity Framework outbox.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class OutboxDomainEvent
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents a persisted domain event row in the Entity Framework outbox.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -254,6 +255,10 @@ public class OutboxDomainEvent</code></pre>
 
 
 
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_OutboxDomainEvent_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The entity stores the serialized domain event payload together with worker lease metadata so multiple hosts can
+safely compete for the same outbox rows without publishing a domain event more than once at a time.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors

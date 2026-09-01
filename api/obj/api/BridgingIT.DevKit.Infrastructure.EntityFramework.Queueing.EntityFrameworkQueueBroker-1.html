@@ -430,7 +430,7 @@ Class EntityFrameworkQueueBroker&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Enqueues a queue message and waits for provider-specific persistence confirmation.</p>
+  <div class="markdown level1 summary"><p>Executes the enqueue and wait operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -441,17 +441,18 @@ Class EntityFrameworkQueueBroker&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IQueueMessage.html">IQueueMessage</a></dt>
-    <dd><p>The message to enqueue.</p>
+    <dd><p>The message associated with the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -471,7 +472,8 @@ Class EntityFrameworkQueueBroker&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on enqueue operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -481,15 +483,18 @@ Class EntityFrameworkQueueBroker&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IQueueMessage.html">IQueueMessage</a></dt>
-    <dd></dd>
+    <dd><p>The message associated with the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

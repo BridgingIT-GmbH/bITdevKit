@@ -269,7 +269,8 @@ As the callback is synchronous, all asynchronous work is explicitly managed and 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>JobSchedulingService</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,21 +280,29 @@ As the callback is synchronous, all asynchronous work is explicitly managed and 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
     <dt><code>schedulerFactory</code> <span class="xref">ISchedulerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler factory used by the operation.</p>
+</dd>
     <dt><code>jobFactory</code> <span class="xref">IJobFactory</span></dt>
-    <dd></dd>
+    <dd><p>The job factory used by the operation.</p>
+</dd>
     <dt><code>applicationLifetime</code> <span class="xref">IHostApplicationLifetime</span></dt>
-    <dd></dd>
+    <dd><p>The application lifetime used by the operation.</p>
+</dd>
     <dt><code>jobSchedules</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobSchedule.html">JobSchedule</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The job schedules used by the operation.</p>
+</dd>
     <dt><code>groupMutualExclusionListener</code> <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.ConcurrentGroupExecutionListener.html">ConcurrentGroupExecutionListener</a></dt>
-    <dd></dd>
+    <dd><p>The group mutual exclusion listener used by the operation.</p>
+</dd>
     <dt><code>jobRunlistener</code> <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobRunHistoryListener.html">JobRunHistoryListener</a></dt>
-    <dd></dd>
+    <dd><p>The job runlistener used by the operation.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobSchedulingOptions.html">JobSchedulingOptions</a></dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
 

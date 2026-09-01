@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FakeAuthenticationOptionsBuilder | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Builds validated fake-authentication options from users and shared claims.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class FakeAuthenticationOptionsBuilder
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Extensions.Web.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Builds validated fake-authentication options from users and shared claims.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -400,7 +401,8 @@ Class FakeAuthenticationOptionsBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates fake-authentication options from the accumulated users and claims.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -411,7 +413,8 @@ Class FakeAuthenticationOptionsBuilder
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FakeAuthenticationOptions.html">FakeAuthenticationOptions</a></dt>
-    <dd></dd>
+    <dd><p>The configured fake-authentication options.</p>
+</dd>
   </dl>
 
 
@@ -421,6 +424,12 @@ Class FakeAuthenticationOptionsBuilder
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>No users are configured or more than one user is marked as default.</p>
+</dd>
+  </dl>
 
 
 

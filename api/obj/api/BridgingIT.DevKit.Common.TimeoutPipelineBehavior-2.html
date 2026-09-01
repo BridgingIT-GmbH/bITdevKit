@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Applies a pessimistic timeout policy configured for a request handler.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Applies a pessimistic timeout policy configured for a request handler.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -105,9 +106,11 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TRequest</code></dt>
-    <dd></dd>
+    <dd><p>The request type.</p>
+</dd>
     <dt><code>TResponse</code></dt>
-    <dd></dd>
+    <dd><p>The result response type.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -299,7 +302,8 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies a pessimistic timeout policy configured for a request handler.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -309,11 +313,14 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create the behavior logger.</p>
+</dd>
     <dt><code>policyCache</code> <span class="xref">ConcurrentDictionary</span>&lt;<span class="xref">Type</span>, <a class="xref" href="BridgingIT.DevKit.Common.PolicyConfig.html">PolicyConfig</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler policy cache.</p>
+</dd>
     <dt><code>options</code> <span class="xref">IOptions</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.TimeoutOptions.html">TimeoutOptions</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>Default timeout settings used when an attribute omits a duration.</p>
+</dd>
   </dl>
 
 
@@ -338,7 +345,8 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether this behavior applies to the current request and handler.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -348,15 +356,18 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <span class="xref">TRequest</span></dt>
-    <dd></dd>
+    <dd><p>The request or notification.</p>
+</dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The concrete handler type.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the behavior should execute; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -409,7 +420,8 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes behavior logic around the next pipeline delegate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -419,19 +431,24 @@ Class TimeoutPipelineBehavior&lt;TRequest, TResponse&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <span class="xref">TRequest</span></dt>
-    <dd></dd>
+    <dd><p>The request or notification.</p>
+</dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The concrete handler type.</p>
+</dd>
     <dt><code>next</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResponse&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The next pipeline delegate.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResponse&gt;</dt>
-    <dd></dd>
+    <dd><p>The pipeline response.</p>
+</dd>
   </dl>
 
 

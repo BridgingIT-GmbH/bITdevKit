@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RuleError | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents an unsatisfied rule as a result error using the rule&#39;s message.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class RuleError
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Rules.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents an unsatisfied rule as a result error using the rule's message.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -280,7 +281,8 @@ Class RuleError
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents an unsatisfied rule as a result error using the rule's message.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -290,7 +292,8 @@ Class RuleError
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Common.IRule.html">IRule</a></dt>
-    <dd></dd>
+    <dd><p>The rule that was not satisfied.</p>
+</dd>
   </dl>
 
 
@@ -315,7 +318,8 @@ Class RuleError
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the rule that was not satisfied.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -350,7 +354,7 @@ Class RuleError
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Throws a ResultException containing the current error message.</p>
+  <div class="markdown level1 summary"><p>Throws a <a class="xref" href="BridgingIT.DevKit.Common.RuleException.html">RuleException</a> for the recorded rule.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -367,6 +371,12 @@ Class RuleError
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuleException.html">RuleException</a></dt>
+    <dd><p>Always thrown for <a class="xref" href="BridgingIT.DevKit.Common.RuleError.html#BridgingIT_DevKit_Common_RuleError_Rule">Rule</a>.</p>
+</dd>
+  </dl>
 
 
 

@@ -306,8 +306,7 @@ Class FileMoverProcessor
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the collection of processor-specific behaviors.
-Behaviors enhance execution (e.g., logging, retry) and are executed before/after processing.</p>
+  <div class="markdown level1 summary"><p>Gets the behaviors applied around processing.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -339,7 +338,8 @@ Behaviors enhance execution (e.g., logging, retry) and are executed before/after
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the root directory to which files are moved.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -370,8 +370,7 @@ Behaviors enhance execution (e.g., logging, retry) and are executed before/after
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets whether the processor is enabled.
-Allows runtime activation/deactivation without removing it from the chain.</p>
+  <div class="markdown level1 summary"><p>Gets or sets whether the processor is enabled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -403,8 +402,7 @@ Allows runtime activation/deactivation without removing it from the chain.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the unique name of the processor.
-Used for identification and runtime control (e.g., enabling/disabling).</p>
+  <div class="markdown level1 summary"><p>Gets the processor name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -440,8 +438,7 @@ Used for identification and runtime control (e.g., enabling/disabling).</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Processes a FileEvent asynchronously.
-Executes the processor's logic for the given event, potentially modified by behaviors.</p>
+  <div class="markdown level1 summary"><p>Moves the supplied file into the configured destination root.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -452,17 +449,17 @@ Executes the processor's logic for the given event, potentially modified by beha
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProcessingContext.html">FileProcessingContext</a></dt>
-    <dd><p>The processing context containing the FileEvent and additional data.</p>
+    <dd><p>The file-processing context containing the source provider and event.</p>
 </dd>
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token to stop the operation if needed.</p>
+    <dd><p>The token used to cancel processing.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd><p>A task representing the asynchronous processing operation.</p>
+    <dd><p>A task that represents the asynchronous move operation.</p>
 </dd>
   </dl>
 

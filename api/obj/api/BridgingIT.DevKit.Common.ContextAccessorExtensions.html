@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ContextAccessorExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides composite lookup across ordered module-context accessors.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ContextAccessorExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Modules.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides composite lookup across ordered module-context accessors.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class ContextAccessorExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the first module found for a type by the supplied accessors.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,15 +142,18 @@ Class ContextAccessorExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IModuleContextAccessor.html">IModuleContextAccessor</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The accessors to query in enumeration order.</p>
+</dd>
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type used to identify a module.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.IModule.html">IModule</a></dt>
-    <dd></dd>
+    <dd><p>The first matching module, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when no accessor resolves one.</p>
+</dd>
   </dl>
 
 
@@ -168,7 +173,8 @@ Class ContextAccessorExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the first module found for a request by the supplied accessors.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -178,15 +184,18 @@ Class ContextAccessorExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IRequestModuleContextAccessor.html">IRequestModuleContextAccessor</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The accessors to query in enumeration order.</p>
+</dd>
     <dt><code>request</code> <span class="xref">HttpRequest</span></dt>
-    <dd></dd>
+    <dd><p>The HTTP request used to identify a module.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.IModule.html">IModule</a></dt>
-    <dd></dd>
+    <dd><p>The first matching module, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when no accessor resolves one.</p>
+</dd>
   </dl>
 
 

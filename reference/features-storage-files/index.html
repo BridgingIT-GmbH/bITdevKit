@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#filestorage-feature-documentation" class="md-skip">
+        <a href="#file-storage" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2040,15 +2147,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2066,8 +2178,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2092,6 +2204,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2308,6 +2476,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2377,15 +2573,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2403,8 +2604,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2657,10 +2858,42 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2670,8 +2903,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2681,29 +2914,57 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture details
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use case details
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#setting-up-a-provider-with-dependency-injection-di" class="md-nav__link">
+  <a href="#setting-up-a-provider-with-dependency-injection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setting Up a Provider with Dependency Injection (DI)
+        Setting up a provider with dependency injection
       
     </span>
   </a>
@@ -2714,12 +2975,12 @@
   <a href="#setting-up-the-entity-framework-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setting Up the Entity Framework Provider
+        Setting up the Entity Framework provider
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setting Up the Entity Framework Provider">
+    <nav class="md-nav" aria-label="Setting up the Entity Framework provider">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2764,12 +3025,12 @@
   <a href="#exposing-providers-through-rest-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exposing Providers Through REST Endpoints
+        Exposing providers through REST endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Exposing Providers Through REST Endpoints">
+    <nav class="md-nav" aria-label="Exposing providers through REST endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2814,19 +3075,19 @@
   <a href="#using-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Providers
+        Using providers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Using Providers">
+    <nav class="md-nav" aria-label="Using providers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#core-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Methods
+        Core methods
       
     </span>
   </a>
@@ -2837,7 +3098,7 @@
   <a href="#implementing-a-custom-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Implementing a Custom Provider
+        Implementing a custom provider
       
     </span>
   </a>
@@ -2853,19 +3114,19 @@
   <a href="#using-extensions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Extensions
+        Using extensions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Using Extensions">
+    <nav class="md-nav" aria-label="Using extensions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#compressing-and-decompressing-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compressing and Decompressing Files
+        Compressing and decompressing files
       
     </span>
   </a>
@@ -2876,7 +3137,7 @@
   <a href="#cross-provider-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cross-Provider Operations
+        Cross-provider operations
       
     </span>
   </a>
@@ -2887,7 +3148,7 @@
   <a href="#handling-errors-and-progress" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Handling Errors and Progress
+        Handling errors and progress
       
     </span>
   </a>
@@ -2903,7 +3164,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -2943,7 +3204,7 @@
   <a href="#fileevent-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FileEvent Structure
+        FileEvent structure
       
     </span>
   </a>
@@ -2967,7 +3228,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#usage_1" class="md-nav__link">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       
         Usage
@@ -2982,7 +3243,7 @@
   <a href="#setting-up-filemonitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setting Up FileMonitoring
+        Setting up FileMonitoring
       
     </span>
   </a>
@@ -2993,7 +3254,7 @@
   <a href="#on-demand-scanning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        On-Demand Scanning
+        On-demand scanning
       
     </span>
   </a>
@@ -3004,7 +3265,7 @@
   <a href="#real-time-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real-Time Monitoring
+        Real-time monitoring
       
     </span>
   </a>
@@ -3015,7 +3276,7 @@
   <a href="#pausing-and-resuming-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pausing and Resuming Monitoring
+        Pausing and resuming monitoring
       
     </span>
   </a>
@@ -3031,7 +3292,7 @@
   <a href="#best-practices_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3067,7 +3328,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#usage_2" class="md-nav__link">
+  <a href="#usage_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         Usage
@@ -3082,7 +3343,7 @@
   <a href="#registering-the-job" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registering the Job
+        Registering the job
       
     </span>
   </a>
@@ -3093,7 +3354,7 @@
   <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How It Works
+        How it works
       
     </span>
   </a>
@@ -3104,7 +3365,7 @@
   <a href="#example-log-output" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Log Output
+        Example log output
       
     </span>
   </a>
@@ -3115,7 +3376,7 @@
   <a href="#retry-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Retry Handling
+        Retry handling
       
     </span>
   </a>
@@ -3131,7 +3392,7 @@
   <a href="#best-practices_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3226,15 +3487,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3252,8 +3518,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3333,6 +3599,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3369,10 +4166,42 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3382,8 +4211,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3393,29 +4222,57 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture details
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-case-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use case details
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#detailed-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Detailed usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Detailed usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#setting-up-a-provider-with-dependency-injection-di" class="md-nav__link">
+  <a href="#setting-up-a-provider-with-dependency-injection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setting Up a Provider with Dependency Injection (DI)
+        Setting up a provider with dependency injection
       
     </span>
   </a>
@@ -3426,12 +4283,12 @@
   <a href="#setting-up-the-entity-framework-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setting Up the Entity Framework Provider
+        Setting up the Entity Framework provider
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setting Up the Entity Framework Provider">
+    <nav class="md-nav" aria-label="Setting up the Entity Framework provider">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3476,12 +4333,12 @@
   <a href="#exposing-providers-through-rest-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exposing Providers Through REST Endpoints
+        Exposing providers through REST endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Exposing Providers Through REST Endpoints">
+    <nav class="md-nav" aria-label="Exposing providers through REST endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3526,19 +4383,19 @@
   <a href="#using-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Providers
+        Using providers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Using Providers">
+    <nav class="md-nav" aria-label="Using providers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#core-methods" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Methods
+        Core methods
       
     </span>
   </a>
@@ -3549,7 +4406,7 @@
   <a href="#implementing-a-custom-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Implementing a Custom Provider
+        Implementing a custom provider
       
     </span>
   </a>
@@ -3565,19 +4422,19 @@
   <a href="#using-extensions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Extensions
+        Using extensions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Using Extensions">
+    <nav class="md-nav" aria-label="Using extensions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#compressing-and-decompressing-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compressing and Decompressing Files
+        Compressing and decompressing files
       
     </span>
   </a>
@@ -3588,7 +4445,7 @@
   <a href="#cross-provider-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cross-Provider Operations
+        Cross-provider operations
       
     </span>
   </a>
@@ -3599,7 +4456,7 @@
   <a href="#handling-errors-and-progress" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Handling Errors and Progress
+        Handling errors and progress
       
     </span>
   </a>
@@ -3615,7 +4472,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3655,7 +4512,7 @@
   <a href="#fileevent-structure" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FileEvent Structure
+        FileEvent structure
       
     </span>
   </a>
@@ -3679,7 +4536,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#usage_1" class="md-nav__link">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       
         Usage
@@ -3694,7 +4551,7 @@
   <a href="#setting-up-filemonitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setting Up FileMonitoring
+        Setting up FileMonitoring
       
     </span>
   </a>
@@ -3705,7 +4562,7 @@
   <a href="#on-demand-scanning" class="md-nav__link">
     <span class="md-ellipsis">
       
-        On-Demand Scanning
+        On-demand scanning
       
     </span>
   </a>
@@ -3716,7 +4573,7 @@
   <a href="#real-time-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real-Time Monitoring
+        Real-time monitoring
       
     </span>
   </a>
@@ -3727,7 +4584,7 @@
   <a href="#pausing-and-resuming-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pausing and Resuming Monitoring
+        Pausing and resuming monitoring
       
     </span>
   </a>
@@ -3743,7 +4600,7 @@
   <a href="#best-practices_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3779,7 +4636,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#usage_2" class="md-nav__link">
+  <a href="#usage_1" class="md-nav__link">
     <span class="md-ellipsis">
       
         Usage
@@ -3794,7 +4651,7 @@
   <a href="#registering-the-job" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registering the Job
+        Registering the job
       
     </span>
   </a>
@@ -3805,7 +4662,7 @@
   <a href="#how-it-works" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How It Works
+        How it works
       
     </span>
   </a>
@@ -3816,7 +4673,7 @@
   <a href="#example-log-output" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Log Output
+        Example log output
       
     </span>
   </a>
@@ -3827,7 +4684,7 @@
   <a href="#retry-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Retry Handling
+        Retry handling
       
     </span>
   </a>
@@ -3843,7 +4700,7 @@
   <a href="#best-practices_2" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3898,10 +4755,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3941,72 +4816,76 @@
   
 
 
-<h1 id="filestorage-feature-documentation">FileStorage Feature Documentation<a class="headerlink" href="#filestorage-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="file-storage">File Storage<a class="headerlink" href="#file-storage" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Read, write, move, and monitor files through extensible storage providers and behaviors.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#filestorage-feature-documentation">FileStorage Feature Documentation</a><ul>
-<li><a href="#overview">Overview</a><ul>
+<li><a href="#file-storage">File Storage</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
 <li><a href="#architecture">Architecture</a></li>
 <li><a href="#use-cases">Use Cases</a></li>
-</ul>
-</li>
-<li><a href="#usage">Usage</a><ul>
-<li><a href="#setting-up-a-provider-with-dependency-injection-di">Setting Up a Provider with Dependency Injection (DI)</a></li>
-<li><a href="#setting-up-the-entity-framework-provider">Setting Up the Entity Framework Provider</a><ul>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#architecture-details">Architecture details</a></li>
+<li><a href="#use-case-details">Use case details</a></li>
+<li><a href="#detailed-usage">Detailed usage</a><ul>
+<li><a href="#setting-up-a-provider-with-dependency-injection">Setting up a provider with dependency injection</a></li>
+<li><a href="#setting-up-the-entity-framework-provider">Setting up the Entity Framework provider</a><ul>
 <li><a href="#entity-framework-provider-behavior">Entity Framework provider behavior</a></li>
 <li><a href="#entity-framework-provider-options">Entity Framework provider options</a></li>
 <li><a href="#entity-framework-provider-notes">Entity Framework provider notes</a></li>
 </ul>
 </li>
-<li><a href="#exposing-providers-through-rest-endpoints">Exposing Providers Through REST Endpoints</a><ul>
+<li><a href="#exposing-providers-through-rest-endpoints">Exposing providers through REST endpoints</a><ul>
 <li><a href="#rest-endpoint-behavior">REST endpoint behavior</a></li>
 <li><a href="#common-routes">Common routes</a></li>
 <li><a href="#endpoint-notes">Endpoint notes</a></li>
 </ul>
 </li>
-<li><a href="#using-providers">Using Providers</a><ul>
-<li><a href="#core-methods">Core Methods</a></li>
-<li><a href="#implementing-a-custom-provider">Implementing a Custom Provider</a></li>
+<li><a href="#using-providers">Using providers</a><ul>
+<li><a href="#core-methods">Core methods</a></li>
+<li><a href="#implementing-a-custom-provider">Implementing a custom provider</a></li>
 </ul>
 </li>
-<li><a href="#using-extensions">Using Extensions</a><ul>
-<li><a href="#compressing-and-decompressing-files">Compressing and Decompressing Files</a></li>
-<li><a href="#cross-provider-operations">Cross-Provider Operations</a></li>
-<li><a href="#handling-errors-and-progress">Handling Errors and Progress</a></li>
+<li><a href="#using-extensions">Using extensions</a><ul>
+<li><a href="#compressing-and-decompressing-files">Compressing and decompressing files</a></li>
+<li><a href="#cross-provider-operations">Cross-provider operations</a></li>
+<li><a href="#handling-errors-and-progress">Handling errors and progress</a></li>
 </ul>
 </li>
-<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#best-practices">Best practices</a></li>
 </ul>
 </li>
 <li><a href="#appendix-a-filemonitoring">Appendix A: FileMonitoring</a><ul>
 <li><a href="#overview_1">Overview</a><ul>
-<li><a href="#fileevent-structure">FileEvent Structure</a></li>
+<li><a href="#fileevent-structure">FileEvent structure</a></li>
 </ul>
 </li>
 <li><a href="#architecture_1">Architecture</a></li>
-<li><a href="#usage_1">Usage</a><ul>
-<li><a href="#setting-up-filemonitoring">Setting Up FileMonitoring</a></li>
-<li><a href="#on-demand-scanning">On-Demand Scanning</a></li>
-<li><a href="#real-time-monitoring">Real-Time Monitoring</a></li>
-<li><a href="#pausing-and-resuming-monitoring">Pausing and Resuming Monitoring</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#setting-up-filemonitoring">Setting up FileMonitoring</a></li>
+<li><a href="#on-demand-scanning">On-demand scanning</a></li>
+<li><a href="#real-time-monitoring">Real-time monitoring</a></li>
+<li><a href="#pausing-and-resuming-monitoring">Pausing and resuming monitoring</a></li>
 </ul>
 </li>
-<li><a href="#best-practices_1">Best Practices</a></li>
+<li><a href="#best-practices_1">Best practices</a></li>
 </ul>
 </li>
 <li><a href="#appendix-b-filemonitoringlocationscanjob">Appendix B: FileMonitoringLocationScanJob</a><ul>
 <li><a href="#overview_2">Overview</a></li>
-<li><a href="#usage_2">Usage</a><ul>
-<li><a href="#registering-the-job">Registering the Job</a></li>
-<li><a href="#how-it-works">How It Works</a></li>
-<li><a href="#example-log-output">Example Log Output</a></li>
-<li><a href="#retry-handling">Retry Handling</a></li>
+<li><a href="#usage_1">Usage</a><ul>
+<li><a href="#registering-the-job">Registering the job</a></li>
+<li><a href="#how-it-works">How it works</a></li>
+<li><a href="#example-log-output">Example log output</a></li>
+<li><a href="#retry-handling">Retry handling</a></li>
 </ul>
 </li>
-<li><a href="#best-practices_2">Best Practices</a></li>
+<li><a href="#best-practices_2">Best practices</a></li>
 </ul>
 </li>
 </ul>
@@ -4014,8 +4893,8 @@
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Managing file storage presents challenges due to inconsistent APIs across storage systems, complex requirements for secure file handling, the need for progress reporting during long operations, robust error handling, thread safety concerns, and the demand for extensibility to support new providers or custom functionality.</p>
-<p>The <code>FileStorage</code> feature addresses these through the <code>IFileStorageProvider</code> interface for abstracting file operations, a fluent DI setup with <code>AddFileStorage</code>, and the <code>Result</code> pattern for error handling and messaging. It supports progress reporting via <code>IProgress&lt;FileProgress&gt;</code> and metadata management with <code>FileMetadata</code>. The feature is designed to be extensible, allowing developers to implement custom providers or extend functionality with behaviors. Additionally, it supports notifications for real-time monitoring (used by <code>FileMonitoring</code>) through the <code>SupportsNotifications</code> property. Besides the existing <code>WriteFileAsync</code> push model, the abstraction also supports <code>OpenWriteFileAsync</code> for scenarios where callers want to stream bytes directly into the destination.</p>
+<p>Storage systems expose different APIs and failure behavior. Applications also need secure file handling, progress reporting for long operations, predictable error handling, thread safety, and support for custom providers.</p>
+<p>The <code>FileStorage</code> feature defines file operations through <code>IFileStorageProvider</code>, registers providers through <code>AddFileStorage</code>, and returns failures through <code>Result</code>. <code>IProgress&lt;FileProgress&gt;</code> reports progress, while <code>FileMetadata</code> carries file metadata. Applications can add providers and behaviors. Providers with <code>SupportsNotifications</code> can notify <code>FileMonitoring</code> about changes. Callers can push content with <code>WriteFileAsync</code> or stream bytes into a destination returned by <code>OpenWriteFileAsync</code>.</p>
 <p>Available providers included:</p>
 <ul>
 <li>Local Files (e.g., <code>C:\data\file.txt</code> or <code>/var/data/file.txt</code>)</li>
@@ -4024,7 +4903,90 @@
 <li>Azure Blob Storage</li>
 <li>Entity Framework backed storage</li>
 </ul>
-<h3 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h3>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>File systems, shares, databases, and cloud stores expose different APIs and failure modes. Applications still need one way to stream content, manage directories and metadata, report progress, handle expected failures, and move files across providers.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p><code>IFileStorageProvider</code> defines Result-native file and directory operations. <code>AddFileStorage(...)</code> registers named providers and optional behaviors, while <code>IFileStorageProviderFactory</code> resolves the configured provider at runtime. Extensions add compression, serialization, and cross-provider transfers without expanding provider implementations.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>named local, in-memory, network, Azure, and Entity Framework providers</li>
+<li>stream-based read, write, and open-write operations</li>
+<li>file and directory metadata, checksums, paging, and health checks</li>
+<li>logging, retry, caching, metrics, and custom behaviors</li>
+<li>progress reporting and cross-provider copy or move helpers</li>
+<li>optional REST endpoints, monitoring, and scheduled scans</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>Application code resolves an <code>IFileStorageProvider</code> from the factory. Behaviors decorate the provider contract, and provider implementations translate paths and operations to their native store. File Monitoring composes providers with location handlers, event stores, and processors; the scheduled scan job calls the same monitoring service.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>read and write files without binding application code to a storage SDK</li>
+<li>move files between local, database-backed, and cloud providers</li>
+<li>expose a controlled provider surface over HTTP</li>
+<li>monitor a location in real time or through on-demand scans</li>
+<li>persist a virtual file system in an application database</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example registers one singleton in-memory provider, writes UTF-8 content, checks both results, disposes the returned stream, and returns the stored text.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Storage</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;memory&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">&quot;MemoryFiles&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)));</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapPut</span><span class="p">(</span><span class="s">&quot;/files/{name}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">,</span>
+<span class="w">    </span><span class="n">IFileStorageProviderFactory</span><span class="w"> </span><span class="n">factory</span><span class="p">,</span>
+<span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;memory&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">source</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span>
+<span class="w">        </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">$&quot;File: {name}&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">writable</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">written</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">storage</span><span class="p">.</span><span class="n">WriteFileAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">name</span><span class="p">,</span>
+<span class="w">        </span><span class="n">source</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">written</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">written</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">read</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">storage</span><span class="p">.</span><span class="n">ReadFileAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">name</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">read</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">read</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">read</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span>
+<span class="w">    </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">reader</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">StreamReader</span><span class="p">(</span>
+<span class="w">        </span><span class="n">content</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">,</span>
+<span class="w">        </span><span class="n">leaveOpen</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">reader</span><span class="p">.</span><span class="n">ReadToEndAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Path</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">,</span><span class="w"> </span><span class="n">Content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+</code></pre></div>
+<p><code>PUT /files/example.txt</code> returns <code>File: example.txt</code>. The in-memory provider retains files only while its singleton instance remains alive.</p>
+<h2 id="architecture-details">Architecture details<a class="headerlink" href="#architecture-details" title="Permanent link">&para;</a></h2>
 <p>The <code>FileStorage</code> subsystem is built around the <code>IFileStorageProvider</code> interface, which defines core file operations. Providers like <code>LocalFileStorageProvider</code>, <code>InMemoryFileStorageProvider</code>, <code>EntityFrameworkFileStorageProvider&lt;TContext&gt;</code>, and others implement this interface. The <code>IFileStorageProviderFactory</code> resolves providers by name, and extensions like <code>FileStorageProviderCompressionExtensions</code> and <code>FileStorageProviderCrossExtensions</code> add advanced functionality such as compression and cross-provider operations. Behaviors can be applied to providers to add cross-cutting concerns like logging or retry logic.</p>
 <p>Below is a high-level architecture diagram:</p>
 <pre class="mermaid"><code>classDiagram
@@ -4088,7 +5050,7 @@
     IFileStorageProvider --&gt; FileStorageProviderCompressionExtensions : Extends
     IFileStorageProvider --&gt; FileStorageProviderCrossExtensions : Extends
     IFileStorageProviderFactory --&gt; IFileStorageProvider : Resolves</code></pre>
-<h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
+<h2 id="use-case-details">Use case details<a class="headerlink" href="#use-case-details" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Basic File Operations</strong>: Read, write, delete, and check file existence across different storage systems.</li>
 <li><strong>Metadata Management</strong>: Retrieve and update file metadata for indexing or auditing purposes.</li>
@@ -4098,8 +5060,8 @@
 <li><strong>Database-backed Virtual Filesystems</strong>: Persist files and directories in the application database through Entity Framework when a separate blob store or file share is unnecessary.</li>
 <li><strong>Health Monitoring</strong>: Check the health of storage providers to ensure availability.</li>
 </ul>
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<h3 id="setting-up-a-provider-with-dependency-injection-di">Setting Up a Provider with Dependency Injection (DI)<a class="headerlink" href="#setting-up-a-provider-with-dependency-injection-di" title="Permanent link">&para;</a></h3>
+<h2 id="detailed-usage">Detailed usage<a class="headerlink" href="#detailed-usage" title="Permanent link">&para;</a></h2>
+<h3 id="setting-up-a-provider-with-dependency-injection">Setting up a provider with dependency injection<a class="headerlink" href="#setting-up-a-provider-with-dependency-injection" title="Permanent link">&para;</a></h3>
 <p>Configure <code>FileStorage</code> using <code>Microsoft.Extensions.DependencyInjection</code> with the <code>AddFileStorage</code> method, which supports a fluent API for registering named providers, applying behaviors, and setting lifetimes. Providers are resolved via <code>IFileStorageProviderFactory</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;inMemory&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4110,20 +5072,20 @@
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;local&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">UseLocal</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">GetTempPath</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;TestStorage_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">()),</span><span class="w"> </span><span class="s">&quot;TestLocal&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">UseLocal</span><span class="p">(</span><span class="s">&quot;TestLocal&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">GetTempPath</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;TestStorage_&quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">().</span><span class="n">ToString</span><span class="p">()))</span>
 <span class="w">               </span><span class="p">.</span><span class="n">WithLogging</span><span class="p">()</span>
 <span class="w">               </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">);</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;network&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">UseWindowsNetwork</span><span class="p">(</span><span class="s">@&quot;\\server\docs&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;NetworkStorage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;username&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;password&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;domain&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">UseWindowsNetwork</span><span class="p">(</span><span class="s">&quot;NetworkStorage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">@&quot;\\server\docs&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;username&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;password&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;domain&quot;</span><span class="p">)</span>
 <span class="w">               </span><span class="p">.</span><span class="n">WithLogging</span><span class="p">()</span>
 <span class="w">               </span><span class="p">.</span><span class="n">WithRetry</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">RetryOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">MaxRetries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">3</span><span class="w"> </span><span class="p">})</span>
 <span class="w">               </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">);</span>
 <span class="w">    </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;azureBlob&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">UseAzureBlob</span><span class="p">(</span><span class="s">&quot;connection-string&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;container-name&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;AzureBlobStorage&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">UseAzureBlob</span><span class="p">(</span><span class="s">&quot;AzureBlobStorage&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;connection-string&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;container-name&quot;</span><span class="p">)</span>
 <span class="w">               </span><span class="p">.</span><span class="n">WithCaching</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">CachingOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">CacheDuration</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span><span class="w"> </span><span class="p">})</span>
 <span class="w">               </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Scoped</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}));</span>
@@ -4150,7 +5112,7 @@
 <div class="highlight"><pre><span></span><code>FileStorage
 </code></pre></div>
 <p>The check resolves every provider name from <code>IFileStorageProviderFactory</code>, calls each provider's <code>CheckHealthAsync(...)</code>, and reports failures with the failed provider names and error details in the health-check data. The health check is tagged with <code>ready</code>, <code>storage</code>, and <code>files</code>.</p>
-<h3 id="setting-up-the-entity-framework-provider">Setting Up the Entity Framework Provider<a class="headerlink" href="#setting-up-the-entity-framework-provider" title="Permanent link">&para;</a></h3>
+<h3 id="setting-up-the-entity-framework-provider">Setting up the Entity Framework provider<a class="headerlink" href="#setting-up-the-entity-framework-provider" title="Permanent link">&para;</a></h3>
 <p>Use the Entity Framework provider when files should live in the same relational database as the rest of your application state.</p>
 <ol>
 <li>Make your <code>DbContext</code> implement <code>IFileStorageContext</code>.</li>
@@ -4239,7 +5201,7 @@
 <li>Because writes are buffered before commit, set <code>MaximumBufferedContentSize(...)</code> when you want predictable limits for large uploads.</li>
 <li>The provider supports cross-provider copy/move and the existing compression, traversal, text, and object extension methods through the normal <code>IFileStorageProvider</code> contract.</li>
 </ul>
-<h3 id="exposing-providers-through-rest-endpoints">Exposing Providers Through REST Endpoints<a class="headerlink" href="#exposing-providers-through-rest-endpoints" title="Permanent link">&para;</a></h3>
+<h3 id="exposing-providers-through-rest-endpoints">Exposing providers through REST endpoints<a class="headerlink" href="#exposing-providers-through-rest-endpoints" title="Permanent link">&para;</a></h3>
 <p>Use <code>Presentation.Web.Storage</code> when you want registered providers to be reachable through HTTP. The endpoint package registers <strong>one global storage endpoint surface</strong> and resolves the target provider by route segment through <code>IFileStorageProviderFactory.CreateProvider(...)</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;documents&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">builder</span>
@@ -4255,7 +5217,7 @@
 <h4 id="rest-endpoint-behavior">REST endpoint behavior<a class="headerlink" href="#rest-endpoint-behavior" title="Permanent link">&para;</a></h4>
 <ul>
 <li>Works with <strong>any</strong> <code>IFileStorageProvider</code>, not only the Entity Framework provider</li>
-<li>Uses <code>/_bdk/api/{providerName}</code> by default when <code>GroupPath</code> is not specified</li>
+<li>Uses <code>/_bdk/api/storage/files/{providerName}</code> by default when <code>GroupPath</code> is not specified</li>
 <li>Publishes one endpoint set for all registered providers, with the provider selected from the sanitized route segment</li>
 <li>Supports provider info, health checks, file/directory existence checks, file listing, directory listing, metadata, checksum, create/delete directory, delete file, file download, raw file upload, and file-event query/scan routes when storage monitoring is configured for that provider</li>
 <li>Raw uploads write the request body directly to the provider-backed path; send them as <code>application/octet-stream</code></li>
@@ -4333,18 +5295,18 @@
 <li>The provider info route intentionally lives at <code>/provider</code> so it does not collide with other fixed <code>_bdk</code> endpoints such as <code>/_bdk/api/info</code>.</li>
 <li>The DoFiesta example uses this endpoint package to back both the Operations &gt; Files and Operations &gt; File Events dashboards against the <code>"documents"</code> Entity Framework provider, and the WASM client consumes the generated Kiota client directly via <code>BackendApiClient.Api._bdk_["documents"]</code>.</li>
 </ul>
-<h3 id="using-providers">Using Providers<a class="headerlink" href="#using-providers" title="Permanent link">&para;</a></h3>
+<h3 id="using-providers">Using providers<a class="headerlink" href="#using-providers" title="Permanent link">&para;</a></h3>
 <p>The <code>IFileStorageProvider</code> interface defines core file operations, returning <code>Result</code> or <code>Result&lt;T&gt;</code> for error handling and messaging. Use the factory-resolved provider to perform operations.</p>
-<h4 id="core-methods">Core Methods<a class="headerlink" href="#core-methods" title="Permanent link">&para;</a></h4>
+<h4 id="core-methods">Core methods<a class="headerlink" href="#core-methods" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>FileExistsAsync(string path, IProgress<FileProgress> progress, CancellationToken token)</strong>: Checks if a file exists at <code>path</code>. Returns <code>Task&lt;Result&gt;</code> indicating success or failure with errors (e.g., <code>FileSystemError</code> for missing files).</li>
+<li><code>FileExistsAsync(string path, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Checks if a file exists at <code>path</code>. Returns <code>Task&lt;Result&gt;</code> indicating success or failure with errors (e.g., <code>FileSystemError</code> for missing files).</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;local&quot;</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">existsResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">FileExistsAsync</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">existsResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;File should exist&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>ReadFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)</strong>: Reads a file as a <code>Stream</code>. Returns <code>Task&lt;Result&lt;Stream&gt;&gt;</code> with the stream or errors (e.g., <code>PermissionError</code>).</li>
+<li><code>ReadFileAsync(string path, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Reads a file as a <code>Stream</code>. Returns <code>Task&lt;Result&lt;Stream&gt;&gt;</code> with the stream or errors (e.g., <code>PermissionError</code>).</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">readResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">ReadFileAsync</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">readResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Read should succeed&quot;</span><span class="p">);</span>
@@ -4352,13 +5314,13 @@
 <span class="k">new</span><span class="w"> </span><span class="nf">StreamReader</span><span class="p">(</span><span class="n">stream</span><span class="p">).</span><span class="n">ReadToEnd</span><span class="p">().</span><span class="n">ShouldBe</span><span class="p">(</span><span class="s">&quot;Test content&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress, CancellationToken token)</strong>: Writes <code>content</code> to <code>path</code>. Use this when the caller already has a source stream. Returns <code>Task&lt;Result&gt;</code> with success or errors (e.g., <code>FileSystemError</code>).</li>
+<li><code>WriteFileAsync(string path, Stream content, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Writes <code>content</code> to <code>path</code>. Use this when the caller already has a source stream. Returns <code>Task&lt;Result&gt;</code> with success or errors (e.g., <code>FileSystemError</code>).</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">writeResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">WriteFileAsync</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">&quot;Test content&quot;</span><span class="p">)),</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">writeResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Write should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>OpenWriteFileAsync(string path, bool useTemporaryWrite, IProgress<FileProgress> progress, CancellationToken token)</strong>: Opens a writable stream for <code>path</code>. Use this when the caller wants to write directly into the provider without first materializing a full source stream. Open failures are returned in the <code>Result</code>; write, flush, or dispose failures surface from the returned stream. <code>useTemporaryWrite: false</code> writes directly to the final path and may expose partial content, while <code>useTemporaryWrite: true</code> requests staged publish semantics when the provider supports it.</li>
+<li><code>OpenWriteFileAsync(string path, bool useTemporaryWrite, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Opens a writable stream for <code>path</code>. Use this when the caller wants to write directly into the provider without first materializing a full source stream. Open failures are returned in the <code>Result</code>; write, flush, or dispose failures surface from the returned stream. <code>useTemporaryWrite: false</code> writes directly to the final path and may expose partial content, while <code>useTemporaryWrite: true</code> requests staged publish semantics when the provider supports it.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">openResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">OpenWriteFileAsync</span><span class="p">(</span><span class="s">&quot;feeds/data.csv&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">useTemporaryWrite</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">,</span><span class="w"> </span><span class="n">progress</span><span class="p">:</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">openResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Open write should succeed&quot;</span><span class="p">);</span>
@@ -4369,7 +5331,7 @@
 <span class="k">await</span><span class="w"> </span><span class="n">writer</span><span class="p">.</span><span class="n">WriteLineAsync</span><span class="p">(</span><span class="s">&quot;1,Sample&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>DeleteFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)</strong>: Deletes a file at <code>path</code>. Returns <code>Task&lt;Result&gt;</code> with success or errors (e.g., <code>PermissionError</code>).</li>
+<li><code>DeleteFileAsync(string path, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Deletes a file at <code>path</code>. Returns <code>Task&lt;Result&gt;</code> with success or errors (e.g., <code>PermissionError</code>).</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">deleteResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">DeleteFileAsync</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">deleteResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Delete should succeed&quot;</span><span class="p">);</span>
@@ -4412,39 +5374,39 @@
 <span class="n">files</span><span class="p">.</span><span class="n">ShouldContain</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)</strong>: Copies a file from <code>sourcePath</code> to <code>destinationPath</code> within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
+<li><code>CopyFileAsync(string sourcePath, string destinationPath, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Copies a file from <code>sourcePath</code> to <code>destinationPath</code> within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">copyResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">CopyFileAsync</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;data_copy.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">copyResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Copy should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)</strong>: Renames a file from <code>path</code> to <code>destinationPath</code> within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
+<li><code>RenameFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Renames a file from <code>path</code> to <code>destinationPath</code> within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">renameResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">RenameFileAsync</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;renamed.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">renameResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Rename should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)</strong>: Moves a file from <code>path</code> to <code>destinationPath</code> within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
+<li><code>MoveFileAsync(string path, string destinationPath, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Moves a file from <code>path</code> to <code>destinationPath</code> within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">moveResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">MoveFileAsync</span><span class="p">(</span><span class="s">&quot;data.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;moved.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">moveResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Move should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>CopyFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress<FileProgress> progress, CancellationToken token)</strong>: Copies multiple files within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or partial failure (e.g., <code>PartialOperationError</code>).</li>
+<li><code>CopyFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Copies multiple files within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or partial failure (e.g., <code>PartialOperationError</code>).</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">filePairs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;data1.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;copy1.txt&quot;</span><span class="p">),</span><span class="w"> </span><span class="p">(</span><span class="s">&quot;data2.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;copy2.txt&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">copyFilesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">CopyFilesAsync</span><span class="p">(</span><span class="n">filePairs</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">copyFilesResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Bulk copy should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress, CancellationToken token)</strong>: Deletes multiple files. Returns <code>Task&lt;Result&gt;</code> with success or partial failure.</li>
+<li><code>DeleteFilesAsync(IEnumerable&lt;string&gt; paths, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Deletes multiple files. Returns <code>Task&lt;Result&gt;</code> with success or partial failure.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">paths</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;data1.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;data2.txt&quot;</span><span class="w"> </span><span class="p">};</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">deleteFilesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">DeleteFilesAsync</span><span class="p">(</span><span class="n">paths</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">deleteFilesResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Bulk delete should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>MoveFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress<FileProgress> progress, CancellationToken token)</strong>: Moves multiple files within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or partial failure.</li>
+<li><code>MoveFilesAsync(IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Moves multiple files within the same provider. Returns <code>Task&lt;Result&gt;</code> with success or partial failure.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">moveFilesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">MoveFilesAsync</span><span class="p">(</span><span class="n">filePairs</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">moveFilesResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Bulk move should succeed&quot;</span><span class="p">);</span>
@@ -4481,7 +5443,7 @@
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">healthResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">CheckHealthAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">healthResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Health check should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="implementing-a-custom-provider">Implementing a Custom Provider<a class="headerlink" href="#implementing-a-custom-provider" title="Permanent link">&para;</a></h4>
+<h4 id="implementing-a-custom-provider">Implementing a custom provider<a class="headerlink" href="#implementing-a-custom-provider" title="Permanent link">&para;</a></h4>
 <p>For custom storage systems (e.g., a proprietary cloud storage API), implement the <code>IFileStorageProvider</code> interface by inheriting from <code>BaseFileStorageProvider</code> and overriding the necessary methods. Below is a minimal example:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CustomFileStorageProvider</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">BaseFileStorageProvider</span>
 <span class="p">{</span>
@@ -4530,9 +5492,9 @@
 <span class="w">               </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}));</span>
 </code></pre></div>
-<h3 id="using-extensions">Using Extensions<a class="headerlink" href="#using-extensions" title="Permanent link">&para;</a></h3>
-<p>The <code>FileStorage</code> subsystem provides extension methods to enhance <code>IFileStorageProvider</code> with advanced functionality, returning <code>Result</code> or <code>Result&lt;T&gt;</code>. These extensions support progress reporting and handle errors gracefully, covering scenarios like compression and cross-provider operations.</p>
-<h4 id="compressing-and-decompressing-files">Compressing and Decompressing Files<a class="headerlink" href="#compressing-and-decompressing-files" title="Permanent link">&para;</a></h4>
+<h3 id="using-extensions">Using extensions<a class="headerlink" href="#using-extensions" title="Permanent link">&para;</a></h3>
+<p>The <code>FileStorage</code> subsystem extends <code>IFileStorageProvider</code> with compression, cross-provider operations, and progress reporting. The extension methods return <code>Result</code> or <code>Result&lt;T&gt;</code> for expected failures.</p>
+<h4 id="compressing-and-decompressing-files">Compressing and decompressing files<a class="headerlink" href="#compressing-and-decompressing-files" title="Permanent link">&para;</a></h4>
 <p>Compress a file or directory into an archive (e.g., ZIP, GZip, Tar), optionally configuring compression options:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;local&quot;</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">&quot;Test content&quot;</span><span class="p">));</span>
@@ -4552,10 +5514,10 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">uncompressResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">UncompressAsync</span><span class="p">(</span><span class="s">&quot;archive.zip&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;output_dir&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">uncompressResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Directory decompression should succeed&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="cross-provider-operations">Cross-Provider Operations<a class="headerlink" href="#cross-provider-operations" title="Permanent link">&para;</a></h4>
+<h4 id="cross-provider-operations">Cross-provider operations<a class="headerlink" href="#cross-provider-operations" title="Permanent link">&para;</a></h4>
 <p>The <code>FileStorageProviderCrossExtensions</code> class provides methods to perform operations across different <code>IFileStorageProvider</code> instances, such as copying or moving files between providers (e.g., from a local file system to an in-memory provider). These methods support progress reporting and handle errors using the <code>Result</code> pattern.</p>
 <ul>
-<li><strong>CopyFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)</strong>: Copies a file from the source provider to the destination provider. Returns <code>Task&lt;Result&gt;</code> with success or errors (e.g., <code>FileSystemError</code>, <code>PermissionError</code>).</li>
+<li><code>CopyFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Copies a file from the source provider to the destination provider. Returns <code>Task&lt;Result&gt;</code> with success or errors (e.g., <code>FileSystemError</code>, <code>PermissionError</code>).</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">sourceProvider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;local&quot;</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">destProvider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">factory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;inMemory&quot;</span><span class="p">);</span>
@@ -4571,7 +5533,7 @@
 <span class="n">existsResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;File should exist in destination provider&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>CopyFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress<FileProgress> progress, CancellationToken token)</strong>: Copies multiple files between providers in a batch. Returns <code>Task&lt;Result&gt;</code> with success or partial failure (e.g., <code>PartialOperationError</code>).</li>
+<li><code>CopyFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Copies multiple files between providers in a batch. Returns <code>Task&lt;Result&gt;</code> with success or partial failure (e.g., <code>PartialOperationError</code>).</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">filePairs</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span>
 <span class="p">{</span>
@@ -4597,7 +5559,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <ul>
-<li><strong>MoveFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)</strong>: Moves a file by copying it to the destination provider and deleting it from the source provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
+<li><code>MoveFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Moves a file by copying it to the destination provider and deleting it from the source provider. Returns <code>Task&lt;Result&gt;</code> with success or errors.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">sourceProvider</span><span class="p">.</span><span class="n">WriteFileAsync</span><span class="p">(</span><span class="s">&quot;move.txt&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">&quot;Move content&quot;</span><span class="p">)),</span><span class="w"> </span><span class="k">null</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 
@@ -4611,7 +5573,7 @@
 <span class="n">sourceExists</span><span class="p">.</span><span class="n">ShouldBeFailure</span><span class="p">(</span><span class="s">&quot;File should not exist in source provider&quot;</span><span class="p">);</span>
 </code></pre></div>
 <ul>
-<li><strong>MoveFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress<FileProgress> progress, CancellationToken token)</strong>: Moves multiple files between providers in a batch. Returns <code>Task&lt;Result&gt;</code> with success or partial failure.</li>
+<li><code>MoveFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable&lt;(string SourcePath, string DestinationPath)&gt; filePairs, IProgress&lt;FileProgress&gt; progress, CancellationToken token)</code>: Moves multiple files between providers in a batch. Returns <code>Task&lt;Result&gt;</code> with success or partial failure.</li>
 </ul>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">moveFilesResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">sourceProvider</span><span class="p">.</span><span class="n">MoveFilesAsync</span><span class="p">(</span><span class="n">destProvider</span><span class="p">,</span><span class="w"> </span><span class="n">filePairs</span><span class="p">,</span><span class="w"> </span><span class="n">progress</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">moveFilesResult</span><span class="p">.</span><span class="n">ShouldBeSuccess</span><span class="p">(</span><span class="s">&quot;Cross-provider bulk move should succeed&quot;</span><span class="p">);</span>
@@ -4625,7 +5587,7 @@
 <span class="w">    </span><span class="n">sourceExists</span><span class="p">.</span><span class="n">ShouldBeFailure</span><span class="p">(</span><span class="s">$&quot;File {sourcePath} should not exist in source provider&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<h4 id="handling-errors-and-progress">Handling Errors and Progress<a class="headerlink" href="#handling-errors-and-progress" title="Permanent link">&para;</a></h4>
+<h4 id="handling-errors-and-progress">Handling errors and progress<a class="headerlink" href="#handling-errors-and-progress" title="Permanent link">&para;</a></h4>
 <p>Use <code>Result</code> for error handling and <code>IProgress&lt;FileProgress&gt;</code> for progress reporting in both compression and cross-provider operations:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Compression error handling</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Progress</span><span class="o">&lt;</span><span class="n">FileProgress</span><span class="o">&gt;</span><span class="p">(</span><span class="n">p</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Processed {p.FilesProcessed}/{p.TotalFiles} files&quot;</span><span class="p">));</span>
@@ -4639,7 +5601,7 @@
 <span class="n">copyErrorResult</span><span class="p">.</span><span class="n">ShouldBeFailure</span><span class="p">(</span><span class="s">&quot;Should fail with non-existent source file&quot;</span><span class="p">);</span>
 <span class="n">copyErrorResult</span><span class="p">.</span><span class="n">Messages</span><span class="p">.</span><span class="n">ShouldContain</span><span class="p">(</span><span class="n">m</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">Contains</span><span class="p">(</span><span class="s">&quot;Copied 0/1 files, 1 failed&quot;</span><span class="p">));</span>
 </code></pre></div>
-<h3 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h3>
+<h3 id="best-practices">Best practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Configure via DI</strong>: Register providers with <code>AddFileStorage</code> for loose coupling and easy provider switching.</li>
 <li><strong>Own EF Migrations in the App</strong>: When using <code>UseEntityFramework&lt;TContext&gt;</code>, add the storage tables through your consuming application's normal migration workflow.</li>
@@ -4653,7 +5615,7 @@
 <h2 id="appendix-a-filemonitoring">Appendix A: FileMonitoring<a class="headerlink" href="#appendix-a-filemonitoring" title="Permanent link">&para;</a></h2>
 <h3 id="overview_1">Overview<a class="headerlink" href="#overview_1" title="Permanent link">&para;</a></h3>
 <p>The <code>FileMonitoring</code> feature builds on <code>FileStorage</code> to provide real-time and on-demand monitoring of file changes in specified locations. It uses <code>IFileStorageProvider</code> to access files and detect changes, generating <code>FileEvent</code> instances (e.g., Added, Changed, Deleted) that are processed by a chain of <code>IFileEventProcessor</code> implementations. The <code>IFileMonitoringService</code> orchestrates monitoring across multiple locations, each managed by an <code>ILocationHandler</code>. Event processing rates can be controlled using a <code>RateLimiter</code>, configured via <code>LocationOptions.RateLimit</code>.</p>
-<h4 id="fileevent-structure">FileEvent Structure<a class="headerlink" href="#fileevent-structure" title="Permanent link">&para;</a></h4>
+<h4 id="fileevent-structure"><code>FileEvent</code> structure<a class="headerlink" href="#fileevent-structure" title="Permanent link">&para;</a></h4>
 <p>The <code>FileEvent</code> class represents a detected file change, with the following key properties:</p>
 <ul>
 <li><strong>EventType</strong>: The type of change (e.g., <code>Added</code>, <code>Changed</code>, <code>Deleted</code>, <code>Unchanged</code>).</li>
@@ -4704,8 +5666,8 @@
     ILocationHandler --&gt; IFileStorageProvider : Uses
     ILocationHandler --&gt; IFileEventStore : Stores Events
     ILocationHandler --&gt; IFileEventProcessor : Processes Events</code></pre>
-<h3 id="usage_1">Usage<a class="headerlink" href="#usage_1" title="Permanent link">&para;</a></h3>
-<h4 id="setting-up-filemonitoring">Setting Up FileMonitoring<a class="headerlink" href="#setting-up-filemonitoring" title="Permanent link">&para;</a></h4>
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h3>
+<h4 id="setting-up-filemonitoring">Setting up FileMonitoring<a class="headerlink" href="#setting-up-filemonitoring" title="Permanent link">&para;</a></h4>
 <p>Configure <code>FileMonitoring</code> using <code>AddFileMonitoring</code> with a fluent API to specify locations, providers, and processors:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddFileMonitoring</span><span class="p">(</span><span class="n">monitoring</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -4713,7 +5675,7 @@
 <span class="w">        </span><span class="p">.</span><span class="n">UseLocal</span><span class="p">(</span><span class="s">&quot;Docs&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">GetTempPath</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;Docs&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">        </span><span class="p">{</span>
 <span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.txt&quot;</span><span class="p">;</span>
-<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;*.tmp&quot;</span><span class="p">]</span>
+<span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[</span><span class="s">&quot;*.tmp&quot;</span><span class="p">];</span>
 <span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">RateLimit</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">RateLimitOptions</span><span class="p">.</span><span class="n">HighSpeed</span><span class="p">;</span><span class="w"> </span><span class="c1">// Configure event processing rate</span>
 <span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileLoggerProcessor</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="w">            </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileMoverProcessor</span><span class="o">&gt;</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4724,7 +5686,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">monitoringService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IFileMonitoringService</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="k">await</span><span class="w"> </span><span class="n">monitoringService</span><span class="p">.</span><span class="n">StartAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="on-demand-scanning">On-Demand Scanning<a class="headerlink" href="#on-demand-scanning" title="Permanent link">&para;</a></h4>
+<h4 id="on-demand-scanning">On-demand scanning<a class="headerlink" href="#on-demand-scanning" title="Permanent link">&para;</a></h4>
 <p>Perform an on-demand scan to detect changes:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">progress</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Progress</span><span class="o">&lt;</span><span class="n">FileScanProgress</span><span class="o">&gt;</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Scanned {report.FilesScanned}/{report.TotalFiles} files ({report.PercentageComplete:F2}%)&quot;</span><span class="p">));</span>
@@ -4737,7 +5699,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">scanContext</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">monitoringService</span><span class="p">.</span><span class="n">ScanLocationAsync</span><span class="p">(</span><span class="s">&quot;Docs&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">scanOptions</span><span class="p">,</span><span class="w"> </span><span class="n">progress</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 <span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Detected {scanContext.Events.Count} events&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="real-time-monitoring">Real-Time Monitoring<a class="headerlink" href="#real-time-monitoring" title="Permanent link">&para;</a></h4>
+<h4 id="real-time-monitoring">Real-time monitoring<a class="headerlink" href="#real-time-monitoring" title="Permanent link">&para;</a></h4>
 <p>Real-time monitoring is enabled by default (unless <code>UseOnDemandOnly</code> is set). The <code>LocalLocationHandler</code> uses <code>FileSystemWatcher</code> to detect changes:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// File changes are automatically detected and processed</span>
 <span class="n">File</span><span class="p">.</span><span class="n">WriteAllText</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">GetTempPath</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;Docs&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test.txt&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Test content&quot;</span><span class="p">);</span>
@@ -4746,7 +5708,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">store</span><span class="p">.</span><span class="n">GetFileEventsAsync</span><span class="p">(</span><span class="s">&quot;test.txt&quot;</span><span class="p">);</span>
 <span class="n">events</span><span class="p">.</span><span class="n">ShouldNotBeEmpty</span><span class="p">();</span>
 </code></pre></div>
-<h4 id="pausing-and-resuming-monitoring">Pausing and Resuming Monitoring<a class="headerlink" href="#pausing-and-resuming-monitoring" title="Permanent link">&para;</a></h4>
+<h4 id="pausing-and-resuming-monitoring">Pausing and resuming monitoring<a class="headerlink" href="#pausing-and-resuming-monitoring" title="Permanent link">&para;</a></h4>
 <p>Control real-time monitoring by pausing and resuming the <code>ILocationHandler</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">monitoringService</span><span class="p">.</span><span class="n">PauseLocationAsync</span><span class="p">(</span><span class="s">&quot;Docs&quot;</span><span class="p">);</span>
 <span class="n">File</span><span class="p">.</span><span class="n">WriteAllText</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">Combine</span><span class="p">(</span><span class="n">Path</span><span class="p">.</span><span class="n">GetTempPath</span><span class="p">(),</span><span class="w"> </span><span class="s">&quot;Docs&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;test.txt&quot;</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Test content&quot;</span><span class="p">);</span>
@@ -4761,7 +5723,7 @@
 <span class="n">eventsAfterResume</span><span class="p">.</span><span class="n">ShouldNotBeEmpty</span><span class="p">();</span>
 <span class="n">eventsAfterResume</span><span class="p">.</span><span class="n">First</span><span class="p">().</span><span class="n">EventType</span><span class="p">.</span><span class="n">ShouldBe</span><span class="p">(</span><span class="n">FileEventType</span><span class="p">.</span><span class="n">Changed</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="best-practices_1">Best Practices<a class="headerlink" href="#best-practices_1" title="Permanent link">&para;</a></h3>
+<h3 id="best-practices_1">Best practices<a class="headerlink" href="#best-practices_1" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Use Appropriate Providers</strong>: Ensure the <code>IFileStorageProvider</code> supports notifications for real-time monitoring (e.g., <code>LocalFileStorageProvider</code> with <code>SupportsNotifications = true</code>).</li>
 <li><strong>Configure Processors</strong>: Chain multiple <code>IFileEventProcessor</code> instances to handle events (e.g., logging, moving files).</li>
@@ -4772,8 +5734,8 @@
 <h2 id="appendix-b-filemonitoringlocationscanjob">Appendix B: FileMonitoringLocationScanJob<a class="headerlink" href="#appendix-b-filemonitoringlocationscanjob" title="Permanent link">&para;</a></h2>
 <h3 id="overview_2">Overview<a class="headerlink" href="#overview_2" title="Permanent link">&para;</a></h3>
 <p>The <code>FileMonitoringLocationScanJob</code> is a scheduled job that triggers on-demand scans for a specified location using the <code>IFileMonitoringService</code>. It integrates with the <code>Application.Jobs</code> feature to run scans at defined intervals, supporting retry logic and configurable scan options. Configure job-level concurrency when overlapping scans must be prevented.</p>
-<h3 id="usage_2">Usage<a class="headerlink" href="#usage_2" title="Permanent link">&para;</a></h3>
-<h4 id="registering-the-job">Registering the Job<a class="headerlink" href="#registering-the-job" title="Permanent link">&para;</a></h4>
+<h3 id="usage_1">Usage<a class="headerlink" href="#usage_1" title="Permanent link">&para;</a></h3>
+<h4 id="registering-the-job">Registering the job<a class="headerlink" href="#registering-the-job" title="Permanent link">&para;</a></h4>
 <p>Register the <code>FileMonitoringLocationScanJob</code> using <code>AddJobScheduler</code>, specifying the location name and scan options via the typed <code>FileMonitoringLocationScanJobData</code> payload:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddJobScheduler</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">FileMonitoringLocationScanJob</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;scan_inbound&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">job</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">job</span>
@@ -4800,27 +5762,27 @@
 <li><strong>Job Data</strong>: <code>FileMonitoringLocationScanJobData</code> defines the location name and scan options (e.g., <code>DelayPerFile</code>, <code>BatchSize</code>).</li>
 <li><strong>Retry Logic</strong>: Configure retry through the Jobs registration with <code>WithRetry(...)</code>.</li>
 </ul>
-<h4 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h4>
+<h4 id="how-it-works">How it works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h4>
 <ol>
 <li>The job retrieves the location name from <code>FileMonitoringLocationScanJobData.LocationName</code>.</li>
 <li>It constructs a <code>FileScanOptions</code> object based on the typed data, setting properties like <code>DelayPerFile</code>, <code>BatchSize</code>, and <code>Timeout</code>.</li>
 <li>It calls <code>IFileMonitoringService.ScanLocationAsync</code> to perform the scan, logging progress and events.</li>
 <li>Events are logged using structured logging (<code>TypedLogger</code>), capturing details like files scanned, events detected, and elapsed time.</li>
 </ol>
-<h4 id="example-log-output">Example Log Output<a class="headerlink" href="#example-log-output" title="Permanent link">&para;</a></h4>
+<h4 id="example-log-output">Example log output<a class="headerlink" href="#example-log-output" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code>STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>started<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound<span class="o">)</span>
 STR<span class="w"> </span>job:<span class="w"> </span>progress<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound,<span class="w"> </span><span class="nv">filesScanned</span><span class="o">=</span><span class="m">10</span>,<span class="w"> </span><span class="nv">totalFiles</span><span class="o">=</span><span class="m">100</span>,<span class="w"> </span><span class="nv">percentageComplete</span><span class="o">=</span><span class="m">10</span>.00<span class="o">)</span><span class="w"> </span>-&gt;<span class="w"> </span>took<span class="w"> </span><span class="m">1000</span>.0000<span class="w"> </span>ms
 STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>completed<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound,<span class="w"> </span><span class="nv">eventCount</span><span class="o">=</span><span class="m">5</span><span class="o">)</span>
 STR<span class="w"> </span>job:<span class="w"> </span>event<span class="w"> </span>processed<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound,<span class="w"> </span><span class="nv">eventType</span><span class="o">=</span>Added,<span class="w"> </span><span class="nv">filePath</span><span class="o">=</span>file1.txt,<span class="w"> </span><span class="nv">size</span><span class="o">=</span><span class="m">1024</span>,<span class="w"> </span><span class="nv">detected</span><span class="o">=</span><span class="m">2025</span>-03-28T12:00:00Z<span class="o">)</span>
 </code></pre></div>
-<h4 id="retry-handling">Retry Handling<a class="headerlink" href="#retry-handling" title="Permanent link">&para;</a></h4>
+<h4 id="retry-handling">Retry handling<a class="headerlink" href="#retry-handling" title="Permanent link">&para;</a></h4>
 <p>Configure retries on the Jobs registration. For example, <code>WithRetry(retry =&gt; retry.MaxAttempts(3).FixedDelay(TimeSpan.FromSeconds(1)))</code> retries transient scan failures up to 3 times:</p>
 <div class="highlight"><pre><span></span><code>STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>started<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound<span class="o">)</span>
 STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>failed<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound,<span class="w"> </span><span class="nv">attempt</span><span class="o">=</span><span class="m">1</span><span class="o">)</span>
 STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>started<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound<span class="o">)</span>
 STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </span>completed<span class="w"> </span><span class="o">(</span><span class="nv">location</span><span class="o">=</span>inbound,<span class="w"> </span><span class="nv">eventCount</span><span class="o">=</span><span class="m">5</span><span class="o">)</span>
 </code></pre></div>
-<h3 id="best-practices_2">Best Practices<a class="headerlink" href="#best-practices_2" title="Permanent link">&para;</a></h3>
+<h3 id="best-practices_2">Best practices<a class="headerlink" href="#best-practices_2" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>Set Appropriate Options</strong>: Configure <code>DelayPerFile</code> and <code>BatchSize</code> to manage load during scans.</li>
 <li><strong>Monitor Logs</strong>: Use the structured logs to track scan progress and events.</li>
@@ -4905,7 +5867,7 @@ STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </sp
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4913,6 +5875,8 @@ STR<span class="w"> </span>job:<span class="w"> </span>scan<span class="w"> </sp
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

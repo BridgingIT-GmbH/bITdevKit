@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EntityFrameworkPermissionProvider&lt;TContext&gt;.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class EntityFrameworkPermissionProvider&lt;TContext&gt;.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class EntityFrameworkPermissionProvider&lt;TContext&gt;.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the checking permission operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,17 +143,23 @@ public static void LogCheckingPermission(ILogger logger, string logKey, string e
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -172,7 +180,8 @@ public static void LogCheckingPermission(ILogger logger, string logKey, string e
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the checking wildcard permission operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -183,15 +192,20 @@ public static void LogCheckingWildcardPermission(ILogger logger, string logKey, 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -212,7 +226,8 @@ public static void LogCheckingWildcardPermission(ILogger logger, string logKey, 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the circular hierarchy detected operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -223,13 +238,17 @@ public static void LogCircularHierarchyDetected(ILogger logger, string logKey, s
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
   </dl>
 
 
@@ -250,7 +269,8 @@ public static void LogCircularHierarchyDetected(ILogger logger, string logKey, s
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the found entity ids operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -261,17 +281,23 @@ public static void LogFoundEntityIds(ILogger logger, string logKey, string entit
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
     <dt><code>count</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of values to process.</p>
+</dd>
   </dl>
 
 
@@ -292,7 +318,8 @@ public static void LogFoundEntityIds(ILogger logger, string logKey, string entit
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the found hierarchy path operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -303,15 +330,20 @@ public static void LogFoundHierarchyPath(ILogger logger, string logKey, string e
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>count</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of values to process.</p>
+</dd>
   </dl>
 
 
@@ -332,7 +364,8 @@ public static void LogFoundHierarchyPath(ILogger logger, string logKey, string e
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the getting entity ids operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -343,15 +376,20 @@ public static void LogGettingEntityIds(ILogger logger, string logKey, string ent
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -372,7 +410,8 @@ public static void LogGettingEntityIds(ILogger logger, string logKey, string ent
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the getting hierarchy path operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -383,13 +422,17 @@ public static void LogGettingHierarchyPath(ILogger logger, string logKey, string
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
   </dl>
 
 
@@ -410,7 +453,8 @@ public static void LogGettingHierarchyPath(ILogger logger, string logKey, string
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the granting permission operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -421,17 +465,23 @@ public static void LogGrantingPermission(ILogger logger, string logKey, string e
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -452,7 +502,8 @@ public static void LogGrantingPermission(ILogger logger, string logKey, string e
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the granting role permission operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -463,17 +514,23 @@ public static void LogGrantingRolePermission(ILogger logger, string logKey, stri
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>roleName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The role name used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -494,7 +551,8 @@ public static void LogGrantingRolePermission(ILogger logger, string logKey, stri
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the invalidating caches operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -505,15 +563,20 @@ public static void LogInvalidatingCaches(ILogger logger, string logKey, string e
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -534,7 +597,8 @@ public static void LogInvalidatingCaches(ILogger logger, string logKey, string e
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the invalidating role caches operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -545,15 +609,20 @@ public static void LogInvalidatingRoleCaches(ILogger logger, string logKey, stri
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>roleName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The role name used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -574,7 +643,8 @@ public static void LogInvalidatingRoleCaches(ILogger logger, string logKey, stri
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the revoking permission operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -585,17 +655,23 @@ public static void LogRevokingPermission(ILogger logger, string logKey, string e
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -616,7 +692,8 @@ public static void LogRevokingPermission(ILogger logger, string logKey, string e
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the revoking role permission operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -627,17 +704,23 @@ public static void LogRevokingRolePermission(ILogger logger, string logKey, stri
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>entityId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>roleName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The role name used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -658,7 +741,8 @@ public static void LogRevokingRolePermission(ILogger logger, string logKey, stri
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the wildcard permission found operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -669,15 +753,20 @@ public static void LogWildcardPermissionFound(ILogger logger, string logKey, str
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the entity type.</p>
+</dd>
     <dt><code>permission</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The permission used by the operation.</p>
+</dd>
     <dt><code>userId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user id used by the operation.</p>
+</dd>
   </dl>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FakeAuthenticationHandler.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides source-generated messages for fake authentication decisions.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class FakeAuthenticationHandler.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Extensions.Web.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides source-generated messages for fake authentication decisions.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class FakeAuthenticationHandler.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Logs successful fake-user authentication.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,11 +143,14 @@ public static void LogFakeUserAuthenticated(ILogger logger, string logKey, strin
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger to write to.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured log key.</p>
+</dd>
     <dt><code>Email</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The authenticated user's email address.</p>
+</dd>
   </dl>
 
 
@@ -166,7 +171,8 @@ public static void LogFakeUserAuthenticated(ILogger logger, string logKey, strin
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Logs that a configured fake user is disabled.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -177,11 +183,14 @@ public static void LogFakeUserDisabled(ILogger logger, string logKey, string Ema
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger to write to.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured log key.</p>
+</dd>
     <dt><code>Email</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The disabled user's email address.</p>
+</dd>
   </dl>
 
 
@@ -202,7 +211,8 @@ public static void LogFakeUserDisabled(ILogger logger, string logKey, string Ema
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Logs that the requested fake user was not configured.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -213,11 +223,14 @@ public static void LogFakeUserNotFound(ILogger logger, string logKey, string Ema
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger to write to.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured log key.</p>
+</dd>
     <dt><code>Email</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The requested email address.</p>
+</dd>
   </dl>
 
 
@@ -238,7 +251,8 @@ public static void LogFakeUserNotFound(ILogger logger, string logKey, string Ema
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Logs an authorization header that does not use the expected fake-user format.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -249,9 +263,11 @@ public static void LogInvalidAuthorizationHeader(ILogger logger, string logKey)<
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger to write to.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured log key.</p>
+</dd>
   </dl>
 
 
@@ -272,7 +288,8 @@ public static void LogInvalidAuthorizationHeader(ILogger logger, string logKey)<
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Logs the start of fake authentication.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -283,9 +300,11 @@ public static void LogStartingAuthentication(ILogger logger, string logKey)</cod
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger to write to.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured log key.</p>
+</dd>
   </dl>
 
 

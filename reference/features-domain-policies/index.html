@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#domain-policies-feature-documentation" class="md-skip">
+        <a href="#domain-policies" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1205,15 +1241,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1231,8 +1272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1305,42 +1346,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1424,7 +1437,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1516,10 +1529,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-it" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
       
     </span>
   </a>
@@ -1530,12 +1598,12 @@
   <a href="#core-building-blocks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Building Blocks
+        Core building blocks
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Building Blocks">
+    <nav class="md-nav" aria-label="Core building blocks">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1599,15 +1667,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
+  <a href="#policy-definitions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Usage
+        Policy definitions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Basic Usage">
+    <nav class="md-nav" aria-label="Policy definitions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1652,12 +1720,12 @@
   <a href="#executing-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Executing Policies
+        Executing policies
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Executing Policies">
+    <nav class="md-nav" aria-label="Executing policies">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1691,7 +1759,7 @@
   <a href="#returning-policy-specific-values" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Returning Policy-Specific Values
+        Returning policy-specific values
       
     </span>
   </a>
@@ -1702,12 +1770,12 @@
   <a href="#failure-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Failure Handling
+        Failure handling
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Failure Handling">
+    <nav class="md-nav" aria-label="Failure handling">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1749,10 +1817,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-policies-vs-rules" class="md-nav__link">
+  <a href="#domain-policies-and-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Policies vs Rules
+        Domain policies and rules
       
     </span>
   </a>
@@ -1763,7 +1831,7 @@
   <a href="#relationship-to-other-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship To Other Features
+        Relationship to other features
       
     </span>
   </a>
@@ -1919,6 +1987,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1937,15 +2033,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1963,8 +2064,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2045,6 +2146,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2244,15 +2373,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2270,8 +2404,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2280,6 +2414,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2355,15 +2517,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2381,8 +2548,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2407,6 +2574,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2623,6 +2846,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2690,15 +2941,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2716,8 +2972,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2997,15 +3253,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3023,8 +3284,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3104,6 +3365,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3143,10 +3935,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-it" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
       
     </span>
   </a>
@@ -3157,12 +4004,12 @@
   <a href="#core-building-blocks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Building Blocks
+        Core building blocks
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Building Blocks">
+    <nav class="md-nav" aria-label="Core building blocks">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3226,15 +4073,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
+  <a href="#policy-definitions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Usage
+        Policy definitions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Basic Usage">
+    <nav class="md-nav" aria-label="Policy definitions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3279,12 +4126,12 @@
   <a href="#executing-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Executing Policies
+        Executing policies
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Executing Policies">
+    <nav class="md-nav" aria-label="Executing policies">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3318,7 +4165,7 @@
   <a href="#returning-policy-specific-values" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Returning Policy-Specific Values
+        Returning policy-specific values
       
     </span>
   </a>
@@ -3329,12 +4176,12 @@
   <a href="#failure-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Failure Handling
+        Failure handling
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Failure Handling">
+    <nav class="md-nav" aria-label="Failure handling">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3376,10 +4223,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-policies-vs-rules" class="md-nav__link">
+  <a href="#domain-policies-and-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Policies vs Rules
+        Domain policies and rules
       
     </span>
   </a>
@@ -3390,7 +4237,7 @@
   <a href="#relationship-to-other-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship To Other Features
+        Relationship to other features
       
     </span>
   </a>
@@ -3440,10 +4287,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3483,16 +4348,21 @@
   
 
 
-<h1 id="domain-policies-feature-documentation">Domain Policies Feature Documentation<a class="headerlink" href="#domain-policies-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="domain-policies">Domain Policies<a class="headerlink" href="#domain-policies" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Encapsulate domain decisions as reusable, context-aware policy objects.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#domain-policies-feature-documentation">Domain Policies Feature Documentation</a><ul>
+<li><a href="#domain-policies">Domain Policies</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#when-to-use-it">When To Use It</a></li>
-<li><a href="#core-building-blocks">Core Building Blocks</a><ul>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#core-building-blocks">Core building blocks</a><ul>
 <li><a href="#idomainpolicytcontext">IDomainPolicy&lt;TContext&gt;</a></li>
 <li><a href="#domainpolicybasetcontext">DomainPolicyBase&lt;TContext&gt;</a></li>
 <li><a href="#domainpolicies">DomainPolicies</a></li>
@@ -3500,26 +4370,26 @@
 <li><a href="#domainpolicyprocessingmode">DomainPolicyProcessingMode</a></li>
 </ul>
 </li>
-<li><a href="#basic-usage">Basic Usage</a><ul>
+<li><a href="#policy-definitions">Policy definitions</a><ul>
 <li><a href="#define-a-policy-context">Define a policy context</a></li>
 <li><a href="#implement-a-policy">Implement a policy</a></li>
 <li><a href="#add-a-conditional-policy">Add a conditional policy</a></li>
 </ul>
 </li>
-<li><a href="#executing-policies">Executing Policies</a><ul>
+<li><a href="#executing-policies">Executing policies</a><ul>
 <li><a href="#single-policy">Single policy</a></li>
 <li><a href="#multiple-policies">Multiple policies</a></li>
 </ul>
 </li>
-<li><a href="#returning-policy-specific-values">Returning Policy-Specific Values</a></li>
-<li><a href="#failure-handling">Failure Handling</a><ul>
+<li><a href="#returning-policy-specific-values">Returning policy-specific values</a></li>
+<li><a href="#failure-handling">Failure handling</a><ul>
 <li><a href="#continue">Continue</a></li>
 <li><a href="#stop">Stop</a></li>
 <li><a href="#throw">Throw</a></li>
 </ul>
 </li>
-<li><a href="#domain-policies-vs-rules">Domain Policies vs Rules</a></li>
-<li><a href="#relationship-to-other-features">Relationship To Other Features</a></li>
+<li><a href="#domain-policies-and-rules">Domain policies and rules</a></li>
+<li><a href="#relationship-to-other-features">Relationship to other features</a></li>
 </ul>
 </li>
 </ul>
@@ -3534,8 +4404,30 @@
 <li>can be executed alone or as part of a policy set through <code>DomainPolicies.ApplyAsync(...)</code></li>
 </ul>
 <p>The feature is meant for domain-level decision logic, not infrastructure authorization policies and not low-level fluent validation. It complements <a href="../features-rules/">Rules</a> and <a href="../features-results/">Results</a> rather than replacing them.</p>
-<h2 id="when-to-use-it">When To Use It<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h2>
-<p>Domain policies are a good fit when:</p>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Some business decisions depend on several domain objects and need more context than a single
+predicate. Callers may also need to skip inapplicable decisions, aggregate several failures, stop at
+the first failure, or retain a typed output from each decision.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>An <code>IDomainPolicy&lt;TContext&gt;</code> separates applicability from evaluation. <code>DomainPolicies.ApplyAsync</code>
+executes enabled policies in order and produces a <code>DomainPolicyResult&lt;TContext&gt;</code> with combined
+messages, errors, and per-policy values.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Asynchronous applicability and evaluation</li>
+<li>Reusable context-specific policy classes</li>
+<li>Continue, stop, or throw processing modes</li>
+<li>Aggregated messages and errors</li>
+<li>Typed per-policy values keyed by policy type</li>
+<li>Compatibility with the shared <code>IResult</code> contract</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>IDomainPolicy&lt;TContext&gt;</code> defines <code>IsEnabledAsync</code> and <code>ApplyAsync</code>.
+<code>DomainPolicyBase&lt;TContext&gt;</code> enables a policy by default. <code>DomainPolicies</code> evaluates policy arrays
+sequentially, combines each <code>IResult</code>, and records its value in <code>DomainPolicyResults&lt;TContext&gt;</code>.
+<code>DomainPolicyProcessingMode</code> controls what happens after a failed policy.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<p>Use domain policies when:</p>
 <ul>
 <li>a business decision spans multiple entities or value objects</li>
 <li>the check needs a dedicated context object rather than a single input value</li>
@@ -3544,14 +4436,50 @@
 <li>the caller needs control over whether evaluation should continue, stop, or throw on failure</li>
 </ul>
 <p>Typical examples are eligibility checks, approval preconditions, order-placement constraints, or workflow transition rules.</p>
-<h2 id="core-building-blocks">Core Building Blocks<a class="headerlink" href="#core-building-blocks" title="Permanent link">&para;</a></h2>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>The following example applies one policy, checks the result before continuing, and prints the
+outcome:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CheckoutContext</span><span class="p">(</span><span class="n">CustomerIsActive</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">DomainPolicies</span><span class="p">.</span><span class="n">ApplyAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">context</span><span class="p">,</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">ActiveCustomerPolicy</span><span class="p">(),</span>
+<span class="w">    </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">details</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Messages</span><span class="p">.</span><span class="n">Concat</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">));</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="n">Environment</span><span class="p">.</span><span class="n">NewLine</span><span class="p">,</span><span class="w"> </span><span class="n">details</span><span class="p">));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">&quot;Checkout policies passed.&quot;</span><span class="p">);</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">CheckoutContext</span><span class="p">(</span><span class="kt">bool</span><span class="w"> </span><span class="n">CustomerIsActive</span><span class="p">);</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ActiveCustomerPolicy</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DomainPolicyBase</span><span class="o">&lt;</span><span class="n">CheckoutContext</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ApplyAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">CheckoutContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span>
+<span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">            </span><span class="n">context</span><span class="p">.</span><span class="n">CustomerIsActive</span>
+<span class="w">                </span><span class="o">?</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Success</span><span class="p">()</span>
+<span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="n">Result</span><span class="p">.</span><span class="n">Failure</span><span class="p">().</span><span class="n">WithMessage</span><span class="p">(</span><span class="s">&quot;Customer must be active.&quot;</span><span class="p">));</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span><code>Checkout policies passed.
+</code></pre></div>
+<h2 id="core-building-blocks">Core building blocks<a class="headerlink" href="#core-building-blocks" title="Permanent link">&para;</a></h2>
 <h3 id="idomainpolicytcontext"><code>IDomainPolicy&lt;TContext&gt;</code><a class="headerlink" href="#idomainpolicytcontext" title="Permanent link">&para;</a></h3>
 <p>This is the core contract:</p>
 <ul>
 <li><code>IsEnabledAsync(...)</code> decides whether the policy should run for the supplied context</li>
 <li><code>ApplyAsync(...)</code> performs the actual business check and returns an <code>IResult</code></li>
 </ul>
-<p>That separation is important because some policies are conditional rather than universally applicable.</p>
+<p>This separation allows a policy to be skipped for contexts where it does not apply.</p>
 <h3 id="domainpolicybasetcontext"><code>DomainPolicyBase&lt;TContext&gt;</code><a class="headerlink" href="#domainpolicybasetcontext" title="Permanent link">&para;</a></h3>
 <p>Most policies can inherit from <code>DomainPolicyBase&lt;TContext&gt;</code>, which already provides a default <code>IsEnabledAsync(...)</code> implementation returning <code>true</code>. You only override it when the policy should be skipped for some contexts.</p>
 <h3 id="domainpolicies"><code>DomainPolicies</code><a class="headerlink" href="#domainpolicies" title="Permanent link">&para;</a></h3>
@@ -3571,7 +4499,7 @@
 <li><code>StopOnPolicyFailure</code>: stop at the first failure and return the partial result</li>
 <li><code>ThrowOnPolicyFailure</code>: raise a <code>DomainPolicyException</code> on the first failure</li>
 </ul>
-<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<h2 id="policy-definitions">Policy definitions<a class="headerlink" href="#policy-definitions" title="Permanent link">&para;</a></h2>
 <h3 id="define-a-policy-context">Define a policy context<a class="headerlink" href="#define-a-policy-context" title="Permanent link">&para;</a></h3>
 <p>The context is the input model against which policies are evaluated:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">CheckoutContext</span><span class="p">(</span>
@@ -3618,7 +4546,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="executing-policies">Executing Policies<a class="headerlink" href="#executing-policies" title="Permanent link">&para;</a></h2>
+<h2 id="executing-policies">Executing policies<a class="headerlink" href="#executing-policies" title="Permanent link">&para;</a></h2>
 <h3 id="single-policy">Single policy<a class="headerlink" href="#single-policy" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">DomainPolicies</span><span class="p">.</span><span class="n">ApplyAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">context</span><span class="p">,</span>
@@ -3636,22 +4564,26 @@
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>If a policy is disabled through <code>IsEnabledAsync(...)</code>, it is skipped and does not contribute to the aggregated result.</p>
-<h2 id="returning-policy-specific-values">Returning Policy-Specific Values<a class="headerlink" href="#returning-policy-specific-values" title="Permanent link">&para;</a></h2>
+<h2 id="returning-policy-specific-values">Returning policy-specific values<a class="headerlink" href="#returning-policy-specific-values" title="Permanent link">&para;</a></h2>
 <p>Policies are not limited to plain success/failure. Because <code>ApplyAsync(...)</code> returns <code>IResult</code>, a policy can return <code>Result&lt;T&gt;</code> or <code>DomainPolicyResult&lt;T&gt;</code>, and <code>DomainPolicies</code> stores the underlying value in <code>PolicyResults</code>.</p>
 <p>That makes policies useful for decision outputs such as risk scores, approval levels, or computed limits.</p>
-<p>Conceptually:</p>
+<p>If <code>LargeOrderApprovalPolicy.ApplyAsync</code> returns a <code>Result&lt;ApprovalLevel&gt;</code>, retrieve that value with:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">approvalLevel</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">PolicyResults</span>
 <span class="w">    </span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="n">LargeOrderApprovalPolicy</span><span class="p">,</span><span class="w"> </span><span class="n">ApprovalLevel</span><span class="o">?&gt;</span><span class="p">();</span>
 </code></pre></div>
 <p>This lets one policy set produce both validation failures and domain decision data.</p>
-<h2 id="failure-handling">Failure Handling<a class="headerlink" href="#failure-handling" title="Permanent link">&para;</a></h2>
+<p>Values are keyed by the concrete policy type. If the same policy type runs more than once in one
+call, the later value replaces the earlier value.</p>
+<h2 id="failure-handling">Failure handling<a class="headerlink" href="#failure-handling" title="Permanent link">&para;</a></h2>
 <h3 id="continue">Continue<a class="headerlink" href="#continue" title="Permanent link">&para;</a></h3>
 <p>Use <code>ContinueOnPolicyFailure</code> when you want the caller to see all policy failures at once.</p>
 <h3 id="stop">Stop<a class="headerlink" href="#stop" title="Permanent link">&para;</a></h3>
 <p>Use <code>StopOnPolicyFailure</code> when later policies depend on earlier policies being satisfied or when the first failure is enough.</p>
 <h3 id="throw">Throw<a class="headerlink" href="#throw" title="Permanent link">&para;</a></h3>
-<p>Use <code>ThrowOnPolicyFailure</code> when a policy violation should escape as an exception. In that case the framework throws <code>DomainPolicyException</code>, which carries the underlying result and integrates naturally with the presentation-layer exception handling documented in <a href="../features-presentation-exception-handling/">Exception Handling</a>.</p>
-<h2 id="domain-policies-vs-rules">Domain Policies vs Rules<a class="headerlink" href="#domain-policies-vs-rules" title="Permanent link">&para;</a></h2>
+<p>Use <code>ThrowOnPolicyFailure</code> when a policy violation should escape as an exception. In that case the
+framework throws <code>DomainPolicyException</code>, which carries the aggregated result and can be handled by
+the presentation-layer exception handling documented in <a href="../features-presentation-exception-handling/">Exception Handling</a>.</p>
+<h2 id="domain-policies-and-rules">Domain policies and rules<a class="headerlink" href="#domain-policies-and-rules" title="Permanent link">&para;</a></h2>
 <p>Use domain policies when:</p>
 <ul>
 <li>the logic is contextual and decision-oriented</li>
@@ -3665,8 +4597,8 @@
 <li>the checks are mostly local predicates</li>
 <li>you want inline rule composition rather than named policy objects</li>
 </ul>
-<p>These features work well together. A domain policy can internally use the Rules feature and then return a <code>Result</code>.</p>
-<h2 id="relationship-to-other-features">Relationship To Other Features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
+<p>A domain policy can use the Rules feature internally and return its <code>Result</code>.</p>
+<h2 id="relationship-to-other-features">Relationship to other features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-domain/">Domain</a> covers aggregates, value objects, typed ids, and fluent aggregate changes.</li>
 <li><a href="../features-results/">Results</a> explains the result model used by domain policies.</li>
@@ -3751,7 +4683,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3759,6 +4691,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

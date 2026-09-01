@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class HandlerCacheInvalidateAttribute | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Marks a request handler to invalidate cache entries whose keys start with a specified prefix after execution.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class HandlerCacheInvalidateAttribute
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Marks a request handler to invalidate cache entries whose keys start with a specified prefix after execution.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -265,7 +266,8 @@ public class HandlerCacheInvalidateAttribute : Attribute</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.HandlerCacheInvalidateAttribute.html">HandlerCacheInvalidateAttribute</a> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -275,7 +277,8 @@ public class HandlerCacheInvalidateAttribute : Attribute</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The cache-key prefix to invalidate.</p>
+</dd>
   </dl>
 
 
@@ -286,6 +289,12 @@ public class HandlerCacheInvalidateAttribute : Attribute</code></pre>
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">key</code> is null or empty.</p>
+</dd>
+  </dl>
 
 
 
@@ -300,7 +309,8 @@ public class HandlerCacheInvalidateAttribute : Attribute</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the cache-key prefix to invalidate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">

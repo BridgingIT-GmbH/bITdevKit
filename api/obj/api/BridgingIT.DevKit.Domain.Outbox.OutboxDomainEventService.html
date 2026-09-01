@@ -271,7 +271,8 @@ to avoid running after the dependency injection container has been disposed.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>OutboxDomainEventService</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -281,15 +282,20 @@ to avoid running after the dependency injection container has been disposed.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
     <dt><code>worker</code> <a class="xref" href="BridgingIT.DevKit.Domain.Outbox.IOutboxDomainEventWorker.html">IOutboxDomainEventWorker</a></dt>
-    <dd></dd>
+    <dd><p>The worker used by the operation.</p>
+</dd>
     <dt><code>applicationLifetime</code> <span class="xref">IHostApplicationLifetime</span></dt>
-    <dd></dd>
+    <dd><p>The application lifetime used by the operation.</p>
+</dd>
     <dt><code>databaseReadyService</code> <a class="xref" href="BridgingIT.DevKit.Common.IDatabaseReadyService.html">IDatabaseReadyService</a></dt>
-    <dd></dd>
+    <dd><p>The database ready service used by the operation.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Outbox.OutboxDomainEventOptions.html">OutboxDomainEventOptions</a></dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
 

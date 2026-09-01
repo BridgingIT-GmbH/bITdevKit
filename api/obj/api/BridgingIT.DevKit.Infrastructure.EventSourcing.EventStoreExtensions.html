@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EventStoreExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents event store extensions.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class EventStoreExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EventSourcing.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents event store extensions.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class EventStoreExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the convert from blob operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,19 +142,24 @@ Class EventStoreExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>data</code> <span class="xref">byte</span>[]</dt>
-    <dd></dd>
+    <dd><p>The data used by the operation.</p>
+</dd>
     <dt><code>typename</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The typename used by the operation.</p>
+</dd>
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The serializer used by the operation.</p>
+</dd>
     <dt><code>typeSelector</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.IAggregateTypeSelector.html">IAggregateTypeSelector</a></dt>
-    <dd></dd>
+    <dd><p>The type selector used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.EventSourcingAggregateRoot.html">EventSourcingAggregateRoot</a></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -172,7 +179,8 @@ Class EventStoreExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the convert from blob operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -182,19 +190,24 @@ Class EventStoreExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>data</code> <span class="xref">byte</span>[]</dt>
-    <dd></dd>
+    <dd><p>The data used by the operation.</p>
+</dd>
     <dt><code>typename</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The typename used by the operation.</p>
+</dd>
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The serializer used by the operation.</p>
+</dd>
     <dt><code>typeSelector</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.IEventTypeSelector.html">IEventTypeSelector</a></dt>
-    <dd></dd>
+    <dd><p>The type selector used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -214,7 +227,8 @@ Class EventStoreExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the convert to blob operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -224,15 +238,18 @@ Class EventStoreExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregate</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.EventSourcingAggregateRoot.html">EventSourcingAggregateRoot</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate used by the operation.</p>
+</dd>
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The serializer used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.EventBlob.html">EventBlob</a></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -252,7 +269,8 @@ Class EventStoreExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the convert to blob operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -262,15 +280,18 @@ Class EventStoreExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>event</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The event used by the operation.</p>
+</dd>
     <dt><code>serializer</code> <a class="xref" href="BridgingIT.DevKit.Common.ISerializer.html">ISerializer</a></dt>
-    <dd></dd>
+    <dd><p>The serializer used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.EventBlob.html">EventBlob</a></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 

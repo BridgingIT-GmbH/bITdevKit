@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FileMonitoringLocationScanJob.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class FileMonitoringLocationScanJob.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.Jobs.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class FileMonitoringLocationScanJob.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the event processed operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,19 +143,26 @@ public static void LogEventProcessed(ILogger logger, string logKey, string locat
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>eventType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The event type used by the operation.</p>
+</dd>
     <dt><code>filePath</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The file path used by the operation.</p>
+</dd>
     <dt><code>fileSize</code> <span class="xref">long</span>?</dt>
-    <dd></dd>
+    <dd><p>The file size used by the operation.</p>
+</dd>
     <dt><code>detectedDate</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>The detected date used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -174,7 +183,8 @@ public static void LogEventProcessed(ILogger logger, string logKey, string locat
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the missing location operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -185,9 +195,11 @@ public static void LogMissingLocation(ILogger logger, string logKey)</code></pre
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
   </dl>
 
 
@@ -208,7 +220,8 @@ public static void LogMissingLocation(ILogger logger, string logKey)</code></pre
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the no changes operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -219,11 +232,14 @@ public static void LogNoChanges(ILogger logger, string logKey, string locationNa
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -244,7 +260,8 @@ public static void LogNoChanges(ILogger logger, string logKey, string locationNa
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the progress operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -255,19 +272,26 @@ public static void LogProgress(ILogger logger, string logKey, string locationNam
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>filesScanned</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The files scanned used by the operation.</p>
+</dd>
     <dt><code>totalFiles</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The total files used by the operation.</p>
+</dd>
     <dt><code>percentageComplete</code> <span class="xref">double</span></dt>
-    <dd></dd>
+    <dd><p>The percentage complete used by the operation.</p>
+</dd>
     <dt><code>timeElapsed</code> <span class="xref">double</span></dt>
-    <dd></dd>
+    <dd><p>The time elapsed used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -288,7 +312,8 @@ public static void LogProgress(ILogger logger, string logKey, string locationNam
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the scan completed operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -299,13 +324,17 @@ public static void LogScanCompleted(ILogger logger, string logKey, string locati
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>eventCount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The event count used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -326,7 +355,8 @@ public static void LogScanCompleted(ILogger logger, string logKey, string locati
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the start scan operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -337,13 +367,17 @@ public static void LogStartScan(ILogger logger, string logKey, string locationNa
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileScanOptions.html">FileScanOptions</a></dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
   </dl>
 
 

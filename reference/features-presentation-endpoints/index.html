@@ -6,14 +6,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-endpoints/">
       
       
-        <link rel="prev" href="../features-presentation/">
+        <link rel="prev" href="../features-presentation-logging/">
       
       
         <link rel="next" href="../features-cli/">
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#presentation-endpoints-feature-documentation" class="md-skip">
+        <a href="#presentation-endpoints" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2042,15 +2149,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2068,8 +2180,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2094,6 +2206,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2182,10 +2350,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2195,8 +2362,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2206,17 +2373,12 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#core-contracts" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Contracts
+        Key Features
       
     </span>
   </a>
@@ -2232,14 +2394,58 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Architecture">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core contracts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture details">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#class-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Class Diagram
+        Class diagram
       
     </span>
   </a>
@@ -2247,10 +2453,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sequence-registration-mapping" class="md-nav__link">
+  <a href="#registration-and-mapping-sequence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sequence (Registration → Mapping)
+        Registration and mapping sequence
       
     </span>
   </a>
@@ -2266,19 +2472,19 @@
   <a href="#getting-started" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting Started
+        Getting started
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting Started">
+    <nav class="md-nav" aria-label="Getting started">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#di-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DI Registration
+        DI registration
       
     </span>
   </a>
@@ -2289,7 +2495,7 @@
   <a href="#mapping-in-the-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mapping in the Pipeline
+        Mapping in the pipeline
       
     </span>
   </a>
@@ -2300,7 +2506,7 @@
   <a href="#grouping-and-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grouping and Authorization
+        Grouping and authorization
       
     </span>
   </a>
@@ -2316,7 +2522,7 @@
   <a href="#built-in-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-in Endpoints
+        Built-in endpoints
       
     </span>
   </a>
@@ -2324,10 +2530,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-usage" class="md-nav__link">
+  <a href="#detailed-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Usage
+        Detailed example
       
     </span>
   </a>
@@ -2349,19 +2555,19 @@
   <a href="#appendix-a-minimal-api-syntax" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A — Minimal API Syntax
+        Appendix A: minimal API syntax
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix A — Minimal API Syntax">
+    <nav class="md-nav" aria-label="Appendix A: minimal API syntax">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#grouping-and-authorization-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grouping and Authorization Options
+        Grouping and authorization options
       
     </span>
   </a>
@@ -2372,7 +2578,7 @@
   <a href="#endpoint-registration-and-mapping-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint Registration and Mapping Lifecycle
+        Endpoint registration and mapping lifecycle
       
     </span>
   </a>
@@ -2383,7 +2589,7 @@
   <a href="#endpoint-system-test-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint System Test Coverage
+        Endpoint system test coverage
       
     </span>
   </a>
@@ -2394,7 +2600,7 @@
   <a href="#result-and-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result and Metadata
+        Result and metadata
       
     </span>
   </a>
@@ -2405,19 +2611,19 @@
   <a href="#result-mapping-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result Mapping Helpers
+        Result mapping helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Result Mapping Helpers">
+    <nav class="md-nav" aria-label="Result mapping helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#helper-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Helper Overview
+        Helper overview
       
     </span>
   </a>
@@ -2428,7 +2634,7 @@
   <a href="#usage-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage Examples
+        Usage examples
       
     </span>
   </a>
@@ -2439,7 +2645,7 @@
   <a href="#custom-error-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Error Handlers
+        Custom error handlers
       
     </span>
   </a>
@@ -2450,7 +2656,7 @@
   <a href="#notes-and-constraints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes and Constraints
+        Notes and constraints
       
     </span>
   </a>
@@ -2651,6 +2857,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2718,15 +2952,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2744,8 +2983,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3025,15 +3264,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3051,8 +3295,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3132,6 +3376,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3168,10 +3943,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3181,8 +3955,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3192,17 +3966,12 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#core-contracts" class="md-nav__link">
+  <a href="#key-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Contracts
+        Key Features
       
     </span>
   </a>
@@ -3218,14 +3987,58 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Architecture">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-contracts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core contracts
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture-details" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture details
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture details">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#class-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Class Diagram
+        Class diagram
       
     </span>
   </a>
@@ -3233,10 +4046,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#sequence-registration-mapping" class="md-nav__link">
+  <a href="#registration-and-mapping-sequence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Sequence (Registration → Mapping)
+        Registration and mapping sequence
       
     </span>
   </a>
@@ -3252,19 +4065,19 @@
   <a href="#getting-started" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting Started
+        Getting started
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting Started">
+    <nav class="md-nav" aria-label="Getting started">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#di-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DI Registration
+        DI registration
       
     </span>
   </a>
@@ -3275,7 +4088,7 @@
   <a href="#mapping-in-the-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Mapping in the Pipeline
+        Mapping in the pipeline
       
     </span>
   </a>
@@ -3286,7 +4099,7 @@
   <a href="#grouping-and-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grouping and Authorization
+        Grouping and authorization
       
     </span>
   </a>
@@ -3302,7 +4115,7 @@
   <a href="#built-in-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-in Endpoints
+        Built-in endpoints
       
     </span>
   </a>
@@ -3310,10 +4123,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#example-usage" class="md-nav__link">
+  <a href="#detailed-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Usage
+        Detailed example
       
     </span>
   </a>
@@ -3335,19 +4148,19 @@
   <a href="#appendix-a-minimal-api-syntax" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A — Minimal API Syntax
+        Appendix A: minimal API syntax
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix A — Minimal API Syntax">
+    <nav class="md-nav" aria-label="Appendix A: minimal API syntax">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#grouping-and-authorization-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Grouping and Authorization Options
+        Grouping and authorization options
       
     </span>
   </a>
@@ -3358,7 +4171,7 @@
   <a href="#endpoint-registration-and-mapping-lifecycle" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint Registration and Mapping Lifecycle
+        Endpoint registration and mapping lifecycle
       
     </span>
   </a>
@@ -3369,7 +4182,7 @@
   <a href="#endpoint-system-test-coverage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint System Test Coverage
+        Endpoint system test coverage
       
     </span>
   </a>
@@ -3380,7 +4193,7 @@
   <a href="#result-and-metadata" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result and Metadata
+        Result and metadata
       
     </span>
   </a>
@@ -3391,19 +4204,19 @@
   <a href="#result-mapping-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result Mapping Helpers
+        Result mapping helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Result Mapping Helpers">
+    <nav class="md-nav" aria-label="Result mapping helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#helper-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Helper Overview
+        Helper overview
       
     </span>
   </a>
@@ -3414,7 +4227,7 @@
   <a href="#usage-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage Examples
+        Usage examples
       
     </span>
   </a>
@@ -3425,7 +4238,7 @@
   <a href="#custom-error-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Error Handlers
+        Custom error handlers
       
     </span>
   </a>
@@ -3436,7 +4249,7 @@
   <a href="#notes-and-constraints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Notes and Constraints
+        Notes and constraints
       
     </span>
   </a>
@@ -3496,10 +4309,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3539,43 +4370,45 @@
   
 
 
-<h1 id="presentation-endpoints-feature-documentation">Presentation Endpoints Feature Documentation<a class="headerlink" href="#presentation-endpoints-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="presentation-endpoints">Presentation Endpoints<a class="headerlink" href="#presentation-endpoints" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Define minimal API endpoints as modular classes with automatic discovery and mapping.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#presentation-endpoints-feature-documentation">Presentation Endpoints Feature Documentation</a><ul>
-<li><a href="#overview">Overview</a><ul>
+<li><a href="#presentation-endpoints">Presentation Endpoints</a><ul>
+<li><a href="#overview">Overview</a></li>
 <li><a href="#challenges">Challenges</a></li>
 <li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#core-contracts">Core contracts</a></li>
+<li><a href="#architecture-details">Architecture details</a><ul>
+<li><a href="#class-diagram">Class diagram</a></li>
+<li><a href="#registration-and-mapping-sequence">Registration and mapping sequence</a></li>
 </ul>
 </li>
-<li><a href="#core-contracts">Core Contracts</a></li>
-<li><a href="#architecture">Architecture</a><ul>
-<li><a href="#class-diagram">Class Diagram</a></li>
-<li><a href="#sequence-registration-mapping">Sequence (Registration → Mapping)</a></li>
+<li><a href="#getting-started">Getting started</a><ul>
+<li><a href="#di-registration">DI registration</a></li>
+<li><a href="#mapping-in-the-pipeline">Mapping in the pipeline</a></li>
+<li><a href="#grouping-and-authorization">Grouping and authorization</a></li>
 </ul>
 </li>
-<li><a href="#getting-started">Getting Started</a><ul>
-<li><a href="#di-registration">DI Registration</a></li>
-<li><a href="#mapping-in-the-pipeline">Mapping in the Pipeline</a></li>
-<li><a href="#grouping-and-authorization">Grouping and Authorization</a></li>
-</ul>
-</li>
-<li><a href="#built-in-endpoints">Built-in Endpoints</a></li>
-<li><a href="#example-usage">Example Usage</a></li>
+<li><a href="#built-in-endpoints">Built-in endpoints</a></li>
+<li><a href="#detailed-example">Detailed example</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
-<li><a href="#appendix-a-minimal-api-syntax">Appendix A — Minimal API Syntax</a><ul>
-<li><a href="#grouping-and-authorization-options">Grouping and Authorization Options</a></li>
-<li><a href="#endpoint-registration-and-mapping-lifecycle">Endpoint Registration and Mapping Lifecycle</a></li>
-<li><a href="#endpoint-system-test-coverage">Endpoint System Test Coverage</a></li>
-<li><a href="#result-and-metadata">Result and Metadata</a></li>
-<li><a href="#result-mapping-helpers">Result Mapping Helpers</a><ul>
-<li><a href="#helper-overview">Helper Overview</a></li>
-<li><a href="#usage-examples">Usage Examples</a></li>
-<li><a href="#custom-error-handlers">Custom Error Handlers</a></li>
-<li><a href="#notes-and-constraints">Notes and Constraints</a></li>
+<li><a href="#appendix-a-minimal-api-syntax">Appendix A: minimal API syntax</a><ul>
+<li><a href="#grouping-and-authorization-options">Grouping and authorization options</a></li>
+<li><a href="#endpoint-registration-and-mapping-lifecycle">Endpoint registration and mapping lifecycle</a></li>
+<li><a href="#endpoint-system-test-coverage">Endpoint system test coverage</a></li>
+<li><a href="#result-and-metadata">Result and metadata</a></li>
+<li><a href="#result-mapping-helpers">Result mapping helpers</a><ul>
+<li><a href="#helper-overview">Helper overview</a></li>
+<li><a href="#usage-examples">Usage examples</a></li>
+<li><a href="#custom-error-handlers">Custom error handlers</a></li>
+<li><a href="#notes-and-constraints">Notes and constraints</a></li>
 </ul>
 </li>
 </ul>
@@ -3586,21 +4419,80 @@
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The Endpoints feature provides a clean, modular way to define Minimal API endpoints as composable classes. Each endpoint set implements a small contract and can be registered and mapped automatically, with configurable route groups, OpenAPI metadata, authorization, CORS, rate limiting, and discovery via DI scanning.</p>
-<h3 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h3>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Modularity: Keep endpoint definitions isolated per feature or module.</li>
 <li>Discovery: Register endpoints without manual wiring for each class.</li>
 <li>Consistency: Apply route grouping, endpoint metadata, authorization, CORS, and rate limiting consistently across endpoints.</li>
 <li>Observability: Log registration to aid debugging in multi-module apps.</li>
 </ul>
-<h3 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h3>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Contracts: <code>IEndpoints</code> defines the minimal surface; <code>EndpointsBase</code> provides group and route-name helpers.</li>
 <li>Registration: DI helpers add endpoints by type, instance, or assembly scanning.</li>
 <li>Mapping: A single <code>MapEndpoints()</code> call maps all registered endpoints.</li>
 <li>Group configuration: <code>EndpointsOptionsBase</code> and <code>EndpointsOptionsBuilderBase</code> centralize group path, tags, OpenAPI metadata, authorization, CORS, rate limiting, route naming, and custom metadata.</li>
 </ul>
-<h2 id="core-contracts">Core Contracts<a class="headerlink" href="#core-contracts" title="Permanent link">&para;</a></h2>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>endpoint sets implemented as independent <code>IEndpoints</code> classes</li>
+<li>explicit, instance-based, and assembly-scanned DI registration</li>
+<li>one <code>MapEndpoints()</code> call with duplicate-mapping protection</li>
+<li>shared route grouping, naming, OpenAPI, authorization, CORS, and rate-limiting options</li>
+<li>optional mapping beneath an existing <code>RouteGroupBuilder</code></li>
+<li>Result-to-Minimal-API response helpers</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>Endpoint classes are singleton <code>IEndpoints</code> services. Each class maps its own routes, usually through <code>EndpointsBase.MapGroup(...)</code>. At startup, <code>MapEndpoints()</code> resolves every enabled, unmapped endpoint set from DI, calls <code>Map(...)</code>, and marks that instance as registered.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>keep one module's routes together without central route wiring</li>
+<li>discover endpoint sets from one or more assemblies</li>
+<li>apply shared authorization and cross-cutting metadata to a route group</li>
+<li>map DevKit <code>Result</code> values to consistent Minimal API responses</li>
+<li>mount all registered endpoints under an application-level route group</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example defines an endpoint set, registers its options and endpoint type, maps all endpoint sets once, and returns a visible response.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Presentation.Web</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.AspNetCore.Routing</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">EchoEndpointsOptions</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddEndpoints</span><span class="o">&lt;</span><span class="n">EchoEndpoints</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">record</span><span class="w"> </span><span class="nf">EchoResponse</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="p">);</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">EchoEndpoints</span><span class="p">(</span><span class="n">EchoEndpointsOptions</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsBase</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Map</span><span class="p">(</span><span class="n">IEndpointRouteBuilder</span><span class="w"> </span><span class="n">app</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="n">app</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;pong&quot;</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">                </span><span class="n">TypedResults</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">EchoResponse</span><span class="p">(</span><span class="n">message</span><span class="p">)))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Get&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">EchoResponse</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">EchoEndpointsOptions</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsOptionsBase</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">EchoEndpointsOptions</span><span class="p">()</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">GroupPath</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;/api/echo&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">GroupTag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Echo&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">RouteNamePrefix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Echo&quot;</span><span class="p">;</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><code>GET /api/echo?message=hello</code> returns <code>{"message":"hello"}</code>. Repeated calls to <code>app.MapEndpoints()</code> do not remap the same singleton endpoint instance.</p>
+<h2 id="core-contracts">Core contracts<a class="headerlink" href="#core-contracts" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>IEndpoints</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Presentation.Web/Endpoints/IEndpoints.cs">src/Presentation.Web/Endpoints/IEndpoints.cs</a>)</li>
 <li><code>Enabled</code>: Toggle endpoint availability.</li>
@@ -3629,8 +4521,8 @@
 <li>Mapping extension (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs">src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs</a>)</li>
 <li><code>MapEndpoints(WebApplication, RouteGroupBuilder?)</code>: Iterates <code>IEndpoints</code> in DI and calls <code>Map</code> when <code>Enabled &amp;&amp; !IsRegistered</code>.</li>
 </ul>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
-<h3 id="class-diagram">Class Diagram<a class="headerlink" href="#class-diagram" title="Permanent link">&para;</a></h3>
+<h2 id="architecture-details">Architecture details<a class="headerlink" href="#architecture-details" title="Permanent link">&para;</a></h2>
+<h3 id="class-diagram">Class diagram<a class="headerlink" href="#class-diagram" title="Permanent link">&para;</a></h3>
 <pre class="mermaid"><code>classDiagram
   class IEndpoints {
     +bool Enabled
@@ -3680,7 +4572,7 @@
   EndpointsOptionsBuilderBase~TOptions,TBuilder~ ..&gt; EndpointsOptionsBase : builds
   ServiceCollectionExtensions ..&gt; IEndpoints : register
   ApplicationApplicationExtensions ..&gt; IEndpoints : map</code></pre>
-<h3 id="sequence-registration-mapping">Sequence (Registration → Mapping)<a class="headerlink" href="#sequence-registration-mapping" title="Permanent link">&para;</a></h3>
+<h3 id="registration-and-mapping-sequence">Registration and mapping sequence<a class="headerlink" href="#registration-and-mapping-sequence" title="Permanent link">&para;</a></h3>
 <pre class="mermaid"><code>sequenceDiagram
   participant Module as Module/Startup
   participant DI as IServiceCollection
@@ -3696,8 +4588,8 @@
   Ext-&gt;&gt;Ep: foreach Enabled &amp;&amp; !IsRegistered
   Ep--&gt;&gt;Ext: Map(routes)
   Ext--&gt;&gt;Ep: IsRegistered = true</code></pre>
-<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
-<h3 id="di-registration">DI Registration<a class="headerlink" href="#di-registration" title="Permanent link">&para;</a></h3>
+<h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<h3 id="di-registration">DI registration<a class="headerlink" href="#di-registration" title="Permanent link">&para;</a></h3>
 <p>Register endpoints explicitly by type, by instance, or via assembly scanning. Type-based registrations are added as singleton <code>IEndpoints</code> services.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Per type</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddEndpoints</span><span class="o">&lt;</span><span class="n">CoreTodoItemEndpoints</span><span class="o">&gt;</span><span class="p">();</span>
@@ -3706,7 +4598,7 @@
 <span class="c1">// Or register all endpoint classes from assemblies</span>
 <span class="n">services</span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">AppDomain</span><span class="p">.</span><span class="n">CurrentDomain</span><span class="p">.</span><span class="n">GetAssemblies</span><span class="p">());</span>
 </code></pre></div>
-<h3 id="mapping-in-the-pipeline">Mapping in the Pipeline<a class="headerlink" href="#mapping-in-the-pipeline" title="Permanent link">&para;</a></h3>
+<h3 id="mapping-in-the-pipeline">Mapping in the pipeline<a class="headerlink" href="#mapping-in-the-pipeline" title="Permanent link">&para;</a></h3>
 <p>Map all registered endpoints once during app startup.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// After building the WebApplication</span>
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
@@ -3715,7 +4607,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">api</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api&quot;</span><span class="p">);</span>
 <span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">(</span><span class="n">api</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="grouping-and-authorization">Grouping and Authorization<a class="headerlink" href="#grouping-and-authorization" title="Permanent link">&para;</a></h3>
+<h3 id="grouping-and-authorization">Grouping and authorization<a class="headerlink" href="#grouping-and-authorization" title="Permanent link">&para;</a></h3>
 <p>Use <code>EndpointsBase.MapGroup(...)</code> with options to apply path, tags, OpenAPI metadata, authorization, CORS, rate limiting, and custom metadata consistently.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">MyEndpoints</span><span class="p">(</span><span class="n">MyEndpointsOptions</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsBase</span>
 <span class="p">{</span>
@@ -3754,7 +4646,7 @@
 <span class="w">  </span><span class="p">.</span><span class="n">RequireRateLimitingPolicy</span><span class="p">(</span><span class="s">&quot;DefaultApi&quot;</span><span class="p">)</span>
 <span class="w">  </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="built-in-endpoints">Built-in Endpoints<a class="headerlink" href="#built-in-endpoints" title="Permanent link">&para;</a></h2>
+<h2 id="built-in-endpoints">Built-in endpoints<a class="headerlink" href="#built-in-endpoints" title="Permanent link">&para;</a></h2>
 <ul>
 <li><code>SystemEndpoints</code> (<a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Presentation.Web/Endpoints/SystemEndpoints.cs">src/Presentation.Web/Endpoints/SystemEndpoints.cs</a>)</li>
 <li>Grouped under a configurable <code>GroupPath</code>; provides a root discovery route plus optional <code>echo</code>, <code>info</code>, and <code>modules</code> routes.</li>
@@ -3771,7 +4663,7 @@
 <li>Control endpoints: trigger, pause, resume, interrupt, purge runs.</li>
 <li>Uses Minimal API method chains: <code>Produces&lt;T&gt;()</code>, <code>WithName(...)</code>, <code>WithDescription(...)</code> for metadata.</li>
 </ul>
-<h2 id="example-usage">Example Usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h2>
+<h2 id="detailed-example">Detailed example<a class="headerlink" href="#detailed-example" title="Permanent link">&para;</a></h2>
 <p>Define a minimal endpoint using <code>EndpointsBase</code> that serves <code>GET /echo</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">EchoEndpoints</span><span class="p">(</span><span class="n">EchoEndpointsOptions</span><span class="w"> </span><span class="n">options</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsBase</span>
 <span class="p">{</span>
@@ -3818,7 +4710,7 @@
 <li>Route names missing prefix: Use <code>.WithName(options, name)</code> or <code>BuildRouteName(options, name)</code> when calling <code>WithName(...)</code>; the prefix metadata is not applied automatically by ASP.NET Core.</li>
 <li>Discovery by assembly: Confirm assemblies contain concrete classes implementing <code>IEndpoints</code>.</li>
 </ul>
-<h2 id="appendix-a-minimal-api-syntax">Appendix A — Minimal API Syntax<a class="headerlink" href="#appendix-a-minimal-api-syntax" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-a-minimal-api-syntax">Appendix A: minimal API syntax<a class="headerlink" href="#appendix-a-minimal-api-syntax" title="Permanent link">&para;</a></h2>
 <p>Endpoints follow ASP.NET Core Minimal API conventions via fluent mapping on <code>RouteGroupBuilder</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Requester-based GET (Result&lt;T&gt; → HTTP)</span>
 <span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;items&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span>
@@ -3859,7 +4751,7 @@
 <span class="c1">// Requester signature (Result&lt;T&gt;)</span>
 <span class="c1">// Task&lt;Result&lt;TValue&gt;&gt; SendAsync&lt;TValue&gt;(IRequest&lt;TValue&gt; request, SendOptions options = null, CancellationToken ct = default);</span>
 </code></pre></div>
-<h3 id="grouping-and-authorization-options">Grouping and Authorization Options<a class="headerlink" href="#grouping-and-authorization-options" title="Permanent link">&para;</a></h3>
+<h3 id="grouping-and-authorization-options">Grouping and authorization options<a class="headerlink" href="#grouping-and-authorization-options" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Build groups with <code>EndpointsBase.MapGroup(app, options)</code> for consistent path, tags, docs metadata, authorization, CORS, rate limiting, and custom metadata.</li>
 <li>Routing and OpenAPI options:</li>
@@ -3889,7 +4781,7 @@
 <li><code>Metadata</code>: attach arbitrary endpoint metadata to the whole group.</li>
 <li><code>ExcludeFromDescription = true</code>: hide endpoints from OpenAPI description.</li>
 </ul>
-<h3 id="endpoint-registration-and-mapping-lifecycle">Endpoint Registration and Mapping Lifecycle<a class="headerlink" href="#endpoint-registration-and-mapping-lifecycle" title="Permanent link">&para;</a></h3>
+<h3 id="endpoint-registration-and-mapping-lifecycle">Endpoint registration and mapping lifecycle<a class="headerlink" href="#endpoint-registration-and-mapping-lifecycle" title="Permanent link">&para;</a></h3>
 <ol>
 <li>Register endpoint instances, types, or assemblies with <code>AddEndpoints(...)</code>.</li>
 <li>Build the <code>WebApplication</code>.</li>
@@ -3898,25 +4790,25 @@
 <li>After <code>Map</code> is called, <code>IsRegistered</code> is set to <code>true</code> for that endpoint instance.</li>
 </ol>
 <p>This lifecycle keeps endpoint classes modular while still making duplicate mapping explicit and avoidable.</p>
-<h3 id="endpoint-system-test-coverage">Endpoint System Test Coverage<a class="headerlink" href="#endpoint-system-test-coverage" title="Permanent link">&para;</a></h3>
+<h3 id="endpoint-system-test-coverage">Endpoint system test coverage<a class="headerlink" href="#endpoint-system-test-coverage" title="Permanent link">&para;</a></h3>
 <p>The endpoint system is covered by focused unit tests in <a href="https://github.com/bridgingIT/bITdevKit/blob/main/tests/Presentation.UnitTests/Web/Endpoints">tests/Presentation.UnitTests/Web/Endpoints</a>:</p>
 <ul>
 <li><code>EndpointsBaseTests</code>: group metadata, authorization precedence, path normalization, CORS, rate limiting, route-name prefix metadata, and custom metadata.</li>
 <li><code>EndpointsOptionsBuilderBaseTests</code>: fluent builder methods and null-array normalization.</li>
 <li><code>EndpointRegistrationTests</code>: DI registration overloads, disabled registration, type registration, <code>MapEndpoints(...)</code>, duplicate prevention, and mapping into a supplied route group.</li>
 </ul>
-<h3 id="result-and-metadata">Result and Metadata<a class="headerlink" href="#result-and-metadata" title="Permanent link">&para;</a></h3>
+<h3 id="result-and-metadata">Result and metadata<a class="headerlink" href="#result-and-metadata" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Map <code>Result&lt;T&gt;</code> to HTTP using helpers (e.g., <code>MapHttpOk()</code>, <code>MapHttpOkAll()</code>, <code>MapHttpCreated(...)</code>, <code>MapHttpNoContent()</code>).</li>
 <li>Add descriptive metadata with <code>Produces&lt;T&gt;()</code>, <code>WithName(...)</code>, <code>WithDescription(...)</code> to improve API docs.</li>
 </ul>
-<h3 id="result-mapping-helpers">Result Mapping Helpers<a class="headerlink" href="#result-mapping-helpers" title="Permanent link">&para;</a></h3>
+<h3 id="result-mapping-helpers">Result mapping helpers<a class="headerlink" href="#result-mapping-helpers" title="Permanent link">&para;</a></h3>
 <p>The endpoint examples above use the built-in mapping helpers that convert <code>Result</code> and <code>Result&lt;T&gt;</code> to typed Minimal API responses. These live in:</p>
 <ul>
 <li>Result helpers: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Presentation.Web/Result/Map/ResultMapExtensions.cs">src/Presentation.Web/Result/Map/ResultMapExtensions.cs</a></li>
 <li>Core mapping: <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs">src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs</a></li>
 </ul>
-<h4 id="helper-overview">Helper Overview<a class="headerlink" href="#helper-overview" title="Permanent link">&para;</a></h4>
+<h4 id="helper-overview">Helper overview<a class="headerlink" href="#helper-overview" title="Permanent link">&para;</a></h4>
 <ul>
 <li><strong><code>MapHttpOk&lt;T&gt;(Result&lt;T&gt;)</code></strong>: Returns <code>Ok&lt;T&gt;</code> on success; maps errors to <code>Unauthorized</code>, <code>BadRequest</code>, or <code>Problem</code>. For single resources.</li>
 <li><strong><code>MapHttpOkAll&lt;T&gt;(Result&lt;T&gt;)</code></strong>: Returns <code>Ok&lt;T&gt;</code> on success without <code>NotFound</code> branch (for collections where empty is valid).</li>
@@ -3930,7 +4822,7 @@
 <li><strong>Generic <code>Map</code> overloads</strong>: Advanced mapping to <code>Results&lt;...&gt;</code> with explicit success shapes (<code>Ok</code>, <code>NoContent</code>, <code>Created&lt;T&gt;</code>) and error variants.</li>
 </ul>
 <p>All helpers perform error-to-HTTP mapping and support optional logging via <code>ILogger</code>.</p>
-<h4 id="usage-examples">Usage Examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h4>
+<h4 id="usage-examples">Usage examples<a class="headerlink" href="#usage-examples" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="c1">// Paged listing (ResultPaged&lt;T&gt; → HTTP)</span>
 <span class="k">group</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;items&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">([</span><span class="n">FromServices</span><span class="p">]</span><span class="w"> </span><span class="n">IRequester</span><span class="w"> </span><span class="n">requester</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="p">[</span><span class="n">FromQuery</span><span class="p">]</span><span class="w"> </span><span class="kt">int</span><span class="w"> </span><span class="n">size</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">ItemsFindPagedQuery</span><span class="p">(</span><span class="n">page</span><span class="p">,</span><span class="w"> </span><span class="n">size</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">ct</span><span class="p">))</span>
@@ -3952,7 +4844,7 @@
 <span class="w">  </span><span class="p">.</span><span class="n">Produces</span><span class="o">&lt;</span><span class="n">FileContentHttpResult</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">  </span><span class="p">.</span><span class="n">WithName</span><span class="p">(</span><span class="s">&quot;Items.Export&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="custom-error-handlers">Custom Error Handlers<a class="headerlink" href="#custom-error-handlers" title="Permanent link">&para;</a></h4>
+<h4 id="custom-error-handlers">Custom error handlers<a class="headerlink" href="#custom-error-handlers" title="Permanent link">&para;</a></h4>
 <p>You can plug in custom error-to-HTTP mapping for specific Result errors. Register handlers once at startup; the registry is consulted before default mapping.</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// At startup (e.g., Program.cs)</span>
 <span class="n">ResultMapHttpExtensions</span><span class="p">.</span><span class="n">RegisterErrorHandler</span><span class="o">&lt;</span><span class="n">CustomBusinessError</span><span class="o">&gt;</span><span class="p">((</span><span class="n">logger</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -3965,7 +4857,7 @@
 <span class="w">    </span><span class="n">type</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;https://example.com/errors/business-rule&quot;</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
-<h4 id="notes-and-constraints">Notes and Constraints<a class="headerlink" href="#notes-and-constraints" title="Permanent link">&para;</a></h4>
+<h4 id="notes-and-constraints">Notes and constraints<a class="headerlink" href="#notes-and-constraints" title="Permanent link">&para;</a></h4>
 <ul>
 <li><code>MapHttpOk&lt;T&gt;</code>/<code>MapHttpCreated&lt;T&gt;</code> require <code>T : class</code>; null <code>Value</code> on success throws <code>InvalidOperationException</code>.</li>
 <li><code>MapHttpCreated&lt;T&gt;</code> with <code>uriFactory</code> only computes the URI for successful results; failure paths ignore the URI.</li>
@@ -4050,7 +4942,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4058,6 +4950,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

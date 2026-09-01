@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Interface IOutboxMessageWriterRepository | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Defines operations for i outbox message writer repository.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Interface IOutboxMessageWriterRepository
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.Outbox.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Defines operations for i outbox message writer repository.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -256,7 +257,8 @@ Interface IOutboxMessageWriterRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds one.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -266,17 +268,21 @@ Interface IOutboxMessageWriterRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Outbox.OutboxMessage.html">OutboxMessage</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Outbox.OutboxMessage.html">OutboxMessage</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -296,7 +302,8 @@ Interface IOutboxMessageWriterRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the insert operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -306,15 +313,18 @@ Interface IOutboxMessageWriterRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>outboxMessage</code> <a class="xref" href="BridgingIT.DevKit.Domain.Outbox.OutboxMessage.html">OutboxMessage</a></dt>
-    <dd></dd>
+    <dd><p>The outbox message used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.Outbox.OutboxMessage.html">OutboxMessage</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

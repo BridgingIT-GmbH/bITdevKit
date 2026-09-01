@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ConditionalLinqExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides LINQ operators whose behavior is selected by a Boolean condition.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ConditionalLinqExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides LINQ operators whose behavior is selected by a Boolean condition.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -117,6 +118,10 @@ Class ConditionalLinqExtensions
 
 
 
+  <h2 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Methods return null or the type's default value for a null source. An <code>If</code> method applies its optional
+operation only when the condition is true; an <code>IfElse</code> method selects between its <code>If</code> and <code>Else</code> inputs.</p>
+</div>
 
 
   <h2 class="section" id="methods">Methods
@@ -130,7 +135,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Tests whether all items satisfy the predicate selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -177,7 +183,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Tests all items against a predicate when enabled; otherwise returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> without enumeration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -222,7 +229,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Tests whether any item satisfies the predicate selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +277,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Tests for a matching item when enabled, or for any item without filtering otherwise.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -314,7 +323,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Averages values produced by the selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -361,7 +371,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Averages projected values when enabled; otherwise returns zero without enumerating the source.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -406,7 +417,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Appends the second sequence selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -453,7 +465,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Appends a second sequence when enabled; otherwise returns the first sequence unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -498,7 +511,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Counts items accepted by the predicate selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -545,7 +559,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Counts matching items when enabled, or all source items otherwise.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -590,7 +605,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes duplicate values using the equality comparer selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -637,7 +653,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes duplicate values when enabled; otherwise returns the source unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -680,7 +697,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the item at the index selected by the condition, or the default value when that index is absent.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -727,7 +745,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the item at the requested index when enabled; otherwise returns the default value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -772,7 +791,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes values found in the second sequence selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -819,7 +839,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes values found in a second sequence when enabled; otherwise returns the first sequence unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -864,7 +885,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the first item matching the predicate selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -911,7 +933,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the first matching item when enabled, or the first item without filtering otherwise.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -956,7 +979,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Group-joins the outer sequence using the inner sequence, key selectors, and result selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1021,7 +1045,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Group-joins matching keys from two sequences when enabled; otherwise returns an empty result sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1078,7 +1103,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the set intersection with the second sequence selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1125,7 +1151,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the set intersection with a second sequence when enabled; otherwise returns the first sequence unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1170,7 +1197,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Joins the outer sequence using the inner sequence, key selectors, and result selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1235,7 +1263,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Joins matching keys from two sequences when enabled; otherwise returns an empty result sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1292,7 +1321,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the last item matching the predicate selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1339,7 +1369,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the last matching item when enabled, or the last item without filtering otherwise.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1384,7 +1415,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the maximum value produced by the selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1433,7 +1465,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the maximum projected value when enabled; otherwise returns the default result value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1480,7 +1513,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the minimum value produced by the selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1529,7 +1563,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the minimum projected value when enabled; otherwise returns the default result value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1576,7 +1611,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Orders the source in descending order using the key selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1625,7 +1661,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Orders by the supplied key in descending order when enabled; otherwise uses a constant-key ordering.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1672,7 +1709,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Orders the source in ascending order using the key selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1721,7 +1759,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Orders by the supplied key when enabled; otherwise creates a stable ordering with a constant key.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1768,7 +1807,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Reverses the source order when enabled; otherwise returns the source unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1811,7 +1851,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects the source with the selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1860,7 +1901,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects the source when the condition is true; otherwise casts each source item to the result type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1907,7 +1949,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the single item matching the predicate selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1954,7 +1997,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the single matching item when enabled, or the unfiltered single item otherwise.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1999,7 +2043,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Skips the number of leading items selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2046,7 +2091,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Skips the requested leading items when enabled; otherwise returns the source unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2091,7 +2137,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sums values produced by the selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2138,7 +2185,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sums projected values when enabled; otherwise returns zero without enumerating the source.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2183,7 +2231,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Takes the number of leading items selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2230,7 +2279,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Takes the requested number of leading items when enabled; otherwise returns the source unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2275,7 +2325,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a descending secondary ordering using the key selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2324,7 +2375,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a descending secondary ordering when the condition is true.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2371,7 +2423,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an ascending secondary ordering using the key selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2420,7 +2473,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an ascending secondary ordering when the condition is true.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2467,7 +2521,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Materializes the source into an array when enabled; otherwise returns an empty array.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2510,7 +2565,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Materializes the source into a list when enabled; otherwise returns an empty list.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2553,7 +2609,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the set union with the second sequence selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2600,7 +2657,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the set union with a second sequence when enabled; otherwise returns the first sequence unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2645,7 +2703,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Filters the source with the predicate selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2692,7 +2751,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies a predicate when the condition is true; otherwise returns the source unchanged.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2737,7 +2797,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Zips the first sequence with the second sequence and result selector selected by the condition.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2792,7 +2853,8 @@ Class ConditionalLinqExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Zips two sequences when enabled; otherwise returns an empty result sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">

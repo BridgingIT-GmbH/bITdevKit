@@ -155,7 +155,8 @@ Struct ResultChooseOption&lt;T&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this option contains a value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -186,7 +187,8 @@ Struct ResultChooseOption&lt;T&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the contained value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -207,6 +209,12 @@ Struct ResultChooseOption&lt;T&gt;
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when <a class="xref" href="BridgingIT.DevKit.Common.ResultChooseOption-1.html#BridgingIT_DevKit_Common_ResultChooseOption_1_HasValue">HasValue</a> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
+  </dl>
 
 
 
@@ -221,7 +229,8 @@ Struct ResultChooseOption&lt;T&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates an option without a value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -232,7 +241,8 @@ Struct ResultChooseOption&lt;T&gt;
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultChooseOption-1.html">ResultChooseOption</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An empty option.</p>
+</dd>
   </dl>
 
 
@@ -252,7 +262,8 @@ Struct ResultChooseOption&lt;T&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates an option that contains a value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -262,13 +273,15 @@ Struct ResultChooseOption&lt;T&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The value to contain, including <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="typeparamref">T</code> permits it.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultChooseOption-1.html">ResultChooseOption</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An option whose <a class="xref" href="BridgingIT.DevKit.Common.ResultChooseOption-1.html#BridgingIT_DevKit_Common_ResultChooseOption_1_HasValue">HasValue</a> property is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
   </dl>
 
 
@@ -288,7 +301,8 @@ Struct ResultChooseOption&lt;T&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Attempts to retrieve the contained value without throwing.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -298,13 +312,15 @@ Struct ResultChooseOption&lt;T&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>result</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>Receives the stored value, or the default value of <code class="typeparamref">T</code> for an empty option.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a value is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 

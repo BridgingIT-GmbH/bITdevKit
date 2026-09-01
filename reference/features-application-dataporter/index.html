@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -16,7 +16,7 @@
         <link rel="prev" href="../features-application-events/">
       
       
-        <link rel="next" href="../features-requester-notifier/">
+        <link rel="next" href="../features-event-sourcing/">
       
       
         
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#dataporter-feature-documentation" class="md-skip">
+        <a href="#dataporter" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1205,15 +1241,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1231,8 +1272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1305,42 +1346,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1424,7 +1437,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1656,10 +1669,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        Challenges
       
     </span>
   </a>
@@ -1667,22 +1680,66 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Start
+        Solution
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Quick Start">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#service-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Service Registration
+        Service registration
       
     </span>
   </a>
@@ -1693,7 +1750,7 @@
   <a href="#basic-export" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Export
+        Basic export
       
     </span>
   </a>
@@ -1704,7 +1761,7 @@
   <a href="#export-to-filecontent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Export To FileContent
+        Export to FileContent
       
     </span>
   </a>
@@ -1715,7 +1772,7 @@
   <a href="#basic-import" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Import
+        Basic import
       
     </span>
   </a>
@@ -1726,7 +1783,7 @@
   <a href="#progress-reporting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Progress Reporting
+        Progress reporting
       
     </span>
   </a>
@@ -1737,7 +1794,7 @@
   <a href="#compression-and-packaging" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compression And Packaging
+        Compression and packaging
       
     </span>
   </a>
@@ -1748,7 +1805,7 @@
   <a href="#template-generation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Template Generation
+        Template generation
       
     </span>
   </a>
@@ -1759,7 +1816,7 @@
   <a href="#row-interceptors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Row Interceptors
+        Row interceptors
       
     </span>
   </a>
@@ -1770,7 +1827,7 @@
   <a href="#custom-formats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Formats
+        Custom formats
       
     </span>
   </a>
@@ -1781,7 +1838,7 @@
   <a href="#import-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Import Options
+        Import options
       
     </span>
   </a>
@@ -1794,10 +1851,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture-overview" class="md-nav__link">
+  <a href="#detailed-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture Overview
+        Detailed architecture
       
     </span>
   </a>
@@ -1808,19 +1865,19 @@
   <a href="#configuration-approaches" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Approaches
+        Configuration approaches
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Approaches">
+    <nav class="md-nav" aria-label="Configuration approaches">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-attribute-based-configuration" class="md-nav__link">
+  <a href="#attribute-based-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Attribute-Based Configuration
+        Attribute-based configuration
       
     </span>
   </a>
@@ -1828,22 +1885,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-profile-based-configuration" class="md-nav__link">
+  <a href="#profile-based-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Profile-Based Configuration
+        Profile-based configuration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Profile-Based Configuration">
+    <nav class="md-nav" aria-label="Profile-based configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#export-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Export Profile
+        Export profile
       
     </span>
   </a>
@@ -1854,7 +1911,7 @@
   <a href="#import-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Import Profile
+        Import profile
       
     </span>
   </a>
@@ -1870,7 +1927,7 @@
   <a href="#registering-profiles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registering Profiles
+        Registering profiles
       
     </span>
   </a>
@@ -1886,19 +1943,19 @@
   <a href="#format-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Format Providers
+        Format providers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Format Providers">
+    <nav class="md-nav" aria-label="Format providers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#excel-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Excel Provider
+        Excel provider
       
     </span>
   </a>
@@ -1909,7 +1966,7 @@
   <a href="#typed-row-csv-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typed-Row CSV Provider
+        Typed-row CSV provider
       
     </span>
   </a>
@@ -1920,7 +1977,7 @@
   <a href="#csv-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CSV Provider
+        CSV provider
       
     </span>
   </a>
@@ -1931,7 +1988,7 @@
   <a href="#json-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        JSON Provider
+        JSON provider
       
     </span>
   </a>
@@ -1942,7 +1999,7 @@
   <a href="#xml-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        XML Provider
+        XML provider
       
     </span>
   </a>
@@ -1953,7 +2010,7 @@
   <a href="#pdf-provider-export-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PDF Provider (Export Only)
+        PDF provider (export only)
       
     </span>
   </a>
@@ -1969,12 +2026,12 @@
   <a href="#advanced-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Advanced Features
+        Advanced features
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced Features">
+    <nav class="md-nav" aria-label="Advanced features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1992,7 +2049,7 @@
   <a href="#advanced-streaming-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Advanced Streaming Scenarios
+        Advanced streaming scenarios
       
     </span>
   </a>
@@ -2003,7 +2060,7 @@
   <a href="#validation-without-import" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Without Import
+        Validation without import
       
     </span>
   </a>
@@ -2014,7 +2071,7 @@
   <a href="#multi-dataset-export" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multi-Dataset Export
+        Multi-dataset export
       
     </span>
   </a>
@@ -2025,7 +2082,7 @@
   <a href="#custom-value-converters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Value Converters
+        Custom value converters
       
     </span>
   </a>
@@ -2036,7 +2093,7 @@
   <a href="#built-in-converters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-in Converters
+        Built-in converters
       
     </span>
   </a>
@@ -2047,7 +2104,7 @@
   <a href="#validation-behaviors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Behaviors
+        Validation behaviors
       
     </span>
   </a>
@@ -2058,7 +2115,7 @@
   <a href="#conditional-styling-excel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conditional Styling (Excel)
+        Conditional styling (Excel)
       
     </span>
   </a>
@@ -2074,7 +2131,7 @@
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Handling
+        Error handling
       
     </span>
   </a>
@@ -2082,10 +2139,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-via-appsettingsjson" class="md-nav__link">
+  <a href="#configuration-through-appsettingsjson" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration via appsettings.json
+        Configuration through appsettings.json
       
     </span>
   </a>
@@ -2107,19 +2164,19 @@
   <a href="#appendix-a-advanced-usage-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A: Advanced Usage Scenarios
+        Appendix A: Advanced usage scenarios
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix A: Advanced Usage Scenarios">
+    <nav class="md-nav" aria-label="Appendix A: Advanced usage scenarios">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#http-api-streaming" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP API Streaming
+        HTTP API streaming
       
     </span>
   </a>
@@ -2130,7 +2187,7 @@
   <a href="#background-file-import-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Background File Import Pipeline
+        Background file import pipeline
       
     </span>
   </a>
@@ -2141,7 +2198,7 @@
   <a href="#scheduled-partner-feed-export" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scheduled Partner Feed Export
+        Scheduled partner feed export
       
     </span>
   </a>
@@ -2149,10 +2206,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#filestorage-exportimport-roundtrip" class="md-nav__link">
+  <a href="#filestorage-exportimport-round-trip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FileStorage Export/Import Roundtrip
+        FileStorage export/import round trip
       
     </span>
   </a>
@@ -2168,6 +2225,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2191,15 +2276,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -2217,8 +2307,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2299,6 +2389,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2498,15 +2616,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2524,8 +2647,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2534,6 +2657,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2609,15 +2760,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2635,8 +2791,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2661,6 +2817,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2877,6 +3089,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2944,15 +3184,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2970,8 +3215,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3251,15 +3496,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3277,8 +3527,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3358,6 +3608,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3397,10 +4178,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#features" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Features
+        Challenges
       
     </span>
   </a>
@@ -3408,22 +4189,66 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#quick-start" class="md-nav__link">
+  <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Quick Start
+        Solution
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Quick Start">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Basic Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#service-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Service Registration
+        Service registration
       
     </span>
   </a>
@@ -3434,7 +4259,7 @@
   <a href="#basic-export" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Export
+        Basic export
       
     </span>
   </a>
@@ -3445,7 +4270,7 @@
   <a href="#export-to-filecontent" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Export To FileContent
+        Export to FileContent
       
     </span>
   </a>
@@ -3456,7 +4281,7 @@
   <a href="#basic-import" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Import
+        Basic import
       
     </span>
   </a>
@@ -3467,7 +4292,7 @@
   <a href="#progress-reporting" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Progress Reporting
+        Progress reporting
       
     </span>
   </a>
@@ -3478,7 +4303,7 @@
   <a href="#compression-and-packaging" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Compression And Packaging
+        Compression and packaging
       
     </span>
   </a>
@@ -3489,7 +4314,7 @@
   <a href="#template-generation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Template Generation
+        Template generation
       
     </span>
   </a>
@@ -3500,7 +4325,7 @@
   <a href="#row-interceptors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Row Interceptors
+        Row interceptors
       
     </span>
   </a>
@@ -3511,7 +4336,7 @@
   <a href="#custom-formats" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Formats
+        Custom formats
       
     </span>
   </a>
@@ -3522,7 +4347,7 @@
   <a href="#import-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Import Options
+        Import options
       
     </span>
   </a>
@@ -3535,10 +4360,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture-overview" class="md-nav__link">
+  <a href="#detailed-architecture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture Overview
+        Detailed architecture
       
     </span>
   </a>
@@ -3549,19 +4374,19 @@
   <a href="#configuration-approaches" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Approaches
+        Configuration approaches
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Approaches">
+    <nav class="md-nav" aria-label="Configuration approaches">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#1-attribute-based-configuration" class="md-nav__link">
+  <a href="#attribute-based-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Attribute-Based Configuration
+        Attribute-based configuration
       
     </span>
   </a>
@@ -3569,22 +4394,22 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-profile-based-configuration" class="md-nav__link">
+  <a href="#profile-based-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Profile-Based Configuration
+        Profile-based configuration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="2. Profile-Based Configuration">
+    <nav class="md-nav" aria-label="Profile-based configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#export-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Export Profile
+        Export profile
       
     </span>
   </a>
@@ -3595,7 +4420,7 @@
   <a href="#import-profile" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Import Profile
+        Import profile
       
     </span>
   </a>
@@ -3611,7 +4436,7 @@
   <a href="#registering-profiles" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registering Profiles
+        Registering profiles
       
     </span>
   </a>
@@ -3627,19 +4452,19 @@
   <a href="#format-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Format Providers
+        Format providers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Format Providers">
+    <nav class="md-nav" aria-label="Format providers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#excel-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Excel Provider
+        Excel provider
       
     </span>
   </a>
@@ -3650,7 +4475,7 @@
   <a href="#typed-row-csv-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typed-Row CSV Provider
+        Typed-row CSV provider
       
     </span>
   </a>
@@ -3661,7 +4486,7 @@
   <a href="#csv-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CSV Provider
+        CSV provider
       
     </span>
   </a>
@@ -3672,7 +4497,7 @@
   <a href="#json-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        JSON Provider
+        JSON provider
       
     </span>
   </a>
@@ -3683,7 +4508,7 @@
   <a href="#xml-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        XML Provider
+        XML provider
       
     </span>
   </a>
@@ -3694,7 +4519,7 @@
   <a href="#pdf-provider-export-only" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PDF Provider (Export Only)
+        PDF provider (export only)
       
     </span>
   </a>
@@ -3710,12 +4535,12 @@
   <a href="#advanced-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Advanced Features
+        Advanced features
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Advanced Features">
+    <nav class="md-nav" aria-label="Advanced features">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3733,7 +4558,7 @@
   <a href="#advanced-streaming-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Advanced Streaming Scenarios
+        Advanced streaming scenarios
       
     </span>
   </a>
@@ -3744,7 +4569,7 @@
   <a href="#validation-without-import" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Without Import
+        Validation without import
       
     </span>
   </a>
@@ -3755,7 +4580,7 @@
   <a href="#multi-dataset-export" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multi-Dataset Export
+        Multi-dataset export
       
     </span>
   </a>
@@ -3766,7 +4591,7 @@
   <a href="#custom-value-converters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Value Converters
+        Custom value converters
       
     </span>
   </a>
@@ -3777,7 +4602,7 @@
   <a href="#built-in-converters" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-in Converters
+        Built-in converters
       
     </span>
   </a>
@@ -3788,7 +4613,7 @@
   <a href="#validation-behaviors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Behaviors
+        Validation behaviors
       
     </span>
   </a>
@@ -3799,7 +4624,7 @@
   <a href="#conditional-styling-excel" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Conditional Styling (Excel)
+        Conditional styling (Excel)
       
     </span>
   </a>
@@ -3815,7 +4640,7 @@
   <a href="#error-handling" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Error Handling
+        Error handling
       
     </span>
   </a>
@@ -3823,10 +4648,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#configuration-via-appsettingsjson" class="md-nav__link">
+  <a href="#configuration-through-appsettingsjson" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration via appsettings.json
+        Configuration through appsettings.json
       
     </span>
   </a>
@@ -3848,19 +4673,19 @@
   <a href="#appendix-a-advanced-usage-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A: Advanced Usage Scenarios
+        Appendix A: Advanced usage scenarios
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix A: Advanced Usage Scenarios">
+    <nav class="md-nav" aria-label="Appendix A: Advanced usage scenarios">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#http-api-streaming" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP API Streaming
+        HTTP API streaming
       
     </span>
   </a>
@@ -3871,7 +4696,7 @@
   <a href="#background-file-import-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Background File Import Pipeline
+        Background file import pipeline
       
     </span>
   </a>
@@ -3882,7 +4707,7 @@
   <a href="#scheduled-partner-feed-export" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scheduled Partner Feed Export
+        Scheduled partner feed export
       
     </span>
   </a>
@@ -3890,10 +4715,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#filestorage-exportimport-roundtrip" class="md-nav__link">
+  <a href="#filestorage-exportimport-round-trip" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FileStorage Export/Import Roundtrip
+        FileStorage export/import round trip
       
     </span>
   </a>
@@ -3948,10 +4773,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3991,67 +4834,71 @@
   
 
 
-<h1 id="dataporter-feature-documentation">DataPorter Feature Documentation<a class="headerlink" href="#dataporter-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="dataporter">DataPorter<a class="headerlink" href="#dataporter" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Import and export structured data through a flexible, format-agnostic data transfer framework.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#dataporter-feature-documentation">DataPorter Feature Documentation</a><ul>
+<li><a href="#dataporter">DataPorter</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#features">Features</a></li>
-<li><a href="#quick-start">Quick Start</a><ul>
-<li><a href="#service-registration">Service Registration</a></li>
-<li><a href="#basic-export">Basic Export</a></li>
-<li><a href="#export-to-filecontent">Export To FileContent</a></li>
-<li><a href="#basic-import">Basic Import</a></li>
-<li><a href="#progress-reporting">Progress Reporting</a></li>
-<li><a href="#compression-and-packaging">Compression And Packaging</a></li>
-<li><a href="#template-generation">Template Generation</a></li>
-<li><a href="#row-interceptors">Row Interceptors</a></li>
-<li><a href="#custom-formats">Custom Formats</a></li>
-<li><a href="#import-options">Import Options</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a><ul>
+<li><a href="#service-registration">Service registration</a></li>
+<li><a href="#basic-export">Basic export</a></li>
+<li><a href="#export-to-filecontent">Export to FileContent</a></li>
+<li><a href="#basic-import">Basic import</a></li>
+<li><a href="#progress-reporting">Progress reporting</a></li>
+<li><a href="#compression-and-packaging">Compression and packaging</a></li>
+<li><a href="#template-generation">Template generation</a></li>
+<li><a href="#row-interceptors">Row interceptors</a></li>
+<li><a href="#custom-formats">Custom formats</a></li>
+<li><a href="#import-options">Import options</a></li>
 </ul>
 </li>
-<li><a href="#architecture-overview">Architecture Overview</a></li>
-<li><a href="#configuration-approaches">Configuration Approaches</a><ul>
-<li><a href="#1-attribute-based-configuration">1. Attribute-Based Configuration</a></li>
-<li><a href="#2-profile-based-configuration">2. Profile-Based Configuration</a><ul>
-<li><a href="#export-profile">Export Profile</a></li>
-<li><a href="#import-profile">Import Profile</a></li>
+<li><a href="#detailed-architecture">Detailed architecture</a></li>
+<li><a href="#configuration-approaches">Configuration approaches</a><ul>
+<li><a href="#attribute-based-configuration">Attribute-based configuration</a></li>
+<li><a href="#profile-based-configuration">Profile-based configuration</a><ul>
+<li><a href="#export-profile">Export profile</a></li>
+<li><a href="#import-profile">Import profile</a></li>
 </ul>
 </li>
-<li><a href="#registering-profiles">Registering Profiles</a></li>
+<li><a href="#registering-profiles">Registering profiles</a></li>
 </ul>
 </li>
-<li><a href="#format-providers">Format Providers</a><ul>
-<li><a href="#excel-provider">Excel Provider</a></li>
-<li><a href="#typed-row-csv-provider">Typed-Row CSV Provider</a></li>
-<li><a href="#csv-provider">CSV Provider</a></li>
-<li><a href="#json-provider">JSON Provider</a></li>
-<li><a href="#xml-provider">XML Provider</a></li>
-<li><a href="#pdf-provider-export-only">PDF Provider (Export Only)</a></li>
+<li><a href="#format-providers">Format providers</a><ul>
+<li><a href="#excel-provider">Excel provider</a></li>
+<li><a href="#typed-row-csv-provider">Typed-row CSV provider</a></li>
+<li><a href="#csv-provider">CSV provider</a></li>
+<li><a href="#json-provider">JSON provider</a></li>
+<li><a href="#xml-provider">XML provider</a></li>
+<li><a href="#pdf-provider-export-only">PDF provider (export only)</a></li>
 </ul>
 </li>
-<li><a href="#advanced-features">Advanced Features</a><ul>
+<li><a href="#advanced-features">Advanced features</a><ul>
 <li><a href="#streaming-apis">Streaming APIs</a></li>
-<li><a href="#advanced-streaming-scenarios">Advanced Streaming Scenarios</a></li>
-<li><a href="#validation-without-import">Validation Without Import</a></li>
-<li><a href="#multi-dataset-export">Multi-Dataset Export</a></li>
-<li><a href="#custom-value-converters">Custom Value Converters</a></li>
-<li><a href="#built-in-converters">Built-in Converters</a></li>
-<li><a href="#validation-behaviors">Validation Behaviors</a></li>
-<li><a href="#conditional-styling-excel">Conditional Styling (Excel)</a></li>
+<li><a href="#advanced-streaming-scenarios">Advanced streaming scenarios</a></li>
+<li><a href="#validation-without-import">Validation without import</a></li>
+<li><a href="#multi-dataset-export">Multi-dataset export</a></li>
+<li><a href="#custom-value-converters">Custom value converters</a></li>
+<li><a href="#built-in-converters">Built-in converters</a></li>
+<li><a href="#validation-behaviors">Validation behaviors</a></li>
+<li><a href="#conditional-styling-excel">Conditional styling (Excel)</a></li>
 </ul>
 </li>
-<li><a href="#error-handling">Error Handling</a></li>
-<li><a href="#configuration-via-appsettingsjson">Configuration via appsettings.json</a></li>
+<li><a href="#error-handling">Error handling</a></li>
+<li><a href="#configuration-through-appsettingsjson">Configuration through appsettings.json</a></li>
 <li><a href="#dependencies">Dependencies</a></li>
-<li><a href="#appendix-a-advanced-usage-scenarios">Appendix A: Advanced Usage Scenarios</a><ul>
-<li><a href="#http-api-streaming">HTTP API Streaming</a></li>
-<li><a href="#background-file-import-pipeline">Background File Import Pipeline</a></li>
-<li><a href="#scheduled-partner-feed-export">Scheduled Partner Feed Export</a></li>
-<li><a href="#filestorage-exportimport-roundtrip">FileStorage Export/Import Roundtrip</a></li>
+<li><a href="#appendix-a-advanced-usage-scenarios">Appendix A: Advanced usage scenarios</a><ul>
+<li><a href="#http-api-streaming">HTTP API streaming</a></li>
+<li><a href="#background-file-import-pipeline">Background file import pipeline</a></li>
+<li><a href="#scheduled-partner-feed-export">Scheduled partner feed export</a></li>
+<li><a href="#filestorage-exportimport-round-trip">FileStorage export/import round trip</a></li>
 </ul>
 </li>
 </ul>
@@ -4059,7 +4906,7 @@
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>A flexible, extensible data export/import framework for .NET supporting multiple file formats with both profile-based and attribute-based configuration.</p>
+<p>DataPorter imports and exports structured .NET data through a common API. It supports Excel, CSV, typed-row CSV, JSON, XML, and PDF output, with profile-based or attribute-based configuration.</p>
 <pre class="mermaid"><code>flowchart LR
     App[Application code] --&gt; Api[IDataExporter / IDataImporter]
     Api --&gt; Service[DataPorterService]
@@ -4070,19 +4917,37 @@
 <p>At a glance, application code talks to <code>IDataExporter</code> or <code>IDataImporter</code>, <code>DataPorterService</code> builds the effective configuration, applies optional row interception, delegates to the selected provider, and returns a typed result.</p>
 <p>For download-oriented scenarios, <code>IDataExporter</code> can also return <code>Result&lt;FileContent&gt;</code> directly via <code>ExportToFileContentAsync(...)</code>, which packages the exported bytes together with a default file name and MIME type derived from the selected provider and compression settings.</p>
 <p>For the lower-level serializer abstractions and JSON converter conventions that sit underneath parts of the import/export stack, see <a href="../common-serialization/">Common Serialization</a>.</p>
-<h2 id="features">Features<a class="headerlink" href="#features" title="Permanent link">&para;</a></h2>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Applications often need to exchange the same domain data in several formats. Each format has different mapping, validation, streaming, packaging, and error-reporting behavior. Implementing those concerns separately can produce inconsistent APIs and can require complete data sets to be buffered in memory.</p>
+<p>Import workflows also need an explicit boundary between parsing data and persisting it. Row-level processing, aggregate reconstruction, and provider-specific bulk insertion have different consistency and memory characteristics.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>DataPorter provides <code>IDataExporter</code> and <code>IDataImporter</code> as format-independent entry points. <code>DataPorterService</code> builds an effective configuration for each operation, resolves the selected provider, applies converters, validation, progress reporting, compression, and row interceptors, and returns a typed result.</p>
+<p>Format providers retain control of format-specific reading and writing. Applications can use built-in providers or register a custom provider without changing the orchestration pipeline.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <ul>
-<li><strong>Multiple Format Support</strong>: Excel (.xlsx), CSV, typed-row CSV, JSON, XML, and PDF (export only)</li>
-<li><strong>Extensible Format Selection</strong>: Built-in formats plus custom project-defined providers</li>
-<li><strong>Dual Configuration Approaches</strong>: Profile-based (similar to AutoMapper) or attribute-based</li>
-<li><strong>Streaming Support</strong>: Incremental import and export using <code>IAsyncEnumerable</code></li>
-<li><strong>Validation</strong>: Built-in validation with customizable rules and error handling</li>
-<li><strong>Value Converters</strong>: Transform values during import/export with custom converters</li>
-<li><strong>Result Pattern</strong>: Integrated with bIT.bITdevKit Result pattern for consistent error handling</li>
-<li><strong>Conditional Styling</strong>: Apply styles based on cell values (Excel)</li>
+<li><strong>Multiple format support</strong>: Excel (<code>.xlsx</code>), CSV, typed-row CSV, JSON, XML, and PDF export.</li>
+<li><strong>Extensible format selection</strong>: Built-in formats and project-defined providers.</li>
+<li><strong>Two configuration approaches</strong>: Profile-based or attribute-based mapping.</li>
+<li><strong>Streaming support</strong>: Incremental import and export through <code>IAsyncEnumerable&lt;T&gt;</code>.</li>
+<li><strong>Validation</strong>: Configurable validation and error-handling behavior.</li>
+<li><strong>Value converters</strong>: Value transformation during import and export.</li>
+<li><strong>Result pattern</strong>: Typed results for success, warnings, and errors.</li>
+<li><strong>Conditional styling</strong>: Value-based styling for Excel exports.</li>
 </ul>
-<h2 id="quick-start">Quick Start<a class="headerlink" href="#quick-start" title="Permanent link">&para;</a></h2>
-<h3 id="service-registration">Service Registration<a class="headerlink" href="#service-registration" title="Permanent link">&para;</a></h3>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>Application code calls <code>IDataExporter</code> or <code>IDataImporter</code>. <code>DataPorterService</code> coordinates the operation and delegates serialization to the provider registered for the selected <code>Format</code>. Profiles, attributes, converters, interceptors, and runtime options contribute to the effective configuration without exposing provider internals to callers.</p>
+<p>The <a href="#detailed-architecture">detailed architecture</a> section describes the orchestration and extension points.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Export application data as downloadable CSV, Excel, JSON, XML, or PDF files.</li>
+<li>Import partner or user-provided data with mapping and validation feedback.</li>
+<li>Stream large data sets without buffering the complete payload.</li>
+<li>Generate annotated templates for supported import formats.</li>
+<li>Package an exported payload as GZip or a single-entry ZIP archive.</li>
+<li>Process rows through interceptors or persist a validated batch through a repository abstraction.</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<h3 id="service-registration">Service registration<a class="headerlink" href="#service-registration" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithExcel</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">UseTableFormatting</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithCsv</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Delimiter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;,&quot;</span><span class="p">)</span>
@@ -4097,7 +4962,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">AddProvider</span><span class="o">&lt;</span><span class="n">EdiX12DataPorterProvider</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <p>For import and export calls, DataPorter supports both the regular options objects and a fluent builder lambda. The examples below prefer the fluent builder syntax.</p>
-<h3 id="basic-export">Basic Export<a class="headerlink" href="#basic-export" title="Permanent link">&para;</a></h3>
+<h3 id="basic-export">Basic export<a class="headerlink" href="#basic-export" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyService</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IDataExporter</span><span class="w"> </span><span class="n">exporter</span><span class="p">;</span>
@@ -4107,7 +4972,10 @@
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">exporter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">exporter</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExportOrdersAsync</span><span class="p">(</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="w"> </span><span class="n">orders</span><span class="p">,</span><span class="w"> </span><span class="n">Stream</span><span class="w"> </span><span class="n">output</span><span class="p">)</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">ExportOrdersAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="w"> </span><span class="n">orders</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Stream</span><span class="w"> </span><span class="n">output</span><span class="p">,</span>
+<span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportAsync</span><span class="p">(</span>
 <span class="w">            </span><span class="n">orders</span><span class="p">,</span>
@@ -4116,16 +4984,24 @@
 <span class="w">                </span><span class="p">.</span><span class="n">WithProgress</span><span class="p">(</span><span class="n">report</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">                </span><span class="p">{</span>
 <span class="w">                    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Exported {report.ProcessedRows} rows&quot;</span><span class="p">);</span>
-<span class="w">                </span><span class="p">}));</span>
+<span class="w">                </span><span class="p">}),</span>
+<span class="w">            </span><span class="n">cancellationToken</span><span class="p">);</span>
 
-<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Exported {result.Value.TotalRows} rows&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
+<span class="w">                </span><span class="s">$&quot;Export failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, result.Errors.Select(error =&gt; error.Message))}&quot;</span><span class="p">);</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
 <span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Exported {result.Value.TotalRows} rows&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="export-to-filecontent">Export To FileContent<a class="headerlink" href="#export-to-filecontent" title="Permanent link">&para;</a></h3>
+<p>For two input rows, the final line is:</p>
+<div class="highlight"><pre><span></span><code>Exported 2 rows
+</code></pre></div>
+<h3 id="export-to-filecontent">Export to <code>FileContent</code><a class="headerlink" href="#export-to-filecontent" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportToFileContentAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">orders</span><span class="p">,</span>
 <span class="w">    </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsCsv</span><span class="p">().</span><span class="n">WithFileName</span><span class="p">(</span><span class="s">&quot;orders-export.csv&quot;</span><span class="p">));</span>
@@ -4135,7 +5011,7 @@
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">MapHttpFile</span><span class="p">();</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="basic-import">Basic Import<a class="headerlink" href="#basic-import" title="Permanent link">&para;</a></h3>
+<h3 id="basic-import">Basic import<a class="headerlink" href="#basic-import" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">ImportOrdersAsync</span><span class="p">(</span><span class="n">Stream</span><span class="w"> </span><span class="n">input</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">importer</span><span class="p">.</span><span class="n">ImportAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span>
@@ -4147,23 +5023,27 @@
 <span class="w">                </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Processed {report.ProcessedRows} rows&quot;</span><span class="p">);</span>
 <span class="w">            </span><span class="p">}));</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">HasErrors</span><span class="p">)</span>
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
+<span class="w">            </span><span class="s">$&quot;Import failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, result.Errors.Select(error =&gt; error.Message))}&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">HasErrors</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Data</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
-<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
+<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
-<span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Row {error.RowNumber}: {error.Message}&quot;</span><span class="p">);</span>
-<span class="w">        </span><span class="p">}</span>
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Row {error.RowNumber}: {error.Message}&quot;</span><span class="p">);</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="p">[];</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="progress-reporting">Progress Reporting<a class="headerlink" href="#progress-reporting" title="Permanent link">&para;</a></h3>
+<h3 id="progress-reporting">Progress reporting<a class="headerlink" href="#progress-reporting" title="Permanent link">&para;</a></h3>
 <p><code>ExportOptions</code> and <code>ImportOptions</code> support optional runtime progress reporting through <code>IProgress&lt;TReport&gt;</code>.</p>
 <ul>
 <li>Export uses <code>IProgress&lt;ExportProgressReport&gt;</code></li>
@@ -4190,7 +5070,7 @@
 <span class="w">        </span><span class="p">}));</span>
 </code></pre></div>
 <p>For true streaming operations, <code>TotalRows</code> and <code>PercentageComplete</code> can remain <code>null</code> until the final completion report because the total row count is not always known up front.</p>
-<h3 id="compression-and-packaging">Compression And Packaging<a class="headerlink" href="#compression-and-packaging" title="Permanent link">&para;</a></h3>
+<h3 id="compression-and-packaging">Compression and packaging<a class="headerlink" href="#compression-and-packaging" title="Permanent link">&para;</a></h3>
 <p><code>ExportOptions</code> and <code>ImportOptions</code> support explicit payload compression or packaging through <code>PayloadCompressionOptions</code>.</p>
 <ul>
 <li><code>PayloadCompressionKind.GZip</code> produces or consumes a compressed single payload stream such as <code>orders.csv.gz</code></li>
@@ -4215,7 +5095,7 @@
 <li>in that mode, DataPorter still reads and writes the plain CSV/JSON/XML stream</li>
 <li>use DataPorter compression only when the artifact itself should be downloadable or uploadable as <code>.gz</code> or <code>.zip</code></li>
 </ul>
-<h3 id="template-generation">Template Generation<a class="headerlink" href="#template-generation" title="Permanent link">&para;</a></h3>
+<h3 id="template-generation">Template generation<a class="headerlink" href="#template-generation" title="Permanent link">&para;</a></h3>
 <p><code>IDataExporter</code> can generate annotated import templates through dedicated template-generation methods and <code>TemplateOptions</code>.</p>
 <ul>
 <li>template generation is single-type in v1</li>
@@ -4285,13 +5165,14 @@
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
 <span class="w">        </span><span class="k">where</span><span class="w"> </span><span class="n">TTarget</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">class</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="p">()</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="c1">// put domain-specific template here</span>
+<span class="w">        </span><span class="c1">// Write the domain-specific template to outputStream.</span>
+<span class="w">        </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">NotImplementedException</span><span class="p">();</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="c1">// regular export members omitted</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="row-interceptors">Row Interceptors<a class="headerlink" href="#row-interceptors" title="Permanent link">&para;</a></h3>
+<h3 id="row-interceptors">Row interceptors<a class="headerlink" href="#row-interceptors" title="Permanent link">&para;</a></h3>
 <p><code>ExportOptions</code> and <code>ImportOptions</code> can flow through typed row interceptors that are resolved from dependency injection.</p>
 <ul>
 <li>Register one or more <code>IExportRowInterceptor&lt;T&gt;</code> implementations to enrich, audit, skip, or abort exported rows.</li>
@@ -4340,7 +5221,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="custom-formats">Custom Formats<a class="headerlink" href="#custom-formats" title="Permanent link">&para;</a></h3>
+<h3 id="custom-formats">Custom formats<a class="headerlink" href="#custom-formats" title="Permanent link">&para;</a></h3>
 <p>DataPorter format selection is not limited to the built-in CSV, CsvTyped, Excel, JSON, XML, and PDF providers. Projects can add their own import/export providers for domain-specific formats without changing the DataPorter pipeline.</p>
 <ul>
 <li><code>Format</code> is an extensible identifier type rather than a closed enum.</li>
@@ -4436,8 +5317,8 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>Use <code>BeforeImportAsync</code> and <code>AfterImportAsync</code> when each row should be handled independently, for example upserts, validation enrichment, or streaming imports. Use <code>AfterImportCompletedAsync</code> with <code>IEntityBulkInserter&lt;TEntity&gt;</code> when the import should be accepted as a batch and written with a provider-specific high-performance insert path after all rows are valid.</p>
-<p>The native capability writes only the aggregate root table (plus same-table owned values). Clear or reject populated child collections explicitly before calling it; the DoFiesta example retains <code>entity.Steps.Clear()</code> to make that boundary visible. Inputs stay detached and database-generated values are not populated. Use <code>InsertSetAsync</code> instead when the import requires graph persistence, tracking, returned generated values, or a repository semantic that has no native equivalent. Unsupported semantics fail by default unless repository fallback was explicitly enabled during registration.</p>
-<h3 id="import-options">Import Options<a class="headerlink" href="#import-options" title="Permanent link">&para;</a></h3>
+<p>The native capability writes only the aggregate root table (plus same-table owned values). Clear or reject populated child collections explicitly before calling it; the DoFiesta example retains <code>entity.Steps.Clear()</code> to make that boundary visible. Inputs stay detached and database-generated values are not populated. Use <code>InsertSetAsync</code> instead when the import requires graph persistence, tracking, returned generated values, or a repository semantic that has no native equivalent. Unsupported provider or mapping semantics return a failed bulk-insert result; there is no row-by-row fallback.</p>
+<h3 id="import-options">Import options<a class="headerlink" href="#import-options" title="Permanent link">&para;</a></h3>
 <p><code>ImportOptions</code> controls runtime parsing behavior for a specific import request:</p>
 <ul>
 <li><code>ImportOptions.Culture</code> is used by the default import conversion pipeline, not only by custom converters.</li>
@@ -4458,7 +5339,7 @@ Order ID;Customer;Total
 ORD-1001;Ada;1,23
 </code></pre></div>
 <p>In this example, <code>HeaderRowIndex = 1</code> tells the importer to use the second line as the header row, and <code>Culture = new CultureInfo("de-DE")</code> allows the default decimal parser to read <code>1,23</code> correctly.</p>
-<h2 id="architecture-overview">Architecture Overview<a class="headerlink" href="#architecture-overview" title="Permanent link">&para;</a></h2>
+<h2 id="detailed-architecture">Detailed architecture<a class="headerlink" href="#detailed-architecture" title="Permanent link">&para;</a></h2>
 <p><code>Application.DataPorter</code> is built around a small orchestration core with pluggable format providers. For developers working on the feature, the key idea is that <code>DataPorterService</code> owns the workflow, while providers own the format-specific reading and writing logic. The service validates the request, resolves the provider for the selected <code>Format</code>, builds the effective configuration, applies optional progress reporting, compression, and row interception, and then delegates the actual import or export work.</p>
 <p>This separation keeps the public API stable while letting each provider optimize for its own format. CSV and Excel stay row-oriented, JSON and XML stay document-oriented, PDF remains export-only, and custom project providers can plug in without changing the orchestration flow. The shared configuration and converter pipeline makes those providers feel consistent even though their internals differ.</p>
 <pre class="mermaid"><code>flowchart LR
@@ -4505,8 +5386,8 @@ ORD-1001;Ada;1,23
 <li>add behavior to a provider when it is truly format-specific</li>
 <li>add a new provider when you need a new external representation, not when you only need different configuration for an existing one</li>
 </ul>
-<h2 id="configuration-approaches">Configuration Approaches<a class="headerlink" href="#configuration-approaches" title="Permanent link">&para;</a></h2>
-<h3 id="1-attribute-based-configuration">1. Attribute-Based Configuration<a class="headerlink" href="#1-attribute-based-configuration" title="Permanent link">&para;</a></h3>
+<h2 id="configuration-approaches">Configuration approaches<a class="headerlink" href="#configuration-approaches" title="Permanent link">&para;</a></h2>
+<h3 id="attribute-based-configuration">Attribute-based configuration<a class="headerlink" href="#attribute-based-configuration" title="Permanent link">&para;</a></h3>
 <p>Use attributes directly on your DTOs for simple scenarios:</p>
 <div class="highlight"><pre><span></span><code><span class="na">[DataPorterSheet(&quot;Products&quot;)]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ProductDto</span>
@@ -4564,9 +5445,9 @@ ORD-1001;Ada;1,23
 </tr>
 </tbody>
 </table>
-<h3 id="2-profile-based-configuration">2. Profile-Based Configuration<a class="headerlink" href="#2-profile-based-configuration" title="Permanent link">&para;</a></h3>
+<h3 id="profile-based-configuration">Profile-based configuration<a class="headerlink" href="#profile-based-configuration" title="Permanent link">&para;</a></h3>
 <p>Use profiles for complex scenarios with full control:</p>
-<h4 id="export-profile">Export Profile<a class="headerlink" href="#export-profile" title="Permanent link">&para;</a></h4>
+<h4 id="export-profile">Export profile<a class="headerlink" href="#export-profile" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderExportProfile</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ExportProfileBase</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Configure</span><span class="p">()</span>
@@ -4605,7 +5486,7 @@ ORD-1001;Ada;1,23
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h4 id="import-profile">Import Profile<a class="headerlink" href="#import-profile" title="Permanent link">&para;</a></h4>
+<h4 id="import-profile">Import profile<a class="headerlink" href="#import-profile" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderImportProfile</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ImportProfileBase</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Configure</span><span class="p">()</span>
@@ -4638,15 +5519,15 @@ ORD-1001;Ada;1,23
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="registering-profiles">Registering Profiles<a class="headerlink" href="#registering-profiles" title="Permanent link">&para;</a></h3>
+<h3 id="registering-profiles">Registering profiles<a class="headerlink" href="#registering-profiles" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">(</span><span class="n">configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddExportProfile</span><span class="o">&lt;</span><span class="n">OrderExportProfile</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddImportProfile</span><span class="o">&lt;</span><span class="n">OrderImportProfile</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="c1">// Or scan an assembly</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddProfilesFromAssembly</span><span class="o">&lt;</span><span class="n">OrderExportProfile</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="format-providers">Format Providers<a class="headerlink" href="#format-providers" title="Permanent link">&para;</a></h2>
-<h3 id="excel-provider">Excel Provider<a class="headerlink" href="#excel-provider" title="Permanent link">&para;</a></h3>
+<h2 id="format-providers">Format providers<a class="headerlink" href="#format-providers" title="Permanent link">&para;</a></h2>
+<h3 id="excel-provider">Excel provider<a class="headerlink" href="#excel-provider" title="Permanent link">&para;</a></h3>
 <p>Uses <a href="https://github.com/ClosedXML/ClosedXML">ClosedXML</a> for Excel file handling.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithExcel</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4658,7 +5539,7 @@ ORD-1001;Ada;1,23
 <span class="w">        </span><span class="n">config</span><span class="p">.</span><span class="n">MaxColumnWidth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span><span class="p">;</span>
 <span class="w">    </span><span class="p">});</span>
 </code></pre></div>
-<h3 id="typed-row-csv-provider">Typed-Row CSV Provider<a class="headerlink" href="#typed-row-csv-provider" title="Permanent link">&para;</a></h3>
+<h3 id="typed-row-csv-provider">Typed-row CSV provider<a class="headerlink" href="#typed-row-csv-provider" title="Permanent link">&para;</a></h3>
 <p>Uses <a href="https://joshclose.github.io/CsvHelper/">CsvHelper</a> with a typed-rows schema for hierarchical object graphs in a single CSV file.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithCsvTyped</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4725,13 +5606,13 @@ PreviousAddress,person-2,prev-3,person-2,PreviousAddresses,0,,,,,,,,Cobol Lane 1
 </code></pre></div>
 <p><strong>Features:</strong></p>
 <ul>
-<li>Table formatting with styles</li>
-<li>Auto-fit columns</li>
-<li>Freeze header row</li>
-<li>Conditional formatting</li>
-<li>Multi-sheet export/import</li>
+<li>Explicit root and child row schema for hierarchical data.</li>
+<li>Object-graph export and import through stable relationship columns.</li>
+<li>Incremental export after the payload schema is determined.</li>
+<li>Bounded grouped streaming import when rows for each <code>RootId</code> are contiguous.</li>
+<li>Validation at the reconstructed aggregate boundary.</li>
 </ul>
-<h3 id="csv-provider">CSV Provider<a class="headerlink" href="#csv-provider" title="Permanent link">&para;</a></h3>
+<h3 id="csv-provider">CSV provider<a class="headerlink" href="#csv-provider" title="Permanent link">&para;</a></h3>
 <p>Uses CsvHelper for CSV file handling.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithCsv</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4784,7 +5665,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <li>streaming grouped import assumes rows for the same aggregate are contiguous; if a completed grouping key appears again later, the stream fails explicitly</li>
 </ul>
 <p>When <code>UseNesting</code> is disabled, nested structured properties without explicit converters are ignored for CSV export/import. This is useful when only scalar columns should participate.</p>
-<h3 id="json-provider">JSON Provider<a class="headerlink" href="#json-provider" title="Permanent link">&para;</a></h3>
+<h3 id="json-provider">JSON provider<a class="headerlink" href="#json-provider" title="Permanent link">&para;</a></h3>
 <p>Uses <a href="https://learn.microsoft.com/en-us/dotnet/api/system.text.json?view=net-10.0">System.Text.Json</a> for JSON handling.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJson</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4804,7 +5685,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <li>malformed JSON after earlier valid items produces earlier successes first and then a failed result</li>
 <li><code>ImportAsync(...)</code> and <code>ValidateAsync(...)</code> use the same incremental item-processing pipeline</li>
 </ul>
-<h3 id="xml-provider">XML Provider<a class="headerlink" href="#xml-provider" title="Permanent link">&para;</a></h3>
+<h3 id="xml-provider">XML provider<a class="headerlink" href="#xml-provider" title="Permanent link">&para;</a></h3>
 <p>Uses <a href="https://learn.microsoft.com/en-us/dotnet/api/system.xml?view=net-10.0">System.Xml</a> for XML handling.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithXml</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4826,7 +5707,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <li>malformed XML after earlier valid items produces earlier successes first and then a failed result</li>
 <li><code>ImportAsync(...)</code> and <code>ValidateAsync(...)</code> use the same incremental item-processing pipeline</li>
 </ul>
-<h3 id="pdf-provider-export-only">PDF Provider (Export Only)<a class="headerlink" href="#pdf-provider-export-only" title="Permanent link">&para;</a></h3>
+<h3 id="pdf-provider-export-only">PDF provider (export only)<a class="headerlink" href="#pdf-provider-export-only" title="Permanent link">&para;</a></h3>
 <p>Uses <a href="https://www.pdfsharp.com/">PDFsharp-MigraDoc</a> for PDF generation (MIT licensed).</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDataPorter</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithPdf</span><span class="p">(</span><span class="n">config</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4863,7 +5744,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <p>When <code>UseNesting</code> is enabled, the PDF provider renders nested structured values in both templates using a readable textual representation. Child objects and collections are traversed recursively and formatted inline. Recursive back references are ignored during rendering so cyclical object graphs cannot cause endless export generation.</p>
 <p>When <code>UseNesting</code> is disabled, nested structured properties without explicit converters are omitted from the PDF table output.</p>
 <p>The PDF provider now uses a platform-aware font resolver so exports can work on Windows and Linux environments such as Ubuntu, provided common system fonts are installed. Clients can also override the primary and fallback PDFsharp font resolvers during setup when they need custom font resolution behavior.</p>
-<h2 id="advanced-features">Advanced Features<a class="headerlink" href="#advanced-features" title="Permanent link">&para;</a></h2>
+<h2 id="advanced-features">Advanced features<a class="headerlink" href="#advanced-features" title="Permanent link">&para;</a></h2>
 <h3 id="streaming-apis">Streaming APIs<a class="headerlink" href="#streaming-apis" title="Permanent link">&para;</a></h3>
 <p>For large files or export sources produced asynchronously, use the async APIs to process items incrementally:</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportAsync</span><span class="p">(</span><span class="n">GetOrdersAsync</span><span class="p">(),</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsXml</span><span class="p">());</span>
@@ -4881,25 +5762,31 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="advanced-streaming-scenarios">Advanced Streaming Scenarios<a class="headerlink" href="#advanced-streaming-scenarios" title="Permanent link">&para;</a></h3>
+<h3 id="advanced-streaming-scenarios">Advanced streaming scenarios<a class="headerlink" href="#advanced-streaming-scenarios" title="Permanent link">&para;</a></h3>
 <p>Advanced usage samples such as HTTP streaming endpoints, background file processing, and scheduled partner-feed exports are collected in the appendix so the main flow can stay focused on the core dataporter concepts.</p>
-<h3 id="validation-without-import">Validation Without Import<a class="headerlink" href="#validation-without-import" title="Permanent link">&para;</a></h3>
+<h3 id="validation-without-import">Validation without import<a class="headerlink" href="#validation-without-import" title="Permanent link">&para;</a></h3>
 <p>Validate data without actually importing:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">validationResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">importer</span><span class="p">.</span><span class="n">ValidateAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 
-<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">validationResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">validationResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
+<span class="w">        </span><span class="s">$&quot;Validation failed: {string.Join(&quot;</span><span class="p">;</span><span class="w"> </span><span class="s">&quot;, validationResult.Errors.Select(error =&gt; error.Message))}&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">validationResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">IsValid</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;All {validationResult.Value.TotalRows} rows are valid&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
 <span class="p">}</span>
-<span class="k">else</span>
+
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
 <span class="p">{</span>
-<span class="w">    </span><span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">error</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">validationResult</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Errors</span><span class="p">)</span>
-<span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Row {error.RowNumber}, Column {error.Column}: {error.Message}&quot;</span><span class="p">);</span>
-<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Row {error.RowNumber}, Column {error.Column}: {error.Message}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="multi-dataset-export">Multi-Dataset Export<a class="headerlink" href="#multi-dataset-export" title="Permanent link">&para;</a></h3>
+<h3 id="multi-dataset-export">Multi-dataset export<a class="headerlink" href="#multi-dataset-export" title="Permanent link">&para;</a></h3>
 <p>Export multiple data sets in a single operation. Depending on the provider this becomes worksheets, top-level sections, or sequential sections in the generated output:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">dataSets</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span>
 <span class="p">{</span>
@@ -4919,7 +5806,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 
 <span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportAsync</span><span class="p">(</span><span class="n">dataSets</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">AsJson</span><span class="p">());</span>
 </code></pre></div>
-<h3 id="custom-value-converters">Custom Value Converters<a class="headerlink" href="#custom-value-converters" title="Permanent link">&para;</a></h3>
+<h3 id="custom-value-converters">Custom value converters<a class="headerlink" href="#custom-value-converters" title="Permanent link">&para;</a></h3>
 <p>Create custom converters for complex transformations:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">StatusConverter</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IValueConverter</span><span class="o">&lt;</span><span class="n">OrderStatus</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -4969,7 +5856,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <li>strings that need trimming, normalization, or external value mapping</li>
 </ul>
 <p>Converters can be configured per column, which allows different representations for the same .NET type in different import/export profiles.</p>
-<h3 id="built-in-converters">Built-in Converters<a class="headerlink" href="#built-in-converters" title="Permanent link">&para;</a></h3>
+<h3 id="built-in-converters">Built-in converters<a class="headerlink" href="#built-in-converters" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -5065,7 +5952,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">        </span><span class="p">}</span>
 <span class="w">    </span><span class="p">});</span>
 </code></pre></div>
-<h3 id="validation-behaviors">Validation Behaviors<a class="headerlink" href="#validation-behaviors" title="Permanent link">&para;</a></h3>
+<h3 id="validation-behaviors">Validation behaviors<a class="headerlink" href="#validation-behaviors" title="Permanent link">&para;</a></h3>
 <p>Control how validation errors are handled during import:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">enum</span><span class="w"> </span><span class="n">ImportValidationBehavior</span>
 <span class="p">{</span>
@@ -5076,18 +5963,14 @@ Flattened column names use underscore-separated segments, for example:</p>
 </code></pre></div>
 <p>Streaming behavior depends on the provider:</p>
 <ul>
-<li><strong>CSV</strong> exports rows directly as they are enumerated</li>
-<li><strong>Typed CSV</strong> exports rows directly after computing the header schema from the configured type graph</li>
-<li><strong>JSON</strong> exports top-level array items incrementally</li>
-<li><strong>XML</strong> exports top-level item elements incrementally</li>
-<li><strong>JSON</strong> streams top-level array items incrementally</li>
-<li><strong>XML</strong> streams top-level item elements incrementally</li>
-<li><strong>CSV</strong> streams flat rows directly, and streams nested-collection imports as completed aggregates once the grouping key changes</li>
-<li><strong>Typed CSV</strong> streams one completed aggregate once the next <code>RootId</code> is seen</li>
+<li><strong>CSV export</strong> writes rows as they are enumerated; grouped import emits a completed aggregate when its grouping key changes.</li>
+<li><strong>Typed CSV export</strong> writes rows after computing the header schema; import emits a completed aggregate when the next <code>RootId</code> is seen.</li>
+<li><strong>JSON export and import</strong> process top-level array items incrementally.</li>
+<li><strong>XML export and import</strong> process top-level item elements incrementally.</li>
 </ul>
 <p>For grouped CSV and typed CSV streaming, rows for the same logical aggregate must be contiguous in the input. If an already completed aggregate key or <code>RootId</code> appears again later, streaming import fails explicitly because the stream can no longer be reconstructed with bounded buffering.</p>
 <p>With <code>CollectErrors</code>, invalid rows are reported in <code>ImportResult.Errors</code> and excluded from <code>ImportResult.Data</code>. They are not partially materialized into the returned data set.</p>
-<h3 id="conditional-styling-excel">Conditional Styling (Excel)<a class="headerlink" href="#conditional-styling-excel" title="Permanent link">&para;</a></h3>
+<h3 id="conditional-styling-excel">Conditional styling (Excel)<a class="headerlink" href="#conditional-styling-excel" title="Permanent link">&para;</a></h3>
 <p>Apply styles based on values in Excel exports:</p>
 <div class="highlight"><pre><span></span><code><span class="n">ForColumn</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Amount</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">StyleWhen</span><span class="p">(</span>
@@ -5100,7 +5983,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">        </span><span class="n">style</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">style</span>
 <span class="w">            </span><span class="p">.</span><span class="n">WithBackgroundColor</span><span class="p">(</span><span class="s">&quot;#00FF00&quot;</span><span class="p">));</span>
 </code></pre></div>
-<h2 id="error-handling">Error Handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
+<h2 id="error-handling">Error handling<a class="headerlink" href="#error-handling" title="Permanent link">&para;</a></h2>
 <p>The framework uses the Result pattern for consistent error handling:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">exporter</span><span class="p">.</span><span class="n">ExportAsync</span><span class="p">(</span><span class="n">data</span><span class="p">,</span><span class="w"> </span><span class="n">stream</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="p">);</span>
 
@@ -5119,7 +6002,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="configuration-via-appsettingsjson">Configuration via appsettings.json<a class="headerlink" href="#configuration-via-appsettingsjson" title="Permanent link">&para;</a></h2>
+<h2 id="configuration-through-appsettingsjson">Configuration through appsettings.json<a class="headerlink" href="#configuration-through-appsettingsjson" title="Permanent link">&para;</a></h2>
 <p>Providers can be configured via configuration:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;DataPorter&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -5163,17 +6046,17 @@ Flattened column names use underscore-separated segments, for example:</p>
 <tbody>
 <tr>
 <td>ClosedXML</td>
-<td>Latest</td>
+<td>0.105.1</td>
 <td>Excel file handling</td>
 </tr>
 <tr>
 <td>CsvHelper</td>
-<td>Latest</td>
+<td>33.1.0</td>
 <td>CSV file handling</td>
 </tr>
 <tr>
 <td>PDFsharp-MigraDoc</td>
-<td>6.2.0</td>
+<td>6.2.4</td>
 <td>PDF generation (MIT licensed)</td>
 </tr>
 <tr>
@@ -5188,8 +6071,8 @@ Flattened column names use underscore-separated segments, for example:</p>
 </tr>
 </tbody>
 </table>
-<h2 id="appendix-a-advanced-usage-scenarios">Appendix A: Advanced Usage Scenarios<a class="headerlink" href="#appendix-a-advanced-usage-scenarios" title="Permanent link">&para;</a></h2>
-<h3 id="http-api-streaming">HTTP API Streaming<a class="headerlink" href="#http-api-streaming" title="Permanent link">&para;</a></h3>
+<h2 id="appendix-a-advanced-usage-scenarios">Appendix A: Advanced usage scenarios<a class="headerlink" href="#appendix-a-advanced-usage-scenarios" title="Permanent link">&para;</a></h2>
+<h3 id="http-api-streaming">HTTP API streaming<a class="headerlink" href="#http-api-streaming" title="Permanent link">&para;</a></h3>
 <p>This scenario shows a modern ASP.NET Core Minimal API that streams export data directly into the HTTP response body and streams import data directly from the HTTP request body.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Client
@@ -5206,7 +6089,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.DataPorter</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/orders/export&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/orders/export&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">HttpContext</span><span class="w"> </span><span class="n">httpContext</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IDataExporter</span><span class="w"> </span><span class="n">exporter</span><span class="p">,</span>
 <span class="w">    </span><span class="n">OrderRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">,</span>
@@ -5246,7 +6129,7 @@ Flattened column names use underscore-separated segments, for example:</p>
 <span class="p">.</span><span class="n">Produces</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status200OK</span><span class="p">,</span><span class="w"> </span><span class="n">contentType</span><span class="p">:</span><span class="w"> </span><span class="n">ContentType</span><span class="p">.</span><span class="n">CSV</span><span class="p">.</span><span class="n">MimeType</span><span class="p">())</span>
 <span class="p">.</span><span class="n">ProducesProblem</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status500InternalServerError</span><span class="p">);</span>
 
-<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/api/orders/import&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/api/orders/import&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
 <span class="w">    </span><span class="n">HttpRequest</span><span class="w"> </span><span class="n">request</span><span class="p">,</span>
 <span class="w">    </span><span class="n">IDataImporter</span><span class="w"> </span><span class="n">importer</span><span class="p">,</span>
 <span class="w">    </span><span class="n">OrderRepository</span><span class="w"> </span><span class="n">repository</span><span class="p">,</span>
@@ -5337,7 +6220,7 @@ ORD-1002,Linus,18.25
 <li>the endpoint handles each imported row as soon as it is parsed</li>
 <li>the same pattern also works with <code>Format.Xml</code>, <code>Format.Csv</code>, and <code>Format.CsvTyped</code></li>
 </ul>
-<h3 id="background-file-import-pipeline">Background File Import Pipeline<a class="headerlink" href="#background-file-import-pipeline" title="Permanent link">&para;</a></h3>
+<h3 id="background-file-import-pipeline">Background file import pipeline<a class="headerlink" href="#background-file-import-pipeline" title="Permanent link">&para;</a></h3>
 <p>This scenario fits a worker service that watches a drop folder or object store and imports large partner files without loading the whole file into memory first.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Worker
@@ -5409,7 +6292,7 @@ ORD-1002,Linus,18.25
 <li>successful rows are persisted immediately instead of waiting for the whole file</li>
 <li>invalid rows can be logged or dead-lettered while valid rows continue to flow through</li>
 </ul>
-<h3 id="scheduled-partner-feed-export">Scheduled Partner Feed Export<a class="headerlink" href="#scheduled-partner-feed-export" title="Permanent link">&para;</a></h3>
+<h3 id="scheduled-partner-feed-export">Scheduled partner feed export<a class="headerlink" href="#scheduled-partner-feed-export" title="Permanent link">&para;</a></h3>
 <p>This scenario fits a scheduled job that produces a large outbound feed and writes it directly into storage without first creating a full in-memory document.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Storage</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
@@ -5468,7 +6351,7 @@ ORD-1002,Linus,18.25
 <li>the storage provider receives the feed incrementally as bytes are produced</li>
 <li>peak memory usage stays bounded by the provider writer and stream buffers instead of the full export size</li>
 </ul>
-<h3 id="filestorage-exportimport-roundtrip">FileStorage Export/Import Roundtrip<a class="headerlink" href="#filestorage-exportimport-roundtrip" title="Permanent link">&para;</a></h3>
+<h3 id="filestorage-exportimport-round-trip">FileStorage export/import round trip<a class="headerlink" href="#filestorage-exportimport-round-trip" title="Permanent link">&para;</a></h3>
 <p>This scenario fits a simpler buffered workflow where the exported payload is materialized once, persisted through <code>IFileStorageProvider.WriteFileAsync(...)</code>, and later read back through <code>IFileStorageProvider.ReadFileAsync(...)</code> for import.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Storage</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
@@ -5636,7 +6519,7 @@ ORD-1002,Linus,18.25
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -5644,6 +6527,8 @@ ORD-1002,Linus,18.25
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

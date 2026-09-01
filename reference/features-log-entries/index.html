@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#log-entries-feature-documentation" class="md-skip">
+        <a href="#log-entries" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2040,15 +2147,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2066,8 +2178,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2092,6 +2204,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2308,6 +2476,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2377,15 +2573,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2403,8 +2604,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2716,10 +2917,76 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-the-feature-covers" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What The Feature Covers
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capabilities
       
     </span>
   </a>
@@ -2730,7 +2997,7 @@
   <a href="#core-contract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Contract
+        Core contract
       
     </span>
   </a>
@@ -2753,7 +3020,7 @@
   <a href="#1-persist-logs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Persist Logs
+        1. Persist logs
       
     </span>
   </a>
@@ -2761,10 +3028,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-expose-logentries-in-your-dbcontext" class="md-nav__link">
+  <a href="#2-expose-logentries-in-the-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Expose LogEntries In Your DbContext
+        2. Expose LogEntries in the DbContext
       
     </span>
   </a>
@@ -2775,7 +3042,7 @@
   <a href="#3-register-the-application-and-maintenance-services" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Register The Application And Maintenance Services
+        3. Register the application and maintenance services
       
     </span>
   </a>
@@ -2783,10 +3050,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-make-sure-the-log-table-exists" class="md-nav__link">
+  <a href="#4-ensure-the-log-table-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Make Sure The Log Table Exists
+        4. Ensure the log table exists
       
     </span>
   </a>
@@ -2797,7 +3064,7 @@
   <a href="#minimal-host-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minimal Host Example
+        Minimal host example
       
     </span>
   </a>
@@ -2813,7 +3080,7 @@
   <a href="#query-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Query Model
+        Query model
       
     </span>
   </a>
@@ -2824,12 +3091,12 @@
   <a href="#typical-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typical Usage
+        Typical usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Typical Usage">
+    <nav class="md-nav" aria-label="Typical usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2885,7 +3152,7 @@
   <a href="#http-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP Endpoints
+        HTTP endpoints
       
     </span>
   </a>
@@ -2896,7 +3163,7 @@
   <a href="#data-shape" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Shape
+        Data shape
       
     </span>
   </a>
@@ -2904,10 +3171,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#architecture-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Architecture details
       
     </span>
   </a>
@@ -2918,7 +3185,7 @@
   <a href="#practical-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Practical Notes
+        Practical notes
       
     </span>
   </a>
@@ -2929,7 +3196,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -2940,7 +3207,7 @@
   <a href="#related-docs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Docs
+        Related docs
       
     </span>
   </a>
@@ -2974,15 +3241,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3000,8 +3272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3081,6 +3353,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3120,10 +3923,76 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#what-the-feature-covers" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What The Feature Covers
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capabilities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capabilities
       
     </span>
   </a>
@@ -3134,7 +4003,7 @@
   <a href="#core-contract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Contract
+        Core contract
       
     </span>
   </a>
@@ -3157,7 +4026,7 @@
   <a href="#1-persist-logs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Persist Logs
+        1. Persist logs
       
     </span>
   </a>
@@ -3165,10 +4034,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-expose-logentries-in-your-dbcontext" class="md-nav__link">
+  <a href="#2-expose-logentries-in-the-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Expose LogEntries In Your DbContext
+        2. Expose LogEntries in the DbContext
       
     </span>
   </a>
@@ -3179,7 +4048,7 @@
   <a href="#3-register-the-application-and-maintenance-services" class="md-nav__link">
     <span class="md-ellipsis">
       
-        3. Register The Application And Maintenance Services
+        3. Register the application and maintenance services
       
     </span>
   </a>
@@ -3187,10 +4056,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#4-make-sure-the-log-table-exists" class="md-nav__link">
+  <a href="#4-ensure-the-log-table-exists" class="md-nav__link">
     <span class="md-ellipsis">
       
-        4. Make Sure The Log Table Exists
+        4. Ensure the log table exists
       
     </span>
   </a>
@@ -3201,7 +4070,7 @@
   <a href="#minimal-host-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minimal Host Example
+        Minimal host example
       
     </span>
   </a>
@@ -3217,7 +4086,7 @@
   <a href="#query-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Query Model
+        Query model
       
     </span>
   </a>
@@ -3228,12 +4097,12 @@
   <a href="#typical-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Typical Usage
+        Typical usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Typical Usage">
+    <nav class="md-nav" aria-label="Typical usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3289,7 +4158,7 @@
   <a href="#http-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP Endpoints
+        HTTP endpoints
       
     </span>
   </a>
@@ -3300,7 +4169,7 @@
   <a href="#data-shape" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data Shape
+        Data shape
       
     </span>
   </a>
@@ -3308,10 +4177,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#architecture-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Architecture details
       
     </span>
   </a>
@@ -3322,7 +4191,7 @@
   <a href="#practical-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Practical Notes
+        Practical notes
       
     </span>
   </a>
@@ -3333,7 +4202,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3344,7 +4213,7 @@
   <a href="#related-docs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Docs
+        Related docs
       
     </span>
   </a>
@@ -3394,10 +4263,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3437,38 +4324,44 @@
   
 
 
-<h1 id="log-entries-feature-documentation">Log Entries Feature Documentation<a class="headerlink" href="#log-entries-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="log-entries">Log Entries<a class="headerlink" href="#log-entries" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Query, stream, export, and manage persisted application logs through a stable application API.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#log-entries-feature-documentation">Log Entries Feature Documentation</a><ul>
+<li><a href="#log-entries">Log Entries</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#what-the-feature-covers">What The Feature Covers</a></li>
-<li><a href="#core-contract">Core Contract</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#capabilities">Capabilities</a></li>
+<li><a href="#core-contract">Core contract</a></li>
 <li><a href="#setup">Setup</a><ul>
-<li><a href="#1-persist-logs">1. Persist Logs</a></li>
-<li><a href="#2-expose-logentries-in-your-dbcontext">2. Expose LogEntries In Your DbContext</a></li>
-<li><a href="#3-register-the-application-and-maintenance-services">3. Register The Application And Maintenance Services</a></li>
-<li><a href="#4-make-sure-the-log-table-exists">4. Make Sure The Log Table Exists</a></li>
-<li><a href="#minimal-host-example">Minimal Host Example</a></li>
+<li><a href="#1-persist-logs">1. Persist logs</a></li>
+<li><a href="#2-expose-logentries-in-the-dbcontext">2. Expose LogEntries in the DbContext</a></li>
+<li><a href="#3-register-the-application-and-maintenance-services">3. Register the application and maintenance services</a></li>
+<li><a href="#4-ensure-the-log-table-exists">4. Ensure the log table exists</a></li>
+<li><a href="#minimal-host-example">Minimal host example</a></li>
 </ul>
 </li>
-<li><a href="#query-model">Query Model</a></li>
-<li><a href="#typical-usage">Typical Usage</a><ul>
+<li><a href="#query-model">Query model</a></li>
+<li><a href="#typical-usage">Typical usage</a><ul>
 <li><a href="#querying">Querying</a></li>
 <li><a href="#streaming">Streaming</a></li>
 <li><a href="#exporting">Exporting</a></li>
 <li><a href="#statistics">Statistics</a></li>
 </ul>
 </li>
-<li><a href="#http-endpoints">HTTP Endpoints</a></li>
-<li><a href="#data-shape">Data Shape</a></li>
-<li><a href="#architecture">Architecture</a></li>
-<li><a href="#practical-notes">Practical Notes</a></li>
-<li><a href="#best-practices">Best Practices</a></li>
-<li><a href="#related-docs">Related Docs</a></li>
+<li><a href="#http-endpoints">HTTP endpoints</a></li>
+<li><a href="#data-shape">Data shape</a></li>
+<li><a href="#architecture-details">Architecture details</a></li>
+<li><a href="#practical-notes">Practical notes</a></li>
+<li><a href="#best-practices">Best practices</a></li>
+<li><a href="#related-docs">Related docs</a></li>
 </ul>
 </li>
 </ul>
@@ -3476,16 +4369,90 @@
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The Log Entries feature provides an application-level API for querying, streaming, exporting, and cleaning up persisted logs. It does not replace the logging pipeline itself. Instead, it gives the rest of the devkit a stable contract for operational access to log data once logs have already been written to a store.</p>
 <p><code>Application.Utilities</code> defines the contract in <code>ILogEntryService</code> and the DTOs used by callers. Infrastructure projects provide concrete implementations, and <code>Presentation.Web</code> exposes a ready-made HTTP endpoint set.</p>
-<h2 id="what-the-feature-covers">What The Feature Covers<a class="headerlink" href="#what-the-feature-covers" title="Permanent link">&para;</a></h2>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Persisted application logs are useful only when operators can search them without coupling application code to a sink schema. Querying a large log table also requires bounded pages, continuation, validation, and controlled maintenance so that dashboards and cleanup work do not become unbounded database operations.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p><code>ILogEntryService</code> defines provider-neutral query, stream, export, statistics, subscription, and cleanup operations. The SQL Server EF Core implementation maps those operations to an <code>ILoggingContext</code>, and the maintenance service processes archival and deletion requests outside the request path. Optional minimal API endpoints expose the same application contract.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>validated filtering by time, severity, trace, correlation, module, log key, type, and text</li>
+<li>continuation-token and tail-query support</li>
+<li>polling-based asynchronous streaming and subscriptions</li>
+<li>CSV, JSON, and plain-text export</li>
+<li>aggregated statistics by level and interval</li>
+<li>queued archival and deletion maintenance</li>
+<li>authorization-enabled operational endpoints</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>Application and presentation code depend on <code>ILogEntryService</code>. <code>LogEntryService&lt;TContext&gt;</code> queries a context that implements <code>ILoggingContext</code>, while <code>LogEntryMaintenanceQueue</code> and <code>LogEntryMaintenanceService&lt;TContext&gt;</code> separate retention work from request processing. The logging sink writes the rows; this feature reads and maintains them.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>show recent warnings or errors in an operations dashboard</li>
+<li>follow new entries for a support console</li>
+<li>export a filtered time range for offline analysis</li>
+<li>correlate records from one distributed request or module</li>
+<li>archive and remove retained entries in bounded batches</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example assumes <code>AppDbContext</code> is already registered, implements <code>ILoggingContext</code>, and points to the same SQL Server table used by the logging sink. It registers the application service and maintenance worker, then exposes a bounded query with safe error handling and a visible result.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Utilities</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Infrastructure.EntityFramework</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.Extensions.Logging</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddScoped</span><span class="o">&lt;</span><span class="n">ILogEntryService</span><span class="p">,</span><span class="w"> </span><span class="n">LogEntryService</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddSingleton</span><span class="o">&lt;</span><span class="n">LogEntryMaintenanceQueue</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddHostedService</span><span class="o">&lt;</span><span class="n">LogEntryMaintenanceService</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/ops/recent-errors&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">ILogEntryService</span><span class="w"> </span><span class="n">logs</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ILoggerFactory</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">,</span>
+<span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">try</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">logs</span><span class="p">.</span><span class="n">QueryAsync</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">LogEntryQueryRequest</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">StartTime</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">.</span><span class="n">AddHours</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">),</span>
+<span class="w">            </span><span class="n">Level</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">LogLevel</span><span class="p">.</span><span class="n">Error</span><span class="p">,</span>
+<span class="w">            </span><span class="n">PageSize</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">100</span>
+<span class="w">        </span><span class="p">},</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">Count</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Items</span><span class="p">.</span><span class="n">Count</span><span class="p">,</span>
+<span class="w">            </span><span class="n">Entries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">response</span><span class="p">.</span><span class="n">Items</span><span class="p">,</span>
+<span class="w">            </span><span class="n">response</span><span class="p">.</span><span class="n">ContinuationToken</span>
+<span class="w">        </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">ArgumentException</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">BadRequest</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">exception</span><span class="p">.</span><span class="n">Message</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">Exception</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">loggerFactory</span><span class="p">.</span><span class="n">CreateLogger</span><span class="p">(</span><span class="s">&quot;LogEntries&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">LogError</span><span class="p">(</span><span class="n">exception</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Could not query persisted log entries&quot;</span><span class="p">);</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="s">&quot;The log query failed.&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+</code></pre></div>
+<p><code>GET /ops/recent-errors</code> returns at most 100 error-or-higher entries from the previous hour and includes the continuation token when another page is available.</p>
+<h2 id="capabilities">Capabilities<a class="headerlink" href="#capabilities" title="Permanent link">&para;</a></h2>
 <ul>
 <li>paged log queries with continuation tokens</li>
-<li>live streaming of newly written log entries</li>
+<li>polling-based asynchronous enumeration and callback subscriptions</li>
 <li>export to CSV, JSON, or plain text</li>
 <li>aggregated statistics by level and time interval</li>
 <li>cleanup and archival-oriented maintenance operations</li>
 <li>correlation-oriented filtering by trace, correlation, module, and log key metadata</li>
 </ul>
-<h2 id="core-contract">Core Contract<a class="headerlink" href="#core-contract" title="Permanent link">&para;</a></h2>
+<h2 id="core-contract">Core contract<a class="headerlink" href="#core-contract" title="Permanent link">&para;</a></h2>
 <p>The central abstraction is <code>ILogEntryService</code>.</p>
 <p>It exposes these operations:</p>
 <ul>
@@ -3513,7 +4480,7 @@
 <li>the web host can optionally expose <code>LogEntryEndpoints</code></li>
 </ol>
 <p>The DoFiesta example wires those pieces together in <a href="https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta.Presentation.Web.Server/Program.cs">Program.cs</a> and <a href="https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta.Infrastructure/Modules/Core/EntityFramework/CoreDbContext.cs">CoreDbContext.cs</a>.</p>
-<h3 id="1-persist-logs">1. Persist Logs<a class="headerlink" href="#1-persist-logs" title="Permanent link">&para;</a></h3>
+<h3 id="1-persist-logs">1. Persist logs<a class="headerlink" href="#1-persist-logs" title="Permanent link">&para;</a></h3>
 <p>The query feature only works if your logging pipeline writes log events into a durable store. Serilog needs to be configured with the <a href="https://github.com/serilog-mssql/serilog-sinks-mssqlserver">MSSQL</a> sink in appsettings.json.</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;Serilog&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;WriteTo&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
@@ -3610,7 +4577,7 @@
 <span class="n">builder</span><span class="p">.</span><span class="n">Host</span><span class="p">.</span><span class="n">ConfigureLogging</span><span class="p">();</span>
 <span class="n">builder</span><span class="p">.</span><span class="n">Host</span><span class="p">.</span><span class="n">ConfigureAppConfiguration</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="2-expose-logentries-in-your-dbcontext">2. Expose <code>LogEntries</code> In Your DbContext<a class="headerlink" href="#2-expose-logentries-in-your-dbcontext" title="Permanent link">&para;</a></h3>
+<h3 id="2-expose-logentries-in-the-dbcontext">2. Expose <code>LogEntries</code> in the DbContext<a class="headerlink" href="#2-expose-logentries-in-the-dbcontext" title="Permanent link">&para;</a></h3>
 <p>Your EF Core context must implement <code>ILoggingContext</code> and expose a <code>DbSet&lt;LogEntry&gt;</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Infrastructure.EntityFramework</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.EntityFrameworkCore</span><span class="p">;</span>
@@ -3623,7 +4590,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>This is what allows <code>LogEntryService&lt;TContext&gt;</code> and <code>LogEntryMaintenanceService&lt;TContext&gt;</code> to query and maintain persisted log rows.</p>
-<h3 id="3-register-the-application-and-maintenance-services">3. Register The Application And Maintenance Services<a class="headerlink" href="#3-register-the-application-and-maintenance-services" title="Permanent link">&para;</a></h3>
+<h3 id="3-register-the-application-and-maintenance-services">3. Register the application and maintenance services<a class="headerlink" href="#3-register-the-application-and-maintenance-services" title="Permanent link">&para;</a></h3>
 <p>DoFiesta registers the query service, maintenance queue, and hosted maintenance worker directly in the web host:</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Utilities</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Infrastructure.EntityFramework</span><span class="p">;</span>
@@ -3646,7 +4613,7 @@
 <li><code>LogEntryMaintenanceService&lt;TContext&gt;</code>: processes queued maintenance work and periodic retention tasks in the background</li>
 <li><code>LogEntryEndpoints</code>: exposes the operational HTTP surface</li>
 </ul>
-<h3 id="4-make-sure-the-log-table-exists">4. Make Sure The Log Table Exists<a class="headerlink" href="#4-make-sure-the-log-table-exists" title="Permanent link">&para;</a></h3>
+<h3 id="4-ensure-the-log-table-exists">4. Ensure the log table exists<a class="headerlink" href="#4-ensure-the-log-table-exists" title="Permanent link">&para;</a></h3>
 <p>Because the query service reads from persisted rows, your database schema must include the logging table used by the sink. The schema is expected to be managed explicitly instead of being created ad hoc by Serilog. That means it should have a migration in your infrastructure project that creates the logging table with the expected shape. The sink's <code>autoCreateSqlTable</code> option should be set to <code>false</code> to avoid conflicts.</p>
 <p>In practice that means:</p>
 <ul>
@@ -3654,7 +4621,7 @@
 <li>the logging table shape must match the sink configuration</li>
 <li>the same database should be reachable by both the logging sink and <code>CoreDbContext</code></li>
 </ul>
-<h3 id="minimal-host-example">Minimal Host Example<a class="headerlink" href="#minimal-host-example" title="Permanent link">&para;</a></h3>
+<h3 id="minimal-host-example">Minimal host example<a class="headerlink" href="#minimal-host-example" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Host</span><span class="p">.</span><span class="n">ConfigureLogging</span><span class="p">();</span>
@@ -3673,7 +4640,7 @@
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">LogEntry</span><span class="o">&gt;</span><span class="w"> </span><span class="n">LogEntries</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="query-model">Query Model<a class="headerlink" href="#query-model" title="Permanent link">&para;</a></h2>
+<h2 id="query-model">Query model<a class="headerlink" href="#query-model" title="Permanent link">&para;</a></h2>
 <p><code>LogEntryQueryRequest</code> supports operational filters instead of hard-coding one reporting view.</p>
 <p>Important filters include:</p>
 <ul>
@@ -3681,6 +4648,7 @@
 <li><code>Age</code></li>
 <li><code>Level</code></li>
 <li><code>TraceId</code></li>
+<li><code>SpanId</code></li>
 <li><code>CorrelationId</code></li>
 <li><code>LogKey</code></li>
 <li><code>ModuleName</code></li>
@@ -3688,10 +4656,12 @@
 <li><code>SearchText</code></li>
 <li><code>PageSize</code></li>
 <li><code>ContinuationToken</code></li>
+<li><code>AfterId</code></li>
 </ul>
 <p>Important rules:</p>
 <ul>
 <li><code>StartTime</code> and <code>Age</code> are mutually exclusive</li>
+<li><code>AfterId</code> and <code>ContinuationToken</code> are mutually exclusive</li>
 <li><code>PageSize</code> must be positive</li>
 <li><code>SearchText</code> is validated to reject control characters</li>
 </ul>
@@ -3702,7 +4672,7 @@
 <li><code>PageSize</code></li>
 </ul>
 <p>That makes the API suitable for dashboards, admin APIs, and support tooling without forcing offset-based paging.</p>
-<h2 id="typical-usage">Typical Usage<a class="headerlink" href="#typical-usage" title="Permanent link">&para;</a></h2>
+<h2 id="typical-usage">Typical usage<a class="headerlink" href="#typical-usage" title="Permanent link">&para;</a></h2>
 <h3 id="querying">Querying<a class="headerlink" href="#querying" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">OperationsService</span><span class="p">(</span><span class="n">ILogEntryService</span><span class="w"> </span><span class="n">logs</span><span class="p">)</span>
 <span class="p">{</span>
@@ -3744,7 +4714,7 @@
 <span class="w">    </span><span class="n">groupByInterval</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="http-endpoints">HTTP Endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
+<h2 id="http-endpoints">HTTP endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
 <p><code>Presentation.Web</code> exposes this feature through <code>LogEntryEndpoints</code>.</p>
 <p>By default the endpoint group is:</p>
 <p><code>/_bdk/api/logentries</code></p>
@@ -3757,7 +4727,7 @@
 <li><code>DELETE /_bdk/api/logentries</code></li>
 </ul>
 <p>The default endpoint options require authorization, which makes these endpoints suitable for internal admin and support surfaces rather than public APIs.</p>
-<h2 id="data-shape">Data Shape<a class="headerlink" href="#data-shape" title="Permanent link">&para;</a></h2>
+<h2 id="data-shape">Data shape<a class="headerlink" href="#data-shape" title="Permanent link">&para;</a></h2>
 <p>Each <code>LogEntryModel</code> exposes operational metadata that is useful when diagnosing distributed flows:</p>
 <ul>
 <li>message and message template</li>
@@ -3772,22 +4742,23 @@
 <li>structured log event properties</li>
 </ul>
 <p>That makes the feature especially useful when combined with module scoping and distributed tracing.</p>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<h2 id="architecture-details">Architecture details<a class="headerlink" href="#architecture-details" title="Permanent link">&para;</a></h2>
 <pre class="mermaid"><code>flowchart LR
     App[Application code] --&gt; Contract[ILogEntryService]
     Contract --&gt; Infra[Infrastructure implementation]
     Infra --&gt; Store[(Persisted log store)]
     Web[Presentation.Web endpoints] --&gt; Contract</code></pre>
 <p>The important boundary is that <code>Application.Utilities</code> owns the contract, not the persistence strategy. This lets the same query and export model work with different infrastructure implementations while keeping consumers stable.</p>
-<h2 id="practical-notes">Practical Notes<a class="headerlink" href="#practical-notes" title="Permanent link">&para;</a></h2>
+<h2 id="practical-notes">Practical notes<a class="headerlink" href="#practical-notes" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Query paging is continuation-token based, not page-number based.</li>
-<li><code>Age</code> is converted into a start time relative to the current moment.</li>
-<li>Live streaming is polling-based and intended for operational dashboards and support tools.</li>
+<li>For queries, <code>Age</code> is subtracted from the start of the current UTC day; use an explicit <code>StartTime</code> for a rolling window such as the previous hour.</li>
+<li><code>StreamAsync</code> polls in batches ordered by descending ID and then advances toward lower IDs. It does not tail entries with higher IDs that arrive after the initial batch.</li>
 <li>Cleanup is a maintenance operation, not a query concern.</li>
+<li>Archival marks matching active rows. Deletion removes only rows that are already archived.</li>
 <li>Export format is intentionally narrow and operational: <code>Csv</code>, <code>Json</code>, or <code>Txt</code>.</li>
 </ul>
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h2 id="best-practices">Best practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Use <code>ContinuationToken</code> instead of trying to emulate offset paging.</li>
 <li>Prefer <code>Age</code> for operational dashboards and <code>StartTime</code>/<code>EndTime</code> for reporting screens.</li>
@@ -3796,7 +4767,7 @@
 <li>Keep the HTTP endpoints behind authorization and treat them as operational tooling.</li>
 <li>Let infrastructure own retention and archival strategy; use <code>CleanupAsync(...)</code> as the application-facing maintenance entry point.</li>
 </ul>
-<h2 id="related-docs">Related Docs<a class="headerlink" href="#related-docs" title="Permanent link">&para;</a></h2>
+<h2 id="related-docs">Related docs<a class="headerlink" href="#related-docs" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-presentation-endpoints/">Presentation Endpoints</a></li>
 <li><a href="../common-observability-tracing/">Common Observability Tracing</a></li>
@@ -3880,7 +4851,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3888,6 +4859,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

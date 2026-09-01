@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ConditionalCollectionExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides fluent collection mutation helpers that add items only when caller-supplied conditions are satisfied.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ConditionalCollectionExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides fluent collection mutation helpers that add items only when caller-supplied conditions are satisfied.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,9 @@ Class ConditionalCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an item to the collection if all specified conditions are true.
+If the collection is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,31 +143,49 @@ Class ConditionalCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>collection</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to add to, or null.</p>
+</dd>
     <dt><code>item</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The item to add.</p>
+</dd>
     <dt><code>predicates</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;[]</dt>
-    <dd></dd>
+    <dd><p>The predicates that must all return true. Add if empty</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection (for chaining if desired), or null if the collection was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of items in the collection.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfAll__1_System_Collections_Generic_ICollection___0____0_System_Func___0_System_Boolean_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var orderItems = new List&lt;Item&gt;();
+var item = new Item { Price = 25.0m, Quantity = 1 };
+orderItems.AddIfAllConditions(item, x =&gt; x.Price &gt; 20.0m, x =&gt; x.Quantity &gt; 0); // Adds if both true
+orderItems = null;
+orderItems.AddIfAllConditions(item, x =&gt; x.Price &gt; 20.0m); // Does nothing and returns null silently</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">predicates</code> is null or empty and the collection is not null.</p>
+</dd>
+  </dl>
 
 
 
@@ -175,7 +196,9 @@ Class ConditionalCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an item to the collection if any specified condition is true.
+If the collection is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -185,31 +208,49 @@ Class ConditionalCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>collection</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to add to, or null.</p>
+</dd>
     <dt><code>item</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The item to add.</p>
+</dd>
     <dt><code>predicates</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;[]</dt>
-    <dd></dd>
+    <dd><p>The predicates, at least one of which must return true.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection (for chaining if desired), or null if the collection was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of items in the collection.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfAny__1_System_Collections_Generic_ICollection___0____0_System_Func___0_System_Boolean_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var orderItems = new List&lt;Item&gt;();
+var item = new Item { Price = 30.0m };
+orderItems.AddIfAnyCondition(item, x =&gt; x.Price &gt; 25.0m, x =&gt; x.Quantity &gt; 5); // Adds if either true
+orderItems = null;
+orderItems.AddIfAnyCondition(item, x =&gt; x.Price &gt; 25.0m); // Does nothing and returns null silently</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">predicates</code> is null or empty and the collection is not null.</p>
+</dd>
+  </dl>
 
 
 
@@ -220,7 +261,9 @@ Class ConditionalCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an item to the collection if it is not null.
+If the collection is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -230,26 +273,39 @@ Class ConditionalCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>collection</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to add to, or null.</p>
+</dd>
     <dt><code>item</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The item to add.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection (for chaining if desired), or null if the collection was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of items in the collection.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfNotNull__1_System_Collections_Generic_ICollection___0____0__examples">Examples</h4>
+  <pre><code class="lang-csharp">var orderItems = new List&lt;Item&gt;();
+Item filteredItem = null; // Could be result of some operation
+orderItems.AddIfNotNull(filteredItem); // Won’t add because it’s null
+filteredItem = new Item { Price = 15.0m };
+orderItems.AddIfNotNull(filteredItem); // Adds because it’s not null
+orderItems = null;
+orderItems.AddIfNotNull(filteredItem); // Does nothing and returns null silently</code></pre>
 
 
 
@@ -263,7 +319,9 @@ Class ConditionalCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an item to the collection if it doesn’t already exist, based on equality or a custom comparer.
+If the collection is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,28 +331,40 @@ Class ConditionalCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>collection</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to add to, or null.</p>
+</dd>
     <dt><code>item</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The item to add.</p>
+</dd>
     <dt><code>comparer</code> <span class="xref">IEqualityComparer</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The comparer to determine uniqueness, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the default equality comparer.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection (for chaining if desired), or null if the collection was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of items in the collection.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIfUnique__1_System_Collections_Generic_ICollection___0____0_System_Collections_Generic_IEqualityComparer___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var orderItems = new List&lt;Item&gt; { new Item { Id = 1 } };
+var newItem = new Item { Id = 1 };
+orderItems.AddIfUnique(newItem, Comparer&lt;Item&gt;.Create((a, b) =&gt; a.Id.CompareTo(b.Id))); // Won’t add if Id matches
+orderItems = null;
+orderItems.AddIfUnique(newItem); // Does nothing and returns null silently</code></pre>
 
 
 
@@ -308,7 +378,9 @@ Class ConditionalCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an item to the collection if the specified condition is true.
+If the collection is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -318,28 +390,40 @@ Class ConditionalCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>collection</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to add to, or null.</p>
+</dd>
     <dt><code>item</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The item to add.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The condition that must be true to add the item.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection (for chaining if desired), or null if the collection was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of items in the collection.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIf__1_System_Collections_Generic_ICollection___0____0_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var orderItems = new List&lt;Item&gt;();
+var item = new Item { Price = 10.0m };
+orderItems.AddIf(item, item.Price &gt; 5.0m); // Adds item if its price is greater than 5
+orderItems = null;
+orderItems.AddIf(item, true); // Does nothing and returns null silently</code></pre>
 
 
 
@@ -353,7 +437,9 @@ Class ConditionalCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an item to the collection if the specified predicate returns true for the item.
+If the collection is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -363,31 +449,49 @@ Class ConditionalCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>collection</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to add to, or null.</p>
+</dd>
     <dt><code>item</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The item to add.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The predicate that determines if the item should be added.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection (for chaining if desired), or null if the collection was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of items in the collection.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddIf__1_System_Collections_Generic_ICollection___0____0_System_Func___0_System_Boolean___examples">Examples</h4>
+  <pre><code class="lang-csharp">var orderItems = new List&lt;Item&gt;();
+var item = new Item { Quantity = 3 };
+orderItems.AddIf(item, x =&gt; x.Quantity &gt; 0); // Adds item if its quantity is positive
+orderItems = null;
+orderItems.AddIf(item, x =&gt; x.Quantity &gt; 0); // Does nothing and returns null silently</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">predicate</code> is null and the collection is not null.</p>
+</dd>
+  </dl>
 
 
 
@@ -398,7 +502,9 @@ Class ConditionalCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a range of items to the collection if the specified condition is true.
+If the collection is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -408,31 +514,49 @@ Class ConditionalCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>collection</code> <span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection to add to, or null.</p>
+</dd>
     <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The items to add.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The condition that must be true to add the items.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The collection (for chaining if desired), or null if the collection was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of items in the collection.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ConditionalCollectionExtensions_AddRangeIf__1_System_Collections_Generic_ICollection___0__System_Collections_Generic_IEnumerable___0__System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var orderItems = new List&lt;Item&gt;();
+var items = new[] { new Item { Price = 20.0m }, new Item { Price = 5.0m } };
+orderItems.AddRangeIf(items, items.Any(i =&gt; i.Price &gt; 10.0m)); // Adds all if any price &gt; 10
+orderItems = null;
+orderItems.AddRangeIf(items, true); // Does nothing and returns null silently</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">items</code> is null and the collection is not null.</p>
+</dd>
+  </dl>
 
 
 

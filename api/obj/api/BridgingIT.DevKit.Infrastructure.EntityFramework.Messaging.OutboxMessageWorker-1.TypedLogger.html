@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OutboxMessageWorker&lt;TContext&gt;.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class OutboxMessageWorker&lt;TContext&gt;.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class OutboxMessageWorker&lt;TContext&gt;.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the message type not resolved operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,13 +143,17 @@ public static void LogMessageTypeNotResolved(ILogger logger, string logKey, stri
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>messageId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message id used by the operation.</p>
+</dd>
     <dt><code>messageType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -168,7 +174,8 @@ public static void LogMessageTypeNotResolved(ILogger logger, string logKey, stri
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the processed operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -179,13 +186,17 @@ public static void LogProcessed(ILogger logger, string logKey, string dbContextT
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
     <dt><code>outboxMessageProcessedCount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The outbox message processed count used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -206,7 +217,8 @@ public static void LogProcessed(ILogger logger, string logKey, string dbContextT
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the processing operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -217,13 +229,17 @@ public static void LogProcessing(ILogger logger, string logKey, string dbContext
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
     <dt><code>messageId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -244,7 +260,8 @@ public static void LogProcessing(ILogger logger, string logKey, string dbContext
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the purging operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -255,11 +272,14 @@ public static void LogPurging(ILogger logger, string logKey, string dbContextTyp
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
   </dl>
 
 

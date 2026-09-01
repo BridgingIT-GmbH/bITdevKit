@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BusinessHoursRule | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Checks the current implementation&#39;s weekday and hour condition for a date and time.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class BusinessHoursRule
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Rules.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Checks the current implementation's weekday and hour condition for a date and time.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -283,7 +284,8 @@ Class BusinessHoursRule
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks the current implementation's weekday and hour condition for a date and time.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -293,9 +295,11 @@ Class BusinessHoursRule
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dateTime</code> <span class="xref">DateTime</span></dt>
-    <dd></dd>
+    <dd><p>The local date and hour evaluated by the rule.</p>
+</dd>
     <dt><code>message</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The failure description, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the built-in business-hours message.</p>
+</dd>
   </dl>
 
 
@@ -320,7 +324,7 @@ Class BusinessHoursRule
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the default message for the rule. Override this property to provide a specific message.</p>
+  <div class="markdown level1 summary"><p>Gets the configured failure message.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -356,7 +360,7 @@ Class BusinessHoursRule
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Implements the core validation logic for the rule.</p>
+  <div class="markdown level1 summary"><p>Returns success for a weekday whose hour is before <code>09:00</code> or at/after <code>17:00</code>; otherwise, returns failure.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -368,7 +372,7 @@ Class BusinessHoursRule
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
-    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> indicating success or failure of the rule.</p>
+    <dd><p>A result representing the evaluated weekday and hour condition.</p>
 </dd>
   </dl>
 

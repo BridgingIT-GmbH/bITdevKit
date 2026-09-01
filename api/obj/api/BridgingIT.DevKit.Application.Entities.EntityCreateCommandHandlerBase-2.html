@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents entity create command handler base.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Entities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents entity create command handler base.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -106,9 +107,11 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TCommand</code></dt>
-    <dd></dd>
+    <dd><p>The command type.</p>
+</dd>
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -294,7 +297,8 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>EntityCreateCommandHandlerBase</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -304,13 +308,17 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
     <dt><code>repository</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericRepository-1.html">IGenericRepository</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The repository used by the operation.</p>
+</dd>
     <dt><code>rules</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Entities.IEntityCreateCommandRule-1.html">IEntityCreateCommandRule</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The rules used by the operation.</p>
+</dd>
     <dt><code>localizer</code> <span class="xref">IStringLocalizer</span></dt>
-    <dd></dd>
+    <dd><p>The localizer used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -335,7 +343,8 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds rule.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -345,13 +354,15 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>rule</code> <a class="xref" href="BridgingIT.DevKit.Application.Entities.IEntityCreateCommandRule-1.html">IEntityCreateCommandRule</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The rule used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Entities.EntityCreateCommandHandlerBase-2.html">EntityCreateCommandHandlerBase</a>&lt;TCommand, TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -371,7 +382,8 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds rule.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -381,13 +393,15 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>rule</code> <span class="xref">Func</span>&lt;TCommand, <a class="xref" href="BridgingIT.DevKit.Application.Entities.IEntityCreateCommandRule-1.html">IEntityCreateCommandRule</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The rule used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Entities.EntityCreateCommandHandlerBase-2.html">EntityCreateCommandHandlerBase</a>&lt;TCommand, TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -407,7 +421,8 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents add rule.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -424,7 +439,8 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TRule</code></dt>
-    <dd></dd>
+    <dd><p>The rule type.</p>
+</dd>
   </dl>
 
 
@@ -443,7 +459,8 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds rules.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -453,13 +470,15 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>command</code> <span class="xref">TCommand</span></dt>
-    <dd></dd>
+    <dd><p>The command used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Entities.IEntityCreateCommandRule-1.html">IEntityCreateCommandRule</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -479,7 +498,8 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the process operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -491,13 +511,15 @@ public abstract class EntityCreateCommandHandlerBase&lt;TCommand, TEntity&gt; : 
     <dt><code>command</code> <span class="xref">TCommand</span></dt>
     <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Commands.EntityCreatedCommandResult.html">EntityCreatedCommandResult</a>&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

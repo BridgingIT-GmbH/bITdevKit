@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class OutboxDomainEventQueue.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class OutboxDomainEventQueue.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class OutboxDomainEventQueue.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the dequeued operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,11 +143,14 @@ public static void LogDequeued(ILogger logger, string logKey, string eventId)</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>eventId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The event id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -166,7 +171,8 @@ public static void LogDequeued(ILogger logger, string logKey, string eventId)</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the queue operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -177,11 +183,14 @@ public static void LogQueue(ILogger logger, string logKey, string eventId)</code
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>eventId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The event id used by the operation.</p>
+</dd>
   </dl>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Interface IDomainEventPropagator&lt;TAggregate, TDomainEvent&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Defines operations for i domain event propagator.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Interface IDomainEventPropagator&lt;TAggregate, TDomainEvent&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.EventSourcing.Mediator.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Defines operations for i domain event propagator.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -105,9 +106,11 @@ Interface IDomainEventPropagator&lt;TAggregate, TDomainEvent&gt;
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
     <dt><code>TDomainEvent</code></dt>
-    <dd></dd>
+    <dd><p>The domain event type.</p>
+</dd>
   </dl>
 
 
@@ -263,7 +266,8 @@ Interface IDomainEventPropagator&lt;TAggregate, TDomainEvent&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the propagate operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,15 +277,18 @@ Interface IDomainEventPropagator&lt;TAggregate, TDomainEvent&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>domainEvent</code> <span class="xref">TDomainEvent</span></dt>
-    <dd></dd>
+    <dd><p>The domain event used by the operation.</p>
+</dd>
     <dt><code>aggregate</code> <span class="xref">TAggregate</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TAggregate</span></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 

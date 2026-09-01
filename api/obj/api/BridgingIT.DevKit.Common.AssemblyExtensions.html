@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AssemblyExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides resilient assembly type discovery and build metadata helpers.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class AssemblyExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides resilient assembly type discovery and build metadata helpers.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Reads a UTC-style build timestamp encoded in the assembly informational version metadata.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,13 +142,16 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assembly</code> <span class="xref">Assembly</span></dt>
-    <dd></dd>
+    <dd><p>The assembly whose informational version should be inspected.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DateTime</span></dt>
-    <dd></dd>
+    <dd><p>The timestamp following a <code>+build</code> or <code>.build</code> suffix in <code>yyyyMMddHHmmss</code> format;
+otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+</dd>
   </dl>
 
 
@@ -166,7 +171,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates loadable types from each supplied assembly, ignoring assemblies that are <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -176,13 +182,15 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assemblies</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Assembly</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The assemblies to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>All types that can be loaded, or an empty sequence when <code class="paramref">assemblies</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -202,7 +210,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates loadable types from the supplied assemblies that implement a specified interface.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -212,15 +221,18 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assemblies</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Assembly</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The assemblies to inspect.</p>
+</dd>
     <dt><code>interface</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The interface contract used to filter discovered types.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Matching loadable types, or an empty sequence when either argument is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -240,7 +252,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates loadable types from the supplied assemblies that implement at least one specified interface.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -250,15 +263,18 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assemblies</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Assembly</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The assemblies to inspect.</p>
+</dd>
     <dt><code>interfaces</code> <span class="xref">Type</span>[]</dt>
-    <dd></dd>
+    <dd><p>The interface contracts used to filter discovered types.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Matching loadable types, or an empty sequence when no usable filter is supplied.</p>
+</dd>
   </dl>
 
 
@@ -278,7 +294,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates the types that can be loaded from an assembly, retaining partial results when some types fail to load.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -288,13 +305,15 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assembly</code> <span class="xref">Assembly</span></dt>
-    <dd></dd>
+    <dd><p>The assembly to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The loadable types, or an empty sequence when <code class="paramref">assembly</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -314,7 +333,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates loadable types from an assembly that implement a specified interface.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -324,15 +344,18 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assembly</code> <span class="xref">Assembly</span></dt>
-    <dd></dd>
+    <dd><p>The assembly to inspect.</p>
+</dd>
     <dt><code>interface</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The interface contract used to filter discovered types.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Matching loadable types, including partial results after a type-load failure.</p>
+</dd>
   </dl>
 
 
@@ -352,7 +375,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates loadable types from an assembly that implement at least one specified interface.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -362,15 +386,18 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assembly</code> <span class="xref">Assembly</span></dt>
-    <dd></dd>
+    <dd><p>The assembly to inspect.</p>
+</dd>
     <dt><code>interfaces</code> <span class="xref">Type</span>[]</dt>
-    <dd></dd>
+    <dd><p>The interface contracts used to filter discovered types.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Matching loadable types, including partial results after a type-load failure.</p>
+</dd>
   </dl>
 
 
@@ -390,7 +417,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates loadable types from the supplied assemblies that implement <code class="typeparamref">TInterface</code>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -400,19 +428,22 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assemblies</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">Assembly</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The assemblies to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Matching loadable types, or an empty sequence for a <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> source.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TInterface</code></dt>
-    <dd></dd>
+    <dd><p>The interface contract used to filter discovered types.</p>
+</dd>
   </dl>
 
 
@@ -431,7 +462,8 @@ Class AssemblyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates loadable types from an assembly that implement <code class="typeparamref">TInterface</code>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -441,19 +473,22 @@ Class AssemblyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>assembly</code> <span class="xref">Assembly</span></dt>
-    <dd></dd>
+    <dd><p>The assembly to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Matching loadable types, or an empty sequence when <code class="paramref">assembly</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TInterface</code></dt>
-    <dd></dd>
+    <dd><p>The interface contract used to filter discovered types.</p>
+</dd>
   </dl>
 
 

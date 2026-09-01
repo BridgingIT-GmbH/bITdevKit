@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MemoryCacheExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides key enumeration and pattern-based removal for the built-in  implementation.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class MemoryCacheExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Caching.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides key enumeration and pattern-based removal for the built-in <span class="xref">Microsoft.Extensions.Caching.Memory.MemoryCache</span> implementation.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -117,6 +118,10 @@ Class MemoryCacheExtensions
 
 
 
+  <h2 id="BridgingIT_DevKit_Common_MemoryCacheExtensions_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Key enumeration relies on private implementation details of <span class="xref">Microsoft.Extensions.Caching.Memory.MemoryCache</span> and requires the supplied
+<span class="xref">Microsoft.Extensions.Caching.Memory.IMemoryCache</span> to be a <span class="xref">Microsoft.Extensions.Caching.Memory.MemoryCache</span> instance.</p>
+</div>
 
 
   <h2 class="section" id="methods">Methods
@@ -130,7 +135,8 @@ Class MemoryCacheExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets all keys currently stored by a memory cache.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,13 +146,15 @@ Class MemoryCacheExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>memoryCache</code> <span class="xref">IMemoryCache</span></dt>
-    <dd></dd>
+    <dd><p>The memory cache to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ICollection</span></dt>
-    <dd></dd>
+    <dd><p>The cache's key collection.</p>
+</dd>
   </dl>
 
 
@@ -166,7 +174,8 @@ Class MemoryCacheExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the cache keys assignable to a specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -176,19 +185,22 @@ Class MemoryCacheExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>memoryCache</code> <span class="xref">IMemoryCache</span></dt>
-    <dd></dd>
+    <dd><p>The memory cache to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The cache keys of type <code class="typeparamref">T</code>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The key type to select.</p>
+</dd>
   </dl>
 
 
@@ -207,7 +219,8 @@ Class MemoryCacheExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes entries whose string keys contain a case-sensitive value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -217,9 +230,11 @@ Class MemoryCacheExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IMemoryCache</span></dt>
-    <dd></dd>
+    <dd><p>The memory cache to modify.</p>
+</dd>
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The key fragment. Null and empty values are ignored.</p>
+</dd>
   </dl>
 
 
@@ -240,7 +255,8 @@ Class MemoryCacheExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes entries whose string keys start with a case-sensitive prefix.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -250,9 +266,11 @@ Class MemoryCacheExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IMemoryCache</span></dt>
-    <dd></dd>
+    <dd><p>The memory cache to modify.</p>
+</dd>
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The key prefix. Null and empty values are ignored.</p>
+</dd>
   </dl>
 
 

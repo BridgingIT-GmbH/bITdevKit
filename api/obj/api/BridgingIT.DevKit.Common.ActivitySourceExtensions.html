@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ActivitySourceExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides activity-source selection from registered application sources.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ActivitySourceExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides activity-source selection from registered application sources.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class ActivitySourceExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a source by name, then the source named <code>default</code>, then the current activity's source.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,15 +142,18 @@ Class ActivitySourceExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">ActivitySource</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The registered activity sources.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The preferred source name, compared without regard to case.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ActivitySource</span></dt>
-    <dd></dd>
+    <dd><p>The selected activity source, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none is available.</p>
+</dd>
   </dl>
 
 

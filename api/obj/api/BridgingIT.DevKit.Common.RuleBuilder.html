@@ -996,7 +996,8 @@ if (result.IsSuccess)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously classifies items, processes both groups with synchronous handlers, and merges their results.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1006,25 +1007,31 @@ if (result.IsSuccess)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The items to classify into matched and unmatched groups.</p>
+</dd>
     <dt><code>matchHandler</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler invoked with items that satisfy all configured rules.</p>
+</dd>
     <dt><code>unmatchHandler</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler invoked with items that do not satisfy all configured rules.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel asynchronous rule classification.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task containing the merged handler results.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of item classified by the configured rules.</p>
+</dd>
   </dl>
 
 

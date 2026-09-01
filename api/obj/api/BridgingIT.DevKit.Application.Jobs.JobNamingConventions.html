@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class JobNamingConventions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Derives normalized, dash-separated names for code-first job definitions.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class JobNamingConventions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Derives normalized, dash-separated names for code-first job definitions.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class JobNamingConventions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a lowercase display name from the job type and optionally prefixes it with the module name.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,15 +142,18 @@ Class JobNamingConventions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The job type whose type name is converted to dash-separated lowercase text.</p>
+</dd>
     <dt><code>module</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional module prefix, also converted to dash-separated lowercase text.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The normalized job name, prefixed with the normalized module and a hyphen when a module is supplied.</p>
+</dd>
   </dl>
 
 
@@ -158,6 +163,12 @@ Class JobNamingConventions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NullReferenceException</span></dt>
+    <dd><p>Thrown when <code class="paramref">jobType</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
 
 
 

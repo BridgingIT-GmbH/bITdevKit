@@ -333,7 +333,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the accepted-event store.</p>
+  <div class="markdown level1 summary"><p>Gets the accepted events.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -365,7 +365,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the batch history store.</p>
+  <div class="markdown level1 summary"><p>Gets the batch history.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -397,7 +397,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the batch store.</p>
+  <div class="markdown level1 summary"><p>Gets the batches.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -429,7 +429,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the dependency store.</p>
+  <div class="markdown level1 summary"><p>Gets the dependencies.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -461,7 +461,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the execution history store.</p>
+  <div class="markdown level1 summary"><p>Gets the execution history.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -493,7 +493,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the execution store.</p>
+  <div class="markdown level1 summary"><p>Gets the executions.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -525,7 +525,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the lease store.</p>
+  <div class="markdown level1 summary"><p>Gets the leases.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -557,7 +557,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the occurrence store.</p>
+  <div class="markdown level1 summary"><p>Gets the occurrences.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -621,7 +621,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the previous execution lookup store.</p>
+  <div class="markdown level1 summary"><p>Gets the previous executions.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -653,7 +653,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the provider-neutral query store.</p>
+  <div class="markdown level1 summary"><p>Gets the queries.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -685,7 +685,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the job runtime state store.</p>
+  <div class="markdown level1 summary"><p>Gets the runtime states.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -717,7 +717,7 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the trigger runtime state store.</p>
+  <div class="markdown level1 summary"><p>Gets the trigger runtime states.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -753,7 +753,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -763,15 +764,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dependency</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a></dt>
-    <dd></dd>
+    <dd><p>The dependency used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -791,7 +795,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the append operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -801,15 +806,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entry</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry.html">JobBatchHistoryEntry</a></dt>
-    <dd></dd>
+    <dd><p>The entry used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -829,7 +837,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the append operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -839,15 +848,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>entry</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry.html">JobExecutionHistoryEntry</a></dt>
-    <dd></dd>
+    <dd><p>The entry used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -867,7 +879,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the attach operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -877,17 +890,21 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrences used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -907,7 +924,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -917,15 +935,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>execution</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a></dt>
-    <dd></dd>
+    <dd><p>The execution used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -945,7 +966,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -955,17 +977,21 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>triggerName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The trigger name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerRuntimeState.html">JobTriggerRuntimeState</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -985,7 +1011,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -995,15 +1022,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRuntimeState.html">JobRuntimeState</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1023,7 +1053,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets by key.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1033,15 +1064,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence key used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1061,7 +1095,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets previous execution.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1071,17 +1106,21 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>currentExecutionId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The current execution id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1101,7 +1140,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets previous successful execution.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1111,19 +1151,24 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>triggerName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The trigger name used by the operation.</p>
+</dd>
     <dt><code>beforeUtc</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>The before utc used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1143,7 +1188,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1153,15 +1199,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry.html">JobExecutionHistoryEntry</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1181,7 +1230,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list batch history operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1191,13 +1241,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchHistoryEntry.html">JobBatchHistoryEntry</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1217,7 +1269,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list batch occurrences operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1227,13 +1280,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1253,7 +1308,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list batches operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1263,13 +1319,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1289,7 +1347,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list by dependent operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1299,15 +1358,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dependentOccurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The dependent occurrence id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1327,7 +1389,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list by occurrence operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1337,15 +1400,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1365,7 +1431,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list by prerequisite operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1375,15 +1442,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>prerequisiteOccurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The prerequisite occurrence id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1403,7 +1473,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list dependencies operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1413,13 +1484,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1439,7 +1512,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list execution history operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1449,13 +1523,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecutionHistoryEntry.html">JobExecutionHistoryEntry</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1475,7 +1551,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list executions operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1485,13 +1562,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1511,7 +1590,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list expired operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1521,15 +1601,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>asOfUtc</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>The as of utc used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1549,7 +1632,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list leases operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1559,13 +1643,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1585,7 +1671,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list occurrences operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1595,15 +1682,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1623,7 +1713,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list occurrences operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1633,13 +1724,15 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1659,7 +1752,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list pending operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1669,23 +1763,30 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>eventDataType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The event data type used by the operation.</p>
+</dd>
     <dt><code>afterAcceptedUtc</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The after accepted utc used by the operation.</p>
+</dd>
     <dt><code>afterAcceptedEventId</code> <span class="xref">Guid</span>?</dt>
-    <dd></dd>
+    <dd><p>The after accepted event id used by the operation.</p>
+</dd>
     <dt><code>take</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The take used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent.html">JobAcceptedEvent</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1705,7 +1806,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the purge operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1715,17 +1817,21 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>olderThanUtc</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>The older than utc used by the operation.</p>
+</dd>
     <dt><code>historyIds</code> <span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">Guid</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The history ids used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1745,7 +1851,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the release operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1755,19 +1862,24 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The ownership token used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1787,7 +1899,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1797,15 +1910,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1825,7 +1941,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1835,17 +1952,21 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>triggerName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The trigger name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1865,7 +1986,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1875,15 +1997,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1903,7 +2028,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes occurrences.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1913,15 +2039,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceIds</code> <span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">Guid</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrence ids used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1941,7 +2070,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the renew operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1951,21 +2081,27 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The ownership token used by the operation.</p>
+</dd>
     <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The duration used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -1985,7 +2121,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the replace occurrences operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1995,17 +2132,21 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrences used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2025,7 +2166,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try accept operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2035,15 +2177,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>acceptedEvent</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent.html">JobAcceptedEvent</a></dt>
-    <dd></dd>
+    <dd><p>The accepted event used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2063,7 +2208,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try acquire operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2073,19 +2219,24 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The duration used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2105,7 +2256,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try attach children operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2115,19 +2267,24 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>childOccurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The child occurrences used by the operation.</p>
+</dd>
     <dt><code>memberships</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The memberships used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2147,7 +2304,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try create operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2157,17 +2315,21 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
-    <dd></dd>
+    <dd><p>The batch used by the operation.</p>
+</dd>
     <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrences used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2187,7 +2349,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try create operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2197,15 +2360,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrence</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a></dt>
-    <dd></dd>
+    <dd><p>The occurrence used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2225,7 +2391,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try create with children operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2235,19 +2402,24 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
-    <dd></dd>
+    <dd><p>The batch used by the operation.</p>
+</dd>
     <dt><code>childOccurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The child occurrences used by the operation.</p>
+</dd>
     <dt><code>memberships</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The memberships used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2267,7 +2439,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the update operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2277,15 +2450,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
-    <dd></dd>
+    <dd><p>The batch used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2305,7 +2481,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the update operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2315,15 +2492,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>execution</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobExecution.html">JobExecution</a></dt>
-    <dd></dd>
+    <dd><p>The execution used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2343,7 +2523,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the update operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2353,15 +2534,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrence</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a></dt>
-    <dd></dd>
+    <dd><p>The occurrence used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2381,7 +2565,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the update operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2391,15 +2576,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dependency</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrenceDependency.html">JobOccurrenceDependency</a></dt>
-    <dd></dd>
+    <dd><p>The dependency used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2419,7 +2607,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the upsert operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2429,15 +2618,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>lease</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a></dt>
-    <dd></dd>
+    <dd><p>The lease used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2457,7 +2649,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the upsert operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2467,15 +2660,18 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>state</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobRuntimeState.html">JobRuntimeState</a></dt>
-    <dd></dd>
+    <dd><p>The state used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2495,7 +2691,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the upsert operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2505,19 +2702,24 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job name used by the operation.</p>
+</dd>
     <dt><code>triggerName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The trigger name used by the operation.</p>
+</dd>
     <dt><code>state</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobTriggerRuntimeState.html">JobTriggerRuntimeState</a></dt>
-    <dd></dd>
+    <dd><p>The state used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -2537,7 +2739,8 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the verify ownership operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2547,19 +2750,24 @@ Class EntityFrameworkJobStoreProvider&lt;TContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The ownership token used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

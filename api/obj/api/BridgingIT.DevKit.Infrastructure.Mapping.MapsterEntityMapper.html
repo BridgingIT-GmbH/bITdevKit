@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MapsterEntityMapper | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents mapster entity mapper.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class MapsterEntityMapper
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents mapster entity mapper.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +270,8 @@ Class MapsterEntityMapper
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>MapsterEntityMapper</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,7 +281,8 @@ Class MapsterEntityMapper
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>mapper</code> <span class="xref">IMapper</span></dt>
-    <dd></dd>
+    <dd><p>The mapper used to transform values.</p>
+</dd>
   </dl>
 
 
@@ -304,7 +307,8 @@ Class MapsterEntityMapper
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the map expression operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -314,19 +318,22 @@ Class MapsterEntityMapper
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>expression</code> <span class="xref">LambdaExpression</span></dt>
-    <dd></dd>
+    <dd><p>The expression used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TDestination</span></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TDestination</code></dt>
-    <dd></dd>
+    <dd><p>The destination type.</p>
+</dd>
   </dl>
 
 
@@ -345,7 +352,7 @@ Class MapsterEntityMapper
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Maps the specified TSource specification to a predicate for TDestination types.</p>
+  <div class="markdown level1 summary"><p>Executes the map specification operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -356,22 +363,25 @@ Class MapsterEntityMapper
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TSource&gt;</dt>
-    <dd><p>The specification.</p>
+    <dd><p>The specification used to filter entities.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TDestination, <span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd></dd>
+    <dd><p>The source type.</p>
+</dd>
     <dt><code>TDestination</code></dt>
-    <dd></dd>
+    <dd><p>The destination type.</p>
+</dd>
   </dl>
 
 
@@ -390,7 +400,7 @@ Class MapsterEntityMapper
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Maps a source object to a destination object. Creates a new instance of TDestination.</p>
+  <div class="markdown level1 summary"><p>Executes the map operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -401,20 +411,21 @@ Class MapsterEntityMapper
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd><p>The source entity.</p>
+    <dd><p>The source sequence.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TDestination</span></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TDestination</code></dt>
-    <dd><p>The type of the destination object.</p>
+    <dd><p>The destination type.</p>
 </dd>
   </dl>
 
@@ -434,7 +445,7 @@ Class MapsterEntityMapper
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Execute a mapping from the source object to the new destination object.</p>
+  <div class="markdown level1 summary"><p>Executes the map operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -445,23 +456,24 @@ Class MapsterEntityMapper
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">TSource</span></dt>
-    <dd><p>The source object.</p>
+    <dd><p>The source sequence.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TDestination</span></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd><p>Source object type.</p>
+    <dd><p>The source type.</p>
 </dd>
     <dt><code>TDestination</code></dt>
-    <dd><p>Destination object type.</p>
+    <dd><p>The destination type.</p>
 </dd>
   </dl>
 
@@ -481,7 +493,7 @@ Class MapsterEntityMapper
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Execute a mapping from the source object to the existing destination object.</p>
+  <div class="markdown level1 summary"><p>Executes the map operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -492,27 +504,27 @@ Class MapsterEntityMapper
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">TSource</span></dt>
-    <dd><p>The source object.</p>
+    <dd><p>The source sequence.</p>
 </dd>
     <dt><code>destination</code> <span class="xref">TDestination</span></dt>
-    <dd><p>The destination object.</p>
+    <dd><p>The destination used by the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TDestination</span></dt>
-    <dd><p>Returns the same destination object after the mapping.</p>
+    <dd><p>The result of the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TSource</code></dt>
-    <dd><p>Source object type.</p>
+    <dd><p>The source type.</p>
 </dd>
     <dt><code>TDestination</code></dt>
-    <dd><p>Destination object type.</p>
+    <dd><p>The destination type.</p>
 </dd>
   </dl>
 

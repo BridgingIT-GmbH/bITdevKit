@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -16,7 +16,7 @@
         <link rel="prev" href="../features-domain/">
       
       
-        <link rel="next" href="../features-event-sourcing/">
+        <link rel="next" href="../features-domain-change-history/">
       
       
         
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#domain-events-feature-documentation" class="md-skip">
+        <a href="#domain-events" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1205,15 +1241,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1231,8 +1272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1370,10 +1411,54 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#raising-domain-events" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Raising Domain Events
+        Raising domain events
       
     </span>
   </a>
@@ -1384,19 +1469,19 @@
   <a href="#publication-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Publication Modes
+        Publication modes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Publication Modes">
+    <nav class="md-nav" aria-label="Publication modes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#direct-publication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Direct Publication
+        Direct publication
       
     </span>
   </a>
@@ -1404,10 +1489,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#reliable-outbox-publication" class="md-nav__link">
+  <a href="#outbox-publication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reliable Outbox Publication
+        Outbox publication
       
     </span>
   </a>
@@ -1484,7 +1569,7 @@
   <a href="#multi-node-processing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multi-Node Processing
+        Multi-node processing
       
     </span>
   </a>
@@ -1495,7 +1580,7 @@
   <a href="#processing-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Processing Modes
+        Processing modes
       
     </span>
   </a>
@@ -1525,10 +1610,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-which-mode" class="md-nav__link">
+  <a href="#when-to-use-each-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use Which Mode
+        When to use each mode
       
     </span>
   </a>
@@ -1539,7 +1624,7 @@
   <a href="#relationship-to-other-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship To Other Features
+        Relationship to other features
       
     </span>
   </a>
@@ -1562,42 +1647,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1681,7 +1738,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1863,6 +1920,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1881,15 +1966,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1907,8 +1997,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1989,6 +2079,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2188,15 +2306,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2214,8 +2337,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2224,6 +2347,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2299,15 +2450,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2325,8 +2481,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2351,6 +2507,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2567,6 +2779,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2634,15 +2874,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2660,8 +2905,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2941,15 +3186,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2967,8 +3217,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3048,6 +3298,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3109,10 +3890,54 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#raising-domain-events" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Raising Domain Events
+        Raising domain events
       
     </span>
   </a>
@@ -3123,19 +3948,19 @@
   <a href="#publication-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Publication Modes
+        Publication modes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Publication Modes">
+    <nav class="md-nav" aria-label="Publication modes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#direct-publication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Direct Publication
+        Direct publication
       
     </span>
   </a>
@@ -3143,10 +3968,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#reliable-outbox-publication" class="md-nav__link">
+  <a href="#outbox-publication" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reliable Outbox Publication
+        Outbox publication
       
     </span>
   </a>
@@ -3223,7 +4048,7 @@
   <a href="#multi-node-processing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multi-Node Processing
+        Multi-node processing
       
     </span>
   </a>
@@ -3234,7 +4059,7 @@
   <a href="#processing-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Processing Modes
+        Processing modes
       
     </span>
   </a>
@@ -3264,10 +4089,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-which-mode" class="md-nav__link">
+  <a href="#when-to-use-each-mode" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use Which Mode
+        When to use each mode
       
     </span>
   </a>
@@ -3278,7 +4103,7 @@
   <a href="#relationship-to-other-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship To Other Features
+        Relationship to other features
       
     </span>
   </a>
@@ -3328,10 +4153,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3371,20 +4214,24 @@
   
 
 
-<h1 id="domain-events-feature-documentation">Domain Events Feature Documentation<a class="headerlink" href="#domain-events-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="domain-events">Domain Events<a class="headerlink" href="#domain-events" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Capture business-significant events in aggregates and publish side effects outside the domain model.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#domain-events-feature-documentation">Domain Events Feature Documentation</a><ul>
+<li><a href="#domain-events">Domain Events</a><ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#challenges">Challenges</a></li>
 <li><a href="#solution">Solution</a></li>
-<li><a href="#raising-domain-events">Raising Domain Events</a></li>
-<li><a href="#publication-modes">Publication Modes</a><ul>
-<li><a href="#direct-publication">Direct Publication</a></li>
-<li><a href="#reliable-outbox-publication">Reliable Outbox Publication</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#raising-domain-events">Raising domain events</a></li>
+<li><a href="#publication-modes">Publication modes</a><ul>
+<li><a href="#direct-publication">Direct publication</a></li>
+<li><a href="#outbox-publication">Outbox publication</a></li>
 </ul>
 </li>
 <li><a href="#setup">Setup</a><ul>
@@ -3394,12 +4241,12 @@
 <li><a href="#4-register-the-outbox-service">4. Register the outbox service</a></li>
 </ul>
 </li>
-<li><a href="#multi-node-processing">Multi-Node Processing</a></li>
-<li><a href="#processing-modes">Processing Modes</a></li>
+<li><a href="#multi-node-processing">Multi-node processing</a></li>
+<li><a href="#processing-modes">Processing modes</a></li>
 <li><a href="#archiving">Archiving</a></li>
 <li><a href="#handlers">Handlers</a></li>
-<li><a href="#when-to-use-which-mode">When To Use Which Mode</a></li>
-<li><a href="#relationship-to-other-features">Relationship To Other Features</a></li>
+<li><a href="#when-to-use-each-mode">When to use each mode</a></li>
+<li><a href="#relationship-to-other-features">Relationship to other features</a></li>
 </ul>
 </li>
 </ul>
@@ -3409,7 +4256,7 @@
 <p>In bITdevKit, aggregates collect events in their <code>DomainEvents</code> collection and repository behaviors publish them after persistence. That gives you two common operating modes:</p>
 <ul>
 <li>direct in-process publication for simple, immediate reactions</li>
-<li>reliable outbox-backed publication for side effects that must survive restarts or transient failures</li>
+<li>durable outbox-backed publication for side effects that must survive restarts or transient failures</li>
 </ul>
 <p>This page focuses on classic domain events raised by aggregates in the <code>Domain.*</code> model. Event-sourced aggregates are documented separately in <a href="../features-event-sourcing/">Event Sourcing</a>.</p>
 <p>When domain events are persisted through the outbox or forwarded into asynchronous messaging flows, their payloads depend on the shared serializer infrastructure documented in <a href="../common-serialization/">Common Serialization</a>.</p>
@@ -3419,7 +4266,7 @@
 <li>Side effects such as notifications, cache updates, or integration messages should not run inside aggregate methods.</li>
 <li>Publishing must happen after persistence, not before.</li>
 <li>Some reactions can run immediately, while others need durable retryable delivery.</li>
-<li>Multi-node deployments need workers to coordinate ownership of persisted events safely.</li>
+<li>Multi-node deployments need workers to coordinate ownership of persisted events.</li>
 </ul>
 <h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
 <p>The devkit uses a small set of building blocks:</p>
@@ -3427,11 +4274,72 @@
 <li><code>DomainEventBase</code> and related base types model immutable domain events.</li>
 <li>Aggregates register events through <code>DomainEvents.Register(...)</code>.</li>
 <li><code>RepositoryDomainEventPublisherBehavior&lt;TEntity&gt;</code> publishes events directly after repository persistence.</li>
-<li><code>RepositoryOutboxDomainEventBehavior&lt;TEntity, TContext&gt;</code> stores events in an outbox table and lets a background worker publish them reliably later.</li>
-<li><code>OutboxDomainEventWorker&lt;TContext&gt;</code> claims persisted rows with optimistic concurrency and renewable leases so multiple hosts can compete safely.</li>
+<li><code>RepositoryOutboxDomainEventBehavior&lt;TEntity, TContext&gt;</code> stores events in an outbox table for later background publication.</li>
+<li><code>OutboxDomainEventWorker&lt;TContext&gt;</code> claims persisted rows with optimistic concurrency and renewable leases so multiple hosts can compete for work.</li>
 <li>Event handlers subscribe through the notifier infrastructure documented in <a href="../features-requester-notifier/">Requester and Notifier</a>.</li>
 </ul>
-<h2 id="raising-domain-events">Raising Domain Events<a class="headerlink" href="#raising-domain-events" title="Permanent link">&para;</a></h2>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Aggregate-owned event registration through <code>DomainEvents</code></li>
+<li>Direct publication after repository persistence</li>
+<li>Entity Framework outbox persistence and background dispatch</li>
+<li>Interval and immediate processing modes</li>
+<li>Retry, batch, lease, and archive controls</li>
+<li>Multi-node processing through leases and optimistic concurrency</li>
+<li>Notifier-compatible domain-event handlers</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>An aggregate registers an <code>IDomainEvent</code>. A configured repository behavior acts after the inner
+repository operation. The direct behavior sends each event through <code>IDomainEventPublisher</code> and then
+clears the aggregate collection. The outbox behavior serializes events into <code>OutboxDomainEvent</code>
+rows; <code>OutboxDomainEventWorker&lt;TContext&gt;</code> later claims and publishes eligible rows.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Run local projections or cache invalidation after an aggregate is persisted.</li>
+<li>Send notifications or integration messages without coupling them to aggregate methods.</li>
+<li>Retain failed deliveries for retry after a restart.</li>
+<li>Process one outbox from several application nodes.</li>
+<li>Keep processed event records for diagnostics before archiving or purging them.</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example changes aggregate state, handles a validation failure, and confirms that the aggregate
+registered one event. A repository behavior publishes the event after persistence.</p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">CustomerRenamedDomainEvent</span><span class="p">(</span><span class="n">Guid</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DomainEventBase</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Guid</span><span class="w"> </span><span class="n">CustomerId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customerId</span><span class="p">;</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">name</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">Customer</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AggregateRoot</span><span class="o">&lt;</span><span class="n">Guid</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Rename</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">name</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Change</span><span class="p">()</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Ensure</span><span class="p">(</span><span class="n">_</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="o">!</span><span class="kt">string</span><span class="p">.</span><span class="n">IsNullOrWhiteSpace</span><span class="p">(</span><span class="n">name</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;A name is required.&quot;</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">customer</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="n">name</span><span class="p">.</span><span class="n">Trim</span><span class="p">())</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Register</span><span class="p">(</span><span class="n">customer</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">CustomerRenamedDomainEvent</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">Id</span><span class="p">,</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">Name</span><span class="p">))</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Apply</span><span class="p">();</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Customer</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Id</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Guid</span><span class="p">.</span><span class="n">NewGuid</span><span class="p">(),</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Ada Lovelace&quot;</span><span class="w"> </span><span class="p">};</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">Rename</span><span class="p">(</span><span class="s">&quot;Grace Hopper&quot;</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span>
+<span class="w">        </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="n">Environment</span><span class="p">.</span><span class="n">NewLine</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">customer</span><span class="p">.</span><span class="n">DomainEvents</span><span class="p">.</span><span class="n">GetAll</span><span class="p">().</span><span class="n">Single</span><span class="p">().</span><span class="n">GetType</span><span class="p">().</span><span class="n">Name</span><span class="p">);</span>
+</code></pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span><code>CustomerRenamedDomainEvent
+</code></pre></div>
+<h2 id="raising-domain-events">Raising domain events<a class="headerlink" href="#raising-domain-events" title="Permanent link">&para;</a></h2>
 <p>Aggregates register events when a meaningful state transition happens:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">CustomerCreatedDomainEvent</span><span class="p">(</span><span class="n">Customer</span><span class="w"> </span><span class="n">customer</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DomainEventBase</span>
 <span class="p">{</span>
@@ -3456,14 +4364,14 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>The aggregate only records the event. It does not publish it directly and it does not know who reacts to it.</p>
-<h2 id="publication-modes">Publication Modes<a class="headerlink" href="#publication-modes" title="Permanent link">&para;</a></h2>
-<h3 id="direct-publication">Direct Publication<a class="headerlink" href="#direct-publication" title="Permanent link">&para;</a></h3>
+<h2 id="publication-modes">Publication modes<a class="headerlink" href="#publication-modes" title="Permanent link">&para;</a></h2>
+<h3 id="direct-publication">Direct publication<a class="headerlink" href="#direct-publication" title="Permanent link">&para;</a></h3>
 <p><code>RepositoryDomainEventPublisherBehavior&lt;TEntity&gt;</code> is the simplest option. After the repository saves the aggregate, it sends each registered event through the configured domain-event publisher and clears the aggregate's event collection.</p>
 <p>This mode works well when:</p>
 <ul>
 <li>reactions are purely in-process</li>
 <li>you do not need durable retries</li>
-<li>a failed handler should fail the current unit of work immediately</li>
+<li>a failed handler should propagate to the repository caller after persistence</li>
 </ul>
 <p>Setup:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddNotifier</span><span class="p">()</span>
@@ -3472,16 +4380,20 @@
 <span class="n">services</span><span class="p">.</span><span class="n">AddEntityFrameworkRepository</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">CoreDbContext</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">RepositoryDomainEventPublisherBehavior</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;&gt;</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="reliable-outbox-publication">Reliable Outbox Publication<a class="headerlink" href="#reliable-outbox-publication" title="Permanent link">&para;</a></h3>
+<h3 id="outbox-publication">Outbox publication<a class="headerlink" href="#outbox-publication" title="Permanent link">&para;</a></h3>
 <p><code>RepositoryOutboxDomainEventBehavior&lt;TEntity, TContext&gt;</code> persists each registered domain event into an outbox table. A hosted background service later triggers the worker, which claims eligible rows, deserializes the events, and publishes them through the notifier.</p>
 <p>This mode works well when:</p>
 <ul>
 <li>handlers trigger infrastructure side effects</li>
 <li>event delivery must survive application restarts</li>
 <li>retries and delayed processing are acceptable</li>
-<li>you want persistence and event recording to happen in one reliable flow</li>
+<li>you can provide a transaction boundary that includes aggregate and outbox persistence</li>
 </ul>
 <p>The outbox row stores event metadata such as event id, type name, serialized content, timestamps, correlation data, processing state, optimistic concurrency data, lease ownership, and archive state.</p>
+<p>The repository behavior first calls the inner repository and then adds outbox rows. With the default
+<code>AutoSave = true</code>, it can issue another <code>SaveChangesAsync</code> call for those rows. Aggregate persistence
+and outbox persistence are therefore atomic only when a surrounding database transaction includes
+both operations. Do not infer an atomic outbox guarantee from the decorator alone.</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
 <h3 id="1-register-handlers">1. Register handlers<a class="headerlink" href="#1-register-handlers" title="Permanent link">&para;</a></h3>
 <p>Domain-event handlers still use the notifier infrastructure:</p>
@@ -3510,7 +4422,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">AutoArchiveAfter</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">)));</span>
 </code></pre></div>
 <p>The hosted service delays startup until the host is ready, periodically triggers processing, and can archive processed rows once they are older than the configured retention threshold.</p>
-<h2 id="multi-node-processing">Multi-Node Processing<a class="headerlink" href="#multi-node-processing" title="Permanent link">&para;</a></h2>
+<h2 id="multi-node-processing">Multi-node processing<a class="headerlink" href="#multi-node-processing" title="Permanent link">&para;</a></h2>
 <p>The current outbox implementation supports multiple competing workers across different hosts.</p>
 <ul>
 <li>workers only scan rows that are not processed and not archived</li>
@@ -3519,8 +4431,8 @@
 <li>if a worker loses ownership, it does not persist the final state for that row</li>
 <li>when processing completes, the worker clears the lease and stores the resulting processing metadata</li>
 </ul>
-<p>This keeps outbox delivery safe when several nodes poll the same table.</p>
-<h2 id="processing-modes">Processing Modes<a class="headerlink" href="#processing-modes" title="Permanent link">&para;</a></h2>
+<p>These ownership checks coordinate delivery when several nodes poll the same table.</p>
+<h2 id="processing-modes">Processing modes<a class="headerlink" href="#processing-modes" title="Permanent link">&para;</a></h2>
 <p><code>OutboxDomainEventOptions</code> supports two common processing styles:</p>
 <ul>
 <li><code>Interval</code>: the hosted service polls the outbox on a configured interval</li>
@@ -3541,6 +4453,8 @@
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">CustomerCreatedHandler</span><span class="p">(</span><span class="n">ILoggerFactory</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">)</span>
 <span class="w">    </span><span class="p">:</span><span class="w"> </span><span class="n">DomainEventHandlerBase</span><span class="o">&lt;</span><span class="n">CustomerCreatedDomainEvent</span><span class="o">&gt;</span><span class="p">(</span><span class="n">loggerFactory</span><span class="p">)</span>
 <span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="nf">CanHandle</span><span class="p">(</span><span class="n">CustomerCreatedDomainEvent</span><span class="w"> </span><span class="n">notification</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Process</span><span class="p">(</span>
 <span class="w">        </span><span class="n">CustomerCreatedDomainEvent</span><span class="w"> </span><span class="n">notification</span><span class="p">,</span>
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
@@ -3549,14 +4463,15 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>This separation is the main benefit of the feature: the publishing strategy can change without changing the handler contract.</p>
-<h2 id="when-to-use-which-mode">When To Use Which Mode<a class="headerlink" href="#when-to-use-which-mode" title="Permanent link">&para;</a></h2>
+<p>Handlers use the same contract for direct and outbox-backed publication.</p>
+<h2 id="when-to-use-each-mode">When to use each mode<a class="headerlink" href="#when-to-use-each-mode" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Use direct publication when the reaction is local, lightweight, and should complete as part of the current flow.</li>
 <li>Use outbox-backed publication when the reaction touches infrastructure, needs retry behavior, or must not be lost after the aggregate was already persisted.</li>
 </ul>
-<p>Many production modules standardize on the outbox behavior for aggregate persistence because it gives a safer default for post-persistence side effects.</p>
-<h2 id="relationship-to-other-features">Relationship To Other Features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
+<p>Modules that need retryable post-persistence side effects can standardize on the outbox behavior,
+provided they also define the required transaction boundary.</p>
+<h2 id="relationship-to-other-features">Relationship to other features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-domain/">Domain</a> covers aggregates, typed ids, and fluent change patterns.</li>
 <li><a href="../features-domain-repositories/">Domain Repositories</a> covers repository abstractions and decorator behaviors in general.</li>
@@ -3641,7 +4556,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3649,6 +4564,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

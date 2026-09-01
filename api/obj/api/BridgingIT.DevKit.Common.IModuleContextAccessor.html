@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Interface IModuleContextAccessor | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Resolves a module from the assembly that defines a type.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Interface IModuleContextAccessor
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Modules.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Resolves a module from the assembly that defines a type.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -256,7 +257,8 @@ Interface IModuleContextAccessor
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds the module associated with a type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -266,13 +268,15 @@ Interface IModuleContextAccessor
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type whose assembly identifies the module.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.IModule.html">IModule</a></dt>
-    <dd></dd>
+    <dd><p>The matching module, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when none is found.</p>
+</dd>
   </dl>
 
 

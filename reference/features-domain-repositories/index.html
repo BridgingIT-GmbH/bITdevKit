@@ -6,14 +6,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-domain-repositories/">
       
       
-        <link rel="prev" href="../features-event-sourcing/">
+        <link rel="prev" href="../features-domain-change-history/">
       
       
         <link rel="next" href="../features-domain-specifications/">
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#domain-repositories-feature-documentation" class="md-skip">
+        <a href="#domain-repositories" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1205,15 +1241,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1231,8 +1272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1305,42 +1346,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1429,10 +1442,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1442,8 +1454,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1453,8 +1465,30 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -1464,29 +1498,24 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+    <nav class="md-nav" aria-label="Basic Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#basic-repository-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Repository Operations
+        Basic repository operations
       
     </span>
   </a>
@@ -1497,7 +1526,7 @@
   <a href="#including-related-entities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Including Related Entities
+        Including related entities
       
     </span>
   </a>
@@ -1508,19 +1537,19 @@
   <a href="#nested-includes-with-theninclude" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Nested Includes with ThenInclude
+        Nested includes with ThenInclude
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Nested Includes with ThenInclude">
+    <nav class="md-nav" aria-label="Nested includes with ThenInclude">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#reference-navigation-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reference Navigation Properties
+        Reference navigation properties
       
     </span>
   </a>
@@ -1531,7 +1560,7 @@
   <a href="#collection-navigation-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collection Navigation Properties
+        Collection navigation properties
       
     </span>
   </a>
@@ -1542,7 +1571,7 @@
   <a href="#multiple-include-chains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multiple Include Chains
+        Multiple include chains
       
     </span>
   </a>
@@ -1550,10 +1579,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#real-world-example-e-commerce-order-query" class="md-nav__link">
+  <a href="#e-commerce-order-query" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real-World Example: E-Commerce Order Query
+        E-commerce order query
       
     </span>
   </a>
@@ -1564,7 +1593,7 @@
   <a href="#key-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Points
+        Key points
       
     </span>
   </a>
@@ -1580,7 +1609,7 @@
   <a href="#combining-with-other-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Combining with Other Options
+        Combining with other options
       
     </span>
   </a>
@@ -1588,10 +1617,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#projection-with-includes" class="md-nav__link">
+  <a href="#projection-with-include-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Projection with Includes
+        Projection with include options
       
     </span>
   </a>
@@ -1602,19 +1631,19 @@
   <a href="#bulk-updates-and-deletes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bulk Updates And Deletes
+        Bulk updates and deletes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Bulk Updates And Deletes">
+    <nav class="md-nav" aria-label="Bulk updates and deletes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#key-points-for-bulk-set-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Points For Bulk Set Operations
+        Key points for bulk set operations
       
     </span>
   </a>
@@ -1630,12 +1659,12 @@
   <a href="#explicit-provider-bulk-inserts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Explicit Provider Bulk Inserts
+        Explicit provider bulk inserts
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Explicit Provider Bulk Inserts">
+    <nav class="md-nav" aria-label="Explicit provider bulk inserts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1653,7 +1682,7 @@
   <a href="#transactions-cancellation-and-outbox" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Transactions, Cancellation, And Outbox
+        Transactions, cancellation, and outbox
       
     </span>
   </a>
@@ -1664,7 +1693,7 @@
   <a href="#key-points-for-explicit-bulk-inserts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Points For Explicit Bulk Inserts
+        Key points for explicit bulk inserts
       
     </span>
   </a>
@@ -1675,7 +1704,7 @@
   <a href="#create-a-new-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create A New Provider
+        Create a new provider
       
     </span>
   </a>
@@ -1696,19 +1725,19 @@
   <a href="#appendix-a-optimistic-concurrency-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A: Optimistic Concurrency Support
+        Appendix A: Optimistic concurrency support
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix A: Optimistic Concurrency Support">
+    <nav class="md-nav" aria-label="Appendix A: Optimistic concurrency support">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#overview_1" class="md-nav__link">
+  <a href="#concurrency-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Concurrency overview
       
     </span>
   </a>
@@ -1724,25 +1753,25 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#1-enable-concurrency-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Enable Concurrency Support
+        1. Enable concurrency support
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Enable Concurrency Support">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
   <a href="#2-configure-entity-framework-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Configure Entity Framework Mapping
+        2. Configure Entity Framework mapping
       
     </span>
   </a>
@@ -1755,10 +1784,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#how-it-prevents-data-conflicts-repository" class="md-nav__link">
+  <a href="#how-repository-concurrency-prevents-conflicts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How It Prevents Data Conflicts (Repository)
+        How repository concurrency prevents conflicts
       
     </span>
   </a>
@@ -1769,7 +1798,7 @@
   <a href="#example-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Usage
+        Example usage
       
     </span>
   </a>
@@ -1807,19 +1836,19 @@
   <a href="#appendix-b-sequence-number-generation-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix B: Sequence Number Generation Support
+        Appendix B: Sequence number generation support
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix B: Sequence Number Generation Support">
+    <nav class="md-nav" aria-label="Appendix B: Sequence number generation support">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#overview_2" class="md-nav__link">
+  <a href="#sequence-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Sequence overview
       
     </span>
   </a>
@@ -1842,7 +1871,7 @@
   <a href="#1-define-sequences-in-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Define Sequences in DbContext
+        1. Define sequences in DbContext
       
     </span>
   </a>
@@ -1850,10 +1879,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-register-in-di" class="md-nav__link">
+  <a href="#2-register-in-dependency-injection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Register in DI
+        2. Register in dependency injection
       
     </span>
   </a>
@@ -1864,7 +1893,7 @@
   <a href="#provider-specific-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Provider-Specific Notes
+        Provider-specific notes
       
     </span>
   </a>
@@ -1877,7 +1906,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#usage_1" class="md-nav__link">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       
         Usage
@@ -1892,7 +1921,7 @@
   <a href="#basic-generation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Generation
+        Basic generation
       
     </span>
   </a>
@@ -1903,7 +1932,7 @@
   <a href="#additional-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Operations
+        Additional operations
       
     </span>
   </a>
@@ -1919,7 +1948,7 @@
   <a href="#benefits-and-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Benefits and Limitations
+        Benefits and limitations
       
     </span>
   </a>
@@ -1982,7 +2011,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -2164,6 +2193,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2182,15 +2239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -2208,8 +2270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2290,6 +2352,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2489,15 +2579,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2515,8 +2610,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2525,6 +2620,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2600,15 +2723,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2626,8 +2754,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2652,6 +2780,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2868,6 +3052,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2935,15 +3147,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2961,8 +3178,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3242,15 +3459,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3268,8 +3490,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3349,6 +3571,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3385,10 +4138,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3398,8 +4150,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3409,8 +4161,30 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3420,29 +4194,24 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+    <nav class="md-nav" aria-label="Basic Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#basic-repository-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Repository Operations
+        Basic repository operations
       
     </span>
   </a>
@@ -3453,7 +4222,7 @@
   <a href="#including-related-entities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Including Related Entities
+        Including related entities
       
     </span>
   </a>
@@ -3464,19 +4233,19 @@
   <a href="#nested-includes-with-theninclude" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Nested Includes with ThenInclude
+        Nested includes with ThenInclude
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Nested Includes with ThenInclude">
+    <nav class="md-nav" aria-label="Nested includes with ThenInclude">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#reference-navigation-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reference Navigation Properties
+        Reference navigation properties
       
     </span>
   </a>
@@ -3487,7 +4256,7 @@
   <a href="#collection-navigation-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collection Navigation Properties
+        Collection navigation properties
       
     </span>
   </a>
@@ -3498,7 +4267,7 @@
   <a href="#multiple-include-chains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multiple Include Chains
+        Multiple include chains
       
     </span>
   </a>
@@ -3506,10 +4275,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#real-world-example-e-commerce-order-query" class="md-nav__link">
+  <a href="#e-commerce-order-query" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Real-World Example: E-Commerce Order Query
+        E-commerce order query
       
     </span>
   </a>
@@ -3520,7 +4289,7 @@
   <a href="#key-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Points
+        Key points
       
     </span>
   </a>
@@ -3536,7 +4305,7 @@
   <a href="#combining-with-other-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Combining with Other Options
+        Combining with other options
       
     </span>
   </a>
@@ -3544,10 +4313,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#projection-with-includes" class="md-nav__link">
+  <a href="#projection-with-include-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Projection with Includes
+        Projection with include options
       
     </span>
   </a>
@@ -3558,19 +4327,19 @@
   <a href="#bulk-updates-and-deletes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bulk Updates And Deletes
+        Bulk updates and deletes
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Bulk Updates And Deletes">
+    <nav class="md-nav" aria-label="Bulk updates and deletes">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#key-points-for-bulk-set-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Points For Bulk Set Operations
+        Key points for bulk set operations
       
     </span>
   </a>
@@ -3586,12 +4355,12 @@
   <a href="#explicit-provider-bulk-inserts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Explicit Provider Bulk Inserts
+        Explicit provider bulk inserts
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Explicit Provider Bulk Inserts">
+    <nav class="md-nav" aria-label="Explicit provider bulk inserts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3609,7 +4378,7 @@
   <a href="#transactions-cancellation-and-outbox" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Transactions, Cancellation, And Outbox
+        Transactions, cancellation, and outbox
       
     </span>
   </a>
@@ -3620,7 +4389,7 @@
   <a href="#key-points-for-explicit-bulk-inserts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Points For Explicit Bulk Inserts
+        Key points for explicit bulk inserts
       
     </span>
   </a>
@@ -3631,7 +4400,7 @@
   <a href="#create-a-new-provider" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Create A New Provider
+        Create a new provider
       
     </span>
   </a>
@@ -3652,19 +4421,19 @@
   <a href="#appendix-a-optimistic-concurrency-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix A: Optimistic Concurrency Support
+        Appendix A: Optimistic concurrency support
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix A: Optimistic Concurrency Support">
+    <nav class="md-nav" aria-label="Appendix A: Optimistic concurrency support">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#overview_1" class="md-nav__link">
+  <a href="#concurrency-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Concurrency overview
       
     </span>
   </a>
@@ -3680,25 +4449,25 @@
     </span>
   </a>
   
-</li>
+    <nav class="md-nav" aria-label="Implementation">
+      <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#1-enable-concurrency-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Enable Concurrency Support
+        1. Enable concurrency support
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="1. Enable Concurrency Support">
-      <ul class="md-nav__list">
+</li>
         
           <li class="md-nav__item">
   <a href="#2-configure-entity-framework-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Configure Entity Framework Mapping
+        2. Configure Entity Framework mapping
       
     </span>
   </a>
@@ -3711,10 +4480,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#how-it-prevents-data-conflicts-repository" class="md-nav__link">
+  <a href="#how-repository-concurrency-prevents-conflicts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How It Prevents Data Conflicts (Repository)
+        How repository concurrency prevents conflicts
       
     </span>
   </a>
@@ -3725,7 +4494,7 @@
   <a href="#example-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Usage
+        Example usage
       
     </span>
   </a>
@@ -3763,19 +4532,19 @@
   <a href="#appendix-b-sequence-number-generation-support" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix B: Sequence Number Generation Support
+        Appendix B: Sequence number generation support
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix B: Sequence Number Generation Support">
+    <nav class="md-nav" aria-label="Appendix B: Sequence number generation support">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#overview_2" class="md-nav__link">
+  <a href="#sequence-overview" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Overview
+        Sequence overview
       
     </span>
   </a>
@@ -3798,7 +4567,7 @@
   <a href="#1-define-sequences-in-dbcontext" class="md-nav__link">
     <span class="md-ellipsis">
       
-        1. Define Sequences in DbContext
+        1. Define sequences in DbContext
       
     </span>
   </a>
@@ -3806,10 +4575,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#2-register-in-di" class="md-nav__link">
+  <a href="#2-register-in-dependency-injection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        2. Register in DI
+        2. Register in dependency injection
       
     </span>
   </a>
@@ -3820,7 +4589,7 @@
   <a href="#provider-specific-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Provider-Specific Notes
+        Provider-specific notes
       
     </span>
   </a>
@@ -3833,7 +4602,7 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#usage_1" class="md-nav__link">
+  <a href="#usage" class="md-nav__link">
     <span class="md-ellipsis">
       
         Usage
@@ -3848,7 +4617,7 @@
   <a href="#basic-generation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Generation
+        Basic generation
       
     </span>
   </a>
@@ -3859,7 +4628,7 @@
   <a href="#additional-operations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Operations
+        Additional operations
       
     </span>
   </a>
@@ -3875,7 +4644,7 @@
   <a href="#benefits-and-limitations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Benefits and Limitations
+        Benefits and limitations
       
     </span>
   </a>
@@ -3930,10 +4699,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3973,72 +4760,72 @@
   
 
 
-<h1 id="domain-repositories-feature-documentation">Domain Repositories Feature Documentation<a class="headerlink" href="#domain-repositories-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="domain-repositories">Domain Repositories<a class="headerlink" href="#domain-repositories" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Access aggregates through type-safe repositories with rich querying, paging, and loading options.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#domain-repositories-feature-documentation">Domain Repositories Feature Documentation</a><ul>
-<li><a href="#overview">Overview</a><ul>
+<li><a href="#domain-repositories">Domain Repositories</a><ul>
+<li><a href="#overview">Overview</a></li>
 <li><a href="#challenges">Challenges</a></li>
 <li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
 <li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a><ul>
+<li><a href="#basic-repository-operations">Basic repository operations</a></li>
+<li><a href="#including-related-entities">Including related entities</a></li>
+<li><a href="#nested-includes-with-theninclude">Nested includes with ThenInclude</a><ul>
+<li><a href="#reference-navigation-properties">Reference navigation properties</a></li>
+<li><a href="#collection-navigation-properties">Collection navigation properties</a></li>
+<li><a href="#multiple-include-chains">Multiple include chains</a></li>
+<li><a href="#e-commerce-order-query">E-commerce order query</a></li>
+<li><a href="#key-points">Key points</a></li>
 </ul>
 </li>
-<li><a href="#usage">Usage</a><ul>
-<li><a href="#basic-repository-operations">Basic Repository Operations</a></li>
-<li><a href="#including-related-entities">Including Related Entities</a></li>
-<li><a href="#nested-includes-with-theninclude">Nested Includes with ThenInclude</a><ul>
-<li><a href="#reference-navigation-properties">Reference Navigation Properties</a></li>
-<li><a href="#collection-navigation-properties">Collection Navigation Properties</a></li>
-<li><a href="#multiple-include-chains">Multiple Include Chains</a></li>
-<li><a href="#real-world-example-e-commerce-order-query">Real-World Example: E-Commerce Order Query</a></li>
-<li><a href="#key-points">Key Points</a></li>
+<li><a href="#combining-with-other-options">Combining with other options</a></li>
+<li><a href="#projection-with-include-options">Projection with include options</a></li>
+<li><a href="#bulk-updates-and-deletes">Bulk updates and deletes</a><ul>
+<li><a href="#key-points-for-bulk-set-operations">Key points for bulk set operations</a></li>
 </ul>
 </li>
-<li><a href="#combining-with-other-options">Combining with Other Options</a></li>
-<li><a href="#projection-with-includes">Projection with Includes</a></li>
-<li><a href="#bulk-updates-and-deletes">Bulk Updates And Deletes</a><ul>
-<li><a href="#key-points-for-bulk-set-operations">Key Points For Bulk Set Operations</a></li>
-</ul>
-</li>
-<li><a href="#explicit-provider-bulk-inserts">Explicit Provider Bulk Inserts</a><ul>
+<li><a href="#explicit-provider-bulk-inserts">Explicit provider bulk inserts</a><ul>
 <li><a href="#options-and-unsupported-providers">Options and unsupported providers</a></li>
-<li><a href="#transactions-cancellation-and-outbox">Transactions, Cancellation, And Outbox</a></li>
-<li><a href="#key-points-for-explicit-bulk-inserts">Key Points For Explicit Bulk Inserts</a></li>
-<li><a href="#create-a-new-provider">Create A New Provider</a></li>
+<li><a href="#transactions-cancellation-and-outbox">Transactions, cancellation, and outbox</a></li>
+<li><a href="#key-points-for-explicit-bulk-inserts">Key points for explicit bulk inserts</a></li>
+<li><a href="#create-a-new-provider">Create a new provider</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#appendix-a-optimistic-concurrency-support">Appendix A: Optimistic Concurrency Support</a><ul>
-<li><a href="#overview_1">Overview</a></li>
-<li><a href="#implementation">Implementation</a></li>
-<li><a href="#1-enable-concurrency-support">1. Enable Concurrency Support</a><ul>
-<li><a href="#2-configure-entity-framework-mapping">2. Configure Entity Framework Mapping</a></li>
+<li><a href="#appendix-a-optimistic-concurrency-support">Appendix A: Optimistic concurrency support</a><ul>
+<li><a href="#concurrency-overview">Concurrency overview</a></li>
+<li><a href="#implementation">Implementation</a><ul>
+<li><a href="#1-enable-concurrency-support">1. Enable concurrency support</a></li>
+<li><a href="#2-configure-entity-framework-mapping">2. Configure Entity Framework mapping</a></li>
 </ul>
 </li>
-<li><a href="#how-it-prevents-data-conflicts-repository">How It Prevents Data Conflicts (Repository)</a></li>
-<li><a href="#example-usage">Example Usage</a></li>
+<li><a href="#how-repository-concurrency-prevents-conflicts">How repository concurrency prevents conflicts</a></li>
+<li><a href="#example-usage">Example usage</a></li>
 <li><a href="#benefits">Benefits</a></li>
 <li><a href="#limitations">Limitations</a></li>
 </ul>
 </li>
-<li><a href="#appendix-b-sequence-number-generation-support">Appendix B: Sequence Number Generation Support</a><ul>
-<li><a href="#overview_2">Overview</a></li>
+<li><a href="#appendix-b-sequence-number-generation-support">Appendix B: Sequence number generation support</a><ul>
+<li><a href="#sequence-overview">Sequence overview</a></li>
 <li><a href="#setup">Setup</a><ul>
-<li><a href="#1-define-sequences-in-dbcontext">1. Define Sequences in DbContext</a></li>
-<li><a href="#2-register-in-di">2. Register in DI</a></li>
-<li><a href="#provider-specific-notes">Provider-Specific Notes</a></li>
+<li><a href="#1-define-sequences-in-dbcontext">1. Define sequences in DbContext</a></li>
+<li><a href="#2-register-in-dependency-injection">2. Register in dependency injection</a></li>
+<li><a href="#provider-specific-notes">Provider-specific notes</a></li>
 </ul>
 </li>
-<li><a href="#usage_1">Usage</a><ul>
-<li><a href="#basic-generation">Basic Generation</a></li>
-<li><a href="#additional-operations">Additional Operations</a></li>
+<li><a href="#usage">Usage</a><ul>
+<li><a href="#basic-generation">Basic generation</a></li>
+<li><a href="#additional-operations">Additional operations</a></li>
 </ul>
 </li>
-<li><a href="#benefits-and-limitations">Benefits and Limitations</a></li>
+<li><a href="#benefits-and-limitations">Benefits and limitations</a></li>
 </ul>
 </li>
 </ul>
@@ -4046,8 +4833,10 @@
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Domain Repositories feature provides a generic repository pattern implementation with powerful query capabilities. It enables efficient data access with type-safe filtering, ordering, paging, and eager loading of related entities through a fluent API.</p>
-<h3 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h3>
+<p>The Domain Repositories feature provides generic read and write contracts with specifications,
+ordering, paging, projection, and eager-loading options. Infrastructure packages implement those
+contracts for different stores.</p>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
 <p>When working with data access layers in domain-driven applications, developers face several challenges:</p>
 <ul>
 <li><strong>Repetitive CRUD Operations</strong>: Writing the same create, read, update, delete operations for each entity type</li>
@@ -4056,29 +4845,73 @@
 <li><strong>Query Composition</strong>: Difficulty in building reusable, composable queries across different contexts</li>
 <li><strong>Abstraction Leakage</strong>: Data access concerns bleeding into domain logic</li>
 </ul>
-<h3 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h3>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
 <p>The repository pattern implementation provides:</p>
 <ul>
 <li><strong>Generic Repository Interface</strong>: <code>IGenericRepository&lt;TEntity&gt;</code> for common CRUD operations</li>
 <li><strong>FindOptions</strong>: A fluent API for building complex queries with filtering, ordering, paging, and includes</li>
 <li><strong>Type-Safe Includes</strong>: <code>IncludeOption&lt;TEntity, TProperty&gt;</code> with <code>ThenInclude</code> support for nested navigation properties</li>
-<li><strong>Multiple Implementations</strong>: EntityFramework, Cosmos, Azure Storage, and in-memory implementations</li>
+<li><strong>Multiple Implementations</strong>: Entity Framework, Cosmos DB, LiteDB, and in-memory repositories</li>
 <li><strong>Specification Pattern</strong>: Reusable query specifications for complex business rules</li>
 </ul>
 <p>This page focuses on how repositories consume specifications. For the specification model itself, see <a href="../features-domain-specifications/">Domain Specifications</a>.</p>
-<h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Separate read-only and read-write repository contracts</li>
+<li>Specifications and <code>FindOptions&lt;TEntity&gt;</code> for query composition</li>
+<li>Typed reference and collection include chains</li>
+<li>Projection, ordering, paging, hierarchy, and distinct options</li>
+<li>Set-based updates and deletes where the provider supports them</li>
+<li>Explicit provider-native bulk insertion with opt-in behaviors</li>
+<li>Optimistic concurrency and sequence-number support</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>IGenericReadOnlyRepository&lt;TEntity&gt;</code> owns query, projection, existence, and count operations.
+<code>IGenericRepository&lt;TEntity&gt;</code> adds insert, update, upsert, delete, and set-based mutation methods.
+<code>FindOptions&lt;TEntity&gt;</code> shapes queries while <code>ISpecification&lt;TEntity&gt;</code> supplies selection criteria.
+Infrastructure implementations translate these contracts to Entity Framework, Cosmos DB, LiteDB,
+or an in-memory context. Repository and bulk-inserter behaviors add cross-cutting semantics.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Loading entities with deeply nested navigation properties (e.g., Customer → Orders → OrderItems → Product)</li>
 <li>Building reusable query options across different handlers</li>
 <li>Implementing eager loading strategies to avoid N+1 query problems</li>
 <li>Creating type-safe data access layers that prevent runtime errors</li>
 </ul>
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<h3 id="basic-repository-operations">Basic Repository Operations<a class="headerlink" href="#basic-repository-operations" title="Permanent link">&para;</a></h3>
-<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CustomerService</span>
-<span class="p">{</span>
-<span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IGenericRepository</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">repository</span><span class="p">;</span>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>Use the result-based extensions when a missing entity or provider exception should be handled as a
+<code>Result&lt;TEntity&gt;</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">CustomerReader</span><span class="p">(</span><span class="n">repository</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">PrintNameAsync</span><span class="p">(</span><span class="n">customerId</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
 
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">CustomerReader</span><span class="p">(</span><span class="n">IGenericReadOnlyRepository</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">repository</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">PrintNameAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">CustomerId</span><span class="w"> </span><span class="n">customerId</span><span class="p">,</span>
+<span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindOneResultAsync</span><span class="p">(</span>
+<span class="w">            </span><span class="n">customerId</span><span class="p">,</span>
+<span class="w">            </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="kt">var</span><span class="w"> </span><span class="n">details</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Messages</span><span class="p">.</span><span class="n">Concat</span><span class="p">(</span>
+<span class="w">                </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">));</span>
+<span class="w">            </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="n">Environment</span><span class="p">.</span><span class="n">NewLine</span><span class="p">,</span><span class="w"> </span><span class="n">details</span><span class="p">));</span>
+<span class="w">            </span><span class="k">return</span><span class="p">;</span>
+<span class="w">        </span><span class="p">}</span>
+
+<span class="w">        </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>For a stored customer named Ada, the output is:</p>
+<div class="highlight"><pre><span></span><code>Ada
+</code></pre></div>
+<h3 id="basic-repository-operations">Basic repository operations<a class="headerlink" href="#basic-repository-operations" title="Permanent link">&para;</a></h3>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">CustomerService</span><span class="p">(</span><span class="n">IGenericRepository</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">repository</span><span class="p">)</span>
+<span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetCustomerAsync</span><span class="p">(</span><span class="n">Guid</span><span class="w"> </span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindOneAsync</span><span class="p">(</span><span class="n">id</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span>
@@ -4090,7 +4923,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="including-related-entities">Including Related Entities<a class="headerlink" href="#including-related-entities" title="Permanent link">&para;</a></h3>
+<h3 id="including-related-entities">Including related entities<a class="headerlink" href="#including-related-entities" title="Permanent link">&para;</a></h3>
 <p>Use <code>IncludeOption</code> to eagerly load related entities:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Simple include</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FindOptions</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
@@ -4098,9 +4931,11 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="nested-includes-with-theninclude">Nested Includes with ThenInclude<a class="headerlink" href="#nested-includes-with-theninclude" title="Permanent link">&para;</a></h3>
-<p>The <code>ThenInclude</code> feature enables fluent, type-safe chaining of navigation properties for loading deeply nested entity graphs. This is particularly useful when you need to load multiple levels of related entities in a single query.</p>
-<h4 id="reference-navigation-properties">Reference Navigation Properties<a class="headerlink" href="#reference-navigation-properties" title="Permanent link">&para;</a></h4>
+<h3 id="nested-includes-with-theninclude">Nested includes with <code>ThenInclude</code><a class="headerlink" href="#nested-includes-with-theninclude" title="Permanent link">&para;</a></h3>
+<p>The <code>ThenInclude</code> feature enables typed chaining of navigation properties for loading nested entity
+graphs. The repository issues one logical query; the provider can translate it into one or more
+database commands, for example when Entity Framework split queries are enabled.</p>
+<h4 id="reference-navigation-properties">Reference navigation properties<a class="headerlink" href="#reference-navigation-properties" title="Permanent link">&para;</a></h4>
 <p>For single-reference navigation properties (e.g., Customer → Address → City → Country):</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FindOptions</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">IncludeOption</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">Address</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">BillingAddress</span><span class="p">)</span>
@@ -4110,7 +4945,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="c1">// Loads: Customer → BillingAddress → City → Country</span>
 </code></pre></div>
-<h4 id="collection-navigation-properties">Collection Navigation Properties<a class="headerlink" href="#collection-navigation-properties" title="Permanent link">&para;</a></h4>
+<h4 id="collection-navigation-properties">Collection navigation properties<a class="headerlink" href="#collection-navigation-properties" title="Permanent link">&para;</a></h4>
 <p>For collection navigation properties (e.g., Customer → Orders → OrderItems → Product):</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FindOptions</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">IncludeOption</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">ICollection</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Orders</span><span class="p">)</span>
@@ -4120,7 +4955,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="c1">// Loads: Customer → Orders → OrderItems → Product</span>
 </code></pre></div>
-<h4 id="multiple-include-chains">Multiple Include Chains<a class="headerlink" href="#multiple-include-chains" title="Permanent link">&para;</a></h4>
+<h4 id="multiple-include-chains">Multiple include chains<a class="headerlink" href="#multiple-include-chains" title="Permanent link">&para;</a></h4>
 <p>You can add multiple include chains to load different navigation paths:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FindOptions</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">IncludeOption</span><span class="o">&lt;</span><span class="n">Order</span><span class="p">,</span><span class="w"> </span><span class="n">Address</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">ShippingAddress</span><span class="p">)</span>
@@ -4134,7 +4969,7 @@
 <span class="c1">// Loads both: Order → ShippingAddress → City → Country</span>
 <span class="c1">//         and: Order → OrderItems → Product → Category</span>
 </code></pre></div>
-<h4 id="real-world-example-e-commerce-order-query">Real-World Example: E-Commerce Order Query<a class="headerlink" href="#real-world-example-e-commerce-order-query" title="Permanent link">&para;</a></h4>
+<h4 id="e-commerce-order-query">E-commerce order query<a class="headerlink" href="#e-commerce-order-query" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderQueryHandler</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">IGenericRepository</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="w"> </span><span class="n">orderRepository</span><span class="p">;</span>
@@ -4159,29 +4994,36 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h4 id="key-points">Key Points<a class="headerlink" href="#key-points" title="Permanent link">&para;</a></h4>
+<h4 id="key-points">Key points<a class="headerlink" href="#key-points" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Type Safety</strong>: All navigation properties are validated at compile-time</li>
-<li><strong>Fluent API</strong>: Chain multiple <code>ThenInclude</code> calls for deep nesting</li>
-<li><strong>Generic Type Parameters</strong>: Always specify both <code>TEntity</code> and <code>TProperty</code> types explicitly in <code>IncludeOption&lt;TEntity, TProperty&gt;</code></li>
-<li><strong>Collection Support</strong>: Works with both reference properties (<code>Address</code>, <code>Customer</code>) and collection properties (<code>ICollection&lt;Order&gt;</code>, <code>IEnumerable&lt;OrderItem&gt;</code>)</li>
-<li><strong>Multiple Chains</strong>: Combine multiple include chains in a single <code>FindOptions</code> instance</li>
-<li><strong>Performance</strong>: Reduces database round-trips by loading all related data in a single query</li>
+<li><strong>Type safety</strong>: All navigation properties are validated at compile time.</li>
+<li><strong>Fluent API</strong>: Chain multiple <code>ThenInclude</code> calls for deep nesting.</li>
+<li><strong>Generic type parameters</strong>: Specify both <code>TEntity</code> and <code>TProperty</code> in <code>IncludeOption&lt;TEntity, TProperty&gt;</code>.</li>
+<li><strong>Collection support</strong>: Works with reference properties (<code>Address</code>, <code>Customer</code>) and collection properties (<code>ICollection&lt;Order&gt;</code>, <code>IEnumerable&lt;OrderItem&gt;</code>).</li>
+<li><strong>Multiple chains</strong>: Combine multiple include chains in one <code>FindOptions</code> instance.</li>
+<li><strong>Performance</strong>: Avoids per-entity lazy-loading queries; the command count depends on provider configuration.</li>
 </ul>
-<h3 id="combining-with-other-options">Combining with Other Options<a class="headerlink" href="#combining-with-other-options" title="Permanent link">&para;</a></h3>
+<h3 id="combining-with-other-options">Combining with other options<a class="headerlink" href="#combining-with-other-options" title="Permanent link">&para;</a></h3>
 <p>You can combine includes with filtering, ordering, and paging:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FindOptions</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">IncludeOption</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">ICollection</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Orders</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">ThenInclude</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">OrderItems</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithOrder</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrderOption</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Name</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithFilter</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">FilterOption</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">IsActive</span><span class="p">))</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithPage</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="mi">20</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithDistinct</span><span class="p">();</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddOrder</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">OrderOption</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Name</span><span class="p">));</span>
 
-<span class="kt">var</span><span class="w"> </span><span class="n">pagedCustomers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span><span class="n">options</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+<span class="n">options</span><span class="p">.</span><span class="n">Skip</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span>
+<span class="n">options</span><span class="p">.</span><span class="n">Take</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">20</span><span class="p">;</span>
+<span class="n">options</span><span class="p">.</span><span class="n">Distinct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DistinctOption</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Id</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">activeCustomers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Specification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">IsActive</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">pagedCustomers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="n">activeCustomers</span><span class="p">,</span>
+<span class="w">    </span><span class="n">options</span><span class="p">,</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="projection-with-includes">Projection with Includes<a class="headerlink" href="#projection-with-includes" title="Permanent link">&para;</a></h3>
-<p>Use includes with projection to load related data before projecting:</p>
+<h3 id="projection-with-include-options">Projection with include options<a class="headerlink" href="#projection-with-include-options" title="Permanent link">&para;</a></h3>
+<p>Projection methods accept the same <code>FindOptions&lt;TEntity&gt;</code>. Entity Framework can translate navigation
+access inside a projection without an explicit include and may ignore includes that do not affect
+the projected shape. Use includes here only when the selected provider needs them.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">FindOptions</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddInclude</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">IncludeOption</span><span class="o">&lt;</span><span class="n">Order</span><span class="p">,</span><span class="w"> </span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">Customer</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">ThenInclude</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">BillingAddress</span><span class="p">));</span>
@@ -4191,11 +5033,10 @@
 <span class="w">    </span><span class="n">options</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="bulk-updates-and-deletes">Bulk Updates And Deletes<a class="headerlink" href="#bulk-updates-and-deletes" title="Permanent link">&para;</a></h3>
+<h3 id="bulk-updates-and-deletes">Bulk updates and deletes<a class="headerlink" href="#bulk-updates-and-deletes" title="Permanent link">&para;</a></h3>
 <p>Use <code>UpdateSetAsync</code> and <code>DeleteSetAsync</code> for set-based operations that run directly in the repository provider without loading each entity instance first.</p>
-<blockquote>
-<p>Bulk operations are ideal for administrative tasks or background jobs that need to update or delete large numbers of entities without loading them into memory.</p>
-</blockquote>
+<p>Set-based operations suit administrative tasks and background jobs that need to change many rows
+without materializing the corresponding entities.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">affected</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">UpdateSetAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="k">set</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">set</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">IsActive</span><span class="p">,</span><span class="w"> </span><span class="k">false</span><span class="p">)</span>
@@ -4254,16 +5095,16 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">deleted</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">DeleteSetAsync</span><span class="p">(</span><span class="n">filter</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="key-points-for-bulk-set-operations">Key Points For Bulk Set Operations<a class="headerlink" href="#key-points-for-bulk-set-operations" title="Permanent link">&para;</a></h4>
+<h4 id="key-points-for-bulk-set-operations">Key points for bulk set operations<a class="headerlink" href="#key-points-for-bulk-set-operations" title="Permanent link">&para;</a></h4>
 <ul>
 <li>Filtering for <code>UpdateSetAsync</code> and <code>DeleteSetAsync</code> comes from specification instances, including specifications generated from a <code>FilterModel</code>.</li>
 <li><code>FindOptions</code> continue to shape the query only; they do not define the <code>WHERE</code> clause.</li>
 <li><code>UpdateSetAsync</code> supports both constant assignments such as <code>.Set(c =&gt; c.IsActive, false)</code> and computed assignments such as <code>.Set(c =&gt; c.LoginCount, c =&gt; c.LoginCount + 1)</code>.</li>
-<li>Only <code>EntityFrameworkGenericRepository&lt;TEntity&gt;</code> and <code>InMemoryRepository&lt;TEntity&gt;</code> currently provides a real implementation for repository bulk updates and deletes.</li>
+<li><code>EntityFrameworkGenericRepository&lt;TEntity&gt;</code> and <code>InMemoryRepository&lt;TEntity&gt;</code> provide implementations for repository bulk updates and deletes.</li>
 <li>Other repository implementations expose the same API for consistency but currently throw <code>NotImplementedException</code>.</li>
 <li>With Entity Framework, set-based operations execute directly in the database and do not synchronize already tracked entities in the current <code>DbContext</code>. If you need the updated database state immediately afterwards, re-query using <code>NoTracking</code> or use a fresh context/repository instance.</li>
 </ul>
-<h3 id="explicit-provider-bulk-inserts">Explicit Provider Bulk Inserts<a class="headerlink" href="#explicit-provider-bulk-inserts" title="Permanent link">&para;</a></h3>
+<h3 id="explicit-provider-bulk-inserts">Explicit provider bulk inserts<a class="headerlink" href="#explicit-provider-bulk-inserts" title="Permanent link">&para;</a></h3>
 <p><code>IEntityBulkInserter&lt;TEntity&gt;</code> is a Domain-owned, infrastructure-implemented preview capability for high-volume root-row ingestion. It is deliberately independent of <code>IGenericRepository&lt;TEntity&gt;.InsertSetAsync</code>: normal repository insertion remains the right choice when callers need EF tracking, graph cascades, or database-generated values returned to input objects.</p>
 <p>For a compatible native operation, bulk insert guarantees:</p>
 <ul>
@@ -4302,7 +5143,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterDomainEventBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">EntityBulkInserterDomainEventMetricsBehavior</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;&gt;</span><span class="p">();</span>
 </code></pre></div>
-<p><code>WithBehavior</code> calls are ordered from outermost to innermost. Register the outbox decorator before ChangeHistory, mutation, and event decorators so it owns the transaction enclosing the native write, ChangeHistory rows, and outbox save. Native ChangeHistory capture additionally requires <code>.CaptureBulkInserts(...)</code> on the tracked entity. Do not combine the outbox decorator with <code>EntityBulkInserterDomainEventPublisherBehavior&lt;TEntity&gt;</code>: direct publication is intentionally non-atomic with the native write.</p>
+<p><code>WithBehavior</code> calls are ordered from outermost to innermost. Register the outbox decorator before ChangeHistory, mutation, and event decorators so it owns the transaction enclosing the native write, ChangeHistory rows, and outbox save. Native ChangeHistory capture also requires <code>.CaptureBulkInserts(...)</code> on the tracked entity. Do not combine the outbox decorator with <code>EntityBulkInserterDomainEventPublisherBehavior&lt;TEntity&gt;</code>. Direct publication is intentionally non-atomic with the native write.</p>
 <table>
 <thead>
 <tr>
@@ -4398,7 +5239,6 @@
 <li><code>BatchSize</code></li>
 <li><code>CommandTimeout</code></li>
 <li><code>AssignSequentialGuidKeys</code></li>
-<li><code>AssignConcurrencyVersions</code></li>
 <li><code>KeepGeneratedIdentityValues</code></li>
 </ul>
 <p>For SQL Server, pass the optional derived <code>SqlServerEntityBulkInsertOptions</code> to <code>AddEntityFrameworkBulkInserter</code>. Its <code>SqlBulkCopyOptions</code> keeps SQL Server-specific flags such as <code>TableLock</code>. Do not configure <code>KeepIdentity</code> or <code>UseInternalTransaction</code>: <code>KeepGeneratedIdentityValues</code> controls identity preservation and the SQL Server strategy uses the active EF transaction.</p>
@@ -4408,10 +5248,10 @@
 </code></pre></div>
 <p>When <code>IEntityBulkInserter&lt;TodoItem&gt;.InsertAsync(...)</code> runs, it returns a failed <code>Result&lt;long&gt;</code> with a typed provider error naming the entity, active EF provider, and registered providers. PostgreSQL and SQLite provider packages currently register typed unsupported inserters, which return <code>EntityBulkInsertPreconditionError</code> instead of silently falling back to row-by-row insertion.</p>
 <p>Native mapping rejects populated owned or non-owned navigations, owned collections with rows, separate-table or JSON ownership, multi-table inheritance, tracked inputs, duplicate object references, and required shadow properties without an explicit shadow-value provider. Null or empty navigations are allowed because they preserve the root-only contract.</p>
-<h4 id="transactions-cancellation-and-outbox">Transactions, Cancellation, And Outbox<a class="headerlink" href="#transactions-cancellation-and-outbox" title="Permanent link">&para;</a></h4>
+<h4 id="transactions-cancellation-and-outbox">Transactions, cancellation, and outbox<a class="headerlink" href="#transactions-cancellation-and-outbox" title="Permanent link">&para;</a></h4>
 <p>The terminal opens an EF transaction when no caller transaction exists. All native batches commit or roll back together. The outbox decorator follows the same rule and encloses its root write plus outbox persistence in one transaction. If <code>DbContext.Database.CurrentTransaction</code> is already active, both participate without committing or rolling it back; the caller owns the final outcome.</p>
 <p>Cancellation is rethrown as <code>OperationCanceledException</code> and an owned transaction is rolled back. In immediate outbox mode, events are queued only after an outbox-owned commit. With a caller-owned transaction, use interval polling because the decorator cannot know when the caller commits; aggregate events are not cleared early.</p>
-<h4 id="key-points-for-explicit-bulk-inserts">Key Points For Explicit Bulk Inserts<a class="headerlink" href="#key-points-for-explicit-bulk-inserts" title="Permanent link">&para;</a></h4>
+<h4 id="key-points-for-explicit-bulk-inserts">Key points for explicit bulk inserts<a class="headerlink" href="#key-points-for-explicit-bulk-inserts" title="Permanent link">&para;</a></h4>
 <ul>
 <li>The current SQL Server strategy uses <code>Microsoft.Data.SqlClient.SqlBulkCopy</code>; no commercial bulk-insert package is required.</li>
 <li>Bulk insert is opt-in and provider-native. It does not replace <code>IGenericRepository&lt;TEntity&gt;.InsertSetAsync</code>.</li>
@@ -4419,9 +5259,9 @@
 <li>The shared mapper writes aggregate-root table columns, flattens same-table owned reference values, and generates primitive or typed GUID ids when needed.</li>
 <li>The shared orchestrator dispatches by exact <code>DbContext.Database.ProviderName</code>; it never infers a provider from a connection string.</li>
 <li>Native inputs stay detached. Store-generated identity, default, computed, and rowversion values are not copied back.</li>
-<li>Prefer this API for imports, seed data, generated records, queue/log batches, or other large inserts where the caller owns the trade-off.</li>
+<li>Use this API for imports, seed data, generated records, queue or log batches, and other large inserts where root-table-only writes are acceptable.</li>
 </ul>
-<h4 id="create-a-new-provider">Create A New Provider<a class="headerlink" href="#create-a-new-provider" title="Permanent link">&para;</a></h4>
+<h4 id="create-a-new-provider">Create a new provider<a class="headerlink" href="#create-a-new-provider" title="Permanent link">&para;</a></h4>
 <p>To add PostgreSQL, SQLite, or another relational provider without modifying the shared orchestrator:</p>
 <ol>
 <li>Create or update the provider assembly so it references <code>Infrastructure.EntityFramework</code> and its EF Core/ADO.NET provider packages.</li>
@@ -4431,8 +5271,8 @@
 <li>Add a derived options type only when native options are needed; derive it from <code>EntityBulkInsertOptions</code> and keep the shared options provider-neutral.</li>
 <li>Add terminal contract tests plus provider integration tests for mappings, value conversion, generated values, transactions, identities, native options, and registration.</li>
 </ol>
-<h2 id="appendix-a-optimistic-concurrency-support">Appendix A: Optimistic Concurrency Support<a class="headerlink" href="#appendix-a-optimistic-concurrency-support" title="Permanent link">&para;</a></h2>
-<h3 id="overview_1">Overview<a class="headerlink" href="#overview_1" title="Permanent link">&para;</a></h3>
+<h2 id="appendix-a-optimistic-concurrency-support">Appendix A: Optimistic concurrency support<a class="headerlink" href="#appendix-a-optimistic-concurrency-support" title="Permanent link">&para;</a></h2>
+<h3 id="concurrency-overview">Concurrency overview<a class="headerlink" href="#concurrency-overview" title="Permanent link">&para;</a></h3>
 <p>The repository implementation provides built-in optimistic concurrency control to handle scenarios where multiple users might attempt to modify the same entity simultaneously. This feature helps prevent the "lost update" problem, where one user's changes could accidentally overwrite another user's modifications.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant User1 as User 1
@@ -4454,7 +5294,7 @@
     DB--&gt;&gt;Repo: Concurrency Exception
     Note over User2: Must refresh and retry</code></pre>
 <h3 id="implementation">Implementation<a class="headerlink" href="#implementation" title="Permanent link">&para;</a></h3>
-<h3 id="1-enable-concurrency-support">1. Enable Concurrency Support<a class="headerlink" href="#1-enable-concurrency-support" title="Permanent link">&para;</a></h3>
+<h4 id="1-enable-concurrency-support">1. Enable concurrency support<a class="headerlink" href="#1-enable-concurrency-support" title="Permanent link">&para;</a></h4>
 <p>To enable concurrency control for an entity, implement the <code>IConcurrency</code> interface:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">TodoItem</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">AuditableAggregateRoot</span><span class="o">&lt;</span><span class="n">TodoItemId</span><span class="o">&gt;</span><span class="p">,</span><span class="w"> </span><span class="n">IConcurrency</span>
 <span class="p">{</span>
@@ -4466,7 +5306,7 @@
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Guid</span><span class="w"> </span><span class="n">ConcurrencyVersion</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h4 id="2-configure-entity-framework-mapping">2. Configure Entity Framework Mapping<a class="headerlink" href="#2-configure-entity-framework-mapping" title="Permanent link">&para;</a></h4>
+<h4 id="2-configure-entity-framework-mapping">2. Configure Entity Framework mapping<a class="headerlink" href="#2-configure-entity-framework-mapping" title="Permanent link">&para;</a></h4>
 <p>Configure the concurrency token in your entity configuration:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">TodoItemEntityTypeConfiguration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IEntityTypeConfiguration</span><span class="o">&lt;</span><span class="n">TodoItem</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -4475,13 +5315,13 @@
 <span class="w">        </span><span class="c1">// Configure concurrency token</span>
 <span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">Property</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">ConcurrencyVersion</span><span class="p">)</span>
 <span class="w">            </span><span class="p">.</span><span class="n">IsConcurrencyToken</span><span class="p">()</span>
-<span class="w">            </span><span class="p">.</span><span class="n">ValueGeneratedOnAddOrUpdate</span><span class="p">();</span>
+<span class="w">            </span><span class="p">.</span><span class="n">ValueGeneratedNever</span><span class="p">();</span>
 
 <span class="w">        </span><span class="c1">// Other configuration...</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="how-it-prevents-data-conflicts-repository">How It Prevents Data Conflicts (Repository)<a class="headerlink" href="#how-it-prevents-data-conflicts-repository" title="Permanent link">&para;</a></h3>
+<h3 id="how-repository-concurrency-prevents-conflicts">How repository concurrency prevents conflicts<a class="headerlink" href="#how-repository-concurrency-prevents-conflicts" title="Permanent link">&para;</a></h3>
 <ol>
 <li>When an entity is retrieved, its current <code>ConcurrencyVersion</code> is tracked</li>
 <li>During updates, the repository:</li>
@@ -4489,7 +5329,7 @@
 <li>Includes the original version in the update condition</li>
 <li>Only updates if the database version matches the original version</li>
 </ol>
-<h3 id="example-usage">Example Usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h3>
+<h3 id="example-usage">Example usage<a class="headerlink" href="#example-usage" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">UpdateTodoItemAsync</span><span class="p">(</span><span class="n">TodoItem</span><span class="w"> </span><span class="n">item</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">try</span>
@@ -4515,14 +5355,17 @@
 </ul>
 <h3 id="limitations">Limitations<a class="headerlink" href="#limitations" title="Permanent link">&para;</a></h3>
 <ul>
-<li>Only available with Entity Framework repositories</li>
+<li>Entity Framework, Cosmos DB, and in-memory repositories support <code>IConcurrency</code>; provider behavior and exception types differ</li>
 <li>May require additional application logic to handle conflict resolution</li>
 </ul>
-<p>The concurrency support provides a robust way to handle simultaneous updates while maintaining data integrity in your application. It's particularly useful in scenarios with multiple users working on the same data simultaneously.</p>
+<p>Concurrency tokens detect stale writes. The application remains responsible for presenting the
+conflict, reloading current state, and deciding whether to retry or merge changes.</p>
 <hr />
-<h2 id="appendix-b-sequence-number-generation-support">Appendix B: Sequence Number Generation Support<a class="headerlink" href="#appendix-b-sequence-number-generation-support" title="Permanent link">&para;</a></h2>
-<h3 id="overview_2">Overview<a class="headerlink" href="#overview_2" title="Permanent link">&para;</a></h3>
-<p>The sequence number generation feature allows developers to generate unique, auto-incrementing numbers for business identifiers (such as order numbers or invoice IDs) directly from the database. This is particularly useful when you need reliable, thread-safe sequencing that integrates with the DbContext. The implementation supports SQL Server, PostgreSQL, SQLite (with emulation) and an in-memory option for testing.</p>
+<h2 id="appendix-b-sequence-number-generation-support">Appendix B: Sequence number generation support<a class="headerlink" href="#appendix-b-sequence-number-generation-support" title="Permanent link">&para;</a></h2>
+<h3 id="sequence-overview">Sequence overview<a class="headerlink" href="#sequence-overview" title="Permanent link">&para;</a></h3>
+<p>The sequence number generator creates unique, incrementing business identifiers such as order or
+invoice numbers. It supports SQL Server and PostgreSQL native sequences, SQLite emulation, and an
+in-memory implementation for tests.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant App as Application Service
     participant Gen as Sequence Generator
@@ -4543,9 +5386,9 @@
     Gen--&gt;&gt;App: Result&lt;SequenceInfo&gt;</code></pre>
 <h3 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h3>
 <p>To use sequence generation, first define sequences in your DbContext and register the generator in dependency injection (DI).</p>
-<h4 id="1-define-sequences-in-dbcontext">1. Define Sequences in DbContext<a class="headerlink" href="#1-define-sequences-in-dbcontext" title="Permanent link">&para;</a></h4>
+<h4 id="1-define-sequences-in-dbcontext">1. Define sequences in <code>DbContext</code><a class="headerlink" href="#1-define-sequences-in-dbcontext" title="Permanent link">&para;</a></h4>
 <p>Configure sequences in the <code>OnModelCreating</code> method of your DbContext. This step is provider-specific.</p>
-<p><div class="highlight"><pre><span></span><code><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">ModelBuilder</span><span class="w"> </span><span class="n">modelBuilder</span><span class="p">)</span>
+<div class="highlight"><pre><span></span><code><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">OnModelCreating</span><span class="p">(</span><span class="n">ModelBuilder</span><span class="w"> </span><span class="n">modelBuilder</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">modelBuilder</span><span class="p">.</span><span class="n">HasSequence</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CoreSchema&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">StartsAt</span><span class="p">(</span><span class="mi">1000</span><span class="p">)</span>
@@ -4555,32 +5398,34 @@
 <span class="w">    </span><span class="k">base</span><span class="p">.</span><span class="n">OnModelCreating</span><span class="p">(</span><span class="n">modelBuilder</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-Apply database migrations to create the sequences (e.g., <code>dotnet ef migrations add AddSequences</code> and <code>dotnet ef database update</code>).</p>
-<h4 id="2-register-in-di">2. Register in DI<a class="headerlink" href="#2-register-in-di" title="Permanent link">&para;</a></h4>
+<p>Apply database migrations to create the sequences (e.g., <code>dotnet ef migrations add AddSequences</code> and <code>dotnet ef database update</code>).</p>
+<h4 id="2-register-in-dependency-injection">2. Register in dependency injection<a class="headerlink" href="#2-register-in-dependency-injection" title="Permanent link">&para;</a></h4>
 <p>Register the appropriate generator for your database provider using the provided extensions. The generator is typically scoped to match the DbContext lifetime.</p>
-<div class="highlight"><pre><span></span><code><span class="c1">// In ConfigureServices</span>
-<span class="n">services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">YourDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">connectionString</span><span class="p">))</span>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddSqlServerDbContext</span><span class="o">&lt;</span><span class="n">YourDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">connectionString</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithSequenceNumberGenerator</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">SequenceNumberGeneratorOptions</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="n">LockTimeout</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">60</span><span class="p">)</span>
 <span class="w">    </span><span class="p">});</span>
 
 <span class="c1">// For PostgreSQL</span>
-<span class="n">services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">YourDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">UseNpgsql</span><span class="p">(</span><span class="n">connectionString</span><span class="p">))</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddPostgresDbContext</span><span class="o">&lt;</span><span class="n">YourDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">connectionString</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithSequenceNumberGenerator</span><span class="p">();</span>
 
 <span class="c1">// For SQLite</span>
-<span class="n">services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">YourDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlite</span><span class="p">(</span><span class="n">connectionString</span><span class="p">))</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddSqliteDbContext</span><span class="o">&lt;</span><span class="n">YourDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">connectionString</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithSequenceNumberGenerator</span><span class="p">();</span>
 
-<span class="c1">// For in-memory testing (no DbContext dependency)</span>
-<span class="n">services</span><span class="p">.</span><span class="n">AddScoped</span><span class="o">&lt;</span><span class="n">ISequenceNumberGenerator</span><span class="p">,</span><span class="w"> </span><span class="n">InMemorySequenceNumberGenerator</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="c1">// For in-memory testing</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddInMemoryDbContext</span><span class="o">&lt;</span><span class="n">YourDbContext</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithSequenceNumberGenerator</span><span class="p">();</span>
 </code></pre></div>
-<h4 id="provider-specific-notes">Provider-Specific Notes<a class="headerlink" href="#provider-specific-notes" title="Permanent link">&para;</a></h4>
-<p>SQL Server and PostgreSQL use native sequences for full support, including increment steps and bounds. SQLite emulates basic sequencing via a system table, while the in-memory option is ideal for unit tests and requires manual configuration in test setup.</p>
-<h3 id="usage_1">Usage<a class="headerlink" href="#usage_1" title="Permanent link">&para;</a></h3>
+<h4 id="provider-specific-notes">Provider-specific notes<a class="headerlink" href="#provider-specific-notes" title="Permanent link">&para;</a></h4>
+<p>SQL Server and PostgreSQL use native sequences, including increment steps and bounds. SQLite
+emulates basic sequencing through a system table. Configure each sequence explicitly when using the
+in-memory implementation.</p>
+<h3 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h3>
 <p>Inject <code>ISequenceNumberGenerator</code> into your services and use it to generate numbers. Operations return <code>Result&lt;T&gt;</code> for safe error handling.</p>
-<h4 id="basic-generation">Basic Generation<a class="headerlink" href="#basic-generation" title="Permanent link">&para;</a></h4>
+<h4 id="basic-generation">Basic generation<a class="headerlink" href="#basic-generation" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderService</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">private</span><span class="w"> </span><span class="k">readonly</span><span class="w"> </span><span class="n">ISequenceNumberGenerator</span><span class="w"> </span><span class="n">generator</span><span class="p">;</span>
@@ -4588,8 +5433,8 @@ Apply database migrations to create the sequences (e.g., <code>dotnet ef migrati
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="nf">OrderService</span><span class="p">(</span><span class="n">ISequenceNumberGenerator</span><span class="w"> </span><span class="n">generator</span><span class="p">,</span><span class="w"> </span><span class="n">YourDbContext</span><span class="w"> </span><span class="n">context</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="n">generator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generator</span><span class="p">;</span>
-<span class="w">        </span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">generator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">generator</span><span class="p">;</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">context</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">;</span>
 <span class="w">    </span><span class="p">}</span>
 
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Result</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">CreateOrderAsync</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">ct</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
@@ -4608,32 +5453,42 @@ Apply database migrations to create the sequences (e.g., <code>dotnet ef migrati
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h4 id="additional-operations">Additional Operations<a class="headerlink" href="#additional-operations" title="Permanent link">&para;</a></h4>
+<h4 id="additional-operations">Additional operations<a class="headerlink" href="#additional-operations" title="Permanent link">&para;</a></h4>
 <ul>
-<li><strong>Metadata Query</strong>: Retrieve details like current value.
-  <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">infoResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetSequenceInfoAsync</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">);</span>
+<li><strong>Metadata Query</strong>: Retrieve details like current value.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">infoResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetSequenceInfoAsync</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">);</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">infoResult</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;Current: {infoResult.Value.CurrentValue}&quot;</span><span class="p">);</span>
 <span class="p">}</span>
-</code></pre></div></li>
-<li><strong>Reset</strong>: Restart the sequence (e.g., for administrative tasks).
-  <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">ResetSequenceAsync</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
-</code></pre></div></li>
-<li><strong>Batch Generation</strong>: Get multiple sequences in one call.
-  <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextMultipleAsync</span><span class="p">(</span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;InvoiceNumbers&quot;</span><span class="w"> </span><span class="p">});</span>
+</code></pre></div>
+<ul>
+<li><strong>Reset</strong>: Restart the sequence (e.g., for administrative tasks).</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">ResetSequenceAsync</span><span class="p">(</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+</code></pre></div>
+<ul>
+<li><strong>Batch Generation</strong>: Get multiple sequences in one call.</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">results</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextMultipleAsync</span><span class="p">(</span><span class="k">new</span><span class="p">[]</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;InvoiceNumbers&quot;</span><span class="w"> </span><span class="p">});</span>
 <span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">results</span><span class="p">.</span><span class="n">IsSuccess</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">order</span><span class="p">.</span><span class="n">OrderNumber</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">results</span><span class="p">.</span><span class="n">Value</span><span class="p">[</span><span class="s">&quot;OrderNumbers&quot;</span><span class="p">];</span>
 <span class="p">}</span>
-</code></pre></div></li>
-<li><strong>Entity Convention</strong>: Generate based on entity type (e.g., "OrderSequence").
-  <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">numberResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextForEntityAsync</span><span class="o">&lt;</span><span class="n">Order</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;CoreSchema&quot;</span><span class="p">);</span>
-</code></pre></div></li>
+</code></pre></div>
+<ul>
+<li><strong>Entity convention</strong>: Use the same sequence-name convention as <code>GetNextForEntityAsync&lt;TEntity&gt;</code>.</li>
 </ul>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">numberResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">generator</span><span class="p">.</span><span class="n">GetNextAsync</span><span class="p">(</span><span class="s">&quot;OrderSequence&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CoreSchema&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p><code>GetNextForEntityAsync&lt;TEntity&gt;</code> is available on concrete generators derived from
+<code>SequenceNumberGeneratorBase&lt;TContext&gt;</code>, but it is not part of <code>ISequenceNumberGenerator</code>.</p>
 <p>The generator ensures thread-safety with internal locking and supports Result-based error handling for issues like missing sequences or timeouts.</p>
-<h3 id="benefits-and-limitations">Benefits and Limitations<a class="headerlink" href="#benefits-and-limitations" title="Permanent link">&para;</a></h3>
-<p>This feature provides reliable sequencing integrated with your DbContext, making it easy to generate business IDs without relying on entity primaries. It's thread-safe and works across providers, though SQLite has limited emulation (basic increment only). For high-volume use, consider batch operations to minimize database calls. In tests, the in-memory generator allows fast, isolated verification without a real database.</p>
+<h3 id="benefits-and-limitations">Benefits and limitations<a class="headerlink" href="#benefits-and-limitations" title="Permanent link">&para;</a></h3>
+<p>Sequence generation keeps business identifiers separate from entity primary keys. Operations are
+serialized by internal locks, but SQLite supports only basic emulation. Use batch operations to
+reduce database calls. The in-memory generator supports isolated tests without a database.</p>
 
 
 
@@ -4712,7 +5567,7 @@ Apply database migrations to create the sequences (e.g., <code>dotnet ef migrati
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4720,6 +5575,8 @@ Apply database migrations to create the sequences (e.g., <code>dotnet ef migrati
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

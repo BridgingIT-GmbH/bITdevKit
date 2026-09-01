@@ -322,8 +322,7 @@ and performs a one-time type lookup across loaded assemblies, cached per name.</
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Resolves a <span class="xref">Microsoft.EntityFrameworkCore.DbContext</span> by a logical context name that may
-omit the &quot;DbContext&quot; suffix (e.g., &quot;Core&quot; or &quot;CoreDbContext&quot;).</p>
+  <div class="markdown level1 summary"><p>Executes the resolve operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -334,15 +333,14 @@ omit the &quot;DbContext&quot; suffix (e.g., &quot;Core&quot; or &quot;CoreDbCon
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>contextName</code> <span class="xref">string</span></dt>
-    <dd><p>The logical context name or the DbContext simple type name. If the value
-does not end with &quot;DbContext&quot;, the suffix will be appended for matching.</p>
+    <dd><p>The context name used by the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DbContext</span></dt>
-    <dd><p>A <span class="xref">Microsoft.EntityFrameworkCore.DbContext</span> instance resolved from the DI container.</p>
+    <dd><p>The result of the operation.</p>
 </dd>
   </dl>
 
@@ -353,13 +351,6 @@ does not end with &quot;DbContext&quot;, the suffix will be appended for matchin
 
 
 
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><span class="xref">InvalidOperationException</span></dt>
-    <dd><p>Thrown when the name is null/empty, no matching DbContext type can be found,
-or the type is not registered in DI.</p>
-</dd>
-  </dl>
 
 
 
@@ -370,7 +361,7 @@ or the type is not registered in DI.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Resolves a <span class="xref">Microsoft.EntityFrameworkCore.DbContext</span> by its concrete <span class="xref">System.Type</span>.</p>
+  <div class="markdown level1 summary"><p>Executes the resolve operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -381,14 +372,14 @@ or the type is not registered in DI.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>contextType</code> <span class="xref">Type</span></dt>
-    <dd><p>The concrete type derived from <span class="xref">Microsoft.EntityFrameworkCore.DbContext</span>.</p>
+    <dd><p>The context type used by the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">DbContext</span></dt>
-    <dd><p>A <span class="xref">Microsoft.EntityFrameworkCore.DbContext</span> instance resolved from the DI container.</p>
+    <dd><p>The result of the operation.</p>
 </dd>
   </dl>
 
@@ -399,15 +390,6 @@ or the type is not registered in DI.</p>
 
 
 
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><span class="xref">ArgumentException</span></dt>
-    <dd><p>Thrown when <code class="paramref">contextType</code> is null or not a <span class="xref">Microsoft.EntityFrameworkCore.DbContext</span>.</p>
-</dd>
-    <dt><span class="xref">InvalidOperationException</span></dt>
-    <dd><p>Thrown when the type is not registered in DI.</p>
-</dd>
-  </dl>
 
 
 

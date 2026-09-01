@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SequenceNumberGeneratorBase&lt;TContext&gt;.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class SequenceNumberGeneratorBase&lt;TContext&gt;.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the entity sequence generation operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,13 +143,17 @@ public static void LogEntitySequenceGeneration(ILogger logger, string logKey, st
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>entityName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The entity name used by the operation.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -168,7 +174,8 @@ public static void LogEntitySequenceGeneration(ILogger logger, string logKey, st
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the multiple sequence generation operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -179,15 +186,20 @@ public static void LogMultipleSequenceGeneration(ILogger logger, string logKey, 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>count</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of values to process.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -208,7 +220,8 @@ public static void LogMultipleSequenceGeneration(ILogger logger, string logKey, 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the sequence generated operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -219,19 +232,26 @@ public static void LogSequenceGenerated(ILogger logger, string logKey, long valu
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>value</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The value used by the operation.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
     <dt><code>dbContextId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -252,7 +272,8 @@ public static void LogSequenceGenerated(ILogger logger, string logKey, long valu
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the sequence generation operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -263,15 +284,20 @@ public static void LogSequenceGeneration(ILogger logger, string logKey, string s
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -292,7 +318,8 @@ public static void LogSequenceGeneration(ILogger logger, string logKey, string s
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the sequence generation failed operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -303,19 +330,26 @@ public static void LogSequenceGenerationFailed(ILogger logger, string logKey, st
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>schema</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The schema used by the operation.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
     <dt><code>dbContextId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context id used by the operation.</p>
+</dd>
     <dt><code>message</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message associated with the operation.</p>
+</dd>
   </dl>
 
 
@@ -336,7 +370,8 @@ public static void LogSequenceGenerationFailed(ILogger logger, string logKey, st
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the sequence lock timeout operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -347,13 +382,17 @@ public static void LogSequenceLockTimeout(ILogger logger, string logKey, string 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>timeout</code> <span class="xref">double</span></dt>
-    <dd></dd>
+    <dd><p>The timeout used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -374,7 +413,8 @@ public static void LogSequenceLockTimeout(ILogger logger, string logKey, string 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the sequence reset operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -385,15 +425,20 @@ public static void LogSequenceReset(ILogger logger, string logKey, string sequen
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>sequenceName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The sequence name used by the operation.</p>
+</dd>
     <dt><code>startValue</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The start value used by the operation.</p>
+</dd>
     <dt><code>dbContextType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The db context type used by the operation.</p>
+</dd>
   </dl>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CsvSerializer | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Serializes objects and object sequences as CSV and deserializes CSV records using CsvHelper.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class CsvSerializer
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Serialization.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Serializes objects and object sequences as CSV and deserializes CSV records using CsvHelper.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -290,7 +291,8 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.CsvSerializer.html">CsvSerializer</a> class with DevKit CSV settings.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -300,7 +302,8 @@ Class CsvSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>settings</code> <a class="xref" href="BridgingIT.DevKit.Common.CsvSerializerSettings.html">CsvSerializerSettings</a></dt>
-    <dd></dd>
+    <dd><p>The settings to apply, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use the defaults.</p>
+</dd>
   </dl>
 
 
@@ -321,7 +324,8 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.CsvSerializer.html">CsvSerializer</a> class with an existing CsvHelper configuration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -331,7 +335,8 @@ Class CsvSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>configuration</code> <span class="xref">CsvConfiguration</span></dt>
-    <dd></dd>
+    <dd><p>The CsvHelper configuration to use.</p>
+</dd>
   </dl>
 
 
@@ -342,6 +347,12 @@ Class CsvSerializer
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">configuration</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
 
 
 
@@ -356,7 +367,8 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers the configured date-time converter and class maps with a CSV reader.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -366,7 +378,8 @@ Class CsvSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>csv</code> <span class="xref">CsvReader</span></dt>
-    <dd></dd>
+    <dd><p>The reader to configure.</p>
+</dd>
   </dl>
 
 
@@ -387,7 +400,8 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers the configured date-time converter and class maps with a CSV writer.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -397,7 +411,8 @@ Class CsvSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>csv</code> <span class="xref">CsvWriter</span></dt>
-    <dd></dd>
+    <dd><p>The writer to configure.</p>
+</dd>
   </dl>
 
 
@@ -418,7 +433,7 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deserializes the specified input stream.</p>
+  <div class="markdown level1 summary"><p>Reads all CSV records as instances of the specified runtime type while leaving the input stream open.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -429,17 +444,17 @@ Class CsvSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>input</code> <span class="xref">Stream</span></dt>
-    <dd><p>The input stream containing serialized data.</p>
+    <dd><p>The CSV input stream, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to return <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd><p>The type of the object to deserialize.</p>
+    <dd><p>The type to create for each CSV record.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">object</span></dt>
-    <dd><p>The deserialized object.</p>
+    <dd><p>A list containing the deserialized records, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when <code class="paramref">input</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
 </dd>
   </dl>
 
@@ -450,6 +465,15 @@ Class CsvSerializer
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p><code class="paramref">type</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+    <dt><span class="xref">SerializationException</span></dt>
+    <dd><p>The CSV data cannot be deserialized.</p>
+</dd>
+  </dl>
 
 
 
@@ -460,7 +484,7 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deserializes the specified input stream into an object of the specified type.</p>
+  <div class="markdown level1 summary"><p>Reads the first CSV record as an instance of <code class="typeparamref">T</code> while leaving the input stream open.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -471,21 +495,22 @@ Class CsvSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>input</code> <span class="xref">Stream</span></dt>
-    <dd><p>The input stream.</p>
+    <dd><p>The CSV input stream, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to return the default value.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">T</span></dt>
-    <dd><p>The deserialized object.</p>
+    <dd><p>The first deserialized record, or the default value when no record is available.</p>
 </dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The record type to create.</p>
+</dd>
   </dl>
 
 
@@ -494,6 +519,12 @@ Class CsvSerializer
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">SerializationException</span></dt>
+    <dd><p>The CSV data cannot be deserialized.</p>
+</dd>
+  </dl>
 
 
 
@@ -504,7 +535,8 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers a CsvHelper class map for subsequent serialization and deserialization operations.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -516,7 +548,8 @@ Class CsvSerializer
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The class-map type to register.</p>
+</dd>
   </dl>
 
 
@@ -535,7 +568,7 @@ Class CsvSerializer
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Serializes the specified object value.</p>
+  <div class="markdown level1 summary"><p>Writes a value, or each item in an object sequence, as CSV while leaving the output stream open.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -546,10 +579,10 @@ Class CsvSerializer
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">object</span></dt>
-    <dd><p>The value.</p>
+    <dd><p>The value or sequence to serialize. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value is ignored.</p>
 </dd>
     <dt><code>output</code> <span class="xref">Stream</span></dt>
-    <dd><p>The output.</p>
+    <dd><p>The destination stream. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> stream is ignored.</p>
 </dd>
   </dl>
 
@@ -561,6 +594,12 @@ Class CsvSerializer
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">SerializationException</span></dt>
+    <dd><p>CsvHelper cannot serialize the value.</p>
+</dd>
+  </dl>
 
 
 

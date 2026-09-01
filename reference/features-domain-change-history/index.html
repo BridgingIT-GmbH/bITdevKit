@@ -6,13 +6,17 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-domain-change-history/">
       
       
+        <link rel="prev" href="../features-domain-events/">
+      
+      
+        <link rel="next" href="../features-domain-repositories/">
       
       
         
@@ -23,7 +27,7 @@
     
     
       
-        <title>ChangeHistory Feature Documentation - bITdevKit</title>
+        <title>Domain Change History - bITdevKit</title>
       
     
     
@@ -74,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#changehistory-feature-documentation" class="md-skip">
+        <a href="#change-history" class="md-skip">
           Skip to content
         </a>
       
@@ -86,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -102,19 +107,21 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
             
-              ChangeHistory Feature Documentation
+              Domain Change History
             
           </span>
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -376,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -406,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -427,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -450,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -488,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -503,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -519,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -539,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -620,194 +723,7 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
     
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
   
   
   
@@ -815,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" >
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -841,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -866,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -890,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -916,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1130,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1191,21 +1233,28 @@
                 
   
   
+    
   
   
+  
     
     
     
     
+      
+      
+        
+      
     
-    <li class="md-nav__item md-nav__item--nested">
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1223,8 +1272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1294,17 +1343,44 @@
                 
   
   
+    
   
   
-    <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Change History
+  
+
+    
+  </span>
+  
+  
+
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="./" class="md-nav__link md-nav__link--active">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
+    Domain Change History
   
 
     
@@ -1313,34 +1389,573 @@
   
 
       </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
+      
         
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
   
   
-  <span class="md-ellipsis">
+  
     
   
-    ChangeHistory
   
-
-    
-  </span>
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#overview" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Overview
+      
+    </span>
+  </a>
   
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
   
-
-      </a>
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#capture-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capture flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restore-flow" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restore flow
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core concepts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#change-rows" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Change rows
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#change-sets" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Change sets
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#capture-sources" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capture sources
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#value-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value policies
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Setup
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#1-expose-the-ef-set" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        1. Expose the EF set
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#2-configure-tracked-entities" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        2. Configure tracked entities
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#3-add-the-repository-behavior" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        3. Add the repository behavior
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#4-add-native-bulk-insert-capture-when-needed" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        4. Add native bulk-insert capture when needed
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#options-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Options reference
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Options reference">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#global-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Global options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#tracked-entity-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Tracked entity options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#value-policies_1" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Value policies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#oversized-value-policies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Oversized value policies
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#capture-modes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capture modes
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#capture-paths" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capture paths
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#restore-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restore options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#endpoint-options" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Endpoint options
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#query-contract" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Query contract
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#service-registration-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Service registration reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#extension-points" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Extension points
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#result-models" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Result models
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stored-row-schema" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Stored row schema
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enum-reference" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Enum reference
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#capture-strategies" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Capture strategies
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Capture strategies">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#entitychangeonly" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EntityChangeOnly
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#repositorysnapshot" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        RepositorySnapshot
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#efchangetracker" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        EfChangeTracker
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#owned-values-collections-and-graphs" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Owned values, collections, and graphs
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#bulk-update-capture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Bulk update capture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#querying-history" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Querying history
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#http-endpoints" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        HTTP endpoints
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restore" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Restore
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#authorization" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Authorization
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#operational-notes" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Operational notes
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#relationship-to-other-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Relationship to other features
+      
+    </span>
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
     </li>
   
 
@@ -1416,7 +2031,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1598,6 +2213,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1616,15 +2259,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1642,8 +2290,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1724,6 +2372,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1923,15 +2599,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1949,8 +2630,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1959,6 +2640,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2034,15 +2743,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2060,8 +2774,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2086,6 +2800,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2302,6 +3072,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2369,15 +3167,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2395,8 +3198,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2676,15 +3479,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2702,8 +3510,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2783,6 +3591,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -2822,22 +4161,55 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#how-it-works" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How It Works
+        Challenges
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="How It Works">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#capture-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capture Flow
+        Capture flow
       
     </span>
   </a>
@@ -2848,7 +4220,7 @@
   <a href="#query-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Query Flow
+        Query flow
       
     </span>
   </a>
@@ -2859,7 +4231,7 @@
   <a href="#restore-flow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Restore Flow
+        Restore flow
       
     </span>
   </a>
@@ -2872,10 +4244,21 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-it" class="md-nav__link">
+  <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
       
     </span>
   </a>
@@ -2886,19 +4269,19 @@
   <a href="#core-concepts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Concepts
+        Core concepts
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Concepts">
+    <nav class="md-nav" aria-label="Core concepts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#change-rows" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Change Rows
+        Change rows
       
     </span>
   </a>
@@ -2909,7 +4292,7 @@
   <a href="#change-sets" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Change Sets
+        Change sets
       
     </span>
   </a>
@@ -2920,7 +4303,7 @@
   <a href="#capture-sources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capture Sources
+        Capture sources
       
     </span>
   </a>
@@ -2931,7 +4314,7 @@
   <a href="#value-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Value Policies
+        Value policies
       
     </span>
   </a>
@@ -3008,19 +4391,19 @@
   <a href="#options-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Options Reference
+        Options reference
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Options Reference">
+    <nav class="md-nav" aria-label="Options reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#global-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global Options
+        Global options
       
     </span>
   </a>
@@ -3031,7 +4414,7 @@
   <a href="#tracked-entity-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tracked Entity Options
+        Tracked entity options
       
     </span>
   </a>
@@ -3042,7 +4425,7 @@
   <a href="#value-policies_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Value Policies
+        Value policies
       
     </span>
   </a>
@@ -3053,7 +4436,7 @@
   <a href="#oversized-value-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Oversized Value Policies
+        Oversized value policies
       
     </span>
   </a>
@@ -3064,7 +4447,7 @@
   <a href="#capture-modes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capture Modes
+        Capture modes
       
     </span>
   </a>
@@ -3075,7 +4458,7 @@
   <a href="#capture-paths" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capture Paths
+        Capture paths
       
     </span>
   </a>
@@ -3086,7 +4469,7 @@
   <a href="#restore-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Restore Options
+        Restore options
       
     </span>
   </a>
@@ -3097,7 +4480,7 @@
   <a href="#endpoint-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint Options
+        Endpoint options
       
     </span>
   </a>
@@ -3108,7 +4491,7 @@
   <a href="#query-contract" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Query Contract
+        Query contract
       
     </span>
   </a>
@@ -3119,7 +4502,7 @@
   <a href="#service-registration-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Service Registration Reference
+        Service registration reference
       
     </span>
   </a>
@@ -3130,7 +4513,7 @@
   <a href="#extension-points" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Extension Points
+        Extension points
       
     </span>
   </a>
@@ -3141,7 +4524,7 @@
   <a href="#result-models" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Result Models
+        Result models
       
     </span>
   </a>
@@ -3152,7 +4535,7 @@
   <a href="#stored-row-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stored Row Schema
+        Stored row schema
       
     </span>
   </a>
@@ -3163,7 +4546,7 @@
   <a href="#enum-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Enum Reference
+        Enum reference
       
     </span>
   </a>
@@ -3179,12 +4562,12 @@
   <a href="#capture-strategies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Capture Strategies
+        Capture strategies
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Capture Strategies">
+    <nav class="md-nav" aria-label="Capture strategies">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3229,7 +4612,7 @@
   <a href="#owned-values-collections-and-graphs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Owned Values, Collections, And Graphs
+        Owned values, collections, and graphs
       
     </span>
   </a>
@@ -3240,7 +4623,7 @@
   <a href="#bulk-update-capture" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Bulk Update Capture
+        Bulk update capture
       
     </span>
   </a>
@@ -3251,7 +4634,7 @@
   <a href="#querying-history" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Querying History
+        Querying history
       
     </span>
   </a>
@@ -3262,7 +4645,7 @@
   <a href="#http-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        HTTP Endpoints
+        HTTP endpoints
       
     </span>
   </a>
@@ -3295,7 +4678,7 @@
   <a href="#operational-notes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operational Notes
+        Operational notes
       
     </span>
   </a>
@@ -3306,7 +4689,7 @@
   <a href="#relationship-to-other-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship To Other Features
+        Relationship to other features
       
     </span>
   </a>
@@ -3331,6 +4714,82 @@
   
 
 
+  <nav class="md-path" aria-label="Navigation" >
+    <ol class="md-path__list">
+      
+        
+  
+  
+    <li class="md-path__item">
+      <a href="../.." class="md-path__link">
+        
+  <span class="md-ellipsis">
+    Home
+  </span>
+
+      </a>
+    </li>
+  
+
+      
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Feature Guides
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../features-domain/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Core Domain and Application
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+    </ol>
+  </nav>
+
               
               <article class="md-content__inner md-typeset">
                 
@@ -3341,26 +4800,30 @@
   
 
 
-<h1 id="changehistory-feature-documentation">ChangeHistory Feature Documentation<a class="headerlink" href="#changehistory-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="change-history">Change History<a class="headerlink" href="#change-history" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Record property-level entity changes, query grouped change sets, and restore selected values through explicit domain-safe policies.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#changehistory-feature-documentation">ChangeHistory Feature Documentation</a><ul>
+<li><a href="#change-history">Change History</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#how-it-works">How It Works</a><ul>
-<li><a href="#capture-flow">Capture Flow</a></li>
-<li><a href="#query-flow">Query Flow</a></li>
-<li><a href="#restore-flow">Restore Flow</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a><ul>
+<li><a href="#capture-flow">Capture flow</a></li>
+<li><a href="#query-flow">Query flow</a></li>
+<li><a href="#restore-flow">Restore flow</a></li>
 </ul>
 </li>
-<li><a href="#when-to-use-it">When To Use It</a></li>
-<li><a href="#core-concepts">Core Concepts</a><ul>
-<li><a href="#change-rows">Change Rows</a></li>
-<li><a href="#change-sets">Change Sets</a></li>
-<li><a href="#capture-sources">Capture Sources</a></li>
-<li><a href="#value-policies">Value Policies</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#core-concepts">Core concepts</a><ul>
+<li><a href="#change-rows">Change rows</a></li>
+<li><a href="#change-sets">Change sets</a></li>
+<li><a href="#capture-sources">Capture sources</a></li>
+<li><a href="#value-policies">Value policies</a></li>
 </ul>
 </li>
 <li><a href="#setup">Setup</a><ul>
@@ -3370,37 +4833,37 @@
 <li><a href="#4-add-native-bulk-insert-capture-when-needed">4. Add native bulk-insert capture when needed</a></li>
 </ul>
 </li>
-<li><a href="#options-reference">Options Reference</a><ul>
-<li><a href="#global-options">Global Options</a></li>
-<li><a href="#tracked-entity-options">Tracked Entity Options</a></li>
-<li><a href="#value-policies_1">Value Policies</a></li>
-<li><a href="#oversized-value-policies">Oversized Value Policies</a></li>
-<li><a href="#capture-modes">Capture Modes</a></li>
-<li><a href="#capture-paths">Capture Paths</a></li>
-<li><a href="#restore-options">Restore Options</a></li>
-<li><a href="#endpoint-options">Endpoint Options</a></li>
-<li><a href="#query-contract">Query Contract</a></li>
-<li><a href="#service-registration-reference">Service Registration Reference</a></li>
-<li><a href="#extension-points">Extension Points</a></li>
-<li><a href="#result-models">Result Models</a></li>
-<li><a href="#stored-row-schema">Stored Row Schema</a></li>
-<li><a href="#enum-reference">Enum Reference</a></li>
+<li><a href="#options-reference">Options reference</a><ul>
+<li><a href="#global-options">Global options</a></li>
+<li><a href="#tracked-entity-options">Tracked entity options</a></li>
+<li><a href="#value-policies_1">Value policies</a></li>
+<li><a href="#oversized-value-policies">Oversized value policies</a></li>
+<li><a href="#capture-modes">Capture modes</a></li>
+<li><a href="#capture-paths">Capture paths</a></li>
+<li><a href="#restore-options">Restore options</a></li>
+<li><a href="#endpoint-options">Endpoint options</a></li>
+<li><a href="#query-contract">Query contract</a></li>
+<li><a href="#service-registration-reference">Service registration reference</a></li>
+<li><a href="#extension-points">Extension points</a></li>
+<li><a href="#result-models">Result models</a></li>
+<li><a href="#stored-row-schema">Stored row schema</a></li>
+<li><a href="#enum-reference">Enum reference</a></li>
 </ul>
 </li>
-<li><a href="#capture-strategies">Capture Strategies</a><ul>
+<li><a href="#capture-strategies">Capture strategies</a><ul>
 <li><a href="#entitychangeonly">EntityChangeOnly</a></li>
 <li><a href="#repositorysnapshot">RepositorySnapshot</a></li>
 <li><a href="#efchangetracker">EfChangeTracker</a></li>
 </ul>
 </li>
-<li><a href="#owned-values-collections-and-graphs">Owned Values, Collections, And Graphs</a></li>
-<li><a href="#bulk-update-capture">Bulk Update Capture</a></li>
-<li><a href="#querying-history">Querying History</a></li>
-<li><a href="#http-endpoints">HTTP Endpoints</a></li>
+<li><a href="#owned-values-collections-and-graphs">Owned values, collections, and graphs</a></li>
+<li><a href="#bulk-update-capture">Bulk update capture</a></li>
+<li><a href="#querying-history">Querying history</a></li>
+<li><a href="#http-endpoints">HTTP endpoints</a></li>
 <li><a href="#restore">Restore</a></li>
 <li><a href="#authorization">Authorization</a></li>
-<li><a href="#operational-notes">Operational Notes</a></li>
-<li><a href="#relationship-to-other-features">Relationship To Other Features</a></li>
+<li><a href="#operational-notes">Operational notes</a></li>
+<li><a href="#relationship-to-other-features">Relationship to other features</a></li>
 </ul>
 </li>
 </ul>
@@ -3419,7 +4882,24 @@
 <li>restore operations as new history rows</li>
 </ul>
 <p>For a design-level view of the implemented requirements, see <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/specs/change-history.md">ChangeHistory Specification</a>.</p>
-<h2 id="how-it-works">How It Works<a class="headerlink" href="#how-it-works" title="Permanent link">&para;</a></h2>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Audit timestamps show that a record changed, but they do not identify the changed values or group
+related changes. A general-purpose history mechanism must also protect sensitive values, preserve
+transaction boundaries, limit the cost of bulk capture, and restore data through domain rules.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>ChangeHistory decorates repository and native bulk-insert operations. It converts configured changes
+into property-level rows, groups those rows into change sets, applies value-protection policies, and
+provides query and opt-in restore services without making domain entities depend on EF Core.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Property-level create, update, bulk-update, native bulk-insert, and restore records</li>
+<li>Change-set and bulk-operation grouping</li>
+<li>Repository snapshot, EF change-tracker, and explicit <code>EntityChange</code> capture strategies</li>
+<li>Include, exclude, redact, hash-only, and oversized-value policies</li>
+<li>Configured owned-value, collection, and graph capture</li>
+<li>Paged queries, minimal API endpoints, authorization hooks, and domain-safe restore policies</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
 <p>At runtime, ChangeHistory sits beside repository persistence. Domain and Application code stay persistence-ignorant, while the EF repository behavior translates configured entity changes into rows in the <code>__ChangeHistory</code> table.</p>
 <pre class="mermaid"><code>flowchart LR
     Domain["Domain entity\nEntityChange or direct mutation"]
@@ -3441,7 +4921,7 @@
     HistoryTable --&gt; QueryService
     QueryService --&gt; Endpoints
     Endpoints --&gt; Behavior</code></pre>
-<h3 id="capture-flow">Capture Flow<a class="headerlink" href="#capture-flow" title="Permanent link">&para;</a></h3>
+<h3 id="capture-flow">Capture flow<a class="headerlink" href="#capture-flow" title="Permanent link">&para;</a></h3>
 <p>The repository behavior chooses the capture source from the configured operation and strategy. Every captured property row belongs to a <code>ChangeSetId</code>; bulk updates also share a <code>BulkOperationId</code>.</p>
 <pre class="mermaid"><code>flowchart TD
     Start(["Repository write starts"])
@@ -3481,7 +4961,7 @@
     Policies --&gt; Rows
     Rows --&gt; Save
     Summary --&gt; Save</code></pre>
-<h3 id="query-flow">Query Flow<a class="headerlink" href="#query-flow" title="Permanent link">&para;</a></h3>
+<h3 id="query-flow">Query flow<a class="headerlink" href="#query-flow" title="Permanent link">&para;</a></h3>
 <p>Read APIs use the query service over stored history rows. Grouped change-set queries first page distinct change sets and then load the rows for those selected groups.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Caller
@@ -3505,7 +4985,7 @@
     end
     Query--&gt;&gt;Endpoint: Safe DTO result
     Endpoint--&gt;&gt;Caller: HTTP response</code></pre>
-<h3 id="restore-flow">Restore Flow<a class="headerlink" href="#restore-flow" title="Permanent link">&para;</a></h3>
+<h3 id="restore-flow">Restore flow<a class="headerlink" href="#restore-flow" title="Permanent link">&para;</a></h3>
 <p>Restore is an explicit write operation. It is allowed only for rows with stored values and configured restore policies. The original history stays unchanged; the restore itself is recorded as a new <code>Restore</code> change set.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Caller
@@ -3536,7 +5016,7 @@
     Handler-&gt;&gt;Table: Insert new Restore history rows
     Handler--&gt;&gt;Endpoint: RestoredChangeSetId and count
     Endpoint--&gt;&gt;Caller: HTTP response</code></pre>
-<h2 id="when-to-use-it">When To Use It<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <p>Use ChangeHistory when a module needs inspectable and optionally restoreable value history for regular entities:</p>
 <ul>
 <li>support staff need to answer "what changed and when?"</li>
@@ -3546,14 +5026,67 @@
 <li>set-based maintenance operations need auditable before/after values</li>
 </ul>
 <p>Use <a href="../features-event-sourcing/">Event Sourcing</a> instead when the event stream is the aggregate source of truth and the aggregate is rebuilt by replaying domain events.</p>
-<h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
-<h3 id="change-rows">Change Rows<a class="headerlink" href="#change-rows" title="Permanent link">&para;</a></h3>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>Register capture for the entity, add the repository behavior, and register query services:</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistory</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Track</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">CaptureChanges</span><span class="p">());</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddEntityFrameworkRepository</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithTransactions</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">RepositoryChangeHistoryBehavior</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;&gt;</span><span class="p">();</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistoryServices</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">();</span>
+</code></pre></div>
+<p>Apply an explicit change, persist it, and inspect the recorded values:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">changeResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">Change</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Set</span><span class="p">(</span><span class="n">e</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">e</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Ada Lovelace&quot;</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Apply</span><span class="p">();</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">changeResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
+<span class="w">        </span><span class="n">Environment</span><span class="p">.</span><span class="n">NewLine</span><span class="p">,</span>
+<span class="w">        </span><span class="n">changeResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">await</span><span class="w"> </span><span class="n">repository</span><span class="p">.</span><span class="n">UpdateAsync</span><span class="p">(</span><span class="n">customer</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">historyResult</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">queryService</span><span class="p">.</span><span class="n">FindAllAsync</span><span class="p">(</span>
+<span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">ChangeHistoryFindAllQuery</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">EntityType</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nameof</span><span class="p">(</span><span class="n">Customer</span><span class="p">),</span>
+<span class="w">        </span><span class="n">EntityId</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">Id</span><span class="p">.</span><span class="n">ToString</span><span class="p">(),</span>
+<span class="w">        </span><span class="n">PropertyName</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">nameof</span><span class="p">(</span><span class="n">Customer</span><span class="p">.</span><span class="n">Name</span><span class="p">),</span>
+<span class="w">        </span><span class="n">IncludeValues</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span>
+<span class="w">    </span><span class="p">},</span>
+<span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">historyResult</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">Error</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
+<span class="w">        </span><span class="n">Environment</span><span class="p">.</span><span class="n">NewLine</span><span class="p">,</span>
+<span class="w">        </span><span class="n">historyResult</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">row</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">historyResult</span><span class="p">.</span><span class="n">Value</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{row.PropertyName}: {row.OldValue} -&gt; {row.NewValue}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>For a customer renamed from <code>Ada</code> to <code>Ada Lovelace</code>, the output is:</p>
+<div class="highlight"><pre><span></span><code>Name: &quot;Ada&quot; -&gt; &quot;Ada Lovelace&quot;
+</code></pre></div>
+<h2 id="core-concepts">Core concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
+<h3 id="change-rows">Change rows<a class="headerlink" href="#change-rows" title="Permanent link">&para;</a></h3>
 <p>Each persisted row represents one captured value change. Rows include the entity type and id, property name/path, old value, new value, operation, capture source, status, user/request metadata, and grouping ids.</p>
 <p>The default table name is <code>__ChangeHistory</code>.</p>
-<h3 id="change-sets">Change Sets<a class="headerlink" href="#change-sets" title="Permanent link">&para;</a></h3>
+<h3 id="change-sets">Change sets<a class="headerlink" href="#change-sets" title="Permanent link">&para;</a></h3>
 <p><code>ChangeSetId</code> groups values changed together. For example, one <code>.Change().Apply()</code> call that updates a title and due date produces one change set with two rows.</p>
 <p>Bulk updates use one <code>BulkOperationId</code> for the overall set-based operation and one change set per affected entity.</p>
-<h3 id="capture-sources">Capture Sources<a class="headerlink" href="#capture-sources" title="Permanent link">&para;</a></h3>
+<h3 id="capture-sources">Capture sources<a class="headerlink" href="#capture-sources" title="Permanent link">&para;</a></h3>
 <p>ChangeHistory distinguishes where a row came from:</p>
 <ul>
 <li><code>EntityChange</code>: a successful fluent <code>EntityChange</code> transaction</li>
@@ -3563,7 +5096,7 @@
 <li><code>UpdateSet</code>: repository set-based update capture</li>
 <li><code>Restore</code>: a restore command writing the undo operation as new history</li>
 </ul>
-<h3 id="value-policies">Value Policies<a class="headerlink" href="#value-policies" title="Permanent link">&para;</a></h3>
+<h3 id="value-policies">Value policies<a class="headerlink" href="#value-policies" title="Permanent link">&para;</a></h3>
 <p>Captured values are serialized through the devkit JSON conventions. Per-property policies control whether values are stored, redacted, hashed, or excluded.</p>
 <p>Common sensitive property names are hash-only by default unless automatic protection is disabled. Redacted or hash-only values are not restoreable because the original value is not stored.</p>
 <h2 id="setup">Setup<a class="headerlink" href="#setup" title="Permanent link">&para;</a></h2>
@@ -3621,8 +5154,8 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <span class="w">        </span><span class="n">maxDetailedEntities</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">);</span>
 </code></pre></div>
 <p>Detailed mode fails before the native write when the batch exceeds its configured limit. It also requires stable client-assigned identifiers; native database-generated identifiers are not hydrated back into input entities. When an outbox behavior is present, register it before the ChangeHistory behavior so the outbox remains the outer transaction owner.</p>
-<h2 id="options-reference">Options Reference<a class="headerlink" href="#options-reference" title="Permanent link">&para;</a></h2>
-<h3 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h3>
+<h2 id="options-reference">Options reference<a class="headerlink" href="#options-reference" title="Permanent link">&para;</a></h2>
+<h3 id="global-options">Global options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h3>
 <p>Configure global defaults through <code>services.AddChangeHistory(options =&gt; ...)</code>.</p>
 <table>
 <thead>
@@ -3695,7 +5228,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="tracked-entity-options">Tracked Entity Options<a class="headerlink" href="#tracked-entity-options" title="Permanent link">&para;</a></h3>
+<h3 id="tracked-entity-options">Tracked entity options<a class="headerlink" href="#tracked-entity-options" title="Permanent link">&para;</a></h3>
 <p><code>Track&lt;TEntity&gt;()</code> returns <code>ChangeHistoryEntityOptionsBuilder&lt;TEntity&gt;</code>. These options apply only to that entity type.</p>
 <table>
 <thead>
@@ -3884,7 +5417,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="value-policies_1">Value Policies<a class="headerlink" href="#value-policies_1" title="Permanent link">&para;</a></h3>
+<h3 id="value-policies_1">Value policies<a class="headerlink" href="#value-policies_1" title="Permanent link">&para;</a></h3>
 <p>Value policies determine whether stored rows contain serialized values and whether those rows can be restored.</p>
 <table>
 <thead>
@@ -3927,7 +5460,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="oversized-value-policies">Oversized Value Policies<a class="headerlink" href="#oversized-value-policies" title="Permanent link">&para;</a></h3>
+<h3 id="oversized-value-policies">Oversized value policies<a class="headerlink" href="#oversized-value-policies" title="Permanent link">&para;</a></h3>
 <p><code>UseOversizedValuePolicy(policy, maxStoredValueLength)</code> applies after serialization.</p>
 <table>
 <thead>
@@ -3955,7 +5488,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="capture-modes">Capture Modes<a class="headerlink" href="#capture-modes" title="Permanent link">&para;</a></h3>
+<h3 id="capture-modes">Capture modes<a class="headerlink" href="#capture-modes" title="Permanent link">&para;</a></h3>
 <p>Capture modes describe what happens when a configured source cannot capture safely.</p>
 <table>
 <thead>
@@ -3979,7 +5512,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="capture-paths">Capture Paths<a class="headerlink" href="#capture-paths" title="Permanent link">&para;</a></h3>
+<h3 id="capture-paths">Capture paths<a class="headerlink" href="#capture-paths" title="Permanent link">&para;</a></h3>
 <p><code>ChangeHistoryCapturePathOptions</code> is created by <code>CaptureOwned(...)</code>, <code>CaptureCollection(...)</code>, and <code>CaptureGraph(...)</code>.</p>
 <table>
 <thead>
@@ -4074,7 +5607,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="restore-options">Restore Options<a class="headerlink" href="#restore-options" title="Permanent link">&para;</a></h3>
+<h3 id="restore-options">Restore options<a class="headerlink" href="#restore-options" title="Permanent link">&para;</a></h3>
 <p><code>AllowRestore(property)</code> returns <code>ChangeHistoryRestorePropertyOptionsBuilder&lt;TEntity, TProperty&gt;</code>.</p>
 <table>
 <thead>
@@ -4180,7 +5713,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="endpoint-options">Endpoint Options<a class="headerlink" href="#endpoint-options" title="Permanent link">&para;</a></h3>
+<h3 id="endpoint-options">Endpoint options<a class="headerlink" href="#endpoint-options" title="Permanent link">&para;</a></h3>
 <p><code>AddChangeHistoryEndpoints&lt;TEntity, TContext&gt;(...)</code> accepts <code>ChangeHistoryEndpointsOptions</code> or <code>ChangeHistoryEndpointsOptionsBuilder</code>.</p>
 <p>ChangeHistory-specific options:</p>
 <table>
@@ -4268,7 +5801,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="query-contract">Query Contract<a class="headerlink" href="#query-contract" title="Permanent link">&para;</a></h3>
+<h3 id="query-contract">Query contract<a class="headerlink" href="#query-contract" title="Permanent link">&para;</a></h3>
 <p><code>ChangeHistoryFindAllQuery</code> drives row and grouped change-set queries.</p>
 <table>
 <thead>
@@ -4339,7 +5872,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <p><code>ChangeHistoryFindOneChangeSetQuery</code> contains <code>ChangeSetId</code>, optional <code>EntityType</code>, optional <code>EntityId</code>, and <code>IncludeValues</code>.</p>
 <p><code>ChangeHistoryRestoreCommand&lt;TEntity&gt;</code> contains <code>EntityId</code>, <code>ChangeSetId</code>, optional <code>Reason</code>, optional <code>ExpectedConcurrencyVersion</code>, and <code>RestoreMode</code>.</p>
 <p><code>ChangeHistoryRecord</code> projects every persisted <code>ChangeHistoryEntry</code> field. <code>OldValue</code> and <code>NewValue</code> remain conditional on <code>IncludeValues</code>; all capture and restore diagnostics are always available.</p>
-<h3 id="service-registration-reference">Service Registration Reference<a class="headerlink" href="#service-registration-reference" title="Permanent link">&para;</a></h3>
+<h3 id="service-registration-reference">Service registration reference<a class="headerlink" href="#service-registration-reference" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4390,7 +5923,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="extension-points">Extension Points<a class="headerlink" href="#extension-points" title="Permanent link">&para;</a></h3>
+<h3 id="extension-points">Extension points<a class="headerlink" href="#extension-points" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4452,7 +5985,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="result-models">Result Models<a class="headerlink" href="#result-models" title="Permanent link">&para;</a></h3>
+<h3 id="result-models">Result models<a class="headerlink" href="#result-models" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4491,7 +6024,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="stored-row-schema">Stored Row Schema<a class="headerlink" href="#stored-row-schema" title="Permanent link">&para;</a></h3>
+<h3 id="stored-row-schema">Stored row schema<a class="headerlink" href="#stored-row-schema" title="Permanent link">&para;</a></h3>
 <p><code>ChangeHistoryEntry</code> is the EF Core row type. The recommended mapping indexes the fields used for entity, change-set, user, time, operation, capture source, and bulk queries.</p>
 <table>
 <thead>
@@ -4587,7 +6120,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h3 id="enum-reference">Enum Reference<a class="headerlink" href="#enum-reference" title="Permanent link">&para;</a></h3>
+<h3 id="enum-reference">Enum reference<a class="headerlink" href="#enum-reference" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4605,12 +6138,16 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <td><code>BestEffort</code>, <code>Required</code>, <code>Disabled</code></td>
 </tr>
 <tr>
+<td><code>ChangeHistoryBulkInsertCaptureMode</code></td>
+<td><code>Disabled</code>, <code>Summary</code>, <code>Detailed</code></td>
+</tr>
+<tr>
 <td><code>ChangeHistoryCapturePathKind</code></td>
 <td><code>Owned</code>, <code>Collection</code>, <code>Graph</code></td>
 </tr>
 <tr>
 <td><code>ChangeHistoryCaptureSource</code></td>
-<td><code>EntityChange</code>, <code>RepositorySnapshot</code>, <code>EfChangeTracker</code>, <code>Create</code>, <code>UpdateSet</code>, <code>Restore</code></td>
+<td><code>EntityChange</code>, <code>RepositorySnapshot</code>, <code>EfChangeTracker</code>, <code>Create</code>, <code>UpdateSet</code>, <code>NativeBulkInsert</code>, <code>Restore</code></td>
 </tr>
 <tr>
 <td><code>ChangeHistoryCaptureStatus</code></td>
@@ -4618,7 +6155,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 <tr>
 <td><code>ChangeHistoryOperation</code></td>
-<td><code>Update</code>, <code>Create</code>, <code>Restore</code>, <code>BulkUpdate</code>, <code>CollectionChanged</code>, <code>GraphChanged</code></td>
+<td><code>Update</code>, <code>Create</code>, <code>Restore</code>, <code>BulkUpdate</code>, <code>BulkInsert</code>, <code>CollectionChanged</code>, <code>GraphChanged</code></td>
 </tr>
 <tr>
 <td><code>ChangeHistoryOversizedValuePolicy</code></td>
@@ -4642,7 +6179,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 </tr>
 </tbody>
 </table>
-<h2 id="capture-strategies">Capture Strategies<a class="headerlink" href="#capture-strategies" title="Permanent link">&para;</a></h2>
+<h2 id="capture-strategies">Capture strategies<a class="headerlink" href="#capture-strategies" title="Permanent link">&para;</a></h2>
 <h3 id="entitychangeonly">EntityChangeOnly<a class="headerlink" href="#entitychangeonly" title="Permanent link">&para;</a></h3>
 <p><code>EntityChangeOnly</code> records only pending change sets produced by <code>.Change().Set(...).Apply()</code>. Direct property mutation is ignored.</p>
 <div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">Track</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
@@ -4660,7 +6197,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">Track</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">CaptureDirectMutations</span><span class="p">(</span><span class="n">ChangeHistoryCaptureStrategy</span><span class="p">.</span><span class="n">EfChangeTracker</span><span class="p">,</span><span class="w"> </span><span class="n">ChangeHistoryCaptureMode</span><span class="p">.</span><span class="n">Required</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="owned-values-collections-and-graphs">Owned Values, Collections, And Graphs<a class="headerlink" href="#owned-values-collections-and-graphs" title="Permanent link">&para;</a></h2>
+<h2 id="owned-values-collections-and-graphs">Owned values, collections, and graphs<a class="headerlink" href="#owned-values-collections-and-graphs" title="Permanent link">&para;</a></h2>
 <p>Scalar properties are captured automatically when the entity is tracked. More complex paths must be declared so the baseline and restore metadata are clear.</p>
 <div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">Track</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">CaptureDirectMutations</span><span class="p">(</span><span class="n">ChangeHistoryCaptureStrategy</span><span class="p">.</span><span class="n">RepositorySnapshot</span><span class="p">,</span><span class="w"> </span><span class="n">ChangeHistoryCaptureMode</span><span class="p">.</span><span class="n">Required</span><span class="p">)</span>
@@ -4672,13 +6209,13 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <span class="w">        </span><span class="p">.</span><span class="n">UseRestorePlan</span><span class="p">(</span><span class="s">&quot;OrderItemsRestore&quot;</span><span class="p">));</span>
 </code></pre></div>
 <p>Collection and graph capture needs stable item identity. EF key metadata can infer simple identities in some cases, but explicit identity configuration is the clearest option for application code.</p>
-<h2 id="bulk-update-capture">Bulk Update Capture<a class="headerlink" href="#bulk-update-capture" title="Permanent link">&para;</a></h2>
+<h2 id="bulk-update-capture">Bulk update capture<a class="headerlink" href="#bulk-update-capture" title="Permanent link">&para;</a></h2>
 <p><code>UpdateSetAsync(...)</code> capture records per-entity history for set-based updates when the affected row count stays inside the configured safety limit.</p>
 <div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">Track</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">CaptureUpdateSet</span><span class="p">(</span><span class="n">ChangeHistoryCaptureMode</span><span class="p">.</span><span class="n">Required</span><span class="p">,</span><span class="w"> </span><span class="n">maxAffectedRows</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">);</span>
 </code></pre></div>
 <p>In <code>Required</code> mode, exceeding the limit fails before the update. In <code>BestEffort</code> mode, the operation can continue and persist a non-restoreable summary row instead of detailed per-entity rows.</p>
-<h2 id="querying-history">Querying History<a class="headerlink" href="#querying-history" title="Permanent link">&para;</a></h2>
+<h2 id="querying-history">Querying history<a class="headerlink" href="#querying-history" title="Permanent link">&para;</a></h2>
 <p>Register services directly when application code needs query and restore APIs:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistoryServices</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
@@ -4699,7 +6236,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <li>paging and sort direction</li>
 </ul>
 <p>Grouped change-set queries load change-set keys first and then load the rows for the selected page.</p>
-<h2 id="http-endpoints">HTTP Endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
+<h2 id="http-endpoints">HTTP endpoints<a class="headerlink" href="#http-endpoints" title="Permanent link">&para;</a></h2>
 <p><code>Presentation.Web.EntityFramework</code> can expose minimal API endpoints for one entity/context pair:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddChangeHistoryEndpoints</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">GroupPath</span><span class="p">(</span><span class="s">&quot;/_bdk/api/customers/history&quot;</span><span class="p">)</span>
@@ -4785,7 +6322,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <span class="w">        </span><span class="n">TodoItemChangeHistoryRestoreRequestAuthorizer</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
 <p><code>UseRestoreAuthorizer&lt;TAuthorizer&gt;()</code> also registers the concrete entity-level authorizer as scoped unless an explicit registration already exists.</p>
-<h2 id="operational-notes">Operational Notes<a class="headerlink" href="#operational-notes" title="Permanent link">&para;</a></h2>
+<h2 id="operational-notes">Operational notes<a class="headerlink" href="#operational-notes" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Capture is transactional with repository persistence when the behavior participates in the same repository transaction.</li>
 <li>Create rows are not restoreable by default because "before create" would imply delete or deactivate semantics.</li>
@@ -4794,7 +6331,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
 <li><code>RepositorySnapshot</code> can require additional include/capture path configuration for owned values, collections, and graphs.</li>
 <li>Bulk capture trades performance for auditability; keep safety limits conservative and raise them deliberately.</li>
 </ul>
-<h2 id="relationship-to-other-features">Relationship To Other Features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
+<h2 id="relationship-to-other-features">Relationship to other features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-domain/">Domain</a> owns entity modeling and fluent <code>EntityChange</code> patterns.</li>
 <li><a href="../features-domain-repositories/">Domain Repositories</a> provide the repository operations that ChangeHistory decorates.</li>
@@ -4880,7 +6417,7 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4888,6 +6425,8 @@ For entities implementing <code>IConcurrency</code>, <code>ConcurrencyVersion</c
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

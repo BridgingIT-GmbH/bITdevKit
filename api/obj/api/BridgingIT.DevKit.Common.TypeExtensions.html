@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TypeExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides runtime type classification, readable type names, hierarchy-safe member lookup, and interface checks.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class TypeExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides runtime type classification, readable type names, hierarchy-safe member lookup, and interface checks.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class TypeExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes assembly version, culture, and public-key-token components from an assembly-qualified type name.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,13 +142,15 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type whose assembly-qualified name should be shortened.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The shortened name, or an empty string when no assembly-qualified name is available.</p>
+</dd>
   </dl>
 
 
@@ -166,7 +170,8 @@ Class TypeExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Formats a namespace-qualified type name and recursively expands generic arguments.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -176,15 +181,18 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type to format.</p>
+</dd>
     <dt><code>useAngleBrackets</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether generic arguments use angle brackets instead of square brackets.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The readable fully qualified name, or an empty string for null input.</p>
+</dd>
   </dl>
 
 
@@ -204,7 +212,8 @@ Class TypeExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a field by walking from a type through its base types without triggering ambiguous reflection matches.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -214,17 +223,21 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The most-derived type to inspect.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The field name.</p>
+</dd>
     <dt><code>flags</code> <span class="xref">BindingFlags</span></dt>
-    <dd></dd>
+    <dd><p>The binding flags applied at each hierarchy level; <span class="xref">System.Reflection.BindingFlags.DeclaredOnly</span> is added.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">FieldInfo</span></dt>
-    <dd></dd>
+    <dd><p>The first matching field, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -244,7 +257,8 @@ Class TypeExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a property by walking from a type through its base types without triggering ambiguous reflection matches.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -254,17 +268,21 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The most-derived type to inspect.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The property name.</p>
+</dd>
     <dt><code>flags</code> <span class="xref">BindingFlags</span></dt>
-    <dd></dd>
+    <dd><p>The binding flags applied at each hierarchy level; <span class="xref">System.Reflection.BindingFlags.DeclaredOnly</span> is added.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">PropertyInfo</span></dt>
-    <dd></dd>
+    <dd><p>The first matching property, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
   </dl>
 
 
@@ -284,7 +302,8 @@ Class TypeExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a type satisfies every supplied interface check.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -294,15 +313,18 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type to inspect.</p>
+</dd>
     <dt><code>interfaces</code> <span class="xref">Type</span>[]</dt>
-    <dd></dd>
+    <dd><p>The interface contracts that must all be implemented.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when every contract is implemented, including for an empty contract set.</p>
+</dd>
   </dl>
 
 
@@ -322,7 +344,8 @@ Class TypeExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a type satisfies at least one supplied interface check.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -332,15 +355,18 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type to inspect.</p>
+</dd>
     <dt><code>interfaces</code> <span class="xref">Type</span>[]</dt>
-    <dd></dd>
+    <dd><p>The interface contracts to test.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when any contract is implemented.</p>
+</dd>
   </dl>
 
 
@@ -526,7 +552,8 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a non-null object's runtime type differs from a target type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -536,15 +563,18 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The object to inspect.</p>
+</dd>
     <dt><code>targetType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The exact runtime type used for comparison.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the non-null object's type differs; null input returns <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -564,7 +594,8 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a type is a constructed <span class="xref">System.Nullable&lt;T&gt;</span> value type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -574,13 +605,15 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> only for a constructed nullable value type.</p>
+</dd>
   </dl>
 
 
@@ -600,7 +633,8 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a non-array type represents a built-in integral, floating-point, or decimal number.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -610,13 +644,15 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type to inspect.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for a supported numeric type.</p>
+</dd>
   </dl>
 
 
@@ -636,7 +672,8 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an object's runtime type exactly equals a target type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -646,15 +683,18 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The object to inspect.</p>
+</dd>
     <dt><code>targetType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The exact runtime type to match.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> for an exact match; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, including for null input.</p>
+</dd>
   </dl>
 
 
@@ -714,7 +754,8 @@ otherwise, <code>false</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Formats a type name without its namespace and recursively expands generic arguments.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -724,15 +765,18 @@ otherwise, <code>false</code>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The type to format.</p>
+</dd>
     <dt><code>useAngleBrackets</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether generic arguments use angle brackets instead of square brackets.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The readable type name, or an empty string for null input.</p>
+</dd>
   </dl>
 
 

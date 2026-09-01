@@ -6,14 +6,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-entitypermissions/">
       
       
-        <link rel="prev" href="../features-extensions/">
+        <link rel="prev" href="../features-presentation-authentication/">
       
       
         <link rel="next" href="../features-identityprovider/">
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#entity-permissions-feature-documentation" class="md-skip">
+        <a href="#entity-permissions" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1931,15 +2005,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1957,8 +2036,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1967,6 +2046,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2065,14 +2172,36 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Solution">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#permission-evaluation-flow-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Permission Evaluation Flow Diagram
+        Permission evaluation flow diagram
       
     </span>
   </a>
@@ -2083,7 +2212,7 @@
   <a href="#permission-granting-flow-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Permission Granting Flow Diagram
+        Permission granting flow diagram
       
     </span>
   </a>
@@ -2096,15 +2225,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
+  <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting Started
+        Use Cases
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting Started">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting started
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting started">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2122,7 +2273,7 @@
   <a href="#basic-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Setup
+        Basic setup
       
     </span>
   </a>
@@ -2133,7 +2284,7 @@
   <a href="#first-secured-endpoint" class="md-nav__link">
     <span class="md-ellipsis">
       
-        First Secured Endpoint
+        First secured endpoint
       
     </span>
   </a>
@@ -2149,19 +2300,19 @@
   <a href="#setup-and-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup and Configuration
+        Setup and configuration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setup and Configuration">
+    <nav class="md-nav" aria-label="Setup and configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#fluent-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fluent Configuration
+        Fluent configuration
       
     </span>
   </a>
@@ -2172,7 +2323,7 @@
   <a href="#hierarchical-entities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hierarchical Entities
+        Hierarchical entities
       
     </span>
   </a>
@@ -2183,7 +2334,7 @@
   <a href="#database-context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Database Context
+        Database context
       
     </span>
   </a>
@@ -2194,7 +2345,7 @@
   <a href="#securing-controllers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Securing Controllers
+        Securing controllers
       
     </span>
   </a>
@@ -2216,7 +2367,7 @@
   <a href="#important-boundary-note" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Important Boundary Note
+        Important boundary note
       
     </span>
   </a>
@@ -2232,19 +2383,19 @@
   <a href="#managing-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Managing Permissions
+        Managing permissions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Managing Permissions">
+    <nav class="md-nav" aria-label="Managing permissions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#using-ientitypermissionprovider-directly" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using IEntityPermissionProvider Directly
+        Using IEntityPermissionProvider directly
       
     </span>
   </a>
@@ -2266,7 +2417,7 @@
   <a href="#default-permission-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Default Permission Providers
+        Default permission providers
       
     </span>
   </a>
@@ -2277,7 +2428,7 @@
   <a href="#cache-invalidation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cache Invalidation
+        Cache invalidation
       
     </span>
   </a>
@@ -2293,12 +2444,12 @@
   <a href="#checking-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checking Permissions
+        Checking permissions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Checking Permissions">
+    <nav class="md-nav" aria-label="Checking permissions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2327,7 +2478,7 @@
   <a href="#using-aspnet-core-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using ASP.NET Core Authorization
+        Using ASP.NET Core authorization
       
     </span>
   </a>
@@ -2338,7 +2489,7 @@
   <a href="#via-runtime-evaluation-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Via Runtime Evaluation Endpoints
+        Via runtime evaluation endpoints
       
     </span>
   </a>
@@ -2354,7 +2505,7 @@
   <a href="#rules-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rules Integration
+        Rules integration
       
     </span>
   </a>
@@ -2365,19 +2516,19 @@
   <a href="#api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        API Reference
+        API reference
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="API Reference">
+    <nav class="md-nav" aria-label="API reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#management-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Management Endpoints
+        Management endpoints
       
     </span>
   </a>
@@ -2388,7 +2539,7 @@
   <a href="#evaluation-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Evaluation Endpoints
+        Evaluation endpoints
       
     </span>
   </a>
@@ -2404,7 +2555,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -2426,24 +2577,24 @@
   <a href="#appendix-working-with-hierarchical-entities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Working with Hierarchical Entities
+        Appendix: Working with hierarchical entities
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Working with Hierarchical Entities">
+    <nav class="md-nav" aria-label="Appendix: Working with hierarchical entities">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#example-employee-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Employee Hierarchy
+        Example: Employee hierarchy
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Example: Employee Hierarchy">
+    <nav class="md-nav" aria-label="Example: Employee hierarchy">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2472,7 +2623,7 @@
   <a href="#step-2-grant-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2: Grant Permissions
+        Step 2: Grant permissions
       
     </span>
   </a>
@@ -2483,7 +2634,7 @@
   <a href="#step-3-check-effective-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3: Check Effective Permissions
+        Step 3: Check effective permissions
       
     </span>
   </a>
@@ -2499,7 +2650,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -2566,15 +2717,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2592,8 +2748,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2618,6 +2774,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2834,6 +3046,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2901,15 +3141,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2927,8 +3172,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3208,15 +3453,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3234,8 +3484,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3315,6 +3565,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3373,14 +4154,36 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Solution">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#permission-evaluation-flow-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Permission Evaluation Flow Diagram
+        Permission evaluation flow diagram
       
     </span>
   </a>
@@ -3391,7 +4194,7 @@
   <a href="#permission-granting-flow-diagram" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Permission Granting Flow Diagram
+        Permission granting flow diagram
       
     </span>
   </a>
@@ -3404,15 +4207,37 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#getting-started" class="md-nav__link">
+  <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Getting Started
+        Use Cases
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Getting Started">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#getting-started" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Getting started
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Getting started">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3430,7 +4255,7 @@
   <a href="#basic-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Setup
+        Basic setup
       
     </span>
   </a>
@@ -3441,7 +4266,7 @@
   <a href="#first-secured-endpoint" class="md-nav__link">
     <span class="md-ellipsis">
       
-        First Secured Endpoint
+        First secured endpoint
       
     </span>
   </a>
@@ -3457,19 +4282,19 @@
   <a href="#setup-and-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Setup and Configuration
+        Setup and configuration
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Setup and Configuration">
+    <nav class="md-nav" aria-label="Setup and configuration">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#fluent-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fluent Configuration
+        Fluent configuration
       
     </span>
   </a>
@@ -3480,7 +4305,7 @@
   <a href="#hierarchical-entities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Hierarchical Entities
+        Hierarchical entities
       
     </span>
   </a>
@@ -3491,7 +4316,7 @@
   <a href="#database-context" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Database Context
+        Database context
       
     </span>
   </a>
@@ -3502,7 +4327,7 @@
   <a href="#securing-controllers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Securing Controllers
+        Securing controllers
       
     </span>
   </a>
@@ -3524,7 +4349,7 @@
   <a href="#important-boundary-note" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Important Boundary Note
+        Important boundary note
       
     </span>
   </a>
@@ -3540,19 +4365,19 @@
   <a href="#managing-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Managing Permissions
+        Managing permissions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Managing Permissions">
+    <nav class="md-nav" aria-label="Managing permissions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#using-ientitypermissionprovider-directly" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using IEntityPermissionProvider Directly
+        Using IEntityPermissionProvider directly
       
     </span>
   </a>
@@ -3574,7 +4399,7 @@
   <a href="#default-permission-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Default Permission Providers
+        Default permission providers
       
     </span>
   </a>
@@ -3585,7 +4410,7 @@
   <a href="#cache-invalidation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Cache Invalidation
+        Cache invalidation
       
     </span>
   </a>
@@ -3601,12 +4426,12 @@
   <a href="#checking-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Checking Permissions
+        Checking permissions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Checking Permissions">
+    <nav class="md-nav" aria-label="Checking permissions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3635,7 +4460,7 @@
   <a href="#using-aspnet-core-authorization" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using ASP.NET Core Authorization
+        Using ASP.NET Core authorization
       
     </span>
   </a>
@@ -3646,7 +4471,7 @@
   <a href="#via-runtime-evaluation-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Via Runtime Evaluation Endpoints
+        Via runtime evaluation endpoints
       
     </span>
   </a>
@@ -3662,7 +4487,7 @@
   <a href="#rules-integration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Rules Integration
+        Rules integration
       
     </span>
   </a>
@@ -3673,19 +4498,19 @@
   <a href="#api-reference" class="md-nav__link">
     <span class="md-ellipsis">
       
-        API Reference
+        API reference
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="API Reference">
+    <nav class="md-nav" aria-label="API reference">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#management-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Management Endpoints
+        Management endpoints
       
     </span>
   </a>
@@ -3696,7 +4521,7 @@
   <a href="#evaluation-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Evaluation Endpoints
+        Evaluation endpoints
       
     </span>
   </a>
@@ -3712,7 +4537,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3734,24 +4559,24 @@
   <a href="#appendix-working-with-hierarchical-entities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Working with Hierarchical Entities
+        Appendix: Working with hierarchical entities
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Working with Hierarchical Entities">
+    <nav class="md-nav" aria-label="Appendix: Working with hierarchical entities">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#example-employee-hierarchy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Employee Hierarchy
+        Example: Employee hierarchy
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Example: Employee Hierarchy">
+    <nav class="md-nav" aria-label="Example: Employee hierarchy">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3780,7 +4605,7 @@
   <a href="#step-2-grant-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 2: Grant Permissions
+        Step 2: Grant permissions
       
     </span>
   </a>
@@ -3791,7 +4616,7 @@
   <a href="#step-3-check-effective-permissions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Step 3: Check Effective Permissions
+        Step 3: Check effective permissions
       
     </span>
   </a>
@@ -3807,7 +4632,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -3862,10 +4687,10 @@
     
     
       <li class="md-path__item">
-        <a href="../" class="md-path__link">
+        <a href="../../docs/" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Docs
   </span>
 
         </a>
@@ -3880,7 +4705,25 @@
     
     
       <li class="md-path__item">
-        <a href="./" class="md-path__link">
+        <a href="../" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Feature Guides
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
+        <a href="../features-presentation-authentication/" class="md-path__link">
           
   <span class="md-ellipsis">
     Security and Access
@@ -3905,66 +4748,70 @@
   
 
 
-<h1 id="entity-permissions-feature-documentation">Entity Permissions Feature Documentation<a class="headerlink" href="#entity-permissions-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="entity-permissions">Entity Permissions<a class="headerlink" href="#entity-permissions" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Enforce fine-grained, entity-level authorization with fluent configuration and runtime evaluation.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#entity-permissions-feature-documentation">Entity Permissions Feature Documentation</a><ul>
+<li><a href="#entity-permissions">Entity Permissions</a><ul>
 <li><a href="#overview">Overview</a></li>
 <li><a href="#challenges">Challenges</a></li>
-<li><a href="#solution">Solution</a><ul>
-<li><a href="#permission-evaluation-flow-diagram">Permission Evaluation Flow Diagram</a></li>
-<li><a href="#permission-granting-flow-diagram">Permission Granting Flow Diagram</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a><ul>
+<li><a href="#permission-evaluation-flow-diagram">Permission evaluation flow diagram</a></li>
+<li><a href="#permission-granting-flow-diagram">Permission granting flow diagram</a></li>
 </ul>
 </li>
-<li><a href="#getting-started">Getting Started</a><ul>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#getting-started">Getting started</a><ul>
 <li><a href="#prerequisites">Prerequisites</a></li>
-<li><a href="#basic-setup">Basic Setup</a></li>
-<li><a href="#first-secured-endpoint">First Secured Endpoint</a></li>
+<li><a href="#basic-setup">Basic setup</a></li>
+<li><a href="#first-secured-endpoint">First secured endpoint</a></li>
 </ul>
 </li>
-<li><a href="#setup-and-configuration">Setup and Configuration</a><ul>
-<li><a href="#fluent-configuration">Fluent Configuration</a></li>
-<li><a href="#hierarchical-entities">Hierarchical Entities</a></li>
-<li><a href="#database-context">Database Context</a></li>
-<li><a href="#securing-controllers">Securing Controllers</a></li>
+<li><a href="#setup-and-configuration">Setup and configuration</a><ul>
+<li><a href="#fluent-configuration">Fluent configuration</a></li>
+<li><a href="#hierarchical-entities">Hierarchical entities</a></li>
+<li><a href="#database-context">Database context</a></li>
+<li><a href="#securing-controllers">Securing controllers</a></li>
 <li><a href="#securing-minimal-apis">Securing Minimal APIs</a></li>
-<li><a href="#important-boundary-note">Important Boundary Note</a></li>
+<li><a href="#important-boundary-note">Important boundary note</a></li>
 </ul>
 </li>
-<li><a href="#managing-permissions">Managing Permissions</a><ul>
-<li><a href="#using-ientitypermissionprovider-directly">Using IEntityPermissionProvider Directly</a></li>
+<li><a href="#managing-permissions">Managing permissions</a><ul>
+<li><a href="#using-ientitypermissionprovider-directly">Using IEntityPermissionProvider directly</a></li>
 <li><a href="#using-entitypermissionproviderbuilder">Using EntityPermissionProviderBuilder</a></li>
-<li><a href="#default-permission-providers">Default Permission Providers</a></li>
-<li><a href="#cache-invalidation">Cache Invalidation</a></li>
+<li><a href="#default-permission-providers">Default permission providers</a></li>
+<li><a href="#cache-invalidation">Cache invalidation</a></li>
 </ul>
 </li>
-<li><a href="#checking-permissions">Checking Permissions</a><ul>
+<li><a href="#checking-permissions">Checking permissions</a><ul>
 <li><a href="#using-ientitypermissionevaluatortentity">Using IEntityPermissionEvaluator&lt;TEntity&gt;</a></li>
 <li><a href="#using-icurrentuseraccessor">Using ICurrentUserAccessor</a></li>
-<li><a href="#using-aspnet-core-authorization">Using ASP.NET Core Authorization</a></li>
-<li><a href="#via-runtime-evaluation-endpoints">Via Runtime Evaluation Endpoints</a></li>
+<li><a href="#using-aspnet-core-authorization">Using ASP.NET Core authorization</a></li>
+<li><a href="#via-runtime-evaluation-endpoints">Via runtime evaluation endpoints</a></li>
 </ul>
 </li>
-<li><a href="#rules-integration">Rules Integration</a></li>
-<li><a href="#api-reference">API Reference</a><ul>
-<li><a href="#management-endpoints">Management Endpoints</a></li>
-<li><a href="#evaluation-endpoints">Evaluation Endpoints</a></li>
+<li><a href="#rules-integration">Rules integration</a></li>
+<li><a href="#api-reference">API reference</a><ul>
+<li><a href="#management-endpoints">Management endpoints</a></li>
+<li><a href="#evaluation-endpoints">Evaluation endpoints</a></li>
 </ul>
 </li>
-<li><a href="#best-practices">Best Practices</a></li>
+<li><a href="#best-practices">Best practices</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
-<li><a href="#appendix-working-with-hierarchical-entities">Appendix: Working with Hierarchical Entities</a><ul>
-<li><a href="#example-employee-hierarchy">Example: Employee Hierarchy</a><ul>
+<li><a href="#appendix-working-with-hierarchical-entities">Appendix: Working with hierarchical entities</a><ul>
+<li><a href="#example-employee-hierarchy">Example: Employee hierarchy</a><ul>
 <li><a href="#structure">Structure</a></li>
 <li><a href="#step-1-configure">Step 1: Configure</a></li>
-<li><a href="#step-2-grant-permissions">Step 2: Grant Permissions</a></li>
-<li><a href="#step-3-check-effective-permissions">Step 3: Check Effective Permissions</a></li>
+<li><a href="#step-2-grant-permissions">Step 2: Grant permissions</a></li>
+<li><a href="#step-3-check-effective-permissions">Step 3: Check effective permissions</a></li>
 </ul>
 </li>
-<li><a href="#related-documentation">Related Documentation</a></li>
+<li><a href="#related-documentation">Related documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -3972,7 +4819,7 @@
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The <code>Application.Identity</code> feature within the <code>bITDevKit</code> provides a robust framework for managing entity-level permissions in ASP.NET Core applications. Designed to enforce precise access control on entities such as <code>Employee</code>, it supports a range of permissions, including predefined constants like <code>Permission.Read</code> and custom strings such as <code>"Review"</code>. Configured through a fluent <code>AddEntityAuthorization</code> syntax in <code>Program.cs</code>, this feature integrates with application code, ASP.NET Core authorization, Minimal APIs, and optional runtime management endpoints. Leveraging Entity Framework Core for persistence, it also supports hierarchical permission inheritance, making it well-suited for organizational or tree-shaped data models.</p>
+<p>The <code>Application.Identity</code> feature manages permissions for entity types and individual entity instances. It supports predefined values such as <code>Permission.Read</code>, application-defined values such as <code>"Review"</code>, user and role grants, optional hierarchy inheritance, and default permission providers. Entity Framework Core stores grants, while application and presentation components expose evaluation and authorization APIs.</p>
 <h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Granular Access Control</strong>: Traditional role-based access control is often too coarse when access must be restricted to specific entity instances.</li>
@@ -3982,7 +4829,7 @@
 <li><strong>Cross-Layer Consistency</strong>: The same permission logic should be reusable in endpoints, application services, and rules without duplicating checks.</li>
 </ul>
 <h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
-<p>The <code>Application.Identity</code> feature addresses these challenges by delivering a unified and developer-friendly system for entity-level permissions. It centralizes configuration within <code>AddEntityAuthorization</code>, supports predefined <code>Permission</code> constants and custom permission strings, and integrates with ASP.NET Core's authorization pipeline.</p>
+<p>The <code>Application.Identity</code> feature centralizes entity-permission configuration within <code>AddEntityAuthorization</code>, supports predefined <code>Permission</code> values and custom permission strings, and integrates with ASP.NET Core authorization.</p>
 <p>Permissions can be applied at two levels:</p>
 <ul>
 <li><strong>Type-wide permissions</strong>: wildcard permissions that apply to all instances of an entity type</li>
@@ -3997,7 +4844,19 @@
 <li><strong>Hierarchy Support</strong>: optional parent inheritance for entities configured through <code>AddHierarchicalEntity(...)</code></li>
 <li><strong>Rules Integration</strong>: <code>HasPermissionRule&lt;TEntity&gt;</code> and <code>HasNotPermissionRule&lt;TEntity&gt;</code> for rule-based authorization checks</li>
 </ul>
-<h3 id="permission-evaluation-flow-diagram">Permission Evaluation Flow Diagram<a class="headerlink" href="#permission-evaluation-flow-diagram" title="Permanent link">&para;</a></h3>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>User and role grants for an entity type or a specific entity id.</li>
+<li>Built-in and application-defined permission names.</li>
+<li>Entity Framework Core persistence through <code>IEntityPermissionContext</code>.</li>
+<li>Optional default providers, hierarchy inheritance, and successful-result caching.</li>
+<li>Evaluator overloads for current-user, explicit-user, entity, entity-id, and type-wide checks.</li>
+<li>ASP.NET Core controller, Minimal API, and optional runtime endpoint integration.</li>
+<li>Rules that return structured authorization failures.</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>Application.Identity</code> defines the permission model, evaluator, providers, and rules. <code>Infrastructure.EntityFramework</code> implements persisted grants and hierarchy lookup. <code>Presentation.Web</code> connects the evaluator to ASP.NET Core authorization and optional management and evaluation endpoints. <code>ICurrentUserAccessor</code> supplies the current user id and roles when a caller does not pass them explicitly.</p>
+<h3 id="permission-evaluation-flow-diagram">Permission evaluation flow diagram<a class="headerlink" href="#permission-evaluation-flow-diagram" title="Permanent link">&para;</a></h3>
 <p>This diagram illustrates the effective permission evaluation process:</p>
 <pre class="mermaid"><code>graph TD
     A[Request or Application Check] --&gt; B[IEntityPermissionEvaluator&lt;TEntity&gt;]
@@ -4022,7 +4881,7 @@
 <li>Configured default permission providers are evaluated.</li>
 <li>The evaluator returns an allow/deny result and may cache successful resolutions.</li>
 </ul>
-<h3 id="permission-granting-flow-diagram">Permission Granting Flow Diagram<a class="headerlink" href="#permission-granting-flow-diagram" title="Permanent link">&para;</a></h3>
+<h3 id="permission-granting-flow-diagram">Permission granting flow diagram<a class="headerlink" href="#permission-granting-flow-diagram" title="Permanent link">&para;</a></h3>
 <p>This diagram depicts how permissions are granted:</p>
 <pre class="mermaid"><code>graph TD
     L[Grant Request] --&gt; M[IEntityPermissionProvider or Builder]
@@ -4035,14 +4894,67 @@
 <li>User- or role-based grants are persisted for an entity type or a concrete entity id.</li>
 <li>Later permission checks resolve those grants directly or via inherited or cached results.</li>
 </ul>
-<h2 id="getting-started">Getting Started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Grant a user read access to one employee record.</li>
+<li>Grant a role a type-wide list or administration permission.</li>
+<li>Inherit access from a parent department or organizational node.</li>
+<li>Provide public or module-wide baseline access through a default provider.</li>
+<li>Protect controller actions, Minimal API routes, or application operations with the same evaluator.</li>
+<li>Inspect or administer grants through optional protected runtime endpoints.</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>The following setup gives authenticated users a default read permission for <code>Employee</code> and exposes an endpoint that checks a concrete employee id. A successful request returns a visible result; a denied request returns HTTP 403.</p>
+<div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">CoreDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="n">connectionString</span><span class="p">));</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddHttpContextAccessor</span><span class="p">();</span>
+<span class="n">services</span><span class="p">.</span><span class="n">AddScoped</span><span class="o">&lt;</span><span class="n">ICurrentUserAccessor</span><span class="p">,</span><span class="w"> </span><span class="n">HttpCurrentUserAccessor</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="n">services</span><span class="p">.</span><span class="n">AddEntityAuthorization</span><span class="p">(</span><span class="n">identity</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">identity</span><span class="p">.</span><span class="n">WithEntityPermissions</span><span class="o">&lt;</span><span class="n">CoreDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">permissions</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">permissions</span>
+<span class="w">            </span><span class="p">.</span><span class="n">AddEntity</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">AddDefaultPermissions</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">)</span>
+<span class="w">            </span><span class="p">.</span><span class="n">UseDefaultPermissionProvider</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/employees/{employeeId}&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Microsoft</span><span class="p">.</span><span class="n">AspNetCore</span><span class="p">.</span><span class="n">Http</span><span class="p">.</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="kt">string</span><span class="w"> </span><span class="n">employeeId</span><span class="p">,</span>
+<span class="w">    </span><span class="n">IEntityPermissionEvaluator</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="w"> </span><span class="n">evaluator</span><span class="p">,</span>
+<span class="w">    </span><span class="n">ICurrentUserAccessor</span><span class="w"> </span><span class="n">currentUser</span><span class="p">,</span>
+<span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">allowed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">evaluator</span><span class="p">.</span><span class="n">HasPermissionAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="n">currentUser</span><span class="p">,</span>
+<span class="w">        </span><span class="n">employeeId</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">allowed</span>
+<span class="w">        </span><span class="o">?</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">employeeId</span><span class="p">,</span><span class="w"> </span><span class="n">permission</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Read&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">allowed</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">})</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Forbid</span><span class="p">();</span>
+<span class="p">})</span>
+<span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">();</span>
+</code></pre></div>
+<p>For <code>employeeId = "emp1"</code>, the default provider produces:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;employeeId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emp1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;permission&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Read&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;allowed&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="p">}</span>
+</code></pre></div>
+<h2 id="getting-started">Getting started<a class="headerlink" href="#getting-started" title="Permanent link">&para;</a></h2>
 <h3 id="prerequisites">Prerequisites<a class="headerlink" href="#prerequisites" title="Permanent link">&para;</a></h3>
 <ul>
 <li>An ASP.NET Core application with dependency injection configured</li>
 <li>Entity Framework Core with a database context implementing <code>IEntityPermissionContext</code></li>
 <li>An <code>ICurrentUserAccessor</code> implementation for user-aware evaluation in web requests</li>
+<li>A database migration that creates the mapped <code>__Identity_EntityPermissions</code> table after the context adds its <code>DbSet</code></li>
 </ul>
-<h3 id="basic-setup">Basic Setup<a class="headerlink" href="#basic-setup" title="Permanent link">&para;</a></h3>
+<h3 id="basic-setup">Basic setup<a class="headerlink" href="#basic-setup" title="Permanent link">&para;</a></h3>
 <p>Configure entity permissions in <code>Program.cs</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Identity</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
@@ -4064,15 +4976,15 @@
 <span class="n">services</span><span class="p">.</span><span class="n">AddDbContext</span><span class="o">&lt;</span><span class="n">CoreDbContext</span><span class="o">&gt;</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseSqlServer</span><span class="p">(</span><span class="s">&quot;Server=.;Database=YourDb;Trusted_Connection=True;&quot;</span><span class="p">));</span>
 </code></pre></div>
-<h3 id="first-secured-endpoint">First Secured Endpoint<a class="headerlink" href="#first-secured-endpoint" title="Permanent link">&para;</a></h3>
+<h3 id="first-secured-endpoint">First secured endpoint<a class="headerlink" href="#first-secured-endpoint" title="Permanent link">&para;</a></h3>
 <p>Secure a Minimal API endpoint:</p>
 <div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/employees&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">())</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RequireEntityPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">List</span><span class="p">);</span>
 </code></pre></div>
 <p>This keeps the example focused on authorization itself. Application-specific request handling can be plugged into the endpoint however the host prefers.</p>
 <hr />
-<h2 id="setup-and-configuration">Setup and Configuration<a class="headerlink" href="#setup-and-configuration" title="Permanent link">&para;</a></h2>
-<h3 id="fluent-configuration">Fluent Configuration<a class="headerlink" href="#fluent-configuration" title="Permanent link">&para;</a></h3>
+<h2 id="setup-and-configuration">Setup and configuration<a class="headerlink" href="#setup-and-configuration" title="Permanent link">&para;</a></h2>
+<h3 id="fluent-configuration">Fluent configuration<a class="headerlink" href="#fluent-configuration" title="Permanent link">&para;</a></h3>
 <p>Define permissions using the fluent syntax:</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Identity</span><span class="p">;</span>
 <span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Common</span><span class="p">;</span>
@@ -4107,7 +5019,7 @@
 <li><strong><code>UseDefaultPermissionProvider</code></strong> activates either the built-in or a custom default provider.</li>
 <li><strong><code>EnableCaching</code></strong> and <strong><code>WithCacheLifetime</code></strong> control evaluator caching.</li>
 </ul>
-<h3 id="hierarchical-entities">Hierarchical Entities<a class="headerlink" href="#hierarchical-entities" title="Permanent link">&para;</a></h3>
+<h3 id="hierarchical-entities">Hierarchical entities<a class="headerlink" href="#hierarchical-entities" title="Permanent link">&para;</a></h3>
 <p>For entities with parent-child relationships, use <code>AddHierarchicalEntity(...)</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="n">permissions</span><span class="p">.</span><span class="n">AddHierarchicalEntity</span><span class="o">&lt;</span><span class="n">Department</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">d</span><span class="p">.</span><span class="n">ParentId</span><span class="p">,</span>
@@ -4116,7 +5028,7 @@
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">List</span><span class="p">);</span>
 </code></pre></div>
 <p>This tells the evaluator how to walk the hierarchy when direct grants are absent.</p>
-<h3 id="database-context">Database Context<a class="headerlink" href="#database-context" title="Permanent link">&para;</a></h3>
+<h3 id="database-context">Database context<a class="headerlink" href="#database-context" title="Permanent link">&para;</a></h3>
 <p>Define the persistence context:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CoreDbContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DbContext</span><span class="p">,</span><span class="w"> </span><span class="n">IEntityPermissionContext</span>
 <span class="p">{</span>
@@ -4128,7 +5040,7 @@
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">DbSet</span><span class="o">&lt;</span><span class="n">EntityPermission</span><span class="o">&gt;</span><span class="w"> </span><span class="n">EntityPermissions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="securing-controllers">Securing Controllers<a class="headerlink" href="#securing-controllers" title="Permanent link">&para;</a></h3>
+<h3 id="securing-controllers">Securing controllers<a class="headerlink" href="#securing-controllers" title="Permanent link">&para;</a></h3>
 <p>For controller-based scenarios, use <code>EntityPermissionRequirementAttribute</code> from the presentation layer:</p>
 <div class="highlight"><pre><span></span><code><span class="na">[Authorize]</span>
 <span class="na">[Route(&quot;api/employees&quot;)]</span>
@@ -4149,7 +5061,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/employees&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RequireEntityPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="important-boundary-note">Important Boundary Note<a class="headerlink" href="#important-boundary-note" title="Permanent link">&para;</a></h3>
+<h3 id="important-boundary-note">Important boundary note<a class="headerlink" href="#important-boundary-note" title="Permanent link">&para;</a></h3>
 <p>The feature spans multiple packages:</p>
 <ul>
 <li><code>Application.Identity</code> defines the permission model, evaluator, provider abstractions, and rules</li>
@@ -4158,9 +5070,9 @@
 </ul>
 <p>That split matters because some APIs that feel like part of the feature actually live outside the core application package.</p>
 <hr />
-<h2 id="managing-permissions">Managing Permissions<a class="headerlink" href="#managing-permissions" title="Permanent link">&para;</a></h2>
+<h2 id="managing-permissions">Managing permissions<a class="headerlink" href="#managing-permissions" title="Permanent link">&para;</a></h2>
 <p>Permissions can be managed programmatically using <code>IEntityPermissionProvider</code> or <code>EntityPermissionProviderBuilder</code>.</p>
-<h3 id="using-ientitypermissionprovider-directly">Using <code>IEntityPermissionProvider</code> Directly<a class="headerlink" href="#using-ientitypermissionprovider-directly" title="Permanent link">&para;</a></h3>
+<h3 id="using-ientitypermissionprovider-directly">Using <code>IEntityPermissionProvider</code> directly<a class="headerlink" href="#using-ientitypermissionprovider-directly" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionProvider</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GrantUserPermissionAsync</span><span class="p">(</span>
@@ -4192,8 +5104,8 @@
 <span class="w">        </span><span class="p">.</span><span class="n">WithPermission</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Permission</span><span class="p">.</span><span class="n">List</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
-<p>This builder is useful for seeding or setup code where a fluent style reads better than calling the provider directly.</p>
-<h3 id="default-permission-providers">Default Permission Providers<a class="headerlink" href="#default-permission-providers" title="Permanent link">&para;</a></h3>
+<p>The builder performs each asynchronous grant synchronously through <code>GetAwaiter().GetResult()</code>. Use it in controlled seeding or setup code; use the asynchronous provider methods in request handling and other asynchronous workflows.</p>
+<h3 id="default-permission-providers">Default permission providers<a class="headerlink" href="#default-permission-providers" title="Permanent link">&para;</a></h3>
 <p>Default providers supply permissions even when no explicit persisted grant exists.</p>
 <p>Use cases include:</p>
 <ul>
@@ -4202,15 +5114,15 @@
 <li>environment- or tenant-dependent defaults</li>
 </ul>
 <p>The core contract is <code>IDefaultEntityPermissionProvider&lt;TEntity&gt;</code>, which exposes <code>GetDefaultPermissions()</code>.</p>
-<h3 id="cache-invalidation">Cache Invalidation<a class="headerlink" href="#cache-invalidation" title="Permanent link">&para;</a></h3>
-<p>If caching is enabled, permission cache entries may need invalidation after administrative changes. The cache extension helpers support broad invalidation patterns such as:</p>
+<h3 id="cache-invalidation">Cache invalidation<a class="headerlink" href="#cache-invalidation" title="Permanent link">&para;</a></h3>
+<p>The Entity Framework provider invalidates affected cache entries after its grant and revoke methods. Broader invalidation is useful when permissions or default-provider behavior change outside those methods. The cache extension helpers support patterns such as:</p>
 <ul>
 <li>invalidating all permissions for a specific user</li>
 <li>invalidating all permissions for an entity type</li>
 </ul>
 <p>See also <a href="../common-caching/">Common Caching</a>.</p>
 <hr />
-<h2 id="checking-permissions">Checking Permissions<a class="headerlink" href="#checking-permissions" title="Permanent link">&para;</a></h2>
+<h2 id="checking-permissions">Checking permissions<a class="headerlink" href="#checking-permissions" title="Permanent link">&para;</a></h2>
 <p>Permissions can be verified using <code>IEntityPermissionEvaluator&lt;TEntity&gt;</code> or ASP.NET Core authorization.</p>
 <h3 id="using-ientitypermissionevaluatortentity">Using <code>IEntityPermissionEvaluator&lt;TEntity&gt;</code><a class="headerlink" href="#using-ientitypermissionevaluatortentity" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">evaluator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionEvaluator</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;&gt;</span><span class="p">();</span>
@@ -4243,12 +5155,12 @@
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">Read</span><span class="p">,</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="using-aspnet-core-authorization">Using ASP.NET Core Authorization<a class="headerlink" href="#using-aspnet-core-authorization" title="Permanent link">&para;</a></h3>
+<h3 id="using-aspnet-core-authorization">Using ASP.NET Core authorization<a class="headerlink" href="#using-aspnet-core-authorization" title="Permanent link">&para;</a></h3>
 <p>ASP.NET Core authorization flows into the same permission system through authorization handlers. For Minimal APIs, <code>RequireEntityPermission(...)</code> adds an <code>EntityPermissionAuthorizationRequirement</code>. For controller-based scenarios, the feature can also participate through policy-based authorization and the attribute helper shown earlier.</p>
-<h3 id="via-runtime-evaluation-endpoints">Via Runtime Evaluation Endpoints<a class="headerlink" href="#via-runtime-evaluation-endpoints" title="Permanent link">&para;</a></h3>
+<h3 id="via-runtime-evaluation-endpoints">Via runtime evaluation endpoints<a class="headerlink" href="#via-runtime-evaluation-endpoints" title="Permanent link">&para;</a></h3>
 <p>If enabled, the evaluation endpoints expose the evaluator over HTTP for operational inspection and debugging.</p>
 <hr />
-<h2 id="rules-integration">Rules Integration<a class="headerlink" href="#rules-integration" title="Permanent link">&para;</a></h2>
+<h2 id="rules-integration">Rules integration<a class="headerlink" href="#rules-integration" title="Permanent link">&para;</a></h2>
 <p><code>Application.Identity</code> integrates with the Rules feature through:</p>
 <ul>
 <li><code>HasPermissionRule&lt;TEntity&gt;</code></li>
@@ -4266,9 +5178,9 @@
 <p>This is useful when permission failures should become structured <code>Result</code> failures instead of ad hoc branching.</p>
 <p>For the broader rule style, see <a href="../features-rules/">Rules</a>.</p>
 <hr />
-<h2 id="api-reference">API Reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
+<h2 id="api-reference">API reference<a class="headerlink" href="#api-reference" title="Permanent link">&para;</a></h2>
 <p>The runtime API surface is optional and lives in <code>Presentation.Web</code>.</p>
-<h3 id="management-endpoints">Management Endpoints<a class="headerlink" href="#management-endpoints" title="Permanent link">&para;</a></h3>
+<h3 id="management-endpoints">Management endpoints<a class="headerlink" href="#management-endpoints" title="Permanent link">&para;</a></h3>
 <p>Default group path:</p>
 <p><code>/_bdk/api/identity/management/entities/permissions</code></p>
 <table>
@@ -4296,12 +5208,12 @@
 <td>Revoke all permissions from a user</td>
 </tr>
 <tr>
-<td><code>/users/{userId}</code></td>
+<td><code>/users/{userId}?entityType={type}&amp;entityId={id}</code></td>
 <td><code>GET</code></td>
 <td>Get granted permissions for one user and entity target</td>
 </tr>
 <tr>
-<td><code>/users</code></td>
+<td><code>/users?entityType={type}&amp;entityId={id}</code></td>
 <td><code>GET</code></td>
 <td>Get granted permissions for all users for an entity target</td>
 </tr>
@@ -4321,12 +5233,12 @@
 <td>Revoke all permissions from a role</td>
 </tr>
 <tr>
-<td><code>/roles/{role}</code></td>
+<td><code>/roles/{role}?entityType={type}&amp;entityId={id}</code></td>
 <td><code>GET</code></td>
 <td>Get granted permissions for one role and entity target</td>
 </tr>
 <tr>
-<td><code>/roles</code></td>
+<td><code>/roles?entityType={type}&amp;entityId={id}</code></td>
 <td><code>GET</code></td>
 <td>Get granted permissions for all roles for an entity target</td>
 </tr>
@@ -4339,7 +5251,8 @@
 <span class="w">  </span><span class="nt">&quot;permission&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Write&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="evaluation-endpoints">Evaluation Endpoints<a class="headerlink" href="#evaluation-endpoints" title="Permanent link">&para;</a></h3>
+<p>The management <code>GET</code> endpoints return persisted grants. They do not add permissions supplied by default providers.</p>
+<h3 id="evaluation-endpoints">Evaluation endpoints<a class="headerlink" href="#evaluation-endpoints" title="Permanent link">&para;</a></h3>
 <p>Default group path:</p>
 <p><code>/_bdk/api/identity/evaluate/entities/permissions</code></p>
 <table>
@@ -4368,18 +5281,19 @@
 <span class="w">  </span><span class="nt">&quot;entityType&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;MyApp.Domain.Model.Employee&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;entityId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;emp1&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;permission&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Read&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Direct&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;source&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">null</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;hasAccess&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
 </code></pre></div>
 <p>Notes:</p>
 <ul>
-<li><code>entityType</code> must be the full CLR type name</li>
+<li><code>entityType</code> can be the configured short CLR name or full CLR type name; persisted grants use the full name</li>
 <li><code>entityId</code> is optional for type-wide checks</li>
 <li>evaluation endpoints can be configured to bypass the cache through <code>IdentityEntityPermissionEvaluationEndpointsOptions</code></li>
+<li>the single-permission evaluation response does not identify the grant source; the effective-permissions endpoint returns source values</li>
 </ul>
 <hr />
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h2 id="best-practices">Best practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Define the smallest permission set that reflects real business needs.</li>
 <li>Use wildcard permissions sparingly for administrative or cross-cutting access.</li>
@@ -4399,8 +5313,8 @@
 <li><strong>Entity Type Not Valid</strong>: The runtime endpoints expect the full entity type name, not a short display name.</li>
 </ul>
 <hr />
-<h2 id="appendix-working-with-hierarchical-entities">Appendix: Working with Hierarchical Entities<a class="headerlink" href="#appendix-working-with-hierarchical-entities" title="Permanent link">&para;</a></h2>
-<h3 id="example-employee-hierarchy">Example: Employee Hierarchy<a class="headerlink" href="#example-employee-hierarchy" title="Permanent link">&para;</a></h3>
+<h2 id="appendix-working-with-hierarchical-entities">Appendix: Working with hierarchical entities<a class="headerlink" href="#appendix-working-with-hierarchical-entities" title="Permanent link">&para;</a></h2>
+<h3 id="example-employee-hierarchy">Example: Employee hierarchy<a class="headerlink" href="#example-employee-hierarchy" title="Permanent link">&para;</a></h3>
 <h4 id="structure">Structure<a class="headerlink" href="#structure" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code>CEO (ceo1)       &lt;- &quot;Read&quot;
   Manager (mgr1) &lt;- &quot;Write&quot;, &quot;Delete&quot; (Admins role)
@@ -4419,7 +5333,7 @@
 <span class="w">    </span><span class="p">});</span>
 <span class="p">});</span>
 </code></pre></div>
-<h4 id="step-2-grant-permissions">Step 2: Grant Permissions<a class="headerlink" href="#step-2-grant-permissions" title="Permanent link">&para;</a></h4>
+<h4 id="step-2-grant-permissions">Step 2: Grant permissions<a class="headerlink" href="#step-2-grant-permissions" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">provider</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionProvider</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="k">await</span><span class="w"> </span><span class="n">provider</span><span class="p">.</span><span class="n">GrantUserPermissionAsync</span><span class="p">(</span>
@@ -4440,7 +5354,7 @@
 <span class="w">    </span><span class="s">&quot;mgr1&quot;</span><span class="p">,</span>
 <span class="w">    </span><span class="n">Permission</span><span class="p">.</span><span class="n">Delete</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="step-3-check-effective-permissions">Step 3: Check Effective Permissions<a class="headerlink" href="#step-3-check-effective-permissions" title="Permanent link">&para;</a></h4>
+<h4 id="step-3-check-effective-permissions">Step 3: Check effective permissions<a class="headerlink" href="#step-3-check-effective-permissions" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">evaluator</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IEntityPermissionEvaluator</span><span class="o">&lt;</span><span class="n">Employee</span><span class="o">&gt;&gt;</span><span class="p">();</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">permissions</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">evaluator</span><span class="p">.</span><span class="n">GetPermissionsAsync</span><span class="p">(</span>
@@ -4455,11 +5369,11 @@
 </code></pre></div>
 <p>Possible output:</p>
 <ul>
-<li><code>Read from Parent:ceo1</code></li>
-<li><code>Write from Parent:mgr1</code></li>
+<li><code>Read from Parent:Entity:ceo1</code></li>
+<li><code>Write from Parent:Entity:mgr1</code></li>
 <li><code>Delete from Parent:Role:Admins</code></li>
 </ul>
-<h3 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h3>
+<h3 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="../features-rules/">Rules</a></li>
 <li><a href="../common-caching/">Common Caching</a></li>
@@ -4543,7 +5457,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4551,6 +5465,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

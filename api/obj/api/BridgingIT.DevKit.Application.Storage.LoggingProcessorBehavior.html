@@ -306,8 +306,7 @@ Class LoggingProcessorBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes after the processor processes the FileEvent.
-Allows post-processing actions (e.g., logging the result or handling errors).</p>
+  <div class="markdown level1 summary"><p>Runs after the process operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -318,20 +317,20 @@ Allows post-processing actions (e.g., logging the result or handling errors).</p
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProcessingContext.html">FileProcessingContext</a></dt>
-    <dd><p>The processing context containing the FileEvent.</p>
+    <dd><p>The context for the operation.</p>
 </dd>
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd><p>The result of the processing operation (success or failure).</p>
+    <dd><p>The result used by the operation.</p>
 </dd>
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token to stop the operation if needed.</p>
+    <dd><p>The token used by the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd><p>A task representing the asynchronous post-processing operation.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -352,8 +351,7 @@ Allows post-processing actions (e.g., logging the result or handling errors).</p
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes before the processor processes the FileEvent.
-Allows pre-processing actions (e.g., logging the event details).</p>
+  <div class="markdown level1 summary"><p>Runs before the process operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -364,17 +362,17 @@ Allows pre-processing actions (e.g., logging the event details).</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileProcessingContext.html">FileProcessingContext</a></dt>
-    <dd><p>The processing context containing the FileEvent.</p>
+    <dd><p>The context for the operation.</p>
 </dd>
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token to stop the operation if needed.</p>
+    <dd><p>The token used by the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd><p>A task representing the asynchronous pre-processing operation.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 

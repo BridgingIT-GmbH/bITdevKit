@@ -306,7 +306,8 @@ Class LoggingRequestPipelineBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes behavior logic around the next request handler.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -316,23 +317,28 @@ Class LoggingRequestPipelineBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleRequest.html">ISimpleRequest</a></dt>
-    <dd></dd>
+    <dd><p>The request being handled.</p>
+</dd>
     <dt><code>next</code> <a class="xref" href="BridgingIT.DevKit.Common.Utilities.RequestHandlerDelegate-1.html">RequestHandlerDelegate</a>&lt;TResponse&gt;</dt>
-    <dd></dd>
+    <dd><p>The next handler delegate.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel processing.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;TResponse&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler response.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResponse</code></dt>
-    <dd></dd>
+    <dd><p>The response type.</p>
+</dd>
   </dl>
 
 

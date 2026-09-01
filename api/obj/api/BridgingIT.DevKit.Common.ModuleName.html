@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ModuleName | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Reads a module name from an assembly-level .">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ModuleName
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Modules.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Reads a module name from an assembly-level <a class="xref" href="BridgingIT.DevKit.Common.ModuleName.Attribute.html">ModuleName.Attribute</a>.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class ModuleName
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the module name attached to the assembly containing a specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,15 +142,18 @@ Class ModuleName
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>A type from the module assembly.</p>
+</dd>
     <dt><code>throwIfNotFound</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether to throw when the assembly has no module-name attribute.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The module name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when it is absent and throwing is disabled.</p>
+</dd>
   </dl>
 
 
@@ -158,6 +163,12 @@ Class ModuleName
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Exception</span></dt>
+    <dd><p>No module name exists and <code class="paramref">throwIfNotFound</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
 
 
 
@@ -168,7 +179,8 @@ Class ModuleName
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the module name attached to the assembly containing <code class="typeparamref">TType</code>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -178,19 +190,22 @@ Class ModuleName
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>throwIfNotFound</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether to throw when the assembly has no module-name attribute.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The module name, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when it is absent and throwing is disabled.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TType</code></dt>
-    <dd></dd>
+    <dd><p>A type from the module assembly.</p>
+</dd>
   </dl>
 
 
@@ -199,6 +214,12 @@ Class ModuleName
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Exception</span></dt>
+    <dd><p>No module name exists and <code class="paramref">throwIfNotFound</code> is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
+  </dl>
 
 
 

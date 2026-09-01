@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RetryException | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents an operation that exhausted its configured retry attempts.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class RetryException
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents an operation that exhausted its configured retry attempts.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -267,7 +268,8 @@ Class RetryException
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.RetryException.html">RetryException</a> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -293,7 +295,8 @@ Class RetryException
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a retry exception with the number of failed attempts and final exception.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -303,9 +306,11 @@ Class RetryException
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>retryCount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of retry attempts.</p>
+</dd>
     <dt><code>innerException</code> <span class="xref">Exception</span></dt>
-    <dd></dd>
+    <dd><p>The final operation exception.</p>
+</dd>
   </dl>
 
 
@@ -326,7 +331,8 @@ Class RetryException
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a retry exception with an error message.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -336,7 +342,8 @@ Class RetryException
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The error message.</p>
+</dd>
   </dl>
 
 
@@ -357,7 +364,8 @@ Class RetryException
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a retry exception with an error message and inner exception.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -367,9 +375,11 @@ Class RetryException
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The error message.</p>
+</dd>
     <dt><code>innerException</code> <span class="xref">Exception</span></dt>
-    <dd></dd>
+    <dd><p>The exception that caused the retry failure.</p>
+</dd>
   </dl>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BrokerMessage | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents a durable broker message row stored in Entity Framework persistence.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class BrokerMessage
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents a durable broker message row stored in Entity Framework persistence.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -254,6 +255,10 @@ public class BrokerMessage</code></pre>
 
 
 
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_BrokerMessage_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>The entity keeps the serialized payload and a JSON-backed collection of handler states so the broker
+can coordinate multi-node leasing and handler-specific retry state without additional tables.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -329,7 +334,8 @@ public class BrokerMessage</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the provider-neutral optimistic concurrency version used to protect message leasing and state updates.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -362,7 +368,8 @@ public Guid ConcurrencyVersion { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the serialized message payload.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -394,7 +401,8 @@ public string Content { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the payload hash for diagnostics and integrity checks.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -426,7 +434,8 @@ public string ContentHash { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the timestamp when the message was accepted by the broker transport.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -490,7 +499,8 @@ public DateTimeOffset CreatedDate { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the strongly typed per-handler execution states restored from <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.BrokerMessage.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_BrokerMessage_HandlerStatesJson">HandlerStatesJson</a>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -522,7 +532,8 @@ public IList&lt;BrokerMessageHandlerState&gt; HandlerStates { get; set; }</code>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the JSON persistence column for <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.BrokerMessage.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_BrokerMessage_HandlerStates">HandlerStates</a>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -554,7 +565,8 @@ public string HandlerStatesJson { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the primary key for the persisted broker row.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -586,7 +598,8 @@ public Guid Id { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets a value indicating whether the message has been moved out of the active working set.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -618,7 +631,8 @@ public bool IsArchived { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the latest aggregate failure summary for the message.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -650,7 +664,8 @@ public string LastError { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the worker instance identifier that currently owns the lease.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -714,7 +729,8 @@ public string LockedBy { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the logical message identifier copied from Messaging.IMessage.MessageId.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -811,7 +827,8 @@ public string MessageId { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the strongly typed message properties restored from <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.BrokerMessage.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_BrokerMessage_PropertiesJson">PropertiesJson</a>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -843,7 +860,8 @@ public IDictionary&lt;string, object&gt; Properties { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the JSON persistence column for <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.BrokerMessage.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Messaging_BrokerMessage_Properties">Properties</a>.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -875,7 +893,8 @@ public string PropertiesJson { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the aggregate processing status derived from the handler-state collection.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -907,7 +926,8 @@ public BrokerMessageStatus Status { get; set; }</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the persisted CLR type token used to restore the message payload.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">

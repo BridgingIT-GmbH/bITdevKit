@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MessageBrokerBase.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class MessageBrokerBase.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Messaging.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class MessageBrokerBase.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the processed operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,19 +143,26 @@ public static void LogProcessed(ILogger logger, string logKey, string messageTyp
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>messageType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
     <dt><code>messageHandler</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message handler used by the operation.</p>
+</dd>
     <dt><code>messageId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message id used by the operation.</p>
+</dd>
     <dt><code>messageBroker</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message broker used by the operation.</p>
+</dd>
     <dt><code>timeElapsed</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The time elapsed used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -174,7 +183,8 @@ public static void LogProcessed(ILogger logger, string logKey, string messageTyp
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the processing operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -185,17 +195,23 @@ public static void LogProcessing(ILogger logger, string logKey, string messageTy
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>messageType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
     <dt><code>messageHandler</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message handler used by the operation.</p>
+</dd>
     <dt><code>messageId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message id used by the operation.</p>
+</dd>
     <dt><code>messageBroker</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message broker used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -216,7 +232,8 @@ public static void LogProcessing(ILogger logger, string logKey, string messageTy
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the publish operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -227,13 +244,17 @@ public static void LogPublish(ILogger logger, string logKey, string messageType,
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>messageType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
     <dt><code>messageId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message id used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -254,7 +275,8 @@ public static void LogPublish(ILogger logger, string logKey, string messageType,
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the subscribe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -265,13 +287,17 @@ public static void LogSubscribe(ILogger logger, string logKey, string messageTyp
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>messageType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
     <dt><code>messageHandler</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message handler used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -292,7 +318,8 @@ public static void LogSubscribe(ILogger logger, string logKey, string messageTyp
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the unsubscribe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -303,13 +330,17 @@ public static void LogUnsubscribe(ILogger logger, string logKey, string messageT
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>messageType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
     <dt><code>messageHandler</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message handler used by the operation.</p>
+</dd>
   </dl>
 
 

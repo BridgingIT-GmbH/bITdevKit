@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FakeUser | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents a deterministic, in-memory user definition for development and demonstration authentication.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class FakeUser
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents a deterministic, in-memory user definition for development and demonstration authentication.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -263,7 +264,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents a deterministic, in-memory user definition for development and demonstration authentication.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,17 +275,23 @@ Class FakeUser
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>email</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The email address used both for sign-in data and deterministic identifier generation.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The user's display name.</p>
+</dd>
     <dt><code>roles</code> <span class="xref">string</span>[]</dt>
-    <dd></dd>
+    <dd><p>The optional role names assigned to the user.</p>
+</dd>
     <dt><code>password</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional development password.</p>
+</dd>
     <dt><code>claims</code> <span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional claim values exposed as read-only user metadata.</p>
+</dd>
     <dt><code>isDefault</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether this user should be treated as the default fake identity.</p>
+</dd>
   </dl>
 
 
@@ -308,7 +316,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the user claims, or an empty dictionary when none were supplied.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -339,7 +348,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the email address supplied when the user was defined.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -370,7 +380,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the stable lowercase GUID identifier derived from the email address.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -401,7 +412,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets a value indicating whether this is the default fake identity.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -432,7 +444,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets a value indicating that the fake user is enabled.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -463,7 +476,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the display name supplied when the user was defined.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -494,7 +508,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the optional development password.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -525,7 +540,8 @@ Class FakeUser
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the optional role names assigned to the user.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">

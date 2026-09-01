@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -16,7 +16,7 @@
         <link rel="prev" href="../features-presentation-console-commands/">
       
       
-        <link rel="next" href="../features-presentation-exception-handling/">
+        <link rel="next" href="../features-presentation-correlationid/">
       
       
         
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#cors-configuration-feature-documentation" class="md-skip">
+        <a href="#cors-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2042,15 +2149,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2068,8 +2180,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2094,6 +2206,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2350,22 +2518,82 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#key-concepts" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Concepts
+        Challenges
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2373,19 +2601,19 @@
   <a href="#configuration-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Schema
+        Configuration schema
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Schema">
+    <nav class="md-nav" aria-label="Configuration schema">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#corsconfiguration-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CorsConfiguration Properties
+        CorsConfiguration properties
       
     </span>
   </a>
@@ -2396,7 +2624,7 @@
   <a href="#corspolicyoptions-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CorsPolicyOptions Properties
+        CorsPolicyOptions properties
       
     </span>
   </a>
@@ -2412,19 +2640,19 @@
   <a href="#configuration-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Examples
+        Configuration examples
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Examples">
+    <nav class="md-nav" aria-label="Configuration examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example-1-production-secure-configuration" class="md-nav__link">
+  <a href="#example-1-production-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 1: Production (Secure Configuration)
+        Example 1: Production configuration
       
     </span>
   </a>
@@ -2432,10 +2660,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-development-permissive-configuration" class="md-nav__link">
+  <a href="#example-2-development-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Development (Permissive Configuration)
+        Example 2: Development configuration
       
     </span>
   </a>
@@ -2443,10 +2671,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-3-public-api-no-credentials" class="md-nav__link">
+  <a href="#example-3-public-api-without-credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 3: Public API (No Credentials)
+        Example 3: Public API without credentials
       
     </span>
   </a>
@@ -2457,7 +2685,7 @@
   <a href="#example-4-wildcard-subdomains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 4: Wildcard Subdomains
+        Example 4: Wildcard subdomains
       
     </span>
   </a>
@@ -2468,7 +2696,7 @@
   <a href="#example-5-multiple-named-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 5: Multiple Named Policies
+        Example 5: Multiple named policies
       
     </span>
   </a>
@@ -2476,10 +2704,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-6-api-only-specific-methods-and-headers" class="md-nav__link">
+  <a href="#example-6-api-with-specific-methods-and-headers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 6: API-Only (Specific Methods and Headers)
+        Example 6: API with specific methods and headers
       
     </span>
   </a>
@@ -2495,19 +2723,19 @@
   <a href="#applying-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Applying Policies
+        Applying policies
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Applying Policies">
+    <nav class="md-nav" aria-label="Applying policies">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#global-default-policy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global Default Policy
+        Global default policy
       
     </span>
   </a>
@@ -2515,10 +2743,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#per-endpoint-policy-minimal-api" class="md-nav__link">
+  <a href="#per-endpoint-policy-for-minimal-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Per-Endpoint Policy (Minimal API)
+        Per-endpoint policy for Minimal APIs
       
     </span>
   </a>
@@ -2526,10 +2754,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#per-endpoint-policy-controller-based" class="md-nav__link">
+  <a href="#per-endpoint-policy-for-controllers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Per-Endpoint Policy (Controller-Based)
+        Per-endpoint policy for controllers
       
     </span>
   </a>
@@ -2537,10 +2765,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#policy-precedence" class="md-nav__link">
+  <a href="#policy-selection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Policy Precedence
+        Policy selection
       
     </span>
   </a>
@@ -2556,19 +2784,19 @@
   <a href="#security-best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Best Practices
+        Security best practices
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Security Best Practices">
+    <nav class="md-nav" aria-label="Security best practices">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#production-recommendations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Production Recommendations
+        Production recommendations
       
     </span>
   </a>
@@ -2576,10 +2804,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#development-vs-production" class="md-nav__link">
+  <a href="#development-and-production" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Development vs Production
+        Development and production
       
     </span>
   </a>
@@ -2590,7 +2818,7 @@
   <a href="#wildcard-subdomains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Wildcard Subdomains
+        Wildcard subdomains
       
     </span>
   </a>
@@ -2673,7 +2901,7 @@
   <a href="#debugging-tips" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debugging Tips
+        Debugging tips
       
     </span>
   </a>
@@ -2689,19 +2917,19 @@
   <a href="#additional-resources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Resources
+        Additional resources
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Additional Resources">
+    <nav class="md-nav" aria-label="Additional resources">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#official-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Official Documentation
+        Official documentation
       
     </span>
   </a>
@@ -2712,7 +2940,7 @@
   <a href="#common-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Scenarios
+        Common scenarios
       
     </span>
   </a>
@@ -2728,6 +2956,34 @@
   
 </nav>
       
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 
@@ -2807,15 +3063,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2833,8 +3094,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3114,15 +3375,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3140,8 +3406,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3221,6 +3487,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3257,22 +4054,82 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#key-concepts" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Concepts
+        Challenges
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3280,19 +4137,19 @@
   <a href="#configuration-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Schema
+        Configuration schema
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Schema">
+    <nav class="md-nav" aria-label="Configuration schema">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#corsconfiguration-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CorsConfiguration Properties
+        CorsConfiguration properties
       
     </span>
   </a>
@@ -3303,7 +4160,7 @@
   <a href="#corspolicyoptions-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CorsPolicyOptions Properties
+        CorsPolicyOptions properties
       
     </span>
   </a>
@@ -3319,19 +4176,19 @@
   <a href="#configuration-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Examples
+        Configuration examples
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Examples">
+    <nav class="md-nav" aria-label="Configuration examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example-1-production-secure-configuration" class="md-nav__link">
+  <a href="#example-1-production-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 1: Production (Secure Configuration)
+        Example 1: Production configuration
       
     </span>
   </a>
@@ -3339,10 +4196,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-development-permissive-configuration" class="md-nav__link">
+  <a href="#example-2-development-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Development (Permissive Configuration)
+        Example 2: Development configuration
       
     </span>
   </a>
@@ -3350,10 +4207,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-3-public-api-no-credentials" class="md-nav__link">
+  <a href="#example-3-public-api-without-credentials" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 3: Public API (No Credentials)
+        Example 3: Public API without credentials
       
     </span>
   </a>
@@ -3364,7 +4221,7 @@
   <a href="#example-4-wildcard-subdomains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 4: Wildcard Subdomains
+        Example 4: Wildcard subdomains
       
     </span>
   </a>
@@ -3375,7 +4232,7 @@
   <a href="#example-5-multiple-named-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 5: Multiple Named Policies
+        Example 5: Multiple named policies
       
     </span>
   </a>
@@ -3383,10 +4240,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-6-api-only-specific-methods-and-headers" class="md-nav__link">
+  <a href="#example-6-api-with-specific-methods-and-headers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 6: API-Only (Specific Methods and Headers)
+        Example 6: API with specific methods and headers
       
     </span>
   </a>
@@ -3402,19 +4259,19 @@
   <a href="#applying-policies" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Applying Policies
+        Applying policies
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Applying Policies">
+    <nav class="md-nav" aria-label="Applying policies">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#global-default-policy" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global Default Policy
+        Global default policy
       
     </span>
   </a>
@@ -3422,10 +4279,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#per-endpoint-policy-minimal-api" class="md-nav__link">
+  <a href="#per-endpoint-policy-for-minimal-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Per-Endpoint Policy (Minimal API)
+        Per-endpoint policy for Minimal APIs
       
     </span>
   </a>
@@ -3433,10 +4290,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#per-endpoint-policy-controller-based" class="md-nav__link">
+  <a href="#per-endpoint-policy-for-controllers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Per-Endpoint Policy (Controller-Based)
+        Per-endpoint policy for controllers
       
     </span>
   </a>
@@ -3444,10 +4301,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#policy-precedence" class="md-nav__link">
+  <a href="#policy-selection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Policy Precedence
+        Policy selection
       
     </span>
   </a>
@@ -3463,19 +4320,19 @@
   <a href="#security-best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Best Practices
+        Security best practices
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Security Best Practices">
+    <nav class="md-nav" aria-label="Security best practices">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#production-recommendations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Production Recommendations
+        Production recommendations
       
     </span>
   </a>
@@ -3483,10 +4340,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#development-vs-production" class="md-nav__link">
+  <a href="#development-and-production" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Development vs Production
+        Development and production
       
     </span>
   </a>
@@ -3497,7 +4354,7 @@
   <a href="#wildcard-subdomains" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Wildcard Subdomains
+        Wildcard subdomains
       
     </span>
   </a>
@@ -3580,7 +4437,7 @@
   <a href="#debugging-tips" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debugging Tips
+        Debugging tips
       
     </span>
   </a>
@@ -3596,19 +4453,19 @@
   <a href="#additional-resources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Resources
+        Additional resources
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Additional Resources">
+    <nav class="md-nav" aria-label="Additional resources">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#official-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Official Documentation
+        Official documentation
       
     </span>
   </a>
@@ -3619,7 +4476,7 @@
   <a href="#common-scenarios" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Scenarios
+        Common scenarios
       
     </span>
   </a>
@@ -3674,10 +4531,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3717,14 +4592,70 @@
   
 
 
-<h1 id="cors-configuration-feature-documentation">Cors Configuration Feature Documentation<a class="headerlink" href="#cors-configuration-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="cors-configuration">CORS Configuration<a class="headerlink" href="#cors-configuration" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Configure browser cross-origin access through fluent, settings-driven CORS policies.</p>
 </blockquote>
+<div class="toc">
+<ul>
+<li><a href="#cors-configuration">CORS Configuration</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#key-concepts">Key concepts</a></li>
+<li><a href="#configuration-schema">Configuration schema</a><ul>
+<li><a href="#corsconfiguration-properties">CorsConfiguration properties</a></li>
+<li><a href="#corspolicyoptions-properties">CorsPolicyOptions properties</a></li>
+</ul>
+</li>
+<li><a href="#configuration-examples">Configuration examples</a><ul>
+<li><a href="#example-1-production-configuration">Example 1: Production configuration</a></li>
+<li><a href="#example-2-development-configuration">Example 2: Development configuration</a></li>
+<li><a href="#example-3-public-api-without-credentials">Example 3: Public API without credentials</a></li>
+<li><a href="#example-4-wildcard-subdomains">Example 4: Wildcard subdomains</a></li>
+<li><a href="#example-5-multiple-named-policies">Example 5: Multiple named policies</a></li>
+<li><a href="#example-6-api-with-specific-methods-and-headers">Example 6: API with specific methods and headers</a></li>
+</ul>
+</li>
+<li><a href="#applying-policies">Applying policies</a><ul>
+<li><a href="#global-default-policy">Global default policy</a></li>
+<li><a href="#per-endpoint-policy-for-minimal-apis">Per-endpoint policy for Minimal APIs</a></li>
+<li><a href="#per-endpoint-policy-for-controllers">Per-endpoint policy for controllers</a></li>
+<li><a href="#policy-selection">Policy selection</a></li>
+</ul>
+</li>
+<li><a href="#security-best-practices">Security best practices</a><ul>
+<li><a href="#production-recommendations">Production recommendations</a></li>
+<li><a href="#development-and-production">Development and production</a></li>
+<li><a href="#wildcard-subdomains">Wildcard subdomains</a></li>
+</ul>
+</li>
+<li><a href="#troubleshooting">Troubleshooting</a><ul>
+<li><a href="#issue-cors-error-no-access-control-allow-origin-header">Issue: CORS error "No 'Access-Control-Allow-Origin' header"</a></li>
+<li><a href="#issue-cors-policy-response-to-preflight-request-doesnt-pass">Issue: "CORS policy: Response to preflight request doesn't pass"</a></li>
+<li><a href="#issue-preflight-options-request-fails">Issue: Preflight OPTIONS request fails</a></li>
+<li><a href="#issue-credentials-not-being-sent">Issue: Credentials not being sent</a></li>
+<li><a href="#issue-configuration-validation-errors-on-startup">Issue: Configuration validation errors on startup</a></li>
+<li><a href="#debugging-tips">Debugging tips</a></li>
+</ul>
+</li>
+<li><a href="#additional-resources">Additional resources</a><ul>
+<li><a href="#official-documentation">Official documentation</a></li>
+<li><a href="#common-scenarios">Common scenarios</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>CORS (Cross-Origin Resource Sharing) is a security mechanism that controls which origins (domains) can access your API from a browser. By default, browsers block cross-origin requests to protect users from malicious websites.</p>
+<p>CORS (Cross-Origin Resource Sharing) lets a server relax the browser's same-origin policy for selected cross-origin requests. It does not authenticate or authorize callers, and non-browser clients are not constrained by browser CORS enforcement.</p>
 <blockquote>
-<p>Builds on the standard <a href="https://learn.microsoft.com/en-us/aspnet/core/security/cors">ASP.NET Cors</a> implementation and basicaly provides a configuration (appsettings) system for it.</p>
+<p>Builds on standard <a href="https://learn.microsoft.com/en-us/aspnet/core/security/cors">ASP.NET Core CORS</a> and adds configuration binding from <code>appsettings</code>.</p>
 </blockquote>
 <p>This feature uses a flexible, configuration-driven CORS setup that supports:</p>
 <ul>
@@ -3734,15 +4665,70 @@
 <li><strong>Wildcard subdomain matching</strong></li>
 <li><strong>Fine-grained control</strong> over origins, methods, headers, and credentials</li>
 </ul>
-<h3 id="key-concepts">Key Concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h3>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Browser applications often run on a different scheme, host, or port from an API. The API must identify trusted origins and decide which methods, headers, response headers, and credentials each origin may use. Incorrect combinations can either block valid browser calls or expose authenticated endpoints too broadly.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p><code>AddCors(IConfiguration)</code> binds the <code>Cors</code> section, validates its named policies, and registers ASP.NET Core CORS services. <code>UseCors(IConfiguration)</code> conditionally adds the middleware. Applications can select one configured default policy or apply named policies through endpoint routing and controller attributes.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>settings-driven named CORS policies</li>
+<li>optional global default policy</li>
+<li>exact-origin and wildcard-subdomain matching</li>
+<li>method, request-header, exposed-header, and credential controls</li>
+<li>configurable preflight cache duration</li>
+<li>startup validation for missing policies and invalid credential combinations</li>
+<li>Minimal API, route-group, and controller policy application</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>The DevKit registration extension translates each <code>CorsPolicyOptions</code> value into an ASP.NET Core <code>CorsPolicyBuilder</code>. The application extension reads the same configuration and adds <code>UseCors()</code> only when CORS is enabled. ASP.NET Core middleware then evaluates request origin and endpoint metadata against the selected policy.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>allow a browser SPA to call an authenticated API from a known origin</li>
+<li>expose a credential-free public API to any origin</li>
+<li>assign different policies to public, frontend, and administrative endpoints</li>
+<li>allow controlled subdomains owned by one organization</li>
+<li>tune preflight caching for production browser clients</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>Configure one exact frontend origin in <code>appsettings.json</code>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">    </span><span class="nt">&quot;Enabled&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;DefaultPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Frontend&quot;</span><span class="p">,</span>
+<span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">      </span><span class="nt">&quot;Frontend&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
+<span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://app.example.com&quot;</span><span class="p">],</span>
+<span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;AllowAnyHeader&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
+<span class="w">        </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
+<span class="w">      </span><span class="p">}</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">  </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>Register the policies and place the conditional middleware after routing and before authorization:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span>
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddAuthorization</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseAuthorization</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/status&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;ready&quot;</span><span class="w"> </span><span class="p">}));</span>
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+</code></pre></div>
+<p>A browser request to <code>/api/status</code> from <code>https://app.example.com</code> receives <code>Access-Control-Allow-Origin: https://app.example.com</code>. Other origins do not receive an allow-origin response header.</p>
+<h2 id="key-concepts">Key concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Origin</strong>: The combination of scheme, host, and port (e.g., <code>https://example.com:443</code>)</li>
 <li><strong>Preflight Request</strong>: An OPTIONS request the browser sends before certain cross-origin requests</li>
-<li><strong>Simple Request</strong>: GET/POST requests that don't trigger preflight</li>
+<li><strong>Simple Request</strong>: A request that satisfies the browser's method, header, and content-type conditions and therefore does not require preflight</li>
 <li><strong>Credentials</strong>: Cookies, authorization headers, or client certificates</li>
 </ul>
-<h2 id="configuration-schema">Configuration Schema<a class="headerlink" href="#configuration-schema" title="Permanent link">&para;</a></h2>
-<h3 id="corsconfiguration-properties">CorsConfiguration Properties<a class="headerlink" href="#corsconfiguration-properties" title="Permanent link">&para;</a></h3>
+<h2 id="configuration-schema">Configuration schema<a class="headerlink" href="#configuration-schema" title="Permanent link">&para;</a></h2>
+<h3 id="corsconfiguration-properties"><code>CorsConfiguration</code> properties<a class="headerlink" href="#corsconfiguration-properties" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -3757,9 +4743,9 @@
 <tr>
 <td><code>Enabled</code></td>
 <td><code>bool</code></td>
-<td>Yes</td>
+<td>No</td>
 <td><code>false</code></td>
-<td>Whether CORS is enabled. When false, all cross-origin requests are blocked.</td>
+<td>Whether DevKit registers and applies CORS. When false, the server emits no DevKit CORS headers.</td>
 </tr>
 <tr>
 <td><code>DefaultPolicy</code></td>
@@ -3778,7 +4764,7 @@
 </tbody>
 </table>
 <p>*Required when <code>Enabled</code> is <code>true</code></p>
-<h3 id="corspolicyoptions-properties">CorsPolicyOptions Properties<a class="headerlink" href="#corspolicyoptions-properties" title="Permanent link">&para;</a></h3>
+<h3 id="corspolicyoptions-properties"><code>CorsPolicyOptions</code> properties<a class="headerlink" href="#corspolicyoptions-properties" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -3795,21 +4781,21 @@
 <td><code>string[]</code></td>
 <td>No</td>
 <td><code>null</code></td>
-<td>Array of allowed origins (e.g., <code>["https://example.com"]</code>). Cannot use with <code>AllowAnyOrigin</code>.</td>
+<td>Allowed origins. Ignored when <code>AllowAnyOrigin</code> is <code>true</code>.</td>
 </tr>
 <tr>
 <td><code>AllowedMethods</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td><code>null</code></td>
-<td>Array of allowed HTTP methods (e.g., <code>["GET", "POST"]</code>). Cannot use with <code>AllowAnyMethod</code>.</td>
+<td>Allowed HTTP methods. Ignored when <code>AllowAnyMethod</code> is <code>true</code>.</td>
 </tr>
 <tr>
 <td><code>AllowedHeaders</code></td>
 <td><code>string[]</code></td>
 <td>No</td>
 <td><code>null</code></td>
-<td>Array of allowed request headers. Cannot use with <code>AllowAnyHeader</code>.</td>
+<td>Allowed request headers. Ignored when <code>AllowAnyHeader</code> is <code>true</code>.</td>
 </tr>
 <tr>
 <td><code>ExposeHeaders</code></td>
@@ -3822,36 +4808,36 @@
 <td><code>AllowCredentials</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
-<td><code>false</code></td>
-<td>Allow credentials (cookies, auth headers). Cannot use with <code>AllowAnyOrigin = true</code>.</td>
+<td><code>null</code> (false)</td>
+<td>Allow credentials. Cannot be <code>true</code> with <code>AllowAnyOrigin = true</code>.</td>
 </tr>
 <tr>
 <td><code>AllowAnyOrigin</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
-<td><code>false</code></td>
-<td>Allow any origin (<em>). Cannot use with <code>AllowCredentials = true</code>. </em><em>Use only in development!</em>*</td>
+<td><code>null</code> (false)</td>
+<td>Allow any origin (<code>*</code>). Use only for credential-free public endpoints or controlled development scenarios.</td>
 </tr>
 <tr>
 <td><code>AllowAnyMethod</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
-<td><code>false</code></td>
+<td><code>null</code> (false)</td>
 <td>Allow any HTTP method. Overrides <code>AllowedMethods</code>.</td>
 </tr>
 <tr>
 <td><code>AllowAnyHeader</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
-<td><code>false</code></td>
-<td>Allow any header. Overrides <code>AllowedHeaders</code>.</td>
+<td><code>null</code> (false)</td>
+<td>Allow any request header. Overrides <code>AllowedHeaders</code>.</td>
 </tr>
 <tr>
 <td><code>AllowWildcardSubdomains</code></td>
 <td><code>bool?</code></td>
 <td>No</td>
-<td><code>false</code></td>
-<td>Enable wildcard subdomain matching (e.g., <code>*.example.com</code>).</td>
+<td><code>null</code> (false)</td>
+<td>Enable matching for wildcard origins such as <code>https://*.example.com</code>.</td>
 </tr>
 <tr>
 <td><code>PreflightMaxAgeSeconds</code></td>
@@ -3862,8 +4848,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="configuration-examples">Configuration Examples<a class="headerlink" href="#configuration-examples" title="Permanent link">&para;</a></h2>
-<h3 id="example-1-production-secure-configuration">Example 1: Production (Secure Configuration)<a class="headerlink" href="#example-1-production-secure-configuration" title="Permanent link">&para;</a></h3>
+<h2 id="configuration-examples">Configuration examples<a class="headerlink" href="#configuration-examples" title="Permanent link">&para;</a></h2>
+<h3 id="example-1-production-configuration">Example 1: Production configuration<a class="headerlink" href="#example-1-production-configuration" title="Permanent link">&para;</a></h3>
 <p>Specific origins with credentials support:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -3884,7 +4870,7 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="example-2-development-permissive-configuration">Example 2: Development (Permissive Configuration)<a class="headerlink" href="#example-2-development-permissive-configuration" title="Permanent link">&para;</a></h3>
+<h3 id="example-2-development-configuration">Example 2: Development configuration<a class="headerlink" href="#example-2-development-configuration" title="Permanent link">&para;</a></h3>
 <p>Allow common localhost ports (included in <code>appsettings.Development.json</code>):</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -3917,7 +4903,7 @@
 <li><strong>3000/3001</strong>: React, Node.js default ports</li>
 <li><strong>4200</strong>: Angular default port</li>
 </ul>
-<h3 id="example-3-public-api-no-credentials">Example 3: Public API (No Credentials)<a class="headerlink" href="#example-3-public-api-no-credentials" title="Permanent link">&para;</a></h3>
+<h3 id="example-3-public-api-without-credentials">Example 3: Public API without credentials<a class="headerlink" href="#example-3-public-api-without-credentials" title="Permanent link">&para;</a></h3>
 <p>Allow any origin without credentials:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -3934,8 +4920,8 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>⚠️ <strong>Note</strong>: Cannot use <code>AllowCredentials: true</code> with <code>AllowAnyOrigin: true</code>.</p>
-<h3 id="example-4-wildcard-subdomains">Example 4: Wildcard Subdomains<a class="headerlink" href="#example-4-wildcard-subdomains" title="Permanent link">&para;</a></h3>
+<p><strong>Note</strong>: Do not use <code>AllowCredentials: true</code> with <code>AllowAnyOrigin: true</code>; registration rejects that combination.</p>
+<h3 id="example-4-wildcard-subdomains">Example 4: Wildcard subdomains<a class="headerlink" href="#example-4-wildcard-subdomains" title="Permanent link">&para;</a></h3>
 <p>Allow any subdomain of example.com:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -3944,7 +4930,7 @@
 <span class="w">    </span><span class="nt">&quot;Policies&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;SubdomainPolicy&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">        </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
-<span class="w">          </span><span class="s2">&quot;https://example.com&quot;</span>
+<span class="w">          </span><span class="s2">&quot;https://*.example.com&quot;</span>
 <span class="w">        </span><span class="p">],</span>
 <span class="w">        </span><span class="nt">&quot;AllowWildcardSubdomains&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">        </span><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
@@ -3962,7 +4948,7 @@
 <li><code>https://admin.example.com</code></li>
 <li>Any other subdomain of <code>example.com</code></li>
 </ul>
-<h3 id="example-5-multiple-named-policies">Example 5: Multiple Named Policies<a class="headerlink" href="#example-5-multiple-named-policies" title="Permanent link">&para;</a></h3>
+<h3 id="example-5-multiple-named-policies">Example 5: Multiple named policies<a class="headerlink" href="#example-5-multiple-named-policies" title="Permanent link">&para;</a></h3>
 <p>Different policies for different endpoints:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -3990,7 +4976,7 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="example-6-api-only-specific-methods-and-headers">Example 6: API-Only (Specific Methods and Headers)<a class="headerlink" href="#example-6-api-only-specific-methods-and-headers" title="Permanent link">&para;</a></h3>
+<h3 id="example-6-api-with-specific-methods-and-headers">Example 6: API with specific methods and headers<a class="headerlink" href="#example-6-api-with-specific-methods-and-headers" title="Permanent link">&para;</a></h3>
 <p>Restrictive configuration for internal API:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -4009,8 +4995,8 @@
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="applying-policies">Applying Policies<a class="headerlink" href="#applying-policies" title="Permanent link">&para;</a></h2>
-<h3 id="global-default-policy">Global Default Policy<a class="headerlink" href="#global-default-policy" title="Permanent link">&para;</a></h3>
+<h2 id="applying-policies">Applying policies<a class="headerlink" href="#applying-policies" title="Permanent link">&para;</a></h2>
+<h3 id="global-default-policy">Global default policy<a class="headerlink" href="#global-default-policy" title="Permanent link">&para;</a></h3>
 <p>Apply a policy to all endpoints by specifying <code>DefaultPolicy</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;Cors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -4027,11 +5013,11 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>In <code>Program.cs</code>:</p>
-<div class="highlight"><pre><span></span><code>builder.Services.AddAppCors(builder.Configuration);
-// ...
-app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span>
+<span class="c1">// ...</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span><span class="w"> </span><span class="c1">// Applies DefaultPolicy globally</span>
 </code></pre></div>
-<h3 id="per-endpoint-policy-minimal-api">Per-Endpoint Policy (Minimal API)<a class="headerlink" href="#per-endpoint-policy-minimal-api" title="Permanent link">&para;</a></h3>
+<h3 id="per-endpoint-policy-for-minimal-apis">Per-endpoint policy for Minimal APIs<a class="headerlink" href="#per-endpoint-policy-for-minimal-apis" title="Permanent link">&para;</a></h3>
 <p>Apply different policies to specific Minimal API endpoints using <code>RequireCors()</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="c1">// Use default policy (configured in DefaultPolicy setting)</span>
 <span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/api/products&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">))</span>
@@ -4057,8 +5043,8 @@ app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
 <span class="n">productsGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/{id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">GetProduct</span><span class="p">(</span><span class="n">id</span><span class="p">)));</span>
 <span class="n">productsGroup</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">Product</span><span class="w"> </span><span class="n">product</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Created</span><span class="p">(</span><span class="s">$&quot;/api/products/{product.Id}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">product</span><span class="p">));</span>
 </code></pre></div>
-<p><strong>Note</strong>: Unlike controller-based APIs, Minimal API does not support <code>[DisableCors]</code> directly. Simply omit <code>RequireCors()</code> on endpoints that should not allow CORS.</p>
-<h3 id="per-endpoint-policy-controller-based">Per-Endpoint Policy (Controller-Based)<a class="headerlink" href="#per-endpoint-policy-controller-based" title="Permanent link">&para;</a></h3>
+<p>Use <code>.DisableCors()</code> on a Minimal API endpoint or route group when it must opt out of inherited CORS metadata. Omitting <code>RequireCors()</code> is sufficient only when no default or parent-group policy applies.</p>
+<h3 id="per-endpoint-policy-for-controllers">Per-endpoint policy for controllers<a class="headerlink" href="#per-endpoint-policy-for-controllers" title="Permanent link">&para;</a></h3>
 <p>If using controllers, apply policies using the <code>[EnableCors]</code> attribute:</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">Microsoft.AspNetCore.Cors</span><span class="p">;</span>
 
@@ -4099,19 +5085,19 @@ app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="policy-precedence">Policy Precedence<a class="headerlink" href="#policy-precedence" title="Permanent link">&para;</a></h3>
-<p>When both default and endpoint-level policies are configured:</p>
+<h3 id="policy-selection">Policy selection<a class="headerlink" href="#policy-selection" title="Permanent link">&para;</a></h3>
+<p>Choose one clear policy model where possible:</p>
 <ol>
-<li><strong>Endpoint-level</strong> <code>RequireCors("PolicyName")</code> or <code>[EnableCors("PolicyName")]</code> takes precedence over all</li>
-<li><strong>Endpoint-level</strong> <code>RequireCors()</code> or <code>[EnableCors()]</code> without parameters uses the configured default policy</li>
-<li><strong>Group-level</strong> <code>MapGroup().RequireCors()</code> applies to all endpoints in the group (Minimal API)</li>
-<li><strong>Controller-level</strong> <code>[EnableCors()]</code> applies to all actions (Controller-based)</li>
-<li><strong>Global default policy</strong> applies when no endpoint configuration is present</li>
-<li><strong><code>[DisableCors]</code></strong> disables CORS for specific controller endpoints</li>
+<li>Set <code>DefaultPolicy</code> and call <code>UseCors(builder.Configuration)</code> when one policy should apply globally.</li>
+<li>Leave <code>DefaultPolicy</code> unset and use <code>RequireCors("PolicyName")</code> or <code>[EnableCors("PolicyName")]</code> for endpoint-level control.</li>
+<li><code>RequireCors()</code> and <code>[EnableCors()]</code> without a name use the registered default policy.</li>
+<li>Route-group and controller metadata flow to their child endpoints.</li>
+<li>Avoid combining a global middleware policy with controller <code>[EnableCors]</code> policies; ASP.NET Core can apply both rather than treating one as a simple override.</li>
+<li>Use <code>.DisableCors()</code> for endpoint-routing metadata or <code>[DisableCors]</code> for controller attributes, while noting that <code>[DisableCors]</code> does not cancel CORS added through endpoint routing's <code>RequireCors</code>.</li>
 </ol>
-<p><strong>Minimal API Example:</strong></p>
-<div class="highlight"><pre><span></span><code><span class="c1">// Global default policy applies to all endpoints</span>
-<span class="n">app</span><span class="p">.</span><span class="n">UseAppCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span>
+<p><strong>Minimal API example:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="c1">// DefaultPolicy is null, so middleware uses endpoint metadata</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span>
 
 <span class="c1">// Group with specific policy</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">apiGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api&quot;</span><span class="p">)</span>
@@ -4119,21 +5105,23 @@ app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
 
 <span class="n">apiGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/products&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">products</span><span class="p">));</span><span class="w"> </span><span class="c1">// Uses ApiPolicy</span>
 
-<span class="c1">// Override group policy for specific endpoint</span>
-<span class="n">apiGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/products/special&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">specialProducts</span><span class="p">))</span>
-<span class="w">        </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">&quot;SpecialPolicy&quot;</span><span class="p">);</span><span class="w"> </span><span class="c1">// Uses SpecialPolicy instead</span>
+<span class="c1">// Use a separate group for another named policy</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">specialGroup</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api/special&quot;</span><span class="p">)</span>
+<span class="w">                      </span><span class="p">.</span><span class="n">RequireCors</span><span class="p">(</span><span class="s">&quot;SpecialPolicy&quot;</span><span class="p">);</span>
 
-<span class="c1">// Endpoint without RequireCors uses global default</span>
-<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/public&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="s">&quot;public data&quot;</span><span class="p">));</span><span class="w"> </span><span class="c1">// Uses global default policy</span>
+<span class="n">specialGroup</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/products&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="n">specialProducts</span><span class="p">));</span>
+
+<span class="c1">// No CORS policy applies to this endpoint</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/internal&quot;</span><span class="p">,</span><span class="w"> </span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="s">&quot;internal data&quot;</span><span class="p">));</span>
 </code></pre></div>
-<p><strong>Controller-based Example:</strong></p>
-<div class="highlight"><pre><span></span><code><span class="na">[EnableCors()]</span><span class="w"> </span><span class="c1">// Controller-level: uses configured default policy</span>
-<span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ValuesController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
+<p><strong>Controller-based example:</strong></p>
+<div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ValuesController</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">ControllerBase</span>
 <span class="p">{</span>
+<span class="w">    </span><span class="na">[EnableCors(&quot;DefaultPolicy&quot;)]</span>
 <span class="w">    </span><span class="na">[HttpGet]</span>
-<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">Get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="c1">// Uses default policy from controller</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">Get</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 
-<span class="w">    </span><span class="na">[EnableCors(&quot;SpecialPolicy&quot;)]</span><span class="w"> </span><span class="c1">// Overrides with specific named policy</span>
+<span class="w">    </span><span class="na">[EnableCors(&quot;SpecialPolicy&quot;)]</span>
 <span class="w">    </span><span class="na">[HttpGet(&quot;special&quot;)]</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">GetSpecial</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 
@@ -4142,8 +5130,8 @@ app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">IActionResult</span><span class="w"> </span><span class="nf">GetInternal</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="security-best-practices">Security Best Practices<a class="headerlink" href="#security-best-practices" title="Permanent link">&para;</a></h2>
-<h3 id="production-recommendations">Production Recommendations<a class="headerlink" href="#production-recommendations" title="Permanent link">&para;</a></h3>
+<h2 id="security-best-practices">Security best practices<a class="headerlink" href="#security-best-practices" title="Permanent link">&para;</a></h2>
+<h3 id="production-recommendations">Production recommendations<a class="headerlink" href="#production-recommendations" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Never use <code>AllowAnyOrigin: true</code> with <code>AllowCredentials: true</code></strong></li>
 <li>This violates the CORS specification</li>
@@ -4187,7 +5175,7 @@ app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;PreflightMaxAgeSeconds&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">3600</span>
 </code></pre></div>
 <p>Reduces overhead by caching preflight responses</p>
-<h3 id="development-vs-production">Development vs Production<a class="headerlink" href="#development-vs-production" title="Permanent link">&para;</a></h3>
+<h3 id="development-and-production">Development and production<a class="headerlink" href="#development-and-production" title="Permanent link">&para;</a></h3>
 <p><strong>Development</strong> (<code>appsettings.Development.json</code>):</p>
 <ul>
 <li>Allow localhost origins with various ports</li>
@@ -4200,10 +5188,10 @@ app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
 <li>Longer preflight cache (3600 seconds)</li>
 <li>Minimal permissions (only required methods/headers)</li>
 </ul>
-<h3 id="wildcard-subdomains">Wildcard Subdomains<a class="headerlink" href="#wildcard-subdomains" title="Permanent link">&para;</a></h3>
+<h3 id="wildcard-subdomains">Wildcard subdomains<a class="headerlink" href="#wildcard-subdomains" title="Permanent link">&para;</a></h3>
 <p><strong>Safe</strong> when you control all subdomains:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://example.com&quot;</span><span class="p">],</span>
+<span class="w">  </span><span class="nt">&quot;AllowedOrigins&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;https://*.example.com&quot;</span><span class="p">],</span>
 <span class="w">  </span><span class="nt">&quot;AllowWildcardSubdomains&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;AllowCredentials&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 <span class="p">}</span>
@@ -4237,7 +5225,7 @@ has been blocked by CORS policy: No &#39;Access-Control-Allow-Origin&#39; header
 </li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
-<span class="n">app</span><span class="p">.</span><span class="n">UseAppCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span><span class="w"> </span><span class="c1">// Must be here</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseCors</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">);</span><span class="w"> </span><span class="c1">// Must be here</span>
 <span class="n">app</span><span class="p">.</span><span class="n">UseAuthorization</span><span class="p">();</span>
 </code></pre></div>
 <ol>
@@ -4275,11 +5263,12 @@ when the request&#39;s credentials mode is &#39;include&#39;.
 <ol>
 <li><strong>Ensure methods are allowed</strong></li>
 </ol>
-<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowedMethods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DELETE&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;OPTIONS&quot;</span><span class="p">]</span>
+<div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowedMethods&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;POST&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;PUT&quot;</span><span class="p">,</span><span class="w"> </span><span class="s2">&quot;DELETE&quot;</span><span class="p">]</span>
 </code></pre></div>
 <p>Or:</p>
 <div class="highlight"><pre><span></span><code><span class="nt">&quot;AllowAnyMethod&quot;</span><span class="p">:</span><span class="w"> </span><span class="kc">true</span>
 </code></pre></div>
+<p>Configure the method used by the actual request. The CORS middleware handles the <code>OPTIONS</code> preflight request.</p>
 <ol>
 <li><strong>Check custom headers are allowed</strong></li>
 </ol>
@@ -4351,7 +5340,7 @@ Ensure <code>DefaultPolicy</code> name matches a policy in <code>Policies</code>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="debugging-tips">Debugging Tips<a class="headerlink" href="#debugging-tips" title="Permanent link">&para;</a></h3>
+<h3 id="debugging-tips">Debugging tips<a class="headerlink" href="#debugging-tips" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Check browser console</strong> for detailed CORS error messages</li>
 <li><strong>Use browser DevTools Network tab</strong> to inspect:</li>
@@ -4375,14 +5364,14 @@ Ensure <code>DefaultPolicy</code> name matches a policy in <code>Policies</code>
 <span class="p">}</span>
 </code></pre></div>
 <p>Then narrow down to identify the specific restriction causing issues.</p>
-<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
-<h3 id="official-documentation">Official Documentation<a class="headerlink" href="#official-documentation" title="Permanent link">&para;</a></h3>
+<h2 id="additional-resources">Additional resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
+<h3 id="official-documentation">Official documentation<a class="headerlink" href="#official-documentation" title="Permanent link">&para;</a></h3>
 <ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/security/cors">ASP.NET Core CORS Documentation</a></li>
 <li><a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS">MDN CORS Guide</a></li>
-<li><a href="https://www.w3.org/TR/cors/">W3C CORS Specification</a></li>
+<li><a href="https://fetch.spec.whatwg.org/#http-cors-protocol">Fetch Standard: CORS protocol</a></li>
 </ul>
-<h3 id="common-scenarios">Common Scenarios<a class="headerlink" href="#common-scenarios" title="Permanent link">&para;</a></h3>
+<h3 id="common-scenarios">Common scenarios<a class="headerlink" href="#common-scenarios" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4491,7 +5480,7 @@ Ensure <code>DefaultPolicy</code> name matches a policy in <code>Policies</code>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4499,6 +5488,8 @@ Ensure <code>DefaultPolicy</code> name matches a policy in <code>Policies</code>
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class LinqFluentExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides null-safe fluent operators for lookup, conditional actions and transformations, validation, matching, and fallback values.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class LinqFluentExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides null-safe fluent operators for lookup, conditional actions and transformations, validation, matching, and fallback values.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -2749,7 +2750,9 @@ var user = await users
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Throws an exception if the condition is true on value type.
+Returns the value if condition is false.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2759,28 +2762,40 @@ var user = await users
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> T?</dt>
-    <dd></dd>
+    <dd><p>The nullable value to validate.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition to evaluate. Can be null.</p>
+</dd>
     <dt><code>exceptionFactory</code> <span class="xref">Func</span>&lt;T, <span class="xref">Exception</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Factory function to create exception. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt>T?</dt>
-    <dd></dd>
+    <dd><p>The original value if condition is false.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The underlying value type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1_System_Nullable___0__System_Func___0_System_Boolean__System_Func___0_System_Exception___examples">Examples</h4>
+  <pre><code class="lang-csharp">int? quantity = order.Quantity
+    .ThrowWhen(q =&gt; q &lt;= 0, q =&gt; new InvalidQuantityException(q));
+
+DateTime? date = appointment.ScheduledAt
+    .ThrowWhen(d =&gt; d &lt; DateTime.Now, d =&gt; new PastDateException(d));</code></pre>
 
 
 
@@ -3109,7 +3124,9 @@ Can be called on sync or async value. Does nothing if predicate or action is nul
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes a side effect if predicate is false on value type, returns value unchanged.
+Does nothing if value has no value or predicate/action is null.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3119,28 +3136,37 @@ Can be called on sync or async value. Does nothing if predicate or action is nul
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> T?</dt>
-    <dd></dd>
+    <dd><p>The nullable value to check.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition to negate. Can be null.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Action</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The action to execute. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt>T?</dt>
-    <dd></dd>
+    <dd><p>The original nullable value for method chaining.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The underlying value type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1_System_Nullable___0__System_Func___0_System_Boolean__System_Action___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">DateTime? deadline = task.DueDate
+    .Unless(d =&gt; d &lt; DateTime.Now, d =&gt; SendOverdueWarning(d));</code></pre>
 
 
 
@@ -3154,7 +3180,9 @@ Can be called on sync or async value. Does nothing if predicate or action is nul
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Transforms value if predicate is false on value type, returns unchanged if true.
+Returns unchanged value if predicate or transformation function is null.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3164,28 +3192,37 @@ Can be called on sync or async value. Does nothing if predicate or action is nul
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> T?</dt>
-    <dd></dd>
+    <dd><p>The nullable value to transform.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition to negate. Can be null.</p>
+</dd>
     <dt><code>then</code> <span class="xref">Func</span>&lt;T, T&gt;</dt>
-    <dd></dd>
+    <dd><p>The transformation function. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt>T?</dt>
-    <dd></dd>
+    <dd><p>The transformed value or original value if condition is true.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The underlying value type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1_System_Nullable___0__System_Func___0_System_Boolean__System_Func___0___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">decimal price = basePrice
+    .Unless(p =&gt; p &lt; 50, p =&gt; p + 10m);  // Add shipping unless under 50</code></pre>
 
 
 
@@ -3323,7 +3360,9 @@ config
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies then or else transformation on value type based on predicate being false.
+Returns default if predicate or transformation functions are null.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3333,32 +3372,45 @@ config
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> TIn?</dt>
-    <dd></dd>
+    <dd><p>The nullable value to transform.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;TIn, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition to negate. Can be null.</p>
+</dd>
     <dt><code>then</code> <span class="xref">Func</span>&lt;TIn, TOut&gt;</dt>
-    <dd></dd>
+    <dd><p>The transformation if false. Can be null.</p>
+</dd>
     <dt><code>else</code> <span class="xref">Func</span>&lt;TIn, TOut&gt;</dt>
-    <dd></dd>
+    <dd><p>The transformation if true. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TOut</span></dt>
-    <dd></dd>
+    <dd><p>The transformed value based on negated predicate, or default if transformations are null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TIn</code></dt>
-    <dd></dd>
+    <dd><p>The input value type.</p>
+</dd>
     <dt><code>TOut</code></dt>
-    <dd></dd>
+    <dd><p>The output type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2_System_Nullable___0__System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1___examples">Examples</h4>
+  <pre><code class="lang-csharp">string message = order.ProcessedAt.Unless(
+    d =&gt; d &lt; DateTime.Now,
+    d =&gt; "Not yet processed",
+    d =&gt; $"Processed on {d:d}");</code></pre>
 
 
 
@@ -3393,7 +3445,8 @@ Returns default if predicate or transformation functions are null.</p>
     <dd><p>The transformation if false. Can be null.</p>
 </dd>
     <dt><code>else</code> <span class="xref">Func</span>&lt;TIn, TOut&gt;</dt>
-    <dd></dd>
+    <dd><p>The transformation if true. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -3436,7 +3489,9 @@ Returns default if predicate or transformation functions are null.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes an action if bool condition is true.
+Does nothing if condition is false or action is null.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -3446,21 +3501,39 @@ Returns default if predicate or transformation functions are null.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>condition</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The boolean condition to evaluate.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Action</span></dt>
-    <dd></dd>
+    <dd><p>The action to execute. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The original condition for method chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_LinqFluentExtensions_When_System_Boolean_System_Action__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Simple condition check
+user.IsAdmin
+    .When(() =&gt; logger.LogInfo("Admin access granted"));
+
+// Chaining conditions
+order.Items.Any()
+    .When(() =&gt; ProcessOrder(order))
+    .Otherwise(() =&gt; logger.LogWarning("Empty order"));
+
+// Multiple conditions
+(items.Count &gt; 0 &amp;&amp; user.HasPermission("edit"))
+    .When(() =&gt; EnableEditMode())
+    .Otherwise(() =&gt; DisableEditMode());</code></pre>
 
 
 
@@ -5244,7 +5317,9 @@ movies
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies then or else transformation on value type based on predicate.
+Returns default if predicate or transformation functions are null.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -5254,32 +5329,45 @@ movies
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> TIn?</dt>
-    <dd></dd>
+    <dd><p>The nullable value to transform.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;TIn, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition to evaluate. Can be null.</p>
+</dd>
     <dt><code>then</code> <span class="xref">Func</span>&lt;TIn, TOut&gt;</dt>
-    <dd></dd>
+    <dd><p>The transformation if true. Can be null.</p>
+</dd>
     <dt><code>else</code> <span class="xref">Func</span>&lt;TIn, TOut&gt;</dt>
-    <dd></dd>
+    <dd><p>The transformation if false. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TOut</span></dt>
-    <dd></dd>
+    <dd><p>The transformed value based on predicate, or default if transformations are null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TIn</code></dt>
-    <dd></dd>
+    <dd><p>The input value type.</p>
+</dd>
     <dt><code>TOut</code></dt>
-    <dd></dd>
+    <dd><p>The output type.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_LinqFluentExtensions_When__2_System_Nullable___0__System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1___examples">Examples</h4>
+  <pre><code class="lang-csharp">string status = order.ShippedDate.When(
+    d =&gt; d &lt; DateTime.Now,
+    d =&gt; $"Shipped on {d:d}",
+    d =&gt; "Not yet shipped");</code></pre>
 
 
 
@@ -5314,7 +5402,8 @@ Returns unchanged value if predicate or transformation functions are null.</p>
     <dd><p>The transformation if true. Can be null.</p>
 </dd>
     <dt><code>else</code> <span class="xref">Func</span>&lt;TIn, TOut&gt;</dt>
-    <dd></dd>
+    <dd><p>The transformation if false. Can be null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>

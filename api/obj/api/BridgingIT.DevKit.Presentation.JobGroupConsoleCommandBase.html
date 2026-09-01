@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class JobGroupConsoleCommandBase | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents job group console command base.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class JobGroupConsoleCommandBase
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.JobScheduling.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents job group console command base.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -308,7 +309,8 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents job group console command base.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -318,11 +320,14 @@ Class JobGroupConsoleCommandBase
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the value.</p>
+</dd>
     <dt><code>description</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The description used by the operation.</p>
+</dd>
     <dt><code>aliases</code> <span class="xref">string</span>[]</dt>
-    <dd></dd>
+    <dd><p>The aliases used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -346,7 +351,8 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Defines the default job group value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -381,7 +387,7 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets optional group name aliases.</p>
+  <div class="markdown level1 summary"><p>Gets the group aliases.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -413,7 +419,7 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the group name this command belongs to.</p>
+  <div class="markdown level1 summary"><p>Gets the group name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -449,7 +455,8 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the execute with job service operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -459,17 +466,21 @@ Class JobGroupConsoleCommandBase
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>console</code> <span class="xref">IAnsiConsole</span></dt>
-    <dd></dd>
+    <dd><p>The console used by the operation.</p>
+</dd>
     <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service collection to configure.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.IJobService.html">IJobService</a>, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The action to invoke.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -489,7 +500,8 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the execute with job service operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -499,25 +511,31 @@ Class JobGroupConsoleCommandBase
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>console</code> <span class="xref">IAnsiConsole</span></dt>
-    <dd></dd>
+    <dd><p>The console used by the operation.</p>
+</dd>
     <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service collection to configure.</p>
+</dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.IJobService.html">IJobService</a>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The action to invoke.</p>
+</dd>
     <dt><code>onSuccess</code> <span class="xref">Action</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The on success used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The  type.</p>
+</dd>
   </dl>
 
 
@@ -536,7 +554,8 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets job service.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -546,13 +565,15 @@ Class JobGroupConsoleCommandBase
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service collection to configure.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.IJobService.html">IJobService</a></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 
@@ -572,7 +593,8 @@ Class JobGroupConsoleCommandBase
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the normalize job group operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -582,13 +604,15 @@ Class JobGroupConsoleCommandBase
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The job group used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The result of the operation.</p>
+</dd>
   </dl>
 
 

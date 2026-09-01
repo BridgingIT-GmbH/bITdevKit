@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RetryFileStorageBehavior.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class RetryFileStorageBehavior.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class RetryFileStorageBehavior.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the retry attempt operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,21 +143,29 @@ public static void LogRetryAttempt(ILogger logger, string logKey, string locatio
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>retryCount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The retry count used by the operation.</p>
+</dd>
     <dt><code>maxRetries</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The max retries used by the operation.</p>
+</dd>
     <dt><code>operation</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The operation used by the operation.</p>
+</dd>
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The path used by the operation.</p>
+</dd>
     <dt><code>errors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The errors used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -176,7 +186,8 @@ public static void LogRetryAttempt(ILogger logger, string logKey, string locatio
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the retry failure operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -187,19 +198,26 @@ public static void LogRetryFailure(ILogger logger, string logKey, string locatio
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>operation</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The operation used by the operation.</p>
+</dd>
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The path used by the operation.</p>
+</dd>
     <dt><code>retries</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The retries used by the operation.</p>
+</dd>
     <dt><code>error</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The error used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -220,7 +238,8 @@ public static void LogRetryFailure(ILogger logger, string logKey, string locatio
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the retry start operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -231,17 +250,23 @@ public static void LogRetryStart(ILogger logger, string logKey, string locationN
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>operation</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The operation used by the operation.</p>
+</dd>
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The path used by the operation.</p>
+</dd>
     <dt><code>maxRetries</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The max retries used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -262,7 +287,8 @@ public static void LogRetryStart(ILogger logger, string logKey, string locationN
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the retry success operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,17 +299,23 @@ public static void LogRetrySuccess(ILogger logger, string logKey, string locatio
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>locationName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The location name used by the operation.</p>
+</dd>
     <dt><code>operation</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The operation used by the operation.</p>
+</dd>
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The path used by the operation.</p>
+</dd>
     <dt><code>retries</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The retries used by the operation.</p>
+</dd>
   </dl>
 
 

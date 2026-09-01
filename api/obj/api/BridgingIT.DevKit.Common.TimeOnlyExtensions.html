@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TimeOnlyExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides clock arithmetic, same-day range checks, boundary alignment, and invariant formatting for  values.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class TimeOnlyExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides clock arithmetic, same-day range checks, boundary alignment, and invariant formatting for <span class="xref">System.TimeOnly</span> values.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class TimeOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a signed clock-unit amount, wrapping across midnight according to <span class="xref">System.TimeOnly</span> arithmetic.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,17 +142,21 @@ Class TimeOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>time</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The time to adjust.</p>
+</dd>
     <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeUnit.html">TimeUnit</a></dt>
-    <dd></dd>
+    <dd><p>The clock unit to add.</p>
+</dd>
     <dt><code>amount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The signed number of units.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The adjusted time of day.</p>
+</dd>
   </dl>
 
 
@@ -160,6 +166,12 @@ Class TimeOnlyExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">unit</code> is unsupported.</p>
+</dd>
+  </dl>
 
 
 
@@ -170,7 +182,8 @@ Class TimeOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Moves a time to the next clock-unit boundary unless it is already aligned.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -180,15 +193,18 @@ Class TimeOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>timeOnly</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The time to ceiling.</p>
+</dd>
     <dt><code>timeUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeUnit.html">TimeUnit</a></dt>
-    <dd></dd>
+    <dd><p>The clock boundary to use.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The aligned time; a day ceiling wraps to midnight.</p>
+</dd>
   </dl>
 
 
@@ -198,6 +214,12 @@ Class TimeOnlyExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">timeUnit</code> is unsupported.</p>
+</dd>
+  </dl>
 
 
 
@@ -259,7 +281,8 @@ Class TimeOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Floors a time to the start of its containing millisecond, second, minute, hour, or day.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -269,15 +292,18 @@ Class TimeOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>timeOnly</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The time to floor.</p>
+</dd>
     <dt><code>timeUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeUnit.html">TimeUnit</a></dt>
-    <dd></dd>
+    <dd><p>The clock boundary to use.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The aligned time.</p>
+</dd>
   </dl>
 
 
@@ -287,6 +313,12 @@ Class TimeOnlyExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">timeUnit</code> is unsupported.</p>
+</dd>
+  </dl>
 
 
 
@@ -348,7 +380,8 @@ Class TimeOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a time lies between two same-day boundaries.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -358,19 +391,24 @@ Class TimeOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>time</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The time to evaluate.</p>
+</dd>
     <dt><code>start</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The lower same-day boundary.</p>
+</dd>
     <dt><code>end</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The upper same-day boundary.</p>
+</dd>
     <dt><code>inclusive</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether equality with either boundary counts as in range.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the selected boundary comparison succeeds.</p>
+</dd>
   </dl>
 
 
@@ -390,7 +428,8 @@ Class TimeOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a time is within a past or future same-day range relative to the current local time.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -400,21 +439,27 @@ Class TimeOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>time</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The time to evaluate.</p>
+</dd>
     <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeUnit.html">TimeUnit</a></dt>
-    <dd></dd>
+    <dd><p>The clock unit used to calculate the boundary.</p>
+</dd>
     <dt><code>amount</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of units between now and the boundary.</p>
+</dd>
     <dt><code>direction</code> <a class="xref" href="BridgingIT.DevKit.Common.DateTimeDirection.html">DateTimeDirection</a></dt>
-    <dd></dd>
+    <dd><p>Whether the range extends into the past or future.</p>
+</dd>
     <dt><code>inclusive</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether now and the calculated boundary are included.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the time lies in the same-day range.</p>
+</dd>
   </dl>
 
 
@@ -494,7 +539,8 @@ Class TimeOnlyExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Rounds a time to the nearest clock unit using half-up tick arithmetic and wraps at midnight.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -504,15 +550,18 @@ Class TimeOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>timeOnly</code> <span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The time to round.</p>
+</dd>
     <dt><code>timeUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.TimeUnit.html">TimeUnit</a></dt>
-    <dd></dd>
+    <dd><p>The clock unit used as the rounding interval.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeOnly</span></dt>
-    <dd></dd>
+    <dd><p>The rounded time of day.</p>
+</dd>
   </dl>
 
 
@@ -522,6 +571,12 @@ Class TimeOnlyExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">timeUnit</code> is unsupported.</p>
+</dd>
+  </dl>
 
 
 

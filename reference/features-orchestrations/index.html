@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#orchestrations-feature-documentation" class="md-skip">
+        <a href="#orchestrations" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1624,15 +1665,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1650,8 +1696,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1732,6 +1778,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1907,10 +1981,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-it" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        Challenges
       
     </span>
   </a>
@@ -1918,10 +1992,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#core-concepts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Concepts
+        Core concepts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
       
     </span>
   </a>
@@ -1929,22 +2053,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#registration" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registration
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Registration">
+    <nav class="md-nav" aria-label="Basic Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#in-memory-runtime" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In-memory Runtime
+        In-memory runtime
       
     </span>
   </a>
@@ -1955,7 +2079,7 @@
   <a href="#durable-entity-framework-runtime" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Durable Entity Framework Runtime
+        Durable Entity Framework runtime
       
     </span>
   </a>
@@ -1966,7 +2090,7 @@
   <a href="#add-operational-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Add Operational Endpoints
+        Add operational endpoints
       
     </span>
   </a>
@@ -1977,7 +2101,7 @@
   <a href="#add-global-orchestration-behaviors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Add Global Orchestration Behaviors
+        Add global orchestration behaviors
       
     </span>
   </a>
@@ -1988,7 +2112,7 @@
   <a href="#background-execution-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Background Execution Settings
+        Background execution settings
       
     </span>
   </a>
@@ -2004,19 +2128,19 @@
   <a href="#authoring-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Authoring Model
+        Authoring model
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Authoring Model">
+    <nav class="md-nav" aria-label="Authoring model">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#state-surface" class="md-nav__link">
     <span class="md-ellipsis">
       
-        State Surface
+        State surface
       
     </span>
   </a>
@@ -2038,7 +2162,7 @@
   <a href="#activity-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity Configuration
+        Activity configuration
       
     </span>
   </a>
@@ -2049,19 +2173,19 @@
   <a href="#writing-custom-activities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Writing Custom Activities
+        Writing custom activities
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Writing Custom Activities">
+    <nav class="md-nav" aria-label="Writing custom activities">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#minimal-custom-activity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minimal Custom Activity
+        Minimal custom activity
       
     </span>
   </a>
@@ -2072,7 +2196,7 @@
   <a href="#activity-with-constructor-injection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity With Constructor Injection
+        Activity with constructor injection
       
     </span>
   </a>
@@ -2083,7 +2207,7 @@
   <a href="#returning-outcomes-correctly" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Returning Outcomes Correctly
+        Returning outcomes correctly
       
     </span>
   </a>
@@ -2094,7 +2218,7 @@
   <a href="#what-a-custom-activity-should-and-should-not-do" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What A Custom Activity Should And Should Not Do
+        What a custom activity should and should not do
       
     </span>
   </a>
@@ -2116,7 +2240,7 @@
   <a href="#when-to-use-an-inline-activity-instead" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use An Inline Activity Instead
+        When to use an inline activity instead
       
     </span>
   </a>
@@ -2127,7 +2251,7 @@
   <a href="#optional-add-your-own-dsl-wrapper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optional: Add Your Own DSL Wrapper
+        Optional: Add your own DSL wrapper
       
     </span>
   </a>
@@ -2143,12 +2267,12 @@
   <a href="#built-in-activity-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Activity Helpers
+        Built-in activity helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Built-In Activity Helpers">
+    <nav class="md-nav" aria-label="Built-in activity helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2199,7 +2323,7 @@
   <a href="#built-in-outbound-integrations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Outbound Integrations
+        Built-in outbound integrations
       
     </span>
   </a>
@@ -2347,7 +2471,7 @@
   <a href="#activity-outcome-and-completion-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity Outcome And Completion Semantics
+        Activity outcome and completion semantics
       
     </span>
   </a>
@@ -2363,19 +2487,19 @@
   <a href="#example-order-approval" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Order Approval
+        Example: Order approval
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Example: Order Approval">
+    <nav class="md-nav" aria-label="Example: Order approval">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#context-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Context Data
+        Context data
       
     </span>
   </a>
@@ -2386,7 +2510,7 @@
   <a href="#definition-sketch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definition Sketch
+        Definition sketch
       
     </span>
   </a>
@@ -2397,7 +2521,7 @@
   <a href="#start-the-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Start the Workflow
+        Start the workflow
       
     </span>
   </a>
@@ -2408,7 +2532,7 @@
   <a href="#approve-or-reject" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Approve or Reject
+        Approve or reject
       
     </span>
   </a>
@@ -2424,19 +2548,19 @@
   <a href="#example-telephone-call-state-machine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Telephone Call State Machine
+        Example: Telephone call state machine
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Example: Telephone Call State Machine">
+    <nav class="md-nav" aria-label="Example: Telephone call state machine">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#context-data_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Context Data
+        Context data
       
     </span>
   </a>
@@ -2447,7 +2571,7 @@
   <a href="#definition-sketch_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definition Sketch
+        Definition sketch
       
     </span>
   </a>
@@ -2458,7 +2582,7 @@
   <a href="#drive-it-with-signals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Drive It With Signals
+        Drive it with signals
       
     </span>
   </a>
@@ -2474,12 +2598,12 @@
   <a href="#durable-timers-and-signals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Durable Timers and Signals
+        Durable timers and signals
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Durable Timers and Signals">
+    <nav class="md-nav" aria-label="Durable timers and signals">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2535,19 +2659,19 @@
   <a href="#starting-and-controlling-instances" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Starting And Controlling Instances
+        Starting and controlling instances
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Starting And Controlling Instances">
+    <nav class="md-nav" aria-label="Starting and controlling instances">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#execute-inline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Execute Inline
+        Execute inline
       
     </span>
   </a>
@@ -2558,7 +2682,7 @@
   <a href="#dispatch-for-background-progression" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dispatch for Background Progression
+        Dispatch for background progression
       
     </span>
   </a>
@@ -2569,7 +2693,7 @@
   <a href="#dispatch-and-wait-for-a-milestone" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dispatch And Wait for a Milestone
+        Dispatch and wait for a milestone
       
     </span>
   </a>
@@ -2580,7 +2704,7 @@
   <a href="#pause-resume-cancel-and-terminate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pause, Resume, Cancel, And Terminate
+        Pause, resume, cancel, and terminate
       
     </span>
   </a>
@@ -2591,12 +2715,12 @@
   <a href="#what-the-control-actions-actually-do" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What The Control Actions Actually Do
+        What the control actions actually do
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="What The Control Actions Actually Do">
+    <nav class="md-nav" aria-label="What the control actions actually do">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2647,7 +2771,7 @@
   <a href="#choosing-the-right-action" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choosing The Right Action
+        Choosing the right action
       
     </span>
   </a>
@@ -2658,7 +2782,7 @@
   <a href="#common-validation-failures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Validation Failures
+        Common validation failures
       
     </span>
   </a>
@@ -2679,7 +2803,7 @@
   <a href="#querying-persisted-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Querying Persisted State
+        Querying persisted state
       
     </span>
   </a>
@@ -2702,7 +2826,7 @@
   <a href="#approval-flow-test" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Approval Flow Test
+        Approval flow test
       
     </span>
   </a>
@@ -2713,7 +2837,7 @@
   <a href="#timeout-test" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Timeout Test
+        Timeout test
       
     </span>
   </a>
@@ -2724,7 +2848,7 @@
   <a href="#telephone-call-test" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Telephone Call Test
+        Telephone call test
       
     </span>
   </a>
@@ -2740,7 +2864,7 @@
   <a href="#operational-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operational Endpoints
+        Operational endpoints
       
     </span>
   </a>
@@ -2748,22 +2872,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#architecture-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Architecture details
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Architecture">
+    <nav class="md-nav" aria-label="Architecture details">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#internal-layers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Internal Layers
+        Internal layers
       
     </span>
   </a>
@@ -2774,7 +2898,7 @@
   <a href="#runtime-execution-loop" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Runtime Execution Loop
+        Runtime execution loop
       
     </span>
   </a>
@@ -2785,7 +2909,7 @@
   <a href="#durable-boundaries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Durable Boundaries
+        Durable boundaries
       
     </span>
   </a>
@@ -2796,7 +2920,7 @@
   <a href="#lease-and-concurrency-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lease And Concurrency Model
+        Lease and concurrency model
       
     </span>
   </a>
@@ -2807,7 +2931,7 @@
   <a href="#signal-and-timer-processing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Signal And Timer Processing
+        Signal and timer processing
       
     </span>
   </a>
@@ -2818,7 +2942,7 @@
   <a href="#persistence-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Persistence Model
+        Persistence model
       
     </span>
   </a>
@@ -2829,7 +2953,7 @@
   <a href="#query-and-operations-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Query And Operations Model
+        Query and operations model
       
     </span>
   </a>
@@ -2845,7 +2969,7 @@
   <a href="#example-sources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Sources
+        Example sources
       
     </span>
   </a>
@@ -2935,15 +3059,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2961,8 +3090,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2971,6 +3100,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3046,15 +3203,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -3072,8 +3234,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3098,6 +3260,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -3314,6 +3532,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -3381,15 +3627,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -3407,8 +3658,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3688,15 +3939,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3714,8 +3970,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3795,6 +4051,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3834,10 +4621,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-it" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        Challenges
       
     </span>
   </a>
@@ -3845,10 +4632,60 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Architecture">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
   <a href="#core-concepts" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Concepts
+        Core concepts
+      
+    </span>
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
       
     </span>
   </a>
@@ -3856,22 +4693,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#registration" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registration
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Registration">
+    <nav class="md-nav" aria-label="Basic Usage">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#in-memory-runtime" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In-memory Runtime
+        In-memory runtime
       
     </span>
   </a>
@@ -3882,7 +4719,7 @@
   <a href="#durable-entity-framework-runtime" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Durable Entity Framework Runtime
+        Durable Entity Framework runtime
       
     </span>
   </a>
@@ -3893,7 +4730,7 @@
   <a href="#add-operational-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Add Operational Endpoints
+        Add operational endpoints
       
     </span>
   </a>
@@ -3904,7 +4741,7 @@
   <a href="#add-global-orchestration-behaviors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Add Global Orchestration Behaviors
+        Add global orchestration behaviors
       
     </span>
   </a>
@@ -3915,7 +4752,7 @@
   <a href="#background-execution-settings" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Background Execution Settings
+        Background execution settings
       
     </span>
   </a>
@@ -3931,19 +4768,19 @@
   <a href="#authoring-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Authoring Model
+        Authoring model
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Authoring Model">
+    <nav class="md-nav" aria-label="Authoring model">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#state-surface" class="md-nav__link">
     <span class="md-ellipsis">
       
-        State Surface
+        State surface
       
     </span>
   </a>
@@ -3965,7 +4802,7 @@
   <a href="#activity-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity Configuration
+        Activity configuration
       
     </span>
   </a>
@@ -3976,19 +4813,19 @@
   <a href="#writing-custom-activities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Writing Custom Activities
+        Writing custom activities
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Writing Custom Activities">
+    <nav class="md-nav" aria-label="Writing custom activities">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#minimal-custom-activity" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Minimal Custom Activity
+        Minimal custom activity
       
     </span>
   </a>
@@ -3999,7 +4836,7 @@
   <a href="#activity-with-constructor-injection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity With Constructor Injection
+        Activity with constructor injection
       
     </span>
   </a>
@@ -4010,7 +4847,7 @@
   <a href="#returning-outcomes-correctly" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Returning Outcomes Correctly
+        Returning outcomes correctly
       
     </span>
   </a>
@@ -4021,7 +4858,7 @@
   <a href="#what-a-custom-activity-should-and-should-not-do" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What A Custom Activity Should And Should Not Do
+        What a custom activity should and should not do
       
     </span>
   </a>
@@ -4043,7 +4880,7 @@
   <a href="#when-to-use-an-inline-activity-instead" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use An Inline Activity Instead
+        When to use an inline activity instead
       
     </span>
   </a>
@@ -4054,7 +4891,7 @@
   <a href="#optional-add-your-own-dsl-wrapper" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Optional: Add Your Own DSL Wrapper
+        Optional: Add your own DSL wrapper
       
     </span>
   </a>
@@ -4070,12 +4907,12 @@
   <a href="#built-in-activity-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Activity Helpers
+        Built-in activity helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Built-In Activity Helpers">
+    <nav class="md-nav" aria-label="Built-in activity helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4126,7 +4963,7 @@
   <a href="#built-in-outbound-integrations" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Outbound Integrations
+        Built-in outbound integrations
       
     </span>
   </a>
@@ -4274,7 +5111,7 @@
   <a href="#activity-outcome-and-completion-semantics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity Outcome And Completion Semantics
+        Activity outcome and completion semantics
       
     </span>
   </a>
@@ -4290,19 +5127,19 @@
   <a href="#example-order-approval" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Order Approval
+        Example: Order approval
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Example: Order Approval">
+    <nav class="md-nav" aria-label="Example: Order approval">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#context-data" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Context Data
+        Context data
       
     </span>
   </a>
@@ -4313,7 +5150,7 @@
   <a href="#definition-sketch" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definition Sketch
+        Definition sketch
       
     </span>
   </a>
@@ -4324,7 +5161,7 @@
   <a href="#start-the-workflow" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Start the Workflow
+        Start the workflow
       
     </span>
   </a>
@@ -4335,7 +5172,7 @@
   <a href="#approve-or-reject" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Approve or Reject
+        Approve or reject
       
     </span>
   </a>
@@ -4351,19 +5188,19 @@
   <a href="#example-telephone-call-state-machine" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example: Telephone Call State Machine
+        Example: Telephone call state machine
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Example: Telephone Call State Machine">
+    <nav class="md-nav" aria-label="Example: Telephone call state machine">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#context-data_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Context Data
+        Context data
       
     </span>
   </a>
@@ -4374,7 +5211,7 @@
   <a href="#definition-sketch_1" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Definition Sketch
+        Definition sketch
       
     </span>
   </a>
@@ -4385,7 +5222,7 @@
   <a href="#drive-it-with-signals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Drive It With Signals
+        Drive it with signals
       
     </span>
   </a>
@@ -4401,12 +5238,12 @@
   <a href="#durable-timers-and-signals" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Durable Timers and Signals
+        Durable timers and signals
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Durable Timers and Signals">
+    <nav class="md-nav" aria-label="Durable timers and signals">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4462,19 +5299,19 @@
   <a href="#starting-and-controlling-instances" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Starting And Controlling Instances
+        Starting and controlling instances
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Starting And Controlling Instances">
+    <nav class="md-nav" aria-label="Starting and controlling instances">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#execute-inline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Execute Inline
+        Execute inline
       
     </span>
   </a>
@@ -4485,7 +5322,7 @@
   <a href="#dispatch-for-background-progression" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dispatch for Background Progression
+        Dispatch for background progression
       
     </span>
   </a>
@@ -4496,7 +5333,7 @@
   <a href="#dispatch-and-wait-for-a-milestone" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dispatch And Wait for a Milestone
+        Dispatch and wait for a milestone
       
     </span>
   </a>
@@ -4507,7 +5344,7 @@
   <a href="#pause-resume-cancel-and-terminate" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pause, Resume, Cancel, And Terminate
+        Pause, resume, cancel, and terminate
       
     </span>
   </a>
@@ -4518,12 +5355,12 @@
   <a href="#what-the-control-actions-actually-do" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What The Control Actions Actually Do
+        What the control actions actually do
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="What The Control Actions Actually Do">
+    <nav class="md-nav" aria-label="What the control actions actually do">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4574,7 +5411,7 @@
   <a href="#choosing-the-right-action" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choosing The Right Action
+        Choosing the right action
       
     </span>
   </a>
@@ -4585,7 +5422,7 @@
   <a href="#common-validation-failures" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Common Validation Failures
+        Common validation failures
       
     </span>
   </a>
@@ -4606,7 +5443,7 @@
   <a href="#querying-persisted-state" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Querying Persisted State
+        Querying persisted state
       
     </span>
   </a>
@@ -4629,7 +5466,7 @@
   <a href="#approval-flow-test" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Approval Flow Test
+        Approval flow test
       
     </span>
   </a>
@@ -4640,7 +5477,7 @@
   <a href="#timeout-test" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Timeout Test
+        Timeout test
       
     </span>
   </a>
@@ -4651,7 +5488,7 @@
   <a href="#telephone-call-test" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Telephone Call Test
+        Telephone call test
       
     </span>
   </a>
@@ -4667,7 +5504,7 @@
   <a href="#operational-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Operational Endpoints
+        Operational endpoints
       
     </span>
   </a>
@@ -4675,22 +5512,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#architecture" class="md-nav__link">
+  <a href="#architecture-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Architecture
+        Architecture details
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Architecture">
+    <nav class="md-nav" aria-label="Architecture details">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#internal-layers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Internal Layers
+        Internal layers
       
     </span>
   </a>
@@ -4701,7 +5538,7 @@
   <a href="#runtime-execution-loop" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Runtime Execution Loop
+        Runtime execution loop
       
     </span>
   </a>
@@ -4712,7 +5549,7 @@
   <a href="#durable-boundaries" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Durable Boundaries
+        Durable boundaries
       
     </span>
   </a>
@@ -4723,7 +5560,7 @@
   <a href="#lease-and-concurrency-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Lease And Concurrency Model
+        Lease and concurrency model
       
     </span>
   </a>
@@ -4734,7 +5571,7 @@
   <a href="#signal-and-timer-processing" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Signal And Timer Processing
+        Signal and timer processing
       
     </span>
   </a>
@@ -4745,7 +5582,7 @@
   <a href="#persistence-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Persistence Model
+        Persistence model
       
     </span>
   </a>
@@ -4756,7 +5593,7 @@
   <a href="#query-and-operations-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Query And Operations Model
+        Query and operations model
       
     </span>
   </a>
@@ -4772,7 +5609,7 @@
   <a href="#example-sources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example Sources
+        Example sources
       
     </span>
   </a>
@@ -4822,10 +5659,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -4865,44 +5720,50 @@
   
 
 
-<h1 id="orchestrations-feature-documentation">Orchestrations Feature Documentation<a class="headerlink" href="#orchestrations-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="orchestrations">Orchestrations<a class="headerlink" href="#orchestrations" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Define durable, stateful workflows in code with explicit states, activities, signals, timers, persisted history, and operational query endpoints.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#orchestrations-feature-documentation">Orchestrations Feature Documentation</a><ul>
+<li><a href="#orchestrations">Orchestrations</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#when-to-use-it">When To Use It</a></li>
-<li><a href="#core-concepts">Core Concepts</a></li>
-<li><a href="#registration">Registration</a><ul>
-<li><a href="#in-memory-runtime">In-memory Runtime</a></li>
-<li><a href="#durable-entity-framework-runtime">Durable Entity Framework Runtime</a></li>
-<li><a href="#add-operational-endpoints">Add Operational Endpoints</a></li>
-<li><a href="#add-global-orchestration-behaviors">Add Global Orchestration Behaviors</a></li>
-<li><a href="#background-execution-settings">Background Execution Settings</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a><ul>
+<li><a href="#core-concepts">Core concepts</a></li>
 </ul>
 </li>
-<li><a href="#authoring-model">Authoring Model</a><ul>
-<li><a href="#state-surface">State Surface</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a><ul>
+<li><a href="#in-memory-runtime">In-memory runtime</a></li>
+<li><a href="#durable-entity-framework-runtime">Durable Entity Framework runtime</a></li>
+<li><a href="#add-operational-endpoints">Add operational endpoints</a></li>
+<li><a href="#add-global-orchestration-behaviors">Add global orchestration behaviors</a></li>
+<li><a href="#background-execution-settings">Background execution settings</a></li>
+</ul>
+</li>
+<li><a href="#authoring-model">Authoring model</a><ul>
+<li><a href="#state-surface">State surface</a></li>
 <li><a href="#whensignal-vs-waitforsignal">WhenSignal(...) vs WaitForSignal(...)</a></li>
-<li><a href="#activity-configuration">Activity Configuration</a></li>
-<li><a href="#writing-custom-activities">Writing Custom Activities</a><ul>
-<li><a href="#minimal-custom-activity">Minimal Custom Activity</a></li>
-<li><a href="#activity-with-constructor-injection">Activity With Constructor Injection</a></li>
-<li><a href="#returning-outcomes-correctly">Returning Outcomes Correctly</a></li>
-<li><a href="#what-a-custom-activity-should-and-should-not-do">What A Custom Activity Should And Should Not Do</a></li>
+<li><a href="#activity-configuration">Activity configuration</a></li>
+<li><a href="#writing-custom-activities">Writing custom activities</a><ul>
+<li><a href="#minimal-custom-activity">Minimal custom activity</a></li>
+<li><a href="#activity-with-constructor-injection">Activity with constructor injection</a></li>
+<li><a href="#returning-outcomes-correctly">Returning outcomes correctly</a></li>
+<li><a href="#what-a-custom-activity-should-and-should-not-do">What a custom activity should and should not do</a></li>
 <li><a href="#contextdata-vs-contextproperties">context.Data vs context.Properties</a></li>
-<li><a href="#when-to-use-an-inline-activity-instead">When To Use An Inline Activity Instead</a></li>
-<li><a href="#optional-add-your-own-dsl-wrapper">Optional: Add Your Own DSL Wrapper</a></li>
+<li><a href="#when-to-use-an-inline-activity-instead">When to use an inline activity instead</a></li>
+<li><a href="#optional-add-your-own-dsl-wrapper">Optional: Add your own DSL wrapper</a></li>
 </ul>
 </li>
-<li><a href="#built-in-activity-helpers">Built-In Activity Helpers</a><ul>
+<li><a href="#built-in-activity-helpers">Built-in activity helpers</a><ul>
 <li><a href="#logactivity">LogActivity(...)</a></li>
 <li><a href="#transformactivity">TransformActivity(...)</a></li>
 <li><a href="#decisionactivity">DecisionActivity(...)</a></li>
 <li><a href="#waitactivity">WaitActivity(...)</a></li>
-<li><a href="#built-in-outbound-integrations">Built-In Outbound Integrations</a></li>
+<li><a href="#built-in-outbound-integrations">Built-in outbound integrations</a></li>
 <li><a href="#queryactivity">QueryActivity(...)</a></li>
 <li><a href="#commandactivity">CommandActivity(...)</a></li>
 <li><a href="#sendrequestactivity">SendRequestActivity(...)</a></li>
@@ -4917,64 +5778,64 @@
 <li><a href="#humantaskactivity">HumanTaskActivity(...)</a></li>
 </ul>
 </li>
-<li><a href="#activity-outcome-and-completion-semantics">Activity Outcome And Completion Semantics</a></li>
+<li><a href="#activity-outcome-and-completion-semantics">Activity outcome and completion semantics</a></li>
 </ul>
 </li>
-<li><a href="#example-order-approval">Example: Order Approval</a><ul>
-<li><a href="#context-data">Context Data</a></li>
-<li><a href="#definition-sketch">Definition Sketch</a></li>
-<li><a href="#start-the-workflow">Start the Workflow</a></li>
-<li><a href="#approve-or-reject">Approve or Reject</a></li>
+<li><a href="#example-order-approval">Example: Order approval</a><ul>
+<li><a href="#context-data">Context data</a></li>
+<li><a href="#definition-sketch">Definition sketch</a></li>
+<li><a href="#start-the-workflow">Start the workflow</a></li>
+<li><a href="#approve-or-reject">Approve or reject</a></li>
 </ul>
 </li>
-<li><a href="#example-telephone-call-state-machine">Example: Telephone Call State Machine</a><ul>
-<li><a href="#context-data_1">Context Data</a></li>
-<li><a href="#definition-sketch_1">Definition Sketch</a></li>
-<li><a href="#drive-it-with-signals">Drive It With Signals</a></li>
+<li><a href="#example-telephone-call-state-machine">Example: Telephone call state machine</a><ul>
+<li><a href="#context-data_1">Context data</a></li>
+<li><a href="#definition-sketch_1">Definition sketch</a></li>
+<li><a href="#drive-it-with-signals">Drive it with signals</a></li>
 </ul>
 </li>
-<li><a href="#durable-timers-and-signals">Durable Timers and Signals</a><ul>
+<li><a href="#durable-timers-and-signals">Durable timers and signals</a><ul>
 <li><a href="#durable-timers">Durable timers</a></li>
 <li><a href="#durable-signals">Durable signals</a></li>
 <li><a href="#how-timers-and-signals-work-together">How timers and signals work together</a></li>
 <li><a href="#why-this-matters-operationally">Why this matters operationally</a></li>
 </ul>
 </li>
-<li><a href="#starting-and-controlling-instances">Starting And Controlling Instances</a><ul>
-<li><a href="#execute-inline">Execute Inline</a></li>
-<li><a href="#dispatch-for-background-progression">Dispatch for Background Progression</a></li>
-<li><a href="#dispatch-and-wait-for-a-milestone">Dispatch And Wait for a Milestone</a></li>
-<li><a href="#pause-resume-cancel-and-terminate">Pause, Resume, Cancel, And Terminate</a></li>
-<li><a href="#what-the-control-actions-actually-do">What The Control Actions Actually Do</a><ul>
+<li><a href="#starting-and-controlling-instances">Starting and controlling instances</a><ul>
+<li><a href="#execute-inline">Execute inline</a></li>
+<li><a href="#dispatch-for-background-progression">Dispatch for background progression</a></li>
+<li><a href="#dispatch-and-wait-for-a-milestone">Dispatch and wait for a milestone</a></li>
+<li><a href="#pause-resume-cancel-and-terminate">Pause, resume, cancel, and terminate</a></li>
+<li><a href="#what-the-control-actions-actually-do">What the control actions actually do</a><ul>
 <li><a href="#pauseasync">PauseAsync(...)</a></li>
 <li><a href="#resumeasync">ResumeAsync(...)</a></li>
 <li><a href="#cancelasync">CancelAsync(...)</a></li>
 <li><a href="#terminateasync">TerminateAsync(...)</a></li>
-<li><a href="#choosing-the-right-action">Choosing The Right Action</a></li>
-<li><a href="#common-validation-failures">Common Validation Failures</a></li>
+<li><a href="#choosing-the-right-action">Choosing the right action</a></li>
+<li><a href="#common-validation-failures">Common validation failures</a></li>
 </ul>
 </li>
 </ul>
 </li>
-<li><a href="#querying-persisted-state">Querying Persisted State</a></li>
+<li><a href="#querying-persisted-state">Querying persisted state</a></li>
 <li><a href="#testing">Testing</a><ul>
-<li><a href="#approval-flow-test">Approval Flow Test</a></li>
-<li><a href="#timeout-test">Timeout Test</a></li>
-<li><a href="#telephone-call-test">Telephone Call Test</a></li>
+<li><a href="#approval-flow-test">Approval flow test</a></li>
+<li><a href="#timeout-test">Timeout test</a></li>
+<li><a href="#telephone-call-test">Telephone call test</a></li>
 </ul>
 </li>
-<li><a href="#operational-endpoints">Operational Endpoints</a></li>
-<li><a href="#architecture">Architecture</a><ul>
-<li><a href="#internal-layers">Internal Layers</a></li>
-<li><a href="#runtime-execution-loop">Runtime Execution Loop</a></li>
-<li><a href="#durable-boundaries">Durable Boundaries</a></li>
-<li><a href="#lease-and-concurrency-model">Lease And Concurrency Model</a></li>
-<li><a href="#signal-and-timer-processing">Signal And Timer Processing</a></li>
-<li><a href="#persistence-model">Persistence Model</a></li>
-<li><a href="#query-and-operations-model">Query And Operations Model</a></li>
+<li><a href="#operational-endpoints">Operational endpoints</a></li>
+<li><a href="#architecture-details">Architecture details</a><ul>
+<li><a href="#internal-layers">Internal layers</a></li>
+<li><a href="#runtime-execution-loop">Runtime execution loop</a></li>
+<li><a href="#durable-boundaries">Durable boundaries</a></li>
+<li><a href="#lease-and-concurrency-model">Lease and concurrency model</a></li>
+<li><a href="#signal-and-timer-processing">Signal and timer processing</a></li>
+<li><a href="#persistence-model">Persistence model</a></li>
+<li><a href="#query-and-operations-model">Query and operations model</a></li>
 </ul>
 </li>
-<li><a href="#example-sources">Example Sources</a></li>
+<li><a href="#example-sources">Example sources</a></li>
 </ul>
 </li>
 </ul>
@@ -4998,7 +5859,34 @@
 <li><code>Presentation.Web.Orchestrations</code>: operational HTTP endpoints</li>
 </ul>
 <p>At the API surface, orchestration runtime and query operations follow the devkit <code>Result</code> pattern. That means callers inspect <code>IsSuccess</code>, <code>IsFailure</code>, <code>Messages</code>, and <code>Errors</code> explicitly rather than inferring business/runtime outcomes from exceptions alone.</p>
-<h2 id="when-to-use-it">When To Use It<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h2>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Long-running business processes must preserve state across requests, restarts and external waits. They also need explicit transition rules, idempotent signal handling, recoverable timers, concurrency control and enough persisted history for operators to understand a stalled instance. Implementing those concerns independently in each application service creates inconsistent recovery and control behavior.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>Define a state machine with <code>Orchestration&lt;TData&gt;</code>, activities, transitions, signals and timers. <code>IOrchestrationService</code> starts and controls instances through <code>Result</code>-returning APIs. The in-memory provider supports local execution and tests; the Entity Framework provider persists instances, history, signals, timers and leases. An internal recovery service resumes due or incomplete work when background execution is enabled.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Code-first states, activities, conditional transitions and terminal outcomes.</li>
+<li>Durable signals and timers for external input and scheduled continuation.</li>
+<li>Inline, background and dispatch-and-wait execution modes.</li>
+<li>Retry, compensation, child orchestration, parallel branch and loop helpers.</li>
+<li>Global activity behaviors for metrics, tracing, policy enforcement or fault injection.</li>
+<li>Pause, resume, cancel, terminate, query and administration operations.</li>
+<li>In-memory and Entity Framework persistence providers.</li>
+<li>Optional operational endpoints and diagram projection.</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>AddOrchestrations</code> registers the executor, public service, recovery service, query and administration services, diagram services and in-memory persistence. <code>WithEntityFramework&lt;TContext&gt;</code> replaces the storage interfaces with durable implementations. Registered definitions are resolved by orchestration type, and class-based activities are created through <code>ActivatorUtilities</code>, so their dependencies come from the application container.</p>
+<h3 id="core-concepts">Core concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h3>
+<ul>
+<li><code>Orchestration&lt;TData&gt;</code> defines the workflow in code.</li>
+<li>States are durable business phases such as <code>Created</code>, <code>AwaitingApproval</code>, or <code>Confirmed</code>.</li>
+<li>Activities perform work inside a state and return <code>OrchestrationOutcome</code> values such as <code>Continue</code>, <code>Retry</code>, <code>Wait</code>, <code>Complete</code>, <code>Cancel</code>, or <code>Terminate</code>.</li>
+<li>Transitions move the instance to the next state.</li>
+<li>Signals are durable external inputs correlated to a specific orchestration instance.</li>
+<li>Timers are durable wake-up points used for timeouts, delayed retries, and scheduled continuation.</li>
+<li>The orchestration context carries typed data plus a property bag for execution-scoped metadata.</li>
+</ul>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <p>Orchestration is a good fit for:</p>
 <ul>
 <li>approval flows</li>
@@ -5013,18 +5901,8 @@
 <li>pure pub/sub event fan-out, here the <a href="../features-messaging/">Messaging</a> feature is a better fit</li>
 <li>simple queue-based background jobs with one handler and no business state machine, here the <a href="../features-queueing/">Queueing</a> feature is a better fit</li>
 </ul>
-<h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
-<ul>
-<li><code>Orchestration&lt;TData&gt;</code> defines the workflow in code.</li>
-<li>States are durable business phases such as <code>Created</code>, <code>AwaitingApproval</code>, or <code>Confirmed</code>.</li>
-<li>Activities perform work inside a state and return <code>OrchestrationOutcome</code> values such as <code>Continue</code>, <code>Retry</code>, <code>Wait</code>, <code>Complete</code>, <code>Cancel</code>, or <code>Terminate</code>.</li>
-<li>Transitions move the instance to the next state.</li>
-<li>Signals are durable external inputs correlated to a specific orchestration instance.</li>
-<li>Timers are durable wake-up points used for timeouts, delayed retries, and scheduled continuation.</li>
-<li>The orchestration context carries typed data plus a property bag for execution-scoped metadata.</li>
-</ul>
-<h2 id="registration">Registration<a class="headerlink" href="#registration" title="Permanent link">&para;</a></h2>
-<h3 id="in-memory-runtime">In-memory Runtime<a class="headerlink" href="#in-memory-runtime" title="Permanent link">&para;</a></h3>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<h3 id="in-memory-runtime">In-memory runtime<a class="headerlink" href="#in-memory-runtime" title="Permanent link">&para;</a></h3>
 <p><code>AddOrchestrations()</code> registers the orchestration runtime and uses the in-memory persistence provider by default. This is a good default for local development, tests, and workflows that do not need durable storage.</p>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Orchestrations</span><span class="p">;</span>
 
@@ -5033,7 +5911,54 @@
 <span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">OrderApprovalOrchestration</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">TelephoneCallOrchestration</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="durable-entity-framework-runtime">Durable Entity Framework Runtime<a class="headerlink" href="#durable-entity-framework-runtime" title="Permanent link">&para;</a></h3>
+<p>The following minimal orchestration completes inline and exposes its result through an endpoint:</p>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddOrchestrations</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">GreetingOrchestration</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/orchestrations/greeting&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">GreetingData</span><span class="w"> </span><span class="n">data</span><span class="p">,</span>
+<span class="w">    </span><span class="n">IOrchestrationService</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">,</span>
+<span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="o">&lt;</span><span class="n">GreetingOrchestration</span><span class="p">,</span><span class="w"> </span><span class="n">GreetingData</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">        </span><span class="n">data</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">IsSuccess</span>
+<span class="w">        </span><span class="o">?</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">InstanceId</span><span class="p">,</span>
+<span class="w">            </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">.</span><span class="n">Status</span><span class="p">,</span>
+<span class="w">            </span><span class="n">data</span><span class="p">.</span><span class="n">Message</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">        </span><span class="p">:</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;; &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">GreetingData</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IOrchestrationData</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">Message</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
+<span class="p">}</span>
+
+<span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">GreetingOrchestration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Orchestration</span><span class="o">&lt;</span><span class="n">GreetingData</span><span class="o">&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Define</span><span class="p">(</span><span class="n">IOrchestrationBuilder</span><span class="o">&lt;</span><span class="n">GreetingData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">builder</span><span class="p">.</span><span class="n">State</span><span class="p">(</span><span class="s">&quot;CreateGreeting&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">state</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">state</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Activity</span><span class="p">((</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">            </span><span class="p">{</span>
+<span class="w">                </span><span class="n">context</span><span class="p">.</span><span class="n">Data</span><span class="p">.</span><span class="n">Message</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">$&quot;Hello, {context.Data.Name}.&quot;</span><span class="p">;</span>
+<span class="w">                </span><span class="k">return</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">FromResult</span><span class="p">(</span><span class="n">OrchestrationOutcome</span><span class="p">.</span><span class="n">Continue</span><span class="p">());</span>
+<span class="w">            </span><span class="p">})</span>
+<span class="w">            </span><span class="p">.</span><span class="n">Complete</span><span class="p">());</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>A successful request returns HTTP 200 with the instance id, terminal status and <code>Hello, {name}.</code>. Failures are mapped without reading <code>result.Value</code>.</p>
+<h3 id="durable-entity-framework-runtime">Durable Entity Framework runtime<a class="headerlink" href="#durable-entity-framework-runtime" title="Permanent link">&para;</a></h3>
 <p>To switch from in-memory persistence to durable storage, implement <code>IOrchestrationContext</code> on your application <code>DbContext</code> and chain <code>WithEntityFramework&lt;TContext&gt;()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AppDbContext</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DbContext</span><span class="p">,</span><span class="w"> </span><span class="n">IOrchestrationContext</span>
 <span class="p">{</span>
@@ -5052,7 +5977,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">TelephoneCallOrchestration</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithEntityFramework</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="add-operational-endpoints">Add Operational Endpoints<a class="headerlink" href="#add-operational-endpoints" title="Permanent link">&para;</a></h3>
+<h3 id="add-operational-endpoints">Add operational endpoints<a class="headerlink" href="#add-operational-endpoints" title="Permanent link">&para;</a></h3>
 <p>If you want the built-in orchestration management and query routes, add the endpoint package and register the endpoint group from the orchestration builder.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddOrchestrations</span><span class="p">()</span>
@@ -5062,7 +5987,7 @@
 <span class="w">        </span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 </code></pre></div>
 <p>The default route group is <code>/_bdk/api/orchestrations</code>.</p>
-<h3 id="add-global-orchestration-behaviors">Add Global Orchestration Behaviors<a class="headerlink" href="#add-global-orchestration-behaviors" title="Permanent link">&para;</a></h3>
+<h3 id="add-global-orchestration-behaviors">Add global orchestration behaviors<a class="headerlink" href="#add-global-orchestration-behaviors" title="Permanent link">&para;</a></h3>
 <p>Orchestration behaviors are global runtime decorators. They are not registered per orchestration type. Once registered on <code>AddOrchestrations()</code>, they wrap activity execution for all orchestrations in the current application.</p>
 <p>This behavior pipeline applies to:</p>
 <ul>
@@ -5120,7 +6045,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="background-execution-settings">Background Execution Settings<a class="headerlink" href="#background-execution-settings" title="Permanent link">&para;</a></h3>
+<h3 id="background-execution-settings">Background execution settings<a class="headerlink" href="#background-execution-settings" title="Permanent link">&para;</a></h3>
 <p>Automatic timer continuation and wait-boundary recovery are controlled through the <code>AddOrchestrations</code> fluent builder. The builder configures <code>OrchestrationExecutionSettings</code> for the runtime.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddOrchestrations</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span>
@@ -5135,7 +6060,7 @@
 <li>in-process timer watchers for low-latency same-process wakeups</li>
 <li>an internal background recovery worker that sweeps due timers and repairs incomplete waiting boundaries after restarts or mid-boundary failures</li>
 </ul>
-<h2 id="authoring-model">Authoring Model<a class="headerlink" href="#authoring-model" title="Permanent link">&para;</a></h2>
+<h2 id="authoring-model">Authoring model<a class="headerlink" href="#authoring-model" title="Permanent link">&para;</a></h2>
 <p>An orchestration is a class derived from <code>Orchestration&lt;TData&gt;</code>.</p>
 <p>Inside <code>Define(...)</code>, you describe one durable state machine. Each state can combine:</p>
 <ul>
@@ -5159,7 +6084,7 @@
 <ul>
 <li><code>WaitForSignal("CallDialed", ...)</code></li>
 </ul>
-<h3 id="state-surface">State Surface<a class="headerlink" href="#state-surface" title="Permanent link">&para;</a></h3>
+<h3 id="state-surface">State surface<a class="headerlink" href="#state-surface" title="Permanent link">&para;</a></h3>
 <p>The core state DSL is intentionally small. A state can declare:</p>
 <ul>
 <li><code>Activity&lt;TActivity&gt;()</code> or <code>Activity(...)</code></li>
@@ -5188,7 +6113,7 @@
 <div class="highlight"><pre><span></span><code><span class="n">state</span><span class="p">.</span><span class="n">WhenSignal</span><span class="p">(</span><span class="s">&quot;HungUp&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">signal</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">signal</span>
 <span class="w">    </span><span class="p">.</span><span class="n">TransitionTo</span><span class="p">(</span><span class="s">&quot;OffHook&quot;</span><span class="p">));</span>
 </code></pre></div>
-<h3 id="activity-configuration">Activity Configuration<a class="headerlink" href="#activity-configuration" title="Permanent link">&para;</a></h3>
+<h3 id="activity-configuration">Activity configuration<a class="headerlink" href="#activity-configuration" title="Permanent link">&para;</a></h3>
 <p>Activities are context-centered. They read from <code>context.Data</code>, write durable workflow data back into the context, and return an <code>OrchestrationOutcome</code> that tells the runtime what to do next.</p>
 <p>The current activity configuration surface supports:</p>
 <ul>
@@ -5206,7 +6131,7 @@
 </code></pre></div>
 <p>This keeps retry and compensation behavior close to the activity that owns the side effect.</p>
 <p>Retries still execute through the global orchestration behavior pipeline, so cross-cutting behaviors observe each activity attempt individually.</p>
-<h3 id="writing-custom-activities">Writing Custom Activities<a class="headerlink" href="#writing-custom-activities" title="Permanent link">&para;</a></h3>
+<h3 id="writing-custom-activities">Writing custom activities<a class="headerlink" href="#writing-custom-activities" title="Permanent link">&para;</a></h3>
 <p>Use a custom activity class when the step is reusable, needs constructor-injected services, or is large enough that an inline lambda would hide the intent of the workflow.</p>
 <p>The contract is intentionally small:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IOrchestrationActivity</span><span class="o">&lt;</span><span class="n">TData</span><span class="o">&gt;</span>
@@ -5217,7 +6142,7 @@
 <span class="w">        </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<h4 id="minimal-custom-activity">Minimal Custom Activity<a class="headerlink" href="#minimal-custom-activity" title="Permanent link">&para;</a></h4>
+<h4 id="minimal-custom-activity">Minimal custom activity<a class="headerlink" href="#minimal-custom-activity" title="Permanent link">&para;</a></h4>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">DetermineApprovalRequirementActivity</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IOrchestrationActivity</span><span class="o">&lt;</span><span class="n">OrderApprovalData</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">OrchestrationOutcome</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ExecuteAsync</span><span class="p">(</span>
@@ -5235,7 +6160,7 @@
 <li>update durable workflow data on <code>context.Data</code> or <code>context.Properties</code></li>
 <li>return an explicit outcome</li>
 </ul>
-<h4 id="activity-with-constructor-injection">Activity With Constructor Injection<a class="headerlink" href="#activity-with-constructor-injection" title="Permanent link">&para;</a></h4>
+<h4 id="activity-with-constructor-injection">Activity with constructor injection<a class="headerlink" href="#activity-with-constructor-injection" title="Permanent link">&para;</a></h4>
 <p>Custom activities can use constructor injection for application services. The runtime creates class-based activities through <code>ActivatorUtilities</code>, so the activity type itself does not need special orchestration-specific registration, but any dependencies it uses must already be registered in the container.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ReservePaymentActivity</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IOrchestrationActivity</span><span class="o">&lt;</span><span class="n">OrderApprovalData</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -5265,7 +6190,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">Activity</span><span class="o">&lt;</span><span class="n">ReservePaymentActivity</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">TransitionTo</span><span class="p">(</span><span class="s">&quot;Confirmed&quot;</span><span class="p">));</span>
 </code></pre></div>
-<h4 id="returning-outcomes-correctly">Returning Outcomes Correctly<a class="headerlink" href="#returning-outcomes-correctly" title="Permanent link">&para;</a></h4>
+<h4 id="returning-outcomes-correctly">Returning outcomes correctly<a class="headerlink" href="#returning-outcomes-correctly" title="Permanent link">&para;</a></h4>
 <p>Custom activities control execution by returning <code>OrchestrationOutcome</code> values.</p>
 <p>Typical patterns are:</p>
 <ul>
@@ -5293,7 +6218,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h4 id="what-a-custom-activity-should-and-should-not-do">What A Custom Activity Should And Should Not Do<a class="headerlink" href="#what-a-custom-activity-should-and-should-not-do" title="Permanent link">&para;</a></h4>
+<h4 id="what-a-custom-activity-should-and-should-not-do">What a custom activity should and should not do<a class="headerlink" href="#what-a-custom-activity-should-and-should-not-do" title="Permanent link">&para;</a></h4>
 <p>Good custom activities:</p>
 <ul>
 <li>focus on one business or integration step</li>
@@ -5316,7 +6241,7 @@
 <li>if another business step or external caller needs to understand the value, put it in <code>context.Data</code></li>
 <li>if the value is mainly runtime/helper metadata, put it in <code>context.Properties</code></li>
 </ul>
-<h4 id="when-to-use-an-inline-activity-instead">When To Use An Inline Activity Instead<a class="headerlink" href="#when-to-use-an-inline-activity-instead" title="Permanent link">&para;</a></h4>
+<h4 id="when-to-use-an-inline-activity-instead">When to use an inline activity instead<a class="headerlink" href="#when-to-use-an-inline-activity-instead" title="Permanent link">&para;</a></h4>
 <p>Inline activities are still the better choice for very small, orchestration-local mutations:</p>
 <div class="highlight"><pre><span></span><code><span class="n">state</span><span class="p">.</span><span class="n">Activity</span><span class="p">((</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -5325,7 +6250,7 @@
 <span class="p">});</span>
 </code></pre></div>
 <p>Move that logic into a custom activity class when it becomes reusable, needs injected services, or deserves its own test surface.</p>
-<h4 id="optional-add-your-own-dsl-wrapper">Optional: Add Your Own DSL Wrapper<a class="headerlink" href="#optional-add-your-own-dsl-wrapper" title="Permanent link">&para;</a></h4>
+<h4 id="optional-add-your-own-dsl-wrapper">Optional: Add your own DSL wrapper<a class="headerlink" href="#optional-add-your-own-dsl-wrapper" title="Permanent link">&para;</a></h4>
 <p>If your application uses the same custom activity in many orchestrations, you can wrap it in your own extension method so the orchestration reads in product language instead of infrastructure language.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">static</span><span class="w"> </span><span class="n">IOrchestrationStateBuilder</span><span class="o">&lt;</span><span class="n">OrderApprovalData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">ReservePayment</span><span class="p">(</span>
 <span class="w">    </span><span class="k">this</span><span class="w"> </span><span class="n">IOrchestrationStateBuilder</span><span class="o">&lt;</span><span class="n">OrderApprovalData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">state</span><span class="p">)</span>
@@ -5334,7 +6259,7 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>That keeps the runtime model unchanged while making orchestration definitions more expressive.</p>
-<h3 id="built-in-activity-helpers">Built-In Activity Helpers<a class="headerlink" href="#built-in-activity-helpers" title="Permanent link">&para;</a></h3>
+<h3 id="built-in-activity-helpers">Built-in activity helpers<a class="headerlink" href="#built-in-activity-helpers" title="Permanent link">&para;</a></h3>
 <p>A focused set of authoring helpers on top of the base state DSL is available.</p>
 <h4 id="logactivity"><code>LogActivity(...)</code><a class="headerlink" href="#logactivity" title="Permanent link">&para;</a></h4>
 <p>Writes a structured log message and returns <code>Continue</code>.</p>
@@ -5360,7 +6285,7 @@
 <p>Returns a waiting outcome, optionally with a delay and reason.</p>
 <div class="highlight"><pre><span></span><code><span class="n">state</span><span class="p">.</span><span class="n">WaitActivity</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"> </span><span class="s">&quot;Waiting before retrying downstream sync.&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h4 id="built-in-outbound-integrations">Built-In Outbound Integrations<a class="headerlink" href="#built-in-outbound-integrations" title="Permanent link">&para;</a></h4>
+<h4 id="built-in-outbound-integrations">Built-in outbound integrations<a class="headerlink" href="#built-in-outbound-integrations" title="Permanent link">&para;</a></h4>
 <p><code>QueryActivity(...)</code>, <code>CommandActivity(...)</code>, and <code>SendRequestActivity(...)</code> are outbound orchestration activities built on top of <code>IRequester</code>.</p>
 <p><code>PublishNotificationActivity(...)</code> is the outbound notifier-based variant built on top of <code>INotifier</code>.</p>
 <p><code>PublishMessageActivity(...)</code> and <code>SendQueueMessageActivity(...)</code> are the transport-oriented outbound variants built on top of <code>IMessageBroker</code> and <code>IQueueBroker</code>.</p>
@@ -5480,7 +6405,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">CancelledTransition</span><span class="p">(</span><span class="s">&quot;Rejected&quot;</span><span class="p">));</span>
 </code></pre></div>
 <p>The built-in helpers above are part of the current public authoring surface. If you need domain-specific helpers beyond those, prefer adding application-level wrapper extensions on top of the existing activity model instead of extending orchestration runtime internals first.</p>
-<h3 id="activity-outcome-and-completion-semantics">Activity Outcome And Completion Semantics<a class="headerlink" href="#activity-outcome-and-completion-semantics" title="Permanent link">&para;</a></h3>
+<h3 id="activity-outcome-and-completion-semantics">Activity outcome and completion semantics<a class="headerlink" href="#activity-outcome-and-completion-semantics" title="Permanent link">&para;</a></h3>
 <p>The activity lifecycle is more important than it first appears because it defines the feature's durability behavior.</p>
 <p>For each activity attempt, the runtime does the following under the instance lease:</p>
 <ol>
@@ -5505,7 +6430,7 @@
 <li>signal-driven activities follow the same durability rules and are recorded separately as signal activity execution history</li>
 </ul>
 <p>That is why activities should be idempotent and why any data needed later in the workflow must be written into orchestration context rather than kept in local variables.</p>
-<h2 id="example-order-approval">Example: Order Approval<a class="headerlink" href="#example-order-approval" title="Permanent link">&para;</a></h2>
+<h2 id="example-order-approval">Example: Order approval<a class="headerlink" href="#example-order-approval" title="Permanent link">&para;</a></h2>
 <p>The <code>OrderApprovalOrchestration</code> example shows a typical business workflow:</p>
 <ul>
 <li>validate the order</li>
@@ -5525,7 +6450,7 @@
     PaymentReservation --&gt; Confirmed: payment reserved
     Confirmed --&gt; [*]
     Rejected --&gt; [*]</code></pre>
-<h3 id="context-data">Context Data<a class="headerlink" href="#context-data" title="Permanent link">&para;</a></h3>
+<h3 id="context-data">Context data<a class="headerlink" href="#context-data" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderApprovalData</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IOrchestrationData</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">OrderId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
@@ -5547,7 +6472,7 @@
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">ConfirmationSent</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="definition-sketch">Definition Sketch<a class="headerlink" href="#definition-sketch" title="Permanent link">&para;</a></h3>
+<h3 id="definition-sketch">Definition sketch<a class="headerlink" href="#definition-sketch" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">OrderApprovalOrchestration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Orchestration</span><span class="o">&lt;</span><span class="n">OrderApprovalData</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Define</span><span class="p">(</span><span class="n">IOrchestrationBuilder</span><span class="o">&lt;</span><span class="n">OrderApprovalData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span>
@@ -5579,7 +6504,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="start-the-workflow">Start the Workflow<a class="headerlink" href="#start-the-workflow" title="Permanent link">&para;</a></h3>
+<h3 id="start-the-workflow">Start the workflow<a class="headerlink" href="#start-the-workflow" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">OrdersApplicationService</span><span class="p">(</span><span class="n">IOrchestrationService</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">Guid</span><span class="o">&gt;</span><span class="w"> </span><span class="n">StartAsync</span><span class="p">(</span><span class="n">Order</span><span class="w"> </span><span class="n">order</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span>
@@ -5595,14 +6520,15 @@
 
 <span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">result</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
 <span class="w">        </span><span class="p">{</span>
-<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Messages</span><span class="p">));</span>
+<span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">InvalidOperationException</span><span class="p">(</span>
+<span class="w">                </span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
 <span class="w">        </span><span class="p">}</span>
 
 <span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">;</span><span class="w"> </span><span class="c1">// instanceId</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="approve-or-reject">Approve or Reject<a class="headerlink" href="#approve-or-reject" title="Permanent link">&para;</a></h3>
+<h3 id="approve-or-reject">Approve or reject<a class="headerlink" href="#approve-or-reject" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">approve</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">SignalAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">result</span><span class="p">.</span><span class="n">Value</span><span class="p">,</span><span class="w"> </span><span class="c1">// instanceId</span>
 <span class="w">    </span><span class="s">&quot;OrderApproved&quot;</span><span class="p">,</span>
@@ -5621,7 +6547,7 @@
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="example-telephone-call-state-machine">Example: Telephone Call State Machine<a class="headerlink" href="#example-telephone-call-state-machine" title="Permanent link">&para;</a></h2>
+<h2 id="example-telephone-call-state-machine">Example: Telephone call state machine<a class="headerlink" href="#example-telephone-call-state-machine" title="Permanent link">&para;</a></h2>
 <p>The <code>TelephoneCallOrchestration</code> example shows a signal-driven workflow where external events control all meaningful progression.</p>
 <pre class="mermaid"><code>stateDiagram-v2
     [*] --&gt; OffHook
@@ -5634,7 +6560,7 @@
     OnHold --&gt; OffHook: HungUp
     OnHold --&gt; PhoneDestroyed: PhoneHurledAgainstWall
     PhoneDestroyed --&gt; [*]</code></pre>
-<h3 id="context-data_1">Context Data<a class="headerlink" href="#context-data_1" title="Permanent link">&para;</a></h3>
+<h3 id="context-data_1">Context data<a class="headerlink" href="#context-data_1" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">TelephoneCallData</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">IOrchestrationData</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">CallId</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span>
@@ -5648,7 +6574,7 @@
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="n">List</span><span class="o">&lt;</span><span class="kt">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">Trace</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">get</span><span class="p">;</span><span class="w"> </span><span class="k">set</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">[];</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="definition-sketch_1">Definition Sketch<a class="headerlink" href="#definition-sketch_1" title="Permanent link">&para;</a></h3>
+<h3 id="definition-sketch_1">Definition sketch<a class="headerlink" href="#definition-sketch_1" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">TelephoneCallOrchestration</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Orchestration</span><span class="o">&lt;</span><span class="n">TelephoneCallData</span><span class="o">&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Define</span><span class="p">(</span><span class="n">IOrchestrationBuilder</span><span class="o">&lt;</span><span class="n">TelephoneCallData</span><span class="o">&gt;</span><span class="w"> </span><span class="n">builder</span><span class="p">)</span>
@@ -5697,13 +6623,13 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="drive-it-with-signals">Drive It With Signals<a class="headerlink" href="#drive-it-with-signals" title="Permanent link">&para;</a></h3>
+<h3 id="drive-it-with-signals">Drive it with signals<a class="headerlink" href="#drive-it-with-signals" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">SignalAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CallDialed&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">SignalAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;CallConnected&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">SignalAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;PlacedOnHold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">SignalAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TakenOffHold&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="durable-timers-and-signals">Durable Timers and Signals<a class="headerlink" href="#durable-timers-and-signals" title="Permanent link">&para;</a></h2>
+<h2 id="durable-timers-and-signals">Durable timers and signals<a class="headerlink" href="#durable-timers-and-signals" title="Permanent link">&para;</a></h2>
 <p>Durable orchestration combines durable timers with durable signals.</p>
 <p>The important point is that the orchestration does not rely on in-memory sleeps, polling loops, or a continuously running workflow object. It persists its current state, decides what it is waiting for next, and then resumes only when one of the durable wake-up conditions becomes true.</p>
 <h3 id="durable-timers">Durable timers<a class="headerlink" href="#durable-timers" title="Permanent link">&para;</a></h3>
@@ -5751,10 +6677,10 @@
 <li>which timers were scheduled, consumed, or are still pending</li>
 <li>the durable reason and plan for the current waiting boundary</li>
 </ul>
-<p>That visibility is what makes durable orchestration practical for long-running workflows. The engine is not just waiting in memory; it is recording the exact reason why the instance is paused and what event or time boundary will wake it next.</p>
-<h2 id="starting-and-controlling-instances">Starting And Controlling Instances<a class="headerlink" href="#starting-and-controlling-instances" title="Permanent link">&para;</a></h2>
+<p>The engine records why an instance is paused and which event or time boundary will resume it. This persisted state lets long-running workflows survive process restarts.</p>
+<h2 id="starting-and-controlling-instances">Starting and controlling instances<a class="headerlink" href="#starting-and-controlling-instances" title="Permanent link">&para;</a></h2>
 <p>The runtime surface is built around <code>IOrchestrationService</code>.</p>
-<h3 id="execute-inline">Execute Inline<a class="headerlink" href="#execute-inline" title="Permanent link">&para;</a></h3>
+<h3 id="execute-inline">Execute inline<a class="headerlink" href="#execute-inline" title="Permanent link">&para;</a></h3>
 <p>Use <code>ExecuteAsync</code> when the orchestration is expected to finish inline without entering a waiting or paused boundary.</p>
 <p>If the orchestration reaches a waiting or paused condition instead, the call returns a failed <code>Result&lt;OrchestrationExecuteResult&gt;</code> because inline execution cannot complete across that durable boundary.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">ExecuteAsync</span><span class="o">&lt;</span><span class="n">OrderApprovalOrchestration</span><span class="p">,</span><span class="w"> </span><span class="n">OrderApprovalData</span><span class="o">&gt;</span><span class="p">(</span>
@@ -5766,7 +6692,7 @@
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="dispatch-for-background-progression">Dispatch for Background Progression<a class="headerlink" href="#dispatch-for-background-progression" title="Permanent link">&para;</a></h3>
+<h3 id="dispatch-for-background-progression">Dispatch for background progression<a class="headerlink" href="#dispatch-for-background-progression" title="Permanent link">&para;</a></h3>
 <p>Use <code>DispatchAsync</code> for workflows that may wait for signals or timers.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">DispatchAsync</span><span class="o">&lt;</span><span class="n">OrderApprovalOrchestration</span><span class="p">,</span><span class="w"> </span><span class="n">OrderApprovalData</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">OrderApprovalData</span>
@@ -5777,7 +6703,7 @@
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="dispatch-and-wait-for-a-milestone">Dispatch And Wait for a Milestone<a class="headerlink" href="#dispatch-and-wait-for-a-milestone" title="Permanent link">&para;</a></h3>
+<h3 id="dispatch-and-wait-for-a-milestone">Dispatch and wait for a milestone<a class="headerlink" href="#dispatch-and-wait-for-a-milestone" title="Permanent link">&para;</a></h3>
 <p>Use <code>DispatchAndWaitAsync</code> when you want background execution but still need to wait for completion, a specific state, or a specific outcome.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">DispatchAndWaitAsync</span><span class="o">&lt;</span><span class="n">OrderApprovalOrchestration</span><span class="p">,</span><span class="w"> </span><span class="n">OrderApprovalData</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">OrderApprovalData</span>
@@ -5790,14 +6716,14 @@
 <span class="w">    </span><span class="n">timeout</span><span class="p">:</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromSeconds</span><span class="p">(</span><span class="mi">30</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="pause-resume-cancel-and-terminate">Pause, Resume, Cancel, And Terminate<a class="headerlink" href="#pause-resume-cancel-and-terminate" title="Permanent link">&para;</a></h3>
+<h3 id="pause-resume-cancel-and-terminate">Pause, resume, cancel, and terminate<a class="headerlink" href="#pause-resume-cancel-and-terminate" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">PauseAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Waiting for manual review&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">ResumeAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">CancelAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Customer withdrew request&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">orchestrations</span><span class="p">.</span><span class="n">TerminateAsync</span><span class="p">(</span><span class="n">instanceId</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Manual operator stop&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="what-the-control-actions-actually-do">What The Control Actions Actually Do<a class="headerlink" href="#what-the-control-actions-actually-do" title="Permanent link">&para;</a></h3>
-<p>These actions are not just convenience methods. Each one changes persisted orchestration state under the instance lease and becomes part of the durable execution history.</p>
+<h3 id="what-the-control-actions-actually-do">What the control actions actually do<a class="headerlink" href="#what-the-control-actions-actually-do" title="Permanent link">&para;</a></h3>
+<p>Each action changes persisted orchestration state under the instance lease and becomes part of the durable execution history.</p>
 <h4 id="pauseasync"><code>PauseAsync(...)</code><a class="headerlink" href="#pauseasync" title="Permanent link">&para;</a></h4>
 <p>Use pause when you want to stop forward execution without ending the orchestration.</p>
 <p>What happens:</p>
@@ -5856,14 +6782,14 @@
 <li>a <code>Terminated</code> history event is appended</li>
 </ul>
 <p>Termination is also terminal. It is the right choice for cases such as irrecoverable operator intervention, unsupported runtime conditions, or explicit stop decisions that should not be interpreted as normal business cancellation.</p>
-<h4 id="choosing-the-right-action">Choosing The Right Action<a class="headerlink" href="#choosing-the-right-action" title="Permanent link">&para;</a></h4>
+<h4 id="choosing-the-right-action">Choosing the right action<a class="headerlink" href="#choosing-the-right-action" title="Permanent link">&para;</a></h4>
 <ul>
 <li>pause: temporarily stop progression, keep the workflow resumable</li>
 <li>resume: continue a paused workflow from its persisted point</li>
 <li>cancel: end the workflow as a controlled cancelled business/operational outcome</li>
 <li>terminate: end the workflow as an explicit hard stop</li>
 </ul>
-<h4 id="common-validation-failures">Common Validation Failures<a class="headerlink" href="#common-validation-failures" title="Permanent link">&para;</a></h4>
+<h4 id="common-validation-failures">Common validation failures<a class="headerlink" href="#common-validation-failures" title="Permanent link">&para;</a></h4>
 <p>The runtime returns <code>Result</code> failures for invalid lifecycle operations. Common examples are:</p>
 <ul>
 <li>pausing an already paused instance</li>
@@ -5872,7 +6798,7 @@
 <li>operating on an instance that does not exist</li>
 </ul>
 <p>That behavior is consistent across the programmatic API and the operational endpoints.</p>
-<h2 id="querying-persisted-state">Querying Persisted State<a class="headerlink" href="#querying-persisted-state" title="Permanent link">&para;</a></h2>
+<h2 id="querying-persisted-state">Querying persisted state<a class="headerlink" href="#querying-persisted-state" title="Permanent link">&para;</a></h2>
 <p>Use <code>IOrchestrationQueryService</code> for operational reads. Query data is derived from persisted state, not worker-local memory.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">OrchestrationDashboardService</span><span class="p">(</span><span class="n">IOrchestrationQueryService</span><span class="w"> </span><span class="n">queries</span><span class="p">)</span>
 <span class="p">{</span>
@@ -5906,7 +6832,7 @@
 </ul>
 <h2 id="testing">Testing<a class="headerlink" href="#testing" title="Permanent link">&para;</a></h2>
 <p>Use <code>OrchestrationTestHarness</code> for deterministic unit tests. The harness runs on the in-memory runtime and includes a fake clock for timer-driven workflows.</p>
-<h3 id="approval-flow-test">Approval Flow Test<a class="headerlink" href="#approval-flow-test" title="Permanent link">&para;</a></h3>
+<h3 id="approval-flow-test">Approval flow test<a class="headerlink" href="#approval-flow-test" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">harness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrchestrationTestHarness</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">OrderApprovalOrchestration</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
@@ -5929,7 +6855,7 @@
 <span class="k">await</span><span class="w"> </span><span class="n">harness</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">dispatch</span><span class="p">.</span><span class="n">Value</span><span class="p">).</span><span class="n">BeCompletedAsync</span><span class="p">(</span><span class="s">&quot;Confirmed&quot;</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">harness</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">dispatch</span><span class="p">.</span><span class="n">Value</span><span class="p">).</span><span class="n">HaveHistoryEventAsync</span><span class="p">(</span><span class="s">&quot;SignalProcessed&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="timeout-test">Timeout Test<a class="headerlink" href="#timeout-test" title="Permanent link">&para;</a></h3>
+<h3 id="timeout-test">Timeout test<a class="headerlink" href="#timeout-test" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">harness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrchestrationTestHarness</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">OrderApprovalOrchestration</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
@@ -5947,7 +6873,7 @@
 <span class="k">await</span><span class="w"> </span><span class="n">harness</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">dispatch</span><span class="p">.</span><span class="n">Value</span><span class="p">).</span><span class="n">HaveStatusAsync</span><span class="p">(</span><span class="n">OrchestrationStatus</span><span class="p">.</span><span class="n">Terminated</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">harness</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">dispatch</span><span class="p">.</span><span class="n">Value</span><span class="p">).</span><span class="n">HaveCurrentStateAsync</span><span class="p">(</span><span class="s">&quot;Rejected&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="telephone-call-test">Telephone Call Test<a class="headerlink" href="#telephone-call-test" title="Permanent link">&para;</a></h3>
+<h3 id="telephone-call-test">Telephone call test<a class="headerlink" href="#telephone-call-test" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">harness</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OrchestrationTestHarness</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithOrchestration</span><span class="o">&lt;</span><span class="n">TelephoneCallOrchestration</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
@@ -5963,7 +6889,7 @@
 <span class="k">await</span><span class="w"> </span><span class="n">harness</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">dispatch</span><span class="p">.</span><span class="n">Value</span><span class="p">).</span><span class="n">HaveCurrentStateAsync</span><span class="p">(</span><span class="s">&quot;PhoneDestroyed&quot;</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">harness</span><span class="p">.</span><span class="n">Assert</span><span class="p">(</span><span class="n">dispatch</span><span class="p">.</span><span class="n">Value</span><span class="p">).</span><span class="n">HaveStatusAsync</span><span class="p">(</span><span class="n">OrchestrationStatus</span><span class="p">.</span><span class="n">Terminated</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="operational-endpoints">Operational Endpoints<a class="headerlink" href="#operational-endpoints" title="Permanent link">&para;</a></h2>
+<h2 id="operational-endpoints">Operational endpoints<a class="headerlink" href="#operational-endpoints" title="Permanent link">&para;</a></h2>
 <p>When <code>Presentation.Web.Orchestrations</code> is registered, the default group path is <code>/_bdk/api/orchestrations</code>.</p>
 <p>Key routes:</p>
 <ul>
@@ -5991,9 +6917,9 @@
 <li>operator-driven control actions</li>
 <li>repair operations for stuck instances</li>
 </ul>
-<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<h2 id="architecture-details">Architecture details<a class="headerlink" href="#architecture-details" title="Permanent link">&para;</a></h2>
 <p>Internally, orchestration definitions are executed by <code>IOrchestrationService</code> through a lease-protected runtime loop that evaluates states, activities, signals, and timers, persists context snapshots plus execution history through the configured persistence provider, and exposes the resulting durable state through query services and optional operational endpoints for inspection, control, and repair.</p>
-<h3 id="internal-layers">Internal Layers<a class="headerlink" href="#internal-layers" title="Permanent link">&para;</a></h3>
+<h3 id="internal-layers">Internal layers<a class="headerlink" href="#internal-layers" title="Permanent link">&para;</a></h3>
 <p>The implementation is easiest to understand as four cooperating layers:</p>
 <ul>
 <li>authoring layer: <code>Orchestration&lt;TData&gt;</code>, state builders, signal builders, timer builders, and the advanced workflow helpers</li>
@@ -6047,7 +6973,7 @@
     Caller-&gt;&gt;Query: GetAsync / GetHistoryAsync / GetContextAsync
     Query-&gt;&gt;Stores: Read persisted instance, history, signals, and timers
     Query--&gt;&gt;Caller: Durable operational view</code></pre>
-<h3 id="runtime-execution-loop">Runtime Execution Loop<a class="headerlink" href="#runtime-execution-loop" title="Permanent link">&para;</a></h3>
+<h3 id="runtime-execution-loop">Runtime execution loop<a class="headerlink" href="#runtime-execution-loop" title="Permanent link">&para;</a></h3>
 <p>At a high level, one orchestration instance advances like this:</p>
 <ol>
 <li>create or load the latest persisted instance snapshot</li>
@@ -6061,8 +6987,8 @@
 <li>either continue under the lease, move into waiting, or end in a terminal status</li>
 </ol>
 <p>The important consequence is that the next decision is always derived from persisted state, not from ambient in-memory worker state.</p>
-<h3 id="durable-boundaries">Durable Boundaries<a class="headerlink" href="#durable-boundaries" title="Permanent link">&para;</a></h3>
-<p>The runtime persists orchestration data at every meaningful boundary, not just at final completion. The practical boundaries to keep in mind are:</p>
+<h3 id="durable-boundaries">Durable boundaries<a class="headerlink" href="#durable-boundaries" title="Permanent link">&para;</a></h3>
+<p>The runtime persists orchestration data at each execution boundary and at final completion. The boundaries are:</p>
 <ul>
 <li>instance creation</li>
 <li>entry into the initial or next state</li>
@@ -6075,7 +7001,7 @@
 <li>pause, resume, cancel, terminate, and completion</li>
 </ul>
 <p>This is why the system can recover from restarts and lease loss without replaying hidden in-memory mutations.</p>
-<h3 id="lease-and-concurrency-model">Lease And Concurrency Model<a class="headerlink" href="#lease-and-concurrency-model" title="Permanent link">&para;</a></h3>
+<h3 id="lease-and-concurrency-model">Lease and concurrency model<a class="headerlink" href="#lease-and-concurrency-model" title="Permanent link">&para;</a></h3>
 <p>State mutation is single-instance serialized through a lease. Multiple orchestration instances can progress concurrently, but only one worker may advance a given instance at a time.</p>
 <p>That lease protects:</p>
 <ul>
@@ -6087,7 +7013,7 @@
 <li>control operations such as pause, resume, cancel, and terminate</li>
 </ul>
 <p>If a worker loses the lease, it must stop mutating the instance. Another worker resumes only from the latest persisted snapshot.</p>
-<h3 id="signal-and-timer-processing">Signal And Timer Processing<a class="headerlink" href="#signal-and-timer-processing" title="Permanent link">&para;</a></h3>
+<h3 id="signal-and-timer-processing">Signal and timer processing<a class="headerlink" href="#signal-and-timer-processing" title="Permanent link">&para;</a></h3>
 <p>Signals and timers are durable records, not in-memory callbacks.</p>
 <p>Signal processing works like this:</p>
 <ul>
@@ -6104,7 +7030,7 @@
 <li>timers that are no longer relevant because state already changed are marked obsolete</li>
 <li>consumed timers either resume waiting execution or trigger a configured timeout transition</li>
 </ul>
-<h3 id="persistence-model">Persistence Model<a class="headerlink" href="#persistence-model" title="Permanent link">&para;</a></h3>
+<h3 id="persistence-model">Persistence model<a class="headerlink" href="#persistence-model" title="Permanent link">&para;</a></h3>
 <p>The persistence provider stores several different kinds of orchestration data:</p>
 <ul>
 <li>the latest instance snapshot with current status, current state, and serialized context</li>
@@ -6114,7 +7040,7 @@
 <li>lease metadata and execution coordination state</li>
 </ul>
 <p>The in-memory provider is useful for tests and local execution. The Entity Framework provider makes the same runtime contract durable in the application database through <code>IOrchestrationContext</code>.</p>
-<h3 id="query-and-operations-model">Query And Operations Model<a class="headerlink" href="#query-and-operations-model" title="Permanent link">&para;</a></h3>
+<h3 id="query-and-operations-model">Query and operations model<a class="headerlink" href="#query-and-operations-model" title="Permanent link">&para;</a></h3>
 <p>Runtime writes state; query services and endpoints read persisted state.</p>
 <p>That separation matters operationally:</p>
 <ul>
@@ -6133,15 +7059,15 @@
 <li>activities should be idempotent because retries and recovery can re-run work</li>
 </ul>
 <p>For most developers, the practical takeaway is simple: keep orchestration context serializable, treat activities as retryable units, and model long-running behavior with explicit states and signals rather than hidden ambient state.</p>
-<h2 id="example-sources">Example Sources<a class="headerlink" href="#example-sources" title="Permanent link">&para;</a></h2>
+<h2 id="example-sources">Example sources<a class="headerlink" href="#example-sources" title="Permanent link">&para;</a></h2>
 <p>The examples used in this guide are based on the runnable unit-test orchestrations in:</p>
 <ul>
-<li><code>tests/Application.UnitTests/Orchestration/OrderApprovalOrchestration.cs</code></li>
-<li><code>tests/Application.UnitTests/Orchestration/TelephoneCallOrchestration.cs</code></li>
-<li><code>tests/Application.UnitTests/Orchestration/OrderApprovalOrchestrationTests.cs</code></li>
-<li><code>tests/Application.UnitTests/Orchestration/TelephoneCallOrchestrationTests.cs</code></li>
+<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/tests/Application.UnitTests/Orchestrations/OrderApprovalOrchestration.cs">OrderApprovalOrchestration.cs</a></li>
+<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestration.cs">TelephoneCallOrchestration.cs</a></li>
+<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/tests/Application.UnitTests/Orchestrations/OrderApprovalOrchestrationTests.cs">OrderApprovalOrchestrationTests.cs</a></li>
+<li><a href="https://github.com/bridgingIT/bITdevKit/blob/main/tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestrationTests.cs">TelephoneCallOrchestrationTests.cs</a></li>
 </ul>
-<p>The original design specification is documented in <code>docs/specs/spec-application-orchestration.md</code>.</p>
+<p>The original design is documented in <a href="https://github.com/bridgingIT/bITdevKit/blob/main/docs/specs/spec-application-orchestration.md">spec-application-orchestration.md</a>.</p>
 
 
 
@@ -6220,7 +7146,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -6228,6 +7154,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

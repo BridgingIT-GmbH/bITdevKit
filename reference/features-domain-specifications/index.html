@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#domain-specifications-feature-documentation" class="md-skip">
+        <a href="#domain-specifications" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1205,15 +1241,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1231,8 +1272,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1305,42 +1346,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1460,10 +1473,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-it" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
       
     </span>
   </a>
@@ -1474,12 +1542,12 @@
   <a href="#core-building-blocks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Building Blocks
+        Core building blocks
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Building Blocks">
+    <nav class="md-nav" aria-label="Core building blocks">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1508,7 +1576,7 @@
   <a href="#composite-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Composite Specifications
+        Composite specifications
       
     </span>
   </a>
@@ -1519,7 +1587,7 @@
   <a href="#reusable-built-in-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reusable Built-In Specifications
+        Reusable built-in specifications
       
     </span>
   </a>
@@ -1532,15 +1600,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
+  <a href="#usage-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Usage
+        Usage details
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Basic Usage">
+    <nav class="md-nav" aria-label="Usage details">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1596,7 +1664,7 @@
   <a href="#dynamic-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dynamic Specifications
+        Dynamic specifications
       
     </span>
   </a>
@@ -1607,12 +1675,12 @@
   <a href="#uniqueness-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Uniqueness Specifications
+        Uniqueness specifications
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Uniqueness Specifications">
+    <nav class="md-nav" aria-label="Uniqueness specifications">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1646,7 +1714,7 @@
   <a href="#collections-of-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collections Of Specifications
+        Collections of specifications
       
     </span>
   </a>
@@ -1654,10 +1722,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-specifications-vs-filtering" class="md-nav__link">
+  <a href="#domain-specifications-and-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Specifications vs Filtering
+        Domain specifications and filtering
       
     </span>
   </a>
@@ -1665,10 +1733,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-specifications-vs-policies-and-rules" class="md-nav__link">
+  <a href="#domain-specifications-policies-and-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Specifications vs Policies and Rules
+        Domain specifications, policies, and rules
       
     </span>
   </a>
@@ -1679,7 +1747,7 @@
   <a href="#relationship-to-other-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship To Other Features
+        Relationship to other features
       
     </span>
   </a>
@@ -1709,7 +1777,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1891,6 +1959,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1909,15 +2005,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1935,8 +2036,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2017,6 +2118,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2216,15 +2345,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2242,8 +2376,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2252,6 +2386,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2327,15 +2489,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2353,8 +2520,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2379,6 +2546,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2595,6 +2818,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2662,15 +2913,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2688,8 +2944,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2969,15 +3225,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2995,8 +3256,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3076,6 +3337,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3115,10 +3907,65 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#when-to-use-it" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        When To Use It
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
       
     </span>
   </a>
@@ -3129,12 +3976,12 @@
   <a href="#core-building-blocks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Building Blocks
+        Core building blocks
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Building Blocks">
+    <nav class="md-nav" aria-label="Core building blocks">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3163,7 +4010,7 @@
   <a href="#composite-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Composite Specifications
+        Composite specifications
       
     </span>
   </a>
@@ -3174,7 +4021,7 @@
   <a href="#reusable-built-in-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reusable Built-In Specifications
+        Reusable built-in specifications
       
     </span>
   </a>
@@ -3187,15 +4034,15 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-usage" class="md-nav__link">
+  <a href="#usage-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Usage
+        Usage details
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Basic Usage">
+    <nav class="md-nav" aria-label="Usage details">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3251,7 +4098,7 @@
   <a href="#dynamic-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dynamic Specifications
+        Dynamic specifications
       
     </span>
   </a>
@@ -3262,12 +4109,12 @@
   <a href="#uniqueness-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Uniqueness Specifications
+        Uniqueness specifications
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Uniqueness Specifications">
+    <nav class="md-nav" aria-label="Uniqueness specifications">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3301,7 +4148,7 @@
   <a href="#collections-of-specifications" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collections Of Specifications
+        Collections of specifications
       
     </span>
   </a>
@@ -3309,10 +4156,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-specifications-vs-filtering" class="md-nav__link">
+  <a href="#domain-specifications-and-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Specifications vs Filtering
+        Domain specifications and filtering
       
     </span>
   </a>
@@ -3320,10 +4167,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#domain-specifications-vs-policies-and-rules" class="md-nav__link">
+  <a href="#domain-specifications-policies-and-rules" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain Specifications vs Policies and Rules
+        Domain specifications, policies, and rules
       
     </span>
   </a>
@@ -3334,7 +4181,7 @@
   <a href="#relationship-to-other-features" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship To Other Features
+        Relationship to other features
       
     </span>
   </a>
@@ -3384,10 +4231,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3427,45 +4292,50 @@
   
 
 
-<h1 id="domain-specifications-feature-documentation">Domain Specifications Feature Documentation<a class="headerlink" href="#domain-specifications-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="domain-specifications">Domain Specifications<a class="headerlink" href="#domain-specifications" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Model reusable business criteria as composable specifications for queries and in-memory evaluation.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#domain-specifications-feature-documentation">Domain Specifications Feature Documentation</a><ul>
+<li><a href="#domain-specifications">Domain Specifications</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#when-to-use-it">When To Use It</a></li>
-<li><a href="#core-building-blocks">Core Building Blocks</a><ul>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#core-building-blocks">Core building blocks</a><ul>
 <li><a href="#ispecificationt">ISpecification&lt;T&gt;</a></li>
 <li><a href="#specificationt">Specification&lt;T&gt;</a></li>
-<li><a href="#composite-specifications">Composite Specifications</a></li>
-<li><a href="#reusable-built-in-specifications">Reusable Built-In Specifications</a></li>
+<li><a href="#composite-specifications">Composite specifications</a></li>
+<li><a href="#reusable-built-in-specifications">Reusable built-in specifications</a></li>
 </ul>
 </li>
-<li><a href="#basic-usage">Basic Usage</a><ul>
+<li><a href="#usage-details">Usage details</a><ul>
 <li><a href="#define-a-simple-specification">Define a simple specification</a></li>
 <li><a href="#evaluate-in-memory">Evaluate in memory</a></li>
 <li><a href="#use-in-repository-queries">Use in repository queries</a></li>
 </ul>
 </li>
 <li><a href="#composition">Composition</a></li>
-<li><a href="#dynamic-specifications">Dynamic Specifications</a></li>
-<li><a href="#uniqueness-specifications">Uniqueness Specifications</a><ul>
+<li><a href="#dynamic-specifications">Dynamic specifications</a></li>
+<li><a href="#uniqueness-specifications">Uniqueness specifications</a><ul>
 <li><a href="#unique-value">Unique value</a></li>
 <li><a href="#unique-value-except-current-entity">Unique value except current entity</a></li>
 </ul>
 </li>
-<li><a href="#collections-of-specifications">Collections Of Specifications</a></li>
-<li><a href="#domain-specifications-vs-filtering">Domain Specifications vs Filtering</a></li>
-<li><a href="#domain-specifications-vs-policies-and-rules">Domain Specifications vs Policies and Rules</a></li>
-<li><a href="#relationship-to-other-features">Relationship To Other Features</a></li>
+<li><a href="#collections-of-specifications">Collections of specifications</a></li>
+<li><a href="#domain-specifications-and-filtering">Domain specifications and filtering</a></li>
+<li><a href="#domain-specifications-policies-and-rules">Domain specifications, policies, and rules</a></li>
+<li><a href="#relationship-to-other-features">Relationship to other features</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>Domain specifications encapsulate reusable criteria that can be evaluated against entities in memory and translated into query expressions for repositories. They are a core domain building block in bITdevKit, not just a repository helper.</p>
+<p>Domain specifications encapsulate reusable criteria that can be evaluated against entities in memory and translated into query expressions for repositories. They are domain building blocks that can be used inside or outside a repository.</p>
 <p>At the center of the feature is <code>ISpecification&lt;T&gt;</code>, which exposes:</p>
 <ul>
 <li><code>ToExpression()</code> for query translation</li>
@@ -3474,7 +4344,29 @@
 <li><code>And(...)</code>, <code>Or(...)</code>, and <code>Not()</code> for composition</li>
 </ul>
 <p>This makes specifications useful both inside domain logic and at repository boundaries.</p>
-<h2 id="when-to-use-it">When To Use It<a class="headerlink" href="#when-to-use-it" title="Permanent link">&para;</a></h2>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Selection criteria are often repeated across domain checks, handlers, and repository queries. Plain
+delegates work in memory but cannot always be translated by a query provider, while duplicated LINQ
+expressions are difficult to name, compose, and test as domain concepts.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p><code>ISpecification&lt;T&gt;</code> keeps a criterion as an expression tree and exposes compiled evaluation and
+logical composition. Repository implementations consume the same expression used by in-memory
+code. <code>Specification&lt;T&gt;</code> supports typed expressions and parameterized Dynamic LINQ expressions.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Queryable criteria through <code>Expression&lt;Func&lt;T, bool&gt;&gt;</code></li>
+<li>In-memory evaluation through compiled predicates</li>
+<li><code>And</code>, <code>Or</code>, and <code>Not</code> composition</li>
+<li>Typed and Dynamic LINQ construction</li>
+<li>Built-in ID and duplicate-value specifications</li>
+<li>Collection helpers that require every supplied specification to match</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>ISpecification&lt;T&gt;</code> defines expression, predicate, direct-evaluation, composition, and diagnostic
+string methods. <code>Specification&lt;T&gt;</code> implements that contract. <code>AndSpecification&lt;T&gt;</code>,
+<code>OrSpecification&lt;T&gt;</code>, and <code>NotSpecification&lt;T&gt;</code> combine expression trees while preserving a single
+<code>ISpecification&lt;T&gt;</code> result that repository providers can consume.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
 <p>Use a domain specification when:</p>
 <ul>
 <li>a selection rule should be reusable across handlers or services</li>
@@ -3489,7 +4381,27 @@
 <li>entities with a specific id</li>
 <li>uniqueness checks for natural keys</li>
 </ul>
-<h2 id="core-building-blocks">Core Building Blocks<a class="headerlink" href="#core-building-blocks" title="Permanent link">&para;</a></h2>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example constructs one specification, evaluates it in memory, and prints the matching names:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="p">[]</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="p">(</span><span class="n">Name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Ada&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">IsActive</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="n">Name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Grace&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">IsActive</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">),</span>
+<span class="w">    </span><span class="p">(</span><span class="n">Name</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;Linus&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">IsActive</span><span class="p">:</span><span class="w"> </span><span class="k">true</span><span class="p">)</span>
+<span class="p">};</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">activeCustomers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Specification</span><span class="o">&lt;</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">IsActive</span><span class="p">)</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">    </span><span class="n">customer</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">IsActive</span><span class="p">);</span>
+<span class="kt">var</span><span class="w"> </span><span class="n">names</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">customers</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">activeCustomers</span><span class="p">.</span><span class="n">ToPredicate</span><span class="p">())</span>
+<span class="w">    </span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">customer</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">customer</span><span class="p">.</span><span class="n">Name</span><span class="p">);</span>
+
+<span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span><span class="s">&quot;, &quot;</span><span class="p">,</span><span class="w"> </span><span class="n">names</span><span class="p">));</span>
+</code></pre></div>
+<p>Output:</p>
+<div class="highlight"><pre><span></span><code>Ada, Linus
+</code></pre></div>
+<h2 id="core-building-blocks">Core building blocks<a class="headerlink" href="#core-building-blocks" title="Permanent link">&para;</a></h2>
 <h3 id="ispecificationt"><code>ISpecification&lt;T&gt;</code><a class="headerlink" href="#ispecificationt" title="Permanent link">&para;</a></h3>
 <p>The specification contract represents one criterion over <code>T</code>.</p>
 <p>It supports two important use cases:</p>
@@ -3505,7 +4417,7 @@
 <li>a dynamic string expression with values</li>
 </ul>
 <p>That gives the devkit both type-safe specifications and more dynamic query scenarios when needed.</p>
-<h3 id="composite-specifications">Composite Specifications<a class="headerlink" href="#composite-specifications" title="Permanent link">&para;</a></h3>
+<h3 id="composite-specifications">Composite specifications<a class="headerlink" href="#composite-specifications" title="Permanent link">&para;</a></h3>
 <p>The feature includes built-in composition types:</p>
 <ul>
 <li><code>AndSpecification&lt;T&gt;</code></li>
@@ -3513,14 +4425,18 @@
 <li><code>NotSpecification&lt;T&gt;</code></li>
 </ul>
 <p>These are also exposed fluently through <code>And(...)</code>, <code>Or(...)</code>, and <code>Not()</code> on <code>ISpecification&lt;T&gt;</code>.</p>
-<h3 id="reusable-built-in-specifications">Reusable Built-In Specifications<a class="headerlink" href="#reusable-built-in-specifications" title="Permanent link">&para;</a></h3>
+<h3 id="reusable-built-in-specifications">Reusable built-in specifications<a class="headerlink" href="#reusable-built-in-specifications" title="Permanent link">&para;</a></h3>
 <p>The package also contains some ready-made specifications:</p>
 <ul>
 <li><code>HasIdSpecification&lt;T&gt;</code> for matching entities by <code>Id</code></li>
 <li><code>UniqueSpecification&lt;TEntity&gt;</code> for uniqueness checks on a property</li>
 <li><code>UniqueExceptSpecification&lt;TEntity, TId&gt;</code> for uniqueness checks that exclude one entity, which is especially useful in update scenarios</li>
 </ul>
-<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p><code>HasIdSpecification&lt;T&gt;</code> compares the <code>IEntity.Id</code> object exposed by the entity. For predictable
+in-memory evaluation with boxed value IDs, prefer a typed specification such as
+<code>new Specification&lt;Customer&gt;(customer =&gt; customer.Id == customerId)</code>. Query translation of the
+object-typed form also depends on the repository provider.</p>
+<h2 id="usage-details">Usage details<a class="headerlink" href="#usage-details" title="Permanent link">&para;</a></h2>
 <h3 id="define-a-simple-specification">Define a simple specification<a class="headerlink" href="#define-a-simple-specification" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">ActiveCustomerSpecification</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Specification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span>
 <span class="p">{</span>
@@ -3544,7 +4460,7 @@
 </code></pre></div>
 <p>The repository can translate the specification expression into the underlying query provider.</p>
 <h2 id="composition">Composition<a class="headerlink" href="#composition" title="Permanent link">&para;</a></h2>
-<p>Specifications can be combined into richer criteria without creating a new monolithic predicate:</p>
+<p>Specifications can combine several criteria without creating one monolithic predicate:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Specification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Status</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">CustomerStatus</span><span class="p">.</span><span class="n">Active</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">And</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Specification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">IsDeleted</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="k">false</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">And</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Specification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Visits</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">5</span><span class="p">));</span>
@@ -3556,7 +4472,7 @@
 <span class="w">    </span><span class="p">.</span><span class="n">Not</span><span class="p">();</span>
 </code></pre></div>
 <p>The important point is that the resulting specification is still an <code>ISpecification&lt;T&gt;</code> and can still be evaluated in memory or translated into a query expression.</p>
-<h2 id="dynamic-specifications">Dynamic Specifications<a class="headerlink" href="#dynamic-specifications" title="Permanent link">&para;</a></h2>
+<h2 id="dynamic-specifications">Dynamic specifications<a class="headerlink" href="#dynamic-specifications" title="Permanent link">&para;</a></h2>
 <p><code>Specification&lt;T&gt;</code> also supports dynamic expressions:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Specification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="s">&quot;Status == @0 &amp;&amp; Visits &gt;= @1&quot;</span><span class="p">,</span>
@@ -3564,12 +4480,16 @@
 <span class="w">    </span><span class="mi">5</span><span class="p">);</span>
 </code></pre></div>
 <p>This is helpful when criteria are assembled from external input or metadata, though strongly typed expressions should remain the default for domain code where possible.</p>
-<h2 id="uniqueness-specifications">Uniqueness Specifications<a class="headerlink" href="#uniqueness-specifications" title="Permanent link">&para;</a></h2>
+<p>The expression string is parsed by Dynamic LINQ. Treat the expression text as trusted or build it
+from an allow-list, and pass user-provided values through <code>@0</code>, <code>@1</code>, and later placeholders.</p>
+<h2 id="uniqueness-specifications">Uniqueness specifications<a class="headerlink" href="#uniqueness-specifications" title="Permanent link">&para;</a></h2>
 <p>The built-in uniqueness specs are useful when natural-key rules need to be expressed as queryable domain criteria.</p>
 <h3 id="unique-value">Unique value<a class="headerlink" href="#unique-value" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UniqueSpecification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Email</span><span class="p">,</span><span class="w"> </span><span class="n">email</span><span class="p">);</span>
 </code></pre></div>
-<p>This expresses “find entities where the selected property already has this value”.</p>
+<p>This expresses "find entities where the selected property already has this value."</p>
+<p>Despite the type name, a satisfied uniqueness specification identifies a conflicting entity. A
+caller establishes uniqueness by confirming that the repository query returns no matches.</p>
 <h3 id="unique-value-except-current-entity">Unique value except current entity<a class="headerlink" href="#unique-value-except-current-entity" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">specification</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">UniqueExceptSpecification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="p">,</span><span class="w"> </span><span class="n">CustomerId</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">    </span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">Email</span><span class="p">,</span>
@@ -3577,7 +4497,7 @@
 <span class="w">    </span><span class="n">customerId</span><span class="p">);</span>
 </code></pre></div>
 <p>This is the common update scenario where one entity is allowed to keep its current value, but no other entity may already use it.</p>
-<h2 id="collections-of-specifications">Collections Of Specifications<a class="headerlink" href="#collections-of-specifications" title="Permanent link">&para;</a></h2>
+<h2 id="collections-of-specifications">Collections of specifications<a class="headerlink" href="#collections-of-specifications" title="Permanent link">&para;</a></h2>
 <p><code>SpecificationExtensions</code> contains helpers for evaluating multiple specifications together:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">specifications</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ISpecification</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">[]</span>
 <span class="p">{</span>
@@ -3588,14 +4508,14 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">isSatisfied</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">specifications</span><span class="p">.</span><span class="n">IsSatisfiedBy</span><span class="p">(</span><span class="n">customer</span><span class="p">);</span>
 </code></pre></div>
 <p>That helper returns <code>true</code> when all supplied specifications are satisfied, and it treats a null or empty collection as satisfied.</p>
-<h2 id="domain-specifications-vs-filtering">Domain Specifications vs Filtering<a class="headerlink" href="#domain-specifications-vs-filtering" title="Permanent link">&para;</a></h2>
+<h2 id="domain-specifications-and-filtering">Domain specifications and filtering<a class="headerlink" href="#domain-specifications-and-filtering" title="Permanent link">&para;</a></h2>
 <p>Specifications and filtering are related but not the same:</p>
 <ul>
 <li>domain specifications are named reusable domain criteria</li>
 <li>filtering is an external query model that can be translated into specifications and find options</li>
 </ul>
 <p>So filtering is often a consumer of the specifications feature, not a replacement for it.</p>
-<h2 id="domain-specifications-vs-policies-and-rules">Domain Specifications vs Policies and Rules<a class="headerlink" href="#domain-specifications-vs-policies-and-rules" title="Permanent link">&para;</a></h2>
+<h2 id="domain-specifications-policies-and-rules">Domain specifications, policies, and rules<a class="headerlink" href="#domain-specifications-policies-and-rules" title="Permanent link">&para;</a></h2>
 <p>Use specifications when:</p>
 <ul>
 <li>you are expressing selection criteria</li>
@@ -3612,7 +4532,7 @@
 <li>you want fluent validation-style checks</li>
 <li>the concern is validation flow rather than queryable entity criteria</li>
 </ul>
-<h2 id="relationship-to-other-features">Relationship To Other Features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
+<h2 id="relationship-to-other-features">Relationship to other features<a class="headerlink" href="#relationship-to-other-features" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-domain-repositories/">Domain Repositories</a> uses specifications as a primary query mechanism.</li>
 <li><a href="../features-filtering/">Filtering</a> translates filter models into specifications and find options.</li>
@@ -3696,7 +4616,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3704,6 +4624,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

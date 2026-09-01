@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class StreamExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides complete-buffer reads and conversions between streams, memory, text, bytes, and JSON values.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class StreamExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides complete-buffer reads and conversions between streams, memory, text, bytes, and JSON values.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -206,7 +207,8 @@ Class StreamExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Copies the remaining source content into a new memory stream and rewinds the result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -216,15 +218,18 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Stream</span></dt>
-    <dd></dd>
+    <dd><p>The stream to copy from its current position.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels the copy operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">MemoryStream</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A readable memory stream positioned at the beginning.</p>
+</dd>
   </dl>
 
 
@@ -233,6 +238,9 @@ Class StreamExtensions
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_StreamExtensions_ToMemoryStreamAsync_System_IO_Stream_System_Threading_CancellationToken__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>The partially populated result is disposed when copying fails.</p>
+</div>
 
 
 
@@ -788,7 +796,8 @@ Class StreamExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Reads repeatedly until a span is full or the stream reaches its end.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -798,15 +807,18 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>stream</code> <span class="xref">Stream</span></dt>
-    <dd></dd>
+    <dd><p>The stream to read from its current position.</p>
+</dd>
     <dt><code>buffer</code> <span class="xref">Span</span>&lt;<span class="xref">byte</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The destination span to fill.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of bytes read, which may be smaller than the span length at end of stream.</p>
+</dd>
   </dl>
 
 

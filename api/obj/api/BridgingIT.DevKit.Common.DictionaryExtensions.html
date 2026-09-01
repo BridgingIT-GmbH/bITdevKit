@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class DictionaryExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides null-tolerant dictionary lookup and conditional mutation helpers.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class DictionaryExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides null-tolerant dictionary lookup and conditional mutation helpers.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,9 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a key-value pair to the dictionary if all specified conditions are true for the value.
+If the dictionary is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,32 +143,45 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to add to, or null.</p>
+</dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
-    <dd></dd>
+    <dd><p>The key of the item to add.</p>
+</dd>
     <dt><code>value</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value of the item to add.</p>
+</dd>
     <dt><code>predicates</code> <span class="xref">Func</span>&lt;TValue, <span class="xref">bool</span>&gt;[]</dt>
-    <dd></dd>
+    <dd><p>The predicates that must all return true. Adds if empty.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary (for chaining if desired), or null if the dictionary was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The type of the keys in the dictionary.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the values in the dictionary.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DictionaryExtensions_AddIfAll__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Func___1_System_Boolean_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var dict = new Dictionary&lt;int, string&gt;();
+dict.AddIfAll(1, "one", v =&gt; v.Length &gt; 2, v =&gt; v.StartsWith("o")); // Adds if both true
+dict = null;
+dict.AddIfAll(2, "two", v =&gt; v.Length &gt; 2); // Does nothing and returns null silently</code></pre>
 
 
 
@@ -179,7 +195,9 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a key-value pair to the dictionary if any specified condition is true for the value.
+If the dictionary is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -189,35 +207,54 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to add to, or null.</p>
+</dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
-    <dd></dd>
+    <dd><p>The key of the item to add.</p>
+</dd>
     <dt><code>value</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value of the item to add.</p>
+</dd>
     <dt><code>predicates</code> <span class="xref">Func</span>&lt;TValue, <span class="xref">bool</span>&gt;[]</dt>
-    <dd></dd>
+    <dd><p>The predicates, at least one of which must return true.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary (for chaining if desired), or null if the dictionary was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The type of the keys in the dictionary.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the values in the dictionary.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_DictionaryExtensions_AddIfAny__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Func___1_System_Boolean_____examples">Examples</h4>
+  <pre><code class="lang-csharp">var dict = new Dictionary&lt;int, string&gt;();
+dict.AddIfAny(1, "one", v =&gt; v.Length &gt; 2, v =&gt; v.Contains("n")); // Adds if either true
+dict = null;
+dict.AddIfAny(2, "two", v =&gt; v.Length &gt; 2); // Does nothing and returns null silently</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">predicates</code> is null or empty and the dictionary is not null.</p>
+</dd>
+  </dl>
 
 
 
@@ -228,7 +265,9 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a key-value pair to the dictionary if the value is not null.
+If the dictionary is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -238,30 +277,44 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to add to, or null.</p>
+</dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
-    <dd></dd>
+    <dd><p>The key of the item to add.</p>
+</dd>
     <dt><code>value</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value of the item to add.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary (for chaining if desired), or null if the dictionary was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The type of the keys in the dictionary.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the values in the dictionary.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DictionaryExtensions_AddIfNotNull__2_System_Collections_Generic_IDictionary___0___1____0___1__examples">Examples</h4>
+  <pre><code class="lang-csharp">var dict = new Dictionary&lt;int, string&gt;();
+string val = null;
+dict.AddIfNotNull(1, val); // Won’t add because value is null
+dict.AddIfNotNull(2, "two"); // Adds because value is not null
+dict = null;
+dict.AddIfNotNull(3, "three"); // Does nothing and returns null silently</code></pre>
 
 
 
@@ -275,7 +328,9 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a key-value pair to the dictionary if the key doesn’t already exist.
+If the dictionary is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -285,30 +340,43 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to add to, or null.</p>
+</dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
-    <dd></dd>
+    <dd><p>The key of the item to add.</p>
+</dd>
     <dt><code>value</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value of the item to add.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary (for chaining if desired), or null if the dictionary was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The type of the keys in the dictionary.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the values in the dictionary.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DictionaryExtensions_AddIfUnique__2_System_Collections_Generic_IDictionary___0___1____0___1__examples">Examples</h4>
+  <pre><code class="lang-csharp">var dict = new Dictionary&lt;int, string&gt; { { 1, "one" } };
+dict.AddIfUnique(1, "uno"); // Won’t add because key 1 exists
+dict.AddIfUnique(2, "two"); // Adds because key 2 doesn’t exist
+dict = null;
+dict.AddIfUnique(3, "three"); // Does nothing and returns null silently</code></pre>
 
 
 
@@ -322,7 +390,9 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a key-value pair to the dictionary if the specified condition is true.
+If the dictionary is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -332,32 +402,45 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to add to, or null.</p>
+</dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
-    <dd></dd>
+    <dd><p>The key of the item to add.</p>
+</dd>
     <dt><code>value</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value of the item to add.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The condition that must be true to add the key-value pair.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary (for chaining if desired), or null if the dictionary was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The type of the keys in the dictionary.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the values in the dictionary.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_DictionaryExtensions_AddIf__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var dict = new Dictionary&lt;int, string&gt;();
+dict.AddIf(1, "one", true); // Adds key-value pair
+dict = null;
+dict.AddIf(2, "two", true); // Does nothing and returns null silently</code></pre>
 
 
 
@@ -371,7 +454,9 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a key-value pair to the dictionary if the specified predicate returns true for the value.
+If the dictionary is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -381,35 +466,54 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to add to, or null.</p>
+</dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
-    <dd></dd>
+    <dd><p>The key of the item to add.</p>
+</dd>
     <dt><code>value</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value of the item to add.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;TValue, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The predicate that determines if the value should be added.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary (for chaining if desired), or null if the dictionary was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The type of the keys in the dictionary.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the values in the dictionary.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_DictionaryExtensions_AddIf__2_System_Collections_Generic_IDictionary___0___1____0___1_System_Func___1_System_Boolean___examples">Examples</h4>
+  <pre><code class="lang-csharp">var dict = new Dictionary&lt;int, string&gt;();
+dict.AddIf(1, "one", v =&gt; v.Length &gt; 2); // Adds if value length &gt; 2
+dict = null;
+dict.AddIf(2, "two", v =&gt; v.Length &gt; 2); // Does nothing and returns null silently</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">predicate</code> is null and the dictionary is not null.</p>
+</dd>
+  </dl>
 
 
 
@@ -524,7 +628,9 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a range of key-value pairs to the dictionary if the specified condition is true.
+If the dictionary is null, returns silently without adding.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -534,33 +640,52 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to add to, or null.</p>
+</dd>
     <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">KeyValuePair</span>&lt;TKey, TValue&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The key-value pairs to add.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The condition that must be true to add the items.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary (for chaining if desired), or null if the dictionary was null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The type of the keys in the dictionary.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the values in the dictionary.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_DictionaryExtensions_AddRangeIf__2_System_Collections_Generic_IDictionary___0___1__System_Collections_Generic_IEnumerable_System_Collections_Generic_KeyValuePair___0___1___System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var dict = new Dictionary&lt;int, string&gt;();
+var items = new Dictionary&lt;int, string&gt; { { 1, "one" }, { 2, "two" } };
+dict.AddRangeIf(items, items.Any(kvp =&gt; kvp.Value.Length &gt; 2)); // Adds all if any value length &gt; 2
+dict = null;
+dict.AddRangeIf(items, true); // Does nothing and returns null silently</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if <code class="paramref">items</code> is null and the dictionary is not null.</p>
+</dd>
+  </dl>
 
 
 
@@ -571,7 +696,8 @@ Class DictionaryExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether a string-keyed dictionary contains a key using ordinal case-insensitive comparison.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -581,21 +707,25 @@ Class DictionaryExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, TValue&gt;</dt>
-    <dd></dd>
+    <dd><p>The dictionary to inspect.</p>
+</dd>
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The key to locate.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when an equal key exists; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, including for a null dictionary.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The dictionary value type.</p>
+</dd>
   </dl>
 
 

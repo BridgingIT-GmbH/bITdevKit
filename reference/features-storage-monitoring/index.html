@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#storage-monitoring-feature-documentation" class="md-skip">
+        <a href="#storage-monitoring" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2040,15 +2147,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2066,8 +2178,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2092,6 +2204,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2308,6 +2476,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2377,15 +2573,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2403,8 +2604,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2688,15 +2889,81 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-concepts" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Concepts
+        Challenges
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Concepts">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core concepts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2725,7 +2992,7 @@
   <a href="#events-and-processors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Events And Processors
+        Events and processors
       
     </span>
   </a>
@@ -2738,10 +3005,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-setup" class="md-nav__link">
+  <a href="#detailed-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Setup
+        Detailed setup
       
     </span>
   </a>
@@ -2752,7 +3019,7 @@
   <a href="#location-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Location Options
+        Location options
       
     </span>
   </a>
@@ -2763,7 +3030,7 @@
   <a href="#on-demand-scans" class="md-nav__link">
     <span class="md-ellipsis">
       
-        On-Demand Scans
+        On-demand scans
       
     </span>
   </a>
@@ -2774,7 +3041,7 @@
   <a href="#runtime-control" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Runtime Control
+        Runtime control
       
     </span>
   </a>
@@ -2785,7 +3052,7 @@
   <a href="#processor-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Processor Pipeline
+        Processor pipeline
       
     </span>
   </a>
@@ -2796,7 +3063,7 @@
   <a href="#filemonitoring-and-filestorage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FileMonitoring And FileStorage
+        FileMonitoring and FileStorage
       
     </span>
   </a>
@@ -2807,7 +3074,7 @@
   <a href="#scheduled-scans" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scheduled Scans
+        Scheduled scans
       
     </span>
   </a>
@@ -2818,7 +3085,7 @@
   <a href="#rest-endpoints-for-provider-backed-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REST Endpoints For Provider-Backed Monitoring
+        REST endpoints for provider-backed monitoring
       
     </span>
   </a>
@@ -2829,7 +3096,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -2840,7 +3107,7 @@
   <a href="#document-storage-diagnostics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Document Storage Diagnostics
+        Document Storage diagnostics
       
     </span>
   </a>
@@ -2851,7 +3118,7 @@
   <a href="#related-docs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Docs
+        Related docs
       
     </span>
   </a>
@@ -2913,15 +3180,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2939,8 +3211,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3020,6 +3292,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3059,15 +3862,81 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#core-concepts" class="md-nav__link">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Core Concepts
+        Challenges
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Core Concepts">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#core-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Core concepts
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Core concepts">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3096,7 +3965,7 @@
   <a href="#events-and-processors" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Events And Processors
+        Events and processors
       
     </span>
   </a>
@@ -3109,10 +3978,10 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#basic-setup" class="md-nav__link">
+  <a href="#detailed-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Setup
+        Detailed setup
       
     </span>
   </a>
@@ -3123,7 +3992,7 @@
   <a href="#location-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Location Options
+        Location options
       
     </span>
   </a>
@@ -3134,7 +4003,7 @@
   <a href="#on-demand-scans" class="md-nav__link">
     <span class="md-ellipsis">
       
-        On-Demand Scans
+        On-demand scans
       
     </span>
   </a>
@@ -3145,7 +4014,7 @@
   <a href="#runtime-control" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Runtime Control
+        Runtime control
       
     </span>
   </a>
@@ -3156,7 +4025,7 @@
   <a href="#processor-pipeline" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Processor Pipeline
+        Processor pipeline
       
     </span>
   </a>
@@ -3167,7 +4036,7 @@
   <a href="#filemonitoring-and-filestorage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        FileMonitoring And FileStorage
+        FileMonitoring and FileStorage
       
     </span>
   </a>
@@ -3178,7 +4047,7 @@
   <a href="#scheduled-scans" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Scheduled Scans
+        Scheduled scans
       
     </span>
   </a>
@@ -3189,7 +4058,7 @@
   <a href="#rest-endpoints-for-provider-backed-monitoring" class="md-nav__link">
     <span class="md-ellipsis">
       
-        REST Endpoints For Provider-Backed Monitoring
+        REST endpoints for provider-backed monitoring
       
     </span>
   </a>
@@ -3200,7 +4069,7 @@
   <a href="#best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Best Practices
+        Best practices
       
     </span>
   </a>
@@ -3211,7 +4080,7 @@
   <a href="#document-storage-diagnostics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Document Storage Diagnostics
+        Document Storage diagnostics
       
     </span>
   </a>
@@ -3222,7 +4091,7 @@
   <a href="#related-docs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Docs
+        Related docs
       
     </span>
   </a>
@@ -3272,10 +4141,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3315,31 +4202,37 @@
   
 
 
-<h1 id="storage-monitoring-feature-documentation">Storage Monitoring Feature Documentation<a class="headerlink" href="#storage-monitoring-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="storage-monitoring">Storage Monitoring<a class="headerlink" href="#storage-monitoring" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Detect file changes and process storage events through configurable monitoring pipelines.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#storage-monitoring-feature-documentation">Storage Monitoring Feature Documentation</a><ul>
+<li><a href="#storage-monitoring">Storage Monitoring</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#core-concepts">Core Concepts</a><ul>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#core-concepts">Core concepts</a><ul>
 <li><a href="#locations">Locations</a></li>
 <li><a href="#service">Service</a></li>
-<li><a href="#events-and-processors">Events And Processors</a></li>
+<li><a href="#events-and-processors">Events and processors</a></li>
 </ul>
 </li>
-<li><a href="#basic-setup">Basic Setup</a></li>
-<li><a href="#location-options">Location Options</a></li>
-<li><a href="#on-demand-scans">On-Demand Scans</a></li>
-<li><a href="#runtime-control">Runtime Control</a></li>
-<li><a href="#processor-pipeline">Processor Pipeline</a></li>
-<li><a href="#filemonitoring-and-filestorage">FileMonitoring And FileStorage</a></li>
-<li><a href="#scheduled-scans">Scheduled Scans</a></li>
-<li><a href="#rest-endpoints-for-provider-backed-monitoring">REST Endpoints For Provider-Backed Monitoring</a></li>
-<li><a href="#best-practices">Best Practices</a></li>
-<li><a href="#document-storage-diagnostics">Document Storage Diagnostics</a></li>
-<li><a href="#related-docs">Related Docs</a></li>
+<li><a href="#detailed-setup">Detailed setup</a></li>
+<li><a href="#location-options">Location options</a></li>
+<li><a href="#on-demand-scans">On-demand scans</a></li>
+<li><a href="#runtime-control">Runtime control</a></li>
+<li><a href="#processor-pipeline">Processor pipeline</a></li>
+<li><a href="#filemonitoring-and-filestorage">FileMonitoring and FileStorage</a></li>
+<li><a href="#scheduled-scans">Scheduled scans</a></li>
+<li><a href="#rest-endpoints-for-provider-backed-monitoring">REST endpoints for provider-backed monitoring</a></li>
+<li><a href="#best-practices">Best practices</a></li>
+<li><a href="#document-storage-diagnostics">Document Storage diagnostics</a></li>
+<li><a href="#related-docs">Related docs</a></li>
 </ul>
 </li>
 </ul>
@@ -3354,7 +4247,95 @@
 <li>a processor pipeline for reacting to detected file events</li>
 <li>status and runtime control through <code>IFileMonitoringService</code></li>
 </ul>
-<h2 id="core-concepts">Core Concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Storage providers can expose current files without explaining what changed since the previous inspection. Applications must reconcile snapshots, process bursts without overloading downstream work, and support both notification-capable file systems and scan-only stores.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>Storage Monitoring associates a named <code>IFileStorageProvider</code> with location options, an event store, and a processor pipeline. <code>IFileMonitoringService</code> coordinates real-time watchers where available and performs explicit scans for every supported provider.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>local, in-memory, and named provider-backed locations</li>
+<li>real-time watching where the provider supports notifications</li>
+<li>deterministic on-demand scans with filters, batching, and progress</li>
+<li>per-location processor pipelines with logging and retry behaviors</li>
+<li>runtime pause, resume, restart, status, and processor control</li>
+<li>scheduled scans and optional REST operations</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>A location handler reads a storage provider and compares observed files with stored file events. It emits <code>FileEvent</code> instances into the location's processor pipeline. <code>IFileMonitoringService</code> owns the configured handlers and exposes their scan and runtime-control operations to application code, jobs, and HTTP endpoints.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>process files arriving in an inbound directory</li>
+<li>reconcile a database-backed or cloud-backed location on a schedule</li>
+<li>move, log, or import files after a detected change</li>
+<li>recover missed events after downtime</li>
+<li>expose monitoring status and manual scans to operational tooling</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example registers a singleton in-memory file provider, monitors it on demand, writes a sample file, checks the storage result, and returns the events detected by the scan.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">System.Text</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Storage</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
+<span class="w">    </span><span class="p">.</span><span class="n">RegisterProvider</span><span class="p">(</span><span class="s">&quot;inbox&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">storage</span>
+<span class="w">        </span><span class="p">.</span><span class="n">UseInMemory</span><span class="p">(</span><span class="s">&quot;Inbox&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)));</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddFileMonitoring</span><span class="p">(</span><span class="n">monitoring</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">monitoring</span><span class="p">.</span><span class="n">UseProvider</span><span class="p">(</span><span class="s">&quot;inbox&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;inbox&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseOnDemandOnly</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">FileFilter</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;*.csv&quot;</span><span class="p">;</span>
+<span class="w">        </span><span class="n">options</span><span class="p">.</span><span class="n">UseProcessor</span><span class="o">&lt;</span><span class="n">FileLoggerProcessor</span><span class="o">&gt;</span><span class="p">();</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/monitoring/scan&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">IFileStorageProviderFactory</span><span class="w"> </span><span class="n">storageFactory</span><span class="p">,</span>
+<span class="w">    </span><span class="n">IFileMonitoringService</span><span class="w"> </span><span class="n">monitoring</span><span class="p">,</span>
+<span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">storage</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">storageFactory</span><span class="p">.</span><span class="n">CreateProvider</span><span class="p">(</span><span class="s">&quot;inbox&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">content</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">MemoryStream</span><span class="p">(</span>
+<span class="w">        </span><span class="n">Encoding</span><span class="p">.</span><span class="n">UTF8</span><span class="p">.</span><span class="n">GetBytes</span><span class="p">(</span><span class="s">&quot;orderId,total\n1001,42.50&quot;</span><span class="p">),</span>
+<span class="w">        </span><span class="n">writable</span><span class="p">:</span><span class="w"> </span><span class="k">false</span><span class="p">);</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">write</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">storage</span><span class="p">.</span><span class="n">WriteFileAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;orders.csv&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="n">content</span><span class="p">,</span>
+<span class="w">        </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">write</span><span class="p">.</span><span class="n">IsFailure</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span><span class="kt">string</span><span class="p">.</span><span class="n">Join</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;; &quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">write</span><span class="p">.</span><span class="n">Errors</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">error</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">error</span><span class="p">.</span><span class="n">Message</span><span class="p">)));</span>
+<span class="w">    </span><span class="p">}</span>
+
+<span class="w">    </span><span class="kt">var</span><span class="w"> </span><span class="n">scan</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">monitoring</span><span class="p">.</span><span class="n">ScanLocationAsync</span><span class="p">(</span>
+<span class="w">        </span><span class="s">&quot;inbox&quot;</span><span class="p">,</span>
+<span class="w">        </span><span class="k">new</span><span class="w"> </span><span class="n">FileScanOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">WaitForProcessing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="w"> </span><span class="p">},</span>
+<span class="w">        </span><span class="n">token</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">new</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="n">EventCount</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scan</span><span class="p">.</span><span class="n">Events</span><span class="p">.</span><span class="n">Count</span><span class="p">,</span>
+<span class="w">        </span><span class="n">Events</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">scan</span><span class="p">.</span><span class="n">Events</span><span class="p">.</span><span class="n">Select</span><span class="p">(</span><span class="n">fileEvent</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">new</span>
+<span class="w">        </span><span class="p">{</span>
+<span class="w">            </span><span class="n">fileEvent</span><span class="p">.</span><span class="n">EventType</span><span class="p">,</span>
+<span class="w">            </span><span class="n">fileEvent</span><span class="p">.</span><span class="n">FilePath</span>
+<span class="w">        </span><span class="p">})</span>
+<span class="w">    </span><span class="p">});</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+</code></pre></div>
+<p>The first <code>POST /monitoring/scan</code> detects <code>orders.csv</code>, runs <code>FileLoggerProcessor</code>, and returns the detected event and path. Later scans compare the current provider contents with the event history.</p>
+<h2 id="core-concepts">Core concepts<a class="headerlink" href="#core-concepts" title="Permanent link">&para;</a></h2>
 <h3 id="locations">Locations<a class="headerlink" href="#locations" title="Permanent link">&para;</a></h3>
 <p>A monitored location combines:</p>
 <ul>
@@ -3404,7 +4385,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <li>inspect queue size and status</li>
 <li>enable and disable processors at runtime</li>
 </ul>
-<h3 id="events-and-processors">Events And Processors<a class="headerlink" href="#events-and-processors" title="Permanent link">&para;</a></h3>
+<h3 id="events-and-processors">Events and processors<a class="headerlink" href="#events-and-processors" title="Permanent link">&para;</a></h3>
 <p>Detected changes become <code>FileEvent</code> instances. These events are then passed through configured <code>IFileEventProcessor</code> implementations.</p>
 <p>Built-in examples include:</p>
 <ul>
@@ -3412,7 +4393,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <li><code>FileMoverProcessor</code></li>
 </ul>
 <p>Processors can also be decorated with <code>IProcessorBehavior</code> implementations such as logging or retry behaviors.</p>
-<h2 id="basic-setup">Basic Setup<a class="headerlink" href="#basic-setup" title="Permanent link">&para;</a></h2>
+<h2 id="detailed-setup">Detailed setup<a class="headerlink" href="#detailed-setup" title="Permanent link">&para;</a></h2>
 <div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.Storage</span><span class="p">;</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddFileMonitoring</span><span class="p">(</span><span class="n">monitoring</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -3433,7 +4414,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <span class="p">});</span>
 </code></pre></div>
 <p>This registers the monitoring service, configures one location, and adds two processors that will react to detected file events.</p>
-<h2 id="location-options">Location Options<a class="headerlink" href="#location-options" title="Permanent link">&para;</a></h2>
+<h2 id="location-options">Location options<a class="headerlink" href="#location-options" title="Permanent link">&para;</a></h2>
 <p><code>LocationOptions</code> controls per-location behavior.</p>
 <p>Key settings include:</p>
 <ul>
@@ -3444,7 +4425,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <li><code>RateLimit</code></li>
 </ul>
 <p><code>UseOnDemandOnly</code> is especially important because it disables real-time watching and turns the location into a scan-only source.</p>
-<h2 id="on-demand-scans">On-Demand Scans<a class="headerlink" href="#on-demand-scans" title="Permanent link">&para;</a></h2>
+<h2 id="on-demand-scans">On-demand scans<a class="headerlink" href="#on-demand-scans" title="Permanent link">&para;</a></h2>
 <p><code>ScanLocationAsync(...)</code> lets application code or scheduled jobs trigger a controlled reconciliation pass over a location.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">fileMonitoringService</span><span class="p">.</span><span class="n">ScanLocationAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="s">&quot;inbound&quot;</span><span class="p">,</span>
@@ -3475,7 +4456,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <li><code>ThrowIfDirectoryNotExists</code></li>
 </ul>
 <p>This makes on-demand scans useful for operational jobs, recovery after downtime, and deterministic partner-feed processing.</p>
-<h2 id="runtime-control">Runtime Control<a class="headerlink" href="#runtime-control" title="Permanent link">&para;</a></h2>
+<h2 id="runtime-control">Runtime control<a class="headerlink" href="#runtime-control" title="Permanent link">&para;</a></h2>
 <p>The monitoring service also exposes operational control:</p>
 <ul>
 <li><code>PauseLocationAsync(...)</code></li>
@@ -3489,8 +4470,8 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <li><code>EnableProcessorAsync(...)</code></li>
 <li><code>DisableProcessorAsync(...)</code></li>
 </ul>
-<p>That API makes the feature suitable for admin screens and automated maintenance workflows, not just startup-time wiring.</p>
-<h2 id="processor-pipeline">Processor Pipeline<a class="headerlink" href="#processor-pipeline" title="Permanent link">&para;</a></h2>
+<p>Admin screens and automated maintenance workflows can call that API after startup.</p>
+<h2 id="processor-pipeline">Processor pipeline<a class="headerlink" href="#processor-pipeline" title="Permanent link">&para;</a></h2>
 <p>The processor pipeline is where file events turn into business-adjacent work.</p>
 <pre class="mermaid"><code>flowchart LR
     Scan[Watcher or Scan] --&gt; Event[FileEvent]
@@ -3506,7 +4487,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <li>location-level monitoring behaviors observe broader scan operations</li>
 </ul>
 <p>This design keeps change detection separate from change handling.</p>
-<h2 id="filemonitoring-and-filestorage">FileMonitoring And FileStorage<a class="headerlink" href="#filemonitoring-and-filestorage" title="Permanent link">&para;</a></h2>
+<h2 id="filemonitoring-and-filestorage">FileMonitoring and FileStorage<a class="headerlink" href="#filemonitoring-and-filestorage" title="Permanent link">&para;</a></h2>
 <p>Storage Monitoring is not a separate storage system. It is built on top of the existing file-storage abstraction:</p>
 <ul>
 <li>the location handler owns an <code>IFileStorageProvider</code></li>
@@ -3514,7 +4495,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <li>processors often use the same storage provider to move, delete, or inspect files</li>
 </ul>
 <p>That relationship is why file monitoring belongs in <code>Application.Storage</code> rather than in scheduling or messaging.</p>
-<h2 id="scheduled-scans">Scheduled Scans<a class="headerlink" href="#scheduled-scans" title="Permanent link">&para;</a></h2>
+<h2 id="scheduled-scans">Scheduled scans<a class="headerlink" href="#scheduled-scans" title="Permanent link">&para;</a></h2>
 <p>When scans must run on a schedule instead of continuously, <code>Application.Storage.Jobs</code> provides <code>FileMonitoringLocationScanJob</code>.</p>
 <p>This job:</p>
 <ul>
@@ -3526,7 +4507,7 @@ makes them a good fit for scheduled reconciliation jobs and admin-driven reproce
 <p>That makes it the bridge between <code>Storage Monitoring</code> and the <code>Application.Jobs</code> feature.</p>
 <p>For provider-backed locations, scheduled scans are the normal way to capture file events in
 multi-node or database-backed deployments where real-time watchers are not available.</p>
-<h2 id="rest-endpoints-for-provider-backed-monitoring">REST Endpoints For Provider-Backed Monitoring<a class="headerlink" href="#rest-endpoints-for-provider-backed-monitoring" title="Permanent link">&para;</a></h2>
+<h2 id="rest-endpoints-for-provider-backed-monitoring">REST endpoints for provider-backed monitoring<a class="headerlink" href="#rest-endpoints-for-provider-backed-monitoring" title="Permanent link">&para;</a></h2>
 <p>When a monitored location is also exposed through <code>Presentation.Web.Storage</code>, the same provider
 name can be used to query file events and trigger scans over HTTP.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddFileStorage</span><span class="p">(</span><span class="n">factory</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">factory</span>
@@ -3534,7 +4515,8 @@ name can be used to query file events and trigger scans over HTTP.</p>
 <span class="w">        </span><span class="p">.</span><span class="n">UseEntityFramework</span><span class="o">&lt;</span><span class="n">AppDbContext</span><span class="o">&gt;</span><span class="p">(</span>
 <span class="w">            </span><span class="s">&quot;Documents&quot;</span><span class="p">,</span>
 <span class="w">            </span><span class="s">&quot;Operational document storage&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)));</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithLifetime</span><span class="p">(</span><span class="n">ServiceLifetime</span><span class="p">.</span><span class="n">Singleton</span><span class="p">)))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">());</span>
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddFileMonitoring</span><span class="p">(</span><span class="n">monitoring</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -3555,11 +4537,11 @@ name can be used to query file events and trigger scans over HTTP.</p>
 </thead>
 <tbody>
 <tr>
-<td><code>GET /_bdk/api/{provider}/events?path=...&amp;eventType=...&amp;fromDate=...&amp;tillDate=...&amp;take=...</code></td>
+<td><code>GET /_bdk/api/storage/files/{provider}/events?path=...&amp;eventType=...&amp;fromDate=...&amp;tillDate=...&amp;take=...</code></td>
 <td>Query stored file events for the provider-backed monitoring location</td>
 </tr>
 <tr>
-<td><code>POST /_bdk/api/{provider}/events/scan?waitForProcessing=true&amp;searchPattern=...&amp;maxFilesToScan=...&amp;skipChecksum=false</code></td>
+<td><code>POST /_bdk/api/storage/files/{provider}/events/scan?waitForProcessing=true&amp;searchPattern=...&amp;maxFilesToScan=...&amp;skipChecksum=false</code></td>
 <td>Trigger an on-demand scan and return the detected events</td>
 </tr>
 </tbody>
@@ -3571,7 +4553,7 @@ name can be used to query file events and trigger scans over HTTP.</p>
 <li>The scan route is useful for operations screens, admin tooling, or recovery workflows after downtime.</li>
 <li>The DoFiesta example consumes these routes through the generated Kiota client and exposes them in the Operations &gt; File Events dashboard at <code>/operations/fileevents</code>.</li>
 </ul>
-<h2 id="best-practices">Best Practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
+<h2 id="best-practices">Best practices<a class="headerlink" href="#best-practices" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Use real-time watching for low-latency inbox scenarios.</li>
 <li>Use on-demand scans when deterministic batch reconciliation matters more than immediate detection.</li>
@@ -3581,10 +4563,10 @@ name can be used to query file events and trigger scans over HTTP.</p>
 <li>Use scheduled scans for partner drop folders, archive sweeps, and recovery passes after downtime.</li>
 <li>Prefer persistent event-store infrastructure when monitoring history matters across restarts.</li>
 </ul>
-<h2 id="document-storage-diagnostics">Document Storage Diagnostics<a class="headerlink" href="#document-storage-diagnostics" title="Permanent link">&para;</a></h2>
+<h2 id="document-storage-diagnostics">Document Storage diagnostics<a class="headerlink" href="#document-storage-diagnostics" title="Permanent link">&para;</a></h2>
 <p><code>IDocumentStorageDiagnosticsService</code> captures a payload-free snapshot of every named document client, including default selection, lifetime, provider capabilities, effective stored-size limits, health, transform identifiers, expiration/retention support, and the most recent retention result when available. Diagnostics never include document values, raw continuation tokens, encryption keys, or transform secrets.</p>
 <p>When the MCP runtime is present, <code>DocumentStorageMcpHandler</code> adds <code>documents.summary</code>, <code>documents.clients</code>, and <code>documents.probe</code>. These operations use the same normalized client identities as dependency injection, health checks, retention, cache keys, continuation-token binding, and the dashboard.</p>
-<h2 id="related-docs">Related Docs<a class="headerlink" href="#related-docs" title="Permanent link">&para;</a></h2>
+<h2 id="related-docs">Related docs<a class="headerlink" href="#related-docs" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-storage-files/">FileStorage</a></li>
 <li><a href="../features-jobscheduling/">JobScheduling</a></li>
@@ -3668,7 +4650,7 @@ name can be used to query file events and trigger scans over HTTP.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3676,6 +4658,8 @@ name can be used to query file events and trigger scans over HTTP.</p>
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

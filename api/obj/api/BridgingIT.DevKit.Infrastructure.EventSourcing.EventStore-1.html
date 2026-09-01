@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EventStore&lt;TAggregate&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents event store.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class EventStore&lt;TAggregate&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EventSourcing.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents event store.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -105,7 +106,8 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -274,7 +276,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents event store.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -284,13 +287,17 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>mediator</code> <span class="xref">IMediator</span></dt>
-    <dd></dd>
+    <dd><p>The mediator used by the operation.</p>
+</dd>
     <dt><code>eventStoreRepository</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Store.IEventStoreRepository.html">IEventStoreRepository</a></dt>
-    <dd></dd>
+    <dd><p>The event store repository used by the operation.</p>
+</dd>
     <dt><code>eventSender</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.AggregatePublish.IPublishAggregateEventSender.html">IPublishAggregateEventSender</a></dt>
-    <dd></dd>
+    <dd><p>The event sender used by the operation.</p>
+</dd>
     <dt><code>eventStoreOptions</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.IEventStoreOptions-1.html">IEventStoreOptions</a>&lt;TAggregate&gt;</dt>
-    <dd></dd>
+    <dd><p>The event store options used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -315,7 +322,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets aggregate ids.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -325,13 +333,15 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">Guid</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -351,7 +361,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -361,17 +372,21 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>forceReplay</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The force replay used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TAggregate&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -391,7 +406,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -401,15 +417,18 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TAggregate&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -429,7 +448,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets events.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -439,13 +459,15 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -465,7 +487,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets events.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -475,15 +498,18 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.IAggregateEvent.html">IAggregateEvent</a>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -503,7 +529,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Saves events.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -513,17 +540,21 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregate</code> <span class="xref">TAggregate</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate used by the operation.</p>
+</dd>
     <dt><code>sendProjectionRequestForEveryEvent</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>The send projection request for every event used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -543,7 +574,8 @@ Class EventStore&lt;TAggregate&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Saves events.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -553,15 +585,18 @@ Class EventStore&lt;TAggregate&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregate</code> <span class="xref">TAggregate</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

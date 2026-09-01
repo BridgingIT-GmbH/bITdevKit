@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TaskExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides fire-and-forget, retry, timeout, fallback, failure handling, and context-free await helpers.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class TaskExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides fire-and-forget, retry, timeout, fallback, failure handling, and context-free await helpers.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class TaskExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configures an awaited task not to resume on the captured synchronization context.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,13 +142,15 @@ Class TaskExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>task</code> <span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>The task to configure.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ConfiguredTaskAwaitable</span></dt>
-    <dd></dd>
+    <dd><p>An awaitable configured with <code>continueOnCapturedContext: false</code>.</p>
+</dd>
   </dl>
 
 
@@ -166,7 +170,8 @@ Class TaskExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configures an awaited value task not to resume on the captured synchronization context.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -176,13 +181,15 @@ Class TaskExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>task</code> <span class="xref">ValueTask</span></dt>
-    <dd></dd>
+    <dd><p>The value task to configure.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ConfiguredValueTaskAwaitable</span></dt>
-    <dd></dd>
+    <dd><p>An awaitable configured with <code>continueOnCapturedContext: false</code>.</p>
+</dd>
   </dl>
 
 
@@ -202,7 +209,8 @@ Class TaskExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configures an awaited result task not to resume on the captured synchronization context.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -212,19 +220,22 @@ Class TaskExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>task</code> <span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The task to configure.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ConfiguredTaskAwaitable</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>An awaitable configured with <code>continueOnCapturedContext: false</code>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The asynchronous result type.</p>
+</dd>
   </dl>
 
 
@@ -243,7 +254,8 @@ Class TaskExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configures an awaited value task result not to resume on the captured synchronization context.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -253,19 +265,22 @@ Class TaskExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>task</code> <span class="xref">ValueTask</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The value task to configure.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ConfiguredValueTaskAwaitable</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>An awaitable configured with <code>continueOnCapturedContext: false</code>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The asynchronous result type.</p>
+</dd>
   </dl>
 
 

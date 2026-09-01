@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Interface ISnapshotRepository | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Defines operations for i snapshot repository.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Interface ISnapshotRepository
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EventSourcing.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Defines operations for i snapshot repository.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -256,7 +257,8 @@ Interface ISnapshotRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets snapshot.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -266,17 +268,21 @@ Interface ISnapshotRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>immutableName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The immutable name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">byte</span>[]&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -296,7 +302,8 @@ Interface ISnapshotRepository
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Saves snapshot.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -306,19 +313,24 @@ Interface ISnapshotRepository
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>aggregateId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate id used by the operation.</p>
+</dd>
     <dt><code>blob</code> <span class="xref">byte</span>[]</dt>
-    <dd></dd>
+    <dd><p>The blob used by the operation.</p>
+</dd>
     <dt><code>immutableName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The immutable name used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

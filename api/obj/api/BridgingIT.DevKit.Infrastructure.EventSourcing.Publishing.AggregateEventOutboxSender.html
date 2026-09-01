@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AggregateEventOutboxSender | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents aggregate event outbox sender.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class AggregateEventOutboxSender
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EventSourcing.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents aggregate event outbox sender.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +270,8 @@ Class AggregateEventOutboxSender
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents aggregate event outbox sender.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,11 +281,14 @@ Class AggregateEventOutboxSender
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>outboxMessageWriterRepository</code> <a class="xref" href="BridgingIT.DevKit.Domain.Outbox.IOutboxMessageWriterRepository.html">IOutboxMessageWriterRepository</a></dt>
-    <dd></dd>
+    <dd><p>The outbox message writer repository used by the operation.</p>
+</dd>
     <dt><code>eventStoreAggregateEventRegistration</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Registration.IEventStoreAggregateEventRegistration.html">IEventStoreAggregateEventRegistration</a></dt>
-    <dd></dd>
+    <dd><p>The event store aggregate event registration used by the operation.</p>
+</dd>
     <dt><code>eventStoreAggregateRegistration</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Registration.IEventStoreAggregateRegistration.html">IEventStoreAggregateRegistration</a></dt>
-    <dd></dd>
+    <dd><p>The event store aggregate registration used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -308,7 +313,8 @@ Class AggregateEventOutboxSender
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the write to outbox operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -318,21 +324,25 @@ Class AggregateEventOutboxSender
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>savedEvent</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.AggregateEvent.html">AggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The saved event used by the operation.</p>
+</dd>
     <dt><code>aggregate</code> <span class="xref">TAggregate</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The aggregate type.</p>
+</dd>
   </dl>
 
 

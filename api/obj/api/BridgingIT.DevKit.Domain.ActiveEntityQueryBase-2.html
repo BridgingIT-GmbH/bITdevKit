@@ -304,7 +304,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Stores the options accumulated by this active-entity query.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -458,7 +459,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Counts entities matching the supplied specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -468,17 +470,21 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specs</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications used to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>ct</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that returns the operation result.</p>
+</dd>
   </dl>
 
 
@@ -498,7 +504,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an entity matches the supplied specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -508,17 +515,21 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specs</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications used to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>ct</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that returns the operation result.</p>
+</dd>
   </dl>
 
 
@@ -538,7 +549,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entities matching the supplied specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -548,17 +560,21 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specs</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications used to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>ct</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that returns the operation result.</p>
+</dd>
   </dl>
 
 
@@ -578,7 +594,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a page of entities matching the supplied specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -588,17 +605,21 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specs</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications used to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>ct</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that returns the operation result.</p>
+</dd>
   </dl>
 
 
@@ -618,7 +639,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds one entity matching the supplied specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -628,17 +650,21 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specs</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications used to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>ct</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that returns the operation result.</p>
+</dd>
   </dl>
 
 
@@ -954,7 +980,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all entities matching the supplied specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -964,25 +991,31 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specs</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications used to filter entities.</p>
+</dd>
     <dt><code>selector</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression that projects each matching entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>ct</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that returns the operation result.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The projection type.</p>
+</dd>
   </dl>
 
 
@@ -1045,7 +1078,8 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects a page of entities matching the supplied specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1055,25 +1089,31 @@ and ensures all results are returned as <a class="xref" href="BridgingIT.DevKit.
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specs</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications used to filter entities.</p>
+</dd>
     <dt><code>selector</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The expression that projects each matching entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The options controlling the operation.</p>
+</dd>
     <dt><code>ct</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that returns the operation result.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The projection type.</p>
+</dd>
   </dl>
 
 

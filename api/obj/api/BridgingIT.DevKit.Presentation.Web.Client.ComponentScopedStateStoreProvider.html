@@ -303,7 +303,7 @@ Class ComponentScopedStateStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously clears all state data from the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Executes the clear all operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -315,7 +315,8 @@ Class ComponentScopedStateStoreProvider
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -335,7 +336,7 @@ Class ComponentScopedStateStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Asynchronously clears all state data for the given state and user context from the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Executes the clear operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -346,17 +347,17 @@ Class ComponentScopedStateStoreProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>stateId</code> <span class="xref">string</span></dt>
-    <dd><p>A unique identifier for the state.</p>
+    <dd><p>The state id used by the operation.</p>
 </dd>
     <dt><code>userContextId</code> <span class="xref">string</span></dt>
-    <dd><p>A unique identifier for the user context.</p>
+    <dd><p>The user context id used by the operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd><p>A task representing the asynchronous clear operation.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 

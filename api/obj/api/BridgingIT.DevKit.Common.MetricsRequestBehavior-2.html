@@ -348,7 +348,8 @@ Class MetricsRequestBehavior&lt;TRequest, TResponse&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether this behavior applies to the current request and handler.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -358,15 +359,18 @@ Class MetricsRequestBehavior&lt;TRequest, TResponse&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <span class="xref">TRequest</span></dt>
-    <dd></dd>
+    <dd><p>The request or notification.</p>
+</dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The concrete handler type.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the behavior should execute; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
 
@@ -386,7 +390,8 @@ Class MetricsRequestBehavior&lt;TRequest, TResponse&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes behavior logic around the next pipeline delegate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -396,19 +401,24 @@ Class MetricsRequestBehavior&lt;TRequest, TResponse&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <span class="xref">TRequest</span></dt>
-    <dd></dd>
+    <dd><p>The request or notification.</p>
+</dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The concrete handler type.</p>
+</dd>
     <dt><code>next</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResponse&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The next pipeline delegate.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResponse&gt;</dt>
-    <dd></dd>
+    <dd><p>The pipeline response.</p>
+</dd>
   </dl>
 
 

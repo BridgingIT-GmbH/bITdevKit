@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class TimeSpanExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides timeout-token creation, duration comparison, unit construction, truncation, and flexible clock-text parsing.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class TimeSpanExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides timeout-token creation, duration comparison, unit construction, truncation, and flexible clock-text parsing.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -352,7 +353,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the longer of two durations by comparing their tick counts.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -362,15 +364,18 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The first duration.</p>
+</dd>
     <dt><code>other</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The second duration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The longer duration, or <code class="paramref">source</code> when equal.</p>
+</dd>
   </dl>
 
 
@@ -501,7 +506,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the shorter of two durations by comparing their tick counts.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -511,15 +517,18 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The first duration.</p>
+</dd>
     <dt><code>other</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The second duration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The shorter duration, or <code class="paramref">source</code> when equal.</p>
+</dd>
   </dl>
 
 
@@ -650,7 +659,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Parses duration or clock text, including compact <code>HHmm</code> and <code>HHmmss</code> forms.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -660,13 +670,15 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The text to parse.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The parsed duration or time of day; <span class="xref">System.TimeSpan.Zero</span> when parsing fails.</p>
+</dd>
   </dl>
 
 
@@ -908,7 +920,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a cancellation source from an optional timeout.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -918,13 +931,15 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional timeout; a missing value produces a source without scheduled cancellation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">CancellationTokenSource</span></dt>
-    <dd></dd>
+    <dd><p>A new cancellation token source.</p>
+</dd>
   </dl>
 
 
@@ -944,7 +959,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a cancellation source using a fallback timeout when no timeout is supplied.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -954,15 +970,18 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional preferred timeout.</p>
+</dd>
     <dt><code>defaultTimeout</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The timeout used when <code class="paramref">source</code> has no value.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">CancellationTokenSource</span></dt>
-    <dd></dd>
+    <dd><p>A new cancellation token source.</p>
+</dd>
   </dl>
 
 
@@ -982,7 +1001,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a cancellation source whose cancellation behavior is determined by a timeout.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -992,13 +1012,15 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>Zero for an already-cancelled source, a positive timeout for scheduled cancellation, or a negative value for no scheduled cancellation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">CancellationTokenSource</span></dt>
-    <dd></dd>
+    <dd><p>A new cancellation token source.</p>
+</dd>
   </dl>
 
 
@@ -1018,7 +1040,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes fractional seconds while preserving the day, hour, minute, and whole-second components.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1028,13 +1051,15 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>timeSpan</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The duration to truncate.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>A duration with zero fractional-second ticks.</p>
+</dd>
   </dl>
 
 
@@ -1054,7 +1079,8 @@ Class TimeSpanExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Attempts to parse duration or clock text, including compact <code>HHmm</code> and <code>HHmmss</code> forms.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1064,15 +1090,18 @@ Class TimeSpanExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The text to parse.</p>
+</dd>
     <dt><code>result</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The parsed duration or time of day, or zero when parsing fails.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when either duration or invariant clock parsing succeeds.</p>
+</dd>
   </dl>
 
 

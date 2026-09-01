@@ -277,7 +277,8 @@ Class JobSchedulerNotifierAcceptedEventBehavior&lt;TNotification, TResult&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>JobSchedulerNotifierAcceptedEventBehavior</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -287,9 +288,11 @@ Class JobSchedulerNotifierAcceptedEventBehavior&lt;TNotification, TResult&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>ingress</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.IJobEventIngress.html">IJobEventIngress</a></dt>
-    <dd></dd>
+    <dd><p>The ingress used by the operation.</p>
+</dd>
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
   </dl>
 
 
@@ -314,7 +317,7 @@ Class JobSchedulerNotifierAcceptedEventBehavior&lt;TNotification, TResult&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Processes a request or notification, calling the next behavior or handler in the pipeline.</p>
+  <div class="markdown level1 summary"><p>Handles .</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -325,25 +328,26 @@ Class JobSchedulerNotifierAcceptedEventBehavior&lt;TNotification, TResult&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <span class="xref">TNotification</span></dt>
-    <dd><p>The request or notification to process.</p>
+    <dd><p>The request used by the operation.</p>
 </dd>
     <dt><code>options</code> <span class="xref">object</span></dt>
-    <dd><p>The options for request (<a class="xref" href="BridgingIT.DevKit.Common.SendOptions.html">SendOptions</a>) or notification (<a class="xref" href="BridgingIT.DevKit.Common.PublishOptions.html">PublishOptions</a>) processing.</p>
+    <dd><p>The options controlling the operation.</p>
 </dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The handler type used by the operation.</p>
+</dd>
     <dt><code>next</code> <span class="xref">Func</span>&lt;<span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
-    <dd><p>The delegate to call the next behavior or handler in the pipeline.</p>
+    <dd><p>The next used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd><p>A task representing the result of the operation, returning a TResponse.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -364,7 +368,7 @@ Class JobSchedulerNotifierAcceptedEventBehavior&lt;TNotification, TResult&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Indicates whether the behavior should be applied per handler.</p>
+  <div class="markdown level1 summary"><p>Determines whether is handler specific.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -376,7 +380,7 @@ Class JobSchedulerNotifierAcceptedEventBehavior&lt;TNotification, TResult&gt;
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd><p><code>true</code> if the behavior is handler-specific (e.g., retry, timeout); <code>false</code> if it should run once per message (e.g., validation).</p>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the condition is met; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </dd>
   </dl>
 

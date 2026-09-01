@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class PostgresJobStoreProvider | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents postgres job store provider.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class PostgresJobStoreProvider
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.Postgres.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents postgres job store provider.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +270,8 @@ Class PostgresJobStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>PostgresJobStoreProvider</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,11 +281,14 @@ Class PostgresJobStoreProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
     <dt><code>connectionString</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The connection string used by the operation.</p>
+</dd>
     <dt><code>tablePrefix</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The table prefix used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -308,7 +313,7 @@ Class PostgresJobStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Retrieves aggregated statistics for a job's execution history from the database.</p>
+  <div class="markdown level1 summary"><p>Gets job run stats.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -319,26 +324,26 @@ Class PostgresJobStoreProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the job.</p>
+    <dd><p>The job name used by the operation.</p>
 </dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd><p>The group the job belongs to.</p>
+    <dd><p>The job group used by the operation.</p>
 </dd>
     <dt><code>startDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd><p>Start of the date range for stats.</p>
+    <dd><p>The start date used by the operation.</p>
 </dd>
     <dt><code>endDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd><p>End of the date range for stats.</p>
+    <dd><p>The end date used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobRunStats.html">JobRunStats</a>&gt;</dt>
-    <dd><p>Statistics including total runs, success/failure counts, and runtime metrics.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -359,7 +364,7 @@ Class PostgresJobStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Retrieves job run history from the database with specified filters.</p>
+  <div class="markdown level1 summary"><p>Gets job runs.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -370,41 +375,41 @@ Class PostgresJobStoreProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the job.</p>
+    <dd><p>The job name used by the operation.</p>
 </dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd><p>The group the job belongs to.</p>
+    <dd><p>The job group used by the operation.</p>
 </dd>
     <dt><code>startDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd><p>Filter runs starting on or after this date.</p>
+    <dd><p>The start date used by the operation.</p>
 </dd>
     <dt><code>endDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd><p>Filter runs ending on or before this date.</p>
+    <dd><p>The end date used by the operation.</p>
 </dd>
     <dt><code>status</code> <span class="xref">string</span></dt>
-    <dd><p>Filter by execution status.</p>
+    <dd><p>The status used by the operation.</p>
 </dd>
     <dt><code>priority</code> <span class="xref">int</span>?</dt>
-    <dd><p>Filter by trigger priority.</p>
+    <dd><p>The priority used by the operation.</p>
 </dd>
     <dt><code>instanceName</code> <span class="xref">string</span></dt>
-    <dd><p>Filter by scheduler instance name.</p>
+    <dd><p>The instance name used by the operation.</p>
 </dd>
     <dt><code>resultContains</code> <span class="xref">string</span></dt>
-    <dd><p>Filter runs where the result contains this string.</p>
+    <dd><p>The result contains used by the operation.</p>
 </dd>
     <dt><code>take</code> <span class="xref">int</span>?</dt>
-    <dd><p>Limit the number of runs returned.</p>
+    <dd><p>The take used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobRun.html">JobRun</a>&gt;&gt;</dt>
-    <dd><p>A collection of job run records from the database.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -425,7 +430,7 @@ Class PostgresJobStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes job run history older than a specified date from the database.</p>
+  <div class="markdown level1 summary"><p>Executes the purge job runs operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -436,23 +441,24 @@ Class PostgresJobStoreProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd><p>The name of the job.</p>
+    <dd><p>The job name used by the operation.</p>
 </dd>
     <dt><code>jobGroup</code> <span class="xref">string</span></dt>
-    <dd><p>The group the job belongs to.</p>
+    <dd><p>The job group used by the operation.</p>
 </dd>
     <dt><code>olderThan</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd><p>Delete runs older than this date.</p>
+    <dd><p>The older than used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -472,7 +478,7 @@ Class PostgresJobStoreProvider
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Saves or updates a job run record in the database.</p>
+  <div class="markdown level1 summary"><p>Saves job run.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -483,17 +489,18 @@ Class PostgresJobStoreProvider
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobRun</code> <a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobRun.html">JobRun</a></dt>
-    <dd><p>The job run record to save.</p>
+    <dd><p>The job run used by the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -898,15 +901,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -924,8 +932,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1044,12 +1052,12 @@
   <a href="#business-calendars" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Business Calendars
+        Business calendars
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Business Calendars">
+    <nav class="md-nav" aria-label="Business calendars">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1067,7 +1075,7 @@
   <a href="#di-aware-calendars" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DI-Aware Calendars
+        DI-aware calendars
       
     </span>
   </a>
@@ -1078,7 +1086,7 @@
   <a href="#dynamic-holidays" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dynamic Holidays
+        Dynamic holidays
       
     </span>
   </a>
@@ -1094,7 +1102,7 @@
   <a href="#human-readable-duration-text" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Human-Readable Duration Text
+        Human-readable duration text
       
     </span>
   </a>
@@ -1105,12 +1113,12 @@
   <a href="#date-and-time-ranges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Date And Time Ranges
+        Date and time ranges
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Date And Time Ranges">
+    <nav class="md-nav" aria-label="Date and time ranges">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1145,7 +1153,7 @@
   <a href="#pattern-guide" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern Guide
+        Pattern guide
       
     </span>
   </a>
@@ -1153,10 +1161,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#full-showcase" class="md-nav__link">
+  <a href="#combined-registration-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Full Showcase
+        Combined registration example
       
     </span>
   </a>
@@ -1233,7 +1241,7 @@
   <a href="#choosing-a-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choosing A Pattern
+        Choosing a pattern
       
     </span>
   </a>
@@ -1271,12 +1279,12 @@
   <a href="#resiliency-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Resiliency Helpers
+        Resiliency helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Resiliency Helpers">
+    <nav class="md-nav" aria-label="Resiliency helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1294,7 +1302,7 @@
   <a href="#debouncer-and-simpledebouncer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debouncer And SimpleDebouncer
+        Debouncer and SimpleDebouncer
       
     </span>
   </a>
@@ -1371,7 +1379,7 @@
   <a href="#simplenotifier-and-simplerequester" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SimpleNotifier And SimpleRequester
+        SimpleNotifier and SimpleRequester
       
     </span>
   </a>
@@ -1382,7 +1390,7 @@
   <a href="#progress-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Progress Types
+        Progress types
       
     </span>
   </a>
@@ -1410,7 +1418,7 @@
   <a href="#what-it-provides" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What It Provides
+        What it provides
       
     </span>
   </a>
@@ -1421,7 +1429,7 @@
   <a href="#registering-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registering Metrics
+        Registering metrics
       
     </span>
   </a>
@@ -1432,7 +1440,7 @@
   <a href="#emitting-custom-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Emitting Custom Metrics
+        Emitting custom metrics
       
     </span>
   </a>
@@ -1443,7 +1451,7 @@
   <a href="#tagged-and-high-fidelity-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tagged And High-Fidelity Metrics
+        Tagged and high-fidelity metrics
       
     </span>
   </a>
@@ -1454,7 +1462,7 @@
   <a href="#built-in-feature-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Feature Metrics
+        Built-in feature metrics
       
     </span>
   </a>
@@ -1465,7 +1473,7 @@
   <a href="#opentelemetry-and-collector-compatibility" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OpenTelemetry And Collector Compatibility
+        OpenTelemetry and collector compatibility
       
     </span>
   </a>
@@ -1492,7 +1500,7 @@
   <a href="#requester-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Requester Utilities
+        Requester utilities
       
     </span>
   </a>
@@ -1503,7 +1511,7 @@
   <a href="#pipeline-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pipeline Utilities
+        Pipeline utilities
       
     </span>
   </a>
@@ -1514,7 +1522,7 @@
   <a href="#startup-task-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Startup Task Utilities
+        Startup task utilities
       
     </span>
   </a>
@@ -1525,19 +1533,19 @@
   <a href="#activity-and-tracing-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity And Tracing Helpers
+        Activity and tracing helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Activity And Tracing Helpers">
+    <nav class="md-nav" aria-label="Activity and tracing helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#outbound-http-correlation-propagation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Outbound HTTP Correlation Propagation
+        Outbound HTTP correlation propagation
       
     </span>
   </a>
@@ -1553,12 +1561,12 @@
   <a href="#reflection-and-expression-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reflection And Expression Helpers
+        Reflection and expression helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Reflection And Expression Helpers">
+    <nav class="md-nav" aria-label="Reflection and expression helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1576,7 +1584,7 @@
   <a href="#reflectionhelper-and-privatereflection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ReflectionHelper And PrivateReflection
+        ReflectionHelper and PrivateReflection
       
     </span>
   </a>
@@ -1592,12 +1600,12 @@
   <a href="#shared-state-and-value-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Shared State And Value Helpers
+        Shared state and value helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Shared State And Value Helpers">
+    <nav class="md-nav" aria-label="Shared state and value helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1659,7 +1667,7 @@
   <a href="#enumeration-and-smart-enumeration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Enumeration And Smart Enumeration
+        Enumeration and smart enumeration
       
     </span>
   </a>
@@ -1675,12 +1683,12 @@
   <a href="#data-and-content-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data And Content Helpers
+        Data and content helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Data And Content Helpers">
+    <nav class="md-nav" aria-label="Data and content helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -1709,7 +1717,7 @@
   <a href="#content-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Content Types
+        Content types
       
     </span>
   </a>
@@ -1742,7 +1750,7 @@
   <a href="#encryption-key-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Encryption Key Providers
+        Encryption key providers
       
     </span>
   </a>
@@ -1753,7 +1761,7 @@
   <a href="#stream-operations-and-temporary-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stream Operations And Temporary Files
+        Stream operations and temporary files
       
     </span>
   </a>
@@ -1764,7 +1772,7 @@
   <a href="#base64url-encoding" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Base64Url Encoding
+        Base64Url encoding
       
     </span>
   </a>
@@ -1775,7 +1783,7 @@
   <a href="#property-scalar-encoding" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Property Scalar Encoding
+        Property scalar encoding
       
     </span>
   </a>
@@ -1786,7 +1794,7 @@
   <a href="#opaque-continuation-tokens" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Opaque Continuation Tokens
+        Opaque continuation tokens
       
     </span>
   </a>
@@ -1808,7 +1816,7 @@
   <a href="#clonehelper-and-clonehelpernew" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CloneHelper And CloneHelperNew
+        CloneHelper and CloneHelperNew
       
     </span>
   </a>
@@ -1824,7 +1832,7 @@
   <a href="#id-and-key-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Id And Key Helpers
+        ID and key helpers
       
     </span>
   </a>
@@ -1835,7 +1843,7 @@
   <a href="#factory-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Factory Helpers
+        Factory helpers
       
     </span>
   </a>
@@ -1846,7 +1854,7 @@
   <a href="#validation-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Helpers
+        Validation helpers
       
     </span>
   </a>
@@ -1857,19 +1865,19 @@
   <a href="#other-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Other Helpers
+        Other helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Other Helpers">
+    <nav class="md-nav" aria-label="Other helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#background-service-health-checks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Background Service Health Checks
+        Background service health checks
       
     </span>
   </a>
@@ -1885,7 +1893,7 @@
   <a href="#storage-neutral-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Storage-Neutral Utilities
+        Storage-neutral utilities
       
     </span>
   </a>
@@ -1968,7 +1976,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -2131,6 +2139,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -2198,15 +2234,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -2224,8 +2265,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2298,42 +2339,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -2417,7 +2430,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -2599,6 +2612,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -2617,15 +2658,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -2643,8 +2689,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2725,6 +2771,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2924,15 +2998,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2950,8 +3029,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2960,6 +3039,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -3035,15 +3142,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -3061,8 +3173,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3087,6 +3199,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -3303,6 +3471,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -3370,15 +3566,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -3396,8 +3597,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3677,15 +3878,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3703,8 +3909,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3784,6 +3990,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3826,12 +4563,12 @@
   <a href="#business-calendars" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Business Calendars
+        Business calendars
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Business Calendars">
+    <nav class="md-nav" aria-label="Business calendars">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3849,7 +4586,7 @@
   <a href="#di-aware-calendars" class="md-nav__link">
     <span class="md-ellipsis">
       
-        DI-Aware Calendars
+        DI-aware calendars
       
     </span>
   </a>
@@ -3860,7 +4597,7 @@
   <a href="#dynamic-holidays" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Dynamic Holidays
+        Dynamic holidays
       
     </span>
   </a>
@@ -3876,7 +4613,7 @@
   <a href="#human-readable-duration-text" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Human-Readable Duration Text
+        Human-readable duration text
       
     </span>
   </a>
@@ -3887,12 +4624,12 @@
   <a href="#date-and-time-ranges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Date And Time Ranges
+        Date and time ranges
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Date And Time Ranges">
+    <nav class="md-nav" aria-label="Date and time ranges">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3927,7 +4664,7 @@
   <a href="#pattern-guide" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pattern Guide
+        Pattern guide
       
     </span>
   </a>
@@ -3935,10 +4672,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#full-showcase" class="md-nav__link">
+  <a href="#combined-registration-example" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Full Showcase
+        Combined registration example
       
     </span>
   </a>
@@ -4015,7 +4752,7 @@
   <a href="#choosing-a-pattern" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Choosing A Pattern
+        Choosing a pattern
       
     </span>
   </a>
@@ -4053,12 +4790,12 @@
   <a href="#resiliency-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Resiliency Helpers
+        Resiliency helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Resiliency Helpers">
+    <nav class="md-nav" aria-label="Resiliency helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4076,7 +4813,7 @@
   <a href="#debouncer-and-simpledebouncer" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debouncer And SimpleDebouncer
+        Debouncer and SimpleDebouncer
       
     </span>
   </a>
@@ -4153,7 +4890,7 @@
   <a href="#simplenotifier-and-simplerequester" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SimpleNotifier And SimpleRequester
+        SimpleNotifier and SimpleRequester
       
     </span>
   </a>
@@ -4164,7 +4901,7 @@
   <a href="#progress-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Progress Types
+        Progress types
       
     </span>
   </a>
@@ -4192,7 +4929,7 @@
   <a href="#what-it-provides" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What It Provides
+        What it provides
       
     </span>
   </a>
@@ -4203,7 +4940,7 @@
   <a href="#registering-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Registering Metrics
+        Registering metrics
       
     </span>
   </a>
@@ -4214,7 +4951,7 @@
   <a href="#emitting-custom-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Emitting Custom Metrics
+        Emitting custom metrics
       
     </span>
   </a>
@@ -4225,7 +4962,7 @@
   <a href="#tagged-and-high-fidelity-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Tagged And High-Fidelity Metrics
+        Tagged and high-fidelity metrics
       
     </span>
   </a>
@@ -4236,7 +4973,7 @@
   <a href="#built-in-feature-metrics" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Feature Metrics
+        Built-in feature metrics
       
     </span>
   </a>
@@ -4247,7 +4984,7 @@
   <a href="#opentelemetry-and-collector-compatibility" class="md-nav__link">
     <span class="md-ellipsis">
       
-        OpenTelemetry And Collector Compatibility
+        OpenTelemetry and collector compatibility
       
     </span>
   </a>
@@ -4274,7 +5011,7 @@
   <a href="#requester-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Requester Utilities
+        Requester utilities
       
     </span>
   </a>
@@ -4285,7 +5022,7 @@
   <a href="#pipeline-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Pipeline Utilities
+        Pipeline utilities
       
     </span>
   </a>
@@ -4296,7 +5033,7 @@
   <a href="#startup-task-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Startup Task Utilities
+        Startup task utilities
       
     </span>
   </a>
@@ -4307,19 +5044,19 @@
   <a href="#activity-and-tracing-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Activity And Tracing Helpers
+        Activity and tracing helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Activity And Tracing Helpers">
+    <nav class="md-nav" aria-label="Activity and tracing helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#outbound-http-correlation-propagation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Outbound HTTP Correlation Propagation
+        Outbound HTTP correlation propagation
       
     </span>
   </a>
@@ -4335,12 +5072,12 @@
   <a href="#reflection-and-expression-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reflection And Expression Helpers
+        Reflection and expression helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Reflection And Expression Helpers">
+    <nav class="md-nav" aria-label="Reflection and expression helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4358,7 +5095,7 @@
   <a href="#reflectionhelper-and-privatereflection" class="md-nav__link">
     <span class="md-ellipsis">
       
-        ReflectionHelper And PrivateReflection
+        ReflectionHelper and PrivateReflection
       
     </span>
   </a>
@@ -4374,12 +5111,12 @@
   <a href="#shared-state-and-value-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Shared State And Value Helpers
+        Shared state and value helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Shared State And Value Helpers">
+    <nav class="md-nav" aria-label="Shared state and value helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4441,7 +5178,7 @@
   <a href="#enumeration-and-smart-enumeration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Enumeration And Smart Enumeration
+        Enumeration and smart enumeration
       
     </span>
   </a>
@@ -4457,12 +5194,12 @@
   <a href="#data-and-content-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Data And Content Helpers
+        Data and content helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Data And Content Helpers">
+    <nav class="md-nav" aria-label="Data and content helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -4491,7 +5228,7 @@
   <a href="#content-types" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Content Types
+        Content types
       
     </span>
   </a>
@@ -4524,7 +5261,7 @@
   <a href="#encryption-key-providers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Encryption Key Providers
+        Encryption key providers
       
     </span>
   </a>
@@ -4535,7 +5272,7 @@
   <a href="#stream-operations-and-temporary-files" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stream Operations And Temporary Files
+        Stream operations and temporary files
       
     </span>
   </a>
@@ -4546,7 +5283,7 @@
   <a href="#base64url-encoding" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Base64Url Encoding
+        Base64Url encoding
       
     </span>
   </a>
@@ -4557,7 +5294,7 @@
   <a href="#property-scalar-encoding" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Property Scalar Encoding
+        Property scalar encoding
       
     </span>
   </a>
@@ -4568,7 +5305,7 @@
   <a href="#opaque-continuation-tokens" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Opaque Continuation Tokens
+        Opaque continuation tokens
       
     </span>
   </a>
@@ -4590,7 +5327,7 @@
   <a href="#clonehelper-and-clonehelpernew" class="md-nav__link">
     <span class="md-ellipsis">
       
-        CloneHelper And CloneHelperNew
+        CloneHelper and CloneHelperNew
       
     </span>
   </a>
@@ -4606,7 +5343,7 @@
   <a href="#id-and-key-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Id And Key Helpers
+        ID and key helpers
       
     </span>
   </a>
@@ -4617,7 +5354,7 @@
   <a href="#factory-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Factory Helpers
+        Factory helpers
       
     </span>
   </a>
@@ -4628,7 +5365,7 @@
   <a href="#validation-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Validation Helpers
+        Validation helpers
       
     </span>
   </a>
@@ -4639,19 +5376,19 @@
   <a href="#other-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Other Helpers
+        Other helpers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Other Helpers">
+    <nav class="md-nav" aria-label="Other helpers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#background-service-health-checks" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Background Service Health Checks
+        Background service health checks
       
     </span>
   </a>
@@ -4667,7 +5404,7 @@
   <a href="#storage-neutral-utilities" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Storage-Neutral Utilities
+        Storage-neutral utilities
       
     </span>
   </a>
@@ -4750,7 +5487,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -4800,10 +5537,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -4845,104 +5600,104 @@
 
 <h1 id="common-utilities-documentation">Common Utilities Documentation<a class="headerlink" href="#common-utilities-documentation" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>Collect low-level utility building blocks for resiliency, activity helpers, ids, hashing, cloning, and more.</p>
+<p>Use shared utilities for resiliency, composition, diagrams, calendars, metrics, storage, and runtime support.</p>
 </blockquote>
 <div class="toc">
 <ul>
 <li><a href="#common-utilities-documentation">Common Utilities Documentation</a><ul>
 <li><a href="#overview">Overview</a></li>
-<li><a href="#business-calendars">Business Calendars</a><ul>
+<li><a href="#business-calendars">Business calendars</a><ul>
 <li><a href="#registration">Registration</a></li>
-<li><a href="#di-aware-calendars">DI-Aware Calendars</a></li>
-<li><a href="#dynamic-holidays">Dynamic Holidays</a></li>
+<li><a href="#di-aware-calendars">DI-aware calendars</a></li>
+<li><a href="#dynamic-holidays">Dynamic holidays</a></li>
 </ul>
 </li>
-<li><a href="#human-readable-duration-text">Human-Readable Duration Text</a></li>
-<li><a href="#date-and-time-ranges">Date And Time Ranges</a><ul>
+<li><a href="#human-readable-duration-text">Human-readable duration text</a></li>
+<li><a href="#date-and-time-ranges">Date and time ranges</a><ul>
 <li><a href="#entity-framework-core">Entity Framework Core</a></li>
 </ul>
 </li>
 <li><a href="#composition">Composition</a><ul>
-<li><a href="#pattern-guide">Pattern Guide</a></li>
-<li><a href="#full-showcase">Full Showcase</a></li>
+<li><a href="#pattern-guide">Pattern guide</a></li>
+<li><a href="#combined-registration-example">Combined registration example</a></li>
 <li><a href="#decorator">Decorator</a></li>
 <li><a href="#adapter">Adapter</a></li>
 <li><a href="#interception">Interception</a></li>
 <li><a href="#strategy">Strategy</a></li>
 <li><a href="#composite">Composite</a></li>
 <li><a href="#chain">Chain</a></li>
-<li><a href="#choosing-a-pattern">Choosing A Pattern</a></li>
+<li><a href="#choosing-a-pattern">Choosing a pattern</a></li>
 <li><a href="#limitations">Limitations</a></li>
 </ul>
 </li>
 <li><a href="#diagrams">Diagrams</a></li>
-<li><a href="#resiliency-helpers">Resiliency Helpers</a><ul>
+<li><a href="#resiliency-helpers">Resiliency helpers</a><ul>
 <li><a href="#retryer">Retryer</a></li>
-<li><a href="#debouncer-and-simpledebouncer">Debouncer And SimpleDebouncer</a></li>
+<li><a href="#debouncer-and-simpledebouncer">Debouncer and SimpleDebouncer</a></li>
 <li><a href="#throttler">Throttler</a></li>
 <li><a href="#circuitbreaker">CircuitBreaker</a></li>
 <li><a href="#timeouthandler">TimeoutHandler</a></li>
 <li><a href="#bulkhead">Bulkhead</a></li>
 <li><a href="#ratelimiter">RateLimiter</a></li>
 <li><a href="#backgroundworker">BackgroundWorker</a></li>
-<li><a href="#simplenotifier-and-simplerequester">SimpleNotifier And SimpleRequester</a></li>
-<li><a href="#progress-types">Progress Types</a></li>
+<li><a href="#simplenotifier-and-simplerequester">SimpleNotifier and SimpleRequester</a></li>
+<li><a href="#progress-types">Progress types</a></li>
 </ul>
 </li>
 <li><a href="#metrics">Metrics</a><ul>
-<li><a href="#what-it-provides">What It Provides</a></li>
-<li><a href="#registering-metrics">Registering Metrics</a></li>
-<li><a href="#emitting-custom-metrics">Emitting Custom Metrics</a></li>
-<li><a href="#tagged-and-high-fidelity-metrics">Tagged And High-Fidelity Metrics</a></li>
-<li><a href="#built-in-feature-metrics">Built-In Feature Metrics</a></li>
-<li><a href="#opentelemetry-and-collector-compatibility">OpenTelemetry And Collector Compatibility</a></li>
+<li><a href="#what-it-provides">What it provides</a></li>
+<li><a href="#registering-metrics">Registering metrics</a></li>
+<li><a href="#emitting-custom-metrics">Emitting custom metrics</a></li>
+<li><a href="#tagged-and-high-fidelity-metrics">Tagged and high-fidelity metrics</a></li>
+<li><a href="#built-in-feature-metrics">Built-in feature metrics</a></li>
+<li><a href="#opentelemetry-and-collector-compatibility">OpenTelemetry and collector compatibility</a></li>
 <li><a href="#endpoints">Endpoints</a></li>
 </ul>
 </li>
-<li><a href="#requester-utilities">Requester Utilities</a></li>
-<li><a href="#pipeline-utilities">Pipeline Utilities</a></li>
-<li><a href="#startup-task-utilities">Startup Task Utilities</a></li>
-<li><a href="#activity-and-tracing-helpers">Activity And Tracing Helpers</a><ul>
-<li><a href="#outbound-http-correlation-propagation">Outbound HTTP Correlation Propagation</a></li>
+<li><a href="#requester-utilities">Requester utilities</a></li>
+<li><a href="#pipeline-utilities">Pipeline utilities</a></li>
+<li><a href="#startup-task-utilities">Startup task utilities</a></li>
+<li><a href="#activity-and-tracing-helpers">Activity and tracing helpers</a><ul>
+<li><a href="#outbound-http-correlation-propagation">Outbound HTTP correlation propagation</a></li>
 </ul>
 </li>
-<li><a href="#reflection-and-expression-helpers">Reflection And Expression Helpers</a><ul>
+<li><a href="#reflection-and-expression-helpers">Reflection and expression helpers</a><ul>
 <li><a href="#predicatebuilder">PredicateBuilder</a></li>
-<li><a href="#reflectionhelper-and-privatereflection">ReflectionHelper And PrivateReflection</a></li>
+<li><a href="#reflectionhelper-and-privatereflection">ReflectionHelper and PrivateReflection</a></li>
 </ul>
 </li>
-<li><a href="#shared-state-and-value-helpers">Shared State And Value Helpers</a><ul>
+<li><a href="#shared-state-and-value-helpers">Shared state and value helpers</a><ul>
 <li><a href="#timeprovideraccessor">TimeProviderAccessor</a></li>
 <li><a href="#version">Version</a></li>
 <li><a href="#valuelist">ValueList</a></li>
 <li><a href="#propertybag">PropertyBag</a></li>
 <li><a href="#safedictionary">SafeDictionary</a></li>
-<li><a href="#enumeration-and-smart-enumeration">Enumeration And Smart Enumeration</a></li>
+<li><a href="#enumeration-and-smart-enumeration">Enumeration and smart enumeration</a></li>
 </ul>
 </li>
-<li><a href="#data-and-content-helpers">Data And Content Helpers</a><ul>
+<li><a href="#data-and-content-helpers">Data and content helpers</a><ul>
 <li><a href="#bytesize">ByteSize</a></li>
 <li><a href="#shortener">Shortener</a></li>
-<li><a href="#content-types">Content Types</a></li>
+<li><a href="#content-types">Content types</a></li>
 <li><a href="#compressionhelper">CompressionHelper</a></li>
 <li><a href="#encryptionhelper">EncryptionHelper</a></li>
-<li><a href="#encryption-key-providers">Encryption Key Providers</a></li>
-<li><a href="#stream-operations-and-temporary-files">Stream Operations And Temporary Files</a></li>
-<li><a href="#base64url-encoding">Base64Url Encoding</a></li>
-<li><a href="#property-scalar-encoding">Property Scalar Encoding</a></li>
-<li><a href="#opaque-continuation-tokens">Opaque Continuation Tokens</a></li>
+<li><a href="#encryption-key-providers">Encryption key providers</a></li>
+<li><a href="#stream-operations-and-temporary-files">Stream operations and temporary files</a></li>
+<li><a href="#base64url-encoding">Base64Url encoding</a></li>
+<li><a href="#property-scalar-encoding">Property scalar encoding</a></li>
+<li><a href="#opaque-continuation-tokens">Opaque continuation tokens</a></li>
 <li><a href="#hashhelper">HashHelper</a></li>
-<li><a href="#clonehelper-and-clonehelpernew">CloneHelper And CloneHelperNew</a></li>
+<li><a href="#clonehelper-and-clonehelpernew">CloneHelper and CloneHelperNew</a></li>
 </ul>
 </li>
-<li><a href="#id-and-key-helpers">Id And Key Helpers</a></li>
-<li><a href="#factory-helpers">Factory Helpers</a></li>
-<li><a href="#validation-helpers">Validation Helpers</a></li>
-<li><a href="#other-helpers">Other Helpers</a><ul>
-<li><a href="#background-service-health-checks">Background Service Health Checks</a></li>
+<li><a href="#id-and-key-helpers">ID and key helpers</a></li>
+<li><a href="#factory-helpers">Factory helpers</a></li>
+<li><a href="#validation-helpers">Validation helpers</a></li>
+<li><a href="#other-helpers">Other helpers</a><ul>
+<li><a href="#background-service-health-checks">Background service health checks</a></li>
 </ul>
 </li>
-<li><a href="#storage-neutral-utilities">Storage-Neutral Utilities</a></li>
+<li><a href="#storage-neutral-utilities">Storage-neutral utilities</a></li>
 <li><a href="#broadcasting">Broadcasting</a><ul>
 <li><a href="#in-memory-single-process-setup">In-memory single-process setup</a></li>
 <li><a href="#entity-framework-registry-and-http-transport">Entity Framework registry and HTTP transport</a></li>
@@ -4951,7 +5706,7 @@
 <li><a href="#diagnostics-and-dashboard">Diagnostics and dashboard</a></li>
 </ul>
 </li>
-<li><a href="#related-documentation">Related Documentation</a></li>
+<li><a href="#related-documentation">Related documentation</a></li>
 </ul>
 </li>
 </ul>
@@ -4975,7 +5730,7 @@
 <li>validation helpers for FluentValidation</li>
 </ul>
 <p>Some of those areas also have higher-level feature docs elsewhere in <code>docs/</code>. This page focuses on the shared utilities available across the devkit and gives a short usage example for each main utility family.</p>
-<h2 id="business-calendars">Business Calendars<a class="headerlink" href="#business-calendars" title="Permanent link">&para;</a></h2>
+<h2 id="business-calendars">Business calendars<a class="headerlink" href="#business-calendars" title="Permanent link">&para;</a></h2>
 <p>Business calendars provide culture-aware working-day calculations for due dates, planning windows, and date ranges.</p>
 <p>Use them when an application needs weekends, holidays, regional calendars, or tenant-specific working-day rules to influence date calculations.</p>
 <h3 id="registration">Registration<a class="headerlink" href="#registration" title="Permanent link">&para;</a></h3>
@@ -5032,7 +5787,7 @@
 <li>neutral language code, such as <code>nl</code></li>
 <li>default calendar</li>
 </ul>
-<h3 id="di-aware-calendars">DI-Aware Calendars<a class="headerlink" href="#di-aware-calendars" title="Permanent link">&para;</a></h3>
+<h3 id="di-aware-calendars">DI-aware calendars<a class="headerlink" href="#di-aware-calendars" title="Permanent link">&para;</a></h3>
 <p>Calendars that need services can be registered with factories or implementation types. This is useful for calendars that need configuration, tenants, repositories, or other scoped services.</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddScoped</span><span class="o">&lt;</span><span class="n">TenantHolidayRepository</span><span class="o">&gt;</span><span class="p">();</span>
 
@@ -5061,7 +5816,7 @@
 <span class="w">    </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span><span class="s">&quot;Date is unavailable: {Reason}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">info</span><span class="p">.</span><span class="n">Reason</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="dynamic-holidays">Dynamic Holidays<a class="headerlink" href="#dynamic-holidays" title="Permanent link">&para;</a></h3>
+<h3 id="dynamic-holidays">Dynamic holidays<a class="headerlink" href="#dynamic-holidays" title="Permanent link">&para;</a></h3>
 <p>Use <code>DynamicBusinessCalendar</code> when holidays are calculated by year instead of stored as a fixed list. The built-in <code>CalculatedHolidayProvider</code> supports simple year-based rules, and projects can implement <code>IHolidayProvider</code> for richer logic.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">calendar</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DynamicBusinessCalendar</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="nf">CalculatedHolidayProvider</span><span class="p">([</span>
@@ -5083,7 +5838,7 @@
 <span class="w">                </span><span class="p">:</span><span class="w"> </span><span class="n">BusinessDayRuleResult</span><span class="p">.</span><span class="n">NoMatch</span><span class="p">)</span>
 <span class="w">    </span><span class="p">]);</span>
 </code></pre></div>
-<h2 id="human-readable-duration-text">Human-Readable Duration Text<a class="headerlink" href="#human-readable-duration-text" title="Permanent link">&para;</a></h2>
+<h2 id="human-readable-duration-text">Human-readable duration text<a class="headerlink" href="#human-readable-duration-text" title="Permanent link">&para;</a></h2>
 <p>Human-readable duration and relative-time text formats durations and relative values using the language registered for the current or supplied culture. Use it for activity feeds, notification text, dashboard ages, and compact duration labels.</p>
 <p>Built-in languages are available for English, German, French, Dutch, Spanish, and Italian.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">GetCultureInfo</span><span class="p">(</span><span class="s">&quot;nl-NL&quot;</span><span class="p">);</span>
@@ -5159,7 +5914,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">text</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromMinutes</span><span class="p">(</span><span class="mi">3</span><span class="p">).</span><span class="n">ToDurationText</span><span class="p">(</span>
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">RelativeTimeFormatOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Culture</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CultureInfo</span><span class="p">.</span><span class="n">GetCultureInfo</span><span class="p">(</span><span class="s">&quot;sv-SE&quot;</span><span class="p">)</span><span class="w"> </span><span class="p">});</span>
 </code></pre></div>
-<h2 id="date-and-time-ranges">Date And Time Ranges<a class="headerlink" href="#date-and-time-ranges" title="Permanent link">&para;</a></h2>
+<h2 id="date-and-time-ranges">Date and time ranges<a class="headerlink" href="#date-and-time-ranges" title="Permanent link">&para;</a></h2>
 <p>The range types use half-open <code>[start, end)</code> semantics and support one open boundary:</p>
 <ul>
 <li><code>DateTimeRange</code></li>
@@ -5317,7 +6072,7 @@
 
 <span class="n">services</span><span class="p">.</span><span class="n">AddComposition</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="pattern-guide">Pattern Guide<a class="headerlink" href="#pattern-guide" title="Permanent link">&para;</a></h3>
+<h3 id="pattern-guide">Pattern guide<a class="headerlink" href="#pattern-guide" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -5359,7 +6114,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="full-showcase">Full Showcase<a class="headerlink" href="#full-showcase" title="Permanent link">&para;</a></h3>
+<h3 id="combined-registration-example">Combined registration example<a class="headerlink" href="#combined-registration-example" title="Permanent link">&para;</a></h3>
 <p><code>AddComposition()</code> is additive, so multiple modules can contribute registrations and the final service resolves with the configured composition order of decorators, explicit interceptors, runtime interception behaviors, and the concrete implementation.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">services</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">ServiceCollection</span><span class="p">();</span>
 
@@ -5592,7 +6347,7 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="choosing-a-pattern">Choosing A Pattern<a class="headerlink" href="#choosing-a-pattern" title="Permanent link">&para;</a></h3>
+<h3 id="choosing-a-pattern">Choosing a pattern<a class="headerlink" href="#choosing-a-pattern" title="Permanent link">&para;</a></h3>
 <ul>
 <li>Use <code>Decorator</code> when the behavior should be visible as an explicit wrapper class and still implement the same contract.</li>
 <li>Use <code>Adapter</code> when the implementation already exists but the consuming code needs a different contract.</li>
@@ -5652,7 +6407,7 @@
 <span class="w">    </span><span class="k">new</span><span class="w"> </span><span class="n">SvgDiagramRenderOptions</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Width</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">640</span><span class="p">,</span><span class="w"> </span><span class="n">Height</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">320</span><span class="w"> </span><span class="p">})</span>
 <span class="w">    </span><span class="p">.</span><span class="n">GetText</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="resiliency-helpers">Resiliency Helpers<a class="headerlink" href="#resiliency-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="resiliency-helpers">Resiliency helpers<a class="headerlink" href="#resiliency-helpers" title="Permanent link">&para;</a></h2>
 <p>The strongest concentration of reusable behavior here is the resiliency set.</p>
 <h3 id="retryer">Retryer<a class="headerlink" href="#retryer" title="Permanent link">&para;</a></h3>
 <p><code>Retryer</code> reruns an asynchronous operation a configured number of times with a fixed or exponential delay.</p>
@@ -5683,7 +6438,7 @@
 <span class="w">    </span><span class="k">async</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">ImportAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">),</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="debouncer-and-simpledebouncer">Debouncer And SimpleDebouncer<a class="headerlink" href="#debouncer-and-simpledebouncer" title="Permanent link">&para;</a></h3>
+<h3 id="debouncer-and-simpledebouncer">Debouncer and SimpleDebouncer<a class="headerlink" href="#debouncer-and-simpledebouncer" title="Permanent link">&para;</a></h3>
 <p><code>Debouncer</code> delays execution until no new call arrived during the configured interval. It is useful for noisy inputs such as UI typing, file-change bursts, or repeated refresh triggers.</p>
 <p><code>SimpleDebouncer</code> is the lighter-weight sibling when you only need basic delayed coalescing behavior without the richer progress shape.</p>
 <p>Use them when:</p>
@@ -5842,7 +6597,7 @@
 
 <span class="k">await</span><span class="w"> </span><span class="n">worker</span><span class="p">.</span><span class="n">StartAsync</span><span class="p">(</span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="simplenotifier-and-simplerequester">SimpleNotifier And SimpleRequester<a class="headerlink" href="#simplenotifier-and-simplerequester" title="Permanent link">&para;</a></h3>
+<h3 id="simplenotifier-and-simplerequester">SimpleNotifier and SimpleRequester<a class="headerlink" href="#simplenotifier-and-simplerequester" title="Permanent link">&para;</a></h3>
 <p>These two types are lightweight in-process messaging helpers:</p>
 <ul>
 <li><code>SimpleNotifier</code>: publish/subscribe notification fan-out</li>
@@ -5873,7 +6628,7 @@
 
 <span class="kt">var</span><span class="w"> </span><span class="n">response</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">requester</span><span class="p">.</span><span class="n">SendAsync</span><span class="o">&lt;</span><span class="n">Ping</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="o">&gt;</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Ping</span><span class="p">(</span><span class="s">&quot;hello&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="progress-types">Progress Types<a class="headerlink" href="#progress-types" title="Permanent link">&para;</a></h3>
+<h3 id="progress-types">Progress types<a class="headerlink" href="#progress-types" title="Permanent link">&para;</a></h3>
 <p>The resiliency family also defines typed progress models such as:</p>
 <ul>
 <li><code>RetryProgress</code></li>
@@ -5896,7 +6651,7 @@
 <p>The devkit metrics feature is a thin developer-friendly layer over .NET diagnostics metrics from <code>System.Diagnostics.Metrics</code>.</p>
 <p>It does not invent a separate metrics runtime. Instead, it builds on the standard .NET <code>Meter</code>, <code>Counter&lt;T&gt;</code>, <code>UpDownCounter&lt;T&gt;</code>, <code>Histogram&lt;T&gt;</code>, and <code>ObservableGauge&lt;T&gt;</code> primitives so applications can emit custom metrics and let the hosting app decide how those metrics are collected and exported.</p>
 <p>The shared devkit meter name is <code>bdk</code>.</p>
-<h3 id="what-it-provides">What It Provides<a class="headerlink" href="#what-it-provides" title="Permanent link">&para;</a></h3>
+<h3 id="what-it-provides">What it provides<a class="headerlink" href="#what-it-provides" title="Permanent link">&para;</a></h3>
 <ul>
 <li><code>Metrics</code> for normalized series naming and high-resolution timestamps</li>
 <li><code>IMetricsService</code> and <code>MetricsService</code> as the single abstraction for creating and recording devkit-owned instruments</li>
@@ -5905,7 +6660,7 @@
 <li>optional system metrics endpoints via <code>AddMetrics(options =&gt; options.AddEndpoints())</code></li>
 <li>optional built-in metrics behaviors for requester, notifier, messaging, queueing, jobs, orchestrations, repositories, and storage</li>
 </ul>
-<h3 id="registering-metrics">Registering Metrics<a class="headerlink" href="#registering-metrics" title="Permanent link">&para;</a></h3>
+<h3 id="registering-metrics">Registering metrics<a class="headerlink" href="#registering-metrics" title="Permanent link">&para;</a></h3>
 <p>Register the feature once in the host. Use the configuration callback explicitly so this devkit registration is unambiguous alongside the .NET metrics APIs:</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddMetrics</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Enabled</span><span class="p">()</span>
@@ -5914,7 +6669,7 @@
 <p>That registers <code>IMetricsService</code> as a singleton and, when requested, the supporting snapshot services used by the web metrics endpoints.</p>
 <p>Metrics are optional. Omitting <code>AddMetrics(...)</code>, or configuring <code>.Enabled(false)</code>, leaves <code>IMetricsService</code> unregistered. Devkit behaviors and providers resolve it optionally and continue their normal work without emitting metrics. Adding a metrics behavior does not implicitly enable the metrics service.</p>
 <p>Applications that inject <code>IMetricsService</code> directly into their own required services should therefore register metrics. Feature composition code that treats metrics as optional can resolve <code>IMetricsService</code> with <code>GetService&lt;IMetricsService&gt;()</code>.</p>
-<h3 id="emitting-custom-metrics">Emitting Custom Metrics<a class="headerlink" href="#emitting-custom-metrics" title="Permanent link">&para;</a></h3>
+<h3 id="emitting-custom-metrics">Emitting custom metrics<a class="headerlink" href="#emitting-custom-metrics" title="Permanent link">&para;</a></h3>
 <p>Use <code>IMetricsService</code> in application or infrastructure code when you want custom metrics without dealing with raw <code>Meter</code> APIs directly.</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">InventoryRefreshService</span><span class="p">(</span><span class="n">IMetricsService</span><span class="w"> </span><span class="n">metrics</span><span class="p">)</span>
 <span class="p">{</span>
@@ -5950,7 +6705,7 @@
 <li>duration series: <code>family_part_a_part_b_duration</code></li>
 </ul>
 <p>Prefer low-cardinality parts such as operation names, message types, or status values. Avoid ids, titles, emails, or other unbounded values in metric parts.</p>
-<h3 id="tagged-and-high-fidelity-metrics">Tagged And High-Fidelity Metrics<a class="headerlink" href="#tagged-and-high-fidelity-metrics" title="Permanent link">&para;</a></h3>
+<h3 id="tagged-and-high-fidelity-metrics">Tagged and high-fidelity metrics<a class="headerlink" href="#tagged-and-high-fidelity-metrics" title="Permanent link">&para;</a></h3>
 <p>Use the direct instrument methods when the metric has a stable name with dimensions expressed as tags:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">sealed</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">InventoryImportService</span><span class="p">(</span><span class="n">IMetricsService</span><span class="w"> </span><span class="n">metrics</span><span class="p">)</span>
 <span class="p">{</span>
@@ -6000,7 +6755,7 @@
 </ul>
 <p><code>MetricsService</code> owns and reuses the concrete instruments safely across concurrent callers. Reusing an instrument name with a conflicting kind or unit is ignored instead of disrupting application work. Recording, listener, or meter-factory failures are also isolated from the instrumented operation. Disposing an owned <code>MetricsService</code> is idempotent and later recording calls become no-ops.</p>
 <p>Keep tag values bounded. Values such as operation, provider, store, outcome, or a small known warehouse set are appropriate. Customer ids, blob names, message ids, exception messages, and other unbounded values are not.</p>
-<h3 id="built-in-feature-metrics">Built-In Feature Metrics<a class="headerlink" href="#built-in-feature-metrics" title="Permanent link">&para;</a></h3>
+<h3 id="built-in-feature-metrics">Built-in feature metrics<a class="headerlink" href="#built-in-feature-metrics" title="Permanent link">&para;</a></h3>
 <p>Several devkit features already have ready-made behaviors that emit metrics without additional custom instrumentation in your handlers or services.</p>
 <p>Examples include:</p>
 <ul>
@@ -6028,7 +6783,7 @@
 <span class="n">services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">MetricsJobSchedulingBehavior</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="opentelemetry-and-collector-compatibility">OpenTelemetry And Collector Compatibility<a class="headerlink" href="#opentelemetry-and-collector-compatibility" title="Permanent link">&para;</a></h3>
+<h3 id="opentelemetry-and-collector-compatibility">OpenTelemetry and collector compatibility<a class="headerlink" href="#opentelemetry-and-collector-compatibility" title="Permanent link">&para;</a></h3>
 <p>The instrumentation itself is OpenTelemetry-friendly because it uses the standard .NET diagnostics metrics stack.</p>
 <p>In practice that means a host can export devkit metrics to an OpenTelemetry collector as long as it:</p>
 <ul>
@@ -6057,8 +6812,8 @@
 <p>These endpoints are useful for dashboards, debugging, demos, and internal operational inspection. They are backed by in-process snapshot services that listen to the <code>bdk</code> meter and project the measurements into JSON models.</p>
 <p>The <code>bdk</code> snapshot groups requester, messaging, queueing, jobs, orchestration, repository, composition, and storage instruments by feature. Observable gauges are collected when each snapshot is requested and represent their latest value rather than a cumulative total.</p>
 <p>They are not an OTLP endpoint, and they are not a Prometheus scrape endpoint. Those concerns belong to the host application's OpenTelemetry configuration.</p>
-<h2 id="requester-utilities">Requester Utilities<a class="headerlink" href="#requester-utilities" title="Permanent link">&para;</a></h2>
-<p>The devkit also includes a fuller in-process request/notification stack than the simple resiliency helpers.</p>
+<h2 id="requester-utilities">Requester utilities<a class="headerlink" href="#requester-utilities" title="Permanent link">&para;</a></h2>
+<p>The devkit also includes a fuller in-process request and notification stack than the small resiliency helpers.</p>
 <p>It includes:</p>
 <ul>
 <li><code>Requester</code> and <code>RequesterBuilder</code></li>
@@ -6079,7 +6834,7 @@
 <span class="n">services</span><span class="p">.</span><span class="n">AddNotifier</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddHandlers</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="pipeline-utilities">Pipeline Utilities<a class="headerlink" href="#pipeline-utilities" title="Permanent link">&para;</a></h2>
+<h2 id="pipeline-utilities">Pipeline utilities<a class="headerlink" href="#pipeline-utilities" title="Permanent link">&para;</a></h2>
 <p>The pipeline utilities compose named, in-process workflows from reusable synchronous or asynchronous
 steps. Pipelines can carry a strongly typed context and can include conditions, hooks, behaviors,
 tracing, timing, and inline steps.</p>
@@ -6098,7 +6853,7 @@ registrations made by another module:</p>
 </code></pre></div>
 <p>Use <a href="../features-pipelines/">Pipelines</a> for the complete definition, registration, execution, control
 flow, observability, testing, and source-generation guidance.</p>
-<h2 id="startup-task-utilities">Startup Task Utilities<a class="headerlink" href="#startup-task-utilities" title="Permanent link">&para;</a></h2>
+<h2 id="startup-task-utilities">Startup task utilities<a class="headerlink" href="#startup-task-utilities" title="Permanent link">&para;</a></h2>
 <p>The devkit includes shared startup-task primitives and behaviors, including:</p>
 <ul>
 <li><code>StartupTaskOptions</code></li>
@@ -6115,7 +6870,7 @@ flow, observability, testing, and source-generation guidance.</p>
 <span class="w">    </span><span class="p">.</span><span class="n">HaltOnFailure</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="activity-and-tracing-helpers">Activity And Tracing Helpers<a class="headerlink" href="#activity-and-tracing-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="activity-and-tracing-helpers">Activity and tracing helpers<a class="headerlink" href="#activity-and-tracing-helpers" title="Permanent link">&para;</a></h2>
 <p>The devkit provides lower-level helpers around <code>System.Diagnostics.Activity</code> and <code>ActivitySource</code>.</p>
 <p>This includes:</p>
 <ul>
@@ -6137,7 +6892,7 @@ flow, observability, testing, and source-generation guidance.</p>
 <span class="w">    </span><span class="p">},</span>
 <span class="w">    </span><span class="n">cancellationToken</span><span class="p">:</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="outbound-http-correlation-propagation">Outbound HTTP Correlation Propagation<a class="headerlink" href="#outbound-http-correlation-propagation" title="Permanent link">&para;</a></h3>
+<h3 id="outbound-http-correlation-propagation">Outbound HTTP correlation propagation<a class="headerlink" href="#outbound-http-correlation-propagation" title="Permanent link">&para;</a></h3>
 <p><code>CorrelationIdPropagationHandler</code> adds the application correlation identifier to the
 <code>CorrelationId</code> header of outbound requests. It is independent from W3C trace-context propagation,
 which remains the responsibility of <code>HttpClient</code> diagnostics and OpenTelemetry instrumentation.
@@ -6168,7 +6923,7 @@ constructed <code>new HttpClient()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="n">services</span><span class="p">.</span><span class="n">AddHttpClient</span><span class="o">&lt;</span><span class="n">IWeatherClient</span><span class="p">,</span><span class="w"> </span><span class="n">WeatherClient</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddCorrelationIdPropagation</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="reflection-and-expression-helpers">Reflection And Expression Helpers<a class="headerlink" href="#reflection-and-expression-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="reflection-and-expression-helpers">Reflection and expression helpers<a class="headerlink" href="#reflection-and-expression-helpers" title="Permanent link">&para;</a></h2>
 <h3 id="predicatebuilder">PredicateBuilder<a class="headerlink" href="#predicatebuilder" title="Permanent link">&para;</a></h3>
 <p><code>PredicateBuilder&lt;T&gt;</code> is a fluent builder for dynamic LINQ predicates.</p>
 <p>It is useful when:</p>
@@ -6196,7 +6951,7 @@ constructed <code>new HttpClient()</code>.</p>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">customers</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">dbContext</span><span class="p">.</span><span class="n">Customers</span><span class="p">.</span><span class="n">Where</span><span class="p">(</span><span class="n">predicate</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="reflectionhelper-and-privatereflection">ReflectionHelper And PrivateReflection<a class="headerlink" href="#reflectionhelper-and-privatereflection" title="Permanent link">&para;</a></h3>
+<h3 id="reflectionhelper-and-privatereflection">ReflectionHelper and PrivateReflection<a class="headerlink" href="#reflectionhelper-and-privatereflection" title="Permanent link">&para;</a></h3>
 <p><code>ReflectionHelper</code> provides cached reflection access and helpers for:</p>
 <ul>
 <li>reading and writing properties dynamically</li>
@@ -6216,7 +6971,7 @@ constructed <code>new HttpClient()</code>.</p>
 <span class="w">    </span><span class="n">t</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">t</span><span class="p">.</span><span class="n">Name</span><span class="p">.</span><span class="n">EndsWith</span><span class="p">(</span><span class="s">&quot;Handler&quot;</span><span class="p">),</span>
 <span class="w">    </span><span class="k">typeof</span><span class="p">(</span><span class="n">Customer</span><span class="p">).</span><span class="n">Assembly</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="shared-state-and-value-helpers">Shared State And Value Helpers<a class="headerlink" href="#shared-state-and-value-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="shared-state-and-value-helpers">Shared state and value helpers<a class="headerlink" href="#shared-state-and-value-helpers" title="Permanent link">&para;</a></h2>
 <h3 id="timeprovideraccessor">TimeProviderAccessor<a class="headerlink" href="#timeprovideraccessor" title="Permanent link">&para;</a></h3>
 <p><code>TimeProviderAccessor</code> gives ambient access to the current <code>TimeProvider</code>. It is useful when code needs the current time without threading a <code>TimeProvider</code> through every constructor or method.</p>
 <p>Use it when:</p>
@@ -6249,7 +7004,7 @@ constructed <code>new HttpClient()</code>.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">shortText</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">current</span><span class="p">.</span><span class="n">ToString</span><span class="p">(</span><span class="n">VersionFormat</span><span class="p">.</span><span class="n">Short</span><span class="p">);</span>
 </code></pre></div>
 <h3 id="valuelist">ValueList<a class="headerlink" href="#valuelist" title="Permanent link">&para;</a></h3>
-<p><code>ValueList&lt;T&gt;</code> is a tiny immutable list optimized for very small collections. It works well when a value object or helper only needs to carry a handful of items.</p>
+<p><code>ValueList&lt;T&gt;</code> is an immutable list designed for very small collections. It works well when a value object or helper only needs to carry a handful of items.</p>
 <p>Use it when:</p>
 <ul>
 <li>most cases contain zero, one, or two items</li>
@@ -6297,7 +7052,7 @@ constructed <code>new HttpClient()</code>.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">retries</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">values</span><span class="p">[</span><span class="s">&quot;retries&quot;</span><span class="p">];</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">missing</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">values</span><span class="p">[</span><span class="s">&quot;unknown&quot;</span><span class="p">];</span><span class="w"> </span><span class="c1">// returns 0</span>
 </code></pre></div>
-<h3 id="enumeration-and-smart-enumeration">Enumeration And Smart Enumeration<a class="headerlink" href="#enumeration-and-smart-enumeration" title="Permanent link">&para;</a></h3>
+<h3 id="enumeration-and-smart-enumeration">Enumeration and smart enumeration<a class="headerlink" href="#enumeration-and-smart-enumeration" title="Permanent link">&para;</a></h3>
 <p><code>Enumeration</code> is the devkit's smart-enum base type. It lets you model fixed values as rich types instead of plain enums, while still supporting lookup by id or value.</p>
 <p>Use it when:</p>
 <ul>
@@ -6317,7 +7072,7 @@ constructed <code>new HttpClient()</code>.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enumeration</span><span class="p">.</span><span class="n">FromValue</span><span class="o">&lt;</span><span class="n">OrderStatus</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;Submitted&quot;</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">allStatuses</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Enumeration</span><span class="p">.</span><span class="n">GetAll</span><span class="o">&lt;</span><span class="n">OrderStatus</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="data-and-content-helpers">Data And Content Helpers<a class="headerlink" href="#data-and-content-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="data-and-content-helpers">Data and content helpers<a class="headerlink" href="#data-and-content-helpers" title="Permanent link">&para;</a></h2>
 <h3 id="bytesize">ByteSize<a class="headerlink" href="#bytesize" title="Permanent link">&para;</a></h3>
 <p><code>ByteSize</code> centralizes binary byte-size calculations so options and defaults do not repeat raw <code>1024</code> multiplication expressions.</p>
 <p>Use it for storage limits, cache-size thresholds, stream buffer thresholds, and memory display conversions:</p>
@@ -6437,7 +7192,7 @@ constructed <code>new HttpClient()</code>.</p>
 </ul>
 <p>Set <code>Placeholder</code> to an empty string when the shortened representation must not include a marker. <code>Separator</code> defaults to <code>/</code> but can be set to <code>.</code>, <code>:</code>, <code>|</code>, or any other non-empty delimiter.</p>
 <p>Segment-based strategies always fit the configured budget. When parent-segment abbreviation is still too long, <code>OverflowTruncation</code> selects the fallback: <code>Left</code> (the default) preserves the final filename or identifier, while <code>Right</code> preserves the beginning of the abbreviated path.</p>
-<h3 id="content-types">Content Types<a class="headerlink" href="#content-types" title="Permanent link">&para;</a></h3>
+<h3 id="content-types">Content types<a class="headerlink" href="#content-types" title="Permanent link">&para;</a></h3>
 <p>The content-type helpers define a <code>ContentType</code> model plus extension methods for:</p>
 <ul>
 <li>resolving from MIME type</li>
@@ -6489,7 +7244,7 @@ constructed <code>new HttpClient()</code>.</p>
 <li>byte arrays</li>
 <li>streams</li>
 </ul>
-<p>It uses AES-CBC/PKCS7 and centralizes key-size validation, initialization-vector generation, and stream creation for features that need symmetric encryption.</p>
+<p>It uses AES-CBC/PKCS7 and centralizes key-size validation, initialization-vector generation, and stream creation for features that need symmetric encryption. AES-CBC does not authenticate the ciphertext. Use an authenticated encryption scheme when an attacker can modify the stored or transported payload.</p>
 <p>Use the string and byte-array helpers for small payloads that are already in memory. These helpers generate a new initialization vector per encryption operation. The byte-array payload format is <code>IV || ciphertext</code>; the string payload is Base64 for that same binary envelope.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">key</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">EncryptionHelper</span><span class="p">.</span><span class="n">GenerateAesKey</span><span class="p">();</span>
 
@@ -6531,7 +7286,7 @@ constructed <code>new HttpClient()</code>.</p>
 <li>Generate a new initialization vector for every encrypted payload.</li>
 <li>Store keys in application configuration or a secret store, not in source files.</li>
 </ul>
-<h3 id="encryption-key-providers">Encryption Key Providers<a class="headerlink" href="#encryption-key-providers" title="Permanent link">&para;</a></h3>
+<h3 id="encryption-key-providers">Encryption key providers<a class="headerlink" href="#encryption-key-providers" title="Permanent link">&para;</a></h3>
 <p><code>IEncryptionKeyProvider</code> separates active write-key selection from historical read-key lookup. <code>EncryptionKeyMaterial</code> copies supplied key bytes, and <code>DictionaryEncryptionKeyProvider</code> provides an immutable in-memory implementation suitable for configuration-backed key sets and tests.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">keys</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">DictionaryEncryptionKeyProvider</span><span class="p">(</span>
 <span class="w">    </span><span class="s">&quot;2026-07&quot;</span><span class="p">,</span>
@@ -6545,7 +7300,7 @@ constructed <code>new HttpClient()</code>.</p>
 <span class="kt">var</span><span class="w"> </span><span class="n">historical</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">keys</span><span class="p">.</span><span class="n">GetKeyAsync</span><span class="p">(</span><span class="s">&quot;2026-01&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
 <p>Keep old key ids available until no persisted encrypted value references them.</p>
-<h3 id="stream-operations-and-temporary-files">Stream Operations And Temporary Files<a class="headerlink" href="#stream-operations-and-temporary-files" title="Permanent link">&para;</a></h3>
+<h3 id="stream-operations-and-temporary-files">Stream operations and temporary files<a class="headerlink" href="#stream-operations-and-temporary-files" title="Permanent link">&para;</a></h3>
 <p><code>StreamHelper</code> is the shared location for stream operations. Its <code>CopyAsync</code> method performs pooled asynchronous copies while optionally enforcing a maximum byte count and calculating an incremental hash. It leaves caller streams open and throws <code>StreamSizeLimitExceededException</code> before writing bytes beyond the configured limit.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">copy</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">await</span><span class="w"> </span><span class="n">StreamHelper</span><span class="p">.</span><span class="n">CopyAsync</span><span class="p">(</span>
 <span class="w">    </span><span class="n">source</span><span class="p">,</span>
@@ -6563,19 +7318,19 @@ constructed <code>new HttpClient()</code>.</p>
 <div class="highlight"><pre><span></span><code><span class="k">await</span><span class="w"> </span><span class="k">using</span><span class="w"> </span><span class="nn">var</span><span class="w"> </span><span class="n">temporary</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">TemporaryFileHelper</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="n">prefix</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;bdk-export-&quot;</span><span class="p">);</span>
 <span class="k">await</span><span class="w"> </span><span class="n">source</span><span class="p">.</span><span class="n">CopyToAsync</span><span class="p">(</span><span class="n">temporary</span><span class="p">.</span><span class="n">Stream</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="base64url-encoding">Base64Url Encoding<a class="headerlink" href="#base64url-encoding" title="Permanent link">&para;</a></h3>
+<h3 id="base64url-encoding">Base64Url encoding<a class="headerlink" href="#base64url-encoding" title="Permanent link">&para;</a></h3>
 <p><code>Base64UrlHelper</code> converts binary values to canonical unpadded Base64Url text and back. <code>Encode</code> replaces the standard Base64 <code>+</code> and <code>/</code> characters with URL-safe characters and omits padding. <code>Decode</code> accepts only that canonical unpadded representation, rejecting malformed input, standard Base64 padding, and alternate encodings of the same bytes.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Encode</span><span class="p">(</span><span class="s">&quot;payload&quot;</span><span class="n">u8</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">decoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Base64UrlHelper</span><span class="p">.</span><span class="n">Decode</span><span class="p">(</span><span class="n">encoded</span><span class="p">);</span>
 </code></pre></div>
 <p>Use this helper for URL, key, token, and metadata formats that explicitly require Base64Url. Continue using standard <code>Convert.ToBase64String</code> and <code>Convert.FromBase64String</code> when a protocol requires regular padded Base64.</p>
-<h3 id="property-scalar-encoding">Property Scalar Encoding<a class="headerlink" href="#property-scalar-encoding" title="Permanent link">&para;</a></h3>
+<h3 id="property-scalar-encoding">Property scalar encoding<a class="headerlink" href="#property-scalar-encoding" title="Permanent link">&para;</a></h3>
 <p><code>PropertyBagScalarCodec</code> preserves scalar property types across string-only persistence systems. Encoded values use a versioned <code>bdk_v1_</code> Base64Url envelope. Strings remain strings even when they look like numbers or booleans; legacy unprefixed values are read as strings.</p>
 <p>Supported values include null, strings, characters, Boolean and numeric primitives, <code>Guid</code>, date/time values, <code>TimeSpan</code>, and byte arrays. Complex values are rejected.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">encoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">PropertyBagScalarCodec</span><span class="p">.</span><span class="n">Encode</span><span class="p">(</span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">decoded</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">DateTimeOffset</span><span class="p">)</span><span class="n">PropertyBagScalarCodec</span><span class="p">.</span><span class="n">Decode</span><span class="p">(</span><span class="n">encoded</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="opaque-continuation-tokens">Opaque Continuation Tokens<a class="headerlink" href="#opaque-continuation-tokens" title="Permanent link">&para;</a></h3>
+<h3 id="opaque-continuation-tokens">Opaque continuation tokens<a class="headerlink" href="#opaque-continuation-tokens" title="Permanent link">&para;</a></h3>
 <p><code>OpaqueContinuationTokenCodec</code> serializes purpose-bound, versioned tokens. Without an <code>IContinuationTokenProtector</code>, tokens are unsigned. With <code>HmacContinuationTokenProtector</code>, tokens use HMAC-SHA256 and reject unsigned, modified, incorrectly signed, or wrong-purpose payloads.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">protector</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">HmacContinuationTokenProtector</span><span class="p">(</span><span class="n">secret</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">token</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">OpaqueContinuationTokenCodec</span><span class="p">.</span><span class="n">Serialize</span><span class="p">(</span><span class="n">payload</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;blob-storage&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">protector</span><span class="p">);</span>
@@ -6606,8 +7361,8 @@ on the serialized JSON representation, so they should not be treated as stable a
 or serializer changes.</p>
 <p>For persisted storage content, prefer <code>ContentHashHelper</code>. It produces and validates the canonical
 <code>sha256:&lt;lowercase-hex&gt;</code> representation and can calculate the hash while copying a stream.</p>
-<h3 id="clonehelper-and-clonehelpernew">CloneHelper And CloneHelperNew<a class="headerlink" href="#clonehelper-and-clonehelpernew" title="Permanent link">&para;</a></h3>
-<p><code>CloneHelper</code> performs deep cloning through serialization-based copying. <code>CloneHelperNew</code> appears to be the newer alternative that exists alongside the original helper.</p>
+<h3 id="clonehelper-and-clonehelpernew">CloneHelper and CloneHelperNew<a class="headerlink" href="#clonehelper-and-clonehelpernew" title="Permanent link">&para;</a></h3>
+<p><code>CloneHelper</code> clones through Newtonsoft.Json with non-public constructor support and type metadata. <code>CloneHelperNew</code> uses System.Text.Json with reference preservation, field inclusion, and runtime discovery of derived types.</p>
 <p>These helpers are useful when:</p>
 <ul>
 <li>a defensive deep copy is needed</li>
@@ -6618,7 +7373,7 @@ or serializer changes.</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">snapshot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CloneHelper</span><span class="p">.</span><span class="n">Clone</span><span class="p">(</span><span class="n">order</span><span class="p">);</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">snapshot2</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">CloneHelperNew</span><span class="p">.</span><span class="n">Clone</span><span class="p">(</span><span class="n">order</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="id-and-key-helpers">Id And Key Helpers<a class="headerlink" href="#id-and-key-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="id-and-key-helpers">ID and key helpers<a class="headerlink" href="#id-and-key-helpers" title="Permanent link">&para;</a></h2>
 <p>The generators serve different purposes:</p>
 <ul>
 <li><code>GuidGenerator.Create(value)</code> creates the same deterministic GUID for the same string. A null value
@@ -6680,7 +7435,7 @@ or serializer changes.</p>
 <p>Generated names and operational IDs can collide and should not be used as database uniqueness
 guarantees without a constraint and collision-handling strategy. Random keys should still be stored and
 transported according to the application's secret-management requirements.</p>
-<h2 id="factory-helpers">Factory Helpers<a class="headerlink" href="#factory-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="factory-helpers">Factory helpers<a class="headerlink" href="#factory-helpers" title="Permanent link">&para;</a></h2>
 <p><code>Factory&lt;T&gt;</code> and the non-generic <code>Factory</code> provide dynamic construction helpers. These are useful in framework-style code, plugin scenarios, or places where types are resolved dynamically and you want the call site to stay terse.</p>
 <p>Example:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">customer</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Factory</span><span class="o">&lt;</span><span class="n">Customer</span><span class="o">&gt;</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">object</span><span class="o">&gt;</span>
@@ -6691,7 +7446,7 @@ transported according to the application's secret-management requirements.</p>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">handler</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">Factory</span><span class="p">.</span><span class="n">Create</span><span class="p">(</span><span class="k">typeof</span><span class="p">(</span><span class="n">MyHandler</span><span class="p">),</span><span class="w"> </span><span class="n">serviceProvider</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="validation-helpers">Validation Helpers<a class="headerlink" href="#validation-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="validation-helpers">Validation helpers<a class="headerlink" href="#validation-helpers" title="Permanent link">&para;</a></h2>
 <p>The devkit includes <code>FluentValidatorExtensions</code>, including <code>AddRangeRule&lt;T&gt;(...)</code>.</p>
 <p>This helper is designed for dynamic validator construction, especially when validation rules are assembled from reflected metadata instead of hard-coded property expressions.</p>
 <p>Example:</p>
@@ -6700,7 +7455,7 @@ transported according to the application's secret-management requirements.</p>
 
 <span class="n">validator</span><span class="p">.</span><span class="n">AddRangeRule</span><span class="p">(</span><span class="n">property</span><span class="p">,</span><span class="w"> </span><span class="mf">0m</span><span class="p">,</span><span class="w"> </span><span class="mf">9999m</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Price must stay within the allowed range.&quot;</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="other-helpers">Other Helpers<a class="headerlink" href="#other-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="other-helpers">Other helpers<a class="headerlink" href="#other-helpers" title="Permanent link">&para;</a></h2>
 <p>Several smaller low-level helpers round out this utility set:</p>
 <ul>
 <li><code>ValueStopwatch</code> for lightweight elapsed-time measurement</li>
@@ -6730,7 +7485,7 @@ directory, then use the normalized path for stable comparisons or hashing:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">workspaceRoot</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WorkspacePathUtilities</span><span class="p">.</span><span class="n">ResolveWorkspaceRoot</span><span class="p">(</span>
 <span class="w">    </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">ContentRootPath</span><span class="p">);</span>
 </code></pre></div>
-<h3 id="background-service-health-checks">Background Service Health Checks<a class="headerlink" href="#background-service-health-checks" title="Permanent link">&para;</a></h3>
+<h3 id="background-service-health-checks">Background service health checks<a class="headerlink" href="#background-service-health-checks" title="Permanent link">&para;</a></h3>
 <p><code>BackgroundServiceHealthCheck&lt;TService&gt;</code> reports whether a registered hosted service has not started,
 is running, completed, was cancelled, or faulted. The registration helper is idempotent by health-check
 name, which lets multiple feature builders safely request the same check:</p>
@@ -6741,7 +7496,7 @@ name, which lets multiple feature builders safely request the same check:</p>
 <p>Use this for operational visibility into long-running <code>BackgroundService</code> implementations. A completed
 service can be healthy or degraded depending on whether it represents completed startup work or a
 worker that was expected to remain active.</p>
-<h2 id="storage-neutral-utilities">Storage-Neutral Utilities<a class="headerlink" href="#storage-neutral-utilities" title="Permanent link">&para;</a></h2>
+<h2 id="storage-neutral-utilities">Storage-neutral utilities<a class="headerlink" href="#storage-neutral-utilities" title="Permanent link">&para;</a></h2>
 <p>Storage features share the following helpers instead of implementing local byte, stream, expiration, hashing, initialization, or key-display logic:</p>
 <ul>
 <li><code>ByteSize.Bytes/Kilobytes/Megabytes/Gigabytes</code> for checked byte calculations.</li>
@@ -6928,7 +7683,7 @@ not accept arbitrary CLR type names or payload JSON, and both the page and actio
 dashboard's existing authorization. The default page path is
 <code>/_bdk/dashboard/broadcasting</code>; no application-specific dashboard registration is required beyond the
 existing <code>AddDashboard(...)</code> call.</p>
-<h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
+<h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-requester-notifier/">Requester and Notifier</a></li>
 <li><a href="../features-pipelines/">Pipelines</a></li>
@@ -7015,7 +7770,7 @@ existing <code>AddDashboard(...)</code> call.</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -7023,6 +7778,8 @@ existing <code>AddDashboard(...)</code> call.</p>
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

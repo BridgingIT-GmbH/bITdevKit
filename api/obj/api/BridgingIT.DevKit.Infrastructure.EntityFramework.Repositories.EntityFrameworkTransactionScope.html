@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class EntityFrameworkTransactionScope | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents entity framework transaction scope.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class EntityFrameworkTransactionScope
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents entity framework transaction scope.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -270,7 +271,8 @@ Class EntityFrameworkTransactionScope
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Represents entity framework transaction scope.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -280,7 +282,8 @@ Class EntityFrameworkTransactionScope
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>transaction</code> <span class="xref">IDbContextTransaction</span></dt>
-    <dd></dd>
+    <dd><p>The transaction used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -305,8 +308,7 @@ Class EntityFrameworkTransactionScope
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Commits the operation, finalizing all changes.
-Called when the Result chain completes successfully.</p>
+  <div class="markdown level1 summary"><p>Executes the commit operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -317,14 +319,14 @@ Called when the Result chain completes successfully.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd><p>A task representing the asynchronous commit operation.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 
@@ -345,8 +347,7 @@ Called when the Result chain completes successfully.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Rolls back the operation, undoing all changes and cleaning up resources.
-Called when the Result chain fails or an exception occurs.</p>
+  <div class="markdown level1 summary"><p>Executes the rollback operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -357,14 +358,14 @@ Called when the Result chain fails or an exception occurs.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>Token to cancel the operation.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd><p>A task representing the asynchronous rollback operation.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 

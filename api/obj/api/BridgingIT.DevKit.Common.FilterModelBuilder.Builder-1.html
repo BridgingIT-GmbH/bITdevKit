@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class FilterModelBuilder.Builder&lt;T&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Builds filter, ordering, inclusion, hierarchy, paging, and tracking criteria for a root object type.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class FilterModelBuilder.Builder&lt;T&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Builds filter, ordering, inclusion, hierarchy, paging, and tracking criteria for a root object type.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -105,7 +106,8 @@ Class FilterModelBuilder.Builder&lt;T&gt;
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The root object type addressed by expression selectors.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -268,7 +270,8 @@ Class FilterModelBuilder.Builder&lt;T&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Builds filter, ordering, inclusion, hierarchy, paging, and tracking criteria for a root object type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -278,7 +281,8 @@ Class FilterModelBuilder.Builder&lt;T&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The mutable filter model that receives each configured criterion.</p>
+</dd>
   </dl>
 
 
@@ -317,7 +321,8 @@ Class FilterModelBuilder.Builder&lt;T&gt;
     <dd><p>The type of the custom filter to add.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the custom filter.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -368,7 +373,8 @@ customFilter.AddParameter(&quot;searchTerm&quot;, &quot;John&quot;);</p>
     <dd><p>The value to compare against.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the filter.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -424,7 +430,8 @@ customFilter.AddParameter(&quot;searchTerm&quot;, &quot;John&quot;);</p>
     <dd><p>A configuration action to specify filters for the collection items.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the filter.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -463,7 +470,8 @@ collectionBuilder.AddFilter(address =&gt; address.City, FilterOperator.Equal, &q
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a nested property criterion only when its configured child builder produces filters.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -473,25 +481,31 @@ collectionBuilder.AddFilter(address =&gt; address.City, FilterOperator.Equal, &q
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>propertySelector</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;T, T2&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A member expression identifying the property to filter.</p>
+</dd>
     <dt><code>filterOperator</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterOperator.html">FilterOperator</a></dt>
-    <dd></dd>
+    <dd><p>The operator used to combine the configured child criteria.</p>
+</dd>
     <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;T2&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The action that adds child criteria to a temporary nested builder.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the criterion.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The current builder for further configuration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T2</code></dt>
-    <dd></dd>
+    <dd><p>The selected property type used by the nested builder.</p>
+</dd>
   </dl>
 
 
@@ -500,6 +514,12 @@ collectionBuilder.AddFilter(address =&gt; address.City, FilterOperator.Equal, &q
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentException</span></dt>
+    <dd><p>Thrown when <code class="paramref">propertySelector</code> is not a member expression.</p>
+</dd>
+  </dl>
 
 
 
@@ -524,9 +544,11 @@ collectionBuilder.AddFilter(address =&gt; address.City, FilterOperator.Equal, &q
     <dd><p>An expression selecting the property that contains the children.</p>
 </dd>
     <dt><code>maxDepth</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum hierarchy depth to include.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the hierarchy configuration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -570,7 +592,8 @@ collectionBuilder.AddFilter(address =&gt; address.City, FilterOperator.Equal, &q
     <dd><p>An expression selecting the property to include.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the include.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -660,7 +683,8 @@ builder.AddInclude(&quot;Addresses.City&quot;);</p>
     <dd><p>An expression selecting the property to include.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the include.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -714,7 +738,8 @@ builder.AddInclude(&quot;Addresses.City&quot;);</p>
     <dd><p>The direction of the ordering (ascending or descending).</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the ordering.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -915,7 +940,8 @@ This resets the thread-local filter model for subsequent builds.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configures the query to disable entity tracking in the underlying context.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -925,15 +951,18 @@ This resets the thread-local filter model for subsequent builds.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>A value indicating whether entity tracking should be disabled. Defaults to <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>.</p>
+</dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>If specified, applies the no-tracking configuration only when the condition is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a>; when <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>, the configuration is not changed.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.html">FilterModelBuilder</a>.<a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">Builder</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The current <a class="xref" href="BridgingIT.DevKit.Common.FilterModelBuilder.Builder-1.html">FilterModelBuilder.Builder&lt;T&gt;</a> instance with the updated tracking configuration.</p>
+</dd>
   </dl>
 
 
@@ -942,6 +971,11 @@ This resets the thread-local filter model for subsequent builds.</p>
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_FilterModelBuilder_Builder_1_SetNoTracking_System_Boolean_System_Nullable_System_Boolean___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Disabling tracking can improve performance for read-only queries by preventing the
+data context from monitoring changes to returned entities. Use this option when you do not intend to update
+the queried entities.</p>
+</div>
 
 
 
@@ -967,7 +1001,8 @@ This resets the thread-local filter model for subsequent builds.</p>
     <dd><p>The standard page size to use from the <a class="xref" href="BridgingIT.DevKit.Common.PageSize.html">PageSize</a> enum.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the paging update.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1014,7 +1049,8 @@ This resets the thread-local filter model for subsequent builds.</p>
     <dd><p>The standard page size to use from the <a class="xref" href="BridgingIT.DevKit.Common.PageSize.html">PageSize</a> enum.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the paging update.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1061,7 +1097,8 @@ This resets the thread-local filter model for subsequent builds.</p>
     <dd><p>The number of items per page.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the paging update.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1105,7 +1142,8 @@ This resets the thread-local filter model for subsequent builds.</p>
     <dd><p>The number of items per page.</p>
 </dd>
     <dt><code>condition</code> <span class="xref">bool</span>?</dt>
-    <dd></dd>
+    <dd><p>When explicitly false, skips the paging update.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>

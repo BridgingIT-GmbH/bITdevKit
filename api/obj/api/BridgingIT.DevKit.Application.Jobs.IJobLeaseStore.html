@@ -257,7 +257,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -267,15 +268,18 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -295,7 +299,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -305,13 +310,15 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -331,7 +338,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list expired operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -341,15 +349,18 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>asOfUtc</code> <span class="xref">DateTimeOffset</span></dt>
-    <dd></dd>
+    <dd><p>The as of utc used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -369,7 +380,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the release operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -379,19 +391,24 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The ownership token used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -411,7 +428,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -421,15 +439,18 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -449,7 +470,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the renew operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -459,21 +481,27 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The ownership token used by the operation.</p>
+</dd>
     <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The duration used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -493,7 +521,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try acquire operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -503,19 +532,24 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>duration</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The duration used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -535,7 +569,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the upsert operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -545,15 +580,18 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>lease</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobLeaseRecord.html">JobLeaseRecord</a></dt>
-    <dd></dd>
+    <dd><p>The lease used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -573,7 +611,8 @@ Interface IJobLeaseStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the verify ownership operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -583,19 +622,24 @@ Interface IJobLeaseStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The occurrence id used by the operation.</p>
+</dd>
     <dt><code>schedulerInstanceId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler instance id used by the operation.</p>
+</dd>
     <dt><code>ownershipToken</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The ownership token used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

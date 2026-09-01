@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#devkit-cli-feature-documentation" class="md-skip">
+        <a href="#devkit-cli" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2042,15 +2149,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2068,8 +2180,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2094,6 +2206,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2213,6 +2381,72 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#packages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2238,7 +2472,7 @@
   <a href="#global-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global Options
+        Global options
       
     </span>
   </a>
@@ -2249,7 +2483,7 @@
   <a href="#workspace-resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Workspace Resolution
+        Workspace resolution
       
     </span>
   </a>
@@ -2260,7 +2494,7 @@
   <a href="#host-runtime-registry" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Runtime Registry
+        Host runtime registry
       
     </span>
   </a>
@@ -2271,7 +2505,7 @@
   <a href="#host-descriptor-shape" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Descriptor Shape
+        Host descriptor shape
       
     </span>
   </a>
@@ -2431,7 +2665,7 @@
   <a href="#exit-codes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exit Codes
+        Exit codes
       
     </span>
   </a>
@@ -2442,7 +2676,7 @@
   <a href="#local-trust-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Local Trust Model
+        Local trust model
       
     </span>
   </a>
@@ -2453,7 +2687,7 @@
   <a href="#relationship-to-console-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship to Console Commands
+        Relationship to console commands
       
     </span>
   </a>
@@ -2475,7 +2709,7 @@
   <a href="#appendix-how-mcp-works-inside-the-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: How MCP Works Inside the CLI
+        Appendix: how MCP works inside the CLI
       
     </span>
   </a>
@@ -2486,7 +2720,7 @@
   <a href="#appendix-adding-new-mcp-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Adding new MCP Tools
+        Appendix: adding new MCP tools
       
     </span>
   </a>
@@ -2509,7 +2743,7 @@
   <a href="#no-hosts-are-listed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        No Hosts Are Listed
+        No hosts are listed
       
     </span>
   </a>
@@ -2520,7 +2754,7 @@
   <a href="#host-command-forwarding-is-unavailable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Command Forwarding Is Unavailable
+        Host command forwarding is unavailable
       
     </span>
   </a>
@@ -2531,7 +2765,7 @@
   <a href="#multiple-hosts-match" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multiple Hosts Match
+        Multiple hosts match
       
     </span>
   </a>
@@ -2547,7 +2781,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -2710,6 +2944,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2777,15 +3039,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2803,8 +3070,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3084,15 +3351,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3110,8 +3382,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3191,6 +3463,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3230,6 +4033,72 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Challenges
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#packages" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3255,7 +4124,7 @@
   <a href="#global-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Global Options
+        Global options
       
     </span>
   </a>
@@ -3266,7 +4135,7 @@
   <a href="#workspace-resolution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Workspace Resolution
+        Workspace resolution
       
     </span>
   </a>
@@ -3277,7 +4146,7 @@
   <a href="#host-runtime-registry" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Runtime Registry
+        Host runtime registry
       
     </span>
   </a>
@@ -3288,7 +4157,7 @@
   <a href="#host-descriptor-shape" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Descriptor Shape
+        Host descriptor shape
       
     </span>
   </a>
@@ -3448,7 +4317,7 @@
   <a href="#exit-codes" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Exit Codes
+        Exit codes
       
     </span>
   </a>
@@ -3459,7 +4328,7 @@
   <a href="#local-trust-model" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Local Trust Model
+        Local trust model
       
     </span>
   </a>
@@ -3470,7 +4339,7 @@
   <a href="#relationship-to-console-commands" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Relationship to Console Commands
+        Relationship to console commands
       
     </span>
   </a>
@@ -3492,7 +4361,7 @@
   <a href="#appendix-how-mcp-works-inside-the-cli" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: How MCP Works Inside the CLI
+        Appendix: how MCP works inside the CLI
       
     </span>
   </a>
@@ -3503,7 +4372,7 @@
   <a href="#appendix-adding-new-mcp-tools" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Adding new MCP Tools
+        Appendix: adding new MCP tools
       
     </span>
   </a>
@@ -3526,7 +4395,7 @@
   <a href="#no-hosts-are-listed" class="md-nav__link">
     <span class="md-ellipsis">
       
-        No Hosts Are Listed
+        No hosts are listed
       
     </span>
   </a>
@@ -3537,7 +4406,7 @@
   <a href="#host-command-forwarding-is-unavailable" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Host Command Forwarding Is Unavailable
+        Host command forwarding is unavailable
       
     </span>
   </a>
@@ -3548,7 +4417,7 @@
   <a href="#multiple-hosts-match" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Multiple Hosts Match
+        Multiple hosts match
       
     </span>
   </a>
@@ -3564,7 +4433,7 @@
   <a href="#related-documentation" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Documentation
+        Related documentation
       
     </span>
   </a>
@@ -3614,10 +4483,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3657,20 +4544,26 @@
   
 
 
-<h1 id="devkit-cli-feature-documentation">DevKit CLI Feature Documentation<a class="headerlink" href="#devkit-cli-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="devkit-cli">DevKit CLI<a class="headerlink" href="#devkit-cli" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Use <code>bdk</code> as the repository-local command-line surface for DevKit local-development workflows, host discovery, host Console Command forwarding and MCP diagnostics.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#devkit-cli-feature-documentation">DevKit CLI Feature Documentation</a><ul>
+<li><a href="#devkit-cli">DevKit CLI</a><ul>
 <li><a href="#overview">Overview</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
 <li><a href="#packages">Packages</a></li>
 <li><a href="#installation">Installation</a></li>
-<li><a href="#global-options">Global Options</a></li>
-<li><a href="#workspace-resolution">Workspace Resolution</a></li>
-<li><a href="#host-runtime-registry">Host Runtime Registry</a></li>
-<li><a href="#host-descriptor-shape">Host Descriptor Shape</a></li>
+<li><a href="#global-options">Global options</a></li>
+<li><a href="#workspace-resolution">Workspace resolution</a></li>
+<li><a href="#host-runtime-registry">Host runtime registry</a></li>
+<li><a href="#host-descriptor-shape">Host descriptor shape</a></li>
 <li><a href="#commands">Commands</a><ul>
 <li><a href="#bdk-version">bdk version</a></li>
 <li><a href="#bdk-help">bdk help</a></li>
@@ -3686,26 +4579,31 @@
 <li><a href="#bdk-mcp">bdk mcp</a></li>
 </ul>
 </li>
-<li><a href="#exit-codes">Exit Codes</a></li>
-<li><a href="#local-trust-model">Local Trust Model</a></li>
-<li><a href="#relationship-to-console-commands">Relationship to Console Commands</a></li>
+<li><a href="#exit-codes">Exit codes</a></li>
+<li><a href="#local-trust-model">Local trust model</a></li>
+<li><a href="#relationship-to-console-commands">Relationship to console commands</a></li>
 <li><a href="#relationship-to-mcp">Relationship to MCP</a></li>
-<li><a href="#appendix-how-mcp-works-inside-the-cli">Appendix: How MCP Works Inside the CLI</a></li>
-<li><a href="#appendix-adding-new-mcp-tools">Appendix: Adding new MCP Tools</a></li>
+<li><a href="#appendix-how-mcp-works-inside-the-cli">Appendix: how MCP works inside the CLI</a></li>
+<li><a href="#appendix-adding-new-mcp-tools">Appendix: adding new MCP tools</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a><ul>
-<li><a href="#no-hosts-are-listed">No Hosts Are Listed</a></li>
-<li><a href="#host-command-forwarding-is-unavailable">Host Command Forwarding Is Unavailable</a></li>
-<li><a href="#multiple-hosts-match">Multiple Hosts Match</a></li>
+<li><a href="#no-hosts-are-listed">No hosts are listed</a></li>
+<li><a href="#host-command-forwarding-is-unavailable">Host command forwarding is unavailable</a></li>
+<li><a href="#multiple-hosts-match">Multiple hosts match</a></li>
 </ul>
 </li>
-<li><a href="#related-documentation">Related Documentation</a></li>
+<li><a href="#related-documentation">Related documentation</a></li>
 </ul>
 </li>
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
 <p>The DevKit CLI provides a single local-development command entry point for DevKit workflows. It is packaged as the <code>BridgingIT.DevKit.Cli</code> .NET tool and exposes the <code>bdk</code> command.</p>
-<p>The CLI foundation provides:</p>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>DevKit applications can expose local diagnostics and operations through several processes and transports. Developers need a consistent way to discover the hosts for the current workspace, select one safely, forward commands and connect MCP clients without copying endpoint addresses or transport details.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p>The <code>bdk</code> tool combines local command dispatch, workspace-aware host discovery, selected-host storage, Console Command forwarding and a STDIO MCP server. Running DevKit web hosts advertise supported local endpoints through user-local descriptors; the CLI resolves those descriptors without loading application assemblies or accessing application databases directly.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<p>The CLI provides:</p>
 <ul>
 <li>local CLI commands registered through the existing Console Commands dispatcher</li>
 <li>workspace resolution</li>
@@ -3717,6 +4615,44 @@
 <li>runtime diagnostics, operations and admin MCP tools</li>
 <li>official DevKit documentation tools for agents</li>
 </ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<pre class="mermaid"><code>flowchart LR
+    User[Developer or MCP client] --&gt; CLI[bdk CLI]
+    CLI --&gt; Commands[Local CLI commands]
+    CLI --&gt; Registry[Workspace host registry]
+    Registry --&gt; Descriptor[Host descriptors]
+    CLI --&gt; ConsoleIPC[Console Command IPC]
+    CLI --&gt; McpSTDIO[MCP over STDIO]
+    McpSTDIO --&gt; McpIPC[Runtime MCP IPC]
+    ConsoleIPC --&gt; Host[Running DevKit web host]
+    McpIPC --&gt; Host</code></pre>
+<p>The CLI owns parsing, output, workspace resolution and local protocol clients. The web host owns descriptor publication and application-specific command or MCP execution.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Restore one repository-local tool and use it consistently across developer machines.</li>
+<li>List, select, inspect, clean or terminate DevKit hosts for the current workspace.</li>
+<li>Forward a registered Console Command to a selected host process.</li>
+<li>Expose bounded diagnostics and operations to an MCP-compatible IDE or agent.</li>
+<li>Query official DevKit guides and generated API reference data through stable MCP tools.</li>
+<li>Produce JSON output and stable exit codes for scripts and CI tasks.</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>Create or restore the repository-local tool, run a command and check its exit code before consuming the result.</p>
+<div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">restore</span>
+
+<span class="nv">$versionJson</span> <span class="p">=</span> <span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="n">version</span> <span class="p">-</span><span class="n">-output</span> <span class="n">json</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="s2">&quot;bdk version failed with exit code $LASTEXITCODE.&quot;</span>
+<span class="p">}</span>
+
+<span class="nv">$versionJson</span>
+</code></pre></div>
+<p>The command writes a JSON object containing the CLI version, registered modules and exit code <code>0</code>. Once a Development host is running, list hosts for the same workspace:</p>
+<div class="highlight"><pre><span></span><code><span class="n">dotnet</span> <span class="n">tool</span> <span class="n">run</span> <span class="n">bdk</span> <span class="n">hosts</span> <span class="n">list</span> <span class="p">-</span><span class="n">-output</span> <span class="n">json</span>
+<span class="k">if</span> <span class="p">(</span><span class="nv">$LASTEXITCODE</span> <span class="o">-ne</span> <span class="n">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">throw</span> <span class="s2">&quot;Host discovery failed with exit code $LASTEXITCODE.&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
 <h2 id="packages">Packages<a class="headerlink" href="#packages" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
@@ -3762,7 +4698,7 @@ dotnet<span class="w"> </span>tool<span class="w"> </span>install<span class="w"
 <div class="highlight"><pre><span></span><code>dotnet<span class="w"> </span>run<span class="w"> </span>--project<span class="w"> </span>src/Presentation.Cli/Presentation.Cli.csproj<span class="w"> </span>--<span class="w"> </span>version
 </code></pre></div>
 <p>This path uses the same command host as the packaged tool. Only the process launch mechanism differs.</p>
-<h2 id="global-options">Global Options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h2>
+<h2 id="global-options">Global options<a class="headerlink" href="#global-options" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -3815,7 +4751,7 @@ dotnet<span class="w"> </span>tool<span class="w"> </span>install<span class="w"
 </table>
 <p><code>--quiet</code> and <code>--verbose</code> cannot be used together. <code>--nologo</code> and <code>--banner</code> cannot be used together. JSON output implies no color and suppresses human-only output.</p>
 <p>The CLI can render an animated startup banner to standard error for interactive text sessions. It is suppressed for JSON, quiet, CI and non-interactive invocations unless <code>--banner</code> is supplied.</p>
-<h2 id="workspace-resolution">Workspace Resolution<a class="headerlink" href="#workspace-resolution" title="Permanent link">&para;</a></h2>
+<h2 id="workspace-resolution">Workspace resolution<a class="headerlink" href="#workspace-resolution" title="Permanent link">&para;</a></h2>
 <p>Workspace-aware commands use a deterministic workspace path so host filtering and selected-host storage are stable.</p>
 <p>Resolution order:</p>
 <ol>
@@ -3824,7 +4760,7 @@ dotnet<span class="w"> </span>tool<span class="w"> </span>install<span class="w"
 <li>The current directory.</li>
 </ol>
 <p>The resolved path is normalized before the CLI computes the workspace hash used for selection files.</p>
-<h2 id="host-runtime-registry">Host Runtime Registry<a class="headerlink" href="#host-runtime-registry" title="Permanent link">&para;</a></h2>
+<h2 id="host-runtime-registry">Host runtime registry<a class="headerlink" href="#host-runtime-registry" title="Permanent link">&para;</a></h2>
 <p>Running DevKit web hosts created with <code>DevKitWebApplication.CreateBuilder(args)</code> can write host descriptors to an OS user-local registry.</p>
 <p>Default locations:</p>
 <table>
@@ -3863,7 +4799,7 @@ dotnet<span class="w"> </span>tool<span class="w"> </span>install<span class="w"
     Cli --&gt;|"reads and filters by workspace"| Registry
     Cli --&gt;|"stores selected runtime id"| Selection
     Cli --&gt;|"uses selected host for host run and MCP"| WebHost</code></pre>
-<h2 id="host-descriptor-shape">Host Descriptor Shape<a class="headerlink" href="#host-descriptor-shape" title="Permanent link">&para;</a></h2>
+<h2 id="host-descriptor-shape">Host descriptor shape<a class="headerlink" href="#host-descriptor-shape" title="Permanent link">&para;</a></h2>
 <p>Host descriptors use shared DTOs from <code>Common.Abstractions/HostDiscovery</code>.</p>
 <p>Important fields:</p>
 <table>
@@ -4002,7 +4938,7 @@ bdk<span class="w"> </span>hosts<span class="w"> </span>versions<span class="w">
 </code></pre></div>
 <p>This command reads descriptor metadata only. It does not enumerate all assemblies loaded inside the host process.</p>
 <h3 id="bdk-hosts-clean"><code>bdk hosts clean</code><a class="headerlink" href="#bdk-hosts-clean" title="Permanent link">&para;</a></h3>
-<p>Removes stale or invalid descriptors when explicitly confirmed.</p>
+<p>Removes stale, invalid or unreachable descriptors when explicitly confirmed.</p>
 <div class="highlight"><pre><span></span><code>bdk<span class="w"> </span>hosts<span class="w"> </span>clean
 bdk<span class="w"> </span>hosts<span class="w"> </span>clean<span class="w"> </span>--yes
 bdk<span class="w"> </span>hosts<span class="w"> </span>clean<span class="w"> </span>--yes<span class="w"> </span>--output<span class="w"> </span>json
@@ -4029,7 +4965,7 @@ bdk<span class="w"> </span>host<span class="w"> </span>run<span class="w"> </spa
 <div class="highlight"><pre><span></span><code>bdk<span class="w"> </span>mcp
 bdk<span class="w"> </span>mcp<span class="w"> </span>--toolset<span class="w"> </span>diagnostics,operations
 bdk<span class="w"> </span>mcp<span class="w"> </span>--toolset<span class="w"> </span>diagnostics,operations,admin
-bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime<span class="w"> </span>commerce-api-5001
+bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime-id<span class="w"> </span>commerce-api-5001
 </code></pre></div>
 <p>The command speaks JSON-RPC over standard input and output. Human logs and diagnostics must go to standard error so MCP clients can parse standard output safely.</p>
 <p>Runtime-bound MCP tools select a running host from the same workspace-aware host registry used by <code>bdk hosts</code> and <code>bdk host run</code>. Documentation tools use official online DevKit documentation and do not require a running host.</p>
@@ -4056,7 +4992,7 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime<span class="w"> 
 </tr>
 </tbody>
 </table>
-<h2 id="exit-codes">Exit Codes<a class="headerlink" href="#exit-codes" title="Permanent link">&para;</a></h2>
+<h2 id="exit-codes">Exit codes<a class="headerlink" href="#exit-codes" title="Permanent link">&para;</a></h2>
 <table>
 <thead>
 <tr>
@@ -4108,7 +5044,7 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime<span class="w"> 
 </tr>
 </tbody>
 </table>
-<h2 id="local-trust-model">Local Trust Model<a class="headerlink" href="#local-trust-model" title="Permanent link">&para;</a></h2>
+<h2 id="local-trust-model">Local trust model<a class="headerlink" href="#local-trust-model" title="Permanent link">&para;</a></h2>
 <p>The CLI is a local-development tool. Host discovery and command forwarding use OS user-local descriptor and IPC locations.</p>
 <p>Rules:</p>
 <ul>
@@ -4119,7 +5055,7 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime<span class="w"> 
 <li>Destructive host commands remain responsible for their own confirmations and safeguards.</li>
 </ul>
 <p>The nonce helps avoid accidental use of stale or spoofed descriptors in the same user-local registry. It is not production authentication.</p>
-<h2 id="relationship-to-console-commands">Relationship to Console Commands<a class="headerlink" href="#relationship-to-console-commands" title="Permanent link">&para;</a></h2>
+<h2 id="relationship-to-console-commands">Relationship to console commands<a class="headerlink" href="#relationship-to-console-commands" title="Permanent link">&para;</a></h2>
 <p>The CLI aligns terminal behavior with the existing Console Commands feature. Local <code>bdk</code> commands use the same Spectre.Console style, while <code>bdk host run</code> executes the selected host's <code>IConsoleCommand</code> implementation in the host process.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant User
@@ -4141,7 +5077,7 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime<span class="w"> 
 <h2 id="relationship-to-mcp">Relationship to MCP<a class="headerlink" href="#relationship-to-mcp" title="Permanent link">&para;</a></h2>
 <p>MCP is implemented as a command module inside <code>bdk</code>. The CLI owns STDIO protocol handling, stable MCP tool names, runtime discovery and runtime selection. Running DevKit web hosts own application-specific execution through app-side MCP handlers.</p>
 <p>The stable catalog includes runtime tools, investigation tools, logs/errors, health/metrics, messaging, queueing, jobs, orchestrations, documentation and project-owned operation dispatch. Project operations remain discoverable through capabilities and callable through <code>bdk_project_call</code>; they are not added as dynamic MCP tools by default.</p>
-<h2 id="appendix-how-mcp-works-inside-the-cli">Appendix: How MCP Works Inside the CLI<a class="headerlink" href="#appendix-how-mcp-works-inside-the-cli" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-how-mcp-works-inside-the-cli">Appendix: how MCP works inside the CLI<a class="headerlink" href="#appendix-how-mcp-works-inside-the-cli" title="Permanent link">&para;</a></h2>
 <p><code>bdk mcp</code> is a local bridge between an MCP client and one or more running DevKit hosts in the same workspace.</p>
 <pre class="mermaid"><code>flowchart LR
     subgraph ClientSide["Agent or IDE process"]
@@ -4257,14 +5193,14 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime<span class="w"> 
 </table>
 <p>Runtime selection follows the same rules as host commands:</p>
 <ol>
-<li><code>--runtime &lt;id&gt;</code> on <code>bdk mcp</code> wins.</li>
+<li><code>--runtime-id &lt;id&gt;</code> or <code>--host &lt;id&gt;</code> on <code>bdk mcp</code> wins.</li>
 <li>A saved workspace selection from <code>bdk_runtimes_select</code> or <code>bdk hosts select</code> is used.</li>
 <li>If exactly one ready MCP runtime exists, it is selected automatically.</li>
 <li>If multiple ready runtimes exist, runtime-bound tools return <code>runtime_selection_required</code>.</li>
 </ol>
 <pre class="mermaid"><code>flowchart TD
     Start([Runtime-bound MCP tool call])
-    Explicit{--runtime supplied?}
+    Explicit{--runtime-id or --host supplied?}
     ExplicitReady{Matching ready MCP runtime?}
     Saved{Workspace selection exists?}
     SavedReady{Selected runtime ready?}
@@ -4290,14 +5226,14 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--runtime<span class="w"> 
     Count --&gt;|More than 1| SelectionRequired</code></pre>
 <p>The CLI enforces coarse toolset authorization before any IPC call. The host dispatcher also verifies that the requested toolset matches the advertised capability. This gives two safeguards: the MCP process must be started with the toolset, and the selected host must explicitly expose the operation under that toolset.</p>
 <p>Feature packages contribute MCP handlers through their presentation registration extensions. For example, messaging, queueing, job scheduling and orchestration presentation packages register their handlers when their endpoints or console commands are registered. Built-in Presentation.Web handlers provide health, metrics and retained-log diagnostics when the corresponding services are available.</p>
-<p>Documentation tools are different from runtime tools. <code>bdk_docs_search</code> and <code>bdk_docs_get</code> read official online DevKit documentation sources, not the local repository. This keeps the CLI useful when developers use it from another project whose repository is not the DevKit source tree.</p>
+<p>Documentation tools are different from runtime tools. <code>bdk_docs_search</code> and <code>bdk_docs_get</code> read the official DevKit documentation from GitHub. API-reference tools first use generated Pages data under <code>.github/pages/api</code> when it exists in the resolved workspace, then fall back to the published GitHub Pages API reference.</p>
 <p>MCP client configuration can be source-controlled for the repo:</p>
 <ul>
 <li><code>.mcp.json</code> for clients that read repo-level MCP configuration.</li>
 <li><code>.vscode/mcp.json</code> for VS Code.</li>
 <li>Rider and Visual Studio can be configured with the same command shape documented in <a href="../features-cli-mcp-clients/">MCP Clients</a>.</li>
 </ul>
-<h2 id="appendix-adding-new-mcp-tools">Appendix: Adding new MCP Tools<a class="headerlink" href="#appendix-adding-new-mcp-tools" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-adding-new-mcp-tools">Appendix: adding new MCP tools<a class="headerlink" href="#appendix-adding-new-mcp-tools" title="Permanent link">&para;</a></h2>
 <p>The MCP catalog is intentionally stable. Adding tools should be deliberate because every <code>bdk_*</code> tool becomes part of the agent-facing CLI surface.</p>
 <p>Use this checklist for new DevKit-owned MCP tools:</p>
 <ol>
@@ -4423,9 +5359,9 @@ bdk_project_call
 </tbody>
 </table>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
-<h3 id="no-hosts-are-listed">No Hosts Are Listed<a class="headerlink" href="#no-hosts-are-listed" title="Permanent link">&para;</a></h3>
+<h3 id="no-hosts-are-listed">No hosts are listed<a class="headerlink" href="#no-hosts-are-listed" title="Permanent link">&para;</a></h3>
 <p>Start a DevKit web application that uses <code>DevKitWebApplication.CreateBuilder(args)</code> in <code>Development</code>. Raw <code>WebApplication.CreateBuilder(args)</code> applications do not write host descriptors by convention.</p>
-<h3 id="host-command-forwarding-is-unavailable">Host Command Forwarding Is Unavailable<a class="headerlink" href="#host-command-forwarding-is-unavailable" title="Permanent link">&para;</a></h3>
+<h3 id="host-command-forwarding-is-unavailable">Host command forwarding is unavailable<a class="headerlink" href="#host-command-forwarding-is-unavailable" title="Permanent link">&para;</a></h3>
 <p>Check that the selected host advertises <code>features.consoleCommands</code>:</p>
 <div class="highlight"><pre><span></span><code>bdk<span class="w"> </span>hosts<span class="w"> </span>list<span class="w"> </span>--feature<span class="w"> </span>consoleCommands
 </code></pre></div>
@@ -4439,14 +5375,14 @@ bdk_project_call
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="multiple-hosts-match">Multiple Hosts Match<a class="headerlink" href="#multiple-hosts-match" title="Permanent link">&para;</a></h3>
+<h3 id="multiple-hosts-match">Multiple hosts match<a class="headerlink" href="#multiple-hosts-match" title="Permanent link">&para;</a></h3>
 <p>Select a host once for the workspace:</p>
 <div class="highlight"><pre><span></span><code>bdk<span class="w"> </span>hosts<span class="w"> </span><span class="k">select</span><span class="w"> </span>commerce-api-5001
 </code></pre></div>
 <p>Or pass an explicit selector:</p>
 <div class="highlight"><pre><span></span><code>bdk<span class="w"> </span>host<span class="w"> </span>run<span class="w"> </span>--host<span class="w"> </span>commerce-api-5001<span class="w"> </span>--<span class="w"> </span>status
 </code></pre></div>
-<h2 id="related-documentation">Related Documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
+<h2 id="related-documentation">Related documentation<a class="headerlink" href="#related-documentation" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-presentation/">Presentation Host</a></li>
 <li><a href="../features-cli-mcp/">DevKit MCP</a></li>
@@ -4533,7 +5469,7 @@ bdk_project_call
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4541,6 +5477,8 @@ bdk_project_call
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

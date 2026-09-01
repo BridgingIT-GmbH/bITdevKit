@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#jobscheduling-feature-documentation" class="md-skip">
+        <a href="#jobscheduling" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2040,15 +2147,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2066,8 +2178,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2092,6 +2204,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2308,6 +2476,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2377,15 +2573,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2403,8 +2604,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2545,10 +2746,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2558,8 +2758,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2569,8 +2769,30 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -2580,29 +2802,35 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-and-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration and operation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registration and operation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#basic-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Setup
+        Basic setup
       
     </span>
   </a>
@@ -2610,10 +2838,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#comprehensive-setup-with-sql-server-persistence-and-api-endpoints" class="md-nav__link">
+  <a href="#comprehensive-setup-with-sql-server-history-and-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comprehensive Setup with SQL Server Persistence and API Endpoints
+        Comprehensive setup with SQL Server history and API endpoints
       
     </span>
   </a>
@@ -2624,7 +2852,7 @@
   <a href="#implementing-a-cancellable-long-running-job" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Implementing a Cancellable Long-Running Job
+        Implementing a cancellable long-running job
       
     </span>
   </a>
@@ -2632,10 +2860,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#managing-jobs-with-jobservice-and-api-endpoints" class="md-nav__link">
+  <a href="#managing-jobs-with-ijobservice-and-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Managing Jobs with JobService and API Endpoints
+        Managing jobs with IJobService and API endpoints
       
     </span>
   </a>
@@ -2646,7 +2874,7 @@
   <a href="#key-properties-of-jobbase" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Properties of JobBase
+        Key properties of JobBase
       
     </span>
   </a>
@@ -2654,10 +2882,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#leveraging-lastprocesseddate" class="md-nav__link">
+  <a href="#using-previous-run-timestamps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Leveraging LastProcessedDate
+        Using previous-run timestamps
       
     </span>
   </a>
@@ -2668,7 +2896,7 @@
   <a href="#controlling-job-execution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Controlling Job Execution
+        Controlling job execution
       
     </span>
   </a>
@@ -2684,19 +2912,19 @@
   <a href="#appendix-configuring-quartznet-persistence-with-sql-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Configuring Quartz.NET Persistence with SQL Server
+        Appendix: configuring Quartz.NET persistence with SQL Server
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Configuring Quartz.NET Persistence with SQL Server">
+    <nav class="md-nav" aria-label="Appendix: configuring Quartz.NET persistence with SQL Server">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#configuration-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Steps
+        Configuration steps
       
     </span>
   </a>
@@ -2707,7 +2935,7 @@
   <a href="#generate-quartz-tables" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Generate Quartz Tables
+        Generate Quartz tables
       
     </span>
   </a>
@@ -2734,19 +2962,19 @@
   <a href="#appendix-additional-persistence-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Additional Persistence Options
+        Appendix: additional persistence options
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Additional Persistence Options">
+    <nav class="md-nav" aria-label="Appendix: additional persistence options">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#postgresql-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PostgreSQL Persistence
+        PostgreSQL persistence
       
     </span>
   </a>
@@ -2757,7 +2985,7 @@
   <a href="#sqlite-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SQLite Persistence
+        SQLite persistence
       
     </span>
   </a>
@@ -2768,7 +2996,7 @@
   <a href="#in-memory-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In-Memory Persistence
+        In-memory persistence
       
     </span>
   </a>
@@ -2779,7 +3007,7 @@
   <a href="#null-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Null Persistence
+        Null persistence
       
     </span>
   </a>
@@ -2795,19 +3023,19 @@
   <a href="#appendix-constructing-cron-expressions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Constructing Cron Expressions
+        Appendix: constructing cron expressions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Constructing Cron Expressions">
+    <nav class="md-nav" aria-label="Appendix: constructing cron expressions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#using-fixed-cron-expressions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Fixed Cron Expressions
+        Using fixed cron expressions
       
     </span>
   </a>
@@ -2815,10 +3043,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-the-cronexpressionbuilder" class="md-nav__link">
+  <a href="#using-cronexpressionbuilder" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using the CronExpressionBuilder
+        Using CronExpressionBuilder
       
     </span>
   </a>
@@ -2831,22 +3059,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#appendix-job-scheduling-api-endpoints" class="md-nav__link">
+  <a href="#appendix-jobscheduling-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Job Scheduling API Endpoints
+        Appendix: JobScheduling API endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Job Scheduling API Endpoints">
+    <nav class="md-nav" aria-label="Appendix: JobScheduling API endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#enabling-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Enabling Endpoints
+        Enabling endpoints
       
     </span>
   </a>
@@ -2857,7 +3085,7 @@
   <a href="#available-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Endpoints
+        Available endpoints
       
     </span>
   </a>
@@ -2868,7 +3096,7 @@
   <a href="#endpoint-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint Details
+        Endpoint details
       
     </span>
   </a>
@@ -3075,15 +3303,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3101,8 +3334,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3182,6 +3415,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3218,10 +3982,9 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
+</li>
+      
+        <li class="md-nav__item">
   <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3231,8 +3994,8 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
   <a href="#solution" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3242,8 +4005,30 @@
   </a>
   
 </li>
-        
-          <li class="md-nav__item">
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#use-cases" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3253,29 +4038,35 @@
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
-  
-</li>
       
         <li class="md-nav__item">
-  <a href="#usage" class="md-nav__link">
+  <a href="#basic-usage" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Usage
+        Basic Usage
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Usage">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#registration-and-operation" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Registration and operation
+      
+    </span>
+  </a>
+  
+    <nav class="md-nav" aria-label="Registration and operation">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#basic-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Basic Setup
+        Basic setup
       
     </span>
   </a>
@@ -3283,10 +4074,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#comprehensive-setup-with-sql-server-persistence-and-api-endpoints" class="md-nav__link">
+  <a href="#comprehensive-setup-with-sql-server-history-and-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Comprehensive Setup with SQL Server Persistence and API Endpoints
+        Comprehensive setup with SQL Server history and API endpoints
       
     </span>
   </a>
@@ -3297,7 +4088,7 @@
   <a href="#implementing-a-cancellable-long-running-job" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Implementing a Cancellable Long-Running Job
+        Implementing a cancellable long-running job
       
     </span>
   </a>
@@ -3305,10 +4096,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#managing-jobs-with-jobservice-and-api-endpoints" class="md-nav__link">
+  <a href="#managing-jobs-with-ijobservice-and-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Managing Jobs with JobService and API Endpoints
+        Managing jobs with IJobService and API endpoints
       
     </span>
   </a>
@@ -3319,7 +4110,7 @@
   <a href="#key-properties-of-jobbase" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Properties of JobBase
+        Key properties of JobBase
       
     </span>
   </a>
@@ -3327,10 +4118,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#leveraging-lastprocesseddate" class="md-nav__link">
+  <a href="#using-previous-run-timestamps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Leveraging LastProcessedDate
+        Using previous-run timestamps
       
     </span>
   </a>
@@ -3341,7 +4132,7 @@
   <a href="#controlling-job-execution" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Controlling Job Execution
+        Controlling job execution
       
     </span>
   </a>
@@ -3357,19 +4148,19 @@
   <a href="#appendix-configuring-quartznet-persistence-with-sql-server" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Configuring Quartz.NET Persistence with SQL Server
+        Appendix: configuring Quartz.NET persistence with SQL Server
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Configuring Quartz.NET Persistence with SQL Server">
+    <nav class="md-nav" aria-label="Appendix: configuring Quartz.NET persistence with SQL Server">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#configuration-steps" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Steps
+        Configuration steps
       
     </span>
   </a>
@@ -3380,7 +4171,7 @@
   <a href="#generate-quartz-tables" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Generate Quartz Tables
+        Generate Quartz tables
       
     </span>
   </a>
@@ -3407,19 +4198,19 @@
   <a href="#appendix-additional-persistence-options" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Additional Persistence Options
+        Appendix: additional persistence options
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Additional Persistence Options">
+    <nav class="md-nav" aria-label="Appendix: additional persistence options">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#postgresql-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        PostgreSQL Persistence
+        PostgreSQL persistence
       
     </span>
   </a>
@@ -3430,7 +4221,7 @@
   <a href="#sqlite-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        SQLite Persistence
+        SQLite persistence
       
     </span>
   </a>
@@ -3441,7 +4232,7 @@
   <a href="#in-memory-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        In-Memory Persistence
+        In-memory persistence
       
     </span>
   </a>
@@ -3452,7 +4243,7 @@
   <a href="#null-persistence" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Null Persistence
+        Null persistence
       
     </span>
   </a>
@@ -3468,19 +4259,19 @@
   <a href="#appendix-constructing-cron-expressions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Constructing Cron Expressions
+        Appendix: constructing cron expressions
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Constructing Cron Expressions">
+    <nav class="md-nav" aria-label="Appendix: constructing cron expressions">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#using-fixed-cron-expressions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Fixed Cron Expressions
+        Using fixed cron expressions
       
     </span>
   </a>
@@ -3488,10 +4279,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#using-the-cronexpressionbuilder" class="md-nav__link">
+  <a href="#using-cronexpressionbuilder" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using the CronExpressionBuilder
+        Using CronExpressionBuilder
       
     </span>
   </a>
@@ -3504,22 +4295,22 @@
 </li>
       
         <li class="md-nav__item">
-  <a href="#appendix-job-scheduling-api-endpoints" class="md-nav__link">
+  <a href="#appendix-jobscheduling-api-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Appendix: Job Scheduling API Endpoints
+        Appendix: JobScheduling API endpoints
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Appendix: Job Scheduling API Endpoints">
+    <nav class="md-nav" aria-label="Appendix: JobScheduling API endpoints">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#enabling-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Enabling Endpoints
+        Enabling endpoints
       
     </span>
   </a>
@@ -3530,7 +4321,7 @@
   <a href="#available-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Available Endpoints
+        Available endpoints
       
     </span>
   </a>
@@ -3541,7 +4332,7 @@
   <a href="#endpoint-details" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Endpoint Details
+        Endpoint details
       
     </span>
   </a>
@@ -3596,10 +4387,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3639,52 +4448,53 @@
   
 
 
-<h1 id="jobscheduling-feature-documentation">JobScheduling Feature Documentation<a class="headerlink" href="#jobscheduling-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="jobscheduling">JobScheduling<a class="headerlink" href="#jobscheduling" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>Legacy Quartz-backed scheduler. For new development, prefer <a href="../features-jobs/">Jobs</a>. Migration is source-level only; Quartz tables and trigger records are not reused by <code>Application.Jobs</code>.</p>
-<p>Schedule and run background jobs with flexible timing, DI integration, and operational visibility.</p>
+<p>Legacy Quartz-backed scheduler. For new development, prefer <a href="../features-jobs/">Jobs</a>. Migration is source-level only; Quartz tables and trigger records are not reused by <code>Application.Jobs</code>.
+Schedule and run background jobs through the legacy Quartz.NET integration.</p>
 </blockquote>
 <div class="toc">
 <ul>
-<li><a href="#jobscheduling-feature-documentation">JobScheduling Feature Documentation</a><ul>
-<li><a href="#overview">Overview</a><ul>
+<li><a href="#jobscheduling">JobScheduling</a><ul>
+<li><a href="#overview">Overview</a></li>
 <li><a href="#challenges">Challenges</a></li>
 <li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
 <li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#registration-and-operation">Registration and operation</a><ul>
+<li><a href="#basic-setup">Basic setup</a></li>
+<li><a href="#comprehensive-setup-with-sql-server-history-and-api-endpoints">Comprehensive setup with SQL Server history and API endpoints</a></li>
+<li><a href="#implementing-a-cancellable-long-running-job">Implementing a cancellable long-running job</a></li>
+<li><a href="#managing-jobs-with-ijobservice-and-api-endpoints">Managing jobs with IJobService and API endpoints</a></li>
+<li><a href="#key-properties-of-jobbase">Key properties of JobBase</a></li>
+<li><a href="#using-previous-run-timestamps">Using previous-run timestamps</a></li>
+<li><a href="#controlling-job-execution">Controlling job execution</a></li>
 </ul>
 </li>
-<li><a href="#usage">Usage</a><ul>
-<li><a href="#basic-setup">Basic Setup</a></li>
-<li><a href="#comprehensive-setup-with-sql-server-persistence-and-api-endpoints">Comprehensive Setup with SQL Server Persistence and API Endpoints</a></li>
-<li><a href="#implementing-a-cancellable-long-running-job">Implementing a Cancellable Long-Running Job</a></li>
-<li><a href="#managing-jobs-with-jobservice-and-api-endpoints">Managing Jobs with JobService and API Endpoints</a></li>
-<li><a href="#key-properties-of-jobbase">Key Properties of JobBase</a></li>
-<li><a href="#leveraging-lastprocesseddate">Leveraging LastProcessedDate</a></li>
-<li><a href="#controlling-job-execution">Controlling Job Execution</a></li>
-</ul>
-</li>
-<li><a href="#appendix-configuring-quartznet-persistence-with-sql-server">Appendix: Configuring Quartz.NET Persistence with SQL Server</a><ul>
-<li><a href="#configuration-steps">Configuration Steps</a></li>
-<li><a href="#generate-quartz-tables">Generate Quartz Tables</a></li>
+<li><a href="#appendix-configuring-quartznet-persistence-with-sql-server">Appendix: configuring Quartz.NET persistence with SQL Server</a><ul>
+<li><a href="#configuration-steps">Configuration steps</a></li>
+<li><a href="#generate-quartz-tables">Generate Quartz tables</a></li>
 <li><a href="#validation">Validation</a></li>
 </ul>
 </li>
-<li><a href="#appendix-additional-persistence-options">Appendix: Additional Persistence Options</a><ul>
-<li><a href="#postgresql-persistence">PostgreSQL Persistence</a></li>
-<li><a href="#sqlite-persistence">SQLite Persistence</a></li>
-<li><a href="#in-memory-persistence">In-Memory Persistence</a></li>
-<li><a href="#null-persistence">Null Persistence</a></li>
+<li><a href="#appendix-additional-persistence-options">Appendix: additional persistence options</a><ul>
+<li><a href="#postgresql-persistence">PostgreSQL persistence</a></li>
+<li><a href="#sqlite-persistence">SQLite persistence</a></li>
+<li><a href="#in-memory-persistence">In-memory persistence</a></li>
+<li><a href="#null-persistence">Null persistence</a></li>
 </ul>
 </li>
-<li><a href="#appendix-constructing-cron-expressions">Appendix: Constructing Cron Expressions</a><ul>
-<li><a href="#using-fixed-cron-expressions">Using Fixed Cron Expressions</a></li>
-<li><a href="#using-the-cronexpressionbuilder">Using the CronExpressionBuilder</a></li>
+<li><a href="#appendix-constructing-cron-expressions">Appendix: constructing cron expressions</a><ul>
+<li><a href="#using-fixed-cron-expressions">Using fixed cron expressions</a></li>
+<li><a href="#using-cronexpressionbuilder">Using CronExpressionBuilder</a></li>
 </ul>
 </li>
-<li><a href="#appendix-job-scheduling-api-endpoints">Appendix: Job Scheduling API Endpoints</a><ul>
-<li><a href="#enabling-endpoints">Enabling Endpoints</a></li>
-<li><a href="#available-endpoints">Available Endpoints</a></li>
-<li><a href="#endpoint-details">Endpoint Details</a></li>
+<li><a href="#appendix-jobscheduling-api-endpoints">Appendix: JobScheduling API endpoints</a><ul>
+<li><a href="#enabling-endpoints">Enabling endpoints</a></li>
+<li><a href="#available-endpoints">Available endpoints</a></li>
+<li><a href="#endpoint-details">Endpoint details</a></li>
 </ul>
 </li>
 </ul>
@@ -3692,16 +4502,77 @@
 </ul>
 </div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<h3 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h3>
-<p>Implementing a reliable scheduling system within a web application often involves navigating a maze of technical hurdles. Developers must contend with creating background tasks that execute on precise schedules—whether for data aggregation, notifications, or system upkeep—without disrupting the application’s core functionality. Crafting custom threading mechanisms or integrating external schedulers can lead to brittle solutions prone to errors, especially when scaling to handle increased loads or ensuring compatibility with dependency injection frameworks. Flexibility in defining schedules, from simple intervals to complex cron-based patterns, demands an abstraction that remains both powerful and intuitive, while also providing visibility into execution history and status for monitoring and debugging purposes.</p>
-<h3 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h3>
-<p>The JobScheduling feature offers a robust resolution to these challenges by building atop Quartz.NET, a mature and widely respected scheduling library, and tailoring it for seamless integration into ASP.NET Core applications. This feature embeds Quartz.NET’s scheduling engine within a hosted service, managed through the ASP.NET Core dependency injection system, eliminating the need for ad-hoc threading or external tools. A fluent registration API streamlines the process of defining jobs, allowing developers to specify schedules, metadata, and execution scopes with clarity and minimal effort. Enhanced by the <code>JobBase</code> class, which provides properties like <code>LastProcessedDate</code> for tracking execution history, the <code>JobService</code> interface for runtime management, and optional API endpoints for operational control, this solution ensures that scheduled tasks are both manageable and observable, delivering reliability and flexibility in equal measure.</p>
-<h3 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h3>
-<p>This scheduling system adapts effortlessly to a range of practical needs within web applications. Imagine an online platform requiring hourly inventory updates: a job can be scheduled to fetch stock levels and persist them to a database, triggered by a cron expression. In a content management system, a nightly task might archive outdated articles, maintaining performance without manual oversight. For real-time monitoring, a singleton job could poll system metrics every few minutes, leveraging its persistent state to detect anomalies over time. Even error-prone operations, like retrying failed API calls, benefit from the feature’s ability to track execution status and timing, enabling developers to build resilient workflows tailored to their application’s demands. Long-running tasks, such as file processing, can use cancellation support, manageable via API endpoints or service methods.</p>
-<h2 id="usage">Usage<a class="headerlink" href="#usage" title="Permanent link">&para;</a></h2>
-<p>Designed to empower developers with a Quartz.NET-backed scheduling solution, the JobScheduling feature integrates smoothly into ASP.NET Core web applications. By combining a fluent API for job registration with the enriched capabilities of the <code>JobBase</code> class, it provides a cohesive framework for defining and executing scheduled tasks. This section walks through the setup process, illustrates job creation with the updated <code>JobBase</code> (including cancellable long-running jobs), introduces runtime management via <code>JobService</code> and API endpoints, and explains the architectural flow that underpins the system.</p>
-<h3 id="basic-setup">Basic Setup<a class="headerlink" href="#basic-setup" title="Permanent link">&para;</a></h3>
-<p>To enable scheduling, the feature must be registered within the application’s service collection, typically in the <code>Program.cs</code> file, with the application’s configuration passed to load Quartz.NET settings. The following example demonstrates a basic setup:</p>
+<p>JobScheduling is the legacy Quartz.NET-backed scheduling feature. It registers Quartz as an ASP.NET Core hosted service, resolves jobs through dependency injection, and provides optional run-history stores and operational endpoints. For new development, use <a href="../features-jobs/">Jobs</a>; the two runtimes do not share schedules or persistence records.</p>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Applications often need recurring or manually triggered work without managing threads inside request handlers. A scheduler must resolve scoped dependencies, apply predictable timing, support cancellation, and expose enough state for operators to inspect or control registered jobs.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p><code>AddJobScheduling(...)</code> hosts Quartz.NET and returns a fluent builder for job definitions. Jobs can derive from <code>JobBase</code>, which records the previous run state in the Quartz job data map. <code>IJobService</code> provides runtime control, while optional stores retain execution history and optional endpoints expose those operations over HTTP.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Quartz.NET six-field cron schedules</li>
+<li>scoped or singleton job activation through dependency injection</li>
+<li>reusable execution behaviors for module scope, timeout, retry, metrics, and fault injection</li>
+<li>manual trigger, pause, resume, interrupt, history, and statistics operations through <code>IJobService</code></li>
+<li>null, in-memory, SQL Server, PostgreSQL, and SQLite run-history providers</li>
+<li>optional minimal API endpoints and console commands</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p><code>JobSchedulingService</code> starts the Quartz scheduler and registers the configured <code>JobSchedule</code> instances. <code>ScopedJobFactory</code> creates jobs from the application service provider. <code>JobBase</code> wraps the job body with state capture and configured <code>IJobSchedulingBehavior</code> instances. <code>JobService</code> combines Quartz control operations with the selected <code>IJobStoreProvider</code>; endpoint and console-command adapters call that service.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>Run periodic cleanup, synchronization, reporting, or monitoring tasks in an existing Quartz-based application.</li>
+<li>Trigger a registered job on demand from application code or an operational endpoint.</li>
+<li>Retain and query execution history through a supported store.</li>
+<li>Pause, resume, or interrupt long-running jobs during operations.</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>The following example registers the built-in <code>EchoJob</code>, retains one hour of run history in memory, and exposes an application endpoint that triggers the job safely. A successful request returns <code>202 Accepted</code>; a Quartz scheduling error returns a problem response.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Application.JobScheduling</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">Quartz</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">Zero</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithInMemoryStore</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">EchoJob</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">EveryMinute</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DEFAULT&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="s">&quot;message&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Scheduler is running&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapPost</span><span class="p">(</span><span class="s">&quot;/jobs/echo/run&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="p">(</span>
+<span class="w">    </span><span class="n">IJobService</span><span class="w"> </span><span class="n">jobs</span><span class="p">,</span>
+<span class="w">    </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="k">try</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">jobs</span><span class="p">.</span><span class="n">TriggerJobAsync</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;echo&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="s">&quot;DEFAULT&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">object</span><span class="o">&gt;</span><span class="p">(),</span>
+<span class="w">            </span><span class="n">cancellationToken</span><span class="p">);</span>
+
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Accepted</span><span class="p">(</span><span class="k">value</span><span class="p">:</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">Job</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;echo&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">Status</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="s">&quot;Triggered&quot;</span><span class="w"> </span><span class="p">});</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="w">    </span><span class="k">catch</span><span class="w"> </span><span class="p">(</span><span class="n">SchedulerException</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span>
+<span class="w">    </span><span class="p">{</span>
+<span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Problem</span><span class="p">(</span>
+<span class="w">            </span><span class="n">title</span><span class="p">:</span><span class="w"> </span><span class="s">&quot;The job could not be triggered.&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="n">detail</span><span class="p">:</span><span class="w"> </span><span class="n">exception</span><span class="p">.</span><span class="n">Message</span><span class="p">);</span>
+<span class="w">    </span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+</code></pre></div>
+<p>After the host starts, <code>POST /jobs/echo/run</code> returns the accepted response and the job writes <code>Scheduler is running</code> through its logger.</p>
+<h2 id="registration-and-operation">Registration and operation<a class="headerlink" href="#registration-and-operation" title="Permanent link">&para;</a></h2>
+<p>JobScheduling integrates Quartz.NET with ASP.NET Core dependency injection and hosted services. The sections below cover job registration, <code>JobBase</code>, cancellation, runtime control through <code>JobService</code>, operational endpoints, and the execution flow.</p>
+<h3 id="basic-setup">Basic setup<a class="headerlink" href="#basic-setup" title="Permanent link">&para;</a></h3>
+<p>Register scheduling in the application's service collection. Pass the application configuration when the scheduler must load Quartz.NET settings. The following example shows the basic setup:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="mi">5000</span><span class="p">))</span>
@@ -3720,7 +4591,7 @@
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
 </code></pre></div>
-<p>Here, <code>AddJobScheduling</code> initializes the Quartz.NET scheduler, using the provided <code>IConfiguration</code> to load settings from <code>appsettings.json</code> (e.g., persistence configuration). The <code>StartupDelay(5000)</code> option delays scheduler startup by 5 seconds, allowing other services to initialize. The fluent chain begins with <code>WithJob&lt;T&gt;()</code>, specifying the job type (<code>EchoJob</code>), followed by <code>Cron()</code> for scheduling, <code>Named()</code> for a unique identifier, and <code>WithData()</code> for custom metadata. The <code>RegisterScoped()</code> method ensures each execution uses a new scoped instance, ideal for transient dependencies, while <code>RegisterSingleton()</code> can be used for persistent state:</p>
+<p>Here, <code>AddJobScheduling</code> initializes the Quartz.NET scheduler. No <code>IConfiguration</code> is passed in this example; pass <code>builder.Configuration</code> when Quartz settings must be loaded from <code>JobScheduling:Quartz</code>. <code>StartupDelay(5000)</code> delays scheduler startup by 5 seconds. The fluent chain begins with <code>WithJob&lt;T&gt;()</code>, followed by <code>Cron()</code> for scheduling, <code>Named()</code> for a unique identifier, and <code>WithData()</code> for custom metadata. <code>RegisterScoped()</code> creates a scoped job instance for each activation. <code>RegisterSingleton()</code> reuses one job instance, but durable state still depends on the configured Quartz store:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">c</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">c</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="mi">5000</span><span class="p">))</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">MetricsMonitorJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="s">&quot;0 */5 * * * ?&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// Every 5 minutes</span>
@@ -3728,30 +4599,22 @@
 <span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="s">&quot;threshold&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;95&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterSingleton</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="comprehensive-setup-with-sql-server-persistence-and-api-endpoints">Comprehensive Setup with SQL Server Persistence and API Endpoints<a class="headerlink" href="#comprehensive-setup-with-sql-server-persistence-and-api-endpoints" title="Permanent link">&para;</a></h3>
-<p>For a production-ready setup with SQL Server persistence, behaviors, and API endpoints, use the following configuration:</p>
+<h3 id="comprehensive-setup-with-sql-server-history-and-api-endpoints">Comprehensive setup with SQL Server history and API endpoints<a class="headerlink" href="#comprehensive-setup-with-sql-server-history-and-api-endpoints" title="Permanent link">&para;</a></h3>
+<p>The following configuration combines Quartz persistence settings, SQL Server run-history access, behaviors, and operational endpoints:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
 
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:10&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">ModuleScopeJobSchedulingBehavior</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="c1">// Module-specific scoping</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithBehavior</span><span class="o">&lt;</span><span class="n">TimeoutJobSchedulingBehavior</span><span class="o">&gt;</span><span class="p">()</span><span class="w"> </span><span class="c1">// Enforces timeouts</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithSqlServerStore</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">&quot;Modules:Core:ConnectionStrings:Default&quot;</span><span class="p">])</span><span class="w"> </span><span class="c1">// SQL Server persistence</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithSqlServerStore</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">[</span><span class="s">&quot;Modules:Core:ConnectionStrings:Default&quot;</span><span class="p">])</span><span class="w"> </span><span class="c1">// SQL Server run history</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">())</span><span class="w"> </span><span class="c1">// Enables API endpoints in development</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">FileMonitoringLocationScanJob</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">HealthCheckJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">Every5Minutes</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;scan_sftp&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">LocationName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;SFTP&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">DelayPerFile</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;00:00:01&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">FileFilter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.*&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.tmp;*.log&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;healthcheck&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">()</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">FileMonitoringLocationScanJob</span><span class="o">&gt;</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">LongRunningJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">Every5Minutes</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;scan_target&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">LocationName</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;TARGET&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">DelayPerFile</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;00:00:01&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">FileFilter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.*&quot;</span><span class="p">)</span>
-<span class="w">        </span><span class="p">.</span><span class="n">WithData</span><span class="p">(</span><span class="n">FileMonitoringLocationScanJob</span><span class="p">.</span><span class="n">DataKeys</span><span class="p">.</span><span class="n">FileBlackListFilter</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;*.tmp;*.log&quot;</span><span class="p">)</span>
+<span class="w">        </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;longrunning&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">EchoJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">EveryMinute</span><span class="p">)</span>
@@ -3781,16 +4644,18 @@
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
-<span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
-<span class="n">app</span><span class="p">.</span><span class="n">UseEndpoints</span><span class="p">(</span><span class="n">endpoints</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">endpoints</span><span class="p">.</span><span class="n">MapControllers</span><span class="p">());</span><span class="w"> </span><span class="c1">// Required for API endpoints</span>
+<span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
 </code></pre></div>
-<p><strong>Configuration Details:</strong>
-- <strong>Persistence</strong>: <code>WithSqlServerStore</code> enables durable storage using a connection string from configuration (see <code>Appendix: Configuring Quartz.NET Persistence with SQL Server</code>).
-- <strong>Behaviors</strong>: Adds scoping and timeouts for enhanced control (e.g., <code>TimeoutJobSchedulingBehavior</code>).
-- <strong>API Endpoints</strong>: <code>AddEndpoints(builder.Environment.IsDevelopment())</code> enables job management endpoints under <code>/_bdk/api/jobs</code> in development mode (see <code>Appendix: Job Scheduling API Endpoints</code>).
-- <strong>Jobs</strong>: Registers diverse jobs with custom schedules and metadata.</p>
-<p><strong>Configuration in <code>appsettings.json</code>:</strong>
+<p>Configuration details:</p>
+<ul>
+<li><code>JobScheduling:Quartz</code> configures Quartz persistence and scheduler behavior.</li>
+<li><code>WithSqlServerStore</code> selects the provider used by <code>IJobService</code> for run history; it does not configure Quartz itself.</li>
+<li><code>WithBehavior</code> adds execution behaviors such as module scope and timeout.</li>
+<li><code>AddEndpoints(builder.Environment.IsDevelopment())</code> registers job management endpoints under <code>/_bdk/api/jobs</code> only in development.</li>
+<li>Each <code>WithJob</code> chain registers one job definition with its schedule and metadata.</li>
+</ul>
+<p><strong>Configuration in <code>appsettings.json</code>:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;JobScheduling&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;StartupDelay&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;00:00:10&quot;</span><span class="p">,</span>
@@ -3809,23 +4674,22 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
-</code></pre></div></p>
-<p>Jobs are implemented by inheriting from <code>JobBase</code>, an abstract class that integrates with Quartz.NET and exposes a rich set of properties to streamline development. Developers override the <code>Process</code> method to define the job’s behavior. Consider this example of an echo job:</p>
+</code></pre></div>
+<p>Implement a job by inheriting from <code>JobBase</code>, which integrates with Quartz.NET and exposes execution state. Override <code>Process</code> to define the job's behavior. The following example defines an echo job:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">EchoJob</span><span class="p">(</span><span class="n">ILoggerFactory</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">JobBase</span><span class="p">(</span><span class="n">loggerFactory</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Process</span><span class="p">(</span><span class="n">IJobExecutionContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
-<span class="w">        </span><span class="kt">var</span><span class="w"> </span><span class="n">logger</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">CreateLogger</span><span class="o">&lt;</span><span class="n">EchoJob</span><span class="o">&gt;</span><span class="p">();</span>
-<span class="w">        </span><span class="n">logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Job {JobName} echoing {Message} at {CurrentTime}, last run at {LastProcessedDate}&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Data</span><span class="p">[</span><span class="s">&quot;message&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">LastProcessedDate</span><span class="p">);</span>
+<span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span>
+<span class="w">            </span><span class="s">&quot;Job {JobName} echoing {Message} at {CurrentTime}, last successful run at {RunSuccessDate}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">Data</span><span class="p">[</span><span class="s">&quot;message&quot;</span><span class="p">],</span><span class="w"> </span><span class="n">DateTimeOffset</span><span class="p">.</span><span class="n">UtcNow</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RunSuccessDate</span><span class="p">);</span>
 
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">1000</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span><span class="w"> </span><span class="c1">// Simulate work</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="implementing-a-cancellable-long-running-job">Implementing a Cancellable Long-Running Job<a class="headerlink" href="#implementing-a-cancellable-long-running-job" title="Permanent link">&para;</a></h3>
-<p>For long-running tasks, cancellation support is critical. Here’s an example of <code>LongRunningJob</code>:</p>
+<h3 id="implementing-a-cancellable-long-running-job">Implementing a cancellable long-running job<a class="headerlink" href="#implementing-a-cancellable-long-running-job" title="Permanent link">&para;</a></h3>
+<p>Long-running tasks must observe cancellation. The following example defines <code>LongRunningJob</code>:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">LongRunningJob</span><span class="p">(</span><span class="n">ILoggerFactory</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">JobBase</span><span class="p">(</span><span class="n">loggerFactory</span><span class="p">)</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Process</span><span class="p">(</span><span class="n">IJobExecutionContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
@@ -3840,15 +4704,15 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><strong>Registration:</strong>
+<p><strong>Registration:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">LongRunningJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">Every30Minutes</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;longrunning&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
-</code></pre></div></p>
-<p><strong>Notes</strong>: Use <code>cancellationToken</code> to handle interruptions, manageable via <code>JobService</code> or API endpoints (e.g., <code>POST /_bdk/api/jobs/longrunning/DEFAULT/pause</code>).</p>
-<h3 id="managing-jobs-with-jobservice-and-api-endpoints">Managing Jobs with JobService and API Endpoints<a class="headerlink" href="#managing-jobs-with-jobservice-and-api-endpoints" title="Permanent link">&para;</a></h3>
-<p>The <code>IJobService</code> interface enables runtime job management programmatically:</p>
+</code></pre></div>
+<p>Use the supplied <code>cancellationToken</code> to handle interruption. <code>POST /_bdk/api/jobs/longrunning/DEFAULT/interrupt</code> requests interruption of a running job; pausing a job affects future triggers.</p>
+<h3 id="managing-jobs-with-ijobservice-and-api-endpoints">Managing jobs with <code>IJobService</code> and API endpoints<a class="headerlink" href="#managing-jobs-with-ijobservice-and-api-endpoints" title="Permanent link">&para;</a></h3>
+<p><code>IJobService</code> enables runtime job management programmatically. The following excerpt shows the most commonly used members; the interface also includes trigger queries, run persistence, and wait-for-completion operations:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">interface</span><span class="w"> </span><span class="n">IJobService</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IEnumerable</span><span class="o">&lt;</span><span class="n">JobInfo</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">GetJobsAsync</span><span class="p">(</span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
@@ -3861,26 +4725,28 @@
 <span class="w">    </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">JobRunStats</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetJobRunStatsAsync</span><span class="p">(</span><span class="kt">string</span><span class="w"> </span><span class="n">jobName</span><span class="p">,</span><span class="w"> </span><span class="kt">string</span><span class="w"> </span><span class="n">jobGroup</span><span class="p">,</span><span class="w"> </span><span class="cm">/* date range */</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><strong>Example: Triggering a Job</strong>
+<p>Example: triggering a job</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">jobService</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IJobService</span><span class="o">&gt;</span><span class="p">();</span>
 <span class="k">await</span><span class="w"> </span><span class="n">jobService</span><span class="p">.</span><span class="n">TriggerJobAsync</span><span class="p">(</span><span class="s">&quot;longrunning&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="n">Dictionary</span><span class="o">&lt;</span><span class="kt">string</span><span class="p">,</span><span class="w"> </span><span class="kt">object</span><span class="o">&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="s">&quot;extra&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;data&quot;</span><span class="w"> </span><span class="p">}</span><span class="w"> </span><span class="p">},</span><span class="w"> </span><span class="n">CancellationToken</span><span class="p">.</span><span class="n">None</span><span class="p">);</span>
-</code></pre></div></p>
+</code></pre></div>
 <p>Alternatively, enable API endpoints with <code>AddEndpoints()</code> for HTTP-based management (e.g., in development):</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:10&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">(),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">());</span>
 </code></pre></div>
-<p>These endpoints, mapped under <code>/_bdk/api/jobs</code>, provide RESTful access to job operations (see <code>Appendix: Job Scheduling API Endpoints</code> for details). For example, to trigger a job via HTTP:
-- <strong>Request</strong>: <code>POST /_bdk/api/jobs/longrunning/DEFAULT/trigger</code>
-- <strong>Body</strong>: <code>{"extra": "data"}</code>
-- <strong>Response</strong>: <code>202 Accepted</code> with message "Job longrunning in group DEFAULT triggered successfully."</p>
-<h3 id="key-properties-of-jobbase">Key Properties of JobBase<a class="headerlink" href="#key-properties-of-jobbase" title="Permanent link">&para;</a></h3>
-<p>The <code>Name</code> property provides a consistent identifier for the job, derived from its description or key name as defined during registration. This eliminates the need to manually extract it from the <code>IJobExecutionContext</code>, ensuring it’s always available within the <code>Process</code> method. Similarly, the <code>Data</code> property delivers a dictionary of strings populated from the <code>JobDataMap</code>, reflecting metadata specified via <code>WithData</code> (e.g., <code>"message" = "First echo"</code>). This makes job-specific configuration readily accessible, simplifying logic that depends on runtime parameters.</p>
-<p>A standout feature, the <code>LastProcessedDate</code> property captures the timestamp of the previous successful execution as a <code>DateTimeOffset</code>. Persisted across runs thanks to the <code>[PersistJobDataAfterExecution]</code> attribute, it starts as <code>DateTimeOffset.MinValue</code> on the first run and updates to the completion time of each subsequent execution. This historical context allows jobs to calculate intervals, detect delays, or process incremental data—such as changes since the last run—enhancing their utility in time-sensitive scenarios.</p>
-<p>Complementing these, <code>ElapsedMilliseconds</code> tracks the duration of the current execution in milliseconds, updated post-run for performance monitoring. The <code>Status</code> property, an enum reflecting success or failure, pairs with <code>ErrorMessage</code> to log execution outcomes or capture exceptions, providing insight into job health. Finally, the <code>Logger</code> property, pre-initialized with the job’s type via the injected <code>ILoggerFactory</code>, facilitates consistent logging without additional setup.</p>
-<h3 id="leveraging-lastprocesseddate">Leveraging LastProcessedDate<a class="headerlink" href="#leveraging-lastprocesseddate" title="Permanent link">&para;</a></h3>
-<p>The <code>LastProcessedDate</code> property proves particularly valuable for jobs requiring awareness of their execution history. For example, a job might compare <code>LastProcessedDate</code> to the current time to identify scheduling lags or use it to filter data processed since the last run, such as new records in a database. This persistence is handled internally by <code>JobBase</code>, which updates the <code>JobDataMap</code> after each execution. The <code>[PersistJobDataAfterExecution]</code> attribute ensures this value carries forward, maintaining continuity across runs without developer intervention.</p>
-<h3 id="controlling-job-execution">Controlling Job Execution<a class="headerlink" href="#controlling-job-execution" title="Permanent link">&para;</a></h3>
-<p>For jobs intended to remain inactive until explicitly enabled, the <code>Enabled</code> method in the fluent API allows registration without immediate execution. This is useful for staging jobs during development or deployment, as shown in the second <code>EchoJob</code> example above, where it’s enabled only in development:</p>
+<p>These endpoints, mapped under <code>/_bdk/api/jobs</code>, provide RESTful access to job operations (see <code>Appendix: Job Scheduling API Endpoints</code> for details). For example, to trigger a job via HTTP:</p>
+<ul>
+<li><strong>Request</strong>: <code>POST /_bdk/api/jobs/longrunning/DEFAULT/trigger</code></li>
+<li><strong>Body</strong>: <code>{"extra": "data"}</code></li>
+<li><strong>Response</strong>: <code>202 Accepted</code> with message "Job longrunning in group DEFAULT triggered successfully."</li>
+</ul>
+<h3 id="key-properties-of-jobbase">Key properties of <code>JobBase</code><a class="headerlink" href="#key-properties-of-jobbase" title="Permanent link">&para;</a></h3>
+<p>The <code>Name</code> property contains the description or key name assigned during registration. Jobs can use it without reading the value from <code>IJobExecutionContext</code>. The <code>Data</code> property contains the string values from <code>JobDataMap</code>, including metadata configured through <code>WithData</code>, such as <code>"message" = "First echo"</code>.</p>
+<p><code>RunDate</code> captures the completion time of the previous execution, while <code>RunSuccessDate</code> captures the completion time of the previous successful execution. Both default to <code>DateTimeOffset.MinValue</code>. <code>JobBase</code> writes these values to the Quartz job data map after execution, and <code>[PersistJobDataAfterExecution]</code> tells Quartz to retain the updated job data according to the configured Quartz store.</p>
+<p><code>ElapsedMilliseconds</code> contains the duration of the current execution and is updated after the run. <code>Status</code> records success or failure, and <code>ErrorMessage</code> contains the captured exception message. <code>Logger</code> is created for the job type through the injected <code>ILoggerFactory</code>.</p>
+<h3 id="using-previous-run-timestamps">Using previous-run timestamps<a class="headerlink" href="#using-previous-run-timestamps" title="Permanent link">&para;</a></h3>
+<p>Use <code>RunDate</code> to inspect the previous attempt or <code>RunSuccessDate</code> to process data since the previous successful run. <code>JobBase</code> restores values from the merged job data map before <code>Process(...)</code> and writes updated values after execution.</p>
+<h3 id="controlling-job-execution">Controlling job execution<a class="headerlink" href="#controlling-job-execution" title="Permanent link">&para;</a></h3>
+<p>Use <code>Enabled</code> to register a job without running it in every environment. The second <code>EchoJob</code> example runs only in development:</p>
 <div class="highlight"><pre><span></span><code><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">EchoJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="s">&quot;0/5 * * * * ?&quot;</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;secondecho&quot;</span><span class="p">)</span>
@@ -3905,7 +4771,7 @@
     I --&gt; J[Persistence Provider]
     A --&gt; K[API Endpoints]
     K --&gt; I</code></pre>
-<p>The web application launches a hosted service that initializes the Quartz scheduler. This scheduler collaborates with a job factory, tied to ASP.NET Core’s dependency injection, to instantiate job classes derived from <code>JobBase</code>. Triggers, governed by cron expressions, prompt the scheduler to execute the <code>Process</code> method at designated times. <code>JobService</code> provides runtime control programmatically, while API endpoints offer HTTP access, both integrating with persistence providers (e.g., SQL Server, in-memory) for history and state management. Within <code>JobBase</code>, properties like <code>Name</code>, <code>Data</code>, <code>LastProcessedDate</code>, and <code>Logger</code> enrich the job’s capabilities, providing identity, configuration, history, and logging without additional setup. The <code>[DisallowConcurrentExecution]</code> attribute ensures thread safety by preventing overlapping runs, while <code>[PersistJobDataAfterExecution]</code> guarantees that properties like <code>LastProcessedDate</code> persist across executions.</p>
+<p>The web application launches a hosted service that initializes the Quartz scheduler. The DI-backed job factory creates job classes derived from <code>JobBase</code>, and cron triggers invoke <code>Process(...)</code>. <code>JobService</code> provides runtime control and combines Quartz state with run history from the selected provider. <code>JobBase</code> exposes <code>Name</code>, <code>Data</code>, <code>RunDate</code>, <code>RunSuccessDate</code>, and <code>Logger</code>. <code>[DisallowConcurrentExecution]</code> prevents overlapping executions for the same job definition, and <code>[PersistJobDataAfterExecution]</code> lets Quartz retain the updated job data map.</p>
 <p>To prevent concurrent execution explicitly, developers can apply the <code>[DisallowConcurrentExecution]</code> attribute directly to a job class:</p>
 <div class="highlight"><pre><span></span><code><span class="na">[DisallowConcurrentExecution]</span>
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nf">NonConcurrentJob</span><span class="p">(</span><span class="n">ILoggerFactory</span><span class="w"> </span><span class="n">loggerFactory</span><span class="p">)</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">JobBase</span><span class="p">(</span><span class="n">loggerFactory</span><span class="p">)</span>
@@ -3913,17 +4779,17 @@
 <span class="w">    </span><span class="k">public</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="w"> </span><span class="nf">Process</span><span class="p">(</span><span class="n">IJobExecutionContext</span><span class="w"> </span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">CancellationToken</span><span class="w"> </span><span class="n">cancellationToken</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">default</span><span class="p">)</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">        </span><span class="k">this</span><span class="p">.</span><span class="n">Logger</span><span class="p">.</span><span class="n">LogInformation</span><span class="p">(</span>
-<span class="w">            </span><span class="s">&quot;Non-concurrent job {JobName} started, last run at {LastProcessedDate}&quot;</span><span class="p">,</span>
-<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">LastProcessedDate</span><span class="p">);</span>
+<span class="w">            </span><span class="s">&quot;Non-concurrent job {JobName} started, last run at {RunDate}&quot;</span><span class="p">,</span>
+<span class="w">            </span><span class="k">this</span><span class="p">.</span><span class="n">Name</span><span class="p">,</span><span class="w"> </span><span class="k">this</span><span class="p">.</span><span class="n">RunDate</span><span class="p">);</span>
 <span class="w">        </span><span class="k">await</span><span class="w"> </span><span class="n">Task</span><span class="p">.</span><span class="n">Delay</span><span class="p">(</span><span class="mi">2000</span><span class="p">,</span><span class="w"> </span><span class="n">cancellationToken</span><span class="p">);</span><span class="w"> </span><span class="c1">// Simulate long task</span>
 <span class="w">    </span><span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div>
-<p>This job, when scheduled frequently (e.g., every second), ensures only one instance runs at a time, queuing subsequent triggers until completion—a feature inherited from Quartz.NET and enforced by <code>JobBase</code>.</p>
-<p>By leveraging this JobScheduling feature, developers gain a sophisticated yet accessible toolset for managing scheduled tasks. The fluent API simplifies configuration, <code>JobBase</code> delivers essential properties, <code>JobService</code> adds programmatic control, and API endpoints provide HTTP management, ensuring web applications can execute recurring tasks efficiently and reliably.</p>
-<h2 id="appendix-configuring-quartznet-persistence-with-sql-server">Appendix: Configuring Quartz.NET Persistence with SQL Server<a class="headerlink" href="#appendix-configuring-quartznet-persistence-with-sql-server" title="Permanent link">&para;</a></h2>
-<p>For applications requiring durable job storage—such as preserving schedules and execution history across restarts—Quartz.NET supports persistence with SQL Server via its ADO.NET job store. This appendix explains how to configure this persistence using JSON settings in <code>appsettings.json</code> and a startup task to initialize the necessary SQL Server tables, as demonstrated in the comprehensive setup example.</p>
-<h3 id="configuration-steps">Configuration Steps<a class="headerlink" href="#configuration-steps" title="Permanent link">&para;</a></h3>
+<p>When this job is scheduled frequently, Quartz prevents concurrent executions for the same job definition. Misfire handling determines what happens to triggers that cannot run at their scheduled time.</p>
+<p>The sections below retain the detailed persistence, cron, and endpoint reference for applications that still use JobScheduling.</p>
+<h2 id="appendix-configuring-quartznet-persistence-with-sql-server">Appendix: configuring Quartz.NET persistence with SQL Server<a class="headerlink" href="#appendix-configuring-quartznet-persistence-with-sql-server" title="Permanent link">&para;</a></h2>
+<p>Quartz.NET can preserve schedules and execution history across restarts in its SQL Server ADO.NET job store. This appendix configures that store through <code>appsettings.json</code> and creates the required tables with a startup task.</p>
+<h3 id="configuration-steps">Configuration steps<a class="headerlink" href="#configuration-steps" title="Permanent link">&para;</a></h3>
 <ol>
 <li>
 <p><strong>Install Required Packages</strong>:
@@ -3956,7 +4822,7 @@
 <li><code>quartz.jobStore.driverDelegateType</code>: Uses <code>SqlServerDelegate</code> for SQL Server-specific operations.</li>
 <li><code>quartz.jobStore.dataSource</code> and <code>quartz.dataSource.default.provider</code>: Define the data source and SQL Server provider.</li>
 <li><code>quartz.dataSource.default.connectionString</code>: Sets the connection string (adjust for your environment).</li>
-<li><code>quartz.jobStore.useProperties</code>: Enables string-based property storage.</li>
+<li><code>quartz.jobStore.useProperties</code>: <code>false</code> allows Quartz to serialize non-string values in the job data map.</li>
 <li><code>quartz.jobStore.clustered</code>: Set to <code>true</code> for clustered deployments (optional).</li>
 <li>
 <p><code>quartz.serializer.type</code>: Uses JSON serialization for job data (optional).</p>
@@ -3977,12 +4843,14 @@
 <span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddStartupTasks</span><span class="p">()</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithTask</span><span class="o">&lt;</span><span class="n">JobSchedulingSqlServerSeederStartupTask</span><span class="o">&gt;</span><span class="p">();</span>
 </code></pre></div>
-<p>The <code>JobSchedulingSqlServerSeederStartupTask</code> initializes Quartz.NET tables if persistence is enabled.</p>
-<h3 id="generate-quartz-tables">Generate Quartz Tables<a class="headerlink" href="#generate-quartz-tables" title="Permanent link">&para;</a></h3>
-<p>The <code>JobSchedulingSqlServerSeederStartupTask</code> creates tables like <code>QRTZ_JOB_DETAILS</code>, <code>QRTZ_TRIGGERS</code>, and <code>QRTZ_JOURNAL_TRIGGERS</code> for job and trigger data persistence (full list in original). Preferred approach: create the Quartz tables via an EF Core migration. This manages schema changes automaticly, versioned and repeatable.</p>
-<p>Steps:
-1. Add a new empty migration (e.g., dotnet ef migrations add AddQuartzTables).
-2. Replace the generated migration body with:</p>
+<p><code>JobSchedulingSqlServerSeederStartupTask</code> initializes the SQL Server Quartz and journal tables.</p>
+<h3 id="generate-quartz-tables">Generate Quartz tables<a class="headerlink" href="#generate-quartz-tables" title="Permanent link">&para;</a></h3>
+<p><code>JobSchedulingSqlServerSeederStartupTask</code> creates tables such as <code>QRTZ_JOB_DETAILS</code>, <code>QRTZ_TRIGGERS</code>, and <code>QRTZ_JOURNAL_TRIGGERS</code>. An EF Core migration is an alternative when the application manages schema changes through migrations.</p>
+<p>Steps:</p>
+<ol>
+<li>Add a new empty migration (e.g., dotnet ef migrations add AddQuartzTables).</li>
+<li>Replace the generated migration body with:</li>
+</ol>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">partial</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">AddQuartzTables</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">Migration</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="k">protected</span><span class="w"> </span><span class="k">override</span><span class="w"> </span><span class="k">void</span><span class="w"> </span><span class="nf">Up</span><span class="p">(</span><span class="n">MigrationBuilder</span><span class="w"> </span><span class="n">migrationBuilder</span><span class="p">)</span>
@@ -4005,82 +4873,80 @@
 </ol>
 <h3 id="validation">Validation<a class="headerlink" href="#validation" title="Permanent link">&para;</a></h3>
 <p>Verify table creation in the specified database (<code>QuartzDb</code>) and test job persistence across restarts.</p>
-<h2 id="appendix-additional-persistence-options">Appendix: Additional Persistence Options<a class="headerlink" href="#appendix-additional-persistence-options" title="Permanent link">&para;</a></h2>
+<h2 id="appendix-additional-persistence-options">Appendix: additional persistence options<a class="headerlink" href="#appendix-additional-persistence-options" title="Permanent link">&para;</a></h2>
 <p>Beyond SQL Server, the feature supports other persistence providers:</p>
-<h3 id="postgresql-persistence">PostgreSQL Persistence<a class="headerlink" href="#postgresql-persistence" title="Permanent link">&para;</a></h3>
+<h3 id="postgresql-persistence">PostgreSQL persistence<a class="headerlink" href="#postgresql-persistence" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">.</span><span class="n">WithPostgresStore</span><span class="p">(</span><span class="s">&quot;Host=localhost;Database=QuartzDb;Username=postgres;Password=secret&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;[public].[QRTZ_&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Notes</strong>: Uses <code>JobSchedulingSqlServerSeederStartupTask</code> (adapts to Postgres) for table creation.</p>
-<h3 id="sqlite-persistence">SQLite Persistence<a class="headerlink" href="#sqlite-persistence" title="Permanent link">&para;</a></h3>
+<p>Use <code>JobSchedulingPostgresSeederStartupTask</code> or <code>PostgresJobStoreMigrationHelper</code> to create the PostgreSQL tables. <code>WithPostgresStore</code> selects the run-history provider; configure Quartz persistence separately through <code>JobScheduling:Quartz</code>.</p>
+<h3 id="sqlite-persistence">SQLite persistence<a class="headerlink" href="#sqlite-persistence" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">.</span><span class="n">WithSqliteStore</span><span class="p">(</span><span class="s">&quot;Data Source=quartz.db&quot;</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;QRTZ_&quot;</span><span class="p">)</span>
 </code></pre></div>
-<p><strong>Notes</strong>: <code>JobSchedulingSqliteSeederStartupTask</code> creates the database file and tables.</p>
-<h3 id="in-memory-persistence">In-Memory Persistence<a class="headerlink" href="#in-memory-persistence" title="Permanent link">&para;</a></h3>
+<p><code>JobSchedulingSqliteSeederStartupTask</code> or <code>SqliteJobStoreMigrationHelper</code> creates the SQLite tables. <code>WithSqliteStore</code> selects the run-history provider; configure Quartz persistence separately.</p>
+<h3 id="in-memory-persistence">In-memory persistence<a class="headerlink" href="#in-memory-persistence" title="Permanent link">&para;</a></h3>
 <div class="highlight"><pre><span></span><code><span class="p">.</span><span class="n">WithInMemoryStore</span><span class="p">(</span><span class="n">TimeSpan</span><span class="p">.</span><span class="n">FromHours</span><span class="p">(</span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="c1">// Retains history for 1 hour</span>
 </code></pre></div>
-<p><strong>Notes</strong>: No durability; ideal for testing.</p>
-<h3 id="null-persistence">Null Persistence<a class="headerlink" href="#null-persistence" title="Permanent link">&para;</a></h3>
+<p>This provider retains run history only for the current process and is suitable for development and tests.</p>
+<h3 id="null-persistence">Null persistence<a class="headerlink" href="#null-persistence" title="Permanent link">&para;</a></h3>
 <p>Default if no store is specified; no history retained.</p>
-<h2 id="appendix-constructing-cron-expressions">Appendix: Constructing Cron Expressions<a class="headerlink" href="#appendix-constructing-cron-expressions" title="Permanent link">&para;</a></h2>
-<p>Scheduling jobs in the JobScheduling feature hinges on Quartz.NET’s 6-field cron expressions, defining execution times in the format: <code>[Seconds] [Minutes] [Hours] [Day of Month] [Month] [Day of Week]</code>. Developers have two powerful tools at their disposal: the <code>CronExpressions</code> struct, offering a library of predefined constants for common schedules, and the <code>CronExpressionBuilder</code>, a fluent API for crafting custom expressions. This appendix guides developers through both approaches, showcasing their strengths with practical examples, including how to schedule a job for the first day of every month at 11:59 PM, ensuring clarity and versatility in job configuration.</p>
-<h3 id="using-fixed-cron-expressions">Using Fixed Cron Expressions<a class="headerlink" href="#using-fixed-cron-expressions" title="Permanent link">&para;</a></h3>
+<h2 id="appendix-constructing-cron-expressions">Appendix: constructing cron expressions<a class="headerlink" href="#appendix-constructing-cron-expressions" title="Permanent link">&para;</a></h2>
+<p>JobScheduling uses Quartz.NET six-field cron expressions in this order: <code>[Seconds] [Minutes] [Hours] [Day of Month] [Month] [Day of Week]</code>. Use the predefined constants in <code>CronExpressions</code> for fixed schedules. Use <code>CronExpressionBuilder</code> to construct a schedule from typed values. The examples include a schedule for 11:59 PM on the first day of each month.</p>
+<h3 id="using-fixed-cron-expressions">Using fixed cron expressions<a class="headerlink" href="#using-fixed-cron-expressions" title="Permanent link">&para;</a></h3>
 <p>The <code>CronExpressions</code> struct provides a rich set of static constants for frequently used schedules, making it an efficient choice for standard patterns. These predefined expressions are readily available in the <code>BridgingIT.DevKit.Application</code> namespace and can be applied directly to the <code>Cron</code> method in <code>JobScheduleBuilder</code>. Here are some examples:</p>
 <ul>
-<li>
-<p><strong>Every 5 Seconds</strong>: <code>CronExpressions.Every5Seconds</code> ("0/5 * * * * ?") runs a job every 5 seconds, ideal for frequent tasks like health checks:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<li><strong>Every 5 Seconds</strong>: <code>CronExpressions.Every5Seconds</code> (<code>0/5 * * * * ?</code>) runs a job every 5 seconds, ideal for frequent tasks like health checks:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">HeartbeatJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">Every5Seconds</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
-</code></pre></div></p>
-</li>
-<li>
-<p><strong>Daily at Midnight</strong>: <code>CronExpressions.DailyAtMidnight</code> ("0 0 0 * * ?") triggers a job at 00:00:00 daily, perfect for nightly maintenance:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+</code></pre></div>
+<ul>
+<li><strong>Daily at Midnight</strong>: <code>CronExpressions.DailyAtMidnight</code> (<code>0 0 0 * * ?</code>) triggers a job at 00:00:00 daily, perfect for nightly maintenance:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">CleanupJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">CronExpressions</span><span class="p">.</span><span class="n">DailyAtMidnight</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
-</code></pre></div></p>
-</li>
-<li>
-<p><strong>First Day of Every Month at 11:59 PM</strong>: While <code>CronExpressions</code> doesn’t have an exact match, <code>CronExpressions.MonthlyAtMidnightOnFirstDay</code> ("0 0 0 1 * ?") is close. To adjust to 11:59 PM, developers can tweak it manually or use the builder (shown later), but here’s a direct string approach inspired by the struct:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+</code></pre></div>
+<ul>
+<li><strong>First day of every month at 11:59 PM</strong>: <code>CronExpressions</code> does not have an exact match. Use a direct expression or the builder shown later:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">MonthlyReportJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="s">&quot;0 59 23 1 * ?&quot;</span><span class="p">)</span><span class="w"> </span><span class="c1">// Derived from MonthlyAtMidnightOnFirstDay, adjusted to 23:59</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
-</code></pre></div></p>
-</li>
-</ul>
-<p>These constants, like <code>CronExpressions.EveryMinute</code> ("0 0/1 * * * ?") or <code>CronExpressions.WeeklyOnWednesdayAtMidnight</code> ("0 0 0 * * WED"), offer a quick, reliable way to apply tested schedules. They’re ideal for static, well-known patterns but require manual string manipulation for slight variations, such as shifting midnight to 11:59 PM.</p>
-<h3 id="using-the-cronexpressionbuilder">Using the CronExpressionBuilder<a class="headerlink" href="#using-the-cronexpressionbuilder" title="Permanent link">&para;</a></h3>
-<p>For greater flexibility or custom schedules, the <code>CronExpressionBuilder</code> provides a fluent, programmatic interface integrated into the <code>JobScheduleBuilder</code>’s <code>Cron</code> method. It allows developers to construct expressions step-by-step, leveraging type-safe enums and integer inputs. Below are examples mirroring the fixed expressions and your specific request:</p>
+</code></pre></div>
+<p>Constants such as <code>CronExpressions.EveryMinute</code> (<code>0 0/1 * * * ?</code>) and <code>CronExpressions.WeeklyOnWednesdayAtMidnight</code> (<code>0 0 0 * * WED</code>) define common fixed schedules. For a variation that has no constant, supply the cron expression directly or use the builder.</p>
+<h3 id="using-cronexpressionbuilder">Using <code>CronExpressionBuilder</code><a class="headerlink" href="#using-cronexpressionbuilder" title="Permanent link">&para;</a></h3>
+<p><code>CronExpressionBuilder</code> integrates with the <code>Cron</code> method on <code>JobScheduleBuilder</code>. It builds expressions from integer values and the <code>CronDayOfWeek</code> and <code>CronMonth</code> enums. The following examples match the fixed expressions above:</p>
 <ul>
-<li>
-<p><strong>Every 5 Seconds</strong>: Use <code>EverySeconds</code> to match <code>CronExpressions.Every5Seconds</code>:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<li><strong>Every 5 Seconds</strong>: Use <code>EverySeconds</code> to match <code>CronExpressions.Every5Seconds</code>:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">HeartbeatJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">EverySeconds</span><span class="p">(</span><span class="mi">5</span><span class="p">).</span><span class="n">Build</span><span class="p">())</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
 </code></pre></div>
-  This builds <code>"0/5 * * * * ?"</code>, identical to the fixed constant but expressed fluently.</p>
-</li>
-<li>
-<p><strong>Daily at Midnight</strong>: Replicate <code>CronExpressions.DailyAtMidnight</code> with <code>AtTime</code>:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<p>This builds <code>"0/5 * * * * ?"</code>, identical to the fixed constant but expressed fluently.</p>
+<ul>
+<li><strong>Daily at Midnight</strong>: Replicate <code>CronExpressions.DailyAtMidnight</code> with <code>AtTime</code>:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">CleanupJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span><span class="p">.</span><span class="n">AtTime</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">0</span><span class="p">).</span><span class="n">Build</span><span class="p">())</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
 </code></pre></div>
-  This produces <code>"0 0 0 * * ?"</code>, matching the predefined expression with explicit time settings.</p>
-</li>
-<li>
-<p><strong>First Day of Every Month at 11:59 PM</strong>: Construct this precise schedule directly:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<p>This produces <code>"0 0 0 * * ?"</code>, matching the predefined expression with explicit time settings.</p>
+<ul>
+<li><strong>First Day of Every Month at 11:59 PM</strong>: Construct this precise schedule directly:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">MonthlyReportJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span>
@@ -4090,11 +4956,11 @@
 <span class="w">        </span><span class="p">.</span><span class="n">Named</span><span class="p">(</span><span class="s">&quot;monthlyReport&quot;</span><span class="p">)</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
 </code></pre></div>
-  The result, <code>"0 59 23 1 * ?"</code>, schedules the job at 23:59:00 on the 1st of each month, aligning with your requirement. Here, <code>DayOfMonth(1)</code> sets the day, and <code>AtTime(23, 59, 0)</code> specifies 11:59 PM.</p>
-</li>
-<li>
-<p><strong>Every Wednesday at 9:30 AM</strong>: Match <code>CronExpressions.WeeklyOnWednesdayAtMidnight</code> with adjustments:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<p>The result, <code>"0 59 23 1 * ?"</code>, schedules the job at 23:59:00 on the 1st of each month, aligning with your requirement. Here, <code>DayOfMonth(1)</code> sets the day, and <code>AtTime(23, 59, 0)</code> specifies 11:59 PM.</p>
+<ul>
+<li><strong>Every Wednesday at 9:30 AM</strong>: Match <code>CronExpressions.WeeklyOnWednesdayAtMidnight</code> with adjustments:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">WeeklyMeetingJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span>
@@ -4103,11 +4969,11 @@
 <span class="w">            </span><span class="p">.</span><span class="n">Build</span><span class="p">())</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
 </code></pre></div>
-  This yields <code>"0 30 9 ? * WED"</code>, shifting the midnight timing to 9:30 AM.</p>
-</li>
-<li>
-<p><strong>Specific Date and Time (e.g., March 27, 2025, 2:30 PM)</strong>: Use <code>AtDateTime</code> for one-time triggers:
-  <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
+<p>This yields <code>"0 30 9 ? * WED"</code>, shifting the midnight timing to 9:30 AM.</p>
+<ul>
+<li><strong>Specific Date and Time (e.g., March 27, 2025, 2:30 PM)</strong>: Use <code>AtDateTime</code> for one-time triggers:</li>
+</ul>
+<div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">WithJob</span><span class="o">&lt;</span><span class="n">OneTimeJob</span><span class="o">&gt;</span><span class="p">()</span>
 <span class="w">        </span><span class="p">.</span><span class="n">Cron</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">b</span>
@@ -4115,22 +4981,19 @@
 <span class="w">            </span><span class="p">.</span><span class="n">Build</span><span class="p">())</span>
 <span class="w">        </span><span class="p">.</span><span class="n">RegisterScoped</span><span class="p">();</span>
 </code></pre></div>
-  This generates <code>"0 30 14 27 3 ?"</code>, targeting a single execution.</p>
-</li>
-</ul>
-<p>The builder’s methods, such as <code>EveryMinutes(15)</code> ("0 0/15 * * * ?") or <code>HoursRange(8, 17)</code> ("0 * 8-17 * * ?"), offer granular control. Enums like <code>CronDayOfWeek</code> and <code>CronMonth</code> ensure type safety, mapping to Quartz’s three-letter abbreviations (e.g., "WED", "JAN"), while integer inputs (e.g., <code>Minutes(59)</code>) simplify numeric fields.</p>
-<h2 id="appendix-job-scheduling-api-endpoints">Appendix: Job Scheduling API Endpoints<a class="headerlink" href="#appendix-job-scheduling-api-endpoints" title="Permanent link">&para;</a></h2>
+<p>This generates <code>"0 30 14 27 3 ?"</code>, targeting a single execution.</p>
+<p>Methods such as <code>EveryMinutes(15)</code> (<code>0 0/15 * * * ?</code>) and <code>HoursRange(8, 17)</code> (<code>0 * 8-17 * * ?</code>) configure individual fields. <code>CronDayOfWeek</code> and <code>CronMonth</code> map to Quartz three-letter abbreviations such as <code>WED</code> and <code>JAN</code>. Methods such as <code>Minutes(59)</code> set numeric fields.</p>
+<h2 id="appendix-jobscheduling-api-endpoints">Appendix: JobScheduling API endpoints<a class="headerlink" href="#appendix-jobscheduling-api-endpoints" title="Permanent link">&para;</a></h2>
 <p>The JobScheduling feature supports optional RESTful API endpoints for managing jobs via HTTP, enabled by calling <code>AddEndpoints()</code> in the <code>AddJobScheduling</code> builder chain. These endpoints, implemented in <code>JobSchedulingEndpoints</code>, provide a convenient interface for querying and controlling jobs, especially useful in development or monitoring scenarios. By default, they are mapped under the <code>/_bdk/api/jobs</code> prefix, configurable via <code>JobSchedulingEndpointsOptions</code>.</p>
-<h3 id="enabling-endpoints">Enabling Endpoints<a class="headerlink" href="#enabling-endpoints" title="Permanent link">&para;</a></h3>
+<h3 id="enabling-endpoints">Enabling endpoints<a class="headerlink" href="#enabling-endpoints" title="Permanent link">&para;</a></h3>
 <p>Enable endpoints with a condition (e.g., development-only):</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddJobScheduling</span><span class="p">(</span><span class="n">o</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">o</span><span class="p">.</span><span class="n">StartupDelay</span><span class="p">(</span><span class="s">&quot;00:00:10&quot;</span><span class="p">),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">)</span>
 <span class="w">    </span><span class="p">.</span><span class="n">AddEndpoints</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">options</span><span class="p">.</span><span class="n">RequireAuthorization</span><span class="p">(),</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">());</span>
 </code></pre></div>
-<p>Ensure routing is configured in the application pipeline:</p>
-<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
-<span class="n">app</span><span class="p">.</span><span class="n">UseEndpoints</span><span class="p">(</span><span class="n">endpoints</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">endpoints</span><span class="p">.</span><span class="n">MapControllers</span><span class="p">());</span>
+<p>Map all registered endpoint sets after building the application:</p>
+<div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">MapEndpoints</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="available-endpoints">Available Endpoints<a class="headerlink" href="#available-endpoints" title="Permanent link">&para;</a></h3>
+<h3 id="available-endpoints">Available endpoints<a class="headerlink" href="#available-endpoints" title="Permanent link">&para;</a></h3>
 <p>Below is a comprehensive list of endpoints, their HTTP methods, paths, parameters, responses, and descriptions, derived from <code>JobSchedulingEndpoints.cs</code>:</p>
 <table>
 <thead>
@@ -4149,7 +5012,7 @@
 <td>GET</td>
 <td><code>/_bdk/api/jobs</code></td>
 <td>None</td>
-<td><code>200 OK</code> (IEnumerable<JobInfo>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
+<td><code>200 OK</code> (<code>IEnumerable&lt;JobInfo&gt;</code>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves a list of all scheduled jobs.</td>
 </tr>
 <tr>
@@ -4165,7 +5028,7 @@
 <td>GET</td>
 <td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/runs</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string), Query: <code>startDate</code>, <code>endDate</code>, <code>status</code>, <code>priority</code>, <code>instanceName</code>, <code>resultContains</code>, <code>take</code> (optional)</td>
-<td><code>200 OK</code> (IEnumerable<JobRun>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
+<td><code>200 OK</code> (<code>IEnumerable&lt;JobRun&gt;</code>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves execution history with optional filters.</td>
 </tr>
 <tr>
@@ -4181,7 +5044,7 @@
 <td>GET</td>
 <td><code>/_bdk/api/jobs/{jobName}/{jobGroup}/triggers</code></td>
 <td><code>jobName</code> (string), <code>jobGroup</code> (string)</td>
-<td><code>200 OK</code> (IEnumerable<TriggerInfo>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
+<td><code>200 OK</code> (<code>IEnumerable&lt;TriggerInfo&gt;</code>), <code>500 Internal Server Error</code> (ProblemDetails)</td>
 <td>Retrieves all triggers for a specific job.</td>
 </tr>
 <tr>
@@ -4226,26 +5089,26 @@
 </tr>
 </tbody>
 </table>
-<h3 id="endpoint-details">Endpoint Details<a class="headerlink" href="#endpoint-details" title="Permanent link">&para;</a></h3>
+<h3 id="endpoint-details">Endpoint details<a class="headerlink" href="#endpoint-details" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>GET /_bdk/api/jobs</strong></li>
 <li><strong>Description</strong>: Lists all scheduled jobs with their current status and trigger details.</li>
 <li>
-<p><strong>Response Example</strong>:
-     <div class="highlight"><pre><span></span><code><span class="p">[</span>
+<p><strong>Response Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;firstecho&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Group&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EchoJob&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Active&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;TriggerCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">},</span>
 <span class="w">  </span><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;longrunning&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Group&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;LongRunningJob&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Active&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;TriggerCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">}</span>
 <span class="p">]</span>
-</code></pre></div></p>
+</code></pre></div>
 </li>
 <li>
 <p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}</strong></p>
 </li>
 <li><strong>Description</strong>: Retrieves detailed information for a specific job, including last run and triggers.</li>
 <li>
-<p><strong>Response Example</strong>:
-     <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;firstecho&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Group&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EchoJob&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;LastRun&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;Status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Success&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;StartTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-04-01T12:00:00Z&quot;</span><span class="p">}}</span>
-</code></pre></div></p>
+<p><strong>Response Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;firstecho&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Group&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;EchoJob&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;LastRun&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="nt">&quot;Status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Success&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;StartTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-04-01T12:00:00Z&quot;</span><span class="p">}}</span>
+</code></pre></div>
 </li>
 <li>
 <p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}/runs</strong></p>
@@ -4259,46 +5122,48 @@
 </ul>
 </li>
 <li>
-<p><strong>Response Example</strong>:
-     <div class="highlight"><pre><span></span><code><span class="p">[</span>
+<p><strong>Response Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span><span class="nt">&quot;Id&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;run1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;JobName&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;firstecho&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;StartTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-04-01T12:00:00Z&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Status&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Success&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;DurationMs&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">}</span>
 <span class="p">]</span>
-</code></pre></div></p>
+</code></pre></div>
 </li>
 <li>
 <p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}/stats</strong></p>
 </li>
 <li><strong>Description</strong>: Provides aggregated stats (e.g., success/failure counts, average duration).</li>
 <li>
-<p><strong>Response Example</strong>:
-     <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;TotalRuns&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;SuccessCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;FailureCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;AvgRunDurationMs&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">950</span><span class="p">}</span>
-</code></pre></div></p>
+<p><strong>Response Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;TotalRuns&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">5</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;SuccessCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">4</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;FailureCount&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;AvgRunDurationMs&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">950</span><span class="p">}</span>
+</code></pre></div>
 </li>
 <li>
 <p><strong>GET /_bdk/api/jobs/{jobName}/{jobGroup}/triggers</strong></p>
 </li>
 <li><strong>Description</strong>: Lists all triggers associated with the job.</li>
 <li>
-<p><strong>Response Example</strong>:
-     <div class="highlight"><pre><span></span><code><span class="p">[</span>
+<p><strong>Response Example</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">[</span>
 <span class="w">  </span><span class="p">{</span><span class="nt">&quot;Name&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;trigger1&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;Group&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;DEFAULT&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;CronExpression&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0 * * * * ?&quot;</span><span class="p">,</span><span class="w"> </span><span class="nt">&quot;NextFireTime&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2025-04-01T12:01:00Z&quot;</span><span class="p">}</span>
 <span class="p">]</span>
-</code></pre></div></p>
+</code></pre></div>
 </li>
 <li>
 <p><strong>POST /_bdk/api/jobs/{jobName}/{jobGroup}/trigger</strong></p>
 </li>
 <li><strong>Description</strong>: Triggers the job immediately with optional data.</li>
-<li><strong>Request Body</strong>:
-     <div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">}</span>
-</code></pre></div></li>
+<li>
+<p><strong>Request Body</strong>:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span><span class="nt">&quot;extra&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;data&quot;</span><span class="p">}</span>
+</code></pre></div>
+</li>
 <li>
 <p><strong>Response</strong>: <code>202 Accepted</code> with "Job {jobName} in group {jobGroup} triggered successfully."</p>
 </li>
 <li>
 <p><strong>POST /_bdk/api/jobs/{jobName}/{jobGroup}/pause</strong></p>
 </li>
-<li><strong>Description</strong>: Pauses the job’s execution.</li>
+<li><strong>Description</strong>: Pauses the job's execution.</li>
 <li>
 <p><strong>Response</strong>: <code>200 OK</code> with "Job {jobName} in group {jobGroup} paused successfully."</p>
 </li>
@@ -4394,7 +5259,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4402,6 +5267,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class LocationOptions | bITdevKit API Reference ">
       
-      <meta name="description" content="Configures options for a monitored location.">
+      <meta name="description" content="Configuration options for a monitored location (a source of file events). Provides filters, processor registrations and rate limiting for that location.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class LocationOptions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Storage.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Configures options for a monitored location.</p>
+  <div class="markdown summary"><p>Configuration options for a monitored location (a source of file events).
+Provides filters, processor registrations and rate limiting for that location.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -264,7 +265,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Configures options for a monitored location.</p>
+  <div class="markdown level1 summary"><p>Configuration options for a monitored location (a source of file events).
+Provides filters, processor registrations and rate limiting for that location.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -275,7 +277,8 @@ Class LocationOptions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The logical name of the location. This value is exposed via <a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationOptions.html#BridgingIT_DevKit_Application_Storage_LocationOptions_LocationName">LocationName</a>.</p>
+</dd>
   </dl>
 
 
@@ -300,7 +303,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Set a blacklist filter for files using glob patterns.</p>
+  <div class="markdown level1 summary"><p>A set of glob patterns that exclude matching files from processing.
+Patterns are evaluated against the file path. Defaults to an empty list.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -364,7 +368,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>The logical name of the configured location.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -395,7 +400,9 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>A list of processor behavior types that should be applied at the location level.
+These types implement <code>IProcessorBehavior</code> and are applied to all processors for this location.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -426,7 +433,9 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configured processor instances for this location.
+Each entry describes a processor type, its behaviors and optional configuration delegate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -457,7 +466,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Rate limiting settings applied to processing for this location.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -488,7 +498,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the scan on start.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -519,7 +530,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets or sets the use on demand only.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -554,7 +566,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers a processor type for this location and returns its configuration object.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -564,19 +577,22 @@ Class LocationOptions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional delegate to further configure the <a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a></dt>
-    <dd></dd>
+    <dd><p>The created <a class="xref" href="BridgingIT.DevKit.Application.Storage.ProcessorConfiguration.html">ProcessorConfiguration</a> for the registered processor.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProcessor</code></dt>
-    <dd></dd>
+    <dd><p>The processor type implementing <code>IFileEventProcessor</code>.</p>
+</dd>
   </dl>
 
 
@@ -595,7 +611,8 @@ Class LocationOptions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers a processor behavior type to be applied to all processors in this location.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -606,13 +623,15 @@ Class LocationOptions
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationOptions.html">LocationOptions</a></dt>
-    <dd></dd>
+    <dd><p>The current <a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationOptions.html">LocationOptions</a> for fluent configuration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TBehavior</code></dt>
-    <dd></dd>
+    <dd><p>A type implementing <code>IProcessorBehavior</code>.</p>
+</dd>
   </dl>
 
 

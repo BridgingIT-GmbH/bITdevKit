@@ -322,7 +322,7 @@ Class IsFalseRule
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the default message for the rule. Override this property to provide a specific message.</p>
+  <div class="markdown level1 summary"><p>Gets the configured message or the default message requiring a false value.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -358,7 +358,7 @@ Class IsFalseRule
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Implements the core validation logic for the rule.</p>
+  <div class="markdown level1 summary"><p>Returns success only when the supplied value is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -370,7 +370,7 @@ Class IsFalseRule
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
-    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a> indicating success or failure of the rule.</p>
+    <dd><p>A result representing the Boolean condition.</p>
 </dd>
   </dl>
 

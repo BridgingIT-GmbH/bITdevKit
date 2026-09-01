@@ -308,7 +308,8 @@ builder.WithDescription("Removes stale records.")
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a builder and controls whether an explicitly configured data contract may replace the contract inferred from the job type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -318,9 +319,11 @@ builder.WithDescription("Removes stale records.")
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>jobName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The stable, non-empty job name; surrounding whitespace is removed.</p>
+</dd>
     <dt><code>allowExplicitDataContractOverride</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> to allow <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobDefinitionBuilder-1.html#BridgingIT_DevKit_Application_Jobs_JobDefinitionBuilder_1_WithData__1">WithData&lt;TData&gt;()</a> to override an inferred data contract; otherwise, the two contracts must match.</p>
+</dd>
   </dl>
 
 
@@ -331,6 +334,12 @@ builder.WithDescription("Removes stale records.")
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when <code class="paramref">jobName</code> is empty or consists only of whitespace.</p>
+</dd>
+  </dl>
 
 
 

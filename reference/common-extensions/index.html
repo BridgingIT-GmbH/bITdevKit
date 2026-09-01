@@ -6,7 +6,7 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -898,15 +901,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -924,8 +932,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1005,7 +1013,7 @@
   <a href="#how-the-extensions-are-organized" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How The Extensions Are Organized
+        How the extensions are organized
       
     </span>
   </a>
@@ -1016,7 +1024,7 @@
   <a href="#main-categories" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Main Categories
+        Main categories
       
     </span>
   </a>
@@ -1027,7 +1035,7 @@
   <a href="#collection-and-sequence-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collection And Sequence Helpers
+        Collection and sequence helpers
       
     </span>
   </a>
@@ -1038,7 +1046,7 @@
   <a href="#fluent-optional-and-null-safe-composition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fluent Optional And Null-Safe Composition
+        Fluent optional and null-safe composition
       
     </span>
   </a>
@@ -1049,7 +1057,7 @@
   <a href="#date-and-time-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Date And Time Helpers
+        Date and time helpers
       
     </span>
   </a>
@@ -1060,7 +1068,7 @@
   <a href="#text-enum-and-argument-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Text, Enum, And Argument Helpers
+        Text, enum, and argument helpers
       
     </span>
   </a>
@@ -1071,7 +1079,7 @@
   <a href="#stream-task-and-async-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stream, Task, And Async Helpers
+        Stream, task, and async helpers
       
     </span>
   </a>
@@ -1082,7 +1090,7 @@
   <a href="#reflection-type-and-expression-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reflection, Type, And Expression Helpers
+        Reflection, type, and expression helpers
       
     </span>
   </a>
@@ -1093,7 +1101,7 @@
   <a href="#configuration-and-di-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration And DI Helpers
+        Configuration and DI helpers
       
     </span>
   </a>
@@ -1104,7 +1112,7 @@
   <a href="#practical-guidance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Practical Guidance
+        Practical guidance
       
     </span>
   </a>
@@ -1115,7 +1123,7 @@
   <a href="#what-this-page-does-not-cover" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What This Page Does Not Cover
+        What this page does not cover
       
     </span>
   </a>
@@ -1126,7 +1134,7 @@
   <a href="#related-docs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Docs
+        Related docs
       
     </span>
   </a>
@@ -1317,6 +1325,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1384,15 +1420,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1410,8 +1451,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1484,42 +1525,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1603,7 +1616,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1785,6 +1798,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1803,15 +1844,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1829,8 +1875,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1911,6 +1957,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -2110,15 +2184,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -2136,8 +2215,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2146,6 +2225,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2221,15 +2328,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" >
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2247,8 +2359,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2273,6 +2385,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2489,6 +2657,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-presentation-exception-handling/" class="md-nav__link">
         
   
@@ -2556,15 +2752,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2582,8 +2783,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2863,15 +3064,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -2889,8 +3095,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2970,6 +3176,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3001,7 +3738,7 @@
   <a href="#how-the-extensions-are-organized" class="md-nav__link">
     <span class="md-ellipsis">
       
-        How The Extensions Are Organized
+        How the extensions are organized
       
     </span>
   </a>
@@ -3012,7 +3749,7 @@
   <a href="#main-categories" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Main Categories
+        Main categories
       
     </span>
   </a>
@@ -3023,7 +3760,7 @@
   <a href="#collection-and-sequence-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Collection And Sequence Helpers
+        Collection and sequence helpers
       
     </span>
   </a>
@@ -3034,7 +3771,7 @@
   <a href="#fluent-optional-and-null-safe-composition" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Fluent Optional And Null-Safe Composition
+        Fluent optional and null-safe composition
       
     </span>
   </a>
@@ -3045,7 +3782,7 @@
   <a href="#date-and-time-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Date And Time Helpers
+        Date and time helpers
       
     </span>
   </a>
@@ -3056,7 +3793,7 @@
   <a href="#text-enum-and-argument-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Text, Enum, And Argument Helpers
+        Text, enum, and argument helpers
       
     </span>
   </a>
@@ -3067,7 +3804,7 @@
   <a href="#stream-task-and-async-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Stream, Task, And Async Helpers
+        Stream, task, and async helpers
       
     </span>
   </a>
@@ -3078,7 +3815,7 @@
   <a href="#reflection-type-and-expression-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Reflection, Type, And Expression Helpers
+        Reflection, type, and expression helpers
       
     </span>
   </a>
@@ -3089,7 +3826,7 @@
   <a href="#configuration-and-di-helpers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration And DI Helpers
+        Configuration and DI helpers
       
     </span>
   </a>
@@ -3100,7 +3837,7 @@
   <a href="#practical-guidance" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Practical Guidance
+        Practical guidance
       
     </span>
   </a>
@@ -3111,7 +3848,7 @@
   <a href="#what-this-page-does-not-cover" class="md-nav__link">
     <span class="md-ellipsis">
       
-        What This Page Does Not Cover
+        What this page does not cover
       
     </span>
   </a>
@@ -3122,7 +3859,7 @@
   <a href="#related-docs" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Related Docs
+        Related docs
       
     </span>
   </a>
@@ -3172,10 +3909,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3217,19 +3972,38 @@
 
 <h1 id="common-extensions">Common Extensions<a class="headerlink" href="#common-extensions" title="Permanent link">&para;</a></h1>
 <blockquote>
-<p>Reuse a broad set of shared helper extensions for composition, collections, async flows, and more.</p>
+<p>Reuse shared extensions for collections, asynchronous flows, date and time values, configuration, and reflection.</p>
 </blockquote>
-<p><code>Common.Abstractions</code> contains a broad extensions layer under <a href="https://github.com/bridgingIT/bITdevKit/blob/main/src/Common.Abstractions/Extensions">Extensions</a>. This is the shared utility surface that many other devkit packages build on.</p>
+<div class="toc">
+<ul>
+<li><a href="#common-extensions">Common Extensions</a><ul>
+<li><a href="#how-the-extensions-are-organized">How the extensions are organized</a></li>
+<li><a href="#main-categories">Main categories</a></li>
+<li><a href="#collection-and-sequence-helpers">Collection and sequence helpers</a></li>
+<li><a href="#fluent-optional-and-null-safe-composition">Fluent optional and null-safe composition</a></li>
+<li><a href="#date-and-time-helpers">Date and time helpers</a></li>
+<li><a href="#text-enum-and-argument-helpers">Text, enum, and argument helpers</a></li>
+<li><a href="#stream-task-and-async-helpers">Stream, task, and async helpers</a></li>
+<li><a href="#reflection-type-and-expression-helpers">Reflection, type, and expression helpers</a></li>
+<li><a href="#configuration-and-di-helpers">Configuration and DI helpers</a></li>
+<li><a href="#practical-guidance">Practical guidance</a></li>
+<li><a href="#what-this-page-does-not-cover">What this page does not cover</a></li>
+<li><a href="#related-docs">Related docs</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<p><code>Common.Abstractions</code> contains a broad extensions layer under <code>src/Common.Abstractions/Extensions</code>. This is the shared utility layer that many other devkit packages build on.</p>
 <p>This page is intentionally an overview, not an API catalog. The goal is to show what kinds of extensions are available and where to look when you need them.</p>
-<h2 id="how-the-extensions-are-organized">How The Extensions Are Organized<a class="headerlink" href="#how-the-extensions-are-organized" title="Permanent link">&para;</a></h2>
+<h2 id="how-the-extensions-are-organized">How the extensions are organized<a class="headerlink" href="#how-the-extensions-are-organized" title="Permanent link">&para;</a></h2>
 <p>The folder contains two styles of extension classes:</p>
 <ul>
 <li>focused classes with explicit names such as <code>DateTimeExtensions</code>, <code>StringExtensions</code>, or <code>ConditionalLinqExtensions</code></li>
 <li>many small helper files that contribute methods to the partial static <code>Extensions</code> class</li>
 </ul>
 <p>That means the package is best understood by capability area rather than by a single class name.</p>
-<h2 id="main-categories">Main Categories<a class="headerlink" href="#main-categories" title="Permanent link">&para;</a></h2>
-<h2 id="collection-and-sequence-helpers">Collection And Sequence Helpers<a class="headerlink" href="#collection-and-sequence-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="main-categories">Main categories<a class="headerlink" href="#main-categories" title="Permanent link">&para;</a></h2>
+<h2 id="collection-and-sequence-helpers">Collection and sequence helpers<a class="headerlink" href="#collection-and-sequence-helpers" title="Permanent link">&para;</a></h2>
 <p>These extensions help with shaping, slicing, filtering, and traversing in-memory collections.</p>
 <p>Representative files:</p>
 <ul>
@@ -3257,7 +4031,7 @@
 <li>building tree structures from flat data</li>
 <li>working with <code>IAsyncEnumerable&lt;T&gt;</code> without pulling in another utility package</li>
 </ul>
-<h2 id="fluent-optional-and-null-safe-composition">Fluent Optional And Null-Safe Composition<a class="headerlink" href="#fluent-optional-and-null-safe-composition" title="Permanent link">&para;</a></h2>
+<h2 id="fluent-optional-and-null-safe-composition">Fluent optional and null-safe composition<a class="headerlink" href="#fluent-optional-and-null-safe-composition" title="Permanent link">&para;</a></h2>
 <p>This area overlaps with the higher-level extension docs in <a href="../features-extensions/">Extensions</a>, but the code lives here in <code>Common.Abstractions</code>.</p>
 <p>Representative files:</p>
 <ul>
@@ -3282,7 +4056,7 @@
 <li>avoiding repetitive guard code in application and infrastructure layers</li>
 </ul>
 <p>If you want the conceptual guidance for these fluent patterns, start with <a href="../features-extensions/">Extensions</a>. This page is the package-level map of where those helpers live.</p>
-<h2 id="date-and-time-helpers">Date And Time Helpers<a class="headerlink" href="#date-and-time-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="date-and-time-helpers">Date and time helpers<a class="headerlink" href="#date-and-time-helpers" title="Permanent link">&para;</a></h2>
 <p>These extensions provide common date and time calculations and parsing helpers.</p>
 <p>Representative files:</p>
 <ul>
@@ -3299,7 +4073,7 @@
 <li>parsing dates from multiple string formats</li>
 <li>range checks and date/time convenience operations</li>
 </ul>
-<h2 id="text-enum-and-argument-helpers">Text, Enum, And Argument Helpers<a class="headerlink" href="#text-enum-and-argument-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="text-enum-and-argument-helpers">Text, enum, and argument helpers<a class="headerlink" href="#text-enum-and-argument-helpers" title="Permanent link">&para;</a></h2>
 <p>These extensions focus on small but frequently used text and enum operations.</p>
 <p>Representative files:</p>
 <ul>
@@ -3316,9 +4090,9 @@
 <li>string cleanup and matching</li>
 <li>working with multiple prefixes or tokens</li>
 <li>enum metadata and helper logic</li>
-<li>building shell or command arguments safely</li>
+<li>combining object argument arrays</li>
 </ul>
-<h2 id="stream-task-and-async-helpers">Stream, Task, And Async Helpers<a class="headerlink" href="#stream-task-and-async-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="stream-task-and-async-helpers">Stream, task, and async helpers<a class="headerlink" href="#stream-task-and-async-helpers" title="Permanent link">&para;</a></h2>
 <p>These support lower-level workflow code where streams, tasks, and async pipelines are common.</p>
 <p>Representative files:</p>
 <ul>
@@ -3332,7 +4106,7 @@
 <li>async sequence querying and projection</li>
 <li>task composition helpers used by infrastructure code</li>
 </ul>
-<h2 id="reflection-type-and-expression-helpers">Reflection, Type, And Expression Helpers<a class="headerlink" href="#reflection-type-and-expression-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="reflection-type-and-expression-helpers">Reflection, type, and expression helpers<a class="headerlink" href="#reflection-type-and-expression-helpers" title="Permanent link">&para;</a></h2>
 <p>These are support extensions for infrastructure code, configuration, and dynamic behavior.</p>
 <p>Representative files:</p>
 <ul>
@@ -3348,7 +4122,7 @@
 <li>extracting useful exception information</li>
 <li>reflection-heavy infrastructure code</li>
 </ul>
-<h2 id="configuration-and-di-helpers">Configuration And DI Helpers<a class="headerlink" href="#configuration-and-di-helpers" title="Permanent link">&para;</a></h2>
+<h2 id="configuration-and-di-helpers">Configuration and DI helpers<a class="headerlink" href="#configuration-and-di-helpers" title="Permanent link">&para;</a></h2>
 <p>These extensions help with configuration access and service-collection inspection.</p>
 <p>Representative files:</p>
 <ul>
@@ -3361,16 +4135,16 @@
 <li>checking whether a service has already been added to <code>IServiceCollection</code></li>
 <li>finding or locating a registered service descriptor during startup composition</li>
 </ul>
-<h2 id="practical-guidance">Practical Guidance<a class="headerlink" href="#practical-guidance" title="Permanent link">&para;</a></h2>
+<h2 id="practical-guidance">Practical guidance<a class="headerlink" href="#practical-guidance" title="Permanent link">&para;</a></h2>
 <ul>
 <li>Use these helpers to reduce boilerplate, not to hide business logic.</li>
 <li>Prefer the narrowly named extension classes when you are browsing for behavior such as date, string, or configuration helpers.</li>
 <li>Expect many small general-purpose methods to live in the partial <code>Extensions</code> class.</li>
 <li>For the fluent null-safe and query-composition style, read <a href="../features-extensions/">Extensions</a> for the conceptual usage patterns and this page for the package layout.</li>
 </ul>
-<h2 id="what-this-page-does-not-cover">What This Page Does Not Cover<a class="headerlink" href="#what-this-page-does-not-cover" title="Permanent link">&para;</a></h2>
+<h2 id="what-this-page-does-not-cover">What this page does not cover<a class="headerlink" href="#what-this-page-does-not-cover" title="Permanent link">&para;</a></h2>
 <p>This page does not list every overload or method. The extensions folder is too broad for that to stay useful. Treat this page as a map of the available families of helpers, then go to the specific file when you need exact behavior.</p>
-<h2 id="related-docs">Related Docs<a class="headerlink" href="#related-docs" title="Permanent link">&para;</a></h2>
+<h2 id="related-docs">Related docs<a class="headerlink" href="#related-docs" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="../features-extensions/">Extensions</a></li>
 <li><a href="../">Common Infrastructure</a></li>
@@ -3455,7 +4229,7 @@
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -3463,6 +4237,8 @@
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

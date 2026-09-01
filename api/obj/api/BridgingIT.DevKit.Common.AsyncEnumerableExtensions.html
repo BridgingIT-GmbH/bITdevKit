@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class AsyncEnumerableExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides asynchronous sequence operators that enumerate sources with cancellation support.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class AsyncEnumerableExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides asynchronous sequence operators that enumerate sources with cancellation support.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an asynchronous sequence contains an item accepted by a predicate, stopping at the first match.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -140,23 +142,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition used to identify a matching item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when a matching item is encountered; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -175,7 +182,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Streams all items from the first asynchronous sequence followed by all items from the second sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -185,23 +193,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The sequence enumerated first.</p>
+</dd>
     <dt><code>second</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The sequence enumerated after <code class="paramref">source</code> completes.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels enumeration of either sequence.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence preserving the order of both inputs.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -220,7 +233,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an asynchronous sequence contains a value using a supplied equality comparer.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -230,25 +244,31 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>enumerable</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The value to locate.</p>
+</dd>
     <dt><code>comparer</code> <span class="xref">IEqualityComparer</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The comparer to use, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use <span class="xref">System.Collections.Generic.EqualityComparer&lt;T&gt;.Default</span>.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when an equal item is encountered; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -267,7 +287,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Determines whether an asynchronous sequence contains a value using the default equality comparer.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -277,23 +298,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The value to locate.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when an equal item is encountered; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -312,7 +338,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Counts the items in an asynchronous sequence that satisfy a predicate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -322,23 +349,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to enumerate.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition that identifies items to count.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The number of matching items.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -357,7 +389,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Counts all items produced by an asynchronous sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -367,21 +400,25 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to enumerate.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The number of produced items.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -400,7 +437,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Streams the first occurrence of each value using a supplied equality comparer.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -410,23 +448,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to filter.</p>
+</dd>
     <dt><code>comparer</code> <span class="xref">IEqualityComparer</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The comparer used to identify duplicate values.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence of distinct values in first-seen order.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -445,7 +488,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Streams the first occurrence of each value using the default equality comparer.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -455,21 +499,25 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to filter.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence of distinct values in first-seen order.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -488,7 +536,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Streams the first item for each projected key using a supplied key comparer.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -498,27 +547,34 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>enumerable</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to filter.</p>
+</dd>
     <dt><code>getKey</code> <span class="xref">Func</span>&lt;T, TKey&gt;</dt>
-    <dd></dd>
+    <dd><p>The function that selects a key from each item.</p>
+</dd>
     <dt><code>comparer</code> <span class="xref">IEqualityComparer</span>&lt;TKey&gt;</dt>
-    <dd></dd>
+    <dd><p>The comparer used to identify duplicate keys.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence containing the first item for each key.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The projected key type.</p>
+</dd>
   </dl>
 
 
@@ -537,7 +593,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Streams the first item for each projected key using the default key comparer.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -547,25 +604,31 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to filter.</p>
+</dd>
     <dt><code>getKey</code> <span class="xref">Func</span>&lt;T, TKey&gt;</dt>
-    <dd></dd>
+    <dd><p>The function that selects a key from each item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence containing the first item for each key.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
     <dt><code>TKey</code></dt>
-    <dd></dd>
+    <dd><p>The projected key type.</p>
+</dd>
   </dl>
 
 
@@ -584,7 +647,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the first item in an asynchronous sequence that satisfies a predicate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -594,23 +658,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition used to select an item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The first matching item.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -619,6 +688,12 @@ Class AsyncEnumerableExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when no item satisfies <code class="paramref">predicate</code>.</p>
+</dd>
+  </dl>
 
 
 
@@ -629,7 +704,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the first item produced by an asynchronous sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -639,21 +715,25 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The first produced item.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -662,6 +742,12 @@ Class AsyncEnumerableExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when the sequence produces no items.</p>
+</dd>
+  </dl>
 
 
 
@@ -672,7 +758,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the first item in an asynchronous sequence that satisfies a predicate, or the default value when no match exists.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -682,23 +769,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>enumerable</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition used to select an item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The first matching item, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -717,7 +809,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the last item in an asynchronous sequence that satisfies a predicate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -727,23 +820,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition used to select an item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The last matching item after the source has been enumerated completely.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -752,6 +850,12 @@ Class AsyncEnumerableExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when no item satisfies <code class="paramref">predicate</code>.</p>
+</dd>
+  </dl>
 
 
 
@@ -762,7 +866,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the last item produced by an asynchronous sequence after enumerating it completely.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -772,21 +877,25 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The last produced item.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -795,6 +904,12 @@ Class AsyncEnumerableExtensions
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown when the sequence produces no items.</p>
+</dd>
+  </dl>
 
 
 
@@ -805,7 +920,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the last item in an asynchronous sequence that satisfies a predicate, or the default value when no match exists.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -815,23 +931,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition used to select an item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The last matching item, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -850,7 +971,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns the last item produced by an asynchronous sequence, or the default value when the sequence is empty.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -860,21 +982,25 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to inspect.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The last produced item, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/default">default</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -893,7 +1019,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Lazily projects each item from an asynchronous sequence into a result value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -903,25 +1030,31 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to transform.</p>
+</dd>
     <dt><code>selector</code> <span class="xref">Func</span>&lt;T, TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The synchronous projection applied to each item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence of projected values.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The source element type.</p>
+</dd>
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The projected element type.</p>
+</dd>
   </dl>
 
 
@@ -940,7 +1073,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Skips a requested number of items and streams the remainder of an asynchronous sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -950,23 +1084,29 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to enumerate.</p>
+</dd>
     <dt><code>count</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of leading items to skip.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The items produced after the first <code class="paramref">count</code> items; an empty sequence when
+<code class="paramref">count</code> is not positive.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -985,7 +1125,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Streams at most a requested number of items from the start of an asynchronous sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -995,23 +1136,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to enumerate.</p>
+</dd>
     <dt><code>count</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum number of items to produce; non-positive values produce an empty sequence.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence containing up to <code class="paramref">count</code> items.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -1030,7 +1176,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Lazily streams the items from an asynchronous sequence that satisfy a predicate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1040,23 +1187,28 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to filter.</p>
+</dd>
     <dt><code>selector</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition used to retain items.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence containing only accepted items.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The sequence element type.</p>
+</dd>
   </dl>
 
 
@@ -1075,7 +1227,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Filters null and empty strings from an asynchronous sequence while retaining whitespace-only values.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1085,15 +1238,18 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous string sequence to filter.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence containing strings for which <span class="xref">string.IsNullOrEmpty(string)</span> is false.</p>
+</dd>
   </dl>
 
 
@@ -1113,7 +1269,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Filters null, empty, and whitespace-only strings from an asynchronous sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1123,15 +1280,18 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous string sequence to filter.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence containing strings with non-whitespace content.</p>
+</dd>
   </dl>
 
 
@@ -1151,7 +1311,8 @@ Class AsyncEnumerableExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Filters null references from an asynchronous sequence.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1161,21 +1322,25 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous sequence to filter.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that cancels source enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>An asynchronous sequence containing only non-null items.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The reference type produced by the sequence.</p>
+</dd>
   </dl>
 
 

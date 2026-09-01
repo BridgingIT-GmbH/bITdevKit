@@ -2316,7 +2316,8 @@ Console.WriteLine(&quot;Operation successful&quot;);
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an error with the supplied message and marks the paged result as failed.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2326,13 +2327,15 @@ Console.WriteLine(&quot;Operation successful&quot;);
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>errorMessage</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The message stored in the appended <a class="xref" href="BridgingIT.DevKit.Common.Error.html">Error</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>A failed paged result that preserves paging metadata, values, messages, and existing errors.</p>
+</dd>
   </dl>
 
 

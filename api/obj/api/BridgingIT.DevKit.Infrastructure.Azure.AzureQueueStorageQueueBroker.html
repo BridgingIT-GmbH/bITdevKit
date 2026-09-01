@@ -440,7 +440,8 @@ Messages are consumed using a background polling loop with visibility timeout se
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on enqueue operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -450,15 +451,18 @@ Messages are consumed using a background polling loop with visibility timeout se
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IQueueMessage.html">IQueueMessage</a></dt>
-    <dd></dd>
+    <dd><p>The message associated with the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -478,7 +482,8 @@ Messages are consumed using a background polling loop with visibility timeout se
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on process operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -488,15 +493,18 @@ Messages are consumed using a background polling loop with visibility timeout se
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <a class="xref" href="BridgingIT.DevKit.Common.IQueueMessage.html">IQueueMessage</a></dt>
-    <dd></dd>
+    <dd><p>The message associated with the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -516,7 +524,8 @@ Messages are consumed using a background polling loop with visibility timeout se
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on subscribe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -526,15 +535,18 @@ Messages are consumed using a background polling loop with visibility timeout se
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>messageType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The handler type used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -554,7 +566,8 @@ Messages are consumed using a background polling loop with visibility timeout se
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on subscribe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -565,15 +578,18 @@ Messages are consumed using a background polling loop with visibility timeout se
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TMessage</code></dt>
-    <dd></dd>
+    <dd><p>The message type.</p>
+</dd>
     <dt><code>THandler</code></dt>
-    <dd></dd>
+    <dd><p>The handler type.</p>
+</dd>
   </dl>
 
 
@@ -592,7 +608,8 @@ Messages are consumed using a background polling loop with visibility timeout se
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on unsubscribe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -604,13 +621,15 @@ Messages are consumed using a background polling loop with visibility timeout se
     <dt><code>messageTypeName</code> <span class="xref">string</span></dt>
     <dd></dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The handler type used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -630,7 +649,8 @@ Messages are consumed using a background polling loop with visibility timeout se
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on unsubscribe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -640,15 +660,18 @@ Messages are consumed using a background polling loop with visibility timeout se
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>messageType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The message type used by the operation.</p>
+</dd>
     <dt><code>handlerType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The handler type used by the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -668,7 +691,8 @@ Messages are consumed using a background polling loop with visibility timeout se
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the on unsubscribe operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -679,15 +703,18 @@ Messages are consumed using a background polling loop with visibility timeout se
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TMessage</code></dt>
-    <dd></dd>
+    <dd><p>The message type.</p>
+</dd>
     <dt><code>THandler</code></dt>
-    <dd></dd>
+    <dd><p>The handler type.</p>
+</dd>
   </dl>
 
 

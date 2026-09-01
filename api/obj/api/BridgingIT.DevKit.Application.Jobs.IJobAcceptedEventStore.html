@@ -257,7 +257,8 @@ Interface IJobAcceptedEventStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list pending operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -267,23 +268,30 @@ Interface IJobAcceptedEventStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The source sequence.</p>
+</dd>
     <dt><code>eventDataType</code> <span class="xref">Type</span></dt>
-    <dd></dd>
+    <dd><p>The event data type used by the operation.</p>
+</dd>
     <dt><code>afterAcceptedUtc</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The after accepted utc used by the operation.</p>
+</dd>
     <dt><code>afterAcceptedEventId</code> <span class="xref">Guid</span>?</dt>
-    <dd></dd>
+    <dd><p>The after accepted event id used by the operation.</p>
+</dd>
     <dt><code>take</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The take used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent.html">JobAcceptedEvent</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -303,7 +311,8 @@ Interface IJobAcceptedEventStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try accept operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -313,15 +322,18 @@ Interface IJobAcceptedEventStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>acceptedEvent</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobAcceptedEvent.html">JobAcceptedEvent</a></dt>
-    <dd></dd>
+    <dd><p>The accepted event used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class LoggingCacheProviderBehavior | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Defines a logging cache-provider decorator whose cache operations are not currently implemented.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class LoggingCacheProviderBehavior
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Caching.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Defines a logging cache-provider decorator whose cache operations are not currently implemented.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -269,7 +270,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <a class="xref" href="BridgingIT.DevKit.Common.Behaviors.LoggingCacheProviderBehavior.html">LoggingCacheProviderBehavior</a> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,9 +281,11 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create the decorator logger, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use a null logger.</p>
+</dd>
     <dt><code>inner</code> <a class="xref" href="BridgingIT.DevKit.Common.ICacheProvider.html">ICacheProvider</a></dt>
-    <dd></dd>
+    <dd><p>The cache provider intended to be decorated.</p>
+</dd>
   </dl>
 
 
@@ -306,7 +310,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the logger used by the decorator.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -341,7 +346,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously gets a cached value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -351,21 +357,25 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key.</p>
+</dd>
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel the cache operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The cached value, or the default value of <code class="typeparamref">T</code> when the key is absent.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The expected value type.</p>
+</dd>
   </dl>
 
 
@@ -374,6 +384,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -384,7 +400,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enumerates the keys currently exposed by the cache provider.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -395,7 +412,8 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The cache keys.</p>
+</dd>
   </dl>
 
 
@@ -405,6 +423,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -415,7 +439,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously enumerates the keys currently exposed by the cache provider.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -425,13 +450,15 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel key enumeration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The cache keys.</p>
+</dd>
   </dl>
 
 
@@ -441,6 +468,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -451,7 +484,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets a cached value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -461,19 +495,22 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The cached value, or the default value of <code class="typeparamref">T</code> when the key is absent.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The expected value type.</p>
+</dd>
   </dl>
 
 
@@ -482,6 +519,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -492,7 +535,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes an entry identified by its exact key.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -502,7 +546,8 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key to remove.</p>
+</dd>
   </dl>
 
 
@@ -513,6 +558,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -523,7 +574,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously removes an entry identified by its exact key.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -533,15 +585,18 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key to remove.</p>
+</dd>
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel the removal operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task representing the removal operation.</p>
+</dd>
   </dl>
 
 
@@ -551,6 +606,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -561,7 +622,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes entries whose keys start with a specified prefix.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -571,7 +633,8 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive key prefix selected for removal.</p>
+</dd>
   </dl>
 
 
@@ -582,6 +645,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -592,7 +661,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously removes entries whose keys start with a specified prefix.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -602,15 +672,18 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The case-sensitive key prefix selected for removal.</p>
+</dd>
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel the removal operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task representing the removal operation.</p>
+</dd>
   </dl>
 
 
@@ -620,6 +693,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -630,7 +709,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously creates or replaces a cached value with optional sliding and absolute expiration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -640,27 +720,34 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key.</p>
+</dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The value to cache.</p>
+</dd>
     <dt><code>slidingExpiration</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The idle duration after which the entry expires, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use provider configuration.</p>
+</dd>
     <dt><code>absoluteExpiration</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The time at which the entry expires regardless of access, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use provider configuration.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel the cache operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task representing the cache operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of value to cache.</p>
+</dd>
   </dl>
 
 
@@ -669,6 +756,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -679,7 +772,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates or replaces a cached value with optional sliding and absolute expiration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -689,20 +783,25 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key.</p>
+</dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The value to cache.</p>
+</dd>
     <dt><code>slidingExpiration</code> <span class="xref">TimeSpan</span>?</dt>
-    <dd></dd>
+    <dd><p>The idle duration after which the entry expires, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use provider configuration.</p>
+</dd>
     <dt><code>absoluteExpiration</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The time at which the entry expires regardless of access, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> to use provider configuration.</p>
+</dd>
   </dl>
 
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of value to cache.</p>
+</dd>
   </dl>
 
 
@@ -711,6 +810,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -721,7 +826,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Attempts to get a cached value through the provider's asynchronous access path.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -731,23 +837,28 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key.</p>
+</dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>Receives the cached value when found; otherwise, the default value of <code class="typeparamref">T</code>.</p>
+</dd>
     <dt><code>token</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token that can cancel the cache operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task whose result is <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the key is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The expected value type.</p>
+</dd>
   </dl>
 
 
@@ -756,6 +867,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 
@@ -766,7 +883,8 @@ Class LoggingCacheProviderBehavior
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Attempts to get a cached value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -776,21 +894,25 @@ Class LoggingCacheProviderBehavior
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The exact cache key.</p>
+</dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>Receives the cached value when found; otherwise, the default value of <code class="typeparamref">T</code>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p><a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">true</a> when the key is present; otherwise, <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/builtin-types/bool">false</a>.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The expected value type.</p>
+</dd>
   </dl>
 
 
@@ -799,6 +921,12 @@ Class LoggingCacheProviderBehavior
 
 
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">NotImplementedException</span></dt>
+    <dd><p>The operation is not implemented.</p>
+</dd>
+  </dl>
 
 
 

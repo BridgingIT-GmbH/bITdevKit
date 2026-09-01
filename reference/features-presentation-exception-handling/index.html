@@ -6,14 +6,14 @@
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width,initial-scale=1">
       
-        <meta name="description" content="Empowering developers with modular components for modern application development, centered around Domain-Driven Design principles">
+        <meta name="description" content="Modular .NET libraries and templates for Domain-Driven Design, application workflows, infrastructure integration, and developer operations.">
       
       
       
         <link rel="canonical" href="https://bridgingit-gmbh.github.io/bITdevKit/reference/features-presentation-exception-handling/">
       
       
-        <link rel="prev" href="../features-presentation-cors/">
+        <link rel="prev" href="../features-presentation-correlationid/">
       
       
         <link rel="next" href="../features-presentation-appstate/">
@@ -78,7 +78,7 @@
     <div data-md-component="skip">
       
         
-        <a href="#exception-handler-configuration-feature-documentation" class="md-skip">
+        <a href="#exception-handler-configuration" class="md-skip">
           Skip to content
         </a>
       
@@ -90,9 +90,10 @@
     
       
 
+
   
 
-<header class="md-header md-header--shadow" data-md-component="header">
+<header class="md-header md-header--shadow md-header--lifted" data-md-component="header">
   <nav class="md-header__inner md-grid" aria-label="Header">
     <a href="../.." title="bITdevKit" class="md-header__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -106,9 +107,7 @@
     <div class="md-header__title" data-md-component="header-title">
       <div class="md-header__ellipsis">
         <div class="md-header__topic">
-          <span class="md-ellipsis">
-            bITdevKit
-          </span>
+          <span class="md-ellipsis">bITdevKit</span>
         </div>
         <div class="md-header__topic" data-md-component="header-topic">
           <span class="md-ellipsis">
@@ -119,6 +118,10 @@
         </div>
       </div>
     </div>
+    <a class="bdk-agent-header-link" href="../../agent-support/" aria-label="AI Agent Support">
+      <span aria-hidden="true">&gt;_</span>
+      <span>AI Agent Support</span>
+    </a>
     
       
         
@@ -380,6 +383,8 @@
         </button>
       </nav>
       
+        <div class="md-search__suggest" data-md-component="search-suggest"></div>
+      
     </form>
     <div class="md-search__output">
       <div class="md-search__scrollwrap" tabindex="0" data-md-scrollfix>
@@ -410,13 +415,121 @@
     
   </nav>
   
+    
+      
+<nav class="md-tabs" aria-label="Tabs" data-md-component="tabs">
+  <div class="md-grid">
+    <ul class="md-tabs__list">
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../.." class="md-tabs__link">
+        
+  
+  
+    
+  
+  Home
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../getting-started/" class="md-tabs__link">
+          
+  
+  
+  Get Started
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+    
+  
+  
+    
+    
+      <li class="md-tabs__item md-tabs__item--active">
+        <a href="../../docs/" class="md-tabs__link">
+          
+  
+  
+  Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../api/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  API
+
+      </a>
+    </li>
+  
+
+      
+        
+  
+  
+  
+  
+    <li class="md-tabs__item">
+      <a href="../../examples/" class="md-tabs__link">
+        
+  
+  
+    
+  
+  Examples
+
+      </a>
+    </li>
+  
+
+      
+    </ul>
+  </div>
+</nav>
+    
+  
 </header>
     
     <div class="md-container" data-md-component="container">
       
       
-        
-          
         
       
       <main class="md-main" data-md-component="main">
@@ -431,7 +544,10 @@
 
 
 
-<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  
+
+
+<nav class="md-nav md-nav--primary md-nav--lifted" aria-label="Navigation" data-md-level="0">
   <label class="md-nav__title" for="__drawer">
     <a href="../.." title="bITdevKit" class="md-nav__button md-logo" aria-label="bITdevKit" data-md-component="logo">
       
@@ -454,6 +570,12 @@
     </div>
   
   <ul class="md-nav__list" data-md-scrollfix>
+    <li class="md-nav__item bdk-agent-nav-item">
+      <a class="md-nav__link bdk-agent-nav-link" href="../../agent-support/">
+        <span aria-hidden="true">&gt;_</span>
+        <span>AI Agent Support</span>
+      </a>
+    </li>
     
       
       
@@ -492,6 +614,11 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
@@ -507,7 +634,7 @@
   <span class="md-ellipsis">
     
   
-    Getting Started
+    Get Started
   
 
     
@@ -523,7 +650,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Getting Started
+    Get Started
   
 
           </label>
@@ -543,35 +670,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../introduction-ddd-guide/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    DDD Introduction
+    Quickstart
   
 
     
@@ -624,195 +723,6 @@
       
   
   
-  
-  
-    <li class="md-nav__item">
-      <a href="../../agent-support/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    AI Agent Support
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../developer-dashboards/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Developer Dashboards
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../why/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Why bITdevKit
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../architecture/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Architecture
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../packages/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Packages
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../api/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    API Reference
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../../examples/" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    Examples
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-    
-      
-      
-  
-  
     
   
   
@@ -821,22 +731,30 @@
     
     
     
-    
-    <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10" checked>
+      
+      
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3" checked>
         
           
-          <label class="md-nav__link" for="__nav_10" id="__nav_10_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3" id="__nav_3_label" tabindex="">
             
   
   
   <span class="md-ellipsis">
     
   
-    Documentation
+    Docs
   
 
     
@@ -847,12 +765,97 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_10_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_3_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Documentation
+    Docs
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../docs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Documentation Overview
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+    
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--active md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2" checked>
+        
+          
+          <label class="md-nav__link" for="__nav_3_2" id="__nav_3_2_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Feature Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_2_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Feature Guides
   
 
           </label>
@@ -872,7 +875,7 @@
   <span class="md-ellipsis">
     
   
-    Overview
+    Complete Feature Index
   
 
     
@@ -896,15 +899,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_2" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_2" >
         
           
-          <label class="md-nav__link" for="__nav_10_2" id="__nav_10_2_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_2" id="__nav_3_2_2_label" tabindex="0">
             
   
   
@@ -922,8 +930,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_2_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_2">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_2_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_2">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1136,6 +1144,34 @@
   
   
     <li class="md-nav__item">
+      <a href="../features-metrics/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Metrics
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
       <a href="../features-profiling/" class="md-nav__link">
         
   
@@ -1203,15 +1239,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_3" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_3" >
         
           
-          <label class="md-nav__link" for="__nav_10_3" id="__nav_10_3_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_3" id="__nav_3_2_3_label" tabindex="0">
             
   
   
@@ -1229,8 +1270,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_3_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_3">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_3">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1303,42 +1344,14 @@
   
   
     <li class="md-nav__item">
-      <a href="../features-event-sourcing/" class="md-nav__link">
+      <a href="../features-domain-change-history/" class="md-nav__link">
         
   
   
   <span class="md-ellipsis">
     
   
-    Event Sourcing
-  
-
-    
-  </span>
-  
-  
-
-      </a>
-    </li>
-  
-
-              
-            
-              
-                
-  
-  
-  
-  
-    <li class="md-nav__item">
-      <a href="../features-change-history.md" class="md-nav__link">
-        
-  
-  
-  <span class="md-ellipsis">
-    
-  
-    ChangeHistory
+    Domain Change History
   
 
     
@@ -1422,7 +1435,7 @@
   <span class="md-ellipsis">
     
   
-    ActiveEntity
+    Active Entity
   
 
     
@@ -1604,6 +1617,34 @@
 
               
             
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
           </ul>
         </nav>
       
@@ -1622,15 +1663,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_4" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_4" >
         
           
-          <label class="md-nav__link" for="__nav_10_4" id="__nav_10_4_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_4" id="__nav_3_2_4_label" tabindex="0">
             
   
   
@@ -1648,8 +1694,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_4_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_4">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_4">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1730,6 +1776,34 @@
     
   
     Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-broadcasting/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Broadcasting
   
 
     
@@ -1929,15 +2003,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_5" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_5" >
         
           
-          <label class="md-nav__link" for="__nav_10_5" id="__nav_10_5_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_5" id="__nav_3_2_5_label" tabindex="0">
             
   
   
@@ -1955,8 +2034,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_5_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_5">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_5_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_5">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -1965,6 +2044,34 @@
 
           </label>
           <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-authentication/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Presentation Authentication
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
             
               
                 
@@ -2042,15 +2149,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--active md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_6" checked>
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_6" checked>
         
           
-          <label class="md-nav__link" for="__nav_10_6" id="__nav_10_6_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_6" id="__nav_3_2_6_label" tabindex="0">
             
   
   
@@ -2068,8 +2180,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_6_label" aria-expanded="true">
-          <label class="md-nav__title" for="__nav_10_6">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_6_label" aria-expanded="true">
+          <label class="md-nav__title" for="__nav_3_2_6">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -2094,6 +2206,62 @@
     
   
     Host
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-configuration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Configuration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-logging/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Logging
   
 
     
@@ -2307,6 +2475,34 @@
                 
   
   
+  
+  
+    <li class="md-nav__item">
+      <a href="../features-presentation-correlationid/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Correlation IDs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
     
   
   
@@ -2378,22 +2574,82 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#key-concepts" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Concepts
+        Challenges
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
   
 </li>
       
@@ -2401,19 +2657,19 @@
   <a href="#configuration-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Schema
+        Configuration schema
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Schema">
+    <nav class="md-nav" aria-label="Configuration schema">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#globalexceptionhandleroptions-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GlobalExceptionHandlerOptions Properties
+        GlobalExceptionHandlerOptions properties
       
     </span>
   </a>
@@ -2429,19 +2685,19 @@
   <a href="#configuration-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Examples
+        Configuration examples
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Examples">
+    <nav class="md-nav" aria-label="Configuration examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example-1-production-secure-configuration" class="md-nav__link">
+  <a href="#example-1-production-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 1: Production (Secure Configuration)
+        Example 1: Production configuration
       
     </span>
   </a>
@@ -2449,10 +2705,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-development-detailed-configuration" class="md-nav__link">
+  <a href="#example-2-development-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Development (Detailed Configuration)
+        Example 2: Development configuration
       
     </span>
   </a>
@@ -2463,7 +2719,7 @@
   <a href="#example-3-fluent-exception-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 3: Fluent Exception Mapping
+        Example 3: Fluent exception mapping
       
     </span>
   </a>
@@ -2474,7 +2730,7 @@
   <a href="#example-4-custom-handlers-with-priority" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 4: Custom Handlers with Priority
+        Example 4: Custom handlers with priority
       
     </span>
   </a>
@@ -2482,10 +2738,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-5-exception-filtering-ignore-rethrow" class="md-nav__link">
+  <a href="#example-5-exception-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 5: Exception Filtering (Ignore &amp; Rethrow)
+        Example 5: Exception filtering
       
     </span>
   </a>
@@ -2496,7 +2752,7 @@
   <a href="#example-6-conditional-handler-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 6: Conditional Handler Registration
+        Example 6: Conditional handler registration
       
     </span>
   </a>
@@ -2507,7 +2763,7 @@
   <a href="#example-7-complete-production-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 7: Complete Production Setup
+        Example 7: Complete production setup
       
     </span>
   </a>
@@ -2523,19 +2779,19 @@
   <a href="#built-in-exception-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Exception Handlers
+        Built-in exception handlers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Built-In Exception Handlers">
+    <nav class="md-nav" aria-label="Built-in exception handlers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#domain-application-exceptions" class="md-nav__link">
+  <a href="#domain-and-application-exceptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain &amp; Application Exceptions
+        Domain and application exceptions
       
     </span>
   </a>
@@ -2546,7 +2802,7 @@
   <a href="#diagnostic-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Diagnostic Handlers
+        Diagnostic handlers
       
     </span>
   </a>
@@ -2554,15 +2810,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-exception-handlers-entity-framework-core" class="md-nav__link">
+  <a href="#database-exception-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Database Exception Handlers (Entity Framework Core)
+        Database exception handlers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Database Exception Handlers (Entity Framework Core)">
+    <nav class="md-nav" aria-label="Database exception handlers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -2612,19 +2868,19 @@
   <a href="#problem-details-response-format" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Problem Details Response Format
+        Problem Details response format
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Problem Details Response Format">
+    <nav class="md-nav" aria-label="Problem Details response format">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#standard-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Standard Properties
+        Standard properties
       
     </span>
   </a>
@@ -2640,7 +2896,7 @@
   <a href="#using-exception-handlers-in-minimal-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Exception Handlers in Minimal APIs
+        Using exception handlers in Minimal APIs
       
     </span>
   </a>
@@ -2651,7 +2907,7 @@
   <a href="#custom-exception-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Exception Handlers
+        Custom exception handlers
       
     </span>
   </a>
@@ -2662,7 +2918,7 @@
   <a href="#security-best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Best Practices
+        Security best practices
       
     </span>
   </a>
@@ -2718,7 +2974,7 @@
   <a href="#debugging-tips" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debugging Tips
+        Debugging tips
       
     </span>
   </a>
@@ -2734,7 +2990,7 @@
   <a href="#additional-resources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Resources
+        Additional resources
       
     </span>
   </a>
@@ -2796,15 +3052,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_7" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_7" >
         
           
-          <label class="md-nav__link" for="__nav_10_7" id="__nav_10_7_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_7" id="__nav_3_2_7_label" tabindex="0">
             
   
   
@@ -2822,8 +3083,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_7_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_7">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_7_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_7">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3103,15 +3364,20 @@
     
     
     
+      
+      
+        
+      
+    
     
     <li class="md-nav__item md-nav__item--nested">
       
         
         
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_10_8" >
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_2_8" >
         
           
-          <label class="md-nav__link" for="__nav_10_8" id="__nav_10_8_label" tabindex="0">
+          <label class="md-nav__link" for="__nav_3_2_8" id="__nav_3_2_8_label" tabindex="0">
             
   
   
@@ -3129,8 +3395,8 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_10_8_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_10_8">
+        <nav class="md-nav" data-md-level="3" aria-labelledby="__nav_3_2_8_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_2_8">
             <span class="md-nav__icon md-icon"></span>
             
   
@@ -3210,6 +3476,537 @@
     </li>
   
 
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_3" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_3" id="__nav_3_3_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Concepts
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_3_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_3">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Concepts
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../why/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Why bITdevKit
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../architecture/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Architecture
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../introduction-ddd-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    DDD Introduction
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_4" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_4" id="__nav_3_4_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Tooling
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_4">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Tooling
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../agent-support-guide/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    AI Agent Support Guide
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../developer-dashboards/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Developer Dashboards
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../packages/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Package Map
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    
+    
+    
+    
+      
+      
+        
+          
+          
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
+        
+          
+          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+            
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decision Guides
+  
+
+    
+  </span>
+  
+  
+
+            <span class="md-nav__icon md-icon"></span>
+          </label>
+        
+        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_3_6">
+            <span class="md-nav__icon md-icon"></span>
+            
+  
+    Decision Guides
+  
+
+          </label>
+          <ul class="md-nav__list" data-md-scrollfix>
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Decisions
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-messaging-vs-queueing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Messaging or Queueing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-activeentity/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or ActiveEntity
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+              
+            
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../api/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    API
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+    
+      
+      
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../examples/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Examples
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
     
   </ul>
 </nav>
@@ -3246,22 +4043,82 @@
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Overview">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#key-concepts" class="md-nav__link">
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#challenges" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Key Concepts
+        Challenges
       
     </span>
   </a>
   
 </li>
-        
-      </ul>
-    </nav>
+      
+        <li class="md-nav__item">
+  <a href="#solution" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Solution
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-features" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key Features
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#architecture" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Architecture
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#use-cases" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Use Cases
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#basic-usage" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Basic Usage
+      
+    </span>
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#key-concepts" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Key concepts
+      
+    </span>
+  </a>
   
 </li>
       
@@ -3269,19 +4126,19 @@
   <a href="#configuration-schema" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Schema
+        Configuration schema
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Schema">
+    <nav class="md-nav" aria-label="Configuration schema">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#globalexceptionhandleroptions-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        GlobalExceptionHandlerOptions Properties
+        GlobalExceptionHandlerOptions properties
       
     </span>
   </a>
@@ -3297,19 +4154,19 @@
   <a href="#configuration-examples" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Configuration Examples
+        Configuration examples
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Configuration Examples">
+    <nav class="md-nav" aria-label="Configuration examples">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#example-1-production-secure-configuration" class="md-nav__link">
+  <a href="#example-1-production-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 1: Production (Secure Configuration)
+        Example 1: Production configuration
       
     </span>
   </a>
@@ -3317,10 +4174,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-2-development-detailed-configuration" class="md-nav__link">
+  <a href="#example-2-development-configuration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 2: Development (Detailed Configuration)
+        Example 2: Development configuration
       
     </span>
   </a>
@@ -3331,7 +4188,7 @@
   <a href="#example-3-fluent-exception-mapping" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 3: Fluent Exception Mapping
+        Example 3: Fluent exception mapping
       
     </span>
   </a>
@@ -3342,7 +4199,7 @@
   <a href="#example-4-custom-handlers-with-priority" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 4: Custom Handlers with Priority
+        Example 4: Custom handlers with priority
       
     </span>
   </a>
@@ -3350,10 +4207,10 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#example-5-exception-filtering-ignore-rethrow" class="md-nav__link">
+  <a href="#example-5-exception-filtering" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 5: Exception Filtering (Ignore &amp; Rethrow)
+        Example 5: Exception filtering
       
     </span>
   </a>
@@ -3364,7 +4221,7 @@
   <a href="#example-6-conditional-handler-registration" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 6: Conditional Handler Registration
+        Example 6: Conditional handler registration
       
     </span>
   </a>
@@ -3375,7 +4232,7 @@
   <a href="#example-7-complete-production-setup" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Example 7: Complete Production Setup
+        Example 7: Complete production setup
       
     </span>
   </a>
@@ -3391,19 +4248,19 @@
   <a href="#built-in-exception-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Built-In Exception Handlers
+        Built-in exception handlers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Built-In Exception Handlers">
+    <nav class="md-nav" aria-label="Built-in exception handlers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
-  <a href="#domain-application-exceptions" class="md-nav__link">
+  <a href="#domain-and-application-exceptions" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Domain &amp; Application Exceptions
+        Domain and application exceptions
       
     </span>
   </a>
@@ -3414,7 +4271,7 @@
   <a href="#diagnostic-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Diagnostic Handlers
+        Diagnostic handlers
       
     </span>
   </a>
@@ -3422,15 +4279,15 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#database-exception-handlers-entity-framework-core" class="md-nav__link">
+  <a href="#database-exception-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Database Exception Handlers (Entity Framework Core)
+        Database exception handlers
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Database Exception Handlers (Entity Framework Core)">
+    <nav class="md-nav" aria-label="Database exception handlers">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
@@ -3480,19 +4337,19 @@
   <a href="#problem-details-response-format" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Problem Details Response Format
+        Problem Details response format
       
     </span>
   </a>
   
-    <nav class="md-nav" aria-label="Problem Details Response Format">
+    <nav class="md-nav" aria-label="Problem Details response format">
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
   <a href="#standard-properties" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Standard Properties
+        Standard properties
       
     </span>
   </a>
@@ -3508,7 +4365,7 @@
   <a href="#using-exception-handlers-in-minimal-apis" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Using Exception Handlers in Minimal APIs
+        Using exception handlers in Minimal APIs
       
     </span>
   </a>
@@ -3519,7 +4376,7 @@
   <a href="#custom-exception-handlers" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Custom Exception Handlers
+        Custom exception handlers
       
     </span>
   </a>
@@ -3530,7 +4387,7 @@
   <a href="#security-best-practices" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Security Best Practices
+        Security best practices
       
     </span>
   </a>
@@ -3586,7 +4443,7 @@
   <a href="#debugging-tips" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Debugging Tips
+        Debugging tips
       
     </span>
   </a>
@@ -3602,7 +4459,7 @@
   <a href="#additional-resources" class="md-nav__link">
     <span class="md-ellipsis">
       
-        Additional Resources
+        Additional resources
       
     </span>
   </a>
@@ -3652,10 +4509,28 @@
     
     
       <li class="md-path__item">
+        <a href="../../docs/" class="md-path__link">
+          
+  <span class="md-ellipsis">
+    Docs
+  </span>
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+    
+    
+      <li class="md-path__item">
         <a href="../" class="md-path__link">
           
   <span class="md-ellipsis">
-    Documentation
+    Feature Guides
   </span>
 
         </a>
@@ -3695,12 +4570,67 @@
   
 
 
-<h1 id="exception-handler-configuration-feature-documentation">Exception Handler Configuration Feature Documentation<a class="headerlink" href="#exception-handler-configuration-feature-documentation" title="Permanent link">&para;</a></h1>
+<h1 id="exception-handler-configuration">Exception Handler Configuration<a class="headerlink" href="#exception-handler-configuration" title="Permanent link">&para;</a></h1>
 <blockquote>
 <p>Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.</p>
 </blockquote>
+<div class="toc">
+<ul>
+<li><a href="#exception-handler-configuration">Exception Handler Configuration</a><ul>
+<li><a href="#overview">Overview</a></li>
+<li><a href="#challenges">Challenges</a></li>
+<li><a href="#solution">Solution</a></li>
+<li><a href="#key-features">Key Features</a></li>
+<li><a href="#architecture">Architecture</a></li>
+<li><a href="#use-cases">Use Cases</a></li>
+<li><a href="#basic-usage">Basic Usage</a></li>
+<li><a href="#key-concepts">Key concepts</a></li>
+<li><a href="#configuration-schema">Configuration schema</a><ul>
+<li><a href="#globalexceptionhandleroptions-properties">GlobalExceptionHandlerOptions properties</a></li>
+</ul>
+</li>
+<li><a href="#configuration-examples">Configuration examples</a><ul>
+<li><a href="#example-1-production-configuration">Example 1: Production configuration</a></li>
+<li><a href="#example-2-development-configuration">Example 2: Development configuration</a></li>
+<li><a href="#example-3-fluent-exception-mapping">Example 3: Fluent exception mapping</a></li>
+<li><a href="#example-4-custom-handlers-with-priority">Example 4: Custom handlers with priority</a></li>
+<li><a href="#example-5-exception-filtering">Example 5: Exception filtering</a></li>
+<li><a href="#example-6-conditional-handler-registration">Example 6: Conditional handler registration</a></li>
+<li><a href="#example-7-complete-production-setup">Example 7: Complete production setup</a></li>
+</ul>
+</li>
+<li><a href="#built-in-exception-handlers">Built-in exception handlers</a><ul>
+<li><a href="#domain-and-application-exceptions">Domain and application exceptions</a></li>
+<li><a href="#diagnostic-handlers">Diagnostic handlers</a></li>
+<li><a href="#database-exception-handlers">Database exception handlers</a><ul>
+<li><a href="#dbupdateconcurrencyexceptionhandler">DbUpdateConcurrencyExceptionHandler</a></li>
+<li><a href="#dbupdateexceptionhandler">DbUpdateExceptionHandler</a></li>
+<li><a href="#dbexceptionhandler">DbExceptionHandler</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#problem-details-response-format">Problem Details response format</a><ul>
+<li><a href="#standard-properties">Standard properties</a></li>
+</ul>
+</li>
+<li><a href="#using-exception-handlers-in-minimal-apis">Using exception handlers in Minimal APIs</a></li>
+<li><a href="#custom-exception-handlers">Custom exception handlers</a></li>
+<li><a href="#security-best-practices">Security best practices</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a><ul>
+<li><a href="#issue-exceptions-are-not-being-caught">Issue: Exceptions are not being caught</a></li>
+<li><a href="#issue-wrong-handler-is-executing">Issue: Wrong handler is executing</a></li>
+<li><a href="#issue-exception-details-showing-in-production">Issue: Exception details showing in production</a></li>
+<li><a href="#debugging-tips">Debugging tips</a></li>
+</ul>
+</li>
+<li><a href="#additional-resources">Additional resources</a></li>
+</ul>
+</li>
+</ul>
+</div>
 <h2 id="overview">Overview<a class="headerlink" href="#overview" title="Permanent link">&para;</a></h2>
-<p>The Exception Handler is a comprehensive, configuration-driven system for handling exceptions in ASP.NET Core applications. It provides a unified approach to converting exceptions into consistent HTTP responses following the <a href="https://tools.ietf.org/html/rfc7807">Problem Details for HTTP APIs</a> standard.</p>
+<p>The Exception Handler is a configuration-driven system for handling exceptions in ASP.NET Core applications. It provides a unified approach to converting exceptions into consistent HTTP responses that use the <a href="https://www.rfc-editor.org/rfc/rfc9457.html">Problem Details for HTTP APIs</a> format.</p>
 <blockquote>
 <p>Builds on the standard <a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling">ASP.NET Core Exception Handler Middleware</a> and provides a fluent, extensible configuration system for managing application and infrastructure exceptions.</p>
 </blockquote>
@@ -3715,15 +4645,66 @@
 <li><strong>Audit logging</strong> with user and request context</li>
 <li><strong>Entity Framework Core database exception handling</strong></li>
 </ul>
-<h3 id="key-concepts">Key Concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h3>
+<h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
+<p>Unhandled exceptions need consistent HTTP responses without disclosing stack traces or infrastructure details. Applications also need predictable handler ordering, mappings for application-specific exceptions, database error handling, logging, and environment-specific diagnostics.</p>
+<h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
+<p><code>AddExceptionHandler(...)</code> registers an ordered ASP.NET Core <code>IExceptionHandler</code> chain. Custom handlers run by configured priority, fluent mappings run next, built-in handlers cover common DevKit exceptions, and <code>GlobalExceptionHandler</code> provides the final 500 response. <code>UseExceptionHandler()</code> adds the middleware that invokes the chain.</p>
+<h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
+<ul>
+<li>built-in handlers for validation, domain, security, module, and infrastructure exceptions</li>
+<li>fluent exception-to-status or exception-to-<code>ProblemDetails</code> mappings</li>
+<li>priority-ordered custom handlers and conditional registration</li>
+<li>exact-type ignore and rethrow filters</li>
+<li>optional logging and response enrichment</li>
+<li>Entity Framework Core handlers from <code>Presentation.Web.EntityFramework</code></li>
+<li>development-only debug details and audit logging handlers</li>
+</ul>
+<h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
+<p>ASP.NET Core's exception-handler middleware calls registered <code>IExceptionHandler</code> implementations in order. Each handler either declines the exception or writes a <code>ProblemDetails</code> response and stops the chain. DevKit registers additional handlers first, followed by mappings, built-in handlers, and the global catch-all handler.</p>
+<h2 id="use-cases">Use Cases<a class="headerlink" href="#use-cases" title="Permanent link">&para;</a></h2>
+<ul>
+<li>map an application exception to a stable HTTP status and title</li>
+<li>return validation errors as a structured client response</li>
+<li>hide exception details in production while retaining server-side logs</li>
+<li>classify Entity Framework concurrency and constraint failures</li>
+<li>add audit or development diagnostics without replacing the standard middleware</li>
+</ul>
+<h2 id="basic-usage">Basic Usage<a class="headerlink" href="#basic-usage" title="Permanent link">&para;</a></h2>
+<p>This example maps <code>KeyNotFoundException</code> to 404, hides details outside Development, enriches the response with a trace identifier, and exposes a route that demonstrates the result.</p>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Presentation.Web</span><span class="p">;</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
+
+<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">IncludeExceptionDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">();</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnableLogging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">KeyNotFoundException</span><span class="o">&gt;</span><span class="p">(</span>
+<span class="w">        </span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span>
+<span class="w">        </span><span class="s">&quot;Resource Not Found&quot;</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnrichProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">_</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">        </span><span class="n">problem</span><span class="p">.</span><span class="n">Extensions</span><span class="p">[</span><span class="s">&quot;traceId&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">TraceIdentifier</span><span class="p">;</span>
+<span class="p">});</span>
+
+<span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
+<span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
+
+<span class="n">app</span><span class="p">.</span><span class="n">MapGet</span><span class="p">(</span><span class="s">&quot;/products/{id:int}&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">GetProduct</span><span class="p">);</span>
+<span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
+
+<span class="k">static</span><span class="w"> </span><span class="n">IResult</span><span class="w"> </span><span class="nf">GetProduct</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
+<span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="k">new</span><span class="w"> </span><span class="nf">KeyNotFoundException</span><span class="p">(</span><span class="s">$&quot;Product {id} was not found.&quot;</span><span class="p">);</span>
+</code></pre></div>
+<p><code>GET /products/42</code> returns a 404 Problem Details response titled <code>Resource Not Found</code>. In production, the response omits the exception message; the server still logs the exception.</p>
+<h2 id="key-concepts">Key concepts<a class="headerlink" href="#key-concepts" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Exception Handler</strong>: A service that attempts to handle a specific exception type and produce an HTTP response</li>
 <li><strong>Handler Chain</strong>: A sequence of handlers executed in priority order; the first to handle stops the chain</li>
-<li><strong>Problem Details</strong>: A standardized JSON format for error responses (RFC 7807)</li>
+<li><strong>Problem Details</strong>: A standardized JSON format for HTTP API error responses (RFC 9457)</li>
 <li><strong>Handler Priority</strong>: Higher values execute first; enables fine-grained control over handler ordering</li>
 </ul>
-<h2 id="configuration-schema">Configuration Schema<a class="headerlink" href="#configuration-schema" title="Permanent link">&para;</a></h2>
-<h3 id="globalexceptionhandleroptions-properties">GlobalExceptionHandlerOptions Properties<a class="headerlink" href="#globalexceptionhandleroptions-properties" title="Permanent link">&para;</a></h3>
+<h2 id="configuration-schema">Configuration schema<a class="headerlink" href="#configuration-schema" title="Permanent link">&para;</a></h2>
+<h3 id="globalexceptionhandleroptions-properties"><code>GlobalExceptionHandlerOptions</code> properties<a class="headerlink" href="#globalexceptionhandleroptions-properties" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -3751,7 +4732,7 @@
 </tr>
 <tr>
 <td><code>AdditionalHandlers</code></td>
-<td><code>List&lt;HandlerRegistration&gt;</code></td>
+<td><code>List&lt;ExceptionHandlerRegistration&gt;</code></td>
 <td>No</td>
 <td><code>[]</code></td>
 <td>Custom exception handlers with optional priority.</td>
@@ -3786,8 +4767,8 @@
 </tr>
 </tbody>
 </table>
-<h2 id="configuration-examples">Configuration Examples<a class="headerlink" href="#configuration-examples" title="Permanent link">&para;</a></h2>
-<h3 id="example-1-production-secure-configuration">Example 1: Production (Secure Configuration)<a class="headerlink" href="#example-1-production-secure-configuration" title="Permanent link">&para;</a></h3>
+<h2 id="configuration-examples">Configuration examples<a class="headerlink" href="#configuration-examples" title="Permanent link">&para;</a></h2>
+<h3 id="example-1-production-configuration">Example 1: Production configuration<a class="headerlink" href="#example-1-production-configuration" title="Permanent link">&para;</a></h3>
 <p>Hide implementation details, enable logging:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -3822,7 +4803,7 @@
 <span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-20T12:00:00Z&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="example-2-development-detailed-configuration">Example 2: Development (Detailed Configuration)<a class="headerlink" href="#example-2-development-detailed-configuration" title="Permanent link">&para;</a></h3>
+<h3 id="example-2-development-configuration">Example 2: Development configuration<a class="headerlink" href="#example-2-development-configuration" title="Permanent link">&para;</a></h3>
 <p>Include full exception details for debugging:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -3830,13 +4811,13 @@
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnableLogging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1">// Debug handler with highest priority in development</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">DebugExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">DebugExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">999</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Audit handler to track errors</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">AuditExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">999</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">AuditExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Add database handlers</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseEntityFramework</span><span class="p">();</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddEntityFrameworkHandlers</span><span class="p">();</span>
 
 <span class="w">    </span><span class="c1">// Detailed enrichment for development</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnrichProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -3867,7 +4848,7 @@
 <span class="w">  </span><span class="nt">&quot;environment&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Development&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="example-3-fluent-exception-mapping">Example 3: Fluent Exception Mapping<a class="headerlink" href="#example-3-fluent-exception-mapping" title="Permanent link">&para;</a></h3>
+<h3 id="example-3-fluent-exception-mapping">Example 3: Fluent exception mapping<a class="headerlink" href="#example-3-fluent-exception-mapping" title="Permanent link">&para;</a></h3>
 <p>Quick configuration without custom handlers:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -3896,18 +4877,18 @@
 
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="example-4-custom-handlers-with-priority">Example 4: Custom Handlers with Priority<a class="headerlink" href="#example-4-custom-handlers-with-priority" title="Permanent link">&para;</a></h3>
+<h3 id="example-4-custom-handlers-with-priority">Example 4: Custom handlers with priority<a class="headerlink" href="#example-4-custom-handlers-with-priority" title="Permanent link">&para;</a></h3>
 <p>Multiple custom handlers with controlled execution order:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">IncludeExceptionDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">.</span><span class="n">IsDevelopment</span><span class="p">();</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnableLogging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 
-<span class="w">    </span><span class="c1">// Security handler: highest priority</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">SecurityExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Audit handler runs first and returns false so handling can continue</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">AuditExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">1100</span><span class="p">);</span>
 
-<span class="w">    </span><span class="c1">// Audit handler: logs all exceptions</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">AuditExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">999</span><span class="p">);</span>
+<span class="w">    </span><span class="c1">// Security handler handles matching exceptions</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">SecurityExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Business logic handlers: medium priority</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">BusinessRuleExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">);</span>
@@ -3919,7 +4900,7 @@
 
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="example-5-exception-filtering-ignore-rethrow">Example 5: Exception Filtering (Ignore &amp; Rethrow)<a class="headerlink" href="#example-5-exception-filtering-ignore-rethrow" title="Permanent link">&para;</a></h3>
+<h3 id="example-5-exception-filtering">Example 5: Exception filtering<a class="headerlink" href="#example-5-exception-filtering" title="Permanent link">&para;</a></h3>
 <p>Control which exceptions are handled vs ignored:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -3941,7 +4922,7 @@
 
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="example-6-conditional-handler-registration">Example 6: Conditional Handler Registration<a class="headerlink" href="#example-6-conditional-handler-registration" title="Permanent link">&para;</a></h3>
+<h3 id="example-6-conditional-handler-registration">Example 6: Conditional handler registration<a class="headerlink" href="#example-6-conditional-handler-registration" title="Permanent link">&para;</a></h3>
 <p>Register handlers based on environment or feature flags:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">environment</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">;</span>
 <span class="kt">var</span><span class="w"> </span><span class="n">featureFlags</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">.</span><span class="n">GetSection</span><span class="p">(</span><span class="s">&quot;FeatureFlags&quot;</span><span class="p">);</span>
@@ -3967,13 +4948,13 @@
 <span class="w">        </span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// Add database handlers if using EF Core</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseEntityFramework</span><span class="p">(</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddEntityFrameworkHandlers</span><span class="p">(</span>
 <span class="w">        </span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">featureFlags</span><span class="p">.</span><span class="n">GetValue</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;UseEntityFramework&quot;</span><span class="p">));</span>
 <span class="p">});</span>
 
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
 </code></pre></div>
-<h3 id="example-7-complete-production-setup">Example 7: Complete Production Setup<a class="headerlink" href="#example-7-complete-production-setup" title="Permanent link">&para;</a></h3>
+<h3 id="example-7-complete-production-setup">Example 7: Complete production setup<a class="headerlink" href="#example-7-complete-production-setup" title="Permanent link">&para;</a></h3>
 <p>Comprehensive configuration combining all features:</p>
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span>
 <span class="p">{</span>
@@ -3983,8 +4964,8 @@
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnableLogging</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">true</span><span class="p">;</span>
 
 <span class="w">    </span><span class="c1">// --- Handlers ---</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">AuditExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">999</span><span class="p">);</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">DebugExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">isDevelopment</span><span class="p">,</span><span class="w"> </span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">AuditExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">1000</span><span class="p">);</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">DebugExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="k">when</span><span class="p">:</span><span class="w"> </span><span class="n">isDevelopment</span><span class="p">,</span><span class="w"> </span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">999</span><span class="p">);</span>
 
 <span class="w">    </span><span class="c1">// --- Exception Mapping ---</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">Map</span><span class="o">&lt;</span><span class="n">NotFoundException</span><span class="o">&gt;</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status404NotFound</span><span class="p">,</span><span class="w"> </span><span class="s">&quot;Resource Not Found&quot;</span><span class="p">)</span>
@@ -3998,7 +4979,7 @@
 <span class="w">           </span><span class="p">.</span><span class="n">Rethrow</span><span class="o">&lt;</span><span class="n">OutOfMemoryException</span><span class="o">&gt;</span><span class="p">();</span>
 
 <span class="w">    </span><span class="c1">// --- Database Handlers ---</span>
-<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">UseEntityFramework</span><span class="p">();</span>
+<span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddEntityFrameworkHandlers</span><span class="p">();</span>
 
 <span class="w">    </span><span class="c1">// --- Problem Details Enrichment ---</span>
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">EnrichProblemDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">context</span><span class="p">,</span><span class="w"> </span><span class="n">problem</span><span class="p">,</span><span class="w"> </span><span class="n">exception</span><span class="p">)</span><span class="w"> </span><span class="o">=&gt;</span>
@@ -4018,8 +4999,8 @@
 
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span>
 </code></pre></div>
-<h2 id="built-in-exception-handlers">Built-In Exception Handlers<a class="headerlink" href="#built-in-exception-handlers" title="Permanent link">&para;</a></h2>
-<h3 id="domain-application-exceptions">Domain &amp; Application Exceptions<a class="headerlink" href="#domain-application-exceptions" title="Permanent link">&para;</a></h3>
+<h2 id="built-in-exception-handlers">Built-in exception handlers<a class="headerlink" href="#built-in-exception-handlers" title="Permanent link">&para;</a></h2>
+<h3 id="domain-and-application-exceptions">Domain and application exceptions<a class="headerlink" href="#domain-and-application-exceptions" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4067,10 +5048,10 @@
 <td>Security violations</td>
 </tr>
 <tr>
-<td><code>ConflictExceptionHandler</code></td>
-<td><code>ConflictException</code></td>
-<td>409</td>
-<td>Resource conflicts</td>
+<td><code>MappedExceptionHandler</code></td>
+<td>Configured exception types</td>
+<td>Configured</td>
+<td>Fluent exception mappings</td>
 </tr>
 <tr>
 <td><code>NotImplementedExceptionHandler</code></td>
@@ -4092,7 +5073,7 @@
 </tr>
 </tbody>
 </table>
-<h3 id="diagnostic-handlers">Diagnostic Handlers<a class="headerlink" href="#diagnostic-handlers" title="Permanent link">&para;</a></h3>
+<h3 id="diagnostic-handlers">Diagnostic handlers<a class="headerlink" href="#diagnostic-handlers" title="Permanent link">&para;</a></h3>
 <table>
 <thead>
 <tr>
@@ -4105,17 +5086,17 @@
 <tr>
 <td><code>DebugExceptionHandler</code></td>
 <td><code>Exception</code> (catch-all)</td>
-<td>Development only; shows full stack traces &amp; context</td>
+<td>Register explicitly in Development; writes full stack traces and context</td>
 </tr>
 <tr>
 <td><code>AuditExceptionHandler</code></td>
-<td><code>Exception</code> (catch-all)</td>
-<td>Track user, request, and exception context</td>
+<td><code>Exception</code> (observes and returns <code>false</code>)</td>
+<td>Register explicitly before handling handlers to log user, request, and exception context</td>
 </tr>
 </tbody>
 </table>
-<h3 id="database-exception-handlers-entity-framework-core">Database Exception Handlers (Entity Framework Core)<a class="headerlink" href="#database-exception-handlers-entity-framework-core" title="Permanent link">&para;</a></h3>
-<p>Register with <code>options.UseEntityFramework()</code>:</p>
+<h3 id="database-exception-handlers">Database exception handlers<a class="headerlink" href="#database-exception-handlers" title="Permanent link">&para;</a></h3>
+<p>Register with <code>options.AddEntityFrameworkHandlers()</code>:</p>
 <table>
 <thead>
 <tr>
@@ -4146,7 +5127,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="dbupdateconcurrencyexceptionhandler">DbUpdateConcurrencyExceptionHandler<a class="headerlink" href="#dbupdateconcurrencyexceptionhandler" title="Permanent link">&para;</a></h4>
+<h4 id="dbupdateconcurrencyexceptionhandler"><code>DbUpdateConcurrencyExceptionHandler</code><a class="headerlink" href="#dbupdateconcurrencyexceptionhandler" title="Permanent link">&para;</a></h4>
 <p>Handles optimistic concurrency violations when multiple users modify the same entity simultaneously.</p>
 <p><strong>Exception:</strong> <code>DbUpdateConcurrencyException</code><br />
 <strong>Status Code:</strong> 409 Conflict</p>
@@ -4159,28 +5140,28 @@
 <span class="k">await</span><span class="w"> </span><span class="n">dbContext</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span><span class="w"> </span><span class="c1">// User B already saved with Version=2</span>
 <span class="c1">// Throws DbUpdateConcurrencyException</span>
 </code></pre></div>
-<p><strong>Response:</strong></p>
+<p><strong>Production response:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/409&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Concurrency Conflict&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">409</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;The record was modified by another user. Please refresh and try again.&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/products/1&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p><strong>In development</strong> (when <code>IncludeExceptionDetails = true</code>), the detail and affected entities are included:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[DbUpdateConcurrencyException] Concurrency conflict detected for: Product. Store update, insert, or delete statement affected an unexpected number of rows.&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;affectedEntities&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span>
 <span class="w">    </span><span class="p">{</span>
 <span class="w">      </span><span class="nt">&quot;entity&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Product&quot;</span><span class="p">,</span>
 <span class="w">      </span><span class="nt">&quot;state&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Modified&quot;</span>
 <span class="w">    </span><span class="p">}</span>
-<span class="w">  </span><span class="p">],</span>
-<span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span>
+<span class="w">  </span><span class="p">]</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><strong>In development</strong> (when <code>IncludeExceptionDetails = true</code>):</p>
-<div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[DbUpdateConcurrencyException] Concurrency conflict detected for: Product. Store update, insert, or delete statement affected an unexpected number of rows.&quot;</span>
-<span class="p">}</span>
-</code></pre></div>
-<h4 id="dbupdateexceptionhandler">DbUpdateExceptionHandler<a class="headerlink" href="#dbupdateexceptionhandler" title="Permanent link">&para;</a></h4>
+<h4 id="dbupdateexceptionhandler"><code>DbUpdateExceptionHandler</code><a class="headerlink" href="#dbupdateexceptionhandler" title="Permanent link">&para;</a></h4>
 <p>Handles database constraint violations including unique constraints, foreign key errors, and check constraints. Automatically classifies errors based on exception message to return appropriate status codes.</p>
 <p><strong>Exception:</strong> <code>DbUpdateException</code><br />
 <strong>Status Code:</strong> 409 (Unique/Duplicate) or 422 (Other violations)</p>
@@ -4190,7 +5171,7 @@
 <span class="k">await</span><span class="w"> </span><span class="n">dbContext</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span><span class="w"> </span><span class="c1">// Email already exists (unique index)</span>
 <span class="c1">// Throws DbUpdateException</span>
 </code></pre></div>
-<p><strong>Response (409 Conflict):</strong></p>
+<p><strong>Response with exception details enabled (409 Conflict):</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/409&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Database Update Failed&quot;</span><span class="p">,</span>
@@ -4207,7 +5188,7 @@
 <span class="k">await</span><span class="w"> </span><span class="n">dbContext</span><span class="p">.</span><span class="n">SaveChangesAsync</span><span class="p">();</span>
 <span class="c1">// Throws DbUpdateException</span>
 </code></pre></div>
-<p><strong>Response (422 Unprocessable Entity):</strong></p>
+<p><strong>Response with exception details enabled (422 Unprocessable Entity):</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/422&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Database Update Failed&quot;</span><span class="p">,</span>
@@ -4218,7 +5199,7 @@
 <span class="w">  </span><span class="nt">&quot;traceId&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;0HN4GBRMVDVP8:00000001&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-<p><strong>Error Type Classification:</strong></p>
+<p><strong>Error type classification:</strong></p>
 <table>
 <thead>
 <tr>
@@ -4260,7 +5241,7 @@
 </tr>
 </tbody>
 </table>
-<h4 id="dbexceptionhandler">DbExceptionHandler<a class="headerlink" href="#dbexceptionhandler" title="Permanent link">&para;</a></h4>
+<h4 id="dbexceptionhandler"><code>DbExceptionHandler</code><a class="headerlink" href="#dbexceptionhandler" title="Permanent link">&para;</a></h4>
 <p>Handles general database errors including connection timeouts, deadlocks, and other infrastructure issues.</p>
 <p><strong>Exception:</strong> <code>DbException</code><br />
 <strong>Status Code:</strong> 503 Service Unavailable</p>
@@ -4281,17 +5262,17 @@
 </code></pre></div>
 <p><strong>In development:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[SqlException] Timeout expired. The timeout period elapsed prior to completion of the operation.&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;errorCode&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;-2&quot;</span>
+<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[SqlException] Timeout expired. The timeout period elapsed prior to completion of the operation.&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h2 id="problem-details-response-format">Problem Details Response Format<a class="headerlink" href="#problem-details-response-format" title="Permanent link">&para;</a></h2>
-<p>All exception handlers produce RFC 7807 Problem Details responses:</p>
+<p>The handler writes the provider error code to the server log; it does not add that code to the response.</p>
+<h2 id="problem-details-response-format">Problem Details response format<a class="headerlink" href="#problem-details-response-format" title="Permanent link">&para;</a></h2>
+<p>Exception handlers produce Problem Details responses. Extension members such as <code>traceId</code> and <code>timestamp</code> appear only when a handler or <code>EnrichProblemDetails</code> adds them:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
-<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/422&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Validation Failed&quot;</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">422</span><span class="p">,</span>
-<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[ValidationException] One or more validation errors occurred.&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;type&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;https://httpstatuses.io/400&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;title&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;Bad Request&quot;</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;status&quot;</span><span class="p">:</span><span class="w"> </span><span class="mi">400</span><span class="p">,</span>
+<span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;[ValidationException] A model validation error has occurred while executing the request&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;instance&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;/api/products&quot;</span><span class="p">,</span>
 <span class="w">  </span><span class="nt">&quot;errors&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;name&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="s2">&quot;Name is required&quot;</span><span class="p">],</span>
@@ -4301,16 +5282,16 @@
 <span class="w">  </span><span class="nt">&quot;timestamp&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;2026-01-20T12:00:00Z&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
-<h3 id="standard-properties">Standard Properties<a class="headerlink" href="#standard-properties" title="Permanent link">&para;</a></h3>
+<h3 id="standard-properties">Standard properties<a class="headerlink" href="#standard-properties" title="Permanent link">&para;</a></h3>
 <ul>
 <li><strong>type</strong>: URI identifying the problem type (links to HTTP status documentation)</li>
 <li><strong>title</strong>: Short human-readable summary</li>
 <li><strong>status</strong>: HTTP status code</li>
-<li><strong>detail</strong>: Detailed explanation (hidden in production by default)</li>
+<li><strong>detail</strong>: Detailed explanation; set <code>IncludeExceptionDetails = false</code> to omit exception details in production (the option defaults to <code>true</code>)</li>
 <li><strong>instance</strong>: Request path that triggered the error</li>
-<li><strong>extensions</strong>: Custom key-value pairs (added via <code>EnrichProblemDetails</code> or handlers)</li>
+<li><strong>extension members</strong>: Custom key-value pairs added through <code>ProblemDetails.Extensions</code>; JSON serialization places them beside the standard properties</li>
 </ul>
-<h2 id="using-exception-handlers-in-minimal-apis">Using Exception Handlers in Minimal APIs<a class="headerlink" href="#using-exception-handlers-in-minimal-apis" title="Permanent link">&para;</a></h2>
+<h2 id="using-exception-handlers-in-minimal-apis">Using exception handlers in Minimal APIs<a class="headerlink" href="#using-exception-handlers-in-minimal-apis" title="Permanent link">&para;</a></h2>
 <p>Exception handlers apply globally by default:</p>
 <div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="k">group</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">MapGroup</span><span class="p">(</span><span class="s">&quot;/api/products&quot;</span><span class="p">);</span>
 
@@ -4320,9 +5301,8 @@
 
 <span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetProducts</span><span class="p">()</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">_service</span><span class="p">.</span><span class="n">GetAllAsync</span><span class="p">());</span>
 
-<span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetProduct</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span>
-<span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">_service</span><span class="p">.</span><span class="n">GetByIdAsync</span><span class="p">(</span><span class="n">id</span><span class="p">))</span>
-<span class="w">    </span><span class="o">??</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">NotFound</span><span class="p">();</span>
+<span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">GetProduct</span><span class="p">(</span><span class="kt">int</span><span class="w"> </span><span class="n">id</span><span class="p">)</span>
+<span class="w">    </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">Results</span><span class="p">.</span><span class="n">Ok</span><span class="p">(</span><span class="k">await</span><span class="w"> </span><span class="n">_service</span><span class="p">.</span><span class="n">GetRequiredByIdAsync</span><span class="p">(</span><span class="n">id</span><span class="p">));</span>
 
 <span class="k">async</span><span class="w"> </span><span class="n">Task</span><span class="o">&lt;</span><span class="n">IResult</span><span class="o">&gt;</span><span class="w"> </span><span class="n">CreateProduct</span><span class="p">(</span><span class="n">CreateProductRequest</span><span class="w"> </span><span class="n">request</span><span class="p">)</span>
 <span class="p">{</span>
@@ -4334,14 +5314,15 @@
 <ol>
 <li><code>CreateProduct</code> validation throws <code>ValidationException</code></li>
 <li><code>ValidationExceptionHandler</code> catches it</li>
-<li>Returns 422 with validation errors</li>
+<li>Returns 400 with validation errors</li>
 <li><code>GetProduct</code> throws <code>EntityNotFoundException</code> (not found)</li>
 <li><code>EntityNotFoundExceptionHandler</code> catches it</li>
 <li>Returns 404 with "Entity Not Found"</li>
 </ol>
-<h2 id="custom-exception-handlers">Custom Exception Handlers<a class="headerlink" href="#custom-exception-handlers" title="Permanent link">&para;</a></h2>
+<h2 id="custom-exception-handlers">Custom exception handlers<a class="headerlink" href="#custom-exception-handlers" title="Permanent link">&para;</a></h2>
 <p>Extend <code>ExceptionHandlerBase&lt;TException&gt;</code> to create custom handlers:</p>
-<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Presentation.Web</span><span class="p">;</span>
+<div class="highlight"><pre><span></span><code><span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Domain</span><span class="p">;</span>
+<span class="k">using</span><span class="w"> </span><span class="nn">BridgingIT.DevKit.Presentation.Web</span><span class="p">;</span>
 
 <span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">MyBusinessException</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">DomainException</span>
 <span class="p">{</span>
@@ -4395,7 +5376,7 @@
 <span class="w">    </span><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">MyBusinessExceptionHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">500</span><span class="p">);</span>
 <span class="p">});</span>
 </code></pre></div>
-<h2 id="security-best-practices">Security Best Practices<a class="headerlink" href="#security-best-practices" title="Permanent link">&para;</a></h2>
+<h2 id="security-best-practices">Security best practices<a class="headerlink" href="#security-best-practices" title="Permanent link">&para;</a></h2>
 <ol>
 <li><strong>Never include exception details in production</strong></li>
 </ol>
@@ -4409,21 +5390,23 @@
 <ol>
 <li><strong>Use meaningful but generic titles</strong></li>
 </ol>
-<p>Wrong:
-   <div class="highlight"><pre><span></span><code><span class="p">{</span>
+<p>Wrong:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;SQL syntax error on line 45 of UserRepository.cs&quot;</span>
 <span class="p">}</span>
-</code></pre></div></p>
-<p>Correct:
-   <div class="highlight"><pre><span></span><code><span class="p">{</span>
+</code></pre></div>
+<p>Correct:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;detail&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;A database error occurred. Please try again later.&quot;</span>
 <span class="p">}</span>
-</code></pre></div></p>
+</code></pre></div>
 <h2 id="troubleshooting">Troubleshooting<a class="headerlink" href="#troubleshooting" title="Permanent link">&para;</a></h2>
 <h3 id="issue-exceptions-are-not-being-caught">Issue: Exceptions are not being caught<a class="headerlink" href="#issue-exceptions-are-not-being-caught" title="Permanent link">&para;</a></h3>
-<p><strong>Symptoms:</strong>
-- Application crashes instead of returning 500 response
-- No exception handler response</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Application crashes instead of returning 500 response</li>
+<li>No exception handler response</li>
+</ul>
 <p><strong>Solutions:</strong></p>
 <ol>
 <li><strong>Verify middleware is registered</strong></li>
@@ -4432,8 +5415,8 @@
 </code></pre></div>
 <ol>
 <li><strong>Check middleware order</strong></li>
-<li>Must be early in pipeline, after routing</li>
-<li>Typically: routing → exception handler → authorization</li>
+<li>Place it before the middleware and endpoints whose exceptions it must handle</li>
+<li>A common order is routing → exception handler → authorization → endpoints</li>
 </ol>
 <div class="highlight"><pre><span></span><code><span class="n">app</span><span class="p">.</span><span class="n">UseRouting</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">UseExceptionHandler</span><span class="p">();</span><span class="w">      </span><span class="c1">// ✅ Correct position</span>
@@ -4445,9 +5428,11 @@
 <div class="highlight"><pre><span></span><code><span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddExceptionHandler</span><span class="p">(</span><span class="n">options</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="cm">/* ... */</span><span class="w"> </span><span class="p">});</span>
 </code></pre></div>
 <h3 id="issue-wrong-handler-is-executing">Issue: Wrong handler is executing<a class="headerlink" href="#issue-wrong-handler-is-executing" title="Permanent link">&para;</a></h3>
-<p><strong>Symptoms:</strong>
-- Exception returns unexpected status code
-- Wrong error title/message</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Exception returns unexpected status code</li>
+<li>Wrong error title/message</li>
+</ul>
 <p><strong>Solution:</strong>
 Check handler priority and execution order:</p>
 <div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">AddHandler</span><span class="o">&lt;</span><span class="n">SpecificHandler</span><span class="o">&gt;</span><span class="p">(</span><span class="n">priority</span><span class="p">:</span><span class="w"> </span><span class="mi">100</span><span class="p">);</span><span class="w">    </span><span class="c1">// Executes first</span>
@@ -4456,12 +5441,14 @@ Check handler priority and execution order:</p>
 </code></pre></div>
 <p>Use highest priority for most specific handlers.</p>
 <h3 id="issue-exception-details-showing-in-production">Issue: Exception details showing in production<a class="headerlink" href="#issue-exception-details-showing-in-production" title="Permanent link">&para;</a></h3>
-<p><strong>Symptoms:</strong>
-- Stack traces and sensitive info in JSON responses</p>
+<p><strong>Symptoms:</strong></p>
+<ul>
+<li>Stack traces and sensitive info in JSON responses</li>
+</ul>
 <p><strong>Solution:</strong></p>
 <div class="highlight"><pre><span></span><code><span class="n">options</span><span class="p">.</span><span class="n">IncludeExceptionDetails</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">false</span><span class="p">;</span><span class="w"> </span><span class="c1">// Set explicitly</span>
 </code></pre></div>
-<h3 id="debugging-tips">Debugging Tips<a class="headerlink" href="#debugging-tips" title="Permanent link">&para;</a></h3>
+<h3 id="debugging-tips">Debugging tips<a class="headerlink" href="#debugging-tips" title="Permanent link">&para;</a></h3>
 <ol>
 <li><strong>Enable detailed logging</strong></li>
 </ol>
@@ -4489,10 +5476,10 @@ Check handler priority and execution order:</p>
 <span class="n">Assert</span><span class="p">.</span><span class="n">IsTrue</span><span class="p">(</span><span class="n">handled</span><span class="p">);</span>
 <span class="n">Assert</span><span class="p">.</span><span class="n">Equal</span><span class="p">(</span><span class="n">StatusCodes</span><span class="p">.</span><span class="n">Status400BadRequest</span><span class="p">,</span><span class="w"> </span><span class="n">context</span><span class="p">.</span><span class="n">Response</span><span class="p">.</span><span class="n">StatusCode</span><span class="p">);</span>
 </code></pre></div>
-<h2 id="additional-resources">Additional Resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
+<h2 id="additional-resources">Additional resources<a class="headerlink" href="#additional-resources" title="Permanent link">&para;</a></h2>
 <ul>
 <li><a href="https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling">ASP.NET Core Error Handling</a></li>
-<li><a href="https://tools.ietf.org/html/rfc7807">Problem Details for HTTP APIs (RFC 7807)</a></li>
+<li><a href="https://www.rfc-editor.org/rfc/rfc9457.html">Problem Details for HTTP APIs (RFC 9457)</a></li>
 </ul>
 
 
@@ -4572,7 +5559,7 @@ Check handler priority and execution order:</p>
     
       
       
-      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.top", "search.highlight", "search.share", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
+      <script id="__config" type="application/json">{"annotate": null, "base": "../..", "features": ["navigation.instant", "navigation.path", "navigation.sections", "navigation.tabs", "navigation.tabs.sticky", "navigation.top", "toc.follow", "search.highlight", "search.share", "search.suggest", "content.code.copy", "content.tabs.link"], "search": "../../assets/javascripts/workers/search.2c215733.min.js", "tags": null, "translations": {"clipboard.copied": "Copied to clipboard", "clipboard.copy": "Copy to clipboard", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.placeholder": "Type to start searching", "search.result.term.missing": "Missing", "select.version": "Select version"}, "version": null}</script>
     
     
       <script src="../../assets/javascripts/bundle.d7400e89.min.js"></script>
@@ -4580,6 +5567,8 @@ Check handler priority and execution order:</p>
         <script src="../../assets/javascripts/disable-keyboard-shortcuts.js"></script>
       
         <script src="../../assets/javascripts/context7-widget.js"></script>
+      
+        <script src="../../assets/javascripts/theme-picker.js"></script>
       
     
   </body>

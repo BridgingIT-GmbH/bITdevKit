@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CommandHandlerBase&lt;TCommand, TResult&gt;.TypedLogger | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents typed logger.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class CommandHandlerBase&lt;TCommand, TResult&gt;.TypedLogger
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Commands.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents typed logger.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -130,7 +131,8 @@ Class CommandHandlerBase&lt;TCommand, TResult&gt;.TypedLogger
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the processed operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,17 +143,23 @@ public static void LogProcessed(ILogger logger, string logKey, string commandTyp
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>commandType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The command type used by the operation.</p>
+</dd>
     <dt><code>commandRequestId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The command request id used by the operation.</p>
+</dd>
     <dt><code>moduleName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The module name used by the operation.</p>
+</dd>
     <dt><code>timeElapsed</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The time elapsed used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -172,7 +180,8 @@ public static void LogProcessed(ILogger logger, string logKey, string commandTyp
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Writes a log entry for the processing operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -183,17 +192,23 @@ public static void LogProcessing(ILogger logger, string logKey, string commandTy
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>The logger that receives diagnostic events.</p>
+</dd>
     <dt><code>logKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The structured logging key.</p>
+</dd>
     <dt><code>commandType</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The command type used by the operation.</p>
+</dd>
     <dt><code>commandRequestId</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The command request id used by the operation.</p>
+</dd>
     <dt><code>commandHandler</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The command handler used by the operation.</p>
+</dd>
     <dt><code>moduleName</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The module name used by the operation.</p>
+</dd>
   </dl>
 
 

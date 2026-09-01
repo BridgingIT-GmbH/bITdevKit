@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class MessagePublishJob&lt;TData, TMessage&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents message publish job.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class MessagePublishJob&lt;TData, TMessage&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Messaging.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents message publish job.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -105,9 +106,11 @@ Class MessagePublishJob&lt;TData, TMessage&gt;
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TData</code></dt>
-    <dd></dd>
+    <dd><p>The data type.</p>
+</dd>
     <dt><code>TMessage</code></dt>
-    <dd></dd>
+    <dd><p>The message type.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -277,7 +280,7 @@ Class MessagePublishJob&lt;TData, TMessage&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes the job using the supplied typed execution context.</p>
+  <div class="markdown level1 summary"><p>Executes the execute operation.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -288,17 +291,17 @@ Class MessagePublishJob&lt;TData, TMessage&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Common.IJobExecutionContext-1.html">IJobExecutionContext</a>&lt;TData&gt;</dt>
-    <dd><p>The typed execution context.</p>
+    <dd><p>The context for the operation.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd><p>The cancellation token.</p>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
 </dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a>&gt;</dt>
-    <dd><p>The execution result.</p>
+    <dd><p>A task that represents the asynchronous operation.</p>
 </dd>
   </dl>
 

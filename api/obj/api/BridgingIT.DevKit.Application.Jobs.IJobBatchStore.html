@@ -257,7 +257,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the attach operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -267,17 +268,21 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrences used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -297,7 +302,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -307,15 +313,18 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -335,7 +344,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -345,13 +355,15 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -371,7 +383,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the list occurrences operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -381,15 +394,18 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -409,7 +425,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Removes occurrences.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -419,15 +436,18 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>occurrenceIds</code> <span class="xref">IReadOnlyCollection</span>&lt;<span class="xref">Guid</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrence ids used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">int</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -447,7 +467,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the replace occurrences operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -457,17 +478,21 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrences used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -487,7 +512,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try attach children operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -497,19 +523,24 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batchId</code> <span class="xref">Guid</span></dt>
-    <dd></dd>
+    <dd><p>The batch id used by the operation.</p>
+</dd>
     <dt><code>childOccurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The child occurrences used by the operation.</p>
+</dd>
     <dt><code>memberships</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The memberships used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -529,7 +560,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try create operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -539,17 +571,21 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
-    <dd></dd>
+    <dd><p>The batch used by the operation.</p>
+</dd>
     <dt><code>occurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The occurrences used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -569,7 +605,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the try create with children operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -579,19 +616,24 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
-    <dd></dd>
+    <dd><p>The batch used by the operation.</p>
+</dd>
     <dt><code>childOccurrences</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobOccurrence.html">JobOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The child occurrences used by the operation.</p>
+</dd>
     <dt><code>memberships</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatchOccurrence.html">JobBatchOccurrence</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The memberships used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -611,7 +653,8 @@ Interface IJobBatchStore
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the update operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -621,15 +664,18 @@ Interface IJobBatchStore
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>batch</code> <a class="xref" href="BridgingIT.DevKit.Application.Jobs.JobBatch.html">JobBatch</a></dt>
-    <dd></dd>
+    <dd><p>The batch used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

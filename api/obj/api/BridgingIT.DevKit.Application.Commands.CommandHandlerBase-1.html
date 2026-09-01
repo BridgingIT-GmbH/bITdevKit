@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class CommandHandlerBase&lt;TCommand&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Represents command handler base.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class CommandHandlerBase&lt;TCommand&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Application.Commands.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Represents command handler base.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -106,7 +107,8 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TCommand</code></dt>
-    <dd></dd>
+    <dd><p>The command type.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -275,7 +277,8 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the <code>CommandHandlerBase</code> class.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -285,11 +288,14 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The factory used to create loggers.</p>
+</dd>
     <dt><code>moduleAccessors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IModuleContextAccessor.html">IModuleContextAccessor</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The module accessors used by the operation.</p>
+</dd>
     <dt><code>activitySources</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">ActivitySource</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The activity sources used by the operation.</p>
+</dd>
   </dl>
 
 
@@ -314,7 +320,8 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the logger.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -349,7 +356,8 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Handles .</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -359,15 +367,18 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>command</code> <span class="xref">TCommand</span></dt>
-    <dd></dd>
+    <dd><p>The command used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse.html">CommandResponse</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -387,7 +398,8 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the process operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -397,15 +409,18 @@ public abstract class CommandHandlerBase&lt;TCommand&gt; : IRequestHandler&lt;TC
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <span class="xref">TCommand</span></dt>
-    <dd></dd>
+    <dd><p>The request used by the operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token used to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse.html">CommandResponse</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task that represents the asynchronous operation.</p>
+</dd>
   </dl>
 
 

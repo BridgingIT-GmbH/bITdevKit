@@ -1621,6 +1621,7 @@
           "Microsoft.AspNetCore.OpenApi": "[10.0.11, )",
           "Microsoft.EntityFrameworkCore": "[10.0.11, )",
           "Microsoft.EntityFrameworkCore.Relational": "[10.0.11, )",
+          "Microsoft.OpenApi": "[2.12.2, )",
           "NSwag.AspNetCore": "[14.7.1, )",
           "RazorSlices": "[0.11.3, )",
           "Serilog.Extensions.Hosting": "[10.0.0, )",

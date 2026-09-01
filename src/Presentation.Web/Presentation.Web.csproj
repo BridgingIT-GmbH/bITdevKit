@@ -24,6 +24,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Authentication.OpenIdConnect" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" />
+    <PackageReference Include="Microsoft.OpenApi" />
     <PackageReference Include="NSwag.AspNetCore" />
     <PackageReference Include="RazorSlices" />
     <PackageReference Include="Serilog.Extensions.Hosting" />

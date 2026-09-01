@@ -4,6 +4,17 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [Unreleased]
 
+## [10.0.111] - 2026-09-02
+
+- Added broadcasting for in-process and distributed delivery, with HTTP transport, node registration, dashboard and console controls, and correlation ID propagation.
+- Added the profiling dashboard and console commands for collecting, inspecting, archiving, and controlling performance snapshots.
+- Added Entity Framework change-history tracking with operational endpoints and dashboard support.
+- Added bounded high-volume blob uploads with configurable concurrency, backpressure, batch EF chunk flushing, and telemetry.
+- Expanded metrics across jobs, messaging, queueing, orchestrations, repositories, and storage clients.
+- Added lower- and uppercase alphanumeric key generators.
+- Updated SharpCompress integration for its 1.0 API so archive compression continues to work.
+- Removed the DinnerFiesta example application.
+
 ## [10.0.110] - 2026-08-03
 
 - public documentation restyled (multiple themes) and updated for clarity, accuracy, and consistency.

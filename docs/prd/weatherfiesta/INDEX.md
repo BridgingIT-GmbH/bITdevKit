@@ -5,14 +5,14 @@ WeatherFiesta is a weather dashboard application for tracking weather across mul
 ## Documents
 
 | Document | Description |
-|----------|-------------|
+| ---------- | ------------- |
 | [Architecture](./architecture.md) | System boundaries, components, data flow, integrations, persistence, security, failure handling |
 | [Technical Design](./technical-design.md) | Domain model, database schema, endpoint mapping, pipelines, cross-cutting concerns, testing |
 
 ## PRDs
 
 | ID | Slice | Title | File |
-|----|-------|-------|------|
+| ---- | ------- | ------- | ------ |
 | PRD-0000 | CITIES | City Subscriptions | [prd-0000-cities-city-subscriptions.md](./prd-0000-cities-city-subscriptions.md) |
 | PRD-0001 | CITIES | City Reorder | [prd-0001-CITIES-city-reorder.md](./prd-0001-CITIES-city-reorder.md) |
 | PRD-0100 | WEATHER | Weather Data Viewing | [prd-0100-weather-weather-data-viewing.md](./prd-0100-weather-weather-data-viewing.md) |
@@ -30,7 +30,7 @@ WeatherFiesta is a weather dashboard application for tracking weather across mul
 ## ADRs
 
 | ADR | Title | File |
-|-----|-------|------|
+| ----- | ------- | ------ |
 | ADR-0001 | Module Boundaries | [adr-0001-weatherfiesta-module-boundaries.md](./adr-0001-weatherfiesta-module-boundaries.md) |
 | ADR-0002 | Staleness Strategy | [adr-0002-weatherfiesta-staleness-strategy.md](./adr-0002-weatherfiesta-staleness-strategy.md) |
 | ADR-0003 | Unit Preferences | [adr-0003-weatherfiesta-unit-preferences-strategy.md](./adr-0003-weatherfiesta-unit-preferences-strategy.md) |

@@ -9,6 +9,7 @@ This document defines the technical architecture for WeatherFiesta, a weather da
 ### 1.2 Scope
 
 WeatherFiesta is a single-module application within a bITdevKit modular monolith. It provides:
+
 - City subscription management (geocoding, subscribe, unsubscribe, reorder, primary)
 - Weather data viewing (current, forecast, hourly, sun times, comparison, export)
 - Data ingestion from Open-Meteo (scheduled and on-demand)
@@ -56,7 +57,7 @@ Developers implementing WeatherFiesta, architects reviewing the design, and QA e
 ### 2.1 Functional Requirements
 
 | Slice | Stories | Status | Key Capabilities |
-|-------|---------|--------|------------------|
+| ------- | --------- | -------- | ------------------ |
 | CITIES | 8 | Implemented | Geocoding, subscribe, unsubscribe, reactivate, primary city, reorder |
 | WEATHER | 14 | Partial | Current weather, forecast, hourly, alerts, sun times, current-weather comparison, export. Multi-day comparison remains pending. |
 | INGESTION | 3 | Implemented | Scheduled ingestion, on-demand ingestion, admin reset |
@@ -69,7 +70,7 @@ Developers implementing WeatherFiesta, architects reviewing the design, and QA e
 ### 2.2 Non-Functional Requirements
 
 | Category | Requirement | Target |
-|----------|-------------|--------|
+| ---------- | ------------- | -------- |
 | Performance | Geocoding suggestions | < 2s |
 | Performance | Weather data response | < 500ms |
 | Performance | Dashboard aggregation | < 500ms |
@@ -88,7 +89,7 @@ Developers implementing WeatherFiesta, architects reviewing the design, and QA e
 ## 3. Architectural Drivers
 
 | Driver | Impact |
-|--------|--------|
+| -------- | -------- |
 | Single module with shared City aggregate | All slices share DbContext, no integration events between slices |
 | Query-time staleness computation | No background staleness job, RetrievedAt timestamp on every weather record |
 | Query-time alert/recommendation computation | No Alert/Recommendation tables, shared WeatherRuleEngine |
@@ -100,7 +101,7 @@ Developers implementing WeatherFiesta, architects reviewing the design, and QA e
 
 ## 4. System Context
 
-```
+```text
 ┌─────────────────────────────────────────────────────────┐
 │                     Core Module                          │
 │                                                          │
@@ -137,7 +138,7 @@ Developers implementing WeatherFiesta, architects reviewing the design, and QA e
 
 WeatherFiesta follows the bITdevKit Clean Onion architecture within a single module:
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │                  Presentation Layer                   │
 │  Minimal API endpoints (32 endpoints)                │
@@ -163,7 +164,7 @@ WeatherFiesta follows the bITdevKit Clean Onion architecture within a single mod
 
 **Vertical slices** within the Application and Presentation layers:
 
-```
+```text
 Core.Application/
 ├── Commands/         # City, weather, admin, user, subscription commands
 ├── Queries/          # City, weather, dashboard, admin, user, subscription queries
@@ -177,7 +178,7 @@ Core.Application/
 ## 6. Terminology
 
 | Term | Definition |
-|------|-----------|
+| ------ | ----------- |
 | City | Global shared entity representing a geographic location with weather data |
 | UserCity | Per-user subscription linking a user to a city, with IsPrimary and DisplayOrder |
 | CurrentWeather | Single record per city, upserted every 30 minutes, with RetrievedAt timestamp |
@@ -198,7 +199,7 @@ Core.Application/
 ## 7. Components and Responsibilities
 
 | Component | Responsibility | Layer |
-|-----------|---------------|-------|
+| ----------- | --------------- | ------- |
 | City (Aggregate) | Global city entity with geocoding data, dedup keys | Domain |
 | UserCity (Entity) | Per-user subscription with order and primary flag | Domain |
 | CurrentWeather (Entity) | Latest weather snapshot per city | Domain |
@@ -220,7 +221,7 @@ Core.Application/
 #### User Endpoints (21)
 
 | Method | Route | Command/Query | Handler | Auth | PRD |
-|--------|-------|---------------|---------|------|-----|
+| -------- | ------- | --------------- | --------- | ------ | ----- |
 | GET | /api/core/cities/suggestions | CitySuggestionQuery | CitySuggestionQueryHandler | User | PRD-0000 S1 |
 | POST | /api/core/cities | CityCreateCommand | CityCreateCommandHandler (via Pipeline) | User | PRD-0000 S2 |
 | GET | /api/core/cities | UserCitiesQuery | UserCitiesQueryHandler | User | PRD-0000 S3 |
@@ -246,7 +247,7 @@ Core.Application/
 #### Admin Endpoints (11)
 
 | Method | Route | Command/Query | Handler | Auth | PRD |
-|--------|-------|---------------|---------|------|-----|
+| -------- | ------- | --------------- | --------- | ------ | ----- |
 | POST | /api/core/admin/cities | AdminCityCreateCommand | AdminCityCreateCommandHandler | Admin | PRD-0300 S1 |
 | PUT | /api/core/admin/cities/{cityId} | AdminCityUpdateCommand | AdminCityUpdateCommandHandler | Admin | PRD-0300 S1 |
 | DELETE | /api/core/admin/cities/{cityId} | AdminCityDeleteCommand | AdminCityDeleteCommandHandler | Admin | PRD-0300 S1 |
@@ -263,7 +264,7 @@ Core.Application/
 
 ### 8.1 City Creation Flow
 
-```
+```text
 User → POST /api/core/cities
   → Endpoint → IRequester.SendAsync(CityCreateCommand)
     → Validation/Retry/Timeout handler behaviors
@@ -279,7 +280,7 @@ User → POST /api/core/cities
 
 ### 8.2 Weather Ingestion Flow
 
-```
+```text
 Quartz WeatherIngestionJob (every 30 min)
   → Find stale cities using StaleCitiesForIngestionSpecification
   → For each stale city:
@@ -294,7 +295,7 @@ Manual Trigger
 
 ### 8.3 Dashboard Read Flow
 
-```
+```text
 User → GET /api/core/dashboard
   → Endpoint → IRequester.SendAsync(GetDashboardQuery)
     → Handler
@@ -311,7 +312,7 @@ User → GET /api/core/dashboard
 
 ### 8.4 Admin City Hard-Delete Flow
 
-```
+```text
 Admin → DELETE /api/core/admin/cities/{cityId}
   → Endpoint → IRequester.SendAsync(AdminDeleteCityCommand)
     → Handler
@@ -327,7 +328,7 @@ Admin → DELETE /api/core/admin/cities/{cityId}
 
 ### 8.5 Admin User Hard-Delete Flow
 
-```
+```text
 Admin → DELETE /api/core/admin/users/{userId}
   → Endpoint → IRequester.SendAsync(AdminUserDeleteCommand)
     → Handler
@@ -341,7 +342,7 @@ Admin → DELETE /api/core/admin/users/{userId}
 
 ### 8.6 Staleness Computation
 
-```
+```csharp
 On every weather-related read:
   var isStale = weather.RetrievedAt < DateTime.UtcNow - WeatherConstants.StaleThreshold;
   if (isStale) {
@@ -353,7 +354,7 @@ On every weather-related read:
 
 ### 8.7 Unit Preferences Metadata
 
-```
+```csharp
 On every weather-related response:
   var preferences = await userProfileRepository.GetPreferencesAsync(userId);
   response.UnitPreferences = new UnitPreferencesDto {
@@ -370,7 +371,7 @@ On every weather-related response:
 #### Cities Table
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | Id | uniqueidentifier | PK, NOT NULL | Typed as CityId |
 | Name | nvarchar(200) | NOT NULL | City display name |
 | Country | nvarchar(100) | NOT NULL | Full country name |
@@ -391,7 +392,7 @@ On every weather-related response:
 #### UserCities Table
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | Id | uniqueidentifier | PK, NOT NULL | Typed as UserCityId |
 | UserId | uniqueidentifier | NOT NULL | FK to UserProfile |
 | CityId | uniqueidentifier | NOT NULL | FK to Cities |
@@ -408,7 +409,7 @@ On every weather-related response:
 #### CurrentWeathers Table
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | Id | uniqueidentifier | PK, NOT NULL | Typed as CurrentWeatherId |
 | CityId | uniqueidentifier | NOT NULL | FK to Cities, UNIQUE |
 | Temperature | decimal(5,2) | NOT NULL | Celsius |
@@ -431,7 +432,7 @@ On every weather-related response:
 #### WeatherForecasts Table
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | Id | uniqueidentifier | PK, NOT NULL | Typed as WeatherForecastId |
 | CityId | uniqueidentifier | NOT NULL | FK to Cities |
 | ForecastDate | date | NOT NULL | Local date for the city's timezone |
@@ -461,7 +462,7 @@ On every weather-related response:
 #### UserProfiles Table
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | Id | uniqueidentifier | PK, NOT NULL | Typed as UserProfileId, same as UserId |
 | Email | nvarchar(256) | NOT NULL | |
 | Name | nvarchar(200) | NOT NULL | |
@@ -477,7 +478,7 @@ On every weather-related response:
 #### OutboxDomainEvents Table
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | Id | uniqueidentifier | PK, NOT NULL | |
 | Type | nvarchar(200) | NOT NULL | Event type (e.g., CityCreatedDomainEvent) |
 | Data | nvarchar(max) | NOT NULL | JSON payload |
@@ -491,7 +492,7 @@ Note: This follows the bITdevKit outbox pattern (ADR-0006). The outbox worker po
 #### Subscriptions Table
 
 | Column | Type | Constraints | Notes |
-|--------|------|-------------|-------|
+| -------- | ------ | ------------- | ------- |
 | Id | uniqueidentifier | PK, NOT NULL | Typed as SubscriptionId |
 | UserId | uniqueidentifier | NOT NULL, UNIQUE | FK to UserProfile, one subscription per user |
 | Plan | int | NOT NULL | Enumeration: 0=Free, 1=Basic, 2=Pro, 3=Enterprise |
@@ -507,7 +508,7 @@ Note: This follows the bITdevKit outbox pattern (ADR-0006). The outbox worker po
 
 ### 9.2 Entity Relationships
 
-```
+```text
 UserProfile 1──1 Subscription
 UserProfile 1──* UserCity *──1 City 1──1 CurrentWeather
                                   City 1──* WeatherForecast
@@ -541,6 +542,7 @@ City does NOT have a soft-delete filter — cities are hard-deleted by admin onl
 ### 9.5 Hard-Delete Cascade Strategy
 
 When admin hard-deletes a City:
+
 1. Delete all CurrentWeather records (by CityId)
 2. Delete all WeatherForecast records (by CityId)
 3. Delete all UserCity records (by CityId) — including soft-deleted ones
@@ -553,10 +555,10 @@ The handler explicitly deletes weather, forecast, subscription, and city records
 ### 10.1 Open-Meteo Integration
 
 | API | Purpose | Base URL | Rate Limit |
-|-----|---------|----------|------------|
-| Geocoding API | City search by name | https://geocoding-api.open-meteo.com/v1/search | ~10,000/day |
-| Forecast API | Current + daily + hourly weather | https://api.open-meteo.com/v1/forecast | ~10,000/day |
-| Lookup API | Exact geocoding by externalId | https://geocoding-api.open-meteo.com/v1/get | ~10,000/day |
+| ----- | --------- | ---------- | ------------ |
+| Geocoding API | City search by name | <https://geocoding-api.open-meteo.com/v1/search> | ~10,000/day |
+| Forecast API | Current + daily + hourly weather | <https://api.open-meteo.com/v1/forecast> | ~10,000/day |
+| Lookup API | Exact geocoding by externalId | <https://geocoding-api.open-meteo.com/v1/get> | ~10,000/day |
 
 ### 10.2 Client Abstraction
 
@@ -574,7 +576,7 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 ### 10.3 Failure Handling
 
 | Failure | Strategy |
-|---------|----------|
+| --------- | ---------- |
 | Transient HTTP error (5xx, timeout) | Retry 3 times with 1s backoff (RetryPipelineBehavior) |
 | Permanent error (4xx, invalid coordinates) | Log error, skip city, continue ingestion |
 | Rate limit (429) | Log warning, back off, retry after delay |
@@ -601,14 +603,14 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 #### Feature Gating by Subscription Plan
 
 | Plan | Max Cities | Forecast Days | Comparison | Export |
-|------|-----------|---------------|------------|--------|
+| ------ | ----------- | --------------- | ------------ | -------- |
 | Free | 3 | 7 | No | No |
 | Basic | 10 | 16 | Yes | Yes |
 | Pro | 25 | 16 | Yes | Yes |
 | Enterprise | Unlimited | 16 | Yes | Yes |
 
 | Endpoint Category | Required Role | Policy |
-|-------------------|--------------|--------|
+| ------------------- | -------------- | -------- |
 | User city/weather/dashboard endpoints | Authenticated user | Default policy |
 | User profile/preferences endpoints | Authenticated user | Default policy |
 | Admin city management endpoints | CoreAdmin | Role requirement |
@@ -642,7 +644,7 @@ Implementation uses `IHttpClientFactory` with typed client, Polly retry policy (
 ### 12.2 Idempotency
 
 | Operation | Idempotency Key | Behavior |
-|-----------|----------------|----------|
+| ----------- | ---------------- | ---------- |
 | City creation | ExternalId or (Latitude, Longitude) | Returns existing city if found |
 | UserCity creation | (UserId, CityId) | Returns 409 if active, reactivates if soft-deleted |
 | Weather ingestion | (CityId) | Upsert semantics — overwrites existing data |
@@ -679,7 +681,7 @@ logger.LogInformation("Weather data ingested for city {CityId}, records: {Curren
 The following metrics are target observability signals for the module. The current implementation primarily exposes structured logs; dedicated metric instruments can be added when production monitoring is wired.
 
 | Metric | Type | Labels |
-|--------|------|--------|
+| -------- | ------ | -------- |
 | core_ingestion_total | Counter | city_id, status (success/failure) |
 | core_ingestion_duration_seconds | Histogram | city_id |
 | core_geocoding_requests_total | Counter | status (success/no_results/error) |
@@ -714,16 +716,16 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 ## 15. Configuration
 
 | Setting | Type | Default | Description |
-|---------|------|---------|-------------|
-| OpenMeteo:GeocodingBaseUrl | string | https://geocoding-api.open-meteo.com/v1 | Geocoding API base URL |
-| OpenMeteo:ForecastBaseUrl | string | https://api.open-meteo.com/v1/forecast | Forecast API base URL |
-| OpenMeteo:LookupBaseUrl | string | https://geocoding-api.open-meteo.com/v1/get | Lookup API base URL |
+| --------- | ------ | --------- | ------------- |
+| OpenMeteo:GeocodingBaseUrl | string | <https://geocoding-api.open-meteo.com/v1> | Geocoding API base URL |
+| OpenMeteo:ForecastBaseUrl | string | <https://api.open-meteo.com/v1/forecast> | Forecast API base URL |
+| OpenMeteo:LookupBaseUrl | string | <https://geocoding-api.open-meteo.com/v1/get> | Lookup API base URL |
 | OpenMeteo:TimeoutSeconds | int | 10 | HTTP client timeout |
 | OpenMeteo:RetryCount | int | 3 | Number of retries for transient errors |
 | OpenMeteo:RetryDelayMs | int | 1000 | Delay between retries |
 | OpenMeteo:InterCallDelayMs | int | 100 | Delay between sequential API calls |
 | Core:StaleThresholdMinutes | int | 60 | Minutes before data is considered stale |
-| Core:IngestionCron | string | 0 */30 * * * ? | Quartz cron for scheduled ingestion |
+| Core:IngestionCron | string | `0 */30 * * * ?` | Quartz cron for scheduled ingestion |
 | Core:ForecastDays | int | 16 | Number of forecast days to ingest |
 | Core:GeocodingMinQueryLength | int | 3 | Minimum characters for geocoding search |
 | Core:ComparisonMaxCities | int | 10 | Maximum cities in comparison |
@@ -733,7 +735,7 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 ## 16. Architecture Decisions
 
 | Decision | ADR | Rationale |
-|----------|-----|-----------|
+| ---------- | ----- | ----------- |
 | Single module (not 7) | ADR-0001 | City is shared root entity; dashboard needs cross-slice queries |
 | Staleness computed at query time | ADR-0002 | No stored flag; always accurate; simple DateTime comparison |
 | API returns metric, frontend converts | ADR-0003 | Cacheable responses; one data format; consistent |
@@ -772,7 +774,7 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 ### 18.1 Test Pyramid
 
 | Level | Count | Focus | Tools |
-|-------|-------|-------|-------|
+| ------- | ------- | ------- | ------- |
 | Domain unit tests | ~50 | Business rules, enumerations, rule engine | xUnit, Shouldly |
 | Application unit tests | ~80 | Command/query handlers, validators, pipeline steps | xUnit, NSubstitute, Shouldly |
 | Infrastructure integration tests | ~20 | EF mappings, repository queries, Open-Meteo client | xUnit, WebApplicationFactory |
@@ -818,7 +820,7 @@ WeatherFiesta runs as part of the bITdevKit modular monolith host. No separate d
 Every PRD story maps to at least one test. Key mappings:
 
 | PRD Story | Test Category | Key Tests |
-|-----------|--------------|-----------|
+| ----------- | -------------- | ----------- |
 | PRD-0000 S1 (Suggestions) | Application | Geocoding validation, min length, API error |
 | PRD-0000 S2 (Subscribe) | Application | Dedup, reactivation, geocoding failure |
 | PRD-0000 S3 (View cities) | Application | Subscription filter, primary city, stale data |
@@ -837,7 +839,7 @@ Every PRD story maps to at least one test. Key mappings:
 ## 19. Risks and Trade-offs
 
 | Decision | Benefit | Cost |
-|----------|---------|------|
+| ---------- | --------- | ------ |
 | Single module | Simple deployment, shared DbContext, no integration events | Module will grow large; no independent deployment |
 | Query-time staleness | Always accurate, no background job | Computed on every read; negligible cost |
 | Query-time alerts/recommendations | No storage, deterministic | Computed on every request; may need caching at scale |
@@ -852,7 +854,7 @@ Every PRD story maps to at least one test. Key mappings:
 ## 20. Open Questions
 
 | # | Question | Impact | Resolution |
-|---|----------|--------|------------|
+| --- | ---------- | -------- | ------------ |
 | 1 | How is UserId resolved from the authenticated principal? | All user endpoints need UserId | Host application provides claims; Core reads ClaimTypes.NameIdentifier |
 | 2 | What admin role/policy name is used? | Admin endpoints need authorization | Configured via `Core:AdminRoleName` setting, default "Administrators" |
 | 3 | Should the PRD language continue to call these flows pipelines? | ADR-0004 originally described named pipeline step types | Resolved for implementation docs: WeatherFiesta currently implements direct command/job flows with bITdevKit requester behaviors rather than dedicated pipeline step types. |

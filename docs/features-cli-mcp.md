@@ -174,11 +174,11 @@ When developing the DevKit repository itself, run the CLI from source:
 
 `bdk mcp` starts with read-only diagnostics by default.
 
-| Toolset       | Enables                          | Example tools                                                         |
+| Toolset | Enables | Example tools |
 | ------------- | -------------------------------- | --------------------------------------------------------------------- |
-| `diagnostics` | Read-only inspection.            | `bdk_health_snapshot`, `bdk_logs_query`, `bdk_jobs_runs`              |
-| `operations`  | Controlled runtime actions that do not purge retained data. | `bdk_jobs_trigger`, `bdk_queueing_retry`, `bdk_orchestrations_signal` |
-| `admin`       | Destructive maintenance actions. | `bdk_logs_purge`, `bdk_messages_purge`, `bdk_orchestrations_purge`    |
+| `diagnostics` | Read-only inspection. | `bdk_health_snapshot`, `bdk_logs_query`, `bdk_jobs_runs` |
+| `operations` | Controlled runtime actions that do not purge retained data. | `bdk_jobs_trigger`, `bdk_queueing_retry`, `bdk_orchestrations_signal` |
+| `admin` | Destructive maintenance actions. | `bdk_logs_purge`, `bdk_messages_purge`, `bdk_orchestrations_purge` |
 
 Enable additional toolsets explicitly:
 
@@ -224,14 +224,14 @@ flowchart TD
 
 Useful runtime tools:
 
-| Tool                   | Purpose                                                                              |
+| Tool | Purpose |
 | ---------------------- | ------------------------------------------------------------------------------------ |
-| `bdk_mcp_status`       | Shows MCP server status, workspace, descriptors and selected runtime.                |
-| `bdk_mcp_self_test`     | Checks runtime selection, IPC connectivity, protocol compatibility and capabilities. |
-| `bdk_runtimes_list`    | Lists ready MCP runtimes in the workspace.                                           |
-| `bdk_runtimes_select`  | Saves a selected runtime for the workspace.                                          |
-| `bdk_capabilities_get` | Lists operations advertised by the selected runtime.                                 |
-| `bdk_project_summary`  | Summarizes selected runtime metadata, registered modules and MCP capabilities.        |
+| `bdk_mcp_status` | Shows MCP server status, workspace, descriptors and selected runtime. |
+| `bdk_mcp_self_test` | Checks runtime selection, IPC connectivity, protocol compatibility and capabilities. |
+| `bdk_runtimes_list` | Lists ready MCP runtimes in the workspace. |
+| `bdk_runtimes_select` | Saves a selected runtime for the workspace. |
+| `bdk_capabilities_get` | Lists operations advertised by the selected runtime. |
+| `bdk_project_summary` | Summarizes selected runtime metadata, registered modules and MCP capabilities. |
 
 ## Common developer prompts
 
@@ -283,22 +283,22 @@ Use the bdk MCP admin tools to purge retained local test data older than yesterd
 
 The MCP catalog is stable. Tools can return structured unavailable responses when the selected runtime does not expose the required feature.
 
-| Area               | Selected tools                                                                                                                          |
+| Area | Selected tools |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
-| Runtime            | `bdk_mcp_status`, `bdk_mcp_self_test`, `bdk_runtimes_*`, `bdk_capabilities_get`                                                          |
-| Health and metrics | `bdk_health_snapshot`, `bdk_metrics_snapshot`, `bdk_metrics_query`                                                                      |
-| Logs and errors    | `bdk_logs_query`, `bdk_logs_tail`, `bdk_errors_recent`, `bdk_errors_details`, `bdk_correlation_inspect`                                 |
-| Messaging          | `bdk_messages_summary`, `bdk_messages_list`, `bdk_messages_details`, `bdk_messages_retry`, `bdk_messages_archive`, `bdk_messages_purge` |
-| Queueing           | `bdk_queueing_summary`, `bdk_queueing_messages`, `bdk_queueing_retry`, `bdk_queueing_pause_queue`, `bdk_queueing_purge`                  |
-| Blob Storage       | `bdk_blobs_summary`, `bdk_blobs_clients`, `bdk_blobs_probe`                                                                               |
-| Jobs               | `bdk_jobs_list`, `bdk_jobs_details`, `bdk_jobs_runs`, `bdk_jobs_trigger`, `bdk_jobs_purge_runs`                                          |
-| Orchestrations     | `bdk_orchestrations_list`, `bdk_orchestrations_instance_details`, `bdk_orchestrations_signal`, `bdk_orchestrations_purge`                |
-| Investigation      | `bdk_investigate_recent_errors`, `bdk_investigate_correlation`, `bdk_investigate_job_run`, `bdk_investigate_orchestration_instance`        |
-| Guidance           | `bdk_guidance_list`, `bdk_guidance_get`                                                                                                   |
-| Documentation      | `bdk_docs_search`, `bdk_docs_get`                                                                                                       |
-| API reference      | `bdk_api_search`, `bdk_api_get`                                                                                                        |
-| Project summary    | `bdk_project_summary`                                                                                                                    |
-| Project operations | `bdk_project_operations`, `bdk_project_call`                                                                                            |
+| Runtime | `bdk_mcp_status`, `bdk_mcp_self_test`, `bdk_runtimes_*`, `bdk_capabilities_get` |
+| Health and metrics | `bdk_health_snapshot`, `bdk_metrics_snapshot`, `bdk_metrics_query` |
+| Logs and errors | `bdk_logs_query`, `bdk_logs_tail`, `bdk_errors_recent`, `bdk_errors_details`, `bdk_correlation_inspect` |
+| Messaging | `bdk_messages_summary`, `bdk_messages_list`, `bdk_messages_details`, `bdk_messages_retry`, `bdk_messages_archive`, `bdk_messages_purge` |
+| Queueing | `bdk_queueing_summary`, `bdk_queueing_messages`, `bdk_queueing_retry`, `bdk_queueing_pause_queue`, `bdk_queueing_purge` |
+| Blob Storage | `bdk_blobs_summary`, `bdk_blobs_clients`, `bdk_blobs_probe` |
+| Jobs | `bdk_jobs_list`, `bdk_jobs_details`, `bdk_jobs_runs`, `bdk_jobs_trigger`, `bdk_jobs_purge_runs` |
+| Orchestrations | `bdk_orchestrations_list`, `bdk_orchestrations_instance_details`, `bdk_orchestrations_signal`, `bdk_orchestrations_purge` |
+| Investigation | `bdk_investigate_recent_errors`, `bdk_investigate_correlation`, `bdk_investigate_job_run`, `bdk_investigate_orchestration_instance` |
+| Guidance | `bdk_guidance_list`, `bdk_guidance_get` |
+| Documentation | `bdk_docs_search`, `bdk_docs_get` |
+| API reference | `bdk_api_search`, `bdk_api_get` |
+| Project summary | `bdk_project_summary` |
+| Project operations | `bdk_project_operations`, `bdk_project_call` |
 
 ## Curated guidance
 

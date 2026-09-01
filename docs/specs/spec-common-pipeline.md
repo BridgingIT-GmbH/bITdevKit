@@ -2431,26 +2431,26 @@ These phases provide a clean way to reason about the design without mixing core 
 
 This section defines the key terms used throughout the design. The glossary establishes a consistent vocabulary for discussing the pipeline feature.
 
-| Term                         | Definition                                                                                                                                                |
+| Term | Definition |
 | ---------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Pipeline**                 | An ordered sequence of processing steps operating on an optional shared context and a carried accumulated `Result`.                                        |
-| **Pipeline Execution**       | A single runtime instance of pipeline processing with its own carried `Result` and, when relevant, its own specific context.                              |
-| **Pipeline Definition**      | The static blueprint describing the structure, order, and conceptual behavior of a pipeline.                                                              |
-| **Named Pipeline**           | A pipeline definition identified by a logical name that distinguishes it from other pipelines within the system.                                          |
-| **Processing Step**          | A focused unit of work within the pipeline that can inspect or update the context, contribute messages and errors to the carried `Result`, and influence control flow. |
-| **Shared Context**           | An optional strongly typed execution-scoped object shared by all steps that carries execution metadata and shared state when needed.                      |
-| **Accumulated Result**       | The untyped framework `Result` that is initialized at execution start and carried forward across all pipeline steps.                                      |
-| **Control Outcome**          | The directional part of step control that indicates how pipeline execution should proceed when interpreted together with the returned `Result`.           |
-| **Pipeline Control**         | The full step-control object combining the returned control outcome and the returned accumulated non-generic `Result`.                                    |
-| **Retry**                    | Re-execution of the current step when a step requests another attempt under the active retry policy.                                                      |
-| **Break**                    | Early successful completion of the pipeline when a step determines that no further processing is required.                                                |
-| **Termination**              | Intentional ending of remaining pipeline execution without by itself defining success or failure.                                                         |
-| **Failure**                  | A failure state represented through the carried `Result`, typically by accumulated errors and failure status.                                             |
-| **Conditional Processing**   | Structural or runtime conditions that determine whether a step participates in pipeline execution.                                                        |
-| **Hooks**                    | Execution observation points that react to events occurring during pipeline execution, such as before or after steps.                                     |
-| **Behaviors**                | Wrappers around pipeline execution that introduce cross-cutting behavior such as diagnostics, logging, or monitoring. They are implemented using the decorator pattern. |
-| **Observability**            | The ability to understand pipeline execution behavior through structured diagnostics, traces, and execution insight.                                      |
-| **Pipeline Execution State** | The runtime state of an executing pipeline including current step, accumulated diagnostics, control outcomes, and the current carried `Result`.           |
+| **Pipeline** | An ordered sequence of processing steps operating on an optional shared context and a carried accumulated `Result`. |
+| **Pipeline Execution** | A single runtime instance of pipeline processing with its own carried `Result` and, when relevant, its own specific context. |
+| **Pipeline Definition** | The static blueprint describing the structure, order, and conceptual behavior of a pipeline. |
+| **Named Pipeline** | A pipeline definition identified by a logical name that distinguishes it from other pipelines within the system. |
+| **Processing Step** | A focused unit of work within the pipeline that can inspect or update the context, contribute messages and errors to the carried `Result`, and influence control flow. |
+| **Shared Context** | An optional strongly typed execution-scoped object shared by all steps that carries execution metadata and shared state when needed. |
+| **Accumulated Result** | The untyped framework `Result` that is initialized at execution start and carried forward across all pipeline steps. |
+| **Control Outcome** | The directional part of step control that indicates how pipeline execution should proceed when interpreted together with the returned `Result`. |
+| **Pipeline Control** | The full step-control object combining the returned control outcome and the returned accumulated non-generic `Result`. |
+| **Retry** | Re-execution of the current step when a step requests another attempt under the active retry policy. |
+| **Break** | Early successful completion of the pipeline when a step determines that no further processing is required. |
+| **Termination** | Intentional ending of remaining pipeline execution without by itself defining success or failure. |
+| **Failure** | A failure state represented through the carried `Result`, typically by accumulated errors and failure status. |
+| **Conditional Processing** | Structural or runtime conditions that determine whether a step participates in pipeline execution. |
+| **Hooks** | Execution observation points that react to events occurring during pipeline execution, such as before or after steps. |
+| **Behaviors** | Wrappers around pipeline execution that introduce cross-cutting behavior such as diagnostics, logging, or monitoring. They are implemented using the decorator pattern. |
+| **Observability** | The ability to understand pipeline execution behavior through structured diagnostics, traces, and execution insight. |
+| **Pipeline Execution State** | The runtime state of an executing pipeline including current step, accumulated diagnostics, control outcomes, and the current carried `Result`. |
 
 ---
 
@@ -2800,15 +2800,15 @@ This makes it a strong foundational feature for a devkit framework, enabling str
 
 ## 24. References
 
-https://www.hojjatk.com/2012/11/chain-of-responsibility-pipeline-design.html
+<https://www.hojjatk.com/2012/11/chain-of-responsibility-pipeline-design.html>
 
-https://www.dofactory.com/net/chain-of-responsibility-design-pattern
+<https://www.dofactory.com/net/chain-of-responsibility-design-pattern>
 
-https://medium.com/@bonnotguillaume/software-architecture-the-pipeline-design-pattern-from-zero-to-hero-b5c43d8a4e60
+<https://medium.com/@bonnotguillaume/software-architecture-the-pipeline-design-pattern-from-zero-to-hero-b5c43d8a4e60>
 
-https://github.com/guillaumebonnot/software-architecture/tree/master/Helios.Architecture.Pipeline
+<https://github.com/guillaumebonnot/software-architecture/tree/master/Helios.Architecture.Pipeline>
 
-https://www.devleader.ca/2026/03/14/decorator-design-pattern-in-c-complete-guide-with-examples
+<https://www.devleader.ca/2026/03/14/decorator-design-pattern-in-c-complete-guide-with-examples>
 
 ---
 

@@ -1,4 +1,4 @@
-# Domain repositories
+# Domain Repositories
 
 > Access aggregates through type-safe repositories with rich querying, paging, and loading options.
 
@@ -490,6 +490,7 @@ To add PostgreSQL, SQLite, or another relational provider without modifying the 
 ## Appendix A: Optimistic concurrency support
 
 ### Concurrency overview
+
 The repository implementation provides built-in optimistic concurrency control to handle scenarios where multiple users might attempt to modify the same entity simultaneously. This feature helps prevent the "lost update" problem, where one user's changes could accidentally overwrite another user's modifications.
 
 ```mermaid
@@ -517,6 +518,7 @@ sequenceDiagram
 ### Implementation
 
 #### 1. Enable concurrency support
+
 To enable concurrency control for an entity, implement the `IConcurrency` interface:
 
 ```csharp
@@ -532,6 +534,7 @@ public class TodoItem : AuditableAggregateRoot<TodoItemId>, IConcurrency
 ```
 
 #### 2. Configure Entity Framework mapping
+
 Configure the concurrency token in your entity configuration:
 
 ```csharp
@@ -597,6 +600,7 @@ conflict, reloading current state, and deciding whether to retry or merge change
 ## Appendix B: Sequence number generation support
 
 ### Sequence overview
+
 The sequence number generator creates unique, incrementing business identifiers such as order or
 invoice numbers. It supports SQL Server and PostgreSQL native sequences, SQLite emulation, and an
 in-memory implementation for tests.
@@ -623,9 +627,11 @@ sequenceDiagram
 ```
 
 ### Setup
+
 To use sequence generation, first define sequences in your DbContext and register the generator in dependency injection (DI).
 
 #### 1. Define sequences in `DbContext`
+
 Configure sequences in the `OnModelCreating` method of your DbContext. This step is provider-specific.
 
 ```csharp
@@ -639,9 +645,11 @@ protected override void OnModelCreating(ModelBuilder modelBuilder)
     base.OnModelCreating(modelBuilder);
 }
 ```
+
 Apply database migrations to create the sequences (e.g., `dotnet ef migrations add AddSequences` and `dotnet ef database update`).
 
 #### 2. Register in dependency injection
+
 Register the appropriate generator for your database provider using the provided extensions. The generator is typically scoped to match the DbContext lifetime.
 
 ```csharp
@@ -665,14 +673,17 @@ services.AddInMemoryDbContext<YourDbContext>()
 ```
 
 #### Provider-specific notes
+
 SQL Server and PostgreSQL use native sequences, including increment steps and bounds. SQLite
 emulates basic sequencing through a system table. Configure each sequence explicitly when using the
 in-memory implementation.
 
 ### Usage
+
 Inject `ISequenceNumberGenerator` into your services and use it to generate numbers. Operations return `Result<T>` for safe error handling.
 
 #### Basic generation
+
 ```csharp
 public class OrderService
 {
@@ -703,7 +714,9 @@ public class OrderService
 ```
 
 #### Additional operations
+
 - **Metadata Query**: Retrieve details like current value.
+
   ```csharp
   var infoResult = await generator.GetSequenceInfoAsync("OrderNumbers");
   if (infoResult.IsSuccess)
@@ -711,11 +724,15 @@ public class OrderService
       Console.WriteLine($"Current: {infoResult.Value.CurrentValue}");
   }
   ```
+
 - **Reset**: Restart the sequence (e.g., for administrative tasks).
+
   ```csharp
   await generator.ResetSequenceAsync("OrderNumbers", 1000);
   ```
+
 - **Batch Generation**: Get multiple sequences in one call.
+
   ```csharp
   var results = await generator.GetNextMultipleAsync(new[] { "OrderNumbers", "InvoiceNumbers" });
   if (results.IsSuccess)
@@ -723,7 +740,9 @@ public class OrderService
       order.OrderNumber = results.Value["OrderNumbers"];
   }
   ```
+
 - **Entity convention**: Use the same sequence-name convention as `GetNextForEntityAsync<TEntity>`.
+
   ```csharp
   var numberResult = await generator.GetNextAsync("OrderSequence", "CoreSchema");
   ```
@@ -734,6 +753,7 @@ public class OrderService
 The generator ensures thread-safety with internal locking and supports Result-based error handling for issues like missing sequences or timeouts.
 
 ### Benefits and limitations
+
 Sequence generation keeps business identifiers separate from entity primary keys. Operations are
 serialized by internal locks, but SQLite supports only basic emulation. Use batch operations to
 reduce database calls. The in-memory generator supports isolated tests without a database.

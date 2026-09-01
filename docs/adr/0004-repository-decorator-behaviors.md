@@ -45,7 +45,7 @@ public interface IGenericRepository<TEntity>
 
 Behaviors wrap the repository using the **Decorator pattern**:
 
-```
+```text
 Handler
   → RepositoryTracingBehavior
     → RepositoryLoggingBehavior
@@ -148,7 +148,7 @@ services.AddEntityFrameworkRepository<Customer, CoreModuleDbContext>()
 
 **Insert Operation**:
 
-```
+```text
 1. Handler: repository.InsertResultAsync(customer)
 2. TracingBehavior: Start span "Repository.Insert.Customer"
 3. LoggingBehavior: Log "Inserting Customer entity"

@@ -27,7 +27,7 @@ Each implementation phase must end with build, test and review checkpoints.
 
 ---
 
-# Architecture Analysis Prompt
+## Architecture Analysis Prompt
 
 Use this first. Do not allow implementation yet.
 
@@ -72,7 +72,7 @@ End with:
 
 ---
 
-# Shared Governance Instructions
+## Shared Governance Instructions
 
 Add the following instruction block at the beginning of every implementation prompt.
 
@@ -136,7 +136,7 @@ At the end of the phase:
 
 ---
 
-# Prompt 1 — Foundation and Public Contracts
+## Prompt 1 — Foundation and Public Contracts
 
 ```text
 Implement the Jobs foundation contracts only.
@@ -198,7 +198,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 2 — Trigger Model, Cron Engine and Materialization Rules
+## Prompt 2 — Trigger Model, Cron Engine and Materialization Rules
 
 ```text
 Implement trigger calculation and materialization logic without executing jobs.
@@ -258,7 +258,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 3 — Persistence Abstractions and In-Memory Provider
+## Prompt 3 — Persistence Abstractions and In-Memory Provider
 
 ```text
 Implement provider-neutral persistence abstractions and the in-memory provider.
@@ -317,7 +317,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 4 — Runtime Dispatch and Execution Engine
+## Prompt 4 — Runtime Dispatch and Execution Engine
 
 ```text
 Implement the core runtime execution engine using the in-memory provider.
@@ -380,7 +380,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 5 — Background Scheduler, Workers and Trigger Scanning
+## Prompt 5 — Background Scheduler, Workers and Trigger Scanning
 
 ```text
 Implement background scheduler execution over the in-memory provider.
@@ -431,7 +431,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 6 — Retry, Timeout, Cancellation, Pause and Resume
+## Prompt 6 — Retry, Timeout, Cancellation, Pause and Resume
 
 ```text
 Implement resilience control semantics.
@@ -489,7 +489,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 7 — Leases, Ownership and Recovery
+## Prompt 7 — Leases, Ownership and Recovery
 
 ```text
 Implement lease and ownership semantics.
@@ -539,7 +539,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 8 — Dependencies and Chaining
+## Prompt 8 — Dependencies and Chaining
 
 ```text
 Implement occurrence dependencies and job chaining.
@@ -594,7 +594,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 9 — Batch Runtime Semantics
+## Prompt 9 — Batch Runtime Semantics
 
 ```text
 Implement batch runtime behavior.
@@ -654,7 +654,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 10 — Job Test Harness
+## Prompt 10 — Job Test Harness
 
 ```text
 Implement Jobs test harness support.
@@ -704,7 +704,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 11 — Entity Framework Provider
+## Prompt 11 — Entity Framework Provider
 
 ```text
 Implement the Entity Framework provider.
@@ -772,7 +772,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 12 — Query Services, Metrics and Dashboard Contracts
+## Prompt 12 — Query Services, Metrics and Dashboard Contracts
 
 ```text
 Implement query services and metrics.
@@ -835,7 +835,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 13 — Operational Endpoints
+## Prompt 13 — Operational Endpoints
 
 ```text
 Implement optional administration endpoints.
@@ -888,7 +888,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 14 — Outbound Integration Helpers
+## Prompt 14 — Outbound Integration Helpers
 
 ```text
 Implement outbound job integration helpers.
@@ -939,7 +939,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 15 — Event Trigger Adapters and Built-In Maintenance Jobs
+## Prompt 15 — Event Trigger Adapters and Built-In Maintenance Jobs
 
 ```text
 Implement event-trigger adapters and built-in maintenance jobs.
@@ -990,7 +990,7 @@ Validation checkpoint:
 
 ---
 
-# Prompt 16 — Migration Guidance, Examples and Developer Documentation
+## Prompt 16 — Migration Guidance, Examples and Developer Documentation
 
 ```text
 Implement documentation and source-level migration guidance.
@@ -1033,7 +1033,7 @@ Validation checkpoint:
 
 ---
 
-# Final Hardening Prompt
+## Final Hardening Prompt
 
 ```text
 Perform final hardening and cleanup only.
@@ -1095,7 +1095,7 @@ End with:
 
 ---
 
-# Optional Fleet Prompt
+## Optional Fleet Prompt
 
 Use this with Copilot CLI `/fleet` only after Prompt 1 foundation boundaries are approved.
 
@@ -1160,7 +1160,7 @@ Fleet rules:
 
 ---
 
-# Recommended Execution Order
+## Recommended Execution Order
 
 1. Architecture Analysis Prompt
 2. Prompt 1 — Foundation and Public Contracts

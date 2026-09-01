@@ -4,7 +4,7 @@
 
 ### 1.1 Inside the System
 
-```
+```text
 ┌──────────────────────────────────────────────────────────────────┐
 │                      Core                                        │
 │                                                                  │
@@ -40,7 +40,7 @@
 ### 1.2 Outside the System
 
 | External System | Purpose | Communication | Failure Mode |
-|----------------|---------|---------------|---------------|
+| ---------------- | --------- | --------------- | --------------- |
 | Host Application | Auth, logging, middleware | In-process | N/A (same process) |
 | SQL Server | Data persistence | ADO.NET/EF Core | Serve cached data + stale warning |
 | Open-Meteo Geocoding API | City search by name | HTTPS GET | Return 400 to user |
@@ -58,13 +58,13 @@
 ## 2. Components and Responsibilities
 
 | Component | Responsibility | Layer | Key Collaborators |
-|-----------|---------------|-------|-------------------|
+| ----------- | --------------- | ------- | ------------------- |
 | **City** | Global shared entity with geocoding data, dedup keys | Domain | UserCity, CurrentWeather, WeatherForecast |
 | **UserCity** | Per-user subscription with order and primary flag | Domain | City, UserProfile |
 | **CurrentWeather** | Latest weather snapshot per city | Domain | City, WeatherRuleEngine |
 | **WeatherForecast** | Daily forecast with hourly JSON | Domain | City, WeatherRuleEngine |
 | **UserProfile** | User identity and unit preferences | Domain | UserCity |
-| **Subscription (Aggregate)** | Per-user subscription with plan, status, billing cycle | Domain |
+| **Subscription (Aggregate)** | Per-user subscription with plan, status, billing cycle | Domain | UserProfile |
 | **WeatherRuleEngine** | Evaluates alert and recommendation rules | Domain | CurrentWeather, WeatherForecast |
 | **CityCreatePipeline** | 5-step city creation orchestration | Application | OpenMeteoClient, City, UserCity |
 | **IngestWeatherPipeline** | 4-step weather data ingestion | Application | OpenMeteoClient, CurrentWeather, WeatherForecast |
@@ -77,7 +77,7 @@
 
 ### 3.1 City Creation Flow
 
-```
+```text
 User ──POST /cities──▶ Endpoint
                           │
                           ▼
@@ -106,7 +106,7 @@ User ──POST /cities──▶ Endpoint
 
 ### 3.2 Weather Ingestion Flow
 
-```
+```text
 ┌─────────────────────────────────────────────────────┐
 │  Triggers                                           │
 │  • Quartz Job (every 30 min, all cities)            │
@@ -144,7 +144,7 @@ User ──POST /cities──▶ Endpoint
 
 ### 3.3 Dashboard Read Flow
 
-```
+```text
 User ──GET /dashboard──▶ Endpoint
                             │
                             ▼
@@ -172,7 +172,7 @@ User ──GET /dashboard──▶ Endpoint
 
 ### 3.4 Alert and Recommendation Computation
 
-```
+```text
 CurrentWeather + WeatherForecast
             │
             ▼
@@ -213,7 +213,7 @@ CurrentWeather + WeatherForecast
 
 ### 4.1 Open-Meteo Integration
 
-```
+```text
 WeatherFiesta                          Open-Meteo
 ┌──────────────┐                       ┌──────────────┐
 │              │  GET /v1/search       │              │
@@ -244,7 +244,7 @@ WeatherFiesta                          Open-Meteo
 ### 4.2 Integration Failure Handling
 
 | Failure | Detection | Response |
-|---------|-----------|----------|
+| --------- | ----------- | ---------- |
 | Transient HTTP error (5xx, timeout) | HttpClient exception | Retry 3x with 1s backoff |
 | Permanent error (4xx) | Status code | Log error, skip city, continue |
 | Rate limit (429) | Status code | Log warning, back off, retry after delay |
@@ -263,7 +263,7 @@ WeatherFiesta                          Open-Meteo
 
 ### 5.1 Entity Relationships
 
-```
+```text
 ┌──────────────┐       ┌──────────────┐       ┌────────────────┐
 │  UserProfile │ 1───* │   UserCity   │ *───1 │     City       │
 │              │       │              │       │                │
@@ -318,7 +318,7 @@ WeatherFiesta                          Open-Meteo
 ### 5.2 Key Constraints
 
 | Table | Constraint | Type |
-|-------|-----------|------|
+| ------- | ----------- | ------ |
 | Cities | ExternalId | UNIQUE (nullable) |
 | Cities | (Latitude, Longitude) | Indexed (proximity check in code) |
 | UserCities | (UserId, CityId) | UNIQUE (filtered WHERE IsDeleted = 0) |
@@ -330,7 +330,7 @@ WeatherFiesta                          Open-Meteo
 ### 5.3 Soft-Delete Strategy
 
 | Entity | Delete Type | Behavior |
-|--------|------------|----------|
+| -------- | ------------ | ---------- |
 | UserCity | Soft-delete | IsDeleted = true, IsPrimary = false, DisplayOrder gap closed |
 | UserProfile | Soft-delete | IsDeleted = true, cascade soft-delete all UserCity |
 | City | Hard-delete (admin only) | Cascade delete CurrentWeather, WeatherForecast, all UserCity |
@@ -345,7 +345,7 @@ All mutable entities implement `IConcurrency` (RowVersion). Optimistic concurren
 
 ### 6.1 Authentication
 
-```
+```text
 ┌──────────┐     ┌──────────────┐     ┌──────────────────┐
 │  Client   │────▶│  Host App    │────▶│  WeatherFiesta   │
 │  (Browser)│     │  (Auth MW)   │     │  Endpoints        │
@@ -369,7 +369,7 @@ All mutable entities implement `IConcurrency` (RowVersion). Optimistic concurren
 ### 6.2 Authorization Matrix
 
 | Category | Endpoints | Required Role | Policy |
-|----------|-----------|---------------|--------|
+| ---------- | ----------- | --------------- | -------- |
 | City subscriptions | GET/POST/DELETE /cities/* | Authenticated | Default |
 | Weather data | GET /cities/{id}/weather, /sun, /compare, /export | Authenticated + subscribed | Subscription check |
 | Dashboard | GET /dashboard | Authenticated | Default |
@@ -389,7 +389,7 @@ All mutable entities implement `IConcurrency` (RowVersion). Optimistic concurren
 
 ### 7.1 Runtime Architecture
 
-```
+```text
 ┌─────────────────────────────────────────────────────────────┐
 │                    ASP.NET Core Host                          │
 │                                                              │
@@ -454,7 +454,7 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
 
 All handlers use Serilog with structured message templates:
 
-```
+```text
 [LogKey] City created {CityId} with external ID {ExternalId}
 [LogKey] Ingestion completed for city {CityId}: {CurrentCount} current, {ForecastCount} forecasts
 [LogKey] Ingestion failed for city {CityId}: {Error}
@@ -465,7 +465,7 @@ All handlers use Serilog with structured message templates:
 ### 8.2 Metrics
 
 | Metric | Type | Purpose |
-|--------|------|---------|
+| -------- | ------ | --------- |
 | weatherfiesta_ingestion_total | Counter | Track ingestion success/failure per city |
 | weatherfiesta_ingestion_duration_seconds | Histogram | Monitor ingestion latency |
 | weatherfiesta_geocoding_requests_total | Counter | Track geocoding API usage |
@@ -476,7 +476,7 @@ All handlers use Serilog with structured message templates:
 ### 8.3 Health Checks
 
 | Check | Purpose |
-|-------|---------|
+| ------- | --------- |
 | Open-Meteo connectivity | Verify external API is reachable |
 | SQL Server connectivity | Verify database is accessible |
 | Quartz scheduler status | Verify ingestion job is running |
@@ -487,7 +487,7 @@ All handlers use Serilog with structured message templates:
 ### 9.1 Failure Modes and Recovery
 
 | Failure Mode | Detection | Recovery | User Impact |
-|-------------|-----------|----------|-------------|
+| ------------- | ----------- | ---------- | ------------- |
 | Open-Meteo API down | HTTP connection failure or timeout | Serve cached data with staleDataWarning | Data may be outdated |
 | Open-Meteo API slow | Response time > 10s | Timeout after 10s, serve cached data | Data may be outdated |
 | Open-Meteo rate limit | HTTP 429 | Log warning, back off, retry after delay | Delayed ingestion |
@@ -500,7 +500,7 @@ All handlers use Serilog with structured message templates:
 
 ### 9.2 Retry Strategy
 
-```
+```text
 Request ──▶ RetryPipelineBehavior
                 │
                 ├── Attempt 1 ──▶ Success ──▶ Return Result
@@ -515,7 +515,7 @@ Request ──▶ RetryPipelineBehavior
 ### 9.3 Data Integrity Guarantees
 
 | Scenario | Guarantee | Mechanism |
-|----------|-----------|-----------|
+| ---------- | ----------- | ----------- |
 | Duplicate city creation | No duplicate City records | ExternalId unique constraint + Lat/Lng proximity check |
 | Duplicate subscription | No duplicate UserCity records | (UserId, CityId) unique constraint (filtered WHERE IsDeleted = 0) |
 | Duplicate weather ingestion | No duplicate weather records | Upsert on (CityId) for CurrentWeather, (CityId, ForecastDate) for WeatherForecast |

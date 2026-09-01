@@ -2,7 +2,6 @@
 # JobScheduling
 
 > Legacy Quartz-backed scheduler. For new development, prefer [Jobs](./features-jobs.md). Migration is source-level only; Quartz tables and trigger records are not reused by `Application.Jobs`.
-
 > Schedule and run background jobs through the legacy Quartz.NET integration.
 
 [TOC]
@@ -88,7 +87,6 @@ app.Run();
 
 After the host starts, `POST /jobs/echo/run` returns the accepted response and the job writes `Scheduler is running` through its logger.
 
-
 ## Registration and operation
 
 JobScheduling integrates Quartz.NET with ASP.NET Core dependency injection and hosted services. The sections below cover job registration, `JobBase`, cancellation, runtime control through `JobService`, operational endpoints, and the execution flow.
@@ -127,7 +125,6 @@ builder.Services.AddJobScheduling(c => c.StartupDelay(5000))
         .WithData("threshold", "95")
         .RegisterSingleton();
 ```
-
 
 ### Comprehensive setup with SQL Server history and API endpoints
 
@@ -190,6 +187,7 @@ Configuration details:
 - Each `WithJob` chain registers one job definition with its schedule and metadata.
 
 **Configuration in `appsettings.json`:**
+
 ```json
 {
   "JobScheduling": {
@@ -248,6 +246,7 @@ public class LongRunningJob(ILoggerFactory loggerFactory) : JobBase(loggerFactor
 ```
 
 **Registration:**
+
 ```csharp
 .WithJob<LongRunningJob>()
     .Cron(CronExpressions.Every30Minutes)
@@ -276,6 +275,7 @@ public interface IJobService
 ```
 
 Example: triggering a job
+
 ```csharp
 var jobService = app.Services.GetRequiredService<IJobService>();
 await jobService.TriggerJobAsync("longrunning", "DEFAULT", new Dictionary<string, object> { { "extra", "data" } }, CancellationToken.None);
@@ -289,6 +289,7 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Confi
 ```
 
 These endpoints, mapped under `/_bdk/api/jobs`, provide RESTful access to job operations (see `Appendix: Job Scheduling API Endpoints` for details). For example, to trigger a job via HTTP:
+
 - **Request**: `POST /_bdk/api/jobs/longrunning/DEFAULT/trigger`
 - **Body**: `{"extra": "data"}`
 - **Response**: `202 Accepted` with message "Job longrunning in group DEFAULT triggered successfully."
@@ -300,7 +301,6 @@ The `Name` property contains the description or key name assigned during registr
 `RunDate` captures the completion time of the previous execution, while `RunSuccessDate` captures the completion time of the previous successful execution. Both default to `DateTimeOffset.MinValue`. `JobBase` writes these values to the Quartz job data map after execution, and `[PersistJobDataAfterExecution]` tells Quartz to retain the updated job data according to the configured Quartz store.
 
 `ElapsedMilliseconds` contains the duration of the current execution and is updated after the run. `Status` records success or failure, and `ErrorMessage` contains the captured exception message. `Logger` is created for the job type through the injected `ILoggerFactory`.
-
 
 ### Using previous-run timestamps
 
@@ -427,27 +427,28 @@ Quartz.NET can preserve schedules and execution history across restarts in its S
 `JobSchedulingSqlServerSeederStartupTask` creates tables such as `QRTZ_JOB_DETAILS`, `QRTZ_TRIGGERS`, and `QRTZ_JOURNAL_TRIGGERS`. An EF Core migration is an alternative when the application manages schema changes through migrations.
 
 Steps:
+
 1. Add a new empty migration (e.g., dotnet ef migrations add AddQuartzTables).
 2. Replace the generated migration body with:
 
-```csharp
-public partial class AddQuartzTables : Migration
-{
-    protected override void Up(MigrationBuilder migrationBuilder)
-    {
-        SqlServerJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
-        //SqliteJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
-        //PostgresJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
-    }
+   ```csharp
+   public partial class AddQuartzTables : Migration
+   {
+       protected override void Up(MigrationBuilder migrationBuilder)
+       {
+           SqlServerJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
+           //SqliteJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
+           //PostgresJobStoreMigrationHelper.CreateQuartzTables(migrationBuilder);
+       }
 
-    protected override void Down(MigrationBuilder migrationBuilder)
-    {
-        SqlServerJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
-        //SqliteJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
-        //PostgresJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
-    }
-}
-```
+       protected override void Down(MigrationBuilder migrationBuilder)
+       {
+           SqlServerJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
+           //SqliteJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
+           //PostgresJobStoreMigrationHelper.DropQuartzTables(migrationBuilder);
+       }
+   }
+   ```
 
 3. Apply it (dotnet ef database update) to create all required Quartz persistence tables or use the `DatabaseMigratorService` or `DatabaseCreatorService` during application startup.
 
@@ -495,7 +496,8 @@ JobScheduling uses Quartz.NET six-field cron expressions in this order: `[Second
 
 The `CronExpressions` struct provides a rich set of static constants for frequently used schedules, making it an efficient choice for standard patterns. These predefined expressions are readily available in the `BridgingIT.DevKit.Application` namespace and can be applied directly to the `Cron` method in `JobScheduleBuilder`. Here are some examples:
 
-- **Every 5 Seconds**: `CronExpressions.Every5Seconds` ("0/5 * * * * ?") runs a job every 5 seconds, ideal for frequent tasks like health checks:
+- **Every 5 Seconds**: `CronExpressions.Every5Seconds` (`0/5 * * * * ?`) runs a job every 5 seconds, ideal for frequent tasks like health checks:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -504,7 +506,8 @@ The `CronExpressions` struct provides a rich set of static constants for frequen
           .RegisterScoped();
   ```
 
-- **Daily at Midnight**: `CronExpressions.DailyAtMidnight` ("0 0 0 * * ?") triggers a job at 00:00:00 daily, perfect for nightly maintenance:
+- **Daily at Midnight**: `CronExpressions.DailyAtMidnight` (`0 0 0 * * ?`) triggers a job at 00:00:00 daily, perfect for nightly maintenance:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -514,6 +517,7 @@ The `CronExpressions` struct provides a rich set of static constants for frequen
   ```
 
 - **First day of every month at 11:59 PM**: `CronExpressions` does not have an exact match. Use a direct expression or the builder shown later:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -522,13 +526,14 @@ The `CronExpressions` struct provides a rich set of static constants for frequen
           .RegisterScoped();
   ```
 
-Constants such as `CronExpressions.EveryMinute` ("0 0/1 * * * ?") and `CronExpressions.WeeklyOnWednesdayAtMidnight` ("0 0 0 * * WED") define common fixed schedules. For a variation that has no constant, supply the cron expression directly or use the builder.
+Constants such as `CronExpressions.EveryMinute` (`0 0/1 * * * ?`) and `CronExpressions.WeeklyOnWednesdayAtMidnight` (`0 0 0 * * WED`) define common fixed schedules. For a variation that has no constant, supply the cron expression directly or use the builder.
 
 ### Using `CronExpressionBuilder`
 
 `CronExpressionBuilder` integrates with the `Cron` method on `JobScheduleBuilder`. It builds expressions from integer values and the `CronDayOfWeek` and `CronMonth` enums. The following examples match the fixed expressions above:
 
 - **Every 5 Seconds**: Use `EverySeconds` to match `CronExpressions.Every5Seconds`:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -536,9 +541,11 @@ Constants such as `CronExpressions.EveryMinute` ("0 0/1 * * * ?") and `CronExpre
           .Cron(b => b.EverySeconds(5).Build())
           .RegisterScoped();
   ```
+
   This builds `"0/5 * * * * ?"`, identical to the fixed constant but expressed fluently.
 
 - **Daily at Midnight**: Replicate `CronExpressions.DailyAtMidnight` with `AtTime`:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -546,9 +553,11 @@ Constants such as `CronExpressions.EveryMinute` ("0 0/1 * * * ?") and `CronExpre
           .Cron(b => b.AtTime(0, 0, 0).Build())
           .RegisterScoped();
   ```
+
   This produces `"0 0 0 * * ?"`, matching the predefined expression with explicit time settings.
 
 - **First Day of Every Month at 11:59 PM**: Construct this precise schedule directly:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -560,9 +569,11 @@ Constants such as `CronExpressions.EveryMinute` ("0 0/1 * * * ?") and `CronExpre
           .Named("monthlyReport")
           .RegisterScoped();
   ```
+
   The result, `"0 59 23 1 * ?"`, schedules the job at 23:59:00 on the 1st of each month, aligning with your requirement. Here, `DayOfMonth(1)` sets the day, and `AtTime(23, 59, 0)` specifies 11:59 PM.
 
 - **Every Wednesday at 9:30 AM**: Match `CronExpressions.WeeklyOnWednesdayAtMidnight` with adjustments:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -573,9 +584,11 @@ Constants such as `CronExpressions.EveryMinute` ("0 0/1 * * * ?") and `CronExpre
               .Build())
           .RegisterScoped();
   ```
+
   This yields `"0 30 9 ? * WED"`, shifting the midnight timing to 9:30 AM.
 
 - **Specific Date and Time (e.g., March 27, 2025, 2:30 PM)**: Use `AtDateTime` for one-time triggers:
+
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -585,9 +598,10 @@ Constants such as `CronExpressions.EveryMinute` ("0 0/1 * * * ?") and `CronExpre
               .Build())
           .RegisterScoped();
   ```
+
   This generates `"0 30 14 27 3 ?"`, targeting a single execution.
 
-Methods such as `EveryMinutes(15)` ("0 0/15 * * * ?") and `HoursRange(8, 17)` ("0 * 8-17 * * ?") configure individual fields. `CronDayOfWeek` and `CronMonth` map to Quartz three-letter abbreviations such as `WED` and `JAN`. Methods such as `Minutes(59)` set numeric fields.
+Methods such as `EveryMinutes(15)` (`0 0/15 * * * ?`) and `HoursRange(8, 17)` (`0 * 8-17 * * ?`) configure individual fields. `CronDayOfWeek` and `CronMonth` map to Quartz three-letter abbreviations such as `WED` and `JAN`. Methods such as `Minutes(59)` set numeric fields.
 
 ## Appendix: JobScheduling API endpoints
 
@@ -612,24 +626,25 @@ app.MapEndpoints();
 
 Below is a comprehensive list of endpoints, their HTTP methods, paths, parameters, responses, and descriptions, derived from `JobSchedulingEndpoints.cs`:
 
-| **Endpoint**                        | **Method** | **Path**                                   | **Parameters**                                                                 | **Responses**                                                                                   | **Description**                                    |
-|-------------------------------------|------------|--------------------------------------------|--------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------|----------------------------------------------------|
-| **Get All Jobs**                    | GET        | `/_bdk/api/jobs`                        | None                                                                           | `200 OK` (IEnumerable<JobInfo>), `500 Internal Server Error` (ProblemDetails)                   | Retrieves a list of all scheduled jobs.            |
-| **Get Job Details**                 | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}`   | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (JobInfo), `404 Not Found` (string), `500 Internal Server Error` (ProblemDetails)      | Retrieves details for a specific job.              |
-| **Get Job Runs**                    | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate`, `status`, `priority`, `instanceName`, `resultContains`, `take` (optional) | `200 OK` (IEnumerable<JobRun>), `500 Internal Server Error` (ProblemDetails)                    | Retrieves execution history with optional filters. |
-| **Get Job Run Stats**               | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}/stats` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate` (optional) | `200 OK` (JobRunStats), `500 Internal Server Error` (ProblemDetails)                            | Retrieves aggregated statistics for job runs.      |
-| **Get Job Triggers**                | GET        | `/_bdk/api/jobs/{jobName}/{jobGroup}/triggers` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (IEnumerable<TriggerInfo>), `500 Internal Server Error` (ProblemDetails)               | Retrieves all triggers for a specific job.         |
-| **Trigger Job**                     | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/trigger` | `jobName` (string), `jobGroup` (string), Body: `data` (Dictionary<string, object>, optional) | `202 Accepted` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Triggers a job to run immediately with optional data. |
-| **Pause Job**                       | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/pause` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Pauses the execution of a specific job.            |
-| **Resume Job**                      | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/resume` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Resumes a paused job.                              |
-| **Interrupt Job**                   | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/interrupt` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Interrupt a started job.                              |
-| **Purge Job Runs**                  | DELETE     | `/_bdk/api/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `olderThan` (DateTimeOffset)   | `200 OK` (string), `500 Internal Server Error` (ProblemDetails)                                 | Purges job run history older than a specified date.|
+| **Endpoint** | **Method** | **Path** | **Parameters** | **Responses** | **Description** |
+| ------------------------------------- | ------------ | -------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| **Get All Jobs** | GET | `/_bdk/api/jobs` | None | `200 OK` (`IEnumerable<JobInfo>`), `500 Internal Server Error` (ProblemDetails) | Retrieves a list of all scheduled jobs. |
+| **Get Job Details** | GET | `/_bdk/api/jobs/{jobName}/{jobGroup}` | `jobName` (string), `jobGroup` (string) | `200 OK` (JobInfo), `404 Not Found` (string), `500 Internal Server Error` (ProblemDetails) | Retrieves details for a specific job. |
+| **Get Job Runs** | GET | `/_bdk/api/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate`, `status`, `priority`, `instanceName`, `resultContains`, `take` (optional) | `200 OK` (`IEnumerable<JobRun>`), `500 Internal Server Error` (ProblemDetails) | Retrieves execution history with optional filters. |
+| **Get Job Run Stats** | GET | `/_bdk/api/jobs/{jobName}/{jobGroup}/stats` | `jobName` (string), `jobGroup` (string), Query: `startDate`, `endDate` (optional) | `200 OK` (JobRunStats), `500 Internal Server Error` (ProblemDetails) | Retrieves aggregated statistics for job runs. |
+| **Get Job Triggers** | GET | `/_bdk/api/jobs/{jobName}/{jobGroup}/triggers` | `jobName` (string), `jobGroup` (string) | `200 OK` (`IEnumerable<TriggerInfo>`), `500 Internal Server Error` (ProblemDetails) | Retrieves all triggers for a specific job. |
+| **Trigger Job** | POST | `/_bdk/api/jobs/{jobName}/{jobGroup}/trigger` | `jobName` (string), `jobGroup` (string), Body: `data` (Dictionary<string, object>, optional) | `202 Accepted` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Triggers a job to run immediately with optional data. |
+| **Pause Job** | POST | `/_bdk/api/jobs/{jobName}/{jobGroup}/pause` | `jobName` (string), `jobGroup` (string) | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Pauses the execution of a specific job. |
+| **Resume Job** | POST | `/_bdk/api/jobs/{jobName}/{jobGroup}/resume` | `jobName` (string), `jobGroup` (string) | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Resumes a paused job. |
+| **Interrupt Job** | POST | `/_bdk/api/jobs/{jobName}/{jobGroup}/interrupt` | `jobName` (string), `jobGroup` (string) | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Interrupt a started job. |
+| **Purge Job Runs** | DELETE | `/_bdk/api/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `olderThan` (DateTimeOffset) | `200 OK` (string), `500 Internal Server Error` (ProblemDetails) | Purges job run history older than a specified date. |
 
 ### Endpoint details
 
 1. **GET /_bdk/api/jobs**
    - **Description**: Lists all scheduled jobs with their current status and trigger details.
    - **Response Example**:
+
      ```json
      [
        {"Name": "firstecho", "Group": "DEFAULT", "Type": "EchoJob", "Status": "Active", "TriggerCount": 1},
@@ -640,6 +655,7 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
 2. **GET /_bdk/api/jobs/{jobName}/{jobGroup}**
    - **Description**: Retrieves detailed information for a specific job, including last run and triggers.
    - **Response Example**:
+
      ```json
      {"Name": "firstecho", "Group": "DEFAULT", "Type": "EchoJob", "LastRun": {"Status": "Success", "StartTime": "2025-04-01T12:00:00Z"}}
      ```
@@ -652,6 +668,7 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
      - `status`: Filter by status (e.g., "Success")
      - `take`: Limit results (e.g., 10)
    - **Response Example**:
+
      ```json
      [
        {"Id": "run1", "JobName": "firstecho", "StartTime": "2025-04-01T12:00:00Z", "Status": "Success", "DurationMs": 1000}
@@ -661,6 +678,7 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
 4. **GET /_bdk/api/jobs/{jobName}/{jobGroup}/stats**
    - **Description**: Provides aggregated stats (e.g., success/failure counts, average duration).
    - **Response Example**:
+
      ```json
      {"TotalRuns": 5, "SuccessCount": 4, "FailureCount": 1, "AvgRunDurationMs": 950}
      ```
@@ -668,6 +686,7 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
 5. **GET /_bdk/api/jobs/{jobName}/{jobGroup}/triggers**
    - **Description**: Lists all triggers associated with the job.
    - **Response Example**:
+
      ```json
      [
        {"Name": "trigger1", "Group": "DEFAULT", "CronExpression": "0 * * * * ?", "NextFireTime": "2025-04-01T12:01:00Z"}
@@ -677,13 +696,15 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
 6. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/trigger**
    - **Description**: Triggers the job immediately with optional data.
    - **Request Body**:
+
      ```json
      {"extra": "data"}
      ```
+
    - **Response**: `202 Accepted` with "Job {jobName} in group {jobGroup} triggered successfully."
 
 7. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/pause**
-- **Description**: Pauses the job's execution.
+   - **Description**: Pauses the job's execution.
    - **Response**: `200 OK` with "Job {jobName} in group {jobGroup} paused successfully."
 
 8. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/resume**

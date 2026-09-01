@@ -101,7 +101,6 @@ public sealed class CustomerDocument
 
 `POST /documents/customers/42` returns the typed value with its key, ETag, and logical content hash. The in-memory provider retains it only for the process lifetime.
 
-
 ## Selection guidance
 
 Use Document Storage when data is:

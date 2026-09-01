@@ -1,4 +1,4 @@
-# Requester and notifier
+# Requester and Notifier
 
 > Dispatch requests and notifications through handler pipelines with reusable cross-cutting behaviors.
 

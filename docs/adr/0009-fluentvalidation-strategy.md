@@ -178,7 +178,7 @@ public static Result<EmailAddress> Create(string value)
 ### Validation Layers Distinction
 
 | Concern | Input Validation (FluentValidation) | Domain Validation (Result Pattern) |
-|---------|-------------------------------------|-----------------------------------|
+| --------- | ------------------------------------- | ----------------------------------- |
 | **Location** | Application layer (Commands/Queries) | Domain layer (Entities/Value Objects) |
 | **Purpose** | Validate external inputs (DTOs) | Enforce domain invariants |
 | **When** | Before handler execution (pipeline) | During entity creation/modification |
@@ -395,7 +395,7 @@ public class CustomerCreateCommand : RequestBase<CustomerModel>
 
 ### Key Implementation Files
 
-```
+```text
 src/Modules/CoreModule/CoreModule.Application/
 ├── Commands/
 │   ├── CustomerCreateCommand.cs           # Lines 18-67: Validator class

@@ -358,7 +358,7 @@ protected override void Up(MigrationBuilder migrationBuilder)
 
 ### Key Implementation Files
 
-```
+```text
 src/Modules/CoreModule/CoreModule.Infrastructure/
 ├── EntityFramework/
 │   ├── CoreModuleDbContext.cs                     # DbContext definition
@@ -419,7 +419,7 @@ builder.Property(x => x.Email)
 ### Migration Strategy by Environment
 
 | Environment | Auto-Apply | Approval Process | Rollback Method |
-|------------|-----------|------------------|-----------------|
+| ------------ | ----------- | ------------------ | ----------------- |
 | Local Development | V Yes (on startup) | None | Delete database, rerun |
 | Containerized/Docker | V Yes (on startup) | None | Recreate container |
 | CI/CD Pipeline | X No | PR review required | Git revert migration file |

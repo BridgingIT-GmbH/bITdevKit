@@ -1,4 +1,4 @@
-# Domain policies
+# Domain Policies
 
 > Encapsulate domain decisions as reusable, context-aware policy objects.
 

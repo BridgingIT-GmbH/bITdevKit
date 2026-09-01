@@ -825,7 +825,6 @@ public sealed record KeyValueMetadata
 }
 ```
 
-
 ```csharp
 public enum KeyValueEntryKind
 {

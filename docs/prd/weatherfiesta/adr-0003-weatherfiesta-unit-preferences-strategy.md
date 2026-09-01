@@ -48,7 +48,7 @@ The `unitPreferences` object tells the frontend which units the user prefers. Th
 ### Endpoints that include unit preferences
 
 | Endpoint | Includes unit preferences? | Reason |
-|----------|---------------------------|--------|
+| ---------- | --------------------------- | -------- |
 | GET /cities/{cityId}/weather | Yes | Temperature and wind values need conversion |
 | GET /cities/{cityId}/sun | No | No unit-dependent fields (times in ISO 8601, durations in seconds) |
 | GET /cities/compare | Yes | Temperature and wind values need conversion |
@@ -120,7 +120,7 @@ The `unitPreferences` object tells the frontend which units the user prefers. Th
 
 ### Conversion Formulas (for frontend reference)
 
-```
+```text
 Fahrenheit = Celsius * 9/5 + 32
 Celsius = (Fahrenheit - 32) * 5/9
 

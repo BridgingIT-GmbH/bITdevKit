@@ -9,12 +9,14 @@ Accepted
 WeatherFiesta is a weather dashboard application with 5 feature slices defined in PRDs: CITIES, WEATHER, INGESTION, ADMIN, USER (plus DASHBOARD and RECOMMENDATIONS as read-only projections). The bITdevKit modular monolith architecture (ADR-0003) requires each module to be a self-contained vertical slice with its own Domain, Application, Infrastructure, and Presentation layers.
 
 Key constraints:
+
 - Modules must not reference other modules' internal layers
 - Each module has its own DbContext and database schema
 - Cross-module communication via contracts or integration events
 - The app has 41 stories across 11 PRDs with significant cross-slice dependencies
 
 Cross-slice dependencies identified:
+
 - CITIES depends on nothing (root entity)
 - WEATHER depends on CITIES (subscription checks, city data)
 - INGESTION depends on CITIES (city coordinates for API calls)
@@ -28,6 +30,7 @@ Cross-slice dependencies identified:
 Organize WeatherFiesta into **2 modules** with a shared domain concept:
 
 ### Module 1: Core (primary module)
+
 Contains all weather-related vertical slices as a single cohesive module:
 
 - **Domain**: City, UserCity, CurrentWeather, WeatherForecast, UserProfile, WeatherCode enumeration, WeatherAlert rules, Recommendation rules
@@ -36,17 +39,20 @@ Contains all weather-related vertical slices as a single cohesive module:
 - **Presentation**: All API endpoints
 
 ### Module 2: Core (existing bITdevKit module)
+
 Unchanged. WeatherFiesta does not modify Core.
 
 ### Rationale for single module
 
 The 5 feature slices (CITIES, WEATHER, INGESTION, ADMIN, USER) share:
+
 1. **City aggregate** — the root entity that all other features reference
 2. **UserCity** — the join table between users and cities
 3. **CurrentWeather / WeatherForecast** — read by DASHBOARD, RECOMMENDATIONS, WEATHER, EXPORT
 4. **Single DbContext** — all entities are tightly related; separate schemas would create cross-module foreign key issues
 
 Splitting into multiple modules would require:
+
 - City aggregate duplication or shared contracts
 - Cross-module queries for dashboard aggregation (defeats module isolation)
 - Integration events for weather data updates (adds latency and complexity)
@@ -108,7 +114,7 @@ The dependency graph is a star pattern centered on City — not a set of indepen
 
 ### Module Structure
 
-```
+```text
 src/Modules/Core/
 ├── Core.Domain/
 │   ├── Aggregates/          # City, UserCity

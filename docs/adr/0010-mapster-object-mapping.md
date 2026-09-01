@@ -268,7 +268,7 @@ Use `.Ignore()` for properties managed via domain methods (not direct mapping):
 
 - **Learning Curve**: Developers must learn Mapster API (`ForType`, `MapWith`, `ConstructUsing`)
 - **Boilerplate**: Explicit configurations require more code than pure conventions
-- **Result<T> Handling**: Extracting `.Value` assumes validation already occurred (risk if validation bypassed)
+- **`Result<T>` handling**: Extracting `.Value` assumes validation already occurred (risk if validation bypassed)
 - **Mapping Errors**: Runtime errors if mapping misconfigured (e.g., forgot to register value object conversion)
 - **Two-Way Sync**: Must maintain both domain-to-DTO and DTO-to-domain mappings
 
@@ -525,7 +525,7 @@ public class CustomerFindAllQueryHandler(IMapper mapper, ...)
 }
 ```
 
-### Result<T> Extraction Pattern
+### `Result<T>` extraction pattern
 
 When domain factory methods return `Result<T>`, extract `.Value`:
 
@@ -613,7 +613,7 @@ config.ForType<Customer, CustomerModel>()
 ### Mapping vs Domain Logic Separation
 
 | Concern | Mapping (Mapster) | Domain Logic |
-|---------|------------------|--------------|
+| --------- | ------------------ | -------------- |
 | **Location** | Presentation layer (MapperRegister) | Domain layer (Entities/Value Objects) |
 | **Purpose** | Transform data between layers | Enforce business rules |
 | **When** | After handler completes (for response) | During entity creation/modification |

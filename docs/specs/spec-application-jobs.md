@@ -160,75 +160,75 @@ Public and protected symbols should be intentionally documented because they def
 
 This glossary captures the working terminology used by the Jobs feature. Names may still evolve during implementation, but the concepts should remain stable.
 
-| Term                          | Meaning                                                                                                                                                  |
+| Term | Meaning |
 | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Job                           | A unit of background work implemented as an `IJob` or derived from the base `JobBase` class.                                                             |
-| Job Definition                | The resolved in-memory representation of a registered job type, including stable name, display name, description, properties, defaults, data type, concurrency, retry, timeout and trigger definitions. |
-| Job Name                      | A stable identifier for a job definition. It is used by configuration, management APIs, query APIs and persisted runtime records.                        |
-| Job Display Name              | An optional human-readable name for dashboards, API clients and operational views. If omitted, the display name is resolved from the optional module name and dashified job type name. |
-| Job Group                     | A grouping value used for scoping, querying, operations or migration compatibility with the existing JobScheduling feature. If no group is configured, the resolved group is `DEFAULT`. |
-| Module                        | An optional module scope used when jobs are registered from modular application boundaries.                                                              |
-| Trigger                       | A configured condition that can create job occurrences. A job can have multiple triggers.                                                                |
-| Trigger Name                  | A stable identifier for a trigger within a job. Trigger names must be unique per job.                                                                    |
-| Trigger Type                  | The trigger category, such as cron, one-time, delayed, startup-delay, manual, calendar or event-based.                                                   |
-| Occurrence                    | A concrete scheduled execution request produced by a trigger. Durable providers persist occurrences before execution.                                    |
-| Due Occurrence                | An occurrence whose scheduled execution time has arrived and is eligible for acquisition by a worker.                                                    |
-| Missed Occurrence             | An occurrence that should have run while the scheduler was stopped, unavailable or unable to acquire work.                                               |
-| Job Batch                     | A durable operational grouping of related occurrences that can be queried, monitored and controlled together. This is distinct from provider scan batch size or worker dispatch batch size. |
-| Batch Child Occurrence        | An occurrence associated with a job batch and counted toward the batch's created, pending, processing, succeeded, failed, cancelled and finished totals. |
-| Execution                     | One attempt to run a job occurrence. Retries create additional execution attempts for the same occurrence.                                                |
-| Execution Record              | Durable attempt summary for one execution attempt, including status, timing, result/error summary, attempt number, and owning scheduler instance.         |
-| Execution History             | Append-only lifecycle records describing occurrence transitions, execution attempt transitions, operator actions, retry scheduling, leases and diagnostics. |
-| Previous Execution            | The immediately preceding execution attempt for the same occurrence. It is mainly useful when the current attempt is a retry.                             |
-| Previous Successful Execution | The latest successful execution for the same job and trigger before the current occurrence, used for delta processing.                                    |
-| JobExecutionContext           | The runtime context passed to a job through the `IJobExecutionContext` public contract. It exposes properties, typed data, previous run information, cancellation, messages, correlation and control operations. |
-| Data                          | Structured input supplied by a code-registered trigger or manual dispatch and exposed to the job through `IJobExecutionContext<TData>` as `ctx.Data`. `Unit` represents no input data. |
-| Properties                      | Non-input key/value information attached to jobs, triggers, occurrences or executions for filtering, diagnostics or runtime decisions.                 |
-| Scheduler Instance            | One running scheduler host inside an application instance. It has an instance id used for leases, diagnostics, telemetry and `TargetInstances(...)` matching. |
-| Worker                        | A scheduler runtime component or execution slot inside a scheduler instance that acquires due occurrences and dispatches job executions. It is not a public target identity. |
-| Worker Pool                   | The bounded set of workers or execution slots inside a scheduler instance used to process jobs concurrently.                                             |
-| Lease                         | A provider-backed ownership record that allows one scheduler instance to execute a due occurrence.                                                       |
-| Lock                          | A provider-specific mechanism used to implement lease acquisition or exclusive updates.                                                                  |
-| Lease Renewal                 | The act of extending ownership while a job is still running.                                                                                             |
-| Lease Expiration              | The point at which an unrenewed lease is considered abandoned and can be recovered.                                                                      |
-| Lease Recovery                | Releasing or reacquiring abandoned work after a host crash, shutdown or stalled execution.                                                               |
-| Active Registration           | The resolved job and trigger model built from code-first fluent registration and attributes at application startup, with appsettings allowed only to override matching registrations. It is the source of truth for available jobs and triggers. |
-| Runtime State                 | Durable mutable scheduler state associated with registered jobs or triggers, such as enable/disable overrides, pause state and trigger materialization watermarks. |
-| Durable Provider              | A storage provider that persists runtime state, occurrences, executions, history and leases across process restarts.                                    |
-| In-Memory Provider            | The default lightweight provider for tests, local development and transient workloads. It does not provide durable recovery across restarts.             |
-| Entity Framework Provider     | The first durable provider, integrating scheduler persistence into an application `DbContext`.                                                           |
-| `IJobsContext`        | Proposed capability interface implemented by an application `DbContext` to host scheduler persistence sets.                                              |
-| Cron Trigger                  | A trigger based on a cron expression. The initial design supports 5-part cron and 6-part cron with seconds.                                              |
-| Cron Engine                   | The devkit-owned abstraction responsible for cron parsing, validation and occurrence calculation.                                                        |
-| Cronos Implementation         | The default cron engine implementation based on Cronos, hidden behind the devkit cron abstraction.                                                       |
-| Serializer                    | The scheduler-wide `ISerializer` used for context data, trigger data, occurrence data, properties and retained diagnostic data. The default is `SystemTextJsonSerializer`. |
-| Time Zone                     | The explicit `TimeZoneInfo` used when calculating cron occurrences. Scheduler calculations start from UTC instants.                                      |
-| Calendar Trigger              | A trigger based on calendar-style schedules beyond direct cron expression strings.                                                                       |
-| Manual Trigger                | A trigger that allows a job to be dispatched explicitly through services or operations APIs.                                                             |
-| Delayed Trigger               | A trigger that creates an occurrence after a relative delay from activation, registration or dispatch.                                                   |
-| Startup-Delay Trigger         | A trigger evaluated when the scheduler starts, after a configured delay.                                                                                 |
-| Event-Based Trigger           | A trigger category reserved for application-defined or provider-defined event sources such as notifications, messages or queue activity when such trigger support is explicitly enabled. Requester remains an outbound job integration unless a separate request-observation adapter is explicitly designed. |
-| Outbound Job Integration      | A job step that invokes another devkit feature, such as Messaging, Queueing, Requester, Notifier, or Orchestration, through the target feature's public abstraction. |
-| Retry Policy                  | Configuration that determines whether failed executions are retried, how many times and with what delay/backoff.                                         |
-| Timeout                       | A configured maximum runtime for an execution before cancellation or timeout handling is requested.                                                      |
-| Priority                      | A scheduling hint used to order eligible work when multiple occurrences are due.                                                                         |
-| Concurrency Limit             | A limit on simultaneous executions for a job, trigger, group or scheduler.                                                                               |
-| Dependency                    | A persisted occurrence-level prerequisite that keeps an occurrence blocked until another occurrence reaches a configured terminal outcome.                 |
-| Chaining                      | A relationship where completion of one job schedules or dispatches another job.                                                                          |
-| Behavior                      | A decorator around job execution used for cross-cutting concerns such as logging, metrics, retries or validation.                                        |
-| Exception Handler             | A registered component that handles unhandled job execution exceptions in a centralized way.                                                             |
-| Dispatch                      | Programmatic request to execute a job immediately or in the background.                                                                                  |
-| Dispatch And Wait             | Programmatic request to dispatch a job and wait for completion or a specific outcome.                                                                    |
-| Pause                         | Operational action that temporarily stops scheduling or execution progression for a job, trigger or occurrence.                                          |
-| Resume                        | Operational action that re-enables scheduling or execution progression after a pause.                                                                    |
-| Cancel                        | Operational action that requests controlled cancellation of an occurrence or running execution.                                                          |
-| Interrupt                     | Operational action that requests cancellation of a currently running execution.                                                                          |
-| Purge                         | Explicit maintenance operation that deletes retained execution history or other eligible operational records.                                            |
-| Operational Endpoints         | Optional HTTP endpoints for querying and managing jobs, triggers, executions, leases and history.                                                        |
-| Operational UI                | Optional dashboard/UI built on top of query and management APIs.                                                                                         |
-| Result Pattern                | The devkit `Result`/`Result<T>` model used by client-facing scheduler operations for explicit success/failure handling.                                  |
-| Source-Level Migration        | Manual code migration from the existing `Application.JobScheduling` API to the new `Application.Jobs` API.                                               |
-| Quartz Compatibility          | Source migration guidance for existing Quartz-backed JobScheduling users; runtime compatibility with Quartz stores is not required.                      |
+| Job | A unit of background work implemented as an `IJob` or derived from the base `JobBase` class. |
+| Job Definition | The resolved in-memory representation of a registered job type, including stable name, display name, description, properties, defaults, data type, concurrency, retry, timeout and trigger definitions. |
+| Job Name | A stable identifier for a job definition. It is used by configuration, management APIs, query APIs and persisted runtime records. |
+| Job Display Name | An optional human-readable name for dashboards, API clients and operational views. If omitted, the display name is resolved from the optional module name and dashified job type name. |
+| Job Group | A grouping value used for scoping, querying, operations or migration compatibility with the existing JobScheduling feature. If no group is configured, the resolved group is `DEFAULT`. |
+| Module | An optional module scope used when jobs are registered from modular application boundaries. |
+| Trigger | A configured condition that can create job occurrences. A job can have multiple triggers. |
+| Trigger Name | A stable identifier for a trigger within a job. Trigger names must be unique per job. |
+| Trigger Type | The trigger category, such as cron, one-time, delayed, startup-delay, manual, calendar or event-based. |
+| Occurrence | A concrete scheduled execution request produced by a trigger. Durable providers persist occurrences before execution. |
+| Due Occurrence | An occurrence whose scheduled execution time has arrived and is eligible for acquisition by a worker. |
+| Missed Occurrence | An occurrence that should have run while the scheduler was stopped, unavailable or unable to acquire work. |
+| Job Batch | A durable operational grouping of related occurrences that can be queried, monitored and controlled together. This is distinct from provider scan batch size or worker dispatch batch size. |
+| Batch Child Occurrence | An occurrence associated with a job batch and counted toward the batch's created, pending, processing, succeeded, failed, cancelled and finished totals. |
+| Execution | One attempt to run a job occurrence. Retries create additional execution attempts for the same occurrence. |
+| Execution Record | Durable attempt summary for one execution attempt, including status, timing, result/error summary, attempt number, and owning scheduler instance. |
+| Execution History | Append-only lifecycle records describing occurrence transitions, execution attempt transitions, operator actions, retry scheduling, leases and diagnostics. |
+| Previous Execution | The immediately preceding execution attempt for the same occurrence. It is mainly useful when the current attempt is a retry. |
+| Previous Successful Execution | The latest successful execution for the same job and trigger before the current occurrence, used for delta processing. |
+| JobExecutionContext | The runtime context passed to a job through the `IJobExecutionContext` public contract. It exposes properties, typed data, previous run information, cancellation, messages, correlation and control operations. |
+| Data | Structured input supplied by a code-registered trigger or manual dispatch and exposed to the job through `IJobExecutionContext<TData>` as `ctx.Data`. `Unit` represents no input data. |
+| Properties | Non-input key/value information attached to jobs, triggers, occurrences or executions for filtering, diagnostics or runtime decisions. |
+| Scheduler Instance | One running scheduler host inside an application instance. It has an instance id used for leases, diagnostics, telemetry and `TargetInstances(...)` matching. |
+| Worker | A scheduler runtime component or execution slot inside a scheduler instance that acquires due occurrences and dispatches job executions. It is not a public target identity. |
+| Worker Pool | The bounded set of workers or execution slots inside a scheduler instance used to process jobs concurrently. |
+| Lease | A provider-backed ownership record that allows one scheduler instance to execute a due occurrence. |
+| Lock | A provider-specific mechanism used to implement lease acquisition or exclusive updates. |
+| Lease Renewal | The act of extending ownership while a job is still running. |
+| Lease Expiration | The point at which an unrenewed lease is considered abandoned and can be recovered. |
+| Lease Recovery | Releasing or reacquiring abandoned work after a host crash, shutdown or stalled execution. |
+| Active Registration | The resolved job and trigger model built from code-first fluent registration and attributes at application startup, with appsettings allowed only to override matching registrations. It is the source of truth for available jobs and triggers. |
+| Runtime State | Durable mutable scheduler state associated with registered jobs or triggers, such as enable/disable overrides, pause state and trigger materialization watermarks. |
+| Durable Provider | A storage provider that persists runtime state, occurrences, executions, history and leases across process restarts. |
+| In-Memory Provider | The default lightweight provider for tests, local development and transient workloads. It does not provide durable recovery across restarts. |
+| Entity Framework Provider | The first durable provider, integrating scheduler persistence into an application `DbContext`. |
+| `IJobsContext` | Proposed capability interface implemented by an application `DbContext` to host scheduler persistence sets. |
+| Cron Trigger | A trigger based on a cron expression. The initial design supports 5-part cron and 6-part cron with seconds. |
+| Cron Engine | The devkit-owned abstraction responsible for cron parsing, validation and occurrence calculation. |
+| Cronos Implementation | The default cron engine implementation based on Cronos, hidden behind the devkit cron abstraction. |
+| Serializer | The scheduler-wide `ISerializer` used for context data, trigger data, occurrence data, properties and retained diagnostic data. The default is `SystemTextJsonSerializer`. |
+| Time Zone | The explicit `TimeZoneInfo` used when calculating cron occurrences. Scheduler calculations start from UTC instants. |
+| Calendar Trigger | A trigger based on calendar-style schedules beyond direct cron expression strings. |
+| Manual Trigger | A trigger that allows a job to be dispatched explicitly through services or operations APIs. |
+| Delayed Trigger | A trigger that creates an occurrence after a relative delay from activation, registration or dispatch. |
+| Startup-Delay Trigger | A trigger evaluated when the scheduler starts, after a configured delay. |
+| Event-Based Trigger | A trigger category reserved for application-defined or provider-defined event sources such as notifications, messages or queue activity when such trigger support is explicitly enabled. Requester remains an outbound job integration unless a separate request-observation adapter is explicitly designed. |
+| Outbound Job Integration | A job step that invokes another devkit feature, such as Messaging, Queueing, Requester, Notifier, or Orchestration, through the target feature's public abstraction. |
+| Retry Policy | Configuration that determines whether failed executions are retried, how many times and with what delay/backoff. |
+| Timeout | A configured maximum runtime for an execution before cancellation or timeout handling is requested. |
+| Priority | A scheduling hint used to order eligible work when multiple occurrences are due. |
+| Concurrency Limit | A limit on simultaneous executions for a job, trigger, group or scheduler. |
+| Dependency | A persisted occurrence-level prerequisite that keeps an occurrence blocked until another occurrence reaches a configured terminal outcome. |
+| Chaining | A relationship where completion of one job schedules or dispatches another job. |
+| Behavior | A decorator around job execution used for cross-cutting concerns such as logging, metrics, retries or validation. |
+| Exception Handler | A registered component that handles unhandled job execution exceptions in a centralized way. |
+| Dispatch | Programmatic request to execute a job immediately or in the background. |
+| Dispatch And Wait | Programmatic request to dispatch a job and wait for completion or a specific outcome. |
+| Pause | Operational action that temporarily stops scheduling or execution progression for a job, trigger or occurrence. |
+| Resume | Operational action that re-enables scheduling or execution progression after a pause. |
+| Cancel | Operational action that requests controlled cancellation of an occurrence or running execution. |
+| Interrupt | Operational action that requests cancellation of a currently running execution. |
+| Purge | Explicit maintenance operation that deletes retained execution history or other eligible operational records. |
+| Operational Endpoints | Optional HTTP endpoints for querying and managing jobs, triggers, executions, leases and history. |
+| Operational UI | Optional dashboard/UI built on top of query and management APIs. |
+| Result Pattern | The devkit `Result`/`Result<T>` model used by client-facing scheduler operations for explicit success/failure handling. |
+| Source-Level Migration | Manual code migration from the existing `Application.JobScheduling` API to the new `Application.Jobs` API. |
+| Quartz Compatibility | Source migration guidance for existing Quartz-backed JobScheduling users; runtime compatibility with Quartz stores is not required. |
 
 ---
 
@@ -3556,21 +3556,21 @@ Compatibility expectations:
 
 Common migration mapping:
 
-| Existing JobScheduling                                | New Jobs                                                                    |
+| Existing JobScheduling | New Jobs |
 | ----------------------------------------------------- | --------------------------------------------------------------------------- |
-| `AddJobScheduling(...)`                               | `AddJobScheduler(...)`                                                      |
-| `JobBase`                                             | new `JobBase` base class or direct `IJob` implementation                    |
-| `Process(IJobExecutionContext, CancellationToken)`    | `ExecuteAsync(IJobExecutionContext, CancellationToken)`                     |
+| `AddJobScheduling(...)` | `AddJobScheduler(...)` |
+| `JobBase` | new `JobBase` base class or direct `IJob` implementation |
+| `Process(IJobExecutionContext, CancellationToken)` | `ExecuteAsync(IJobExecutionContext, CancellationToken)` |
 | `.WithJob<T>().Cron(...).Named(...).RegisterScoped()` | `.WithJob<T>("name", job => job.WithDescription("...").AddTrigger("trigger", t => t.Cron(...)))` |
-| `.WithData(key, value)`                               | `.Data(...)`, `.WithProperty(...)`, or typed `IJobExecutionContext<TData>`      |
-| job group                                             | job group, module, or properties-based scope                                  |
-| `LastProcessedDate`                                   | `IJobExecutionContext.PreviousSuccessfulExecution.CompletedUtc` or equivalent |
-| `ElapsedMilliseconds`                                 | execution history duration                                                  |
-| `Status` / `ErrorMessage`                             | execution history status, messages, and errors                              |
-| `CronExpressions` / `CronExpressionBuilder`           | devkit cron helpers and new fluent cron builder                             |
-| `[DisallowConcurrentExecution]`                       | `.WithConcurrency(limit: 1)`                                                |
-| Quartz SQL tables                                     | devkit Entity Framework provider tables                                     |
-| `IJobService`                                         | new scheduler management/query services returning `Result`, `Result<T>` or `ResultPaged<T>` |
+| `.WithData(key, value)` | `.Data(...)`, `.WithProperty(...)`, or typed `IJobExecutionContext<TData>` |
+| job group | job group, module, or properties-based scope |
+| `LastProcessedDate` | `IJobExecutionContext.PreviousSuccessfulExecution.CompletedUtc` or equivalent |
+| `ElapsedMilliseconds` | execution history duration |
+| `Status` / `ErrorMessage` | execution history status, messages, and errors |
+| `CronExpressions` / `CronExpressionBuilder` | devkit cron helpers and new fluent cron builder |
+| `[DisallowConcurrentExecution]` | `.WithConcurrency(limit: 1)` |
+| Quartz SQL tables | devkit Entity Framework provider tables |
+| `IJobService` | new scheduler management/query services returning `Result`, `Result<T>` or `ResultPaged<T>` |
 
 ## Fluent Configuration Model
 
@@ -5026,9 +5026,9 @@ Trigger-level settings override job-level defaults. For example, a job can defin
 
 Cron triggers should accept the common 5-field form and the 6-field form with seconds:
 
-| Parts          | Format                                              | Example             |
+| Parts | Format | Example |
 | -------------- | --------------------------------------------------- | ------------------- |
-| 5              | `minute hour day-of-month month day-of-week`        | `0 8 * * MON-FRI`   |
+| 5 | `minute hour day-of-month month day-of-week` | `0 8 * * MON-FRI` |
 | 6 with seconds | `second minute hour day-of-month month day-of-week` | `0 0 8 * * MON-FRI` |
 
 The cron builder should make this explicit:

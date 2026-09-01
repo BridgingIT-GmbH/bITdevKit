@@ -19,7 +19,7 @@ We use the **MADR (Markdown Architectural Decision Records)** format for consist
 ## Quick Reference
 
 | ADR | Title | Status |
-|-----|-------|--------|
+| ----- | ------- | -------- |
 | [ADR-0001](0001-clean-onion-architecture.md) | Clean/Onion Architecture with Strict Layer Boundaries | Accepted |
 | [ADR-0002](0002-result-pattern-error-handling.md) | Result Pattern for Error Handling | Accepted |
 | [ADR-0003](0003-modular-monolith-architecture.md) | Modular Monolith Architecture | Accepted |

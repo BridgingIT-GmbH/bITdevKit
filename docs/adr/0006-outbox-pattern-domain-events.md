@@ -73,7 +73,7 @@ CREATE TABLE OutboxDomainEvents (
 
 ### Execution Flow
 
-```
+```text
 1. Handler calls repository.InsertResultAsync(customer)
 2. RepositoryOutboxDomainEventBehavior:
    a. Extracts customer.DomainEvents

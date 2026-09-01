@@ -19,7 +19,7 @@ Use the **Pipeline pattern** for both city creation and weather ingestion. Do no
 
 ### City Creation Pipeline
 
-```
+```text
 CityCreateCommand
   → GeocodeCityStep          (call Open-Meteo Geocoding API)
   → CheckCityExistsStep      (dedup by ExternalId or Lat/Lng)
@@ -32,7 +32,7 @@ Each step receives the pipeline context, performs its action, and passes control
 
 ### Weather Ingestion Pipeline
 
-```
+```text
 IngestWeatherCommand
   → FetchCurrentWeatherStep  (call Open-Meteo Forecast API)
   → UpsertCurrentWeatherStep (upsert CurrentWeather record)

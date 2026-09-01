@@ -155,7 +155,6 @@ At runtime, Jobs exposes three service layers with distinct responsibilities:
 
 These services all use the devkit `Result` pattern for runtime or query outcomes where business/runtime validation can fail without throwing exceptions.
 
-
 ## Registration and dispatch
 
 Register jobs and triggers in code during application startup:

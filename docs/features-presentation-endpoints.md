@@ -282,7 +282,6 @@ var options = new MyEndpointsOptionsBuilder()
   - Control endpoints: trigger, pause, resume, interrupt, purge runs.
   - Uses Minimal API method chains: `Produces<T>()`, `WithName(...)`, `WithDescription(...)` for metadata.
 
-
 ## Detailed example
 
 Define a minimal endpoint using `EndpointsBase` that serves `GET /echo`:

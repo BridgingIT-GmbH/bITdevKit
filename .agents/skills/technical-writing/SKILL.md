@@ -118,7 +118,7 @@ Do not repeat the same material in every layer. The overview orients, the quicks
 - Don't pre-announce ("we will soon support...") and don't start consecutive sentences with the same phrase.
 - Read the awkward sentence aloud. If it stays awkward, rewrite it.
 - Link with words that say where the link goes: the page title or a short description. Never "click here". Prefer a sentence of context on the page over a link off it.
-- Headings carry the point, not just the topic ("Pick the mode first", not "Modes"). Use sentence case except for repository-mandated labels in the feature-document spine. A task heading is a bare verb phrase ("Create an instance"). A concept heading is a noun phrase. One h1 per page, no skipped levels.
+- Headings carry the point, not just the topic ("Pick the mode first", not "Modes"). Use Title Case for the H1 in bITdevKit documentation and preserve product casing such as `bITdevKit`, `ActiveEntity`, and `MCP`. For MkDocs content pages, make the navigation label, frontmatter title, and H1 match exactly. The landing page can use the site name as its metadata title and omit an H1. Use sentence case for supporting headings except for repository-mandated labels in the feature-document spine. A task heading is a bare verb phrase ("Create an instance"). A concept heading is a noun phrase. One h1 per page, no skipped levels.
 - Numbered lists for sequences, bullets for everything else. Introduce a list with a complete sentence. Keep items parallel.
 - Code goes in code font. UI elements go in bold. Use serial commas. Drop "etc." and say up front that a list is partial.
 

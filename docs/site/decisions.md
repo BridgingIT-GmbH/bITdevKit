@@ -4,15 +4,13 @@ title: Decisions
 
 # Decisions
 
-These short guides help with the practical tradeoffs that developers usually hit early when working
-with `bITdevKit`.
+These guides compare related `bITdevKit` features that use different runtime or dependency models.
 
 ## Available guides
 
-- [Messaging vs Queueing](decisions-messaging-vs-queueing.md)
-- [Repository vs ActiveEntity](decisions-repository-vs-activeentity.md)
+- [Messaging or Queueing](decisions-messaging-vs-queueing.md)
+- [Repository or ActiveEntity](decisions-repository-vs-activeentity.md)
 
-## Why these pages exist
+## Purpose
 
-The documentation describes the features individually. These guides explain when to choose one
-approach over another in a real application.
+Feature guides describe each API. Decision guides compare where each model fits and state the tradeoffs.

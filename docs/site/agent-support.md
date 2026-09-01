@@ -4,40 +4,40 @@ title: AI Agent Support
 
 # AI Agent Support
 
-`bITdevKit` is agent-capable through the `bdk mcp` command. It gives MCP-capable IDEs and coding agents a local, workspace-aware way to read official DevKit documentation, inspect the running application, and apply the expected patterns while they help with development.
+`bITdevKit` supports coding agents through the `bdk mcp` command. MCP-capable IDEs and agents can use it to read official DevKit documentation, inspect a running application, and follow DevKit patterns in the current workspace.
 
-This is designed for local development. It is not a public HTTP endpoint and it is not a production administration API.
+This integration is for local development. It does not expose a public HTTP endpoint or a production administration API.
 
 ## Why it matters
 
-Modern coding agents are more useful when they can combine framework guidance with live runtime context. With DevKit MCP, an agent can search official DevKit docs, request curated implementation guidance, summarize the selected project runtime, and then ask the running application for bounded diagnostics instead of guessing from source code alone.
+Source code shows what an application can do. Runtime diagnostics show what it is doing now. DevKit MCP gives an agent both, together with official documentation and implementation guidance.
 
 Common workflows include:
 
 - check whether the selected local runtime is ready
 - inspect application health and runtime metrics
 - query retained logs and recent errors
-- follow correlation ids across logs and operational features
+- follow correlation IDs across logs and operational features
 - inspect messaging and queueing state
 - inspect and operate durable jobs
-- inspect orchestration instances, history, signals and timers
+- inspect orchestration instances, history, signals, and timers
 - call project-owned diagnostics exposed by the application
 - search official DevKit documentation from the consuming project
 - search official DevKit API reference symbols from the consuming project
 - request curated implementation guidance for common DevKit feature work
-- summarize the selected runtime, registered modules and advertised MCP capabilities
-- use DevKit docs and API reference while implementing jobs, queues, handlers, modules, endpoints or project-owned MCP tools
+- summarize the selected runtime, registered modules, and advertised MCP capabilities
+- use DevKit docs and API reference while implementing jobs, queues, handlers, modules, endpoints, or project-owned MCP tools
 
-## Three agent angles
+## Agent context
 
-DevKit MCP gives agents three complementary sources of context:
+DevKit MCP gives agents four kinds of context:
 
-| Angle | Tools | Use |
+| Context | Tools | Use |
 | --- | --- | --- |
 | Guidance | `bdk_guidance_list`, `bdk_guidance_get` | Get a concise implementation checklist for common DevKit work. |
 | Documentation | `bdk_docs_search`, `bdk_docs_get` | Read official DevKit feature docs while coding in a consuming project. |
-| API reference | `bdk_api_search`, `bdk_api_get` | Find exact DevKit types, members, overloads, extension methods and signatures. |
-| Runtime | `bdk_project_summary`, `bdk_capabilities_get`, feature tools | Inspect the selected app, its modules, capabilities and live operational state. |
+| API reference | `bdk_api_search`, `bdk_api_get` | Find exact DevKit types, members, overloads, extension methods, and signatures. |
+| Runtime | `bdk_project_summary`, `bdk_capabilities_get`, feature tools | Inspect the selected app, its modules, capabilities, and live operational state. |
 
 For feature work, prefer this flow:
 
@@ -45,7 +45,7 @@ For feature work, prefer this flow:
 Guidance -> Docs -> API reference -> Code -> Runtime verification
 ```
 
-Guidance is intentionally one generic operation. When a prompt asks for "guidance", "how to implement", "add", "create" or "build" DevKit-specific code, ask the agent to call `bdk_guidance_get` with the natural-language request as `query`. The tool infers the relevant guidance topics, including combined cases such as a job that triggers an orchestration.
+The guidance API uses one generic operation. For a request to add, create, or build DevKit code, call `bdk_guidance_get` with the natural-language request in `query`. The tool selects the relevant topics and can combine them, such as guidance for a job that triggers an orchestration.
 
 Example guidance call:
 
@@ -55,9 +55,14 @@ Example guidance call:
 }
 ```
 
-Guidance topics cover major DevKit areas such as jobs, messaging, queueing, orchestration, pipelines, caching, mapping, serialization, utilities, commands and queries, application events, ActiveEntity, domain events, repositories, specifications, domain modeling, filtering, modules, requester/notifier, results, rules, startup tasks, document storage, blob storage, file storage, storage monitoring and dashboard pages.
+Guidance covers the following DevKit areas:
 
-## Docs-aware coding
+- application patterns such as commands, queries, events, jobs, messaging, queueing, orchestration, pipelines, and startup tasks
+- domain patterns such as ActiveEntity, domain events, repositories, specifications, domain modeling, results, and rules
+- shared capabilities such as caching, mapping, serialization, utilities, filtering, modules, and requester or notifier
+- storage and presentation features such as document, blob, and file storage, storage monitoring, and dashboard pages
+
+## Use docs while coding
 
 `bdk mcp` exposes documentation and API reference tools directly to the agent:
 
@@ -65,10 +70,10 @@ Guidance topics cover major DevKit areas such as jobs, messaging, queueing, orch
 | --- | --- |
 | `bdk_docs_search` | Search official DevKit documentation by topic. |
 | `bdk_docs_get` | Load a bounded markdown source returned by search. |
-| `bdk_api_search` | Search official DevKit API reference symbols by type, member, namespace, topic or keyword. |
-| `bdk_api_get` | Load bounded API reference details for a symbol uid returned by search. |
+| `bdk_api_search` | Search official DevKit API reference symbols by type, member, namespace, topic, or keyword. |
+| `bdk_api_get` | Load bounded API reference details for a symbol `uid` returned by search. |
 
-The docs tools read the official DevKit documentation from GitHub. The API tools read generated API reference metadata from GitHub Pages. They do not depend on the consuming project's local `docs` folder, so a customer project can use `bdk` as a development assistant without vendoring the DevKit source repository.
+The docs tools read official DevKit documentation from GitHub. The API tools read generated reference metadata from GitHub Pages. Neither tool depends on the consuming project's local `docs` folder. A project can therefore use `bdk` without copying the DevKit source repository.
 
 A useful agent workflow is:
 
@@ -77,7 +82,7 @@ A useful agent workflow is:
 3. Search the API reference for the concrete types and members involved.
 4. Inspect the existing project code for matching conventions.
 5. Make the implementation change.
-6. Use runtime MCP tools to verify the app advertises or executes the feature.
+6. Use runtime MCP tools to verify that the app advertises or executes the feature.
 
 Example:
 
@@ -111,13 +116,13 @@ flowchart LR
     Handler --> Service
 ```
 
-The CLI discovers ready DevKit hosts for the current workspace, selects the current runtime, and forwards runtime-bound tool calls over local IPC. Stale runtime descriptors are ignored by MCP selection so agents work with currently running hosts.
+The CLI discovers ready DevKit hosts for the current workspace and selects the current runtime. It forwards runtime tool calls over local IPC. MCP selection ignores stale runtime descriptors.
 
 ## Install and enable MCP
 
-MCP has two sides:
+MCP requires two processes:
 
-- the `bdk mcp` STDIO server started by your IDE or agent
+- the `bdk mcp` STDIO server that your IDE or agent starts
 - a running DevKit web host with local MCP tooling enabled
 
 ### 1. Install the `bdk` .NET tool
@@ -133,7 +138,7 @@ dotnet tool install BridgingIT.DevKit.Cli
 dotnet tool run bdk --version
 ```
 
-The MCP command shape is:
+Start the MCP server with:
 
 ```powershell
 dotnet tool run bdk mcp --toolset diagnostics,operations,admin
@@ -153,7 +158,7 @@ var builder = DevKitWebApplication.CreateBuilder(args)
         .WithHandlersFromAssembly<CoreModule>());
 ```
 
-If the project only needs built-in handlers from DevKit feature packages, those packages can register their own handlers. Project-owned handlers are added with `.WithHandler<THandler>()` or `.WithHandlersFromAssembly<TMarker>()`.
+DevKit feature packages can register their built-in handlers. Add project-owned handlers with `.WithHandler<THandler>()` or `.WithHandlersFromAssembly<TMarker>()`.
 
 ### 3. Start the application
 
@@ -202,7 +207,7 @@ Or call these tools from the MCP client:
 - `bdk_runtimes_list`
 - `bdk_capabilities_get`
 
-The expected result is one ready selected runtime and a capabilities response listing the operations exposed by the host.
+The expected result is one selected runtime in the ready state and a capabilities response that lists the host operations.
 
 ## What agents can access
 
@@ -212,27 +217,27 @@ Built-in areas include:
 
 | Area | Examples |
 | --- | --- |
-| Runtime | MCP status, self-test, capabilities, health and metrics |
-| Logs and errors | query logs, tail logs, recent errors, inspect correlation ids |
-| Messaging | summaries, subscriptions, retained messages, retry, archive, pause and resume |
-| Queueing | queue summaries, retained queue messages, retry, archive, queue/type pause and resume |
-| Jobs | job definitions, run history, run statistics, trigger, pause, resume and interrupt |
-| Orchestrations | instances, details, history, timers, signals and runtime control |
+| Runtime | MCP status, self-test, capabilities, health, and metrics |
+| Logs and errors | query logs, tail logs, recent errors, and inspect correlation IDs |
+| Messaging | summaries, subscriptions, retained messages, retry, archive, pause, and resume |
+| Queueing | queue summaries, retained queue messages, retry, archive, and queue or type pause and resume |
+| Jobs | job definitions, run history, run statistics, trigger, pause, resume, and interrupt |
+| Orchestrations | instances, details, history, timers, signals, and runtime control |
 | Project tools | application-owned diagnostics through `bdk_project_operations` and `bdk_project_call` |
-| Project summary | selected runtime, registered modules, MCP capability groups and project-owned operations |
-| Guidance | curated implementation checklists for jobs, messaging, queueing, orchestration, pipelines and dashboard pages |
+| Project summary | selected runtime, registered modules, MCP capability groups, and project-owned operations |
+| Guidance | curated implementation checklists for jobs, messaging, queueing, orchestration, pipelines, and dashboard pages |
 | Documentation | official DevKit docs search and retrieval for implementation guidance |
 | API reference | official DevKit API symbols, signatures, summaries and DocFX links |
 
 Operations are grouped into toolsets:
 
 - `diagnostics`: default read-oriented tools
-- `operations`: runtime control such as retry, pause, resume, trigger or signal
+- `operations`: runtime control such as retry, pause, resume, trigger, or signal
 - `admin`: destructive maintenance operations, always requiring explicit confirmation
 
 ## Useful development prompts
 
-Use prompts that tell the agent what to inspect first, what to change, and when to stop for approval. These examples assume the application is running locally and the MCP client has started `bdk mcp`.
+State what the agent must inspect first, what it can change, and when it must wait for approval. These examples assume that the application is running locally and the MCP client has started `bdk mcp`.
 
 ### Runtime orientation
 
@@ -241,13 +246,13 @@ Use the bdk MCP tools to verify the selected runtime. Run the MCP self-test, ins
 ```
 
 ```text
-Use bdk MCP to check whether this application exposes logs, jobs, messaging, queueing, orchestrations and project-owned operations. Tell me which areas are available and which are not.
+Use bdk MCP to check whether this application exposes logs, jobs, messaging, queueing, orchestrations, and project-owned operations. Tell me which areas are available and which are not.
 ```
 
 ### Debugging a failing local feature
 
 ```text
-Use bdk MCP to inspect the latest errors from the running app. For the newest error, follow the correlation id, summarize the related logs, and point me to the most likely code area.
+Use bdk MCP to inspect the latest errors from the running app. For the newest error, follow the correlation ID, summarize the related logs, and point me to the most likely code area.
 ```
 
 ```text
@@ -261,7 +266,7 @@ Use bdk MCP to list recent job runs and failed executions. If a job failed, insp
 ```
 
 ```text
-Use bdk MCP to inspect waiting queue messages and retained broker messages. Identify messages that look stuck, leased, failed or ready for retry, but do not perform operations yet.
+Use bdk MCP to inspect waiting queue messages and retained broker messages. Identify messages that look stuck, leased, failed, or ready for retry, but do not perform operations yet.
 ```
 
 ```text
@@ -271,11 +276,11 @@ Use bdk MCP operations to retry the failed queue message I identify. Before call
 ### Orchestrations
 
 ```text
-Use bdk MCP to list active orchestration instances. For any failed or stuck instance, inspect details, history, signals and timers, then summarize what happened.
+Use bdk MCP to list active orchestration instances. For any failed or stuck instance, inspect details, history, signals, and timers, then summarize what happened.
 ```
 
 ```text
-Use bdk MCP to investigate orchestration instance <instance-id>. Include history, signals, timers and related correlation logs if available.
+Use bdk MCP to investigate orchestration instance <instance-id>. Include history, signals, timers, and related correlation logs if available.
 ```
 
 ### Project-owned diagnostics
@@ -320,11 +325,11 @@ Use bdk_api_search for IRepository and Specification, then call bdk_api_get for 
 Use bdk MCP to inspect retained local test data older than yesterday. Do not purge anything. If cleanup is appropriate, show the exact admin call and wait for my approval.
 ```
 
-For destructive actions, prefer a two-step prompt: first ask the agent to inspect and propose the operation, then approve a second prompt with the explicit confirmation arguments.
+For a destructive action, first ask the agent to inspect and propose the operation. Approve the operation in a second prompt with the explicit confirmation arguments.
 
-## Configure an MCP client
+## MCP client references
 
-For VS Code, Visual Studio, Rider and repo-local client examples, see:
+For VS Code, Visual Studio, Rider, and repo-local client examples, see:
 
 - [MCP Client Configuration](reference/features-cli-mcp-clients.md)
 - [DevKit MCP Reference](reference/features-cli-mcp.md)
@@ -344,17 +349,17 @@ var builder = DevKitWebApplication.CreateBuilder(args)
         .WithHandlersFromAssembly<CoreModule>());
 ```
 
-Project operations should use client-safe names such as `catalog_inspect_product` or `orders_find_customer_context`. Agents can discover them with `bdk_project_operations` and call them through `bdk_project_call`.
+Use client-safe project operation names such as `catalog_inspect_product` or `orders_find_customer_context`. Agents discover these operations with `bdk_project_operations` and call them through `bdk_project_call`.
 
 ## Safety model
 
-MCP support is intentionally local-first:
+MCP support runs locally:
 
 - no public MCP HTTP endpoint is exposed
 - host communication uses local IPC with nonce validation
 - runtime selection is workspace-aware and only targets ready runtimes
-- responses are bounded for agent use
+- tool responses enforce output bounds
 - operations and admin tools must be enabled explicitly
 - destructive admin operations require confirmation arguments
 
-This keeps the feature useful for development while preserving a clear boundary between local diagnostics and production operations.
+These constraints separate local diagnostics from production administration.

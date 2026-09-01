@@ -13,6 +13,7 @@ WeatherFiesta has two entity lifecycle patterns that need clear decisions:
 2. **Soft-delete vs hard-delete**: UserCity subscriptions use soft-delete (IsDeleted flag). Cities use hard-delete (admin only). User accounts use soft-delete. The behavior for each must be consistent and documented.
 
 Key constraints from PRDs:
+
 - City deduplication by ExternalId (Open-Meteo geocoding ID) or (Latitude, Longitude) pair (PRD-0000 Story 2)
 - UserCity soft-delete with reactivation (PRD-0000 Story 2 AC3, Story 4)
 - Admin hard-delete of City cascades to all weather data and subscriptions (PRD-0300 Story 1 AC5)
@@ -31,6 +32,7 @@ Use **ExternalId as primary deduplication key**, with (Latitude, Longitude) as f
 3. If neither lookup finds a match, create a new City.
 
 This ensures:
+
 - Exact matches via ExternalId (Open-Meteo's unique identifier)
 - Fuzzy matches via coordinates for cities without ExternalId
 - No duplicate cities for the same real-world location
@@ -38,14 +40,14 @@ This ensures:
 ### Soft-Delete Strategy
 
 | Entity | Delete Type | Behavior |
-|--------|------------|----------|
+| -------- | ------------ | ---------- |
 | UserCity | Soft-delete | IsDeleted = true. Reactivates on re-subscription. DisplayOrder gaps closed. IsPrimary cleared. |
 | City | Hard-delete (admin only) | Cascading delete of CurrentWeather, WeatherForecast, and all UserCity records. No soft-delete for cities. |
 | UserProfile | Soft-delete | IsDeleted = true. Cascading soft-delete of all UserCity records. User cannot authenticate. |
 
 ### UserCity Lifecycle
 
-```
+```text
 [Subscribe] → UserCity created (IsDeleted=false, IsPrimary=false, DisplayOrder=max+1)
 [Set Primary] → IsPrimary=true for this, IsPrimary=false for all others
 [Unsubscribe] → IsDeleted=true, IsPrimary=false, DisplayOrder gap closed
@@ -55,7 +57,7 @@ This ensures:
 
 ### City Lifecycle
 
-```
+```text
 [User Subscribe] → Geocode → Dedup check → Create City (if new) → Create UserCity
 [Admin Create] → No geocoding → Dedup check → Create City (no UserCity)
 [Admin Delete] → Hard-delete City + CurrentWeather + WeatherForecast + all UserCity

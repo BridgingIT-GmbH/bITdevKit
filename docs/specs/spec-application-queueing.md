@@ -440,7 +440,7 @@ The feature should support multiple queue broker providers behind `IQueueBroker`
 ### 7.0 Provider comparison
 
 | Provider | Durability | Best for | Operational history | Runtime provisioning | Notes |
-|---|---|---|---|---|---|
+| --- | --- | --- | --- | --- | --- |
 | `InProcessQueueBroker` | No | Local work, tests, simple apps | No | N/A | Fastest and simplest, process-bound |
 | `EntityFrameworkQueueBroker` | Yes | Durable app-local queues | Full | App + EF migrations | Best operational visibility and control |
 | `ServiceBusQueueBroker` | Yes | Azure enterprise workloads | Limited/provider-specific | Yes | Rich broker semantics, cloud-native |

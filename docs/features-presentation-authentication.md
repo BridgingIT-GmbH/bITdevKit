@@ -1,4 +1,4 @@
-# Presentation authentication
+# Presentation Authentication
 
 > Authenticate ASP.NET Core requests with JWT bearer tokens and expose the current principal through a devkit abstraction.
 

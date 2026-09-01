@@ -1,4 +1,4 @@
-# Change history
+# Change History
 
 > Record property-level entity changes, query grouped change sets, and restore selected values through explicit domain-safe policies.
 

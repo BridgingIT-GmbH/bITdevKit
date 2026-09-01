@@ -61,7 +61,6 @@ Define a state machine with `Orchestration<TData>`, activities, transitions, sig
 - Timers are durable wake-up points used for timeouts, delayed retries, and scheduled continuation.
 - The orchestration context carries typed data plus a property bag for execution-scoped metadata.
 
-
 ## Use Cases
 
 Orchestration is a good fit for:
@@ -77,7 +76,6 @@ It is usually not the best fit for:
 - short synchronous request handlers with no waiting, here the [Pipelines](./features-pipelines.md) feature is a better fit
 - pure pub/sub event fan-out, here the [Messaging](./features-messaging.md) feature is a better fit
 - simple queue-based background jobs with one handler and no business state machine, here the [Queueing](./features-queueing.md) feature is a better fit
-
 
 ## Basic Usage
 

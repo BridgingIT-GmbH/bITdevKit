@@ -402,7 +402,7 @@ services.AddEntityFrameworkRepository<Customer, CoreModuleDbContext>()
 bITDevKit supports both persistence patterns. Choose based on your project's complexity and requirements:
 
 | Factor | ActiveEntity | Repository |
-|---------|-------------|------------|
+| --------- | ------------- | ------------ |
 | **Simplicity** | Embedded CRUD methods in entities | Separate abstraction layer |
 | **Development Speed** | Faster for simple CRUD | More setup required |
 | **Testing** | Requires in-memory provider | Easy to mock abstractions |

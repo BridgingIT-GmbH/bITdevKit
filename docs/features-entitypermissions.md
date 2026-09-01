@@ -1,5 +1,4 @@
-# Entity permissions
-
+# Entity Permissions
 
 > Enforce fine-grained, entity-level authorization with fluent configuration and runtime evaluation.
 

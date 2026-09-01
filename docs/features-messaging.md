@@ -303,6 +303,7 @@ flowchart LR
 1. **Every subscriber receives every message.** Because the exchange is fanout, `Queue A`, `Queue B`, and `Queue C` all receive a copy of every published message. The consumer for `Queue A` deserializes the message using the type declared in the `Type` AMQP header and then runs `Process`, which dispatches only to handlers registered for that message type. If `Queue A` has no handler for the message type, `Process` completes without invoking any handler.
 
 2. **Competing consumers for the same application.** If you run three replicas of the same module and want them to compete (one message handled by exactly one replica), all replicas must use the **same queue name**. The default behavior (random queue name + exclusive + auto-delete) creates a unique queue per instance, which means every replica receives every message. To enable competing consumers, set a stable `QueueName` and disable exclusivity:
+
    ```csharp
    // WithRabbitMQBroker(...) accepts a stable QueueName, but its current
    // configuration overload does not expose the non-exclusive/durable flags.
@@ -572,7 +573,7 @@ Notes:
 ### Built-in behavior matrix (brief)
 
 | Behavior | Pipeline | Purpose | Recommended use |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | ModuleScopeMessagePublisherBehavior | Publisher | Propagate module context across publish pipeline | Multi-module applications that use module context |
 | ModuleScopeMessageHandlerBehavior | Handler | Propagate module context into handlers | Multi-module applications that use module context |
 | MetricsMessagePublisherBehavior | Publisher | Emit publish counters/timers | Applications that collect messaging metrics |

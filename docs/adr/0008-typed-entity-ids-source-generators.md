@@ -251,7 +251,7 @@ Typed IDs serialize to their underlying primitive value:
 
 **Rejected Because**: Source generator provides same benefits with zero boilerplate.
 
-### 3. Generic ID<TEntity> Wrapper
+### 3. Generic `ID<TEntity>` wrapper
 
 **Description**: Use `Id<Customer>` and `Id<Address>` as generic types.
 
@@ -317,7 +317,7 @@ Customer : Entity<Id<Customer>>
 
 - **ADR-0007**: Entity Framework Core - Value conversions enable typed ID persistence
 - **ADR-0012**: Domain Logic in Domain Layer - Typed IDs are domain value objects
-- **ADR-0002**: Result Pattern - ID validation can return Result<TId>
+- **ADR-0002**: Result Pattern - ID validation can return `Result<TId>`
 - **ADR-0004**: Repository Pattern - Repositories accept typed IDs in methods
 
 ## References
@@ -332,7 +332,7 @@ Customer : Entity<Id<Customer>>
 
 ### Key Implementation Files
 
-```
+```text
 src/Modules/CoreModule/CoreModule.Domain/
 ├── Model/
 │   └── CustomerAggregate/
@@ -424,7 +424,7 @@ For each `[TypedEntityId<T>]` attribute, the generator creates:
 3. **Factory Methods**: `Create(T value)` and `CreateNew()` (for Guid)
 4. **Equality Members**: `Equals`, `GetHashCode`, `==`, `!=` operators
 5. **String Conversion**: `ToString()` delegates to underlying value
-6. **IEquatable<T>**: Proper value equality semantics
+6. **`IEquatable<T>`**: Proper value equality semantics
 
 ### Debugging Tips
 

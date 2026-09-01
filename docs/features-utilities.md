@@ -78,7 +78,6 @@ app.Run();
 
 `GET /system/time` returns the current timestamp and `SameProvider: true`. `GetUtcNow()` returns a value directly, so there is no `Result` wrapper to unwrap or failure branch to handle.
 
-
 ## Package contents
 
 ### Startup tasks

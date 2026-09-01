@@ -27,7 +27,7 @@ In Domain-Driven Design, the domain layer is the heart of the application. Howev
 
 **Domain logic (invariants and business rules) belongs in the Domain layer** within Aggregates, Value Objects, and Business Rules.
 
-### Domain Logic Includes:
+### Domain Logic Includes
 
 **Invariants** (must always be true):
 
@@ -285,7 +285,7 @@ public class CustomerStatus : Enumeration
 ### Domain vs Application Responsibility Matrix
 
 | Concern | Layer | Example |
-|---------|-------|---------|
+| --------- | ------- | --------- |
 | Email format validation | Domain | `EmailAddress.Create(email)` |
 | Email uniqueness check | Domain (rule definition) | `EmailShouldBeUniqueRule` |
 | Email uniqueness execution | Application | `Rule.Add(new EmailShouldBeUniqueRule(...)).CheckAsync()` |

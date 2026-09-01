@@ -114,7 +114,7 @@ Every endpoint must include:
 - **Error Responses**: `.ProducesProblem()` or `.ProducesResultProblem()` for each error status
 - **Tags**: Applied via `.WithTags()` for grouping in OpenAPI UI
 
-### Result<T> HTTP Mapping Extensions
+### `Result<T>` HTTP mapping extensions
 
 - **`.MapHttpOk()`**: Maps `Result<T>` → HTTP 200 with body
 - **`.MapHttpOkAll()`**: Maps `Result<IEnumerable<T>>` → HTTP 200 with collection

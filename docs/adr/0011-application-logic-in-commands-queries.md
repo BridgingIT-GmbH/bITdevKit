@@ -23,7 +23,7 @@ The application needs clear separation between:
 
 **Application logic is handled in Commands/Queries and their Handlers** in the Application layer.
 
-### Application Logic Includes:
+### Application Logic Includes
 
 **Use Case Orchestration**:
 
@@ -230,7 +230,7 @@ public class CustomerFindAllQueryHandler(
 ### Application vs Domain Responsibility Matrix
 
 | Concern | Layer | Example |
-|---------|-------|---------|
+| --------- | ------- | --------- |
 | Sequence number generation | Application | `numberGenerator.NextAsync()` |
 | Email format validation | Domain | `EmailAddress.Create()` |
 | Aggregate creation | Domain | `Customer.Create()` |

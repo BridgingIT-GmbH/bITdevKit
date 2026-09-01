@@ -1,8 +1,8 @@
 ---
-title: Messaging vs Queueing
+title: Messaging or Queueing
 ---
 
-# Messaging vs Queueing
+# Messaging or Queueing
 
 `Messaging` and `Queueing` are related, but they solve different problems.
 
@@ -13,8 +13,7 @@ title: Messaging vs Queueing
 - the model is event-driven and publish/subscribe oriented
 - integration or side effects should be loosely coupled
 
-See:
-[Messaging](reference/features-messaging.md)
+For details, see [Messaging](reference/features-messaging.md).
 
 ## Choose Queueing when
 
@@ -23,20 +22,19 @@ See:
 - background work needs operational visibility
 - the model is work ownership, not event fan-out
 
-See:
-[Queueing](reference/features-queueing.md)
+For details, see [Queueing](reference/features-queueing.md).
 
-## Quick comparison
+## Comparison
 
 | Concern | Messaging | Queueing |
-|---|---|---|
+| --- | --- | --- |
 | Delivery style | Publish/subscribe | Single-consumer work dispatch |
 | Typical fan-out | One-to-many | One-to-one |
-| Best for | Events and reactions | Background work items |
+| Primary use | Events and reactions | Background work items |
 | Consumer model | Multiple handlers may react | One handler owns one message type |
 | Operational focus | Event propagation | Work processing and queue control |
 
-## Practical rule of thumb
+## Decision rule
 
 Use `Messaging` when something happened.
 

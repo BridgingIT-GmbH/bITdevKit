@@ -548,23 +548,23 @@ Implemented public docs groupings:
 
 The public documentation structure shall be derived from the current repository documentation set as follows.
 
-**Getting Started**
+#### Getting started
 
 - site-authored getting-started overview page
 - curated orientation derived from `README.md`
 - curated orientation derived from `docs/INDEX.md`
 - use of `docs/introduction-ddd-guide.md` as an early onboarding concept page
 
-**Why / Architecture / Packages / Examples / Decisions**
+#### Why, architecture, packages, examples, and decisions
 
 - site-authored overview pages for evaluation and onboarding
 - site-authored decision pages for recurring technical tradeoffs
 
-**Documentation**
+#### Documentation
 
 The public technical docs shall expose:
 
-**Common Infrastructure**
+#### Common infrastructure
 
 - `docs/common-extensions.md`
 - `docs/common-utilities.md`
@@ -574,7 +574,7 @@ The public technical docs shall expose:
 - `docs/common-caching.md`
 - `docs/common-observability-tracing.md`
 
-**Core Domain and Application**
+#### Core domain and application
 
 - `docs/features-domain.md`
 - `docs/features-domain-events.md`
@@ -589,7 +589,7 @@ The public technical docs shall expose:
 - `docs/features-application-events.md`
 - `docs/features-application-dataporter.md`
 
-**Execution, Messaging and Modularity**
+#### Execution, messaging, and modularity
 
 - `docs/features-requester-notifier.md`
 - `docs/features-messaging.md`
@@ -600,12 +600,12 @@ The public technical docs shall expose:
 - `docs/features-filtering.md`
 - `docs/features-extensions.md`
 
-**Security and Access**
+#### Security and access
 
 - `docs/features-entitypermissions.md`
 - `docs/features-identityprovider.md`
 
-**Presentation and Host**
+#### Presentation and host
 
 - `docs/features-presentation-endpoints.md`
 - `docs/features-presentation-console-commands.md`
@@ -613,7 +613,7 @@ The public technical docs shall expose:
 - `docs/features-presentation-exception-handling.md`
 - `docs/features-presentation-appstate.md`
 
-**Storage, Scheduling and Utilities**
+#### Storage, scheduling, and utilities
 
 - `docs/features-startuptasks.md`
 - `docs/features-jobscheduling.md`
@@ -622,7 +622,7 @@ The public technical docs shall expose:
 - `docs/features-storage-monitoring.md`
 - `docs/features-log-entries.md`
 
-**Testing and Test Utilities**
+#### Testing and test utilities
 
 - `docs/testing-fake-authentication.md`
 - `docs/testing-common-xunit.md`

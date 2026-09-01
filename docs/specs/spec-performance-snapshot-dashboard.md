@@ -635,6 +635,7 @@ The dashboard shall clearly show the active or selected session and allow the us
 - open a session directly from a shareable URL
 
 The **Start** control shall be disabled while a session is running. The **Stop** control shall be disabled when no session is running.
+
 - trigger a manual one-off snapshot collection
 - trigger a manual deployment-wide GC collection
 - add a named phase marker while the selected session is active

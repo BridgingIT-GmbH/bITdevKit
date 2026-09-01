@@ -16,7 +16,7 @@ This prevents the agents from prematurely implementing the entire system in one 
 
 ---
 
-# Prompt 1 — Architecture Analysis Only
+## Prompt 1 — Architecture Analysis Only
 
 Use this FIRST.
 
@@ -53,7 +53,7 @@ Wait for approval before implementation begins.
 
 ---
 
-# Shared Specification Reference
+## Shared Specification Reference
 
 Add the following instruction at the beginning of every implementation prompt below:
 
@@ -90,7 +90,7 @@ If specification ambiguity exists:
 
 ---
 
-# Prompt 2 — Foundation Layer Implementation
+## Prompt 2 — Foundation Layer Implementation
 
 Use this after architecture review.
 
@@ -156,7 +156,7 @@ Ensure tests pass.
 
 ---
 
-# Prompt 3 — Persistence Abstractions and In-Memory Provider
+## Prompt 3 — Persistence Abstractions and In-Memory Provider
 
 ```text
 Implement the persistence abstractions and in-memory provider.
@@ -200,7 +200,7 @@ Ensure no EF references exist in the runtime core.
 
 ---
 
-# Prompt 4 — Runtime Engine
+## Prompt 4 — Runtime Engine
 
 ```text
 Implement the orchestration runtime engine.
@@ -254,7 +254,7 @@ Ensure runtime behavior follows the specification exactly.
 
 ---
 
-# Prompt 5 — Leases and Concurrency
+## Prompt 5 — Leases and Concurrency
 
 ```text
 Implement orchestration instance leases and concurrency protection.
@@ -296,7 +296,7 @@ Do not implement EF provider yet.
 
 ---
 
-# Prompt 6 — Durable Timers and Signals
+## Prompt 6 — Durable Timers and Signals
 
 ```text
 Implement durable timer and signal processing.
@@ -339,7 +339,7 @@ Ensure timers are persisted before execution.
 
 ---
 
-# Prompt 7 — Test Harness
+## Prompt 7 — Test Harness
 
 ```text
 Implement the orchestration test harness.
@@ -375,7 +375,7 @@ Add end-to-end tests using:
 
 ---
 
-# Prompt 8 — Entity Framework Provider
+## Prompt 8 — Entity Framework Provider
 
 ```text
 Implement the Entity Framework orchestration provider.
@@ -423,7 +423,7 @@ Add integration tests for:
 
 ---
 
-# Prompt 9 — Query Services and Metrics
+## Prompt 9 — Query Services and Metrics
 
 ```text
 Implement orchestration query services and metrics.
@@ -462,7 +462,7 @@ Add tests for:
 
 ---
 
-# Prompt 10 — Endpoint Layer
+## Prompt 10 — Endpoint Layer
 
 ```text
 Implement the orchestration administration endpoint layer.
@@ -508,7 +508,7 @@ Add integration tests for:
 
 ---
 
-# Prompt 11 — Advanced Workflow Features
+## Prompt 11 — Advanced Workflow Features
 
 ```text
 Implement the advanced workflow layer.
@@ -552,7 +552,7 @@ Ensure advanced features still obey:
 
 ---
 
-# Prompt 12 — Final Hardening and Cleanup
+## Prompt 12 — Final Hardening and Cleanup
 
 ```text
 Perform final hardening and cleanup.
@@ -601,7 +601,7 @@ the new @docs\specs\spec-application-orchestration.md feature has been implement
 
 ---
 
-# Optional Fleet Prompt
+## Optional Fleet Prompt
 
 Use this with Copilot CLI `/fleet`.
 
@@ -631,7 +631,7 @@ Rules:
 
 ---
 
-# Recommended Execution Order
+## Recommended Execution Order
 
 1. Prompt 1 — Architecture Analysis
 2. Prompt 2 — Foundation Layer

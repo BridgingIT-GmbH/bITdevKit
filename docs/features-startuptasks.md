@@ -1,5 +1,5 @@
 
-# Startup tasks
+# Startup Tasks
 
 > Run application startup work after the host reports that it has started.
 

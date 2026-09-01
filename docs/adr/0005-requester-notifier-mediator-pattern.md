@@ -65,7 +65,7 @@ Behaviors execute in order around each handler:
 
 ### Request Flow
 
-```
+```text
 Endpoint
   → IRequester.SendAsync(command)
     → ModuleScopeBehavior

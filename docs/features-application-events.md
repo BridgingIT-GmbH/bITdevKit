@@ -1,4 +1,4 @@
-# Application events
+# Application Events
 
 > Publish and handle application-layer events through `INotifier` with explicit `Result`-based outcomes.
 

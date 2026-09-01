@@ -84,4 +84,3 @@ As a developer, I want equivalent archive operations in code, the console, and t
 - Common unit tests cover full round-trip, running snapshot export, identity remapping, relationship remapping, invalid/oversized rejection, and terminal-session enforcement.
 - Shared store contract tests run atomic import against in-memory and Entity Framework providers.
 - Presentation tests cover command registration/file workflows, archive routes, upload/download responses, path builders, and dashboard controls.
-

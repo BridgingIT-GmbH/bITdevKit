@@ -91,21 +91,21 @@ This feature does not introduce:
 
 ## Terminology
 
-| Term               | Meaning                                                                                         |
+| Term | Meaning |
 | ------------------ | ----------------------------------------------------------------------------------------------- |
-| Blob               | Binary content stored under a `BlobKey`.                                                        |
-| BlobKey            | Logical key consisting of `Container` and `Name`.                                               |
-| Container          | Logical top-level grouping for blobs. Maps to an Azure Blob container or EF/InMemory namespace. |
-| Name               | Path-like object name inside a container.                                                       |
-| Properties         | Provider-neutral blob information and custom property bag values.                               |
-| PropertyBag        | Devkit key/value property container used for custom blob properties.                            |
-| ContentType        | Shared `ContentType` enum from `src/Common.Utilities/ContentTypes`.                             |
-| BlobInfo           | Blob metadata/properties returned by upload, list, properties, and update operations.           |
-| BlobDownload       | Download result containing a readable stream and blob info.                                     |
-| Continuation token | Opaque token used to continue listing blobs.                                                    |
-| Full scan          | Listing a container without a prefix.                                                           |
-| Lease              | Internal provider mechanism used to coordinate write/delete operations.                         |
-| Result-native API  | API that returns `Result` or `Result<T>` directly.                                              |
+| Blob | Binary content stored under a `BlobKey`. |
+| BlobKey | Logical key consisting of `Container` and `Name`. |
+| Container | Logical top-level grouping for blobs. Maps to an Azure Blob container or EF/InMemory namespace. |
+| Name | Path-like object name inside a container. |
+| Properties | Provider-neutral blob information and custom property bag values. |
+| PropertyBag | Devkit key/value property container used for custom blob properties. |
+| ContentType | Shared `ContentType` enum from `src/Common.Utilities/ContentTypes`. |
+| BlobInfo | Blob metadata/properties returned by upload, list, properties, and update operations. |
+| BlobDownload | Download result containing a readable stream and blob info. |
+| Continuation token | Opaque token used to continue listing blobs. |
+| Full scan | Listing a container without a prefix. |
+| Lease | Internal provider mechanism used to coordinate write/delete operations. |
+| Result-native API | API that returns `Result` or `Result<T>` directly. |
 
 ## Design Principles
 
@@ -758,18 +758,18 @@ public sealed class BlobStoreOptions
 
 ## Default Option Values
 
-| Option                            |    Default | Meaning                                         |
+| Option | Default | Meaning |
 | --------------------------------- | ---------: | ----------------------------------------------- |
-| `DefaultTake`                     |      `100` | Used when `BlobQuery.Take` is null.             |
-| `MaxTake`                         |     `1000` | Maximum allowed listing page size.              |
-| `MaxBlobSize`                     |     `null` | Optional maximum upload size in bytes for this client. |
-| `AllowFullScans`                  |    `false` | Disallows full container scans by default.      |
-| `RequireExplicitFullScanApproval` |     `true` | Requires `AllowFullScan = true` per query.      |
-| `ChunkSize`                       |     `4 MB` | EF Core blob chunk size.                        |
-| `ChunkFlushCount`                 |        `4` | Maximum EF chunks per intermediate save.        |
-| `MaxPendingChunkBytes`            |    `16 MB` | Pending EF chunk bytes before an intermediate save. |
-| `LeaseDuration`                   | `1 minute` | EF Core internal lease duration.                |
-| `LeaseOwner`                      |     `null` | Optional logical owner used for EF Core leases. |
+| `DefaultTake` | `100` | Used when `BlobQuery.Take` is null. |
+| `MaxTake` | `1000` | Maximum allowed listing page size. |
+| `MaxBlobSize` | `null` | Optional maximum upload size in bytes for this client. |
+| `AllowFullScans` | `false` | Disallows full container scans by default. |
+| `RequireExplicitFullScanApproval` | `true` | Requires `AllowFullScan = true` per query. |
+| `ChunkSize` | `4 MB` | EF Core blob chunk size. |
+| `ChunkFlushCount` | `4` | Maximum EF chunks per intermediate save. |
+| `MaxPendingChunkBytes` | `16 MB` | Pending EF chunk bytes before an intermediate save. |
+| `LeaseDuration` | `1 minute` | EF Core internal lease duration. |
+| `LeaseOwner` | `null` | Optional logical owner used for EF Core leases. |
 
 `MaxBlobSize` is evaluated per registered client. A null value means the devkit abstraction does not impose an additional size limit, but native provider limits still apply.
 
@@ -821,11 +821,11 @@ public sealed class BlobStoreProviderCapabilities
 
 ## Expected Capability Matrix
 
-| Provider         | Paging | Prefix listing | Full scan | Properties | ETag     | Content hash | Leases              | Streaming      |
+| Provider | Paging | Prefix listing | Full scan | Properties | ETag | Content hash | Leases | Streaming |
 | ---------------- | ------ | -------------- | --------- | ---------- | -------- | ------------ | ------------------- | -------------- |
-| InMemory         | Yes    | Yes            | Yes       | Yes        | Optional | Yes          | Internal/no-op      | Memory stream  |
-| Entity Framework | Yes    | Yes            | Yes       | Yes        | Yes      | Yes          | Internal EF lease   | Chunked stream |
-| Azure Blob       | Yes    | Yes            | Yes       | Yes        | Yes      | Yes          | Native where needed | Native stream  |
+| InMemory | Yes | Yes | Yes | Yes | Optional | Yes | Internal/no-op | Memory stream |
+| Entity Framework | Yes | Yes | Yes | Yes | Yes | Yes | Internal EF lease | Chunked stream |
+| Azure Blob | Yes | Yes | Yes | Yes | Yes | Yes | Native where needed | Native stream |
 
 ## Query Validation
 
@@ -924,14 +924,14 @@ internal sealed class BlobContinuationToken
 
 ## Token Fields
 
-| Field         | Purpose                                                             |
+| Field | Purpose |
 | ------------- | ------------------------------------------------------------------- |
-| `Provider`    | Provider discriminator, for example `inmemory`, `ef`, `azure-blob`. |
-| `QueryHash`   | Stable hash of the logical query.                                   |
-| `Container`   | Container associated with the query.                                |
-| `Name`        | Last returned blob name for keyset-based paging.                    |
-| `NativeToken` | Provider-native continuation token.                                 |
-| `Properties`  | Optional provider-specific metadata.                                |
+| `Provider` | Provider discriminator, for example `inmemory`, `ef`, `azure-blob`. |
+| `QueryHash` | Stable hash of the logical query. |
+| `Container` | Container associated with the query. |
+| `Name` | Last returned blob name for keyset-based paging. |
+| `NativeToken` | Provider-native continuation token. |
+| `Properties` | Optional provider-specific metadata. |
 
 ## Token Requirements
 
@@ -1606,15 +1606,15 @@ Azure Blob Storage is the cloud/object storage provider.
 
 ## Azure Blob Mapping
 
-| Blob Storage concept         | Azure Blob concept                             |
+| Blob Storage concept | Azure Blob concept |
 | ---------------------------- | ---------------------------------------------- |
-| `BlobKey.Container`          | Container name                                 |
-| `BlobKey.Name`               | Blob name                                      |
-| `BlobInfo.ContentType`       | HTTP content type from `ContentType.MimeType()` |
-| `BlobInfo.ETag`              | Blob ETag                                      |
-| `BlobInfo.LastModifiedAt`    | Blob last modified timestamp                   |
-| `BlobInfo.Properties`        | Blob metadata, converted through `PropertyBag` |
-| `BlobPage.ContinuationToken` | Azure blob listing continuation token          |
+| `BlobKey.Container` | Container name |
+| `BlobKey.Name` | Blob name |
+| `BlobInfo.ContentType` | HTTP content type from `ContentType.MimeType()` |
+| `BlobInfo.ETag` | Blob ETag |
+| `BlobInfo.LastModifiedAt` | Blob last modified timestamp |
+| `BlobInfo.Properties` | Blob metadata, converted through `PropertyBag` |
+| `BlobPage.ContinuationToken` | Azure blob listing continuation token |
 
 ## Azure Blob Upload Strategy
 
@@ -1934,15 +1934,15 @@ Required metrics:
 
 Recommended metric names:
 
-| Metric name                       | Type      | Meaning                                      |
+| Metric name | Type | Meaning |
 | --------------------------------- | --------- | -------------------------------------------- |
-| `bdk.blob_storage.operations`     | Counter   | Number of blob operations started/completed. |
-| `bdk.blob_storage.duration`       | Histogram | Operation duration in milliseconds.          |
-| `bdk.blob_storage.failures`       | Counter   | Operation failures by error type.            |
-| `bdk.blob_storage.bytes`          | Histogram | Uploaded or downloaded byte counts.          |
-| `bdk.blob_storage.list_items`     | Histogram | Number of items returned by list operation.  |
-| `bdk.blob_storage.retry_attempts` | Counter   | Retry attempts by operation.                 |
-| `bdk.blob_storage.timeouts`       | Counter   | Operations that timed out.                   |
+| `bdk.blob_storage.operations` | Counter | Number of blob operations started/completed. |
+| `bdk.blob_storage.duration` | Histogram | Operation duration in milliseconds. |
+| `bdk.blob_storage.failures` | Counter | Operation failures by error type. |
+| `bdk.blob_storage.bytes` | Histogram | Uploaded or downloaded byte counts. |
+| `bdk.blob_storage.list_items` | Histogram | Number of items returned by list operation. |
+| `bdk.blob_storage.retry_attempts` | Counter | Retry attempts by operation. |
+| `bdk.blob_storage.timeouts` | Counter | Operations that timed out. |
 
 Recommended tags:
 

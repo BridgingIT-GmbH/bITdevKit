@@ -4,34 +4,32 @@ title: Examples
 
 # Examples
 
-The examples are the best way to see how the building blocks come together in real code.
+Use these applications to trace `bITdevKit` features through working code.
 
 ## Primary onboarding example
 
 ### GettingStarted
 
-Repository:
-[bITdevKit.Examples.GettingStarted](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted)
+The [bITdevKit.Examples.GettingStarted](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted) repository contains the introductory application.
 
-Best for:
+Use it to:
 
-- first contact with the devkit
-- understanding the intended project shape
-- following the concepts from docs into a focused runnable example
+- examine the generated project structure
+- learn the bootstrap sequence
+- connect the documentation to a runnable example
 
 ## Repository examples
 
 ### DoFiesta
 
-Path:
-[`examples/DoFiesta`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/DoFiesta)
+Source: [`examples/DoFiesta`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/DoFiesta)
 
-Best for:
+Use it to:
 
-- a full-stack application with a Blazor WebAssembly frontend and ASP.NET Core API backend
-- a stronger Domain-Driven Design example across Domain, Application, Infrastructure, and Presentation layers
-- following aggregates, value objects, domain events, specifications, rules, commands, and queries in context
-- exploring generated API clients, persistence, file attachments, messaging, jobs, and operational integrations
+- run a full-stack application with a Blazor WebAssembly frontend and ASP.NET Core API backend
+- trace Domain-Driven Design patterns across Domain, Application, Infrastructure, and Presentation layers
+- follow aggregates, value objects, domain events, specifications, rules, commands, and queries in context
+- inspect generated API clients, persistence, file attachments, messaging, jobs, and operational integrations
 
 Run it from the repository root:
 
@@ -39,18 +37,16 @@ Run it from the repository root:
 dotnet run --project examples/DoFiesta/DoFiesta.Presentation.Web.Server
 ```
 
-For its layer structure and development notes, read the
-[`DoFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta-README.md).
+For its layer structure and development notes, read the [`DoFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/DoFiesta/DoFiesta-README.md).
 
 ### EventSourcingDemo
 
-Path:
-[`examples/EventSourcingDemo`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/EventSourcingDemo)
+Source: [`examples/EventSourcingDemo`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/EventSourcingDemo)
 
-Best for:
+Use it to:
 
-- event-sourcing-oriented exploration
-- understanding how event-driven persistence concepts fit into the devkit
+- examine event-sourced aggregates and persistence
+- understand how event sourcing integrates with other devkit features
 
 Run it from the repository root:
 
@@ -58,20 +54,18 @@ Run it from the repository root:
 dotnet run --project examples/EventSourcingDemo/EventSourcingDemo.Presentation.Web
 ```
 
-For its short overview and REST request guidance, read the
-[`EventSourcingDemo-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/EventSourcingDemo/EventSourcingDemo-README.md).
+For its short overview and REST request guidance, read the [`EventSourcingDemo-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/EventSourcingDemo/EventSourcingDemo-README.md).
 
 ### WeatherFiesta
 
-Path:
-[`examples/WeatherFiesta`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/WeatherFiesta)
+Source: [`examples/WeatherFiesta`](https://github.com/bridgingIT/bITdevKit/tree/main/examples/WeatherFiesta)
 
-Best for:
+Use it to:
 
-- seeing ActiveEntity and modular vertical slices in a realistic weather dashboard
-- learning service-agent abstractions through the Open-Meteo integration
-- following commands, queries, requester pipelines, scheduled ingestion, and data export end to end
-- exploring subscription-gated features, developer dashboards, console commands, and MCP integration
+- examine ActiveEntity and modular vertical slices in a weather dashboard
+- learn service-agent abstractions through the Open-Meteo integration
+- trace commands, queries, requester pipelines, scheduled ingestion, and data export
+- inspect subscription-gated features, developer dashboards, console commands, and MCP integration
 
 Run it from the repository root:
 
@@ -79,5 +73,4 @@ Run it from the repository root:
 dotnet run --project examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server
 ```
 
-For its architecture, API, configuration, and testing guide, read the
-[`WeatherFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/WeatherFiesta/WeatherFiesta-README.md).
+For its architecture, API, configuration, and testing guide, read the [`WeatherFiesta-README.md`](https://github.com/bridgingIT/bITdevKit/blob/main/examples/WeatherFiesta/WeatherFiesta-README.md).

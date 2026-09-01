@@ -115,7 +115,6 @@ Console.WriteLine(await response.Content.ReadAsStringAsync());
 
 A successful response contains the configured issuer and URLs for the authorize, token, user-info and logout endpoints.
 
-
 ## Detailed setup
 
 ### Install the package
@@ -306,7 +305,7 @@ sequenceDiagram
 ### Configuration
 
 | Option | Default | Description |
-|--------|---------|-------------|
+| -------- | --------- | ------------- |
 | `EnableCookieSingleSignOn` | `true` | When `true`, the authorize endpoint checks for an existing auth cookie and skips the login page for already-authenticated users. |
 | `EnablePersistentRefreshTokens` | `true` | Controls cookie sign-in during authorization-code and refresh-token exchange. Keep it enabled when using cookie SSO. |
 
@@ -682,7 +681,6 @@ Common error codes include `invalid_request`, `invalid_client`, `invalid_grant`,
 - [OAuth 2.0 (RFC 6749)](https://www.rfc-editor.org/rfc/rfc6749)
 - [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
 - [JSON Web Token (RFC 7519)](https://www.rfc-editor.org/rfc/rfc7519)
-
 
 ## Additional request examples
 

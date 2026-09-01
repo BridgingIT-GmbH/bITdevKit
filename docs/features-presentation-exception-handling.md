@@ -95,7 +95,7 @@ static IResult GetProduct(int id) =>
 ### `GlobalExceptionHandlerOptions` properties
 
 | Property | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
+| ---------- | ------ | ---------- | --------- | ------------- |
 | `IncludeExceptionDetails` | `bool` | No | `true` | Include exception details (type, message) in responses. Set to `false` in production. |
 | `EnableLogging` | `bool` | No | `false` | Log exceptions to the logging system. Recommended: `true` in all environments. |
 | `AdditionalHandlers` | `List<ExceptionHandlerRegistration>` | No | `[]` | Custom exception handlers with optional priority. |
@@ -376,7 +376,7 @@ app.UseExceptionHandler();
 ### Domain and application exceptions
 
 | Handler | Exception | Status | Use Case |
-|---------|-----------|--------|----------|
+| --------- | ----------- | -------- | ---------- |
 | `ValidationExceptionHandler` | `ValidationException` | 400 | FluentValidation errors |
 | `DomainPolicyExceptionHandler` | `DomainPolicyException` | 400 | Policy violations |
 | `DomainRuleExceptionHandler` | `RuleException` | 400 | Business rule violations |
@@ -391,7 +391,7 @@ app.UseExceptionHandler();
 ### Diagnostic handlers
 
 | Handler | Exception | When to Use |
-|---------|-----------|------------|
+| --------- | ----------- | ------------ |
 | `DebugExceptionHandler` | `Exception` (catch-all) | Register explicitly in Development; writes full stack traces and context |
 | `AuditExceptionHandler` | `Exception` (observes and returns `false`) | Register explicitly before handling handlers to log user, request, and exception context |
 
@@ -400,7 +400,7 @@ app.UseExceptionHandler();
 Register with `options.AddEntityFrameworkHandlers()`:
 
 | Handler | Exception | Status | Use Case |
-|---------|-----------|--------|----------|
+| --------- | ----------- | -------- | ---------- |
 | `DbUpdateConcurrencyExceptionHandler` | `DbUpdateConcurrencyException` | 409 | Optimistic concurrency violations |
 | `DbUpdateExceptionHandler` | `DbUpdateException` | 422/409 | Constraint violations, FK errors |
 | `DbExceptionHandler` | `DbException` | 503 | Connection errors, general DB errors |
@@ -507,7 +507,7 @@ await dbContext.SaveChangesAsync();
 **Error type classification:**
 
 | Classification | Keywords | Status |
-|---|---|---|
+| --- | --- | --- |
 | `UniqueConstraintViolation` | UNIQUE, DUPLICATE, IX_, UK_, PRIMARY KEY | 409 |
 | `ForeignKeyViolation` | FOREIGN KEY, REFERENCE, FK_ | 422 |
 | `NotNullViolation` | NOT NULL, CANNOT INSERT NULL, NULL VALUE | 422 |
@@ -695,6 +695,7 @@ builder.Services.AddExceptionHandler(options =>
 3. **Use meaningful but generic titles**
 
    Wrong:
+
    ```json
    {
      "detail": "SQL syntax error on line 45 of UserRepository.cs"
@@ -702,6 +703,7 @@ builder.Services.AddExceptionHandler(options =>
    ```
 
    Correct:
+
    ```json
    {
      "detail": "A database error occurred. Please try again later."
@@ -713,6 +715,7 @@ builder.Services.AddExceptionHandler(options =>
 ### Issue: Exceptions are not being caught
 
 **Symptoms:**
+
 - Application crashes instead of returning 500 response
 - No exception handler response
 
@@ -743,6 +746,7 @@ builder.Services.AddExceptionHandler(options =>
 ### Issue: Wrong handler is executing
 
 **Symptoms:**
+
 - Exception returns unexpected status code
 - Wrong error title/message
 
@@ -760,6 +764,7 @@ Use highest priority for most specific handlers.
 ### Issue: Exception details showing in production
 
 **Symptoms:**
+
 - Stack traces and sensitive info in JSON responses
 
 **Solution:**

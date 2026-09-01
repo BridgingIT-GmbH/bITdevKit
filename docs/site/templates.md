@@ -4,11 +4,9 @@ title: Templates
 
 # Templates
 
-`bITdevKit` provides .NET templates to help you scaffold new solutions and modules using the kit's
-architectural conventions.
+`bITdevKit` provides .NET templates that create solutions and modules using the kit's architectural conventions.
 
-These templates are the fastest way to start a new codebase that already follows the intended
-structure around onion architecture, modular vertical slices, and a clear separation of concerns.
+The generated structure follows onion architecture and groups each module into separate layer projects.
 
 ## Available templates
 
@@ -18,15 +16,13 @@ structure around onion architecture, modular vertical slices, and a clear separa
 
 Short name: `bdksolution`
 
-Creates a complete solution with an initial module and the basic project structure for a
-`bITdevKit`-based application.
+Creates a solution with an initial module and the project structure for a `bITdevKit`-based application.
 
 ### bITdevKit Module
 
 Short name: `bdkmodule`
 
-Adds a new functional module to an existing solution. Each module follows the onion architecture
-pattern with separate projects for the major concerns.
+Adds a module to an existing solution. The template creates separate application, domain, infrastructure, presentation, and test projects.
 
 Generated module structure:
 
@@ -88,7 +84,7 @@ After generation, the template adds the new projects to the solution file automa
 
 ## Manual follow-up after module creation
 
-After adding a new module, a few manual changes are still required.
+After adding a module, register it and add its configuration.
 
 Register the new module in `Program.cs`:
 
@@ -131,14 +127,14 @@ SolutionName/
 └── SolutionName.slnx
 ```
 
-## Recommended onboarding path
+## Onboarding path
 
-The best practical sequence is:
+Use this sequence:
 
 1. Start with the [GettingStarted example](https://github.com/BridgingIT-GmbH/bITdevKit.Examples.GettingStarted).
 2. Read the [Getting Started](getting-started.md) page on this site.
-3. Use the templates when you are ready to scaffold your own solution or add modules to an existing one.
-4. Continue into the [Documentation](reference/index.md) for the deeper framework concepts behind the generated structure.
+3. Use the templates to create a solution or add modules to an existing one.
+4. Continue to the [Documentation](reference/index.md) for the APIs used by the generated projects.
 
 ## Update or uninstall
 

@@ -21,7 +21,7 @@ Compute alerts and recommendations **at query time** from existing weather data.
 ### Alert Rules (PRD-0100)
 
 | Alert Type | Condition | Severity |
-|------------|-----------|----------|
+| ------------ | ----------- | ---------- |
 | Thunderstorm | WMO codes 95, 96, 99 | Warning |
 | Hail | WMO codes 96, 99 | Warning |
 | Severe wind | Wind speed > 80 km/h | Caution |
@@ -32,7 +32,7 @@ Compute alerts and recommendations **at query time** from existing weather data.
 ### Recommendation Rules (PRD-0600)
 
 | Category | Condition | Message | Severity |
-|----------|-----------|---------|----------|
+| ---------- | ----------- | --------- | ---------- |
 | Precipitation | Precipitation probability > 60% | Bring an umbrella | Caution |
 | UV | UV index max > 6 | Wear sunscreen | Caution |
 | Temperature (cold) | Apparent temperature < 5°C | Dress warmly | Caution |
@@ -151,6 +151,7 @@ public class Recommendation
 ### Sorting Rules
 
 Recommendations are sorted by:
+
 1. Severity descending (Warning → Caution → Info)
 2. Category order (Storm → Temperature → Precipitation → Wind → UV → General)
 

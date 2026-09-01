@@ -1,4 +1,4 @@
-# LINQ extensions
+# LINQ Extensions
 
 > Apply null-aware value operations and cancellation-aware asynchronous sequence operators.
 

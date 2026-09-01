@@ -4,8 +4,7 @@ title: Architecture
 
 # Architecture
 
-`bITdevKit` is designed around clean architecture with modular vertical slices. The goal is to keep
-business logic explicit, testable, and isolated from infrastructure choices.
+`bITdevKit` applies clean architecture through modular vertical slices. Domain and application code depend only on inner layers. Infrastructure and presentation provide integrations and entry points.
 
 ## High-level architecture map
 
@@ -26,7 +25,7 @@ flowchart TB
 
 ### Domain
 
-- aggregates, entities, value objects, typed ids
+- aggregates, entities, value objects, and typed IDs
 - domain events, domain policies, and business rules
 - no dependency on outer layers
 
@@ -49,8 +48,7 @@ flowchart TB
 
 ## Modular vertical slices
 
-The preferred shape is a modular monolith where each module owns its own domain, application,
-infrastructure, and presentation concerns.
+A modular monolith can group each module's domain, application, infrastructure, and presentation code.
 
 ```text
 Module/
@@ -60,8 +58,7 @@ Module/
 └── Module.Presentation
 ```
 
-This keeps business capabilities cohesive while still allowing a single host application to compose
-many modules together.
+A single host application can compose multiple modules without merging their layer boundaries.
 
 ## Request flow in practice
 
@@ -85,7 +82,7 @@ sequenceDiagram
     Endpoint-->>Client: HTTP response
 ```
 
-## Architectural building blocks that matter most
+## Related architecture guides
 
 - [DDD Introduction](reference/introduction-ddd-guide.md)
 - [Domain](reference/features-domain.md)

@@ -88,14 +88,14 @@ services.AddComposition()
 
 The feature should expose building blocks for these patterns.
 
-| Pattern                 | Purpose                                                              | Support                                 |
+| Pattern | Purpose | Support |
 | ----------------------- | -------------------------------------------------------------------- | --------------------------------------- |
-| Adapter                 | Convert one contract into another                                    | Required                                |
-| Decorator               | Add behavior while keeping the same contract                         | Required                                |
-| Interception            | Control access to or intercept calls while keeping the same contract | Required                                |
-| Strategy                | Register and resolve named/keyed implementations                     | Required                                |
-| Composite               | Treat multiple implementations as one implementation                 | Required                                |
-| Chain of Responsibility | Pass a request through ordered handlers until one handles it         | Required                                |
+| Adapter | Convert one contract into another | Required |
+| Decorator | Add behavior while keeping the same contract | Required |
+| Interception | Control access to or intercept calls while keeping the same contract | Required |
+| Strategy | Register and resolve named/keyed implementations | Required |
+| Composite | Treat multiple implementations as one implementation | Required |
+| Chain of Responsibility | Pass a request through ordered handlers until one handles it | Required |
 
 ## Design Principles
 
@@ -677,14 +677,14 @@ This means the outermost concern is the first one registered, both for explicit 
 
 The required built-ins are:
 
-| Behavior      | Purpose                                              | Notes                                                                         |
+| Behavior | Purpose | Notes |
 | ------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------- |
-| Logging       | Log before/after/failure of method calls             | Use `ILogger`                                                                 |
-| Timeout       | Cancel or fail calls exceeding configured duration   | Use existing Common.Utilities resiliency helpers where applicable             |
-| Retry         | Retry transient failures                             | Use existing Common.Utilities resiliency helpers                              |
-| Metrics       | Record call duration and outcome                     | Keep lightweight                                                              |
-| Authorization | Check access before invoking                         | Generic hook only; application-specific authorization can add custom behavior |
-| Lazy          | Delay expensive inner service creation when possible | Optional behavior implementation, not class proxying                          |
+| Logging | Log before/after/failure of method calls | Use `ILogger` |
+| Timeout | Cancel or fail calls exceeding configured duration | Use existing Common.Utilities resiliency helpers where applicable |
+| Retry | Retry transient failures | Use existing Common.Utilities resiliency helpers |
+| Metrics | Record call duration and outcome | Keep lightweight |
+| Authorization | Check access before invoking | Generic hook only; application-specific authorization can add custom behavior |
+| Lazy | Delay expensive inner service creation when possible | Optional behavior implementation, not class proxying |
 
 Caching is intentionally excluded.
 
@@ -1266,21 +1266,21 @@ The feature documentation should include:
 * Chain examples
 * Factory examples
 * Null Object examples
-* Result and Result<T> return type behavior
+* `Result` and `Result<T>` return type behavior
 * Resiliency helper reuse for retry/timeout
 * Guidance on when to use existing devkit features instead
 * Limitations
 
 ### Pattern Comparison Table
 
-| Need                                        | Use                     |
+| Need | Use |
 | ------------------------------------------- | ----------------------- |
-| Same interface, explicit wrapper            | Decorator               |
-| Same interface, access control/interception | Interception            |
-| Different interface shape                   | Adapter                 |
-| Select implementation by key                | Strategy                |
-| Combine many implementations as one         | Composite               |
-| Ordered fallback/handling                   | Chain of Responsibility |
+| Same interface, explicit wrapper | Decorator |
+| Same interface, access control/interception | Interception |
+| Different interface shape | Adapter |
+| Select implementation by key | Strategy |
+| Combine many implementations as one | Composite |
+| Ordered fallback/handling | Chain of Responsibility |
 
 ## Summary
 

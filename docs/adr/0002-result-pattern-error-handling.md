@@ -132,7 +132,7 @@ public class Result<T>
 
 Once a step fails, all subsequent steps are skipped and the failure flows directly to the end:
 
-```
+```text
 [Start] → [Validation] → [Business Rule] → [Persistence] → [Mapping] → [Success]
              ↓               ↓                 ↓
            [Failure] ←──────┴─────────────────┘
@@ -175,7 +175,7 @@ protected override async Task<Result<CustomerModel>> HandleAsync(
 
 ### When to Use Results vs Exceptions
 
-- **Use Result<T> for**:
+- **Use `Result<T>` for**:
   - Validation failures
   - Business rule violations
   - Not found scenarios
@@ -208,7 +208,7 @@ public async Task CreateCustomer_WithInvalidEmail_ReturnsFailure()
 ### Result Operators Quick Reference
 
 | Operator | Purpose | Example |
-|----------|---------|---------|
+| ---------- | --------- | --------- |
 | `Bind()` | Transform value | `.Bind(x => ProcessValue(x))` |
 | `BindAsync()` | Async transform | `.BindAsync(x => ProcessAsync(x))` |
 | `BindResult()` | Chain Results | `.BindResult(CreateEntity)` |

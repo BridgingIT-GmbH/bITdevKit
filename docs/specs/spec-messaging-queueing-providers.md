@@ -39,7 +39,7 @@ Dual-format normalization: both `AssemblyQualifiedNameShort` and `PrettyName` ar
 New methods on `IMessageBrokerService`:
 
 | Method | Purpose |
-|---|---|
+| --- | --- |
 | `PauseMessageTypeAsync(type)` | Pause processing for a message type |
 | `ResumeMessageTypeAsync(type)` | Resume processing for a message type |
 | `GetSummaryAsync()` | Broker runtime summary (counts, paused types, capabilities) |
@@ -51,7 +51,7 @@ New methods on `IMessageBrokerService`:
 Mapped in `MessagingEndpoints` under the messaging group:
 
 | Method | Route | Purpose |
-|---|---|---|
+| --- | --- | --- |
 | `GET` | `/summary` | Broker summary |
 | `GET` | `/subscriptions` | Active subscriptions |
 | `GET` | `/waiting` | Waiting (unhandled) messages |

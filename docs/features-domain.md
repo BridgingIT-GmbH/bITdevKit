@@ -1,4 +1,4 @@
-# Domain model
+# Domain Model
 
 > Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
 
@@ -334,7 +334,7 @@ operations remain on the in-memory entity. A false `When` also preserves earlier
 registers events queued before the circuit breaker. Apply changes to a detached or otherwise safe
 instance when the caller requires all-or-nothing state.
 
-**Key Feature: Declaration-Order Execution**
+#### Declaration-order execution
 
 All operations execute **in the exact order they are declared**. This makes the code intuitive and predictable - "what you see is what executes":
 
@@ -620,7 +620,7 @@ public Result<Customer> ComplexUpdate(string name, int age)
 ### Features
 
 | Operation | Description |
-|-----------|-------------|
+| ----------- | ------------- |
 | **`Set`** | Updates a property at its declaration position. Supports direct values, computed factories, `Result<T>` factories (fail-fast), and Result-returning methods for chaining domain logic. Only updates if value differs (automatic change detection). **Also applies actions to collection items:** all items, filtered items, or single item by ID. |
 | **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. `Remove` fails with `NotFoundError` if item not found. Executes at declaration position. |
 | **`Ensure`** | Runs a guard at its declaration position. A false predicate returns a failure and skips later operations; earlier mutations remain. |

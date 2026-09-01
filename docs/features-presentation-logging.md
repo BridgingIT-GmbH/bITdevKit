@@ -1,4 +1,4 @@
-# Presentation logging
+# Presentation Logging
 
 > Configure Serilog once for a devkit host and change its global minimum level at runtime.
 

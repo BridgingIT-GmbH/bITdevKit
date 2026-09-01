@@ -149,7 +149,7 @@ public void Domain_Should_Not_HaveDependencyOnOtherLayers()
 
 ### Project Structure Example (CoreModule)
 
-```
+```text
 CoreModule/
 ├── CoreModule.Domain/              # No dependencies on other layers
 ├── CoreModule.Application/         # References: Domain

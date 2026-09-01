@@ -1,4 +1,4 @@
-# Presentation configuration
+# Presentation Configuration
 
 > Compose JSON, Azure, and environment-variable configuration providers in the devkit host order.
 

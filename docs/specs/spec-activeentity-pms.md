@@ -131,7 +131,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
 ### Project Aggregate
 
 - **Root**: `Project`
-  - **Properties**: `Id` (ProjectId), `Name` (string), `Description` (Description), `TeamId` (TeamId), `OwnerId` (UserId), `EpicIds` (IReadOnlyCollection<EpicId>), `SprintIds` (IReadOnlyCollection<SprintId>), `Configuration` (ProjectConfiguration), `AuditState`, `ConcurrencyVersion`.
+  - **Properties**: `Id` (ProjectId), `Name` (string), `Description` (Description), `TeamId` (TeamId), `OwnerId` (UserId), `EpicIds` (`IReadOnlyCollection<EpicId>`), `SprintIds` (`IReadOnlyCollection<SprintId>`), `Configuration` (ProjectConfiguration), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name, description, teamId, ownerId, configuration)`, `AddEpicId(epicId)`, `RemoveEpicId(epicId)`, `AddSprintId(sprintId)`, `RemoveSprintId(sprintId)`, `ChangeName(name)`, `ChangeDescription(description)`, `ChangeTeamId(teamId)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `ProjectCreatedDomainEvent`.
   - **Domain Events**:
     - `ProjectCreatedDomainEvent(Project project)`: Triggered on `Create`, exposes `ProjectId`.
@@ -147,7 +147,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
 ### Epic Aggregate
 
 - **Root**: `Epic`
-  - **Properties**: `Id` (EpicId), `Title` (string), `Description` (Description), `Priority` (Priority), `Status` (WorkItemStatus), `ProjectId` (ProjectId), `OwnerId` (UserId), `FeatureIds` (IReadOnlyCollection<FeatureId>), `AuditState`, `ConcurrencyVersion`.
+  - **Properties**: `Id` (EpicId), `Title` (string), `Description` (Description), `Priority` (Priority), `Status` (WorkItemStatus), `ProjectId` (ProjectId), `OwnerId` (UserId), `FeatureIds` (`IReadOnlyCollection<FeatureId>`), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(title, description, priority, projectId, ownerId)`, `AddFeatureId(featureId)`, `RemoveFeatureId(featureId)`, `ChangeTitle(title)`, `ChangeDescription(description)`, `ChangePriority(priority)`, `ChangeStatus(status)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `EpicCreatedDomainEvent`.
   - **Domain Events**:
     - `EpicCreatedDomainEvent(Epic epic)`: Triggered on `Create`, exposes `EpicId`.
@@ -158,7 +158,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
 ### Feature Aggregate
 
 - **Root**: `Feature`
-  - **Properties**: `Id` (FeatureId), `Title` (string), `Description` (Description), `Priority` (Priority), `Status` (WorkItemStatus), `EpicId` (EpicId), `OwnerId` (UserId), `ProductBacklogItemIds` (IReadOnlyCollection<ProductBacklogItemId>), `AuditState`, `ConcurrencyVersion`.
+  - **Properties**: `Id` (FeatureId), `Title` (string), `Description` (Description), `Priority` (Priority), `Status` (WorkItemStatus), `EpicId` (EpicId), `OwnerId` (UserId), `ProductBacklogItemIds` (`IReadOnlyCollection<ProductBacklogItemId>`), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(title, description, priority, epicId, ownerId)`, `AddProductBacklogItemId(pbiId)`, `RemoveProductBacklogItemId(pbiId)`, `ChangeTitle(title)`, `ChangeDescription(description)`, `ChangePriority(priority)`, `ChangeStatus(status)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `FeatureCreatedDomainEvent`.
   - **Domain Events**:
     - `FeatureCreatedDomainEvent(Feature feature)`: Triggered on `Create`, exposes `FeatureId`.
@@ -169,7 +169,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
 ### Product Backlog Item (PBI) Aggregate
 
 - **Root**: `ProductBacklogItem`
-  - **Properties**: `Id` (ProductBacklogItemId), `Title` (string), `Description` (Description), `AcceptanceCriteria` (Description), `StoryPoints` (StoryPoints), `Priority` (Priority), `Status` (WorkItemStatus), `FeatureId` (FeatureId), `SprintId` (SprintId?, optional), `AssignedToId` (UserId?, optional), `Area` (string?, optional), `WorkTasks` (IReadOnlyCollection<WorkTask>), `Tags` (IReadOnlyCollection<ProductBacklogItemTag>), `WorkTaskTags` (IReadOnlyCollection<WorkTaskTag>), `WorkTaskCount` (int), `AuditState`, `ConcurrencyVersion`.
+  - **Properties**: `Id` (ProductBacklogItemId), `Title` (string), `Description` (Description), `AcceptanceCriteria` (Description), `StoryPoints` (StoryPoints), `Priority` (Priority), `Status` (WorkItemStatus), `FeatureId` (FeatureId), `SprintId` (SprintId?, optional), `AssignedToId` (UserId?, optional), `Area` (string?, optional), `WorkTasks` (`IReadOnlyCollection<WorkTask>`), `Tags` (`IReadOnlyCollection<ProductBacklogItemTag>`), `WorkTaskTags` (`IReadOnlyCollection<WorkTaskTag>`), `WorkTaskCount` (int), `AuditState`, `ConcurrencyVersion`.
   - **Methods**:
     - `Create(title, description, acceptanceCriteria, storyPoints, priority, featureId, area, sprintId, assignedToId)`: Returns `Result<ProductBacklogItem>` with `ValidationError` using `Result.Failure(new ValidationError(...))`. Registers only `ProductBacklogItemCreatedDomainEvent` and, if applicable, `ProductBacklogItemAssignedDomainEvent`.
     - `AddWorkTask(workTask)`, `RemoveWorkTask(workTaskId)`, `AddTag(tagId)`, `RemoveTag(tagId)`, `AddWorkTaskTag(workTaskId, tagId)`, `RemoveWorkTaskTag(workTaskId, tagId)`: Return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`.
@@ -192,7 +192,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
 ### Sprint Aggregate
 
 - **Root**: `Sprint`
-  - **Properties**: `Id` (SprintId), `Name` (string), `Goal` (SprintGoal), `StartDate` (DueDate), `EndDate` (DueDate), `Status` (SprintStatus), `ProjectId` (ProjectId), `OwnerId` (UserId), `ProductBacklogItemIds` (IReadOnlyCollection<ProductBacklogItemId>), `Plan` (SprintPlan), `AuditState`, `ConcurrencyVersion`.
+  - **Properties**: `Id` (SprintId), `Name` (string), `Goal` (SprintGoal), `StartDate` (DueDate), `EndDate` (DueDate), `Status` (SprintStatus), `ProjectId` (ProjectId), `OwnerId` (UserId), `ProductBacklogItemIds` (`IReadOnlyCollection<ProductBacklogItemId>`), `Plan` (SprintPlan), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name, goal, startDate, endDate, projectId, ownerId, plan)`, `AddProductBacklogItemId(pbiId)`, `RemoveProductBacklogItemId(pbiId)`, `ChangeName(name)`, `ChangeGoal(goal)`, `ChangeStartDate(startDate)`, `ChangeEndDate(endDate)`, `ChangeStatus(status)`, `ChangeOwnerId(ownerId)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `SprintCreatedDomainEvent`.
   - **Domain Events**:
     - `SprintCreatedDomainEvent(Sprint sprint)`: Triggered on `Create`, exposes `SprintId`.
@@ -236,7 +236,7 @@ Domain events are registered using `RegisterDomainEvent` and `RegisterChangedDom
 ### Team Aggregate
 
 - **Root**: `Team`
-  - **Properties**: `Id` (TeamId), `Name` (string), `Members` (IReadOnlyCollection<TeamMember>), `AuditState`, `ConcurrencyVersion`.
+  - **Properties**: `Id` (TeamId), `Name` (string), `Members` (`IReadOnlyCollection<TeamMember>`), `AuditState`, `ConcurrencyVersion`.
   - **Methods**: `Create(name)`, `AddMember(userId, role)`, `RemoveMember(userId)`, `ChangeName(name)`. Update methods return `Result` with `ValidationError` using `Result.Failure(new ValidationError(...))`. `Create` registers only `TeamCreatedDomainEvent`.
   - **Domain Events**:
     - `TeamCreatedDomainEvent(Team team)`: Triggered on `Create`, exposes `TeamId`.

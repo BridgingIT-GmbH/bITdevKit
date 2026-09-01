@@ -176,7 +176,6 @@ Inject the service into a component and call its async update method:
 
 Selecting **Increment** changes the displayed count and records an undo snapshot. Use `AsLocalStorageScoped()` instead when the value must survive a browser refresh.
 
-
 ## Detailed usage
 
 ### 1. Creating a state class
@@ -283,7 +282,7 @@ Components can subscribe to the `StateChanged` or `StateChangeWithMetadata` even
 - `StateChanged`: `Action<object>` - Provides the new state object whenever the state changes.
 - `StateChangeWithMetadata`: `Action<IStateChangeMetadata>` - Provides detailed metadata about the change, including `StateId`, `Timestamp`, `Operation`, `OldValue`, `NewValue`, and `Reason`.
 
-**Example: Customer filter component**
+#### Customer filter component
 
 ```razor
 <MudSelect T="string" Label="Status" Dense="true" Clearable="true"
@@ -357,7 +356,7 @@ protected override async Task OnInitializedAsync()
 
 Enable history in the `AppStateOptions` to support undo/redo operations.
 
-**Example: Enabling undo and redo**
+#### Enable undo and redo
 
 ```csharp
 builder.Services.AddAppState()
@@ -372,7 +371,7 @@ builder.Services.AddAppState()
         .Done();
 ```
 
-**Example: Adding undo and redo buttons**
+#### Add undo and redo buttons
 
 ```razor
 <MudButton OnClick="@(() => FilterState.UndoAsync())" Disabled="@(!FilterState.CanUndo)">Undo</MudButton>
@@ -394,7 +393,7 @@ OnFilterStateChanged(FilterState.CurrentState); // Trigger filtering by directly
 
 Use the `AppStateDebugger` to log and track state changes for debugging.
 
-**Example: Enabling debugging**
+#### Enable debugging
 
 ```csharp
 builder.Services.AddAppState()
@@ -418,7 +417,7 @@ builder.Services.AddAppState()
 
 Integrate `AppState<T>` with other services (e.g., a mediator for commands/queries) to fetch data or perform actions based on state changes.
 
-**Example: Using a requester or mediator**
+#### Use a requester or mediator
 
 ```csharp
 private async Task LoadCustomers()
@@ -467,29 +466,35 @@ private async Task LoadCustomers()
 ## Appendix: internals of AppState
 
 ### State storage
+
 - **Current State**: Stored in a private field (e.g., `currentState`) in the derived class, managed through `GetCurrentState` and `UpdateState` methods.
 - **Persistence**: The state is serialized to JSON and saved to storage via `IAppStateStoreProvider` (e.g., local storage) in the `SaveStateAsyncInternal` method, which is called by the debouncer.
 - **Loading**: The `LoadStateAsync` method deserializes the state from storage and updates the current state using `SetCurrentState`.
 
 ### History management
+
 - **Undo/Redo Stacks**: Maintains two `Stack<TState>` objects (`undoStack` and `redoStack`) to store state snapshots for undo/redo operations.
 - **Limits**: The maximum number of history items is controlled by `AppStateOptions.MaxHistoryItems`, preventing excessive memory usage.
 - **Operations**: `UndoAsync` pops a state from `undoStack`, pushes the current state to `redoStack`, and restores the previous state. `RedoAsync` does the reverse.
 
 ### Change notifications
+
 - **Events**: Defines `StateChanged` (`Action<object>`) and `StateChangeWithMetadata` (`Action<IStateChangeMetadata>`) events to notify subscribers.
 - **Triggering**: Events are fired in `SetCurrentState` when the state changes (i.e., when `oldState` and `newState` are not equal, based on `Equals` comparison).
 - **Metadata**: The `StateChangeWithMetadata` event includes a `StateChangeMetadata<T>` object with properties like `StateId`, `Timestamp`, `Operation`, `OldValue`, `NewValue`, and `Reason`.
 
 ### Debounced saving
+
 - **Debouncer**: Utilizes a `Debouncer` instance (`saveDebouncer`) to delay state persistence, reducing the frequency of storage writes.
 - **Configuration**: The debounce delay is set via `AppStateOptions.DebounceDelay` (500 ms by default).
 - **Mechanism**: The `saveDebouncer` triggers `SaveStateAsyncInternal`, which serializes the state and saves it to storage.
 
 ### Debugging
+
 - **Debugger Integration**: Uses `AppStateDebugger` to log state changes and track metadata, controlled by `LoggingEnabled` and `StateChangesTracked` settings.
 - **Logging**: State changes are logged with details like the reason, old state, and new state, aiding in debugging.
 
 ### Lifecycle
+
 - **Initialization**: `AppState<T>` instances are created through dependency injection. The default registration lifetime is scoped, with host-specific scope boundaries.
 - **Disposal**: The `Dispose` method ensures the `saveDebouncer` is disposed, cleaning up resources when the instance is no longer needed.

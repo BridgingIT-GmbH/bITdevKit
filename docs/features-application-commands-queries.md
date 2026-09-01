@@ -1,4 +1,4 @@
-# Application commands and queries
+# Application Commands and Queries
 
 > Separate application writes and reads into focused handlers with shared behaviors and clear boundaries.
 

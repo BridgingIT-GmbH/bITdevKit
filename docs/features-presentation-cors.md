@@ -99,7 +99,7 @@ A browser request to `/api/status` from `https://app.example.com` receives `Acce
 ### `CorsConfiguration` properties
 
 | Property | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
+| ---------- | ------ | ---------- | --------- | ------------- |
 | `Enabled` | `bool` | No | `false` | Whether DevKit registers and applies CORS. When false, the server emits no DevKit CORS headers. |
 | `DefaultPolicy` | `string` | No | `null` | Name of the policy to apply globally. Leave null for endpoint-level control only. |
 | `Policies` | `Dictionary<string, CorsPolicyOptions>` | Yes* | `{}` | Named policies. At least one required when Enabled is true. |
@@ -109,7 +109,7 @@ A browser request to `/api/status` from `https://app.example.com` receives `Acce
 ### `CorsPolicyOptions` properties
 
 | Property | Type | Required | Default | Description |
-|----------|------|----------|---------|-------------|
+| ---------- | ------ | ---------- | --------- | ------------- |
 | `AllowedOrigins` | `string[]` | No | `null` | Allowed origins. Ignored when `AllowAnyOrigin` is `true`. |
 | `AllowedMethods` | `string[]` | No | `null` | Allowed HTTP methods. Ignored when `AllowAnyMethod` is `true`. |
 | `AllowedHeaders` | `string[]` | No | `null` | Allowed request headers. Ignored when `AllowAnyHeader` is `true`. |
@@ -757,7 +757,7 @@ Ensure `DefaultPolicy` name matches a policy in `Policies`:
 ### Common scenarios
 
 | Scenario | Recommended Configuration |
-|----------|---------------------------|
+| ---------- | --------------------------- |
 | Frontend SPA + API | `AllowedOrigins` with specific domain, `AllowCredentials: true` |
 | Public API | `AllowAnyOrigin: true`, `AllowCredentials: false` |
 | Multiple subdomains | `AllowWildcardSubdomains: true` with base domain |

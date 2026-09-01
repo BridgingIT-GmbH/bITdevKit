@@ -1,4 +1,4 @@
-# Domain specifications
+# Domain Specifications
 
 > Model reusable business criteria as composable specifications for queries and in-memory evaluation.
 

@@ -119,7 +119,6 @@ app.Run();
 
 `PUT /blobs/reports/june.txt` returns the uploaded key, length, content hash, and `Report: june.txt`. The upload stream stays caller-owned; disposing `BlobDownload` closes the returned content stream.
 
-
 ## Rules and limits
 
 - `BlobKey` contains `Container` and `Name`.
@@ -1072,11 +1071,11 @@ The snapshot includes client names, provider names, capabilities, and readable h
 
 Blob Storage is exposed to local AI agents through the DevKit MCP runtime automatically when `AddBlobStorage()` runs in a DevKit web host with MCP enabled. The MCP adapter uses the diagnostics service that `AddBlobStorage` registers automatically.
 
-| MCP tool             | Runtime operation | Purpose                                                |
+| MCP tool | Runtime operation | Purpose |
 | -------------------- | ----------------- | ------------------------------------------------------ |
-| `bdk_blobs_summary`  | `blobs.summary`   | Summarizes registered blob clients and health counts.  |
-| `bdk_blobs_clients`  | `blobs.clients`   | Lists clients, provider names, capabilities and probe status. |
-| `bdk_blobs_probe`    | `blobs.probe`     | Returns probe details for one named blob client.       |
+| `bdk_blobs_summary` | `blobs.summary` | Summarizes registered blob clients and health counts. |
+| `bdk_blobs_clients` | `blobs.clients` | Lists clients, provider names, capabilities and probe status. |
+| `bdk_blobs_probe` | `blobs.probe` | Returns probe details for one named blob client. |
 
 Example agent prompt:
 

@@ -1,4 +1,4 @@
-# Domain events
+# Domain Events
 
 > Capture business-significant events in aggregates and publish side effects outside the domain model.
 

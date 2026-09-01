@@ -1,6 +1,5 @@
 # Filtering
 
-
 > Simplify complex entity queries with a unified filtering solution.
 
 [TOC]
@@ -46,26 +45,26 @@ Representing each query shape as a separate endpoint or set of query parameters 
 
 The Filtering feature provides one model for query criteria and a set of builders that translate the model into repository specifications and options.
 
-1. **Unified query interface**
+### Unified query interface
 
 - Single, consistent way to express complex queries
 - Works across different entity types
 - Supports both simple and complex filtering scenarios
 - Reduces the need for an endpoint for each query scenario
 
-2. **Typed server implementation**
+### Typed server implementation
 
 - Typed server models and generated OpenAPI schemas
 - A documented `FilterModel` contract between clients and endpoints
 - Expression-based builder methods for server-created filters
 
-3. **Repository integration**
+### Repository integration
 
 - Built-in custom filter types and named specifications
 - Translation to repository `FindOptions<TEntity>`
 - Support for additional domain specifications
 
-4. **Query controls**
+### Query controls
 
 - Paging and multiple orderings
 - Selective eager-loading includes
@@ -89,19 +88,19 @@ The [request flow diagram](#request-flow-diagram) shows these components in sequ
 
 ## Use Cases
 
-1. **Data Grids, Tables and Lists**
+### Data grids, tables, and lists
 
 - Dynamic column filtering
 - Multi-column sorting
 - Server-side pagination
 
-2. **Search Interfaces**
+### Search interfaces
 
 - Full-text search across multiple fields
 - Combined filters (date ranges, categories, status)
 - Related entity filtering
 
-3. **Lookup lists**
+### Lookup lists
 
 - Dynamic data loading for select components
 - Type-ahead/autocomplete requests
@@ -460,25 +459,25 @@ The following considerations apply to HTTP POST requests:
 
 ## Best practices
 
-1. **Request Method Selection**
+### Request method selection
 
 - Use GET for simple queries and basic filtering
 - Use POST for complex filters or when URL length might be an issue
 - Do not put secrets in either form; POST does not replace HTTPS or safe logging
 
-2. **Performance Considerations**
+### Performance considerations
 
 - Keep page sizes reasonable (recommended: 10-50 items)
 - Use includes selectively to prevent excessive data loading
 - Consider adding indexes for commonly filtered fields
 
-3. **Error Handling**
+### Error handling
 
 - Always check the `isSuccess` property in responses
 - Handle error messages appropriately in your client application
 - Log error details for debugging purposes
 
-4. **Security**
+### Security
 
 - Validate or allowlist exposed fields, orderings, includes, and specification names
 - Implement appropriate rate limiting
@@ -1627,12 +1626,14 @@ var filterModel = FilterModelBuilder.For<Customer>()
 #### When to use each overload
 
 **Expression-Based (`AddInclude(c => c.Property)`):**
+
 - Provides compile-time safety and IntelliSense support
 - Best for known, statically-defined relationships
 - Automatically refactored when property names change
 - Limited to direct property access (single level)
 
 **String-Based (`AddInclude("Property.Nested")`):**
+
 - More flexible for dynamic scenarios
 - Supports deeply nested navigation paths
 - Useful when property names come from configuration or user input
@@ -1658,6 +1659,7 @@ The `ThenInclude` feature enables type-safe chaining of navigation properties fo
 #### Basic usage
 
 **Reference Navigation** (single related entity):
+
 ```csharp
 var filterModel = FilterModelBuilder.For<Customer>()
     .AddInclude(c => c.BillingAddress)
@@ -1667,6 +1669,7 @@ var filterModel = FilterModelBuilder.For<Customer>()
 ```
 
 **Collection Navigation** (collection of related entities):
+
 ```csharp
 var filterModel = FilterModelBuilder.For<Customer>()
     .AddInclude(c => c.Orders)             // ICollection<Order>

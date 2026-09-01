@@ -440,7 +440,7 @@ They shall not include state name in the metric family.
 
 #### 7.9.2 New counters
 
-#### Requester
+#### Requester counters
 
 - `requester_send`
 - `requester_send_{request}`
@@ -451,7 +451,7 @@ They shall not include state name in the metric family.
 - `requester_handle_failure`
 - `requester_handle_{request}_failure`
 
-#### Notifier
+#### Notifier counters
 
 - `notifier_publish`
 - `notifier_publish_{notification}`
@@ -462,7 +462,7 @@ They shall not include state name in the metric family.
 - `notifier_handle_failure`
 - `notifier_handle_{notification}_failure`
 
-#### Queueing
+#### Queueing counters
 
 - `queueing_enqueue`
 - `queueing_enqueue_{message}`
@@ -473,14 +473,14 @@ They shall not include state name in the metric family.
 - `queueing_handle_failure`
 - `queueing_handle_{message}_failure`
 
-#### Job scheduling
+#### Job scheduling counters
 
 - `jobscheduling_execute`
 - `jobscheduling_execute_{job}`
 - `jobscheduling_execute_failure`
 - `jobscheduling_execute_{job}_failure`
 
-#### Orchestrations
+#### Orchestration counters
 
 - `orchestrations_activity_execute`
 - `orchestrations_activity_execute_{orchestration}_{activity}`
@@ -491,65 +491,65 @@ They shall not include state name in the metric family.
 
 The following histogram families shall be added with unit `ms`.
 
-#### Requester
+#### Requester duration metrics
 
 - `requester_send_duration`
 - `requester_send_{request}_duration`
 - `requester_handle_duration`
 - `requester_handle_{request}_duration`
 
-#### Notifier
+#### Notifier duration metrics
 
 - `notifier_publish_duration`
 - `notifier_publish_{notification}_duration`
 - `notifier_handle_duration`
 - `notifier_handle_{notification}_duration`
 
-#### Queueing
+#### Queueing duration metrics
 
 - `queueing_enqueue_duration`
 - `queueing_enqueue_{message}_duration`
 - `queueing_handle_duration`
 - `queueing_handle_{message}_duration`
 
-#### Job scheduling
+#### Job scheduling duration metrics
 
 - `jobscheduling_execute_duration`
 - `jobscheduling_execute_{job}_duration`
 
-#### Orchestrations
+#### Orchestration duration metrics
 
 - `orchestrations_activity_execute_duration`
 - `orchestrations_activity_execute_{orchestration}_{activity}_duration`
 
 #### 7.9.4 Metric semantics by feature
 
-#### Requester
+#### Requester metric semantics
 
 - `send` counts one dispatch attempt per `IRequester.SendAsync(...)` call
 - `handle` counts one actual request handler execution
 - `failure` counts failed `Result` values and thrown exceptions
 
-#### Notifier
+#### Notifier metric semantics
 
 - `publish` counts one notification dispatch attempt per `INotifier.PublishAsync(...)` call
 - `handle` counts one handler execution per notification handler
 - `publish_failure` counts a failed overall publish result or thrown exception
 - `handle_failure` counts a failed handler result or thrown exception
 
-#### Queueing
+#### Queueing metric semantics
 
 - `enqueue` counts one enqueue attempt per broker enqueue operation
 - `handle` counts one queue handler execution attempt
 - `failure` is exception-based because queue handlers do not return `Result`
 
-#### Job scheduling
+#### Job scheduling metric semantics
 
 - `execute` counts one actual job execution attempt through the behavior pipeline
 - `failure` counts failed `Result` values and thrown exceptions where the job surface provides them
 - retries count as separate execution attempts when retry behavior re-invokes the job
 
-#### Orchestrations
+#### Orchestration metric semantics
 
 - `execute` counts one activity attempt each time the runtime invokes an activity
 - `failure` counts activity attempts that end in runtime failure handling
@@ -609,6 +609,7 @@ services.AddOrchestrations()
 This registration applies to all orchestrations in the application.
 
 ### 7.11 Documentation impact
+
 This specification should update:
 
 - `docs/features-requester-notifier.md`

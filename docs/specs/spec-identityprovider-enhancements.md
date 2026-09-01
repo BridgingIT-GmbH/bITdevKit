@@ -48,7 +48,7 @@ The client application exchanges the code for tokens as normal. The previous ses
 
 ### API
 
-```
+```http
 POST /_bdk/api/identity/connect/switch-user
 Content-Type: application/x-www-form-urlencoded
 
@@ -63,7 +63,7 @@ state=<optional-csrf-state>
 **Responses:**
 
 | Status | Condition |
-|--------|-----------|
+| -------- | ----------- |
 | 302 Redirect | Success — redirects to `redirect_uri?code=<new-code>&state=<state>` |
 | 401 Unauthorized | No valid session cookie present |
 | 404 Not Found | Target user not found |
@@ -116,7 +116,7 @@ Both endpoints accept any token type (access token, ID token, refresh token). Ne
 
 #### Standard Introspection
 
-```
+```http
 POST /_bdk/api/identity/connect/introspect
 Content-Type: application/x-www-form-urlencoded
 
@@ -149,7 +149,7 @@ token_type_hint=access_token|refresh_token|id_token  (optional)
 
 #### Convenience Decode
 
-```
+```http
 GET /_bdk/api/identity/connect/decode?token=<jwt-token>
 ```
 
@@ -205,7 +205,7 @@ No additional builder option required — endpoints are always available when th
 
 Custom claims are merged during token generation using a layered approach:
 
-```
+```text
 final_claims = base_claims + user_custom_claims + client_custom_claims
 ```
 
@@ -275,7 +275,7 @@ builder.AddFakeIdentityProvider(options =>
 
 ### Debug Endpoint
 
-```
+```http
 GET /_bdk/api/identity/connect/debug/claims?user_id=<id>&client_id=<id>
 ```
 
@@ -301,7 +301,7 @@ Returns the fully resolved claim set for a given user+client combination, useful
 
 When consent is enabled, the authorization flow gains an intermediate step:
 
-```
+```text
 User Selection → Consent Screen → Authorization Code → Token Exchange
 ```
 
@@ -328,7 +328,7 @@ The consent data is stored in the authorization code entry (in-memory) and consu
 ### Scope Rules
 
 | Scope | Behavior |
-|-------|----------|
+| ------- | ---------- |
 | `openid` | Always granted, non-deselectable (required for OIDC) |
 | `profile` | Toggleable, default: selected |
 | `email` | Toggleable, default: selected |
@@ -380,7 +380,7 @@ All endpoints under `/_bdk/api/identity/connect/sessions`.
 
 #### List Active Sessions
 
-```
+```http
 GET /_bdk/api/identity/connect/sessions
 ```
 
@@ -404,7 +404,7 @@ GET /_bdk/api/identity/connect/sessions
 
 #### Get Session Details
 
-```
+```http
 GET /_bdk/api/identity/connect/sessions/{session_id}
 ```
 
@@ -431,7 +431,7 @@ GET /_bdk/api/identity/connect/sessions/{session_id}
 
 #### Revoke Session
 
-```
+```http
 DELETE /_bdk/api/identity/connect/sessions/{session_id}
 ```
 
@@ -439,14 +439,13 @@ DELETE /_bdk/api/identity/connect/sessions/{session_id}
 
 #### Revoke All Sessions
 
-```
+```http
 DELETE /_bdk/api/identity/connect/sessions
 ```
 
 **Response:** `204 No Content`. Revokes all sessions for the current authenticated user.
 
 > **Cross-Client Revocation**: `DELETE /sessions` revokes all sessions for the authenticated user across all clients.
-
 > **Refresh Token Invalidation**: When a session is revoked, all associated refresh tokens are immediately invalidated.
 
 ### Builder Configuration
@@ -513,7 +512,7 @@ Reference implementation following the pattern in `examples/DoFiesta/DoFiesta.Pr
 New types introduced across features:
 
 | Type | Used By |
-|------|---------|
+| ------ | --------- |
 | `SessionInfo` | Feature 5 (list sessions response) |
 | `SessionDetail` | Feature 5 (session detail response) |
 | `TokenIntrospectionResponse` | Feature 2 (introspect response) |
@@ -551,7 +550,7 @@ When features are enabled, the discovery document (`/.well-known/openid-configur
 ### Backward Compatibility Summary
 
 | Feature | Default | Breaking? |
-|---------|---------|-----------|
+| --------- | --------- | ----------- |
 | User Switching | Enabled | No — additive endpoint |
 | Token Introspection | Always available | No — additive endpoint |
 | Custom Claims | Empty dictionaries | No — additive data |
@@ -581,7 +580,7 @@ When features are enabled, the discovery document (`/.well-known/openid-configur
 ### Test Scenarios
 
 | Scenario | Feature | Type |
-|----------|---------|------|
+| ---------- | --------- | ------ |
 | Switch user, exchange code, verify new identity | 1 | Integration |
 | Introspect valid token, verify `active: true` | 2 | Unit |
 | Introspect expired token, verify `active: false` | 2 | Unit |

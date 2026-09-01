@@ -119,7 +119,6 @@ app.Run();
 
 Calling `POST /dev/profiling/sample` returns the readable session key and a terminal state. The session remains available in the in-memory store until retention removes it or the process exits.
 
-
 ## Local development setup
 
 Start with the process-local in-memory provider when profiling one application process. Keep collection, the dashboard, and Console Commands restricted to Development.

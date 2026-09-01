@@ -193,7 +193,6 @@ classDiagram
 - **Database-backed Virtual Filesystems**: Persist files and directories in the application database through Entity Framework when a separate blob store or file share is unnecessary.
 - **Health Monitoring**: Check the health of storage providers to ensure availability.
 
-
 ## Detailed usage
 
 ### Setting up a provider with dependency injection
@@ -380,7 +379,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
 
 #### Core methods
 
-- **FileExistsAsync(string path, IProgress<FileProgress> progress, CancellationToken token)**: Checks if a file exists at `path`. Returns `Task<Result>` indicating success or failure with errors (e.g., `FileSystemError` for missing files).
+- `FileExistsAsync(string path, IProgress<FileProgress> progress, CancellationToken token)`: Checks if a file exists at `path`. Returns `Task<Result>` indicating success or failure with errors (e.g., `FileSystemError` for missing files).
 
   ```csharp
   var provider = factory.CreateProvider("local");
@@ -388,7 +387,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   existsResult.ShouldBeSuccess("File should exist");
   ```
 
-- **ReadFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)**: Reads a file as a `Stream`. Returns `Task<Result<Stream>>` with the stream or errors (e.g., `PermissionError`).
+- `ReadFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)`: Reads a file as a `Stream`. Returns `Task<Result<Stream>>` with the stream or errors (e.g., `PermissionError`).
 
   ```csharp
   var readResult = await provider.ReadFileAsync("data.txt", null, CancellationToken.None);
@@ -397,14 +396,14 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   new StreamReader(stream).ReadToEnd().ShouldBe("Test content");
   ```
 
-- **WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress, CancellationToken token)**: Writes `content` to `path`. Use this when the caller already has a source stream. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
+- `WriteFileAsync(string path, Stream content, IProgress<FileProgress> progress, CancellationToken token)`: Writes `content` to `path`. Use this when the caller already has a source stream. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`).
 
   ```csharp
   var writeResult = await provider.WriteFileAsync("data.txt", new MemoryStream(Encoding.UTF8.GetBytes("Test content")), null, CancellationToken.None);
   writeResult.ShouldBeSuccess("Write should succeed");
   ```
 
-- **OpenWriteFileAsync(string path, bool useTemporaryWrite, IProgress<FileProgress> progress, CancellationToken token)**: Opens a writable stream for `path`. Use this when the caller wants to write directly into the provider without first materializing a full source stream. Open failures are returned in the `Result`; write, flush, or dispose failures surface from the returned stream. `useTemporaryWrite: false` writes directly to the final path and may expose partial content, while `useTemporaryWrite: true` requests staged publish semantics when the provider supports it.
+- `OpenWriteFileAsync(string path, bool useTemporaryWrite, IProgress<FileProgress> progress, CancellationToken token)`: Opens a writable stream for `path`. Use this when the caller wants to write directly into the provider without first materializing a full source stream. Open failures are returned in the `Result`; write, flush, or dispose failures surface from the returned stream. `useTemporaryWrite: false` writes directly to the final path and may expose partial content, while `useTemporaryWrite: true` requests staged publish semantics when the provider supports it.
 
   ```csharp
   var openResult = await provider.OpenWriteFileAsync("feeds/data.csv", useTemporaryWrite: false, progress: null, CancellationToken.None);
@@ -416,7 +415,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   await writer.WriteLineAsync("1,Sample");
   ```
 
-- **DeleteFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)**: Deletes a file at `path`. Returns `Task<Result>` with success or errors (e.g., `PermissionError`).
+- `DeleteFileAsync(string path, IProgress<FileProgress> progress, CancellationToken token)`: Deletes a file at `path`. Returns `Task<Result>` with success or errors (e.g., `PermissionError`).
 
   ```csharp
   var deleteResult = await provider.DeleteFileAsync("data.txt", null, CancellationToken.None);
@@ -465,28 +464,28 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   files.ShouldContain("data.txt");
   ```
 
-- **CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Copies a file from `sourcePath` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
+- `CopyFileAsync(string sourcePath, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)`: Copies a file from `sourcePath` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
 
   ```csharp
   var copyResult = await provider.CopyFileAsync("data.txt", "data_copy.txt", null, CancellationToken.None);
   copyResult.ShouldBeSuccess("Copy should succeed");
   ```
 
-- **RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Renames a file from `path` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
+- `RenameFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)`: Renames a file from `path` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
 
   ```csharp
   var renameResult = await provider.RenameFileAsync("data.txt", "renamed.txt", null, CancellationToken.None);
   renameResult.ShouldBeSuccess("Rename should succeed");
   ```
 
-- **MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Moves a file from `path` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
+- `MoveFileAsync(string path, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)`: Moves a file from `path` to `destinationPath` within the same provider. Returns `Task<Result>` with success or errors.
 
   ```csharp
   var moveResult = await provider.MoveFileAsync("data.txt", "moved.txt", null, CancellationToken.None);
   moveResult.ShouldBeSuccess("Move should succeed");
   ```
 
-- **CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Copies multiple files within the same provider. Returns `Task<Result>` with success or partial failure (e.g., `PartialOperationError`).
+- `CopyFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)`: Copies multiple files within the same provider. Returns `Task<Result>` with success or partial failure (e.g., `PartialOperationError`).
 
   ```csharp
   var filePairs = new[] { ("data1.txt", "copy1.txt"), ("data2.txt", "copy2.txt") };
@@ -494,7 +493,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   copyFilesResult.ShouldBeSuccess("Bulk copy should succeed");
   ```
 
-- **DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress, CancellationToken token)**: Deletes multiple files. Returns `Task<Result>` with success or partial failure.
+- `DeleteFilesAsync(IEnumerable<string> paths, IProgress<FileProgress> progress, CancellationToken token)`: Deletes multiple files. Returns `Task<Result>` with success or partial failure.
 
   ```csharp
   var paths = new[] { "data1.txt", "data2.txt" };
@@ -502,7 +501,7 @@ The `IFileStorageProvider` interface defines core file operations, returning `Re
   deleteFilesResult.ShouldBeSuccess("Bulk delete should succeed");
   ```
 
-- **MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Moves multiple files within the same provider. Returns `Task<Result>` with success or partial failure.
+- `MoveFilesAsync(IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)`: Moves multiple files within the same provider. Returns `Task<Result>` with success or partial failure.
 
   ```csharp
   var moveFilesResult = await provider.MoveFilesAsync(filePairs, null, CancellationToken.None);
@@ -637,7 +636,7 @@ uncompressResult.ShouldBeSuccess("Directory decompression should succeed");
 
 The `FileStorageProviderCrossExtensions` class provides methods to perform operations across different `IFileStorageProvider` instances, such as copying or moving files between providers (e.g., from a local file system to an in-memory provider). These methods support progress reporting and handle errors using the `Result` pattern.
 
-- **CopyFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Copies a file from the source provider to the destination provider. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`, `PermissionError`).
+- `CopyFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)`: Copies a file from the source provider to the destination provider. Returns `Task<Result>` with success or errors (e.g., `FileSystemError`, `PermissionError`).
 
   ```csharp
   var sourceProvider = factory.CreateProvider("local");
@@ -654,7 +653,7 @@ The `FileStorageProviderCrossExtensions` class provides methods to perform opera
   existsResult.ShouldBeSuccess("File should exist in destination provider");
   ```
 
-- **CopyFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Copies multiple files between providers in a batch. Returns `Task<Result>` with success or partial failure (e.g., `PartialOperationError`).
+- `CopyFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)`: Copies multiple files between providers in a batch. Returns `Task<Result>` with success or partial failure (e.g., `PartialOperationError`).
 
   ```csharp
   var filePairs = new[]
@@ -681,7 +680,7 @@ The `FileStorageProviderCrossExtensions` class provides methods to perform opera
   }
   ```
 
-- **MoveFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)**: Moves a file by copying it to the destination provider and deleting it from the source provider. Returns `Task<Result>` with success or errors.
+- `MoveFileAsync(IFileStorageProvider sourceProvider, string sourcePath, IFileStorageProvider destinationProvider, string destinationPath, IProgress<FileProgress> progress, CancellationToken token)`: Moves a file by copying it to the destination provider and deleting it from the source provider. Returns `Task<Result>` with success or errors.
 
   ```csharp
   await sourceProvider.WriteFileAsync("move.txt", new MemoryStream(Encoding.UTF8.GetBytes("Move content")), null, CancellationToken.None);
@@ -696,7 +695,7 @@ The `FileStorageProviderCrossExtensions` class provides methods to perform opera
   sourceExists.ShouldBeFailure("File should not exist in source provider");
   ```
 
-- **MoveFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)**: Moves multiple files between providers in a batch. Returns `Task<Result>` with success or partial failure.
+- `MoveFilesAsync(IFileStorageProvider sourceProvider, IFileStorageProvider destinationProvider, IEnumerable<(string SourcePath, string DestinationPath)> filePairs, IProgress<FileProgress> progress, CancellationToken token)`: Moves multiple files between providers in a batch. Returns `Task<Result>` with success or partial failure.
 
   ```csharp
   var moveFilesResult = await sourceProvider.MoveFilesAsync(destProvider, filePairs, progress, CancellationToken.None);

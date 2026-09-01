@@ -184,7 +184,6 @@ Built-in examples include:
 
 Processors can also be decorated with `IProcessorBehavior` implementations such as logging or retry behaviors.
 
-
 ## Detailed setup
 
 ```csharp

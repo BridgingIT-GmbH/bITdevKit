@@ -4,8 +4,7 @@ title: Packages
 
 # Packages
 
-The repository contains many packages, but they are easier to understand when grouped by role rather
-than read as a flat list.
+This page groups selected source projects by role. It is a guide to the package layout, not an exhaustive inventory.
 
 ## Core foundation
 
@@ -36,8 +35,7 @@ These packages support domain modeling and event-driven domain behavior:
 
 ## Application flow
 
-These packages shape command/query handling, messaging, queueing, notifications, and storage-facing
-application abstractions:
+These packages shape command/query handling, messaging, queueing, notifications, and storage-facing application abstractions:
 
 - `Application.Commands`
 - `Application.Queries`
@@ -68,8 +66,7 @@ These packages implement transport and persistence choices:
 
 ## Presentation and host-facing packages
 
-These packages expose the kit through web, configuration, logging, and feature-specific presentation
-layers:
+These packages expose the kit through web, configuration, logging, and feature-specific presentation layers:
 
 - `Presentation`
 - `Presentation.Configuration`
@@ -89,13 +86,12 @@ These packages mainly help with source generation, testing, or supporting infras
 - `Common.Utilities.CodeGen`
 - `Common.Utilities.Tracing`
 - `Common.Utilities.Xunit`
-- `Domain.CodeGen`
 - `Presentation.Web.Client`
 - `Infrastructure.Windows`
 
-## How to read the package map
+## Use the package map
 
-The most useful mental model is:
+Read the map in this order:
 
 1. Start with the developer-facing concepts in [Getting Started](getting-started.md).
 2. Learn the architectural roles on the [Architecture](architecture.md) page.

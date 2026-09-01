@@ -47,7 +47,7 @@ Each module (e.g., `CoreModule`) is a **vertical slice** containing:
 
 ### Module Structure
 
-```
+```text
 src/Modules/<ModuleName>/
 ├── <Module>.Domain/              # Business logic
 ├── <Module>.Application/         # Commands, Queries, Handlers

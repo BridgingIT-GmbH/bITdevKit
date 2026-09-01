@@ -14,9 +14,9 @@ status: draft
 
 ## Identity Management based on ASP.NET Identity
 
-https://duendesoftware.com/learn/role-based-access-control-asp-net-core-identity
+<https://duendesoftware.com/learn/role-based-access-control-asp-net-core-identity>
 
-https://dev.to/tural_hasanov_11/permission-based-authentication-and-authorization-in-net-via-cookies-47fh
+<https://dev.to/tural_hasanov_11/permission-based-authentication-and-authorization-in-net-via-cookies-47fh>
 
 - manage user/roles/permissions
 - based on ASP.NET Identity for robust and secure identity management

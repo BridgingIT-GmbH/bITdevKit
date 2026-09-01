@@ -94,16 +94,16 @@ flowchart TD
 
 ## Core Components
 
-| Component                                 | Responsibility                                                                                    |
+| Component | Responsibility |
 | ----------------------------------------- | ------------------------------------------------------------------------------------------------- |
-| `ConsoleCommandExecutor`                  | Shared command-line execution service used by terminal and web frontends.                         |
-| `TerminalConsoleFrontend`                 | Existing interactive console loop, refactored to call the shared executor.                        |
-| `WebConsoleHub`                           | SignalR hub receiving command lines and streaming output back to the browser.                     |
-| `WebConsoleSession`                       | Represents one browser console connection/session.                                                |
-| `SignalRAnsiConsoleOutput`                | Spectre.Console output adapter that sends rendered ANSI/text output to SignalR.                   |
-| `SignalRTextWriter`                       | TextWriter used by Spectre output to push text fragments to the browser.                          |
-| `WebConsoleEndpoints` or `WebConsolePage` | Maps the Razor `.cshtml` page and static assets.                                                  |
-| `WebConsoleOptions`                       | Configuration for enabling, route paths, authorization, dimensions, and environment restrictions. |
+| `ConsoleCommandExecutor` | Shared command-line execution service used by terminal and web frontends. |
+| `TerminalConsoleFrontend` | Existing interactive console loop, refactored to call the shared executor. |
+| `WebConsoleHub` | SignalR hub receiving command lines and streaming output back to the browser. |
+| `WebConsoleSession` | Represents one browser console connection/session. |
+| `SignalRAnsiConsoleOutput` | Spectre.Console output adapter that sends rendered ANSI/text output to SignalR. |
+| `SignalRTextWriter` | TextWriter used by Spectre output to push text fragments to the browser. |
+| `WebConsoleEndpoints` or `WebConsolePage` | Maps the Razor `.cshtml` page and static assets. |
+| `WebConsoleOptions` | Configuration for enabling, route paths, authorization, dimensions, and environment restrictions. |
 
 ## Execution Model
 
@@ -201,21 +201,21 @@ Default route:
 
 ### Client-to-Server Methods
 
-| Method                          | Purpose                                                                              |
+| Method | Purpose |
 | ------------------------------- | ------------------------------------------------------------------------------------ |
-| `SendCommand(string line)`      | Executes one command line in the current browser session.                            |
-| `CancelCommand()`               | Requests cancellation of the currently running command. Optional in v1, recommended. |
-| `Resize(int columns, int rows)` | Updates the server-side console dimensions for future rendering. Optional in v1.     |
+| `SendCommand(string line)` | Executes one command line in the current browser session. |
+| `CancelCommand()` | Requests cancellation of the currently running command. Optional in v1, recommended. |
+| `Resize(int columns, int rows)` | Updates the server-side console dimensions for future rendering. Optional in v1. |
 
 ### Server-to-Client Events
 
-| Event               | Payload           | Purpose                                  |
+| Event | Payload | Purpose |
 | ------------------- | ----------------- | ---------------------------------------- |
-| `console.output`    | `string text`     | ANSI/text output to write into xterm.js. |
-| `console.error`     | `string text`     | Error output, rendered as terminal text. |
-| `console.started`   | `object metadata` | Command execution started.               |
-| `console.completed` | `object metadata` | Command execution completed.             |
-| `console.cancelled` | `object metadata` | Command was cancelled.                   |
+| `console.output` | `string text` | ANSI/text output to write into xterm.js. |
+| `console.error` | `string text` | Error output, rendered as terminal text. |
+| `console.started` | `object metadata` | Command execution started. |
+| `console.completed` | `object metadata` | Command execution completed. |
+| `console.cancelled` | `object metadata` | Command was cancelled. |
 
 ## Razor Page
 

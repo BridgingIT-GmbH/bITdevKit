@@ -40,17 +40,17 @@ nav:
       - Core Domain and Application:
           - Domain: reference/features-domain.md
           - Domain Events: reference/features-domain-events.md
-          - Event Sourcing: reference/features-event-sourcing.md
-          - ChangeHistory: reference/features-domain-change-history.md
+          - Domain Change History: reference/features-domain-change-history.md
           - Domain Repositories: reference/features-domain-repositories.md
           - Domain Specifications: reference/features-domain-specifications.md
-          - ActiveEntity: reference/features-domain-activeentity.md
+          - Active Entity: reference/features-domain-activeentity.md
           - Domain Policies: reference/features-domain-policies.md
           - Rules: reference/features-rules.md
           - Results: reference/features-results.md
           - Application Commands and Queries: reference/features-application-commands-queries.md
           - Application Events: reference/features-application-events.md
           - DataPorter: reference/features-application-dataporter.md
+          - Event Sourcing: reference/features-event-sourcing.md
       - Execution, Messaging and Modularity:
           - Requester and Notifier: reference/features-requester-notifier.md
           - Messaging: reference/features-messaging.md

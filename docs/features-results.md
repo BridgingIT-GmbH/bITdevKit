@@ -144,25 +144,25 @@ classDiagram
 
 Use results in these scenarios:
 
-1. **Service layer operations**
+### Service layer operations
 
 - Handling business rule validations
 - Processing complex operations with multiple potential failure points
 - Returning domain-specific errors
 
-2. **Data access operations**
+### Data access operations
 
 - Managing database operations
 - Handling entity not found scenarios
 - Dealing with validation errors
 
-3. **API endpoints**
+### API endpoints
 
 - Returning paginated data
 - Handling complex operation outcomes
 - Providing detailed error information
 
-4. **Complex workflows**
+### Complex workflows
 
 - Managing multi-step processes
 - Handling conditional operations
@@ -498,7 +498,9 @@ public class DataService
 
 ### Best practices
 
-1. **Early Returns**: Return failures as soon as possible to avoid unnecessary processing.
+### Early returns
+
+Return failures as soon as possible to avoid unnecessary processing.
 
 ```csharp
 public class OrderProcessor
@@ -521,7 +523,9 @@ public class OrderProcessor
 }
 ```
 
-2. **Meaningful Messages**: Include context in error messages.
+### Meaningful messages
+
+Include context in error messages.
 
 ```csharp
 public Result ProcessOrderById(int orderId, string status)
@@ -530,7 +534,9 @@ public Result ProcessOrderById(int orderId, string status)
 }
 ```
 
-3. **Type-Safe Errors**: Use strongly-typed errors for better error handling.
+### Type-safe errors
+
+Use strongly typed errors for better error handling.
 
 ```csharp
 public class OrderNotFoundError : ResultErrorBase
@@ -855,36 +861,36 @@ public class OrderProcessor
 
 This example demonstrates:
 
-1. **Proper Error Handling**
+1. **Proper error handling**
 
-- Each operation returns a `Result` or `Result<T>`
-- Errors are properly propagated and transformed
-- Rollback operations are performed when needed
+   - Each operation returns a `Result` or `Result<T>`
+   - Errors are properly propagated and transformed
+   - Rollback operations are performed when needed
 
-2. **Clean Code Practices**
+2. **Clean code practices**
 
-- Follows the .editorconfig standards
-- Proper use of dependency injection
-- Clear separation of concerns
-- Consistent error handling
+   - Follows the .editorconfig standards
+   - Proper use of dependency injection
+   - Clear separation of concerns
+   - Consistent error handling
 
-3. **Workflow Management**
+3. **Workflow management**
 
-- Sequential processing with proper validation
-- Rollback mechanisms for failed operations
-- Proper logging at each step
+   - Sequential processing with proper validation
+   - Rollback mechanisms for failed operations
+   - Proper logging at each step
 
-4. **Result Pattern Usage**
+4. **Result pattern usage**
 
-- Consistent use of Result objects
-- Proper error aggregation
-- Clear success/failure paths
+   - Consistent use of Result objects
+   - Proper error aggregation
+   - Clear success/failure paths
 
-5. **Resource Management**
+5. **Resource management**
 
-- Proper cleanup in case of failures
-- Structured error handling
-- Structured logging
+   - Proper cleanup in case of failures
+   - Structured error handling
+   - Structured logging
 
 ## Result operation scope
 
@@ -1019,6 +1025,7 @@ public async Task<Result<T>> EndOperationAsync(
 Use this overload when your operation implements `IOperationScope`. It automatically calls `CommitAsync()` on success or `RollbackAsync()` on failure/exception.
 
 **Example:**
+
 ```csharp
 var result = await Result<User>.Success(user)
     .StartOperation(async ct => await transaction.BeginAsync(ct))
@@ -1065,12 +1072,13 @@ public interface IOperationScope
 ```
 
 **Key Benefits:**
+
 - **Simplified API**: Operations implementing `IOperationScope` can use the cleaner `EndOperationAsync(cancellationToken)` overload
 - **Type Safety**: Interface contract ensures all required methods are implemented
 - **Discoverability**: All scopes follow the same pattern
 - **Testability**: Easy to mock with standard mocking frameworks
 
-#### IRepositoryTransaction<TEntity>
+#### `IRepositoryTransaction<TEntity>`
 
 ```csharp
 public interface IRepositoryTransaction<TEntity>
@@ -1176,18 +1184,18 @@ This appendix shows Result-based repository usage. For the repository abstractio
 
 ### Available extensions
 
-1. Read-Only Repository Extensions (`GenericReadOnlyRepositoryResultExtensions`):
+1. Read-only repository extensions (`GenericReadOnlyRepositoryResultExtensions`):
 
-- Count operations
-- Find operations
-- Paged query operations
+   - Count operations
+   - Find operations
+   - Paged query operations
 
-2. Repository Extensions (`GenericRepositoryResultExtensions`):
+2. Repository extensions (`GenericRepositoryResultExtensions`):
 
-- Insert operations
-- Update operations
-- Upsert operations
-- Delete operations
+   - Insert operations
+   - Update operations
+   - Upsert operations
+   - Delete operations
 
 ### Usage examples
 
@@ -1310,8 +1318,9 @@ public class InventoryService
 
 ### Best practices
 
-1. **Consistent Usage**: Use these extensions throughout the application for consistent error
-   handling:
+#### Consistent usage
+
+Use these extensions throughout the application for consistent error handling:
 
 ```csharp
 // Instead of:
@@ -1328,7 +1337,9 @@ var result = await _repository.FindOneResultAsync(id);
 return result;
 ```
 
-2. **Combining Operations**: Chain repository operations while maintaining error handling:
+#### Combining operations
+
+Chain repository operations while maintaining error handling:
 
 ```csharp
 public async Task<Result<Order>> ProcessOrderAsync(Order order)
@@ -1348,7 +1359,7 @@ public async Task<Result<Order>> ProcessOrderAsync(Order order)
 }
 ```
 
-3. **Paged Queries with Specifications**:
+#### Paged queries with specifications
 
 ```csharp
 public async Task<ResultPaged<Product>> SearchProductsAsync(
@@ -1362,7 +1373,7 @@ public async Task<ResultPaged<Product>> SearchProductsAsync(
 }
 ```
 
-4. **Filtering with model**:
+#### Filtering with a model
 
 ```csharp
 public async Task<ResultPaged<Order>> GetOrdersAsync(FilterModel filterModel)
@@ -1600,6 +1611,7 @@ await result.HandleAsync(
 ```
 
 Key differences from Match:
+
 - Handlers are actions (void/Task) rather than functions returning values
 - Returns the original Result for fluent chaining
 - Maintains result context through the chain
@@ -1695,7 +1707,7 @@ var result = await Result<List<Person>>.Success(people)
 
 ## Appendix C: Result creation methods
 
-> Guidance to creating and initializing Result<T> instances.
+> Guidance to creating and initializing `Result<T>` instances.
 
 ### Success creation
 
@@ -1846,7 +1858,6 @@ The Either type provides multiple ways to create and handle values:
 
 #### Direct creation
 
-
 ```csharp
 // Create Either from first type
 Either<int, string> numericCase = 42;
@@ -1920,7 +1931,6 @@ await either.SwitchAsync(
     });
 ```
 
-
 ### Error handling and try operations
 
 Either provides built-in support for handling operations that might fail:
@@ -1969,7 +1979,6 @@ var simpleResult = either.ToResult(
     firstMatch: num => num,
     errorMessage: "Conversion failed");
 ```
-
 
 ### Examples
 
@@ -2055,98 +2064,129 @@ throw `InvalidOperationException` when the instance contains the other type. Pre
 ### Mapping methods
 
 #### `MapHttpNoContent`
+
 - Maps a non-generic `Result` to a response for no-content operations (e.g., DELETE).
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new DeleteCommand(id));
   return response.Result.MapHttpNoContent(logger);
   ```
+
 - **Outcomes**: `204 No Content`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttpOk<T>`
+
 - Maps a `Result<T>` to a response with a value (e.g., GET).
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new GetItemQuery(id));
   return response.Result.MapHttpOk(logger);
   ```
+
 - **Outcomes**: `200 OK` with `T`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttpOk`
+
 - Maps a non-generic `Result` to a simple success response.
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new SimpleOperationCommand());
   return response.Result.MapHttpOk(logger);
   ```
+
 - **Outcomes**: `200 OK`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttpOkAll<T>`
+
 - Maps a `Result<T>` to a response with a value, excluding not-found errors (e.g., broad success cases).
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new GetItemQuery(id));
   return response.Result.MapHttpOkAll(logger);
   ```
+
 - **Outcomes**: `200 OK` with `T`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttpCreated<T>`
+
 - Maps a `Result<T>` to a create response (e.g., POST), with URI or location factory.
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new CreateItemCommand(item));
   return response.Result.MapHttpCreated($"/api/items/{response.Result.Value.Id}", logger);
   // OR with factory:
   return response.Result.MapHttpCreated(value => $"/api/items/{value.Id}", logger);
   ```
+
 - **Outcomes**: `201 Created` with `T` and `Location`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttpAccepted` and `MapHttpAccepted<T>`
+
 - Maps a `Result` or `Result<T>` to a `202 Accepted` response for long-running tasks.
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new StartLongRunningTaskCommand());
   return response.Result.MapHttpAccepted("/api/status/123", logger);
   ```
+
 - **Outcomes**: `202 Accepted` (with `T` if generic), `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttpOkPaged<T>`
+
 - Maps a `ResultPaged<T>` to a paginated data response.
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new GetPagedItemsQuery(page: 1, pageSize: 10));
   return response.Result.MapHttpOkPaged(logger);
   ```
+
 - **Outcomes**: `200 OK` with `PagedResponse<T>`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttpFile`
+
 - Maps a `Result<FileContent>` to a file download response.
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new GetFileCommand(id));
   return response.Result.MapHttpFile(logger);
   ```
+
 - **Outcomes**: File download, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
 #### `MapHttp<TSuccess, ...>`
+
 - Flexible mapping for custom success and error types.
 - **Usage**:
+
   ```csharp
   var response = await mediator.Send(new CustomOperationCommand());
   return response.Result.MapHttp<Created<string>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>(
       value => TypedResults.Created("/api/custom", value), logger);
   ```
+
 - **Outcomes**: Depends on types; errors typically `500 Problem`.
 
 ### Custom error handling
+
 - **Registering Handlers**: Override defaults with `RegisterErrorHandler<TError>`.
+
   ```csharp
   ResultMapHttpExtensions.RegisterErrorHandler<ValidationError>((logger, result) =>
       TypedResults.Problem(detail: result.ToString(), statusCode: 422, title: "Validation Failed"));
   ```
+
 - **Behavior**: Specific methods wrap unrecognized custom results in `ProblemHttpResult`; generic `MapHttp` uses `MapError<TProblem>`.
 
 ### Notes
+
 - **Usage Context**: These methods are designed for minimal API endpoints.
 - **Logging**: Pass an optional `ILogger` for debug/error logging.
 - **Error Precedence**: First matching error type determines the response.

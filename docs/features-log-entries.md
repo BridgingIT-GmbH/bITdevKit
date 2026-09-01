@@ -1,5 +1,5 @@
 
-# Log entries
+# Log Entries
 
 > Query, stream, export, and manage persisted application logs through a stable application API.
 
@@ -95,7 +95,6 @@ app.Run();
 ```
 
 `GET /ops/recent-errors` returns at most 100 error-or-higher entries from the previous hour and includes the continuation token when another page is available.
-
 
 ## Capabilities
 

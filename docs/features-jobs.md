@@ -1,4 +1,5 @@
-# Jobs Feature Documentation
+
+# Jobs
 
 > Schedule durable background work through devkit-owned jobs, triggers, batches, leases, history, and source-level integrations.
 
@@ -25,6 +26,67 @@ Key characteristics:
 - optional outbound and event-trigger adapters for Requester, Notifier, Messaging, Queueing, Pipelines, and Orchestrations
 - built-in maintenance jobs for archive, purge, and repair operations
 
+## Challenges
+
+Scheduled work needs more than a timer callback when it must survive restarts or run on several hosts. A scheduler must materialize work deterministically, prevent concurrent ownership, retain attempts and history, apply retry and timeout policy, and expose operational controls without coupling job code to one persistence provider.
+
+## Solution
+
+Register jobs and triggers with `AddJobScheduler`. Each manual dispatch or trigger evaluation creates an occurrence. The runtime acquires a provider-backed lease, creates an execution attempt, resolves the job and its behaviors, and stores the outcome and history. The in-memory provider supports transient use; `WithEntityFramework<TContext>` persists runtime state for recovery and multi-host coordination.
+
+## Key Features
+
+- Class-based and inline jobs with typed data and execution context.
+- Manual, cron, calendar, one-time, delayed, startup-delay, event and custom triggers.
+- Accepted asynchronous dispatch and dispatch-and-wait APIs.
+- Retry, timeout, concurrency, instance targeting, chaining and batch controls.
+- Provider-neutral occurrences, executions, leases, history and runtime state.
+- In-memory and Entity Framework stores.
+- Query, maintenance and runtime-control services with optional web endpoints.
+- Test harnesses with in-memory persistence and a controllable clock.
+
+## Architecture
+
+Code-first definitions are accumulated in `JobRegistrationStore`. `IJobSchedulerService` handles dispatch and control operations, while `JobSchedulerBackgroundService` evaluates triggers and acquires due occurrences for bounded worker execution. `IJobStoreProvider` supplies the persistence boundary used by runtime, query and maintenance services. Behaviors wrap concrete execution attempts; optional integration adapters convert accepted events or outbound operations into normal job work.
+
+## Use Cases
+
+Use Jobs for recurring maintenance, delayed or one-time work, business-calendar schedules, operator-triggered tasks, batched fan-out, or durable event-triggered processing. Use Pipelines for an in-process sequence that does not need scheduler persistence, Queueing for one-handler work dispatch without a schedule, and Orchestrations for stateful processes that wait on durable signals or business transitions.
+
+## Basic Usage
+
+Register a manual inline job, then dispatch it through an endpoint and map its `Result` safely:
+
+```csharp
+builder.Services.AddJobScheduler()
+    .WithJob("heartbeat", job => job
+        .WithDescription("Writes a scheduler heartbeat.")
+        .Execute((context, cancellationToken) =>
+        {
+            Console.WriteLine($"Heartbeat execution {context.ExecutionId}");
+            return Task.FromResult(Result.Success());
+        })
+        .AddTrigger("manual", trigger => trigger.Manual()));
+
+var app = builder.Build();
+app.MapPost("/jobs/heartbeat", async (
+    IJobSchedulerService scheduler,
+    CancellationToken cancellationToken) =>
+{
+    var result = await scheduler.DispatchAndWaitAsync(
+        "heartbeat",
+        cancellationToken: cancellationToken);
+
+    return result.IsSuccess
+        ? Results.Ok(new { result.Value.Status })
+        : Results.Problem(string.Join("; ", result.Errors.Select(error => error.Message)));
+});
+
+app.Run();
+```
+
+A successful request writes the execution id to standard output and returns HTTP 200 with the terminal execution status. The failure branch does not read `result.Value`.
+
 ## Glossary
 
 | Term | Meaning |
@@ -48,7 +110,7 @@ Key characteristics:
 | Manual dispatch | An explicit application or operator request to create an occurrence from a manual trigger. |
 | Accepted asynchronous dispatch | `DispatchAsync(...)` accepts and persists an occurrence, then returns without running it inline. Background execution later acquires and runs the occurrence. |
 | Inline dispatch | `DispatchAndWaitAsync(...)` creates an occurrence and waits for the current execution attempt to reach a terminal result. |
-| Background execution | Hosted scheduler processing that pending due triggers, acquires leases, and runs eligible occurrences through the worker pool. |
+| Background execution | Hosted scheduler processing that evaluates due triggers, acquires leases, and runs eligible occurrences through the worker pool. |
 | Execution | One attempt to run an occurrence. Retries create additional executions for the same occurrence. |
 | Execution history | Append-only lifecycle records for occurrences, executions, retries, leases, operator actions, batch operations, and diagnostics. |
 | Job execution context | The `IJobExecutionContext` passed to a job execution. It exposes identity, typed data, properties, items, previous execution snapshots, messages, and cancellation. |
@@ -83,7 +145,7 @@ Key characteristics:
 | Operational endpoints | The HTTP surface from `Presentation.Web.Jobs` for dashboards, support tooling, runtime control, batch operations, and maintenance actions. |
 | Test harness | The Jobs testing helpers that execute jobs or scheduler flows with in-memory persistence and controlled runtime state. |
 
-## Core Service Surface
+## Core service surface
 
 At runtime, Jobs exposes three service layers with distinct responsibilities:
 
@@ -93,7 +155,8 @@ At runtime, Jobs exposes three service layers with distinct responsibilities:
 
 These services all use the devkit `Result` pattern for runtime or query outcomes where business/runtime validation can fail without throwing exceptions.
 
-## Basic Setup
+
+## Registration and dispatch
 
 Register jobs and triggers in code during application startup:
 
@@ -131,7 +194,7 @@ builder.Services.AddScoped<CustomerCleanupProcessor>();
 
 builder.Services.AddJobScheduler()
     .WithJob("cleanup-customers-inline", job => job
-        .Description("Runs the customer cleanup processor inline for the caller.")
+        .WithDescription("Runs the customer cleanup processor inline for the caller.")
         .Execute((context, serviceProvider, cancellationToken) =>
             serviceProvider.GetRequiredService<CustomerCleanupProcessor>()
                 .RunAsync(cancellationToken))
@@ -162,7 +225,7 @@ var result = await scheduler.DispatchAndWaitAsync(
 
 That `DispatchAndWaitAsync(...)` path is the feature's inline execution mode: the scheduler still creates the occurrence and execution records, but the caller waits for the terminal result of the current attempt.
 
-### Composing Registrations Across Modules
+### Composing registrations across modules
 
 You can call `AddJobScheduler()` multiple times from different feature modules or startup slices. Each call reuses the same scheduler singletons and the same `JobRegistrationStore`, so the registrations compose into one scheduler runtime.
 
@@ -181,7 +244,7 @@ services.AddJobScheduler()
 
 This pattern is useful when a host, a shared module, and an integration feature all need to contribute jobs without centralizing every registration in one file.
 
-### Scheduler Instance And Worker Pool
+### Scheduler instance and worker pool
 
 Hosted background execution can be aligned explicitly to a stable scheduler instance id and tuned through the top-level builder.
 
@@ -200,7 +263,7 @@ builder.Services.AddJobScheduler()
 
 Use `InstanceId(...)` when several hosts share the same jobs store and you need stable scheduler instance targeting, diagnostics, or lease ownership labels across restarts.
 
-### Exception Handling
+### Exception handling
 
 Unhandled scheduler failures can be observed centrally through `WithExceptionHandler<THandler>()`.
 
@@ -232,7 +295,7 @@ Handler notes:
 - failures raised by the hosted scheduler loop use `JobSchedulerExceptionSource.BackgroundService`
 - normal `Result` failures, validation errors, retries, and other handled scheduler outcomes do not flow through this last-chance exception surface
 
-### Scheduler Instance Targeting
+### Scheduler instance targeting
 
 Jobs can constrain execution to specific scheduler instances. Set a default target list on the job or override it on an individual trigger.
 
@@ -270,7 +333,7 @@ Appsettings can override the same targeting properties for code-registered jobs:
 }
 ```
 
-## Durable Persistence And Endpoints
+## Durable persistence and endpoints
 
 The default registration uses the in-memory provider. To make occurrences, leases, batches, history, and runtime state durable, wire the Entity Framework provider and optionally add the operational endpoint package.
 
@@ -286,7 +349,7 @@ builder.Services.AddJobScheduler()
 
 The default Jobs endpoint group is `/_bdk/api/jobs`.
 
-## Entity Framework DbContext Setup
+## Entity Framework DbContext setup
 
 To persist occurrences, executions, history, leases, batches, and runtime state in your application database, the host `DbContext` only needs to implement `IJobsContext` and expose the Jobs sets. The Jobs entities carry their EF mapping through attributes and conventions, so no Jobs-specific `ModelBuilder` call is required.
 
@@ -343,7 +406,7 @@ Setup notes:
 
 If the host already has several module DbContexts, the Jobs provider can attach to whichever one should own scheduler state. The important part is that the chosen context implements `IJobsContext`; migrations for that context will include the annotated Jobs entities.
 
-## Authoring Notes
+## Authoring notes
 
 - Jobs and triggers remain code-first definitions. Durable storage never becomes the source of truth for registrations.
 - Runtime state can override a registered job or trigger to enable, disable, pause, or resume it without mutating source code.
@@ -351,7 +414,7 @@ If the host already has several module DbContexts, the Jobs provider can attach 
 - Cron and calendar triggers default to `JobMissedOccurrencePolicy.RunOnce`, so each scheduler sweep creates one occurrence for the latest due time in the covered window. Use `.WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.Skip)` only when missed windows should advance without creating work.
 - Batches are grouping and bulk-control constructs, not workflow definitions. If you need durable business state transitions, use [Orchestrations](./features-orchestrations.md).
 
-### Lifetime And Resolved Properties
+### Lifetime and resolved properties
 
 Job registrations can control the DI lifetime for the job type and can set the module explicitly.
 
@@ -375,9 +438,9 @@ Resolution rules:
 - if `.Name(...)` is omitted, Jobs derives the display name from the optional resolved module name plus the dashified job type name
 - query APIs and dashboard views expose the resolved module name and resolved display name, not only the raw fluent input
 
-## Advanced Usage
+## Advanced usage
 
-### Typed Data, Properties, And Execution Context
+### Typed data, properties, and execution context
 
 Use a typed `JobBase<TData>` when the job contract needs a durable payload. The execution context then gives you strongly typed input, immutable properties, previous execution snapshots, mutable messages, and a mutable item bag.
 
@@ -438,14 +501,14 @@ Context guidance:
 - `context.Items` is an in-memory item bag for the active attempt only; it is not the durable properties store
 - `context.PreviousExecution` and `context.PreviousSuccessfulExecution` let jobs implement incremental or compensating behavior without querying storage manually
 
-### Inline Delegate Jobs
+### Inline delegate jobs
 
 Inline delegate jobs are useful when the registration site already owns the behavior and a separate class would add little value. They still execute through the normal definition, trigger, context, retry, timeout, lease, and history pipeline.
 
 ```csharp
 builder.Services.AddJobScheduler()
     .WithJob("export-customer-inline", job => job
-        .Description("Exports one customer through an inline delegate.")
+        .WithDescription("Exports one customer through an inline delegate.")
         .Execute<ExportCustomerJobData>(async (context, serviceProvider, cancellationToken) =>
         {
             var tenant = context.Properties.Get("tenant", "default");
@@ -542,7 +605,7 @@ public sealed class ImportOrdersJob : JobBase, IChaosExceptionJob
 }
 ```
 
-### Trigger Properties Versus Dispatch Properties
+### Trigger properties versus dispatch properties
 
 Trigger properties are registration-time defaults. Dispatch properties are operation-time overlays. The scheduler merges them when materializing the occurrence, with explicit dispatch properties taking precedence.
 
@@ -570,7 +633,7 @@ await scheduler.DispatchAsync(
     cancellationToken);
 ```
 
-### Advanced Use Cases
+### Advanced use cases
 
 Use the same core runtime for different operational patterns:
 
@@ -586,7 +649,7 @@ Use the same core runtime for different operational patterns:
 - outbound integration jobs through `WithRequestSendJob(...)` or `WithRequesterJob(...)`, `WithNotificationPublishJob(...)` or `WithNotifierJob(...)`, `WithMessagingPublishJob(...)` or `WithMessagePublishJob(...)`, `WithQueueingSendJob(...)` or `WithQueueSendJob(...)`, `WithPipelineExecuteJob(...)`, and `WithOrchestrationExecuteJob(...)`
 - event-triggered jobs through accepted-event ingress and scheduler sweeps
 
-### Calendar Triggers
+### Calendar triggers
 
 Use calendar triggers when cron syntax is the wrong abstraction and the business schedule is expressed in dates, weekdays, exclusions, or month-end rules.
 
@@ -614,7 +677,7 @@ Calendar trigger guidance:
 - use `.TimeZone(...)` or `.InTimeZone(...)` when the recurring local time is not UTC
 - combine calendar rules with normal trigger properties, retry policy, timeout, and chaining rules
 
-### Event Triggers
+### Event triggers
 
 Event triggers let accepted outbound or messaging activity materialize normal scheduler occurrences. The trigger definition stays code-first, while the adapter converts a published notification, broker message, or queue message into a durable accepted-event row that the scheduler sweep turns into an occurrence.
 
@@ -658,7 +721,7 @@ Adapter notes:
 - Messaging and Queueing adapters require `AddJobScheduler()` to be configured before `UseJobSchedulerEventTriggers()` so the event-source registry exists
 - Accepted events are materialized during scheduler sweeps, not inline with the publishing call
 
-### Custom Triggers
+### Custom triggers
 
 Use a custom trigger when the schedule source is neither cron, calendar, manual, nor accepted events. A custom trigger provider keeps the scheduler core provider-neutral while still letting a job materialize occurrences from an external rule or state source.
 
@@ -713,7 +776,7 @@ Custom trigger guidance:
 - update `JobTriggerRuntimeState` when the provider needs one-shot or watermark behavior
 - prefer properties for durable correlation and `context.Items` only for attempt-local execution details
 
-## Testing Jobs
+## Testing jobs
 
 The Jobs feature ships xUnit-oriented testing utilities directly from `Application.Jobs`. You can use the same public helper types that the feature itself uses in its unit tests.
 
@@ -725,7 +788,7 @@ Use two testing styles:
 
 `JobSchedulerTestHarness` is also the right tool for event-trigger and custom-trigger coverage because it can materialize triggers, execute due work, and assert retained occurrence/history state without booting a full host.
 
-### Direct Job Tests With A Synthetic Execution Context
+### Direct job tests with a synthetic execution context
 
 Use `JobExecutionContextBuilder<TData>` when you want a deterministic context without starting the scheduler runtime.
 
@@ -767,7 +830,7 @@ This path is useful for:
 - previous-attempt and previous-success logic
 - cancellation-token propagation into the job method
 
-### Direct Runtime Tests With JobTestHarness
+### Direct runtime tests with `JobTestHarness`
 
 Use `JobTestHarness.Create()` when you want the real DI activation path for one job, but still want a fully synthetic execution context.
 
@@ -798,7 +861,7 @@ public class ExportCustomerJobHarnessTests
 
 Use this style when you want constructor-injected collaborators, typed payload validation, or previous-execution snapshots without materializing occurrences and leases.
 
-### Scheduler Tests With In-Memory Persistence
+### Scheduler tests with in-memory persistence
 
 Use `JobSchedulerTestHarness.Create(...)` when you want to test scheduler behavior rather than only the job body.
 
@@ -846,11 +909,11 @@ Typical cases to test with the harness:
 
 If you need a durable-provider test, keep the same job/trigger authoring model and swap the in-memory setup for the Entity Framework provider in a higher-level integration test.
 
-## Architecture
+## Architecture details
 
 The Jobs feature is intentionally split between registration-time definitions, a durable runtime model, and operational services that work against the same persisted state.
 
-### Architectural Responsibilities
+### Architectural responsibilities
 
 - authoring defines stable job names, trigger names, data contracts, concurrency, retries, and chaining rules
 - runtime services create and mutate occurrences, batches, leases, runtime overrides, executions, and history
@@ -876,7 +939,7 @@ flowchart LR
     F --> L[Entity Framework provider]
 ```
 
-### Dispatch And Execution Flow
+### Dispatch and execution flow
 
 Every trigger materialization, manual dispatch, retry, and batch item becomes a durable occurrence. The background service then turns due occurrences into executions by acquiring leases, invoking the job type, and recording execution history.
 
@@ -898,7 +961,7 @@ sequenceDiagram
     Runtime->>Store: Persist execution, history, occurrence status, and lease release
 ```
 
-### Durable Data Shape
+### Durable data shape
 
 The persisted model is occurrence-centered. Jobs and triggers stay code-first definitions, while the database stores operational state and history around those definitions.
 
@@ -969,7 +1032,7 @@ classDiagram
     JobOccurrence --> JobOccurrenceDependency : prerequisites
 ```
 
-### Entity Framework Tables
+### Entity Framework tables
 
 When the Entity Framework provider is enabled, the durable scheduler state is stored in a small set of operational tables using the `__Jobs_` prefix. These tables do not replace the code-first registration model. They only persist runtime overlays, materialized work, coordination state, and retained history around the registered jobs and triggers.
 
@@ -1004,7 +1067,7 @@ Operationally, the most important relationships are:
 
 That split keeps the physical model aligned with runtime responsibilities: runtime-state tables govern whether registered definitions may run, occurrence/execution tables govern actual work, lease tables govern distributed coordination, and history/event tables preserve the support trail around that work.
 
-### Runtime Semantics
+### Runtime semantics
 
 - Registrations define what can run; persisted runtime state defines how a registration is currently allowed to run.
 - Trigger evaluation is stateless with respect to source code but stateful with respect to persisted runtime overrides and accepted external events.
@@ -1012,7 +1075,7 @@ That split keeps the physical model aligned with runtime responsibilities: runti
 - Batches aggregate multiple ordinary occurrences; chaining links ordinary occurrences through dependency rows.
 - Maintenance operations work on retained state only and do not mutate the source registration model.
 
-## Observability And Telemetry
+## Observability and telemetry
 
 Jobs emits tracing through `ActivitySource` using the source name `BridgingIT.DevKit.Application.Jobs`. It emits optional runtime metrics through `IMetricsService` and the shared `bdk` meter when metrics are registered.
 
@@ -1061,9 +1124,9 @@ sequenceDiagram
 
 If you pass `JobDispatchOptions.CorrelationId` or an accepted-event correlation id, that identifier flows into `IJobExecutionContext`, durable history, activities, and logs for the resulting execution path. It is deliberately not emitted as a metric tag.
 
-## Operational Services
+## Operational services
 
-### Runtime Control
+### Runtime control
 
 Use `IJobSchedulerService` when application code or support tooling needs to mutate scheduler state.
 
@@ -1087,7 +1150,7 @@ The control surface covers:
 - batch creation, dispatch, attach, retry, cancel, pause, resume, and archive
 - bulk occurrence retry, cancel, and archive
 
-### Query Models
+### Query models
 
 Use `IJobSchedulerQueryService` when a UI, dashboard, or support endpoint needs shaped operational views rather than raw persistence rows.
 
@@ -1138,7 +1201,7 @@ The maintenance surface covers:
 
 ## Examples
 
-### Database Cleanup
+### Database cleanup
 
 Built-in maintenance jobs are normal jobs. Register them once and dispatch them explicitly when needed:
 
@@ -1169,7 +1232,7 @@ await scheduler.DispatchAndWaitAsync<JobsPurgeHistoryJob>(
 
 Maintenance job options such as retention windows, batch sizes, dry-run mode, and target filters are passed as typed dispatch data. They are not read from appsettings; code remains the source of truth for what a maintenance run is allowed to do.
 
-### Purging Retained Occurrences
+### Purging retained occurrences
 
 Use the maintenance service when you want provider-neutral purge behavior from application code or support tooling.
 
@@ -1189,7 +1252,7 @@ var result = await maintenance.PurgeOccurrencesAsync(new JobPurgeOccurrencesRequ
 Console.WriteLine($"Purged {result.ProcessedCount} occurrence(s).");
 ```
 
-### Batch Processing
+### Batch processing
 
 Use batch APIs for grouped dispatch and targeted retry of failed children:
 
@@ -1230,7 +1293,7 @@ builder.Services.AddJobScheduler()
 
 The successor still has its own trigger, lease, retry, timeout, and execution history. Chaining adds a dependency between occurrences; it does not create a workflow engine or dynamic trigger definition store.
 
-### Migrating From Application.JobScheduling
+### Migrating from `Application.JobScheduling`
 
 The old `Application.JobScheduling` feature and the new `Application.Jobs` feature can exist during a source migration, but a single job should be owned by only one scheduler at a time.
 
@@ -1257,7 +1320,7 @@ await scheduler.DispatchAsync(
 
 Keep stable names intentionally. A changed job name or trigger name creates a new scheduler identity and will not automatically inherit old occurrence history.
 
-### Optional Integrations
+### Optional integrations
 
 Requester, Notifier, and Pipeline integrations remain ordinary jobs registered through the core Jobs package because they depend only on Common abstractions. Messaging, Queueing, and Orchestrations expose their job builders from their own feature packages and depend only on Common.Abstractions job integration contracts, not on the Jobs runtime package. Consumers opt into those feature packages only when they already use the corresponding feature.
 
@@ -1347,13 +1410,13 @@ builder.Services.AddJobScheduler()
         .AddTrigger("manual", trigger => trigger.Manual()));
 ```
 
-## Operational Notes
+## Operational notes
 
-### Endpoint Surface
+### Endpoint surface
 
 `Presentation.Web.Jobs` exposes the same scheduler/query/maintenance surface over HTTP. The default route group is `/_bdk/api/jobs`.
 
-#### Read Endpoints
+#### Read endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
@@ -1382,7 +1445,7 @@ builder.Services.AddJobScheduler()
 | `GET` | `/_bdk/api/jobs/servers` | List observed scheduler server instances. |
 | `GET` | `/_bdk/api/jobs/metrics` | Get aggregate operational metrics. |
 
-#### Dashboard Endpoints
+#### Dashboard endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
@@ -1397,7 +1460,7 @@ Dashboard projections:
 - `/_bdk/api/jobs/dashboard/navigation` returns job facet counts plus link descriptors that support tools can use to build a navigation shell without private provider access
 - `/_bdk/api/jobs/dashboard/overview` returns headline counts for enabled triggers, due/running/failed work, retries, leases, batches, servers, and the oldest due occurrence
 
-#### Job And Trigger Control Endpoints
+#### Job and trigger control endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
@@ -1420,7 +1483,7 @@ Dashboard projections:
 | `POST` | `/_bdk/api/jobs/{jobName}/triggers/{triggerName}/resume` | Resume a paused trigger. |
 | `POST` | `/_bdk/api/jobs/definitions/{jobName}/triggers/{triggerName}/resume` | Canonical route for resuming a trigger. |
 
-#### Occurrence Control Endpoints
+#### Occurrence control endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
@@ -1436,7 +1499,7 @@ Dashboard projections:
 | `POST` | `/_bdk/api/jobs/occurrences/bulk/archive` | Archive selected eligible retained occurrences as one bulk operation. |
 | `DELETE` | `/_bdk/api/jobs/occurrences` | Purge retained terminal occurrences by age and optional filters. |
 
-#### Batch Endpoints
+#### Batch endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
@@ -1449,7 +1512,7 @@ Dashboard projections:
 | `POST` | `/_bdk/api/jobs/batches/{batchId}/resume` | Resume eligible child occurrences for a batch. |
 | `POST` | `/_bdk/api/jobs/batches/{batchId}/archive` | Archive a batch and eligible retained child occurrences. |
 
-#### Maintenance Endpoints
+#### Maintenance endpoints
 
 | Method | Route | Description |
 | --- | --- | --- |
@@ -1464,7 +1527,7 @@ The occurrence purge endpoint accepts query parameters comparable to other retai
 DELETE /_bdk/api/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&statuses=Archived&jobName=cleanup-customers&triggerName=nightly&isArchived=true&batchSize=250
 ```
 
-### Operational Semantics
+### Operational semantics
 
 - Event-trigger adapters accept external events and materialize occurrences asynchronously during scheduler sweeps.
 - Event-trigger idempotency is based on source identity or an explicit idempotency key.
@@ -1475,7 +1538,7 @@ DELETE /_bdk/api/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&statuses=Archiv
 - Batch membership uses `JobBatchOccurrence`; chaining uses `JobOccurrenceDependency`.
 - Persisted runtime state augments active registrations, but it never becomes the source of truth for job or trigger definitions.
 
-## See Also
+## See also
 
 - [Application Commands and Queries](./features-application-commands-queries.md)
 - [Entity Framework packages](https://github.com/bridgingIT/bITdevKit/tree/main/src/Infrastructure.EntityFramework)

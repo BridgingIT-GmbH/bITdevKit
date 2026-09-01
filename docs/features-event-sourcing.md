@@ -1,4 +1,4 @@
-# Event Sourcing Feature Documentation
+# Event sourcing
 
 > Persist aggregates as immutable event streams and rebuild state through replay and snapshots.
 
@@ -17,25 +17,35 @@ This feature also includes its own outbox path for durable post-commit event dis
 
 Persisted aggregate events, snapshots, and event-sourcing outbox payloads are closely tied to the shared serializer abstractions and conventions documented in [Common Serialization](./common-serialization.md).
 
-## When To Use It
+## Challenges
 
-Event sourcing is useful when you need:
+State-based persistence keeps the latest aggregate state but does not retain the decisions that
+produced it. Adding replay, optimistic stream versions, snapshots, and reliable downstream
+publication separately creates several persistence and registration concerns for each aggregate.
 
-- a complete change history for an aggregate
-- replayable state reconstruction
-- explicit aggregate-version control
-- projection building from event streams
-- durable downstream distribution of stored aggregate events
+## Solution
 
-It is usually a deliberate architectural choice rather than the default for every module.
+The event-sourcing packages define versioned aggregate events, an event-sourced aggregate base, and
+an `IEventStore<TAggregate>` abstraction. Infrastructure persists streams and snapshots and can route
+stored events through mediator requests, notifications, or the event-store outbox.
 
-## Core Building Blocks
+## Key Features
 
-### Aggregate Events
+- Ordered, versioned aggregate-event streams
+- Aggregate reconstruction through event replay
+- Optional snapshots
+- Stable persisted type names through `ImmutableNameAttribute`
+- Configurable mediator and outbox publication modes
+- Aggregate-specific store and projection registration
+
+## Architecture
+
+### Aggregate events
 
 Aggregate events inherit from `AggregateEvent`, which extends the domain-event concept with aggregate versioning:
 
 ```csharp
+[ImmutableName("person-created-v1")]
 public class PersonCreated(Guid id, int version, string firstName, string lastName)
     : AggregateEvent(id, version)
 {
@@ -46,7 +56,7 @@ public class PersonCreated(Guid id, int version, string firstName, string lastNa
 
 Each event belongs to exactly one aggregate instance and one aggregate version.
 
-### Event-Sourced Aggregate Root
+### Event-sourced aggregate root
 
 Event-sourced aggregates inherit from `EventSourcingAggregateRoot`. They:
 
@@ -57,7 +67,7 @@ Event-sourced aggregates inherit from `EventSourcingAggregateRoot`. They:
 
 The aggregate state is changed by applying events, not by directly mutating persistence-facing properties first.
 
-### Event Store
+### Event store
 
 `IEventStore<TAggregate>` persists and reloads the event stream for one aggregate type. The default implementation writes events through infrastructure repositories and can rebuild an aggregate by replaying its stored stream.
 
@@ -68,9 +78,67 @@ Typical responsibilities are:
 - rebuild the aggregate from stored events
 - optionally use snapshots to avoid full replay every time
 
-### Registration and Immutable Names
+### Registration and immutable names
 
-Stored events need stable names so previously persisted data can still be resolved even when CLR type names move. The event-sourcing registration services and `ImmutableNameAttribute` support that mapping between persisted names and runtime types.
+Stored events need stable names so previously persisted data can still be resolved even when CLR type names move. Automatic registration discovers concrete aggregates and aggregate events marked with `ImmutableNameAttribute` and maps their persisted names to runtime types.
+
+## Use Cases
+
+Use event sourcing when you need:
+
+- a complete change history for an aggregate
+- replayable state reconstruction
+- explicit aggregate-version control
+- projection building from event streams
+- durable downstream distribution of stored aggregate events
+
+It is usually a deliberate architectural choice rather than the default for every module.
+
+## Basic Usage
+
+Register the store context and one aggregate type:
+
+```csharp
+services.AddEventStoreContextSqlServer<AppEventStoreDbContext>(
+    connectionString,
+    nameOfMigrationsAssembly: typeof(AppEventStoreDbContext).Assembly.GetName().Name,
+    defaultSchema: "events",
+    eventStorePublishingModes: EventStorePublishingModes.AddToOutbox,
+    maxRetryCount: 3,
+    maxRetryDelaySeconds: 5);
+
+services.RegisterAggregateAndProjectionRequestForEventStore<Person>(
+    projectionRequestPublishingModes: EventStorePublishingModes.None,
+    isSnapshotEnabled: true);
+```
+
+Create, save, and reload an aggregate through `IEventStore<Person>`:
+
+```csharp
+public sealed class CreatePerson(IEventStore<Person> eventStore)
+{
+    public async Task ExecuteAsync(CancellationToken cancellationToken)
+    {
+        var person = new Person(new PersonCreatedEvent("Lovelace", "Ada"));
+        await eventStore.SaveEventsAsync(person, cancellationToken);
+
+        var reloaded = await eventStore.GetAsync(person.Id, cancellationToken);
+        if (reloaded is null)
+        {
+            Console.Error.WriteLine("The saved person could not be reloaded.");
+            return;
+        }
+
+        Console.WriteLine($"{reloaded.Firstname} {reloaded.Lastname}, version {reloaded.Version}");
+    }
+}
+```
+
+The output after storing the creation event is:
+
+```text
+Ada Lovelace, version 1
+```
 
 ## Setup
 
@@ -88,7 +156,7 @@ services.AddEfCoreEventStore<MyEventStoreDbContext>(
 
 That registration wires the core event-store services, aggregate-event repositories, snapshot support, and the EF-backed event-store outbox infrastructure.
 
-In real SQL Server hosts, you will usually use the higher-level convenience registration instead:
+In a SQL Server host, the higher-level registration also configures the context:
 
 ```csharp
 services.AddEventStoreContextSqlServer<MyEventStoreDbContext>(
@@ -110,7 +178,7 @@ services.RegisterAggregateAndProjectionRequestForEventStore<MyAggregate>(
 
 This makes `IEventStore<MyAggregate>` available and configures snapshot behavior for that aggregate type.
 
-### 3. Use an event-store DbContext
+### 3. Use an event-store `DbContext`
 
 The EF-backed store expects a DbContext derived from `EventStoreDbContext`, which already defines tables for:
 
@@ -118,7 +186,7 @@ The EF-backed store expects a DbContext derived from `EventStoreDbContext`, whic
 - snapshots
 - the event-sourcing outbox
 
-## Aggregate Workflow
+## Aggregate workflow
 
 The typical event-sourced flow looks like this:
 
@@ -130,7 +198,7 @@ The typical event-sourced flow looks like this:
 
 That means the event stream is the source of truth and projections or read models are downstream consumers.
 
-## Outbox Support
+## Outbox support
 
 Event sourcing has its own outbox path, separate from the classic `RepositoryOutboxDomainEventBehavior` used by regular repositories.
 
@@ -146,7 +214,9 @@ Register the worker with:
 services.AddEfOutboxWorker();
 ```
 
-This worker processes unhandled event-store outbox messages and marks them as processed once the configured downstream actions succeed.
+`AddEfOutboxWorker()` registers `IOutboxWorkerService`; it does not start a hosted worker. Invoke
+`DoWorkAsync()` from a scheduled job or another application-owned trigger. Each run processes
+unhandled messages and marks a message as processed after the configured downstream actions succeed.
 
 ## Snapshots
 
@@ -160,7 +230,7 @@ Enable snapshots when:
 
 If snapshots are disabled, the aggregate is rebuilt from the full stream every time it is loaded.
 
-## Relationship To Other Features
+## Relationship to other features
 
 - [Domain](./features-domain.md) covers regular aggregates, value objects, typed ids, and fluent change patterns.
 - [Domain Events](./features-domain-events.md) covers domain events for regular aggregates and the repository-based domain-event outbox.

@@ -1,32 +1,101 @@
-# JobScheduling Feature Documentation
+
+# JobScheduling
 
 > Legacy Quartz-backed scheduler. For new development, prefer [Jobs](./features-jobs.md). Migration is source-level only; Quartz tables and trigger records are not reused by `Application.Jobs`.
 
-> Schedule and run background jobs with flexible timing, DI integration, and operational visibility.
+> Schedule and run background jobs through the legacy Quartz.NET integration.
 
 [TOC]
 
 ## Overview
 
-### Challenges
+JobScheduling is the legacy Quartz.NET-backed scheduling feature. It registers Quartz as an ASP.NET Core hosted service, resolves jobs through dependency injection, and provides optional run-history stores and operational endpoints. For new development, use [Jobs](./features-jobs.md); the two runtimes do not share schedules or persistence records.
 
-Implementing a reliable scheduling system within a web application often involves navigating a maze of technical hurdles. Developers must contend with creating background tasks that execute on precise schedules—whether for data aggregation, notifications, or system upkeep—without disrupting the application’s core functionality. Crafting custom threading mechanisms or integrating external schedulers can lead to brittle solutions prone to errors, especially when scaling to handle increased loads or ensuring compatibility with dependency injection frameworks. Flexibility in defining schedules, from simple intervals to complex cron-based patterns, demands an abstraction that remains both powerful and intuitive, while also providing visibility into execution history and status for monitoring and debugging purposes.
+## Challenges
 
-### Solution
+Applications often need recurring or manually triggered work without managing threads inside request handlers. A scheduler must resolve scoped dependencies, apply predictable timing, support cancellation, and expose enough state for operators to inspect or control registered jobs.
 
-The JobScheduling feature offers a robust resolution to these challenges by building atop Quartz.NET, a mature and widely respected scheduling library, and tailoring it for seamless integration into ASP.NET Core applications. This feature embeds Quartz.NET’s scheduling engine within a hosted service, managed through the ASP.NET Core dependency injection system, eliminating the need for ad-hoc threading or external tools. A fluent registration API streamlines the process of defining jobs, allowing developers to specify schedules, metadata, and execution scopes with clarity and minimal effort. Enhanced by the `JobBase` class, which provides properties like `LastProcessedDate` for tracking execution history, the `JobService` interface for runtime management, and optional API endpoints for operational control, this solution ensures that scheduled tasks are both manageable and observable, delivering reliability and flexibility in equal measure.
+## Solution
 
-### Use Cases
+`AddJobScheduling(...)` hosts Quartz.NET and returns a fluent builder for job definitions. Jobs can derive from `JobBase`, which records the previous run state in the Quartz job data map. `IJobService` provides runtime control, while optional stores retain execution history and optional endpoints expose those operations over HTTP.
 
-This scheduling system adapts effortlessly to a range of practical needs within web applications. Imagine an online platform requiring hourly inventory updates: a job can be scheduled to fetch stock levels and persist them to a database, triggered by a cron expression. In a content management system, a nightly task might archive outdated articles, maintaining performance without manual oversight. For real-time monitoring, a singleton job could poll system metrics every few minutes, leveraging its persistent state to detect anomalies over time. Even error-prone operations, like retrying failed API calls, benefit from the feature’s ability to track execution status and timing, enabling developers to build resilient workflows tailored to their application’s demands. Long-running tasks, such as file processing, can use cancellation support, manageable via API endpoints or service methods.
+## Key Features
 
-## Usage
+- Quartz.NET six-field cron schedules
+- scoped or singleton job activation through dependency injection
+- reusable execution behaviors for module scope, timeout, retry, metrics, and fault injection
+- manual trigger, pause, resume, interrupt, history, and statistics operations through `IJobService`
+- null, in-memory, SQL Server, PostgreSQL, and SQLite run-history providers
+- optional minimal API endpoints and console commands
 
-Designed to empower developers with a Quartz.NET-backed scheduling solution, the JobScheduling feature integrates smoothly into ASP.NET Core web applications. By combining a fluent API for job registration with the enriched capabilities of the `JobBase` class, it provides a cohesive framework for defining and executing scheduled tasks. This section walks through the setup process, illustrates job creation with the updated `JobBase` (including cancellable long-running jobs), introduces runtime management via `JobService` and API endpoints, and explains the architectural flow that underpins the system.
+## Architecture
 
-### Basic Setup
+`JobSchedulingService` starts the Quartz scheduler and registers the configured `JobSchedule` instances. `ScopedJobFactory` creates jobs from the application service provider. `JobBase` wraps the job body with state capture and configured `IJobSchedulingBehavior` instances. `JobService` combines Quartz control operations with the selected `IJobStoreProvider`; endpoint and console-command adapters call that service.
 
-To enable scheduling, the feature must be registered within the application’s service collection, typically in the `Program.cs` file, with the application’s configuration passed to load Quartz.NET settings. The following example demonstrates a basic setup:
+## Use Cases
+
+- Run periodic cleanup, synchronization, reporting, or monitoring tasks in an existing Quartz-based application.
+- Trigger a registered job on demand from application code or an operational endpoint.
+- Retain and query execution history through a supported store.
+- Pause, resume, or interrupt long-running jobs during operations.
+
+## Basic Usage
+
+The following example registers the built-in `EchoJob`, retains one hour of run history in memory, and exposes an application endpoint that triggers the job safely. A successful request returns `202 Accepted`; a Quartz scheduling error returns a problem response.
+
+```csharp
+using BridgingIT.DevKit.Application;
+using BridgingIT.DevKit.Application.JobScheduling;
+using Quartz;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services
+    .AddJobScheduling(options => options.StartupDelay(TimeSpan.Zero))
+    .WithInMemoryStore(TimeSpan.FromHours(1))
+    .WithJob<EchoJob>()
+        .Cron(CronExpressions.EveryMinute)
+        .Named("echo", "DEFAULT")
+        .WithData("message", "Scheduler is running")
+        .RegisterScoped();
+
+var app = builder.Build();
+
+app.MapPost("/jobs/echo/run", async (
+    IJobService jobs,
+    CancellationToken cancellationToken) =>
+{
+    try
+    {
+        await jobs.TriggerJobAsync(
+            "echo",
+            "DEFAULT",
+            new Dictionary<string, object>(),
+            cancellationToken);
+
+        return Results.Accepted(value: new { Job = "echo", Status = "Triggered" });
+    }
+    catch (SchedulerException exception)
+    {
+        return Results.Problem(
+            title: "The job could not be triggered.",
+            detail: exception.Message);
+    }
+});
+
+app.Run();
+```
+
+After the host starts, `POST /jobs/echo/run` returns the accepted response and the job writes `Scheduler is running` through its logger.
+
+
+## Registration and operation
+
+JobScheduling integrates Quartz.NET with ASP.NET Core dependency injection and hosted services. The sections below cover job registration, `JobBase`, cancellation, runtime control through `JobService`, operational endpoints, and the execution flow.
+
+### Basic setup
+
+Register scheduling in the application's service collection. Pass the application configuration when the scheduler must load Quartz.NET settings. The following example shows the basic setup:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -48,7 +117,7 @@ var app = builder.Build();
 app.Run();
 ```
 
-Here, `AddJobScheduling` initializes the Quartz.NET scheduler, using the provided `IConfiguration` to load settings from `appsettings.json` (e.g., persistence configuration). The `StartupDelay(5000)` option delays scheduler startup by 5 seconds, allowing other services to initialize. The fluent chain begins with `WithJob<T>()`, specifying the job type (`EchoJob`), followed by `Cron()` for scheduling, `Named()` for a unique identifier, and `WithData()` for custom metadata. The `RegisterScoped()` method ensures each execution uses a new scoped instance, ideal for transient dependencies, while `RegisterSingleton()` can be used for persistent state:
+Here, `AddJobScheduling` initializes the Quartz.NET scheduler. No `IConfiguration` is passed in this example; pass `builder.Configuration` when Quartz settings must be loaded from `JobScheduling:Quartz`. `StartupDelay(5000)` delays scheduler startup by 5 seconds. The fluent chain begins with `WithJob<T>()`, followed by `Cron()` for scheduling, `Named()` for a unique identifier, and `WithData()` for custom metadata. `RegisterScoped()` creates a scoped job instance for each activation. `RegisterSingleton()` reuses one job instance, but durable state still depends on the configured Quartz store:
 
 ```csharp
 builder.Services.AddJobScheduling(c => c.StartupDelay(5000))
@@ -59,9 +128,10 @@ builder.Services.AddJobScheduling(c => c.StartupDelay(5000))
         .RegisterSingleton();
 ```
 
-### Comprehensive Setup with SQL Server Persistence and API Endpoints
 
-For a production-ready setup with SQL Server persistence, behaviors, and API endpoints, use the following configuration:
+### Comprehensive setup with SQL Server history and API endpoints
+
+The following configuration combines Quartz persistence settings, SQL Server run-history access, behaviors, and operational endpoints:
 
 ```csharp
 var builder = WebApplication.CreateBuilder(args);
@@ -69,23 +139,15 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Configuration)
     .WithBehavior<ModuleScopeJobSchedulingBehavior>() // Module-specific scoping
     .WithBehavior<TimeoutJobSchedulingBehavior>() // Enforces timeouts
-    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"]) // SQL Server persistence
+    .WithSqlServerStore(builder.Configuration["Modules:Core:ConnectionStrings:Default"]) // SQL Server run history
     .AddEndpoints(builder.Environment.IsDevelopment()) // Enables API endpoints in development
-    .WithJob<FileMonitoringLocationScanJob>()
+    .WithJob<HealthCheckJob>()
         .Cron(CronExpressions.Every5Minutes)
-        .Named("scan_sftp")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.LocationName, "SFTP")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.DelayPerFile, "00:00:01")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.FileFilter, "*.*")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.FileBlackListFilter, "*.tmp;*.log")
+        .Named("healthcheck")
         .RegisterScoped()
-    .WithJob<FileMonitoringLocationScanJob>()
+    .WithJob<LongRunningJob>()
         .Cron(CronExpressions.Every5Minutes)
-        .Named("scan_target")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.LocationName, "TARGET")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.DelayPerFile, "00:00:01")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.FileFilter, "*.*")
-        .WithData(FileMonitoringLocationScanJob.DataKeys.FileBlackListFilter, "*.tmp;*.log")
+        .Named("longrunning")
         .RegisterScoped()
     .WithJob<EchoJob>()
         .Cron(CronExpressions.EveryMinute)
@@ -115,16 +177,17 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Confi
         .RegisterScoped();
 
 var app = builder.Build();
-app.UseRouting();
-app.UseEndpoints(endpoints => endpoints.MapControllers()); // Required for API endpoints
+app.MapEndpoints();
 app.Run();
 ```
 
-**Configuration Details:**
-- **Persistence**: `WithSqlServerStore` enables durable storage using a connection string from configuration (see `Appendix: Configuring Quartz.NET Persistence with SQL Server`).
-- **Behaviors**: Adds scoping and timeouts for enhanced control (e.g., `TimeoutJobSchedulingBehavior`).
-- **API Endpoints**: `AddEndpoints(builder.Environment.IsDevelopment())` enables job management endpoints under `/_bdk/api/jobs` in development mode (see `Appendix: Job Scheduling API Endpoints`).
-- **Jobs**: Registers diverse jobs with custom schedules and metadata.
+Configuration details:
+
+- `JobScheduling:Quartz` configures Quartz persistence and scheduler behavior.
+- `WithSqlServerStore` selects the provider used by `IJobService` for run history; it does not configure Quartz itself.
+- `WithBehavior` adds execution behaviors such as module scope and timeout.
+- `AddEndpoints(builder.Environment.IsDevelopment())` registers job management endpoints under `/_bdk/api/jobs` only in development.
+- Each `WithJob` chain registers one job definition with its schedule and metadata.
 
 **Configuration in `appsettings.json`:**
 ```json
@@ -148,26 +211,25 @@ app.Run();
 }
 ```
 
-Jobs are implemented by inheriting from `JobBase`, an abstract class that integrates with Quartz.NET and exposes a rich set of properties to streamline development. Developers override the `Process` method to define the job’s behavior. Consider this example of an echo job:
+Implement a job by inheriting from `JobBase`, which integrates with Quartz.NET and exposes execution state. Override `Process` to define the job's behavior. The following example defines an echo job:
 
 ```csharp
 public class EchoJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
 {
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        var logger = this.Logger.CreateLogger<EchoJob>();
-        logger.LogInformation(
-            "Job {JobName} echoing {Message} at {CurrentTime}, last run at {LastProcessedDate}",
-            this.Name, this.Data["message"], DateTimeOffset.UtcNow, this.LastProcessedDate);
+        this.Logger.LogInformation(
+            "Job {JobName} echoing {Message} at {CurrentTime}, last successful run at {RunSuccessDate}",
+            this.Name, this.Data["message"], DateTimeOffset.UtcNow, this.RunSuccessDate);
 
         await Task.Delay(1000, cancellationToken); // Simulate work
     }
 }
 ```
 
-### Implementing a Cancellable Long-Running Job
+### Implementing a cancellable long-running job
 
-For long-running tasks, cancellation support is critical. Here’s an example of `LongRunningJob`:
+Long-running tasks must observe cancellation. The following example defines `LongRunningJob`:
 
 ```csharp
 public class LongRunningJob(ILoggerFactory loggerFactory) : JobBase(loggerFactory)
@@ -193,11 +255,11 @@ public class LongRunningJob(ILoggerFactory loggerFactory) : JobBase(loggerFactor
     .RegisterScoped();
 ```
 
-**Notes**: Use `cancellationToken` to handle interruptions, manageable via `JobService` or API endpoints (e.g., `POST /_bdk/api/jobs/longrunning/DEFAULT/pause`).
+Use the supplied `cancellationToken` to handle interruption. `POST /_bdk/api/jobs/longrunning/DEFAULT/interrupt` requests interruption of a running job; pausing a job affects future triggers.
 
-### Managing Jobs with JobService and API Endpoints
+### Managing jobs with `IJobService` and API endpoints
 
-The `IJobService` interface enables runtime job management programmatically:
+`IJobService` enables runtime job management programmatically. The following excerpt shows the most commonly used members; the interface also includes trigger queries, run persistence, and wait-for-completion operations:
 
 ```csharp
 public interface IJobService
@@ -213,7 +275,7 @@ public interface IJobService
 }
 ```
 
-**Example: Triggering a Job**
+Example: triggering a job
 ```csharp
 var jobService = app.Services.GetRequiredService<IJobService>();
 await jobService.TriggerJobAsync("longrunning", "DEFAULT", new Dictionary<string, object> { { "extra", "data" } }, CancellationToken.None);
@@ -231,21 +293,22 @@ These endpoints, mapped under `/_bdk/api/jobs`, provide RESTful access to job op
 - **Body**: `{"extra": "data"}`
 - **Response**: `202 Accepted` with message "Job longrunning in group DEFAULT triggered successfully."
 
-### Key Properties of JobBase
+### Key properties of `JobBase`
 
-The `Name` property provides a consistent identifier for the job, derived from its description or key name as defined during registration. This eliminates the need to manually extract it from the `IJobExecutionContext`, ensuring it’s always available within the `Process` method. Similarly, the `Data` property delivers a dictionary of strings populated from the `JobDataMap`, reflecting metadata specified via `WithData` (e.g., `"message" = "First echo"`). This makes job-specific configuration readily accessible, simplifying logic that depends on runtime parameters.
+The `Name` property contains the description or key name assigned during registration. Jobs can use it without reading the value from `IJobExecutionContext`. The `Data` property contains the string values from `JobDataMap`, including metadata configured through `WithData`, such as `"message" = "First echo"`.
 
-A standout feature, the `LastProcessedDate` property captures the timestamp of the previous successful execution as a `DateTimeOffset`. Persisted across runs thanks to the `[PersistJobDataAfterExecution]` attribute, it starts as `DateTimeOffset.MinValue` on the first run and updates to the completion time of each subsequent execution. This historical context allows jobs to calculate intervals, detect delays, or process incremental data—such as changes since the last run—enhancing their utility in time-sensitive scenarios.
+`RunDate` captures the completion time of the previous execution, while `RunSuccessDate` captures the completion time of the previous successful execution. Both default to `DateTimeOffset.MinValue`. `JobBase` writes these values to the Quartz job data map after execution, and `[PersistJobDataAfterExecution]` tells Quartz to retain the updated job data according to the configured Quartz store.
 
-Complementing these, `ElapsedMilliseconds` tracks the duration of the current execution in milliseconds, updated post-run for performance monitoring. The `Status` property, an enum reflecting success or failure, pairs with `ErrorMessage` to log execution outcomes or capture exceptions, providing insight into job health. Finally, the `Logger` property, pre-initialized with the job’s type via the injected `ILoggerFactory`, facilitates consistent logging without additional setup.
+`ElapsedMilliseconds` contains the duration of the current execution and is updated after the run. `Status` records success or failure, and `ErrorMessage` contains the captured exception message. `Logger` is created for the job type through the injected `ILoggerFactory`.
 
-### Leveraging LastProcessedDate
 
-The `LastProcessedDate` property proves particularly valuable for jobs requiring awareness of their execution history. For example, a job might compare `LastProcessedDate` to the current time to identify scheduling lags or use it to filter data processed since the last run, such as new records in a database. This persistence is handled internally by `JobBase`, which updates the `JobDataMap` after each execution. The `[PersistJobDataAfterExecution]` attribute ensures this value carries forward, maintaining continuity across runs without developer intervention.
+### Using previous-run timestamps
 
-### Controlling Job Execution
+Use `RunDate` to inspect the previous attempt or `RunSuccessDate` to process data since the previous successful run. `JobBase` restores values from the merged job data map before `Process(...)` and writes updated values after execution.
 
-For jobs intended to remain inactive until explicitly enabled, the `Enabled` method in the fluent API allows registration without immediate execution. This is useful for staging jobs during development or deployment, as shown in the second `EchoJob` example above, where it’s enabled only in development:
+### Controlling job execution
+
+Use `Enabled` to register a job without running it in every environment. The second `EchoJob` example runs only in development:
 
 ```csharp
 .WithJob<EchoJob>()
@@ -280,7 +343,7 @@ graph TD
     K --> I
 ```
 
-The web application launches a hosted service that initializes the Quartz scheduler. This scheduler collaborates with a job factory, tied to ASP.NET Core’s dependency injection, to instantiate job classes derived from `JobBase`. Triggers, governed by cron expressions, prompt the scheduler to execute the `Process` method at designated times. `JobService` provides runtime control programmatically, while API endpoints offer HTTP access, both integrating with persistence providers (e.g., SQL Server, in-memory) for history and state management. Within `JobBase`, properties like `Name`, `Data`, `LastProcessedDate`, and `Logger` enrich the job’s capabilities, providing identity, configuration, history, and logging without additional setup. The `[DisallowConcurrentExecution]` attribute ensures thread safety by preventing overlapping runs, while `[PersistJobDataAfterExecution]` guarantees that properties like `LastProcessedDate` persist across executions.
+The web application launches a hosted service that initializes the Quartz scheduler. The DI-backed job factory creates job classes derived from `JobBase`, and cron triggers invoke `Process(...)`. `JobService` provides runtime control and combines Quartz state with run history from the selected provider. `JobBase` exposes `Name`, `Data`, `RunDate`, `RunSuccessDate`, and `Logger`. `[DisallowConcurrentExecution]` prevents overlapping executions for the same job definition, and `[PersistJobDataAfterExecution]` lets Quartz retain the updated job data map.
 
 To prevent concurrent execution explicitly, developers can apply the `[DisallowConcurrentExecution]` attribute directly to a job class:
 
@@ -291,22 +354,22 @@ public class NonConcurrentJob(ILoggerFactory loggerFactory) : JobBase(loggerFact
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
         this.Logger.LogInformation(
-            "Non-concurrent job {JobName} started, last run at {LastProcessedDate}",
-            this.Name, this.LastProcessedDate);
+            "Non-concurrent job {JobName} started, last run at {RunDate}",
+            this.Name, this.RunDate);
         await Task.Delay(2000, cancellationToken); // Simulate long task
     }
 }
 ```
 
-This job, when scheduled frequently (e.g., every second), ensures only one instance runs at a time, queuing subsequent triggers until completion—a feature inherited from Quartz.NET and enforced by `JobBase`.
+When this job is scheduled frequently, Quartz prevents concurrent executions for the same job definition. Misfire handling determines what happens to triggers that cannot run at their scheduled time.
 
-By leveraging this JobScheduling feature, developers gain a sophisticated yet accessible toolset for managing scheduled tasks. The fluent API simplifies configuration, `JobBase` delivers essential properties, `JobService` adds programmatic control, and API endpoints provide HTTP management, ensuring web applications can execute recurring tasks efficiently and reliably.
+The sections below retain the detailed persistence, cron, and endpoint reference for applications that still use JobScheduling.
 
-## Appendix: Configuring Quartz.NET Persistence with SQL Server
+## Appendix: configuring Quartz.NET persistence with SQL Server
 
-For applications requiring durable job storage—such as preserving schedules and execution history across restarts—Quartz.NET supports persistence with SQL Server via its ADO.NET job store. This appendix explains how to configure this persistence using JSON settings in `appsettings.json` and a startup task to initialize the necessary SQL Server tables, as demonstrated in the comprehensive setup example.
+Quartz.NET can preserve schedules and execution history across restarts in its SQL Server ADO.NET job store. This appendix configures that store through `appsettings.json` and creates the required tables with a startup task.
 
-### Configuration Steps
+### Configuration steps
 
 1. **Install Required Packages**:
    Ensure the project includes the `Quartz` and `Quartz.Extensions.Hosting` NuGet packages, which provide the core Quartz.NET functionality and hosted service integration, including SQL Server support.
@@ -337,7 +400,7 @@ For applications requiring durable job storage—such as preserving schedules an
    - `quartz.jobStore.driverDelegateType`: Uses `SqlServerDelegate` for SQL Server-specific operations.
    - `quartz.jobStore.dataSource` and `quartz.dataSource.default.provider`: Define the data source and SQL Server provider.
    - `quartz.dataSource.default.connectionString`: Sets the connection string (adjust for your environment).
-   - `quartz.jobStore.useProperties`: Enables string-based property storage.
+   - `quartz.jobStore.useProperties`: `false` allows Quartz to serialize non-string values in the job data map.
    - `quartz.jobStore.clustered`: Set to `true` for clustered deployments (optional).
    - `quartz.serializer.type`: Uses JSON serialization for job data (optional).
 
@@ -357,11 +420,11 @@ For applications requiring durable job storage—such as preserving schedules an
        .WithTask<JobSchedulingSqlServerSeederStartupTask>();
    ```
 
-   The `JobSchedulingSqlServerSeederStartupTask` initializes Quartz.NET tables if persistence is enabled.
+   `JobSchedulingSqlServerSeederStartupTask` initializes the SQL Server Quartz and journal tables.
 
-### Generate Quartz Tables
+### Generate Quartz tables
 
-The `JobSchedulingSqlServerSeederStartupTask` creates tables like `QRTZ_JOB_DETAILS`, `QRTZ_TRIGGERS`, and `QRTZ_JOURNAL_TRIGGERS` for job and trigger data persistence (full list in original). Preferred approach: create the Quartz tables via an EF Core migration. This manages schema changes automaticly, versioned and repeatable.
+`JobSchedulingSqlServerSeederStartupTask` creates tables such as `QRTZ_JOB_DETAILS`, `QRTZ_TRIGGERS`, and `QRTZ_JOURNAL_TRIGGERS`. An EF Core migration is an alternative when the application manages schema changes through migrations.
 
 Steps:
 1. Add a new empty migration (e.g., dotnet ef migrations add AddQuartzTables).
@@ -392,43 +455,43 @@ public partial class AddQuartzTables : Migration
 
 Verify table creation in the specified database (`QuartzDb`) and test job persistence across restarts.
 
-## Appendix: Additional Persistence Options
+## Appendix: additional persistence options
 
 Beyond SQL Server, the feature supports other persistence providers:
 
-### PostgreSQL Persistence
+### PostgreSQL persistence
 
 ```csharp
 .WithPostgresStore("Host=localhost;Database=QuartzDb;Username=postgres;Password=secret", "[public].[QRTZ_")
 ```
 
-**Notes**: Uses `JobSchedulingSqlServerSeederStartupTask` (adapts to Postgres) for table creation.
+Use `JobSchedulingPostgresSeederStartupTask` or `PostgresJobStoreMigrationHelper` to create the PostgreSQL tables. `WithPostgresStore` selects the run-history provider; configure Quartz persistence separately through `JobScheduling:Quartz`.
 
-### SQLite Persistence
+### SQLite persistence
 
 ```csharp
 .WithSqliteStore("Data Source=quartz.db", "QRTZ_")
 ```
 
-**Notes**: `JobSchedulingSqliteSeederStartupTask` creates the database file and tables.
+`JobSchedulingSqliteSeederStartupTask` or `SqliteJobStoreMigrationHelper` creates the SQLite tables. `WithSqliteStore` selects the run-history provider; configure Quartz persistence separately.
 
-### In-Memory Persistence
+### In-memory persistence
 
 ```csharp
 .WithInMemoryStore(TimeSpan.FromHours(1)) // Retains history for 1 hour
 ```
 
-**Notes**: No durability; ideal for testing.
+This provider retains run history only for the current process and is suitable for development and tests.
 
-### Null Persistence
+### Null persistence
 
 Default if no store is specified; no history retained.
 
-## Appendix: Constructing Cron Expressions
+## Appendix: constructing cron expressions
 
-Scheduling jobs in the JobScheduling feature hinges on Quartz.NET’s 6-field cron expressions, defining execution times in the format: `[Seconds] [Minutes] [Hours] [Day of Month] [Month] [Day of Week]`. Developers have two powerful tools at their disposal: the `CronExpressions` struct, offering a library of predefined constants for common schedules, and the `CronExpressionBuilder`, a fluent API for crafting custom expressions. This appendix guides developers through both approaches, showcasing their strengths with practical examples, including how to schedule a job for the first day of every month at 11:59 PM, ensuring clarity and versatility in job configuration.
+JobScheduling uses Quartz.NET six-field cron expressions in this order: `[Seconds] [Minutes] [Hours] [Day of Month] [Month] [Day of Week]`. Use the predefined constants in `CronExpressions` for fixed schedules. Use `CronExpressionBuilder` to construct a schedule from typed values. The examples include a schedule for 11:59 PM on the first day of each month.
 
-### Using Fixed Cron Expressions
+### Using fixed cron expressions
 
 The `CronExpressions` struct provides a rich set of static constants for frequently used schedules, making it an efficient choice for standard patterns. These predefined expressions are readily available in the `BridgingIT.DevKit.Application` namespace and can be applied directly to the `Cron` method in `JobScheduleBuilder`. Here are some examples:
 
@@ -450,7 +513,7 @@ The `CronExpressions` struct provides a rich set of static constants for frequen
           .RegisterScoped();
   ```
 
-- **First Day of Every Month at 11:59 PM**: While `CronExpressions` doesn’t have an exact match, `CronExpressions.MonthlyAtMidnightOnFirstDay` ("0 0 0 1 * ?") is close. To adjust to 11:59 PM, developers can tweak it manually or use the builder (shown later), but here’s a direct string approach inspired by the struct:
+- **First day of every month at 11:59 PM**: `CronExpressions` does not have an exact match. Use a direct expression or the builder shown later:
   ```csharp
   builder.Services
       .AddJobScheduling(builder.Configuration)
@@ -459,11 +522,11 @@ The `CronExpressions` struct provides a rich set of static constants for frequen
           .RegisterScoped();
   ```
 
-These constants, like `CronExpressions.EveryMinute` ("0 0/1 * * * ?") or `CronExpressions.WeeklyOnWednesdayAtMidnight` ("0 0 0 * * WED"), offer a quick, reliable way to apply tested schedules. They’re ideal for static, well-known patterns but require manual string manipulation for slight variations, such as shifting midnight to 11:59 PM.
+Constants such as `CronExpressions.EveryMinute` ("0 0/1 * * * ?") and `CronExpressions.WeeklyOnWednesdayAtMidnight` ("0 0 0 * * WED") define common fixed schedules. For a variation that has no constant, supply the cron expression directly or use the builder.
 
-### Using the CronExpressionBuilder
+### Using `CronExpressionBuilder`
 
-For greater flexibility or custom schedules, the `CronExpressionBuilder` provides a fluent, programmatic interface integrated into the `JobScheduleBuilder`’s `Cron` method. It allows developers to construct expressions step-by-step, leveraging type-safe enums and integer inputs. Below are examples mirroring the fixed expressions and your specific request:
+`CronExpressionBuilder` integrates with the `Cron` method on `JobScheduleBuilder`. It builds expressions from integer values and the `CronDayOfWeek` and `CronMonth` enums. The following examples match the fixed expressions above:
 
 - **Every 5 Seconds**: Use `EverySeconds` to match `CronExpressions.Every5Seconds`:
   ```csharp
@@ -524,13 +587,13 @@ For greater flexibility or custom schedules, the `CronExpressionBuilder` provide
   ```
   This generates `"0 30 14 27 3 ?"`, targeting a single execution.
 
-The builder’s methods, such as `EveryMinutes(15)` ("0 0/15 * * * ?") or `HoursRange(8, 17)` ("0 * 8-17 * * ?"), offer granular control. Enums like `CronDayOfWeek` and `CronMonth` ensure type safety, mapping to Quartz’s three-letter abbreviations (e.g., "WED", "JAN"), while integer inputs (e.g., `Minutes(59)`) simplify numeric fields.
+Methods such as `EveryMinutes(15)` ("0 0/15 * * * ?") and `HoursRange(8, 17)` ("0 * 8-17 * * ?") configure individual fields. `CronDayOfWeek` and `CronMonth` map to Quartz three-letter abbreviations such as `WED` and `JAN`. Methods such as `Minutes(59)` set numeric fields.
 
-## Appendix: Job Scheduling API Endpoints
+## Appendix: JobScheduling API endpoints
 
 The JobScheduling feature supports optional RESTful API endpoints for managing jobs via HTTP, enabled by calling `AddEndpoints()` in the `AddJobScheduling` builder chain. These endpoints, implemented in `JobSchedulingEndpoints`, provide a convenient interface for querying and controlling jobs, especially useful in development or monitoring scenarios. By default, they are mapped under the `/_bdk/api/jobs` prefix, configurable via `JobSchedulingEndpointsOptions`.
 
-### Enabling Endpoints
+### Enabling endpoints
 
 Enable endpoints with a condition (e.g., development-only):
 
@@ -539,14 +602,13 @@ builder.Services.AddJobScheduling(o => o.StartupDelay("00:00:10"), builder.Confi
     .AddEndpoints(options => options.RequireAuthorization(), builder.Environment.IsDevelopment());
 ```
 
-Ensure routing is configured in the application pipeline:
+Map all registered endpoint sets after building the application:
 
 ```csharp
-app.UseRouting();
-app.UseEndpoints(endpoints => endpoints.MapControllers());
+app.MapEndpoints();
 ```
 
-### Available Endpoints
+### Available endpoints
 
 Below is a comprehensive list of endpoints, their HTTP methods, paths, parameters, responses, and descriptions, derived from `JobSchedulingEndpoints.cs`:
 
@@ -563,7 +625,7 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
 | **Interrupt Job**                   | POST       | `/_bdk/api/jobs/{jobName}/{jobGroup}/interrupt` | `jobName` (string), `jobGroup` (string)                                        | `200 OK` (string), `400 Bad Request` (ProblemDetails), `500 Internal Server Error` (ProblemDetails) | Interrupt a started job.                              |
 | **Purge Job Runs**                  | DELETE     | `/_bdk/api/jobs/{jobName}/{jobGroup}/runs` | `jobName` (string), `jobGroup` (string), Query: `olderThan` (DateTimeOffset)   | `200 OK` (string), `500 Internal Server Error` (ProblemDetails)                                 | Purges job run history older than a specified date.|
 
-### Endpoint Details
+### Endpoint details
 
 1. **GET /_bdk/api/jobs**
    - **Description**: Lists all scheduled jobs with their current status and trigger details.
@@ -621,7 +683,7 @@ Below is a comprehensive list of endpoints, their HTTP methods, paths, parameter
    - **Response**: `202 Accepted` with "Job {jobName} in group {jobGroup} triggered successfully."
 
 7. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/pause**
-   - **Description**: Pauses the job’s execution.
+- **Description**: Pauses the job's execution.
    - **Response**: `200 OK` with "Job {jobName} in group {jobGroup} paused successfully."
 
 8. **POST /_bdk/api/jobs/{jobName}/{jobGroup}/resume**

@@ -1,4 +1,4 @@
-# Domain Specifications Feature Documentation
+# Domain specifications
 
 > Model reusable business criteria as composable specifications for queries and in-memory evaluation.
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-Domain specifications encapsulate reusable criteria that can be evaluated against entities in memory and translated into query expressions for repositories. They are a core domain building block in bITdevKit, not just a repository helper.
+Domain specifications encapsulate reusable criteria that can be evaluated against entities in memory and translated into query expressions for repositories. They are domain building blocks that can be used inside or outside a repository.
 
 At the center of the feature is `ISpecification<T>`, which exposes:
 
@@ -17,7 +17,35 @@ At the center of the feature is `ISpecification<T>`, which exposes:
 
 This makes specifications useful both inside domain logic and at repository boundaries.
 
-## When To Use It
+## Challenges
+
+Selection criteria are often repeated across domain checks, handlers, and repository queries. Plain
+delegates work in memory but cannot always be translated by a query provider, while duplicated LINQ
+expressions are difficult to name, compose, and test as domain concepts.
+
+## Solution
+
+`ISpecification<T>` keeps a criterion as an expression tree and exposes compiled evaluation and
+logical composition. Repository implementations consume the same expression used by in-memory
+code. `Specification<T>` supports typed expressions and parameterized Dynamic LINQ expressions.
+
+## Key Features
+
+- Queryable criteria through `Expression<Func<T, bool>>`
+- In-memory evaluation through compiled predicates
+- `And`, `Or`, and `Not` composition
+- Typed and Dynamic LINQ construction
+- Built-in ID and duplicate-value specifications
+- Collection helpers that require every supplied specification to match
+
+## Architecture
+
+`ISpecification<T>` defines expression, predicate, direct-evaluation, composition, and diagnostic
+string methods. `Specification<T>` implements that contract. `AndSpecification<T>`,
+`OrSpecification<T>`, and `NotSpecification<T>` combine expression trees while preserving a single
+`ISpecification<T>` result that repository providers can consume.
+
+## Use Cases
 
 Use a domain specification when:
 
@@ -33,7 +61,34 @@ Typical examples are:
 - entities with a specific id
 - uniqueness checks for natural keys
 
-## Core Building Blocks
+## Basic Usage
+
+This example constructs one specification, evaluates it in memory, and prints the matching names:
+
+```csharp
+var customers = new[]
+{
+	(Name: "Ada", IsActive: true),
+	(Name: "Grace", IsActive: false),
+	(Name: "Linus", IsActive: true)
+};
+
+var activeCustomers = new Specification<(string Name, bool IsActive)>(
+	customer => customer.IsActive);
+var names = customers
+	.Where(activeCustomers.ToPredicate())
+	.Select(customer => customer.Name);
+
+Console.WriteLine(string.Join(", ", names));
+```
+
+Output:
+
+```text
+Ada, Linus
+```
+
+## Core building blocks
 
 ### `ISpecification<T>`
 
@@ -55,7 +110,7 @@ That dual nature is what makes specifications more useful than a plain `Func<T, 
 
 That gives the devkit both type-safe specifications and more dynamic query scenarios when needed.
 
-### Composite Specifications
+### Composite specifications
 
 The feature includes built-in composition types:
 
@@ -65,7 +120,7 @@ The feature includes built-in composition types:
 
 These are also exposed fluently through `And(...)`, `Or(...)`, and `Not()` on `ISpecification<T>`.
 
-### Reusable Built-In Specifications
+### Reusable built-in specifications
 
 The package also contains some ready-made specifications:
 
@@ -73,7 +128,12 @@ The package also contains some ready-made specifications:
 - `UniqueSpecification<TEntity>` for uniqueness checks on a property
 - `UniqueExceptSpecification<TEntity, TId>` for uniqueness checks that exclude one entity, which is especially useful in update scenarios
 
-## Basic Usage
+`HasIdSpecification<T>` compares the `IEntity.Id` object exposed by the entity. For predictable
+in-memory evaluation with boxed value IDs, prefer a typed specification such as
+`new Specification<Customer>(customer => customer.Id == customerId)`. Query translation of the
+object-typed form also depends on the repository provider.
+
+## Usage details
 
 ### Define a simple specification
 
@@ -113,7 +173,7 @@ The repository can translate the specification expression into the underlying qu
 
 ## Composition
 
-Specifications can be combined into richer criteria without creating a new monolithic predicate:
+Specifications can combine several criteria without creating one monolithic predicate:
 
 ```csharp
 var specification = new Specification<Customer>(c => c.Status == CustomerStatus.Active)
@@ -132,7 +192,7 @@ var specification = new Specification<Customer>(c => c.Status == CustomerStatus.
 
 The important point is that the resulting specification is still an `ISpecification<T>` and can still be evaluated in memory or translated into a query expression.
 
-## Dynamic Specifications
+## Dynamic specifications
 
 `Specification<T>` also supports dynamic expressions:
 
@@ -145,7 +205,10 @@ var specification = new Specification<Customer>(
 
 This is helpful when criteria are assembled from external input or metadata, though strongly typed expressions should remain the default for domain code where possible.
 
-## Uniqueness Specifications
+The expression string is parsed by Dynamic LINQ. Treat the expression text as trusted or build it
+from an allow-list, and pass user-provided values through `@0`, `@1`, and later placeholders.
+
+## Uniqueness specifications
 
 The built-in uniqueness specs are useful when natural-key rules need to be expressed as queryable domain criteria.
 
@@ -155,7 +218,10 @@ The built-in uniqueness specs are useful when natural-key rules need to be expre
 var specification = new UniqueSpecification<Customer>(c => c.Email, email);
 ```
 
-This expresses “find entities where the selected property already has this value”.
+This expresses "find entities where the selected property already has this value."
+
+Despite the type name, a satisfied uniqueness specification identifies a conflicting entity. A
+caller establishes uniqueness by confirming that the repository query returns no matches.
 
 ### Unique value except current entity
 
@@ -168,7 +234,7 @@ var specification = new UniqueExceptSpecification<Customer, CustomerId>(
 
 This is the common update scenario where one entity is allowed to keep its current value, but no other entity may already use it.
 
-## Collections Of Specifications
+## Collections of specifications
 
 `SpecificationExtensions` contains helpers for evaluating multiple specifications together:
 
@@ -184,7 +250,7 @@ var isSatisfied = specifications.IsSatisfiedBy(customer);
 
 That helper returns `true` when all supplied specifications are satisfied, and it treats a null or empty collection as satisfied.
 
-## Domain Specifications vs Filtering
+## Domain specifications and filtering
 
 Specifications and filtering are related but not the same:
 
@@ -193,7 +259,7 @@ Specifications and filtering are related but not the same:
 
 So filtering is often a consumer of the specifications feature, not a replacement for it.
 
-## Domain Specifications vs Policies and Rules
+## Domain specifications, policies, and rules
 
 Use specifications when:
 
@@ -211,7 +277,7 @@ Use [Rules](./features-rules.md) when:
 - you want fluent validation-style checks
 - the concern is validation flow rather than queryable entity criteria
 
-## Relationship To Other Features
+## Relationship to other features
 
 - [Domain Repositories](./features-domain-repositories.md) uses specifications as a primary query mechanism.
 - [Filtering](./features-filtering.md) translates filter models into specifications and find options.

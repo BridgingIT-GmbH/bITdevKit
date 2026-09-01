@@ -1,4 +1,5 @@
-# Presentation Host Feature Documentation
+
+# Presentation Host
 
 > Configure web and generic host applications through DevKit application builders and package-owned starter extensions.
 
@@ -12,7 +13,7 @@ Use this setup for new web applications that should be discoverable by future De
 
 Use `DevKitApplication.CreateBuilder(args)` for non-web applications that would otherwise start from `Host.CreateApplicationBuilder(args)` but still want the same DevKit starter extensions.
 
-### Challenges
+## Challenges
 
 - Startup code can become repetitive when every host wires configuration, logging and modules manually.
 - CLI and diagnostics tooling need a consistent host-side entry point without forcing every application to adopt custom infrastructure.
@@ -20,7 +21,7 @@ Use `DevKitApplication.CreateBuilder(args)` for non-web applications that would 
 - Feature packages need a place to contribute fluent setup extensions without making `Presentation.Web` depend on every feature package.
 - Existing applications using `WebApplicationBuilder` must keep working.
 
-### Solution
+## Solution
 
 - `DevKitWebApplication.CreateBuilder(args)` creates the normal ASP.NET Core builder and wraps it in `DevKitWebApplicationBuilder`.
 - `DevKitApplication.CreateBuilder(args)` creates the normal generic host builder and wraps it in `DevKitApplicationBuilder`.
@@ -32,6 +33,51 @@ Use `DevKitApplication.CreateBuilder(args)` for non-web applications that would 
   - `AddLogging()` from `Presentation.Serilog`.
   - `AddModules(...)` from `Presentation.Configuration`, using the existing module builder callbacks.
 - The builder stores the generic host builder in `DevKitBuilderProperties.HostBuilder`, so starter extensions can call host-level setup without making `Presentation.Web` depend on configuration or logging packages.
+
+## Key Features
+
+- DevKit-aware builders for ASP.NET Core and generic hosts
+- fluent configuration, Serilog, module, and Console Command setup
+- access to the wrapped native builders for advanced host configuration
+- shared builder contracts and property keys for feature-owned extensions
+- development-only web host discovery and local CLI or MCP integration
+- an incremental migration path from standard .NET host builders
+
+## Architecture
+
+`DevKitWebApplicationBuilder` wraps `WebApplicationBuilder`, while `DevKitApplicationBuilder` wraps `HostApplicationBuilder`. Both expose `IDevKitApplicationBuilder` so feature packages can register services without depending on a concrete host. Package-owned extension methods configure their features, and the web builder can add local host tooling when the environment and options allow it.
+
+## Use Cases
+
+- start a new DevKit-aware ASP.NET Core application
+- give a worker or console application the same fluent setup style
+- migrate an existing host without replacing its middleware or service registrations
+- expose a development host to local CLI and MCP tooling
+- add a feature-owned builder extension without adding dependencies to `Presentation.Web`
+
+## Basic Usage
+
+This web host uses the DevKit builder, applies the configuration and logging starter extensions, and exposes a visible response through a normal minimal API endpoint.
+
+```csharp
+using BridgingIT.DevKit.Presentation.Web;
+
+var builder = DevKitWebApplication.CreateBuilder(args)
+    .AddConfiguration()
+    .AddLogging();
+
+var app = builder.Build();
+
+app.MapGet("/", () => Results.Ok(new
+{
+    Application = builder.Environment.ApplicationName,
+    Environment = builder.Environment.EnvironmentName
+}));
+
+app.Run();
+```
+
+`GET /` returns the application and environment names. The wrapped `WebApplicationBuilder` remains available through `builder.WebApplicationBuilder` when a library requires the concrete ASP.NET Core builder.
 
 ## Packages
 
@@ -46,7 +92,7 @@ Use the packages that match the startup features your host needs.
 | `BridgingIT.DevKit.Presentation.Serilog` | Provides `AddLogging()` starter extension. |
 | `BridgingIT.DevKit.Common.Modules` | Provides module registration and `WithModule<T>()`. |
 
-## Core Concepts
+## Core concepts
 
 ### DevKitWebApplication
 
@@ -124,7 +170,7 @@ public interface IDevKitHostApplicationBuilder : IDevKitApplicationBuilder
 }
 ```
 
-### Shared Builder Properties
+### Shared builder properties
 
 Feature packages can coordinate through `IDevKitApplicationBuilder.Properties` using well-known keys from `DevKitBuilderProperties`.
 
@@ -132,6 +178,7 @@ Current keys include:
 
 - `ApplicationName`
 - `ContentRootPath`
+- `HostEnvironment`
 - `HostBuilder`
 - `HostApplicationBuilder`
 - `LoggingBuilder`
@@ -141,7 +188,7 @@ Current keys include:
 
 `DevKitApplicationBuilder` sets `HostApplicationBuilder` and `LoggingBuilder` for generic-host starter extensions.
 
-## Recommended Setup
+## Recommended setup
 
 For a new web host, start with the DevKit builder and add starter extensions for configuration, logging and modules.
 
@@ -175,7 +222,7 @@ builder.Services.AddModules(builder.Configuration, builder.Environment)
 
 Both styles remain valid. Prefer the DevKit builder for new applications that should be prepared for DevKit CLI and host tooling.
 
-### Non-Web Console Application
+### Non-web console application
 
 For a new non-web host, start with `DevKitApplication.CreateBuilder(args)`. This wraps `Host.CreateApplicationBuilder(args)` and gives console applications the same fluent DevKit setup style as web applications.
 
@@ -196,8 +243,15 @@ var builder = DevKitApplication.CreateBuilder(args, builder => builder
         .WithCommand<SampleConsoleCommand>()));
 
 using var host = builder.Build();
+var console = host.Services.GetRequiredService<IAnsiConsole>();
+var executor = new ConsoleCommandExecutor();
+var result = await executor.ExecuteAsync(
+    args,
+    console,
+    host.Services,
+    ConsoleCommandExecutionSource.Terminal);
 
-return await ConsoleCommands.RunAsync(host.Services, args);
+return result.Succeeded ? 0 : 1;
 ```
 
 `DevKitApplication` does not enable descriptor writing or local CLI host advertisement by default. Single-shot command applications can therefore use the fluent builder without explicitly disabling CLI integration.
@@ -214,7 +268,7 @@ var builder = DevKitApplication.CreateBuilder(args, builder => builder
         .WithCommand<SampleConsoleCommand>()));
 ```
 
-For a long-running worker or daemon, keep the same builder but run the host instead of invoking `ConsoleCommands.RunAsync(...)` directly. Register Console Commands only when the process should expose command implementations through DI for future local forwarding or internal execution.
+For a long-running worker or daemon, keep the same builder but run the host instead of invoking `ConsoleCommandExecutor.ExecuteAsync(...)` directly. Register Console Commands only when the process should expose command implementations through DI for future local forwarding or internal execution.
 
 ```csharp
 var builder = DevKitApplication.CreateBuilder(args, options => options
@@ -241,7 +295,7 @@ builder.Services.AddConsoleCommands(commands => commands
     .WithCommand<SampleConsoleCommand>());
 ```
 
-## Starter Extensions
+## Starter extensions
 
 ### AddConfiguration
 
@@ -310,9 +364,9 @@ builder.Services.AddConsoleCommands(commands => commands
     .WithCommand<SampleConsoleCommand>());
 ```
 
-Use `ConsoleCommands.RunAsync(host.Services, args)` when the process should execute one command and exit. Use `host.RunAsync()` for long-running workers.
+Use `ConsoleCommandExecutor.ExecuteAsync(...)` and check its result when the process should execute one command and exit. Use `host.RunAsync()` for long-running workers.
 
-## Local Tooling Policy
+## Local tooling policy
 
 The DevKit web builder evaluates local tooling during builder creation. The decision is available through `DevKitWebApplicationBuilder.LocalToolingDecision` and is also stored in the builder properties using `DevKitWebApplicationBuilderProperties.LocalToolingDecision`.
 
@@ -350,7 +404,7 @@ var builder = DevKitApplication.CreateBuilder(args, options => options
     .Cli(cli => cli.Enabled()));
 ```
 
-## Migrating an Existing Host
+## Migrating an existing host
 
 Use this path when moving an application from raw `WebApplicationBuilder` to the DevKit builder.
 
@@ -378,7 +432,7 @@ var builder = DevKitWebApplication.CreateBuilder(args)
 
 Then keep the rest of the service registration and middleware pipeline unchanged unless the host needs additional DevKit-specific options.
 
-### Compatibility Guidance
+### Compatibility guidance
 
 - Keep using `WebApplication.CreateBuilder(args)` for applications that do not need DevKit host tooling.
 - Use `DevKitWebApplication.CreateBuilder(args)` for new applications and apps that should participate in DevKit CLI or diagnostics flows.
@@ -389,7 +443,7 @@ Then keep the rest of the service registration and middleware pipeline unchanged
 - Prefer `IDevKitHostApplicationBuilder` for generic-host starter extensions that should not apply to web hosts.
 - Use the wrapped `WebApplicationBuilder` only for advanced ASP.NET Core integration points that cannot be expressed through the common builder contract.
 
-## Writing Feature-Owned Builder Extensions
+## Writing feature-owned builder extensions
 
 Feature packages can add fluent setup without changing `Presentation.Web`.
 
@@ -429,7 +483,7 @@ private static IHostBuilder GetHostBuilder(IDevKitApplicationBuilder builder)
 
 Use the `BridgingIT.DevKit.Presentation.Web` namespace for web-host starter extensions so consuming applications that already import `Presentation.Web` can discover them naturally.
 
-## Example: Commerce Host
+## Example: Commerce host
 
 A fictional ecommerce host demonstrates the recommended startup shape.
 
@@ -445,7 +499,7 @@ The application still configures requesters, notifiers, storage, jobs, endpoints
 
 ## Troubleshooting
 
-### Extension Methods Are Not Found
+### Extension methods are not found
 
 Check the host references and namespaces:
 
@@ -457,7 +511,7 @@ Check the host references and namespaces:
 - Generic host starter extensions are exposed from the `BridgingIT.DevKit.Presentation` namespace.
 - Web starter extensions are exposed from the `BridgingIT.DevKit.Presentation.Web` namespace.
 
-### Local Tooling Is Disabled
+### Local tooling is disabled
 
 Check the evaluated environment and configuration:
 
@@ -465,11 +519,11 @@ Check the evaluated environment and configuration:
 - `DevKit:Cli:Enabled` must not be `false`.
 - Capability-specific configuration such as `DevKit:Cli:ConsoleCommands` or `DevKit:Cli:Mcp` must not be `false` when that capability is needed.
 
-### Avoid Dependency Churn
+### Avoid dependency churn
 
 Do not add broad feature package references to `Presentation.Web` just to expose starter methods. Put fluent extensions in the package that owns the behavior and target `IDevKitApplicationBuilder` where possible.
 
-## Related Documentation
+## Related documentation
 
 - [Modules](./features-modules.md)
 - [Presentation Correlation IDs](./features-presentation-correlationid.md)

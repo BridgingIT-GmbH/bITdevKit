@@ -1,4 +1,4 @@
-# Requester and Notifier Feature Documentation
+# Requester and notifier
 
 > Dispatch requests and notifications through handler pipelines with reusable cross-cutting behaviors.
 
@@ -6,7 +6,10 @@
 
 ## Overview
 
-The `Requester` and `Notifier` systems form a robust framework designed to streamline the handling of requests (commands and queries) and notifications in modern applications. These systems provide structured approaches to dispatching messages to their respective handlers through a customizable pipeline of behaviors, allowing developers to address cross-cutting concerns like validation, retries, and timeouts without altering core business logic. By enforcing consistent and type-safe mechanisms for message processing, the systems ensure predictability and maintainability in complex applications. They share a set of extensible pipeline behaviors, ensuring consistency across different types of message handling.
+The `Requester` and `Notifier` systems dispatch requests and notifications through configurable
+handler pipelines. Requester selects one handler for a command or query. Notifier publishes one
+notification to every matching handler. Both use the same behavior contract for concerns such as
+validation, retries, and timeouts.
 
 Two kinds of messages are supported:
 
@@ -17,53 +20,59 @@ Using these components (requests for commands/queries and notifications for doma
 
 Some of the cross-cutting behaviors described on this page rely on shared common infrastructure, especially [Common Caching](./common-caching.md) for cache-related behaviors and [Common Observability / Tracing](./common-observability-tracing.md) for broader instrumentation conventions around message processing flows.
 
-### Challenges
+## Challenges
 
 Managing the core mechanics of message dispatching and handler execution presents several challenges:
 
 1. **Inconsistent Dispatching**: Without a standardized mechanism, dispatching requests or notifications to handlers can vary across the application, leading to unpredictable behavior.
 2. **Error Propagation Complexity**: Propagating errors from handlers through multiple layers while preserving context is difficult, often resulting in lost information.
-3. **Coupling of Concerns**: Handlers often mix business logic with technical concerns (e.g., error handling, logging), making them harder to maintain and test. Additionally, tight coupling between components can make the system rigid and harder to evolve.
+3. **Coupled concerns**: Handlers often mix business logic with error handling and logging. This coupling makes handlers harder to maintain, test, and change.
 4. **Extensibility Limitations**: Adding new functionality (e.g., validation, retries) typically requires modifying existing handlers, increasing complexity and risk.
 5. **Type Safety Issues**: Ensuring type-safe handling of requests, notifications, and their results, especially for operations with no meaningful return value, can be error-prone.
 6. **Message Tracking**: Tracking message metadata (e.g., IDs, timestamps) for debugging and auditing is often ad hoc, leading to inconsistent monitoring.
 7. **Multiple Handler Coordination**: For notifications, coordinating multiple handlers (e.g., sequential, concurrent, or fire-and-forget execution) adds complexity, especially when ensuring consistent error handling.
 
-These challenges are why message-handling systems like `Requester` and `Notifier` are popular—they provide structured approaches to dispatching messages, managing errors, and extending functionality without modifying core logic. The `Requester` and `Notifier` systems address these challenges by offering standardized, extensible, and type-safe solutions for request, notification, and handler management.
+Requester and Notifier address these concerns through common dispatch, result, metadata, discovery,
+and behavior contracts.
 
-### Solution
+## Solution
 
-The `Requester` and `Notifier` systems provide comprehensive solutions by:
+The systems provide:
 
 1. Standardizing message dispatching through central interfaces (`IRequester` for requests, `INotifier` for notifications), ensuring consistent behavior across the application.
-2. Enabling structured error propagation with `Result<TValue>` (for requests) and `Result` (for notifications), preserving context across layers.
+2. Enabling structured error propagation with `Result<TValue>` for request handlers and `Result` for notification handlers. `INotifier.PublishAsync(...)` exposes the aggregate as `IResult`.
 3. Decoupling concerns by using a pipeline of behaviors to handle technical aspects (e.g., validation, retries) separately from business logic, and reducing coupling between components through the use of requests (for commands/queries) and notifications (for domain events).
 4. Supporting extensibility through shared behaviors that can be added without modifying handlers.
 5. Providing type-safe handling with `Result<Unit>` for commands with no meaningful return value and non-generic `Result` for notifications.
 6. Including built-in message metadata (`RequestId`, `RequestTimestamp` for requests; `NotificationId`, `NotificationTimestamp` for notifications) for tracking and auditing.
 7. Supporting multiple handler coordination for notifications with configurable execution modes (sequential, concurrent, fire-and-forget).
 
-### Key Features
+## Key Features
 
 - **Type-Safe Handling**:
   - `Requester`: Uses `Result<TResponse>` for requests.
-  - `Notifier`: Uses non-generic `Result` for notifications, as they don’t return values.
+  - `Notifier`: Uses non-generic `Result` because notifications do not return values.
 - **DI Integration**: Scoped handler lifetimes for both systems.
 - **Message Metadata**:
   - `RequestBase<TResponse>`: Provides `RequestId`, `RequestTimestamp`.
   - `NotificationBase`: Provides `NotificationId`, `NotificationTimestamp`.
-- **Async-Only Handlers**:
-  - `RequestHandlerBase<TRequest, TResponse>` for requests.
-  - `NotificationHandlerBase<TNotification>` for notifications.
+- **Asynchronous dispatch contracts**:
+  - `RequestHandlerBase<TRequest, TResponse>` returns `Task<Result<TResponse>>`.
+  - `NotificationHandlerBase<TNotification>` returns `Task<Result>`.
+  - Source-generated `[Handle]` methods may be synchronous or asynchronous; generated bridges use the asynchronous contracts.
 - **Shared Pipeline Behaviors**: For validation, retry, timeout, and custom logic, applicable to both systems.
 - **Execution Modes (Notifier)**: Sequential (default), concurrent, or fire-and-forget, configurable per notification.
 - **Per-Handler Policies**: Timeout, retry, and chaos injection policies via attributes.
 - **Progress Reporting**: Via `IProgress<ProgressReport>` in `SendOptions` (requests) and `PublishOptions` (notifications).
 - **Automatic Discovery**: Handler and validator discovery via assembly scanning for both systems.
 
-### Architecture
+## Architecture
 
-The `Requester` and `Notifier` systems are built around their respective interfaces: `IRequester` for dispatching requests to a single handler, and `INotifier` for dispatching notifications to multiple handlers in a pub/sub model. Requests inherit from `RequestBase<TValue>`, and notifications inherit from `NotificationBase`, both providing metadata for tracking. Handlers implement `IRequestHandler<TRequest, TValue>` for requests (returning `Result<TValue>`) and `INotificationHandler<TNotification>` for notifications (returning `Result`). Shared behaviors implement `IPipelineBehavior<TRequest, TResponse>`, applying cross-cutting concerns like validation or retries. The `RequesterBuilder` and `NotifierBuilder` configure their respective systems, allowing registration of handlers and behaviors via a fluent API, including automatic discovery of validators embedded in messages.
+`IRequester` dispatches a request to one handler, while `INotifier` dispatches a notification to
+multiple handlers. Manual messages normally derive from `RequestBase<TValue>` or `NotificationBase`;
+source-generated messages receive the corresponding base type. Handlers return `Result<TValue>` or
+`Result`, and shared `IPipelineBehavior<TRequest, TResponse>` implementations wrap dispatch. The
+builders register handlers, behaviors, and discovered validators.
 
 ```mermaid
 classDiagram
@@ -87,8 +96,8 @@ classDiagram
         +bool IsFailure
     }
 
-    class IResultT {
-        <<interface>>
+    class IResultGeneric {
+        <<IResult of T>>
         +TValue Value
     }
 
@@ -167,9 +176,12 @@ classDiagram
 
     IRequester <|.. Requester
     INotifier <|.. Notifier
-    IResult <|-- IResultT
+    IResult <|-- IResultGeneric
     IResult ..> IResultError : contains
-    IResultT <|.. ResultT : Result<Unit> for null results
+    class ResultGeneric {
+        <<Result of T>>
+    }
+    IResultGeneric <|.. ResultGeneric
     IRequest <|.. RequestBase
     INotification <|.. NotificationBase
     IPipelineBehavior <|.. PipelineBehaviorBase
@@ -182,15 +194,15 @@ classDiagram
     Notifier --> IPipelineBehavior : uses
     Notifier --> IHandlerCache : uses
     Notifier --> INotificationHandler : uses
-    RequestBase --> IResultT : returns
-    NotificationBase --> IResult : returns
+    RequestHandlerBase --> IResultGeneric : returns
+    NotificationHandlerBase --> IResult : returns
 ```
 
-### Use Cases
+## Use Cases
 
 - **Requester**:
   - Creating a customer (`Result<Unit>`).
-  - Updating a customer’s email (`Result<string>`).
+  - Updating a customer's email (`Result<string>`).
   - Fetching customer details (`Result<CustomerDto>`).
   - Applying retry/timeout policies to critical operations.
   - Processing generic entities (e.g., `SaveEntityRequest<TEntity>`).
@@ -200,13 +212,69 @@ classDiagram
   - Updating caches in a fire-and-forget manner after data changes.
   - Broadcasting system events to multiple subscribers (e.g., audit logging, metrics collection).
 
+## Basic Usage
+
+Register handler discovery and the behaviors needed by each dispatcher:
+
+```csharp
+services.AddRequester()
+    .AddHandlers()
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>));
+
+services.AddNotifier()
+    .AddHandlers()
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>));
+```
+
+Dispatch a request and publish a notification, checking each result before using it:
+
+```csharp
+var requestResult = await requester.SendAsync(
+    new DoSomethingCommand { Message = "Index customer records" },
+    cancellationToken: cancellationToken);
+
+if (requestResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        Environment.NewLine,
+        requestResult.Errors.Select(error => error.Message)));
+    return;
+}
+
+var notificationResult = await notifier.PublishAsync(
+    new UserRegisteredNotification
+    {
+        UserId = Guid.Parse("5f6b5ba2-85d5-44bb-87a7-f876a65cdb09"),
+        Email = "ada@example.test"
+    },
+    cancellationToken: cancellationToken);
+
+if (notificationResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        Environment.NewLine,
+        notificationResult.Errors.Select(error => error.Message)));
+    return;
+}
+
+Console.WriteLine("Request and notification completed.");
+```
+
+The success path ends with:
+
+```text
+Request and notification completed.
+```
+
 ---
 
 ## Part 1: Requester
 
-### Basic Usage
+### Basic usage
 
-#### Request Dispatching
+#### Request dispatching
 
 ```csharp
 // Creating a command
@@ -236,7 +304,7 @@ if (queryResult.IsSuccess)
 }
 ```
 
-#### Command with Unit Result
+#### Command with unit result
 
 ```csharp
 public class DoSomethingCommand : RequestBase<Unit>
@@ -264,7 +332,7 @@ public class DoSomethingCommandHandler : RequestHandlerBase<DoSomethingCommand, 
 }
 ```
 
-#### Query with Value Result
+#### Query with value result
 
 ```csharp
 public class User : IEntity
@@ -289,7 +357,7 @@ public class GetUserQuery : RequestBase<User>
     }
 }
 
-[HandlerTimeout(5000)] // Timeout after 500ms
+[HandlerTimeout(5000)] // Timeout after 5 seconds
 public class GetUserQueryHandler : RequestHandlerBase<GetUserQuery, User>
 {
     private readonly IGenericReadOnlyRepository<User> userRepository;
@@ -309,7 +377,7 @@ public class GetUserQueryHandler : RequestHandlerBase<GetUserQuery, User>
 }
 ```
 
-#### FluentValidation Setup in Requests
+#### FluentValidation setup in requests
 
 Requests can include a nested `Validator` class that extends `FluentValidation.AbstractValidator<TRequest>`. The `RequesterBuilder` automatically discovers these validators during assembly scanning and registers them for use with the `ValidationPipelineBehavior`.
 
@@ -330,7 +398,7 @@ public class CreateCustomerCommand : RequestBase<string>
 }
 ```
 
-#### Validation Behavior
+#### Validation behavior
 
 The `ValidationPipelineBehavior` is a pipeline behavior that automatically validates requests using FluentValidation if a validator is registered. It runs before the handler, ensuring validation errors are caught early.
 
@@ -338,7 +406,7 @@ The `ValidationPipelineBehavior` is a pipeline behavior that automatically valid
 // Ensure the ValidationPipelineBehavior is registered
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>));
 
 // Example request with validation
 public class UpdateEmailCommand : RequestBase<string>
@@ -366,7 +434,7 @@ public class UpdateEmailCommandHandler : RequestHandlerBase<UpdateEmailCommand, 
 }
 ```
 
-#### Using SendOptions
+#### Using `SendOptions`
 
 ```csharp
 var requester = provider.GetRequiredService<IRequester>();
@@ -392,7 +460,7 @@ catch (Exception ex)
 }
 ```
 
-#### Request Metadata and Cancellation
+#### Request metadata and cancellation
 
 ```csharp
 public class CancelableCommand : RequestBase<Unit>
@@ -414,7 +482,7 @@ var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 var result = await requester.SendAsync(new CancelableCommand { TaskId = Guid.NewGuid() }, cancellationToken: cts.Token);
 ```
 
-#### Best Practices
+#### Practices
 
 1. **Early Returns**: Check `result.IsSuccess` early to avoid unnecessary processing.
 
@@ -437,16 +505,16 @@ var result = await requester.SendAsync(new CancelableCommand { TaskId = Guid.New
    ```csharp
    services.AddRequester()
        .AddHandlers()
-       .WithBehavior<ValidationPipelineBehavior<,>>()
-       .WithBehavior<TransactionPipelineBehavior<,>>()
-       .WithBehavior<RetryPipelineBehavior<,>>();
+       .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+       .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
+       .WithBehavior(typeof(RetryPipelineBehavior<,>));
    ```
 
-### Configuring Behavior Options
+### Configuring behavior options
 
 The `Requester` and `Notifier` systems support configuring default options for various pipeline behaviors through a fluent API. These options can be configured globally to provide default values that are used when handler-specific attributes don't specify them. This allows for centralized configuration of cross-cutting concerns like retries, timeouts, and circuit breakers.
 
-#### Available Options
+#### Available options
 
 The following options can be configured:
 
@@ -456,30 +524,33 @@ The following options can be configured:
 - **ChaosOptions**: Configure default chaos injection behavior (injection rate, enabled state).
 - **DatabaseTransactionOptions** (EntityFramework): Configure default database transaction behavior (context name).
 
-#### Configuration Methods
+#### Configuration methods
 
 Each option type has two configuration methods:
 
 1. **Parameter-based**: Pass specific values directly.
 2. **Action-based**: Pass a configuration action for more flexibility.
 
-Additionally, a generic `WithBehaviorOptions<TOptions>` method allows configuring any option type using an action delegate.
+The generic `WithBehaviorOptions<TOptions>` method configures an option type through an action delegate.
 
-#### RetryOptions Configuration
+#### `RetryOptions` configuration
 
 Configure default retry behavior for handlers with the `HandlerRetryAttribute`:
+
+`RetryPipelineBehavior` retries thrown exceptions. A handler that returns a failed `Result` is not
+retried.
 
 ```csharp
 // Using parameters
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithRetryOptions(defaultCount: 3, defaultDelay: 100);
 
 // Using action
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithRetryOptions(options =>
     {
         options.DefaultCount = 3;
@@ -492,27 +563,31 @@ public class MyCommandHandler : RequestHandlerBase<MyCommand, Unit>
 {
     protected override Task<Result<Unit>> HandleAsync(MyCommand request, SendOptions options, CancellationToken cancellationToken)
     {
-        // Handler logic with automatic retry on failure
+        // Exceptions from this handler are retried; failed Result values are returned as-is
         return Task.FromResult(Result<Unit>.Success(Unit.Value));
     }
 }
 ```
 
-#### TimeoutOptions Configuration
+#### `TimeoutOptions` configuration
 
 Configure default timeout duration for handlers with the `HandlerTimeoutAttribute`:
+
+The pessimistic timeout bounds how long the pipeline awaits the handler, but it does not replace or
+cancel the handler's original token. The underlying operation can continue after a timeout unless it
+has another cancellation mechanism.
 
 ```csharp
 // Using parameter
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>))
     .WithTimeoutOptions(defaultDuration: 5000); // 5 seconds
 
 // Using action
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>))
     .WithTimeoutOptions(options => options.DefaultDuration = 5000);
 
 // Handler usage
@@ -527,7 +602,7 @@ public class MyQueryHandler : RequestHandlerBase<MyQuery, User>
 }
 ```
 
-#### CircuitBreakerOptions Configuration
+#### `CircuitBreakerOptions` configuration
 
 Configure default circuit breaker behavior for handlers with the `HandlerCircuitBreakerAttribute`:
 
@@ -535,7 +610,7 @@ Configure default circuit breaker behavior for handlers with the `HandlerCircuit
 // Using parameters
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<CircuitBreakerPipelineBehavior<,>>()
+    .WithBehavior(typeof(CircuitBreakerPipelineBehavior<,>))
     .WithCircuitBreakerOptions(
         defaultAttempts: 5,
         defaultBreakDurationSeconds: 60,
@@ -545,7 +620,7 @@ services.AddRequester()
 // Using action
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<CircuitBreakerPipelineBehavior<,>>()
+    .WithBehavior(typeof(CircuitBreakerPipelineBehavior<,>))
     .WithCircuitBreakerOptions(options =>
     {
         options.DefaultAttempts = 5;
@@ -566,7 +641,7 @@ public class ExternalApiCommandHandler : RequestHandlerBase<ExternalApiCommand, 
 }
 ```
 
-#### ChaosOptions Configuration
+#### `ChaosOptions` configuration
 
 Configure default chaos injection behavior for handlers with the `HandlerChaosAttribute`:
 
@@ -574,13 +649,13 @@ Configure default chaos injection behavior for handlers with the `HandlerChaosAt
 // Using parameters
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ChaosPipelineBehavior<,>>()
+    .WithBehavior(typeof(ChaosPipelineBehavior<,>))
     .WithChaosOptions(defaultInjectionRate: 0.1, defaultEnabled: false); // 10% injection rate, disabled by default
 
 // Using action
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ChaosPipelineBehavior<,>>()
+    .WithBehavior(typeof(ChaosPipelineBehavior<,>))
     .WithChaosOptions(options =>
     {
         options.DefaultInjectionRate = 0.1;
@@ -599,7 +674,7 @@ public class TestCommandHandler : RequestHandlerBase<TestCommand, Unit>
 }
 ```
 
-#### DatabaseTransactionOptions Configuration (EntityFramework)
+#### `DatabaseTransactionOptions` configuration (Entity Framework)
 
 Configure default database transaction behavior for handlers with the `HandlerDatabaseTransactionAttribute`:
 
@@ -607,13 +682,13 @@ Configure default database transaction behavior for handlers with the `HandlerDa
 // Using parameter
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<DatabaseTransactionPipelineBehavior<,>>()
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
     .WithDatabaseTransactionOptions(defaultContextName: "Core"); // Default to "CoreDbContext"
 
 // Using action
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<DatabaseTransactionPipelineBehavior<,>>()
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
     .WithDatabaseTransactionOptions(options => options.DefaultContextName = "Core");
 
 // Handler usage
@@ -638,44 +713,44 @@ public class UpdateUserCommandHandler : RequestHandlerBase<UpdateUserCommand, Un
 }
 ```
 
-#### Generic BehaviorOptions Configuration
+#### Generic `BehaviorOptions` configuration
 
 Use the generic `WithBehaviorOptions<TOptions>` method to configure any option type:
 
 ```csharp
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithBehaviorOptions<RetryOptions>(options =>
     {
         options.DefaultCount = 3;
         options.DefaultDelay = 100;
     })
-    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>))
     .WithBehaviorOptions<TimeoutOptions>(options => options.DefaultDuration = 5000);
 ```
 
-#### Fluent API Chaining
+#### Fluent API chaining
 
 All option configuration methods return the builder instance, enabling fluent API chaining:
 
 ```csharp
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>()
-    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithRetryOptions(3, 100)
-    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>))
     .WithTimeoutOptions(5000)
-    .WithBehavior<CircuitBreakerPipelineBehavior<,>>()
+    .WithBehavior(typeof(CircuitBreakerPipelineBehavior<,>))
     .WithCircuitBreakerOptions(5, 60, 1000, true)
-    .WithBehavior<ChaosPipelineBehavior<,>>()
+    .WithBehavior(typeof(ChaosPipelineBehavior<,>))
     .WithChaosOptions(0.1, false)
-    .WithBehavior<DatabaseTransactionPipelineBehavior<,>>()
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>))
     .WithDatabaseTransactionOptions("Core");
 ```
 
-#### Configuration Priority
+#### Configuration priority
 
 When both default options and handler attributes are present, the handler attribute values take precedence:
 
@@ -683,7 +758,7 @@ When both default options and handler attributes are present, the handler attrib
 // Configure defaults
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithRetryOptions(3, 100); // Default: 3 retries with 100ms delay
 
 // Handler with specific values
@@ -707,23 +782,23 @@ public class StandardCommandHandler : RequestHandlerBase<StandardCommand, Unit>
 }
 ```
 
-#### Notifier Options Configuration
+#### Notifier options configuration
 
 The same options configuration methods are available for the `Notifier` system:
 
 ```csharp
 services.AddNotifier()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>()
-    .WithBehavior<RetryPipelineBehavior<,>>()
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
     .WithRetryOptions(3, 100)
-    .WithBehavior<TimeoutPipelineBehavior<,>>()
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>))
     .WithTimeoutOptions(5000);
 ```
 
 ### Examples
 
-#### Command Handling Example
+#### Command handling example
 
 ```csharp
 public class DoSomethingCommand : RequestBase<Unit>
@@ -762,7 +837,7 @@ else
 }
 ```
 
-#### Query Handling Example
+#### Query handling example
 
 ```csharp
 public class User : IEntity
@@ -786,7 +861,7 @@ public class GetUserQuery : RequestBase<User>
     }
 }
 
-[HandlerTimeout(5000)] // Timeout after 500ms
+[HandlerTimeout(5000)] // Timeout after 5 seconds
 public class GetUserQueryHandler : RequestHandlerBase<GetUserQuery, User>
 {
     private readonly IGenericReadOnlyRepository<User> userRepository;
@@ -822,11 +897,14 @@ else
 
 ## Part 2: Notifier
 
-### Overview
+### Notifier overview
 
-The `Notifier` system complements the `Requester` by providing a publish/subscribe (pub/sub) model for handling notifications. Unlike requests, which are dispatched to a single handler, notifications are dispatched to multiple handlers, enabling scenarios where multiple components need to react to a domain event (e.g., user registration, system updates). The `Notifier` shares the same pipeline behaviors as the `Requester`, ensuring consistency in cross-cutting concerns like validation and retries. It supports configurable execution modes (sequential, concurrent, fire-and-forget) to control how handlers are invoked, and it returns a non-generic `Result` to aggregate outcomes from all handlers.
+The `Notifier` system complements the `Requester` with a publish/subscribe model. Unlike requests,
+notifications are dispatched to multiple handlers. The notifier supports sequential, concurrent, and
+fire-and-forget execution and returns `IResult`. Sequential and concurrent modes aggregate completed
+handler outcomes; fire-and-forget returns success after scheduling the handlers.
 
-#### Challenges Addressed by Notifier
+#### Challenges addressed by Notifier
 
 - **Multiple Handler Coordination**: Coordinating multiple handlers for a single notification, with options for sequential, concurrent, or fire-and-forget execution.
 - **Consistent Error Handling**: Aggregating errors from multiple handlers into a single `Result` while preserving context.
@@ -838,23 +916,23 @@ The `Notifier` system complements the `Requester` by providing a publish/subscri
 The `Notifier` system addresses these challenges by:
 
 1. Providing a central `INotifier` interface for publishing notifications to multiple handlers.
-2. Aggregating handler outcomes into a non-generic `Result`, indicating overall success or failure.
+2. Aggregating handler outcomes into an `IResult` for sequential and concurrent publication.
 3. Supporting three execution modes (sequential, concurrent, fire-and-forget) configurable via `PublishOptions`.
-4. Reusing the `Requester`’s pipeline behaviors for consistency in cross-cutting concerns.
+4. Reusing the `Requester` pipeline behaviors for the same cross-cutting behavior.
 
-#### Key Features Specific to Notifier
+#### Key features specific to Notifier
 
 - **Pub/Sub Model**: Dispatches notifications to multiple handlers.
 - **Execution Modes**:
   - **Sequential**: Handlers run one after another, stopping on the first failure (default).
   - **Concurrent**: Handlers run in parallel, with results aggregated.
   - **Fire-and-Forget**: Handlers are invoked without awaiting completion, returning immediately.
-- **Non-Generic Result**: Returns a `Result` (without a value) to aggregate outcomes from all handlers.
+- **Non-generic result**: Returns `IResult`; completed handler outcomes are represented by `Result`.
 - **Shared Behaviors**: Uses the same pipeline behaviors as `Requester` (e.g., validation, retries).
 
-### Basic Usage
+### Basic usage
 
-#### Notification Dispatching
+#### Notification dispatching
 
 ```csharp
 // Creating a notification
@@ -875,7 +953,7 @@ else
 }
 ```
 
-#### Notification with Multiple Handlers
+#### Notification with multiple handlers
 
 ```csharp
 public class UserRegisteredNotification : NotificationBase
@@ -937,7 +1015,7 @@ else
 }
 ```
 
-#### FluentValidation Setup in Notifications
+#### FluentValidation setup in notifications
 
 Notifications, like requests, can include a nested `Validator` class that extends `FluentValidation.AbstractValidator<TNotification>`. The `NotifierBuilder` automatically discovers these validators during assembly scanning and registers them for use with the `ValidationPipelineBehavior`.
 
@@ -958,7 +1036,7 @@ public class EmailSentNotification : NotificationBase
 }
 ```
 
-#### Using PublishOptions
+#### Using `PublishOptions`
 
 ```csharp
 var notifier = provider.GetRequiredService<INotifier>();
@@ -983,7 +1061,7 @@ else
 }
 ```
 
-#### Notification Metadata and Cancellation
+#### Notification metadata and cancellation
 
 ```csharp
 public class SystemEventNotification : NotificationBase
@@ -1005,12 +1083,12 @@ var cts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
 var result = await notifier.PublishAsync(new SystemEventNotification { EventType = "SystemStarted" }, cancellationToken: cts.Token);
 ```
 
-#### Best Practices
+#### Practices
 
 1. **Execution Mode Selection**:
-   - Use `Sequential` for ordered processing where one handler’s failure should stop others.
+   - Use `Sequential` for ordered processing when one handler's failure must stop the remaining handlers.
    - Use `Concurrent` for performance when handlers can run independently.
-   - Use `FireAndForget` for non-critical tasks where immediate return is needed.
+   - Use `FireAndForget` only when the caller does not need completion or failure information from handlers.
 
    ```csharp
    var options = new PublishOptions { ExecutionMode = ExecutionMode.Concurrent };
@@ -1035,13 +1113,13 @@ var result = await notifier.PublishAsync(new SystemEventNotification { EventType
    ```csharp
    services.AddNotifier()
        .AddHandlers()
-       .WithBehavior<ValidationPipelineBehavior<,>>()
-       .WithBehavior<RetryPipelineBehavior<,>>();
+       .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+       .WithBehavior(typeof(RetryPipelineBehavior<,>));
    ```
 
 ### Examples
 
-#### Notification with Sequential Execution
+#### Notification with sequential execution
 
 ```csharp
 public class UserRegisteredNotification : NotificationBase
@@ -1084,7 +1162,7 @@ public class LogUserRegistrationHandler : NotificationHandlerBase<UserRegistered
 // Register the Notifier with ValidationPipelineBehavior
 services.AddNotifier()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>));
 
 var notification = new UserRegisteredNotification
 {
@@ -1103,7 +1181,7 @@ else
 }
 ```
 
-#### Notification with Concurrent Execution
+#### Notification with concurrent execution
 
 ```csharp
 // Using the same UserRegisteredNotification as above
@@ -1124,7 +1202,7 @@ else
 }
 ```
 
-#### Notification with Fire-and-Forget Execution
+#### Notification with fire-and-forget execution
 
 ```csharp
 public class CacheUpdateNotification : NotificationBase
@@ -1151,13 +1229,16 @@ var result = await notifier.PublishAsync(new CacheUpdateNotification
 Console.WriteLine("Notification dispatched in fire-and-forget mode.");
 ```
 
+The returned result confirms dispatch only. It does not contain handler failures, and the supplied
+cancellation token must remain valid long enough for scheduled handlers that observe it.
+
 ---
 
-## Part 3: Pipeline Behaviors
+## Part 3: pipeline behaviors
 
-### Basic Usage
+### Basic usage
 
-#### Configuring Behaviors
+#### Configuring behaviors
 
 Pipeline behaviors can be added to both the `Requester` and `Notifier` systems to handle cross-cutting concerns. They are registered using the fluent API during system configuration and are shared between the two systems for consistency.
 
@@ -1165,18 +1246,18 @@ Pipeline behaviors can be added to both the `Requester` and `Notifier` systems t
 // Adding validation, retry, and timeout behaviors for both Requester and Notifier
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>()
-    .WithBehavior<RetryPipelineBehavior<,>>()
-    .WithBehavior<TimeoutPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 
 services.AddNotifier()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>()
-    .WithBehavior<RetryPipelineBehavior<,>>()
-    .WithBehavior<TimeoutPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>))
+    .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 ```
 
-#### Creating a Custom Behavior
+#### Creating a custom behavior
 
 You can create custom pipeline behaviors to add your own cross-cutting concerns. To do so, inherit from `PipelineBehaviorBase<TRequest, TResponse>` and implement the required methods. The behavior can be used by both `Requester` and `Notifier`.
 
@@ -1194,9 +1275,9 @@ public class LoggingPipelineBehavior<TRequest, TResponse> : PipelineBehaviorBase
 
     protected override async Task<TResponse> Process(TRequest request, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken)
     {
-        this.Logger.LogInformation($"Processing request: {request.GetType().Name}");
+        this.Logger.LogInformation("Processing message {MessageType}", request.GetType().Name);
         var result = await next();
-        this.Logger.LogInformation($"Message processed: {result.IsSuccess}");
+        this.Logger.LogInformation("Message processed (success={IsSuccess})", result.IsSuccess);
         return result;
     }
 
@@ -1205,16 +1286,16 @@ public class LoggingPipelineBehavior<TRequest, TResponse> : PipelineBehaviorBase
 
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<LoggingPipelineBehavior<,>>();
+    .WithBehavior(typeof(LoggingPipelineBehavior<,>));
 
 services.AddNotifier()
     .AddHandlers()
-    .WithBehavior<LoggingPipelineBehavior<,>>();
+    .WithBehavior(typeof(LoggingPipelineBehavior<,>));
 ```
 
 ### Examples
 
-#### Progress Reporting
+#### Progress reporting
 
 - Allows handlers and behaviors to report progress during message processing using the `SendOptions.Progress` property.
 - Useful for long-running operations where you want to provide feedback to the caller.
@@ -1272,8 +1353,7 @@ public class UpdateUserCommand : RequestBase<Unit>
     }
 }
 
-[HandlerDatabaseTransaction(contextName: "Core")]   // Uses "Core" DbContext
-// or [HandlerDatabaseTransaction<CoreDbContext>()] // Often not usable as Application layer does not know about DbContext types in the Infrastructure layer
+[HandlerDatabaseTransaction(contextName: "Core")] // Resolves CoreDbContext by its logical name
 public class UpdateUserCommandHandler : RequestHandlerBase<UpdateUserCommand, Unit>
 {
     private readonly IGenericRepository<User> userRepository;
@@ -1298,17 +1378,17 @@ public class UpdateUserCommandHandler : RequestHandlerBase<UpdateUserCommand, Un
 }
 
 // Register the behavior
-services.AddDbContext<MyDbContext>(options => options.UseSqlServer("connection_string"));
+services.AddSqlServerDbContext<CoreDbContext>("connection_string");
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>()
-    .WithBehavior<TransactionPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(DatabaseTransactionPipelineBehavior<,>));
 ```
 
 #### ChaosPipelineBehavior
 
 - Injects random failures to test system resilience.
-- Configured with `HandlerChaosAttribute` to specify the injection rate and whether it’s enabled.
+- Configure `HandlerChaosAttribute` with the injection rate and enabled state.
 
 ```csharp
 // Command to test chaos
@@ -1327,13 +1407,17 @@ public class TestChaosCommandHandler : RequestHandlerBase<TestChaosCommand, Unit
 // Register the behavior
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ChaosPipelineBehavior<,>>();
+    .WithBehavior(typeof(ChaosPipelineBehavior<,>));
 ```
 
 #### CircuitBreakerPipelineBehavior
 
 - Implements a circuit breaker pattern to prevent repeated failures.
 - Configured with `HandlerCircuitBreakerAttribute` to specify attempts, break duration, and backoff settings.
+
+The current implementation wraps the breaker in `WaitAndRetryForeverAsync`. Exception paths continue
+retrying with the configured backoff until an attempt succeeds or the caller cancels. Failed `Result`
+values do not count as breaker failures.
 
 ```csharp
 // Command for a critical operation
@@ -1352,7 +1436,7 @@ public class CriticalOperationCommandHandler : RequestHandlerBase<CriticalOperat
 // Register the behavior
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<CircuitBreakerPipelineBehavior<,>>();
+    .WithBehavior(typeof(CircuitBreakerPipelineBehavior<,>));
 ```
 
 #### CacheInvalidatePipelineBehavior
@@ -1376,7 +1460,7 @@ public class ClearUserCacheCommandHandler : RequestHandlerBase<ClearUserCacheCom
 // Register the behavior
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<CacheInvalidatePipelineBehavior<,>>();
+    .WithBehavior(typeof(CacheInvalidatePipelineBehavior<,>));
 ```
 
 #### AuthorizationPolicyPipelineBehavior
@@ -1403,8 +1487,17 @@ public class CreateCustomerCommandHandler
 // Register the behavior early (before retry/timeout)
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<AuthorizationPolicyPipelineBehavior<,>>()
+    .WithBehavior(typeof(AuthorizationPolicyPipelineBehavior<,>));
 ```
+
+Both authorization behaviors are provided by `Presentation.Web` and require an
+`ICurrentUserAccessor` that exposes the current principal. Policy authorization also requires
+ASP.NET Core authorization services.
+
+> **Current limitation:** the denial path creates a non-generic `Result`. That is compatible with a
+> Notifier `IResult` pipeline but not with Requester's typed `IResult<T>` pipeline. Do not rely on the
+> Requester examples below to return a typed unauthorized or forbidden result until that conversion is
+> corrected in the implementation.
 
 #### AuthorizationRolesPipelineBehavior
 
@@ -1430,21 +1523,21 @@ public class DeleteCustomerCommandHandler
 // Register the behavior early (before retry/timeout)
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<AuthorizationRolesPipelineBehavior<,>>()
+    .WithBehavior(typeof(AuthorizationRolesPipelineBehavior<,>));
 ```
 
 ---
 
-## Appendix A: CQS Pattern
+## Appendix A: CQS pattern
 
 The Command-Query Separation (CQS) pattern is a design principle that separates operations into two distinct categories: commands and queries. Introduced by Bertrand Meyer as part of his work on the Eiffel programming language, CQS aims to improve code clarity, maintainability, and predictability by enforcing a clear distinction between operations that modify state and those that retrieve data.
 
-### General Pattern
+### General pattern
 
 In the CQS pattern:
 
-- **Commands**: Operations that modify the state of the system but do not return a value. Commands are responsible for performing actions, such as updating a database, sending an email, or changing an object's state. For example, a method like `UpdateUser(userId, newName)` would be a command because it modifies the user’s name but does not return a result.
-- **Queries**: Operations that retrieve data from the system without modifying its state. Queries are responsible for fetching information, such as retrieving a user’s details or calculating a total. For example, a method like `GetUser(userId)` would be a query because it returns the user’s data without altering the system.
+- **Commands**: Operations that change system state without returning a value. For example, `UpdateUser(userId, newName)` changes the user's name and does not return data.
+- **Queries**: Operations that retrieve data without changing system state. For example, `GetUser(userId)` returns user data without updating it.
 
 The key principle of CQS is that a method should either be a command or a query, but not both. This separation ensures that:
 
@@ -1453,19 +1546,19 @@ The key principle of CQS is that a method should either be a command or a query,
 
 This distinction leads to several benefits:
 
-- **Predictability**: Developers can easily understand whether a method will change the system’s state or simply return data, reducing the risk of unexpected side effects.
-- **Testability**: Queries, being side-effect-free, are easier to test because their output depends only on their input and the system’s state. Commands can be tested by verifying state changes.
+- **Predictability**: The request type shows whether an operation changes state or returns data.
+- **Testability**: Query tests compare output with the supplied input and system state. Command tests verify the resulting state change.
 - **Maintainability**: Separating concerns makes the codebase easier to navigate and modify, as commands and queries have distinct roles.
 - **Scalability**: Queries can be optimized (e.g., through caching) without affecting commands, and commands can be audited or logged independently of queries.
 
-### CQS in Practice
+### CQS in practice
 
 In practice, adhering strictly to CQS can sometimes be challenging, especially in scenarios where a command might need to return a value (e.g., the ID of a newly created resource). To address this, variations like Command-Query Responsibility Segregation (CQRS) extend CQS by allowing commands to return minimal data (e.g., a success status or identifier) while maintaining separation between state-changing and data-retrieving operations.
 
 The `Requester` feature aligns with the CQS pattern by providing a structured way to handle commands and queries:
 
 - **Commands**: Represented as requests that return `Result<Unit>`, focusing on state modification without returning meaningful data. For example, a `CreateUserCommand` might update a database and return `Result<Unit>.Success(Unit.Value)` to indicate success.
-- **Queries**: Represented as requests that return `Result<TValue>`, focusing on data retrieval without modifying state. For example, a `GetUserQuery` might return `Result<User>` with the user’s details.
+- **Queries**: Requests that return `Result<TValue>` without modifying state. For example, `GetUserQuery` can return `Result<User>` with the user details.
 
 This alignment offers several benefits:
 
@@ -1473,13 +1566,16 @@ This alignment offers several benefits:
 - **Predictability**: Commands modify state without returning data, while queries return data without modifying state, reducing side effects.
 - **Scalability**: Separating concerns allows for better optimization, such as caching query results or applying different behaviors to commands and queries.
 
-By using the `Requester` feature, you can enforce CQS principles, ensuring a clean and predictable request-handling architecture. For example, pipeline behaviors like `ValidationPipelineBehavior` can be applied to both commands and queries, while `RetryPipelineBehavior` might be more relevant for commands that interact with external systems.
+Requester supports a CQS organization but does not enforce whether a request changes state. Application
+code remains responsible for keeping command and query semantics distinct. Behaviors such as
+`ValidationPipelineBehavior` can apply to both categories.
 
 ---
 
-## Appendix B: Comparison with MediatR
+## Appendix B: comparison with MediatR
 
-The `Requester` and `Notifier` systems share similarities with the popular **MediatR** library but offer distinct features tailored to specific needs:
+Requester and Notifier share several concepts with **MediatR**, but their public contracts and
+configuration differ:
 
 - **Similarities**:
   - Both support request/response (`IRequest<TResponse>`) and pub/sub (`INotification`) patterns for dispatching messages to handlers.
@@ -1487,20 +1583,20 @@ The `Requester` and `Notifier` systems share similarities with the popular **Med
   - Both integrate with dependency injection for handler resolution.
 
 - **Differences**:
-  - **Execution Modes (Notifier)**: The `Notifier` supports sequential, concurrent, and fire-and-forget execution modes for notifications, while MediatR processes notifications sequentially by default with no built-in concurrency options.
+  - **Execution modes (Notifier)**: Notifier selects sequential, concurrent, or fire-and-forget execution per `PublishOptions`. [MediatR configures its notification publisher](https://github.com/LuckyPennySoftware/MediatR/blob/main/src/MediatR/MicrosoftExtensionsDI/MediatrServiceConfiguration.cs), defaulting to `ForeachAwaitPublisher` and allowing alternatives such as `TaskWhenAllPublisher`; that selection is service configuration rather than a per-publication option.
   - **Built-in Behaviors**: `Requester` and `Notifier` provide pre-built behaviors (e.g., retry, timeout, chaos injection) via attributes, whereas MediatR requires custom implementation of such features.
   - **Result Type**: `Requester` uses `Result<TValue>` and `Notifier` uses `Result` for consistent error handling, while MediatR allows handlers to return any type, leaving error handling to the user.
   - **Metadata**: `RequestBase<TValue>` and `NotificationBase` include built-in metadata (`RequestId`, `NotificationId`, timestamps), which MediatR lacks by default.
 
 ---
 
-## Appendix C: Generic Handlers in Requester and Notifier
+## Appendix C: Generic handlers in Requester and Notifier
 
 ### Overview
 
 Generic handlers in the `Requester` and `Notifier` systems enable handling of generic request/notification types (e.g., `GenericRequest<TData>`, `GenericNotification<TData>`) with a single handler, reducing code duplication. They are registered using `AddGenericHandlers`, which discovers open generic handlers, validates constraints, and registers closed handlers (e.g., `GenericDataProcessor<UserData>`).
 
-### Key Features
+### Key features
 
 - **Automatic Discovery**: `AddGenericHandlers` scans assemblies for open generic handlers and discovers type arguments based on constraints.
 - **Constraint Validation**: Ensures type arguments meet constraints (e.g., `where TData : class, IDataItem`).
@@ -1513,7 +1609,7 @@ Generic handlers in the `Requester` and `Notifier` systems enable handling of ge
 services.AddRequester()
     .AddHandlers()
     .AddGenericHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>));
 ```
 
 #### Notifier
@@ -1522,14 +1618,14 @@ services.AddRequester()
 services.AddNotifier()
     .AddHandlers()
     .AddGenericHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>));
 ```
 
 `AddGenericHandlers` discovers open generic handlers (e.g., `GenericDataProcessor<TData>`), finds type arguments (e.g., `UserData`, `OrderData`) that satisfy constraints, and registers closed handlers.
 
 ### Examples
 
-#### Generic Request Handler (Requester)
+#### Generic request handler (Requester)
 
 ```csharp
 public class ProcessDataRequest<TData> : RequestBase<string>
@@ -1566,7 +1662,7 @@ var userRequest = new ProcessDataRequest<UserData> { Data = new UserData { Id = 
 var result = await requester.SendAsync(userRequest); // "Processed: user123"
 ```
 
-#### Generic Notification Handler (Notifier)
+#### Generic notification handler (Notifier)
 
 ```csharp
 public class GenericNotification<TData> : NotificationBase
@@ -1603,11 +1699,11 @@ var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: u
 
 ---
 
-## Appendix D: Source-Generated Commands, Queries, and Events
+## Appendix D: Source-generated commands, queries, and events
 
 The source-generated authoring model lets you write a command, query, or event as a single partial type. This is a convenient way to define simple request/notification flows without needing separate message and handler classes. The source generators create the necessary boilerplate code, allowing you to focus on the business logic.
 
-### Quick Start
+### Quick start
 
 > Add the `BridgingIT.DevKit.Common.Utilities.CodeGen` package as an analyzer reference in the application project that contains the commands and queries.
 
@@ -1629,7 +1725,7 @@ For a package reference, use:
                   PrivateAssets="all" />
 ```
 
-### Command Without Response
+### Command without response
 
 ```csharp
 [Command]
@@ -1648,7 +1744,7 @@ public partial class DoSomethingCommand
 }
 ```
 
-### Command With Response
+### Command with response
 
 ```csharp
 public sealed class CreateUserCommandResult
@@ -1687,7 +1783,7 @@ public partial class CreateUserCommand
 }
 ```
 
-### Query With Response
+### Query with response
 
 ```csharp
 [Query]
@@ -1713,7 +1809,7 @@ public partial class GetUserQuery
 }
 ```
 
-### Complex Validation With `[Validate]`
+### Complex validation with `[Validate]`
 
 When a rule is more complex than a simple property validator, use `[Validate]`:
 
@@ -1747,7 +1843,7 @@ public partial class CreateOrderCommand
 - Existing handler policy attributes such as retry, timeout, authorization, and transactions still apply.
 - Generated validators continue to run through the normal Requester validation pipeline.
 
-### Event Quick Start
+### Event quick start
 
 Use `[Event]` to author a notification as a single partial type. Each `[Handle]` method becomes a generated `NotificationHandlerBase<TEvent>` implementation.
 
@@ -1778,7 +1874,7 @@ public partial class UserRegisteredEvent
 }
 ```
 
-### Event Validation With `[Validate]`
+### Event validation with `[Validate]`
 
 For more complex event validation, use `[Validate]` with an `InlineValidator<TEvent>`:
 
@@ -1805,7 +1901,7 @@ public partial class OrderImportedEvent
 }
 ```
 
-### Combining Generated and Manual Event Handlers
+### Combining generated and manual event handlers
 
 Generated handlers do not replace the normal notifier pub/sub model. You can use multiple generated `[Handle]` methods and still add more manual `INotificationHandler<TEvent>` subscribers.
 
@@ -1840,7 +1936,7 @@ public class CustomerSignedUpMetricsHandler : NotificationHandlerBase<CustomerSi
 }
 ```
 
-### Event Notes
+### Event notes
 
 - `[Event]` requires a top-level, non-generic, `partial` class.
 - Events can declare one or more `[Handle]` methods.

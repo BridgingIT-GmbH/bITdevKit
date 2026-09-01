@@ -1,4 +1,5 @@
-# Presentation Dashboard Feature Documentation
+
+# Presentation Dashboard
 
 > Host developer dashboard pages as a modular shell with pluggable RazorSlice pages, grouped navigation, and live-updating dashboard cards.
 
@@ -10,7 +11,7 @@ The Dashboard feature provides a server-rendered developer dashboard under a con
 
 Dashboard pages are Minimal API endpoints that render [RazorSlices](https://github.com/DamianEdwards/RazorSlices). Pages can also publish navigation metadata and an optional compact card for the dashboard index page. Cards are refreshed in-place by a dashboard HTML fragment endpoint, so the index can show current plugin state without reloading the full shell.
 
-### Challenges
+## Challenges
 
 - Extensibility: Let bITdevKit packages and application projects add dashboard pages without editing the dashboard shell.
 - Navigation: Keep the sidebar aware of plugged-in pages and group pages by feature area.
@@ -18,7 +19,7 @@ Dashboard pages are Minimal API endpoints that render [RazorSlices](https://gith
 - Live overview: Let plugin cards update on the dashboard index without a full page reload.
 - External assemblies: Support dashboard plugins that live outside `Presentation.Web`.
 
-### Solution
+## Solution
 
 - Shell: `AddDashboard(...)` registers the dashboard shell and discovers dashboard plugins.
 - Endpoints: `IDashboardEndpoints` marks endpoint classes that map dashboard routes.
@@ -27,9 +28,50 @@ Dashboard pages are Minimal API endpoints that render [RazorSlices](https://gith
 - Page sets: `DashboardPageSet` lets modules define multiple pages, content fragments, page-local actions, navigation, and cards from one builder.
 - Helpers: `MapDashboardPage(...)`, `DashboardPath.Combine(...)`, and `Results.Extensions.DashboardRazorSlice(...)` simplify plugin page mapping.
 
-## Core Contracts
+## Key Features
 
-- `DashboardEndpointsOptions` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptions.cs](src/Presentation.Web/Dashboard/DashboardEndpointsOptions.cs))
+- server-rendered dashboard shell with grouped sidebar navigation
+- automatic discovery of built-in and application-owned page plugins
+- page-set API for pages, fragments, cards, badges, and local actions
+- configurable automatic, anonymous, existing-scheme, cookie, or OIDC authorization
+- in-process health, metrics, identity, storage, jobs, messaging, and other feature pages
+- fragment refresh without full-page reloads
+- stable page keys for selectively hiding navigation and cards
+
+## Architecture
+
+`AddDashboard(...)` registers the shell and discovers dashboard endpoint and page-provider contracts. `app.MapEndpoints()` maps the shell and plugin routes. Page providers supply navigation and card metadata, while RazorSlice pages render full pages or HTML fragments directly from in-process services.
+
+## Use Cases
+
+- inspect application health, metrics, logs, jobs, and storage from one local operations UI
+- add a module-specific diagnostics or management page
+- expose lightweight live cards without building a separate SPA
+- package dashboard pages with a reusable feature assembly
+- reuse host authentication or configure a dashboard-specific interactive OIDC flow
+
+## Basic Usage
+
+Register the dashboard shell, build the application, and map the shared endpoint pipeline:
+
+```csharp
+using BridgingIT.DevKit.Presentation.Web.Dashboard;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDashboard(options => options
+    .WithGroupPath("/_bdk/dashboard"));
+
+var app = builder.Build();
+app.MapEndpoints();
+app.Run();
+```
+
+`GET /_bdk/dashboard` renders the dashboard index. The default `Auto` authorization mode allows anonymous access only when the host has no authentication schemes; when schemes exist, dashboard routes require authorization. Configure an explicit authorization mode for production hosts.
+
+## Core contracts
+
+- `DashboardEndpointsOptions` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptions.cs](../src/Presentation.Web/Dashboard/DashboardEndpointsOptions.cs))
   - `Enabled`: Enables or disables the dashboard.
   - `GroupPath`: Base dashboard path. Defaults to `/_bdk/dashboard`.
   - `GroupTag`: Endpoint group tag.
@@ -38,40 +80,40 @@ Dashboard pages are Minimal API endpoints that render [RazorSlices](https://gith
   - `SignOutAuthenticationSchemes`: Authentication schemes used by the dashboard sign-out route. If empty, sign-out uses the dashboard authentication schemes.
   - `DisabledPageKeys`: Stable page keys hidden from sidebar navigation and dashboard index cards.
   - `PluginAssemblies`: Additional assemblies to scan for dashboard plugins.
-- `DashboardAuthorizationOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
+- `DashboardAuthorizationOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](../src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
   - `UseCookie(...)`: Reuses an existing host cookie scheme for dashboard access.
   - `UseExistingScheme(...)`: Reuses another host-owned authentication scheme.
   - `UseOpenIdConnect(authority, ...)`: Registers dashboard-owned cookie and OIDC schemes with dashboard conventions.
   - `UseOpenIdConnect(Action<OpenIdConnectOptions>, ...)`: Registers dashboard-owned cookie and OIDC schemes with raw ASP.NET Core handler configuration.
-- `DashboardOpenIdConnectOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
+- `DashboardOpenIdConnectOptionsBuilder` ([src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs](../src/Presentation.Web/Dashboard/DashboardEndpointsOptionsBuilder.cs))
   - `WithClientId(...)`: Overrides the default dashboard client id.
   - `WithMetadataAddress(...)`: Overrides the default discovery document address.
   - `RequireHttpsMetadata(...)`: Controls whether OIDC metadata must be loaded over HTTPS.
   - `RequireSignedTokens()`: Enables signed-token and issuer-signing-key validation.
   - `Configure(...)`: Applies low-level `OpenIdConnectOptions` customization after dashboard conventions.
-- `DashboardAuthenticationDefaults` ([src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs](src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs))
+- `DashboardAuthenticationDefaults` ([src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs](../src/Presentation.Web/Dashboard/DashboardAuthenticationDefaults.cs))
   - Provides the dashboard-owned authentication scheme names and the default OIDC client id `dashboard`.
-- `IDashboardEndpoints` ([src/Presentation.Web/Dashboard/IDashboardEndpoints.cs](src/Presentation.Web/Dashboard/IDashboardEndpoints.cs))
+- `IDashboardEndpoints` ([src/Presentation.Web/Dashboard/IDashboardEndpoints.cs](../src/Presentation.Web/Dashboard/IDashboardEndpoints.cs))
   - Marker contract for dashboard-specific endpoint sets.
   - Extends the regular presentation `IEndpoints` contract.
-- `IDashboardPageProvider` ([src/Presentation.Web/Dashboard/IDashboardPageProvider.cs](src/Presentation.Web/Dashboard/IDashboardPageProvider.cs))
+- `IDashboardPageProvider` ([src/Presentation.Web/Dashboard/IDashboardPageProvider.cs](../src/Presentation.Web/Dashboard/IDashboardPageProvider.cs))
   - Provides `DashboardPage` descriptors for sidebar navigation and optional index cards.
-- `DashboardPageSet` ([src/Presentation.Web/Dashboard/DashboardPageSet.cs](src/Presentation.Web/Dashboard/DashboardPageSet.cs))
+- `DashboardPageSet` ([src/Presentation.Web/Dashboard/DashboardPageSet.cs](../src/Presentation.Web/Dashboard/DashboardPageSet.cs))
   - Recommended base for module dashboards that own one or more pages.
   - Implements endpoint mapping and page metadata from a single `DashboardPageSetBuilder` declaration.
-- `DashboardPage` ([src/Presentation.Web/Dashboard/DashboardPage.cs](src/Presentation.Web/Dashboard/DashboardPage.cs))
+- `DashboardPage` ([src/Presentation.Web/Dashboard/DashboardPage.cs](../src/Presentation.Web/Dashboard/DashboardPage.cs))
   - Defines title, icon, URL, group, ordering, sidebar visibility, optional badge, and optional card provider.
-- `DashboardPageCard` ([src/Presentation.Web/Dashboard/DashboardPage.cs](src/Presentation.Web/Dashboard/DashboardPage.cs))
+- `DashboardPageCard` ([src/Presentation.Web/Dashboard/DashboardPage.cs](../src/Presentation.Web/Dashboard/DashboardPage.cs))
   - Defines compact card content for the dashboard index.
-- Route helpers ([src/Presentation.Web/Dashboard/DashboardRouteBuilderExtensions.cs](src/Presentation.Web/Dashboard/DashboardRouteBuilderExtensions.cs))
+- Route helpers ([src/Presentation.Web/Dashboard/DashboardRouteBuilderExtensions.cs](../src/Presentation.Web/Dashboard/DashboardRouteBuilderExtensions.cs))
   - `MapDashboardPage<TPage>(...)`: Maps a typed RazorSlice page.
   - `MapDashboardPage(..., razorIdentifier, assembly, ...)`: Maps a compiled RazorSlice by identifier from a plugin assembly.
-- Path helper ([src/Presentation.Web/Dashboard/DashboardPath.cs](src/Presentation.Web/Dashboard/DashboardPath.cs))
+- Path helper ([src/Presentation.Web/Dashboard/DashboardPath.cs](../src/Presentation.Web/Dashboard/DashboardPath.cs))
   - `DashboardPath.Combine(...)`: Combines route segments with one slash.
 
-## Architecture
+## Architecture details
 
-### Class Diagram
+### Class diagram
 
 ```mermaid
 classDiagram
@@ -114,7 +156,7 @@ classDiagram
   DashboardShell ..> DashboardEndpointsOptions
 ```
 
-### Sequence (Registration → Render)
+### Registration and render sequence
 
 ```mermaid
 sequenceDiagram
@@ -140,9 +182,9 @@ sequenceDiagram
   Shell-->>Browser: card HTML fragment
 ```
 
-## Getting Started
+## Getting started
 
-### Register the Dashboard
+### Register the dashboard
 
 Register the dashboard during service configuration.
 
@@ -206,7 +248,7 @@ app.MapEndpoints();
 
 The dashboard uses the existing endpoint registration pipeline. `AddDashboard(...)` registers dashboard endpoint classes with `AddEndpoints(...)`; `app.MapEndpoints()` maps them.
 
-### Authentication And Authorization
+### Authentication and authorization
 
 Dashboard routes use the same endpoint authorization pipeline as other bITdevKit endpoints. By default, the dashboard runs in `Auto` authorization mode:
 
@@ -334,7 +376,7 @@ builder.Services.AddDashboard(options => options
 
 When the dashboard registers its own OIDC flow, it automatically uses the built-in access-denied page and sign-out route. When the current dashboard principal is authenticated, the dashboard shell shows a sign-out action in the header. The action posts to the built-in dashboard sign-out route and redirects back to the current dashboard URL, which triggers the configured authentication challenge again. Configure `.SignOutAuthenticationScheme(...)` manually only when using a custom scheme that needs separate sign-out behavior.
 
-### Include Plugin Assemblies
+### Include plugin assemblies
 
 The dashboard scans the core dashboard assembly, explicitly configured plugin assemblies, and currently loaded assemblies containing dashboard contracts. For application plugins, prefer explicit registration so discovery does not depend on load order.
 
@@ -356,7 +398,7 @@ builder.Services.AddDashboard(options =>
 });
 ```
 
-### Built-In Routes
+### Built-in routes
 
 The dashboard shell uses fixed built-in routes below the configured `GroupPath`. Plugin pages own and map their own route segments; the shell does not maintain a central list of plugin paths.
 
@@ -376,9 +418,9 @@ The dashboard shell uses fixed built-in routes below the configured `GroupPath`.
 | Document storage explorer | `/_bdk/dashboard/storage/documents` |
 | Blob storage explorer | `/_bdk/dashboard/storage/blobs` |
 
-## Built-In Pages
+## Built-in pages
 
-### Dashboard Index
+### Dashboard index
 
 The dashboard index shows cards contributed by dashboard page providers. It includes a refresh interval dropdown with fixed intervals:
 
@@ -429,14 +471,14 @@ The blob storage page is contributed by `Presentation.Web.Storage` and is shown 
 
 The page lets operators switch between registered blob clients, choose a container and optional prefix, list `BlobInfo` metadata with deterministic paging, explicitly approve full scans when the selected client allows them, upload a local file to the selected container and prefix, download an exact blob, and delete an exact blob. Listing renders metadata only and does not download content streams. The download action streams the selected blob and disposes the returned `BlobDownload` after the response is complete.
 
-## Adding Project-Specific Dashboard Pages
+## Adding project-specific dashboard pages
 
 For new project or module pages, prefer `DashboardPageSet`. A page set lets one module declare all of its dashboard pages, content fragments, local action routes, sidebar metadata, and index cards in one class. The low-level `IDashboardEndpoints` and `IDashboardPageProvider` contracts remain available for advanced or unusual plugins.
 
-### Folder Layout
+### Folder layout
 
 ```text
-# Presentation.Web
+Presentation.Web/
 
 Modules/
   Catalog/
@@ -450,7 +492,7 @@ Modules/
         _ViewImports.cshtml
 ```
 
-### Project Package Reference
+### Project package reference
 
 The application or plugin assembly that owns the `.cshtml` files must reference `RazorSlices` directly so RazorSlice proxy types are generated for that assembly. With central package management, add the reference without a version:
 
@@ -460,7 +502,7 @@ The application or plugin assembly that owns the `.cshtml` files must reference 
 </ItemGroup>
 ```
 
-### Page Set
+### Page set
 
 Use one page set per module. Each page owns its display route, optional content fragments, optional dashboard index card, and optional local actions.
 
@@ -524,7 +566,7 @@ The builder derives:
 
 Use `.HideFromSidebar()` for utility pages and `.HideFromIndex()` for pages that should not appear as index cards.
 
-### RazorSlice Imports
+### RazorSlice imports
 
 For project-local dashboard pages, add a `_ViewImports.cshtml` beside the pages.
 
@@ -540,7 +582,7 @@ For project-local dashboard pages, add a `_ViewImports.cshtml` beside the pages.
 
 RazorSlices currently do not support Tag Helpers in this repo because warnings are treated as errors and RazorSlices marks Tag Helper APIs obsolete. Use RazorSlice base classes and normal Razor markup instead.
 
-### RazorSlice Page
+### RazorSlice page
 
 Use `DashboardPageSlice` for full dashboard pages and `DashboardContentSlice` for content fragments. The page can resolve services directly because it is server-rendered.
 
@@ -578,7 +620,7 @@ Use `DashboardPageSlice` for full dashboard pages and `DashboardContentSlice` fo
 }
 ```
 
-### Page Descriptor Guidance
+### Page descriptor guidance
 
 - `.Title(...)`: Display name in sidebar and default card title.
 - `.Icon(...)`: Bootstrap icon name without the `bi-` prefix.
@@ -594,11 +636,11 @@ Use `DashboardPageSlice` for full dashboard pages and `DashboardContentSlice` fo
 
 Page sets are called at render time to provide navigation and cards. Keep badge and card work lightweight, use in-process services, and handle missing optional services gracefully.
 
-### Advanced Manual Mapping
+### Advanced manual mapping
 
 For advanced cases, implement `IDashboardEndpoints` to map custom routes and `IDashboardPageProvider` to contribute sidebar/card metadata manually. Use `MapDashboardPage<TPage>(...)` for typed RazorSlices or `MapDashboardPage(..., razorIdentifier, assembly, ...)` when the generated RazorSlice type is awkward to reference.
 
-## Dashboard Index Cards
+## Dashboard index cards
 
 Cards are rendered on the dashboard index and refreshed through the index content fragment endpoint. A card provider can return live values such as counts, health summaries, queue depth, or last activity.
 
@@ -606,7 +648,7 @@ If a page has `ShowOnIndex = true` but no `Card` delegate, the shell can still p
 
 The dashboard catches page provider/card failures and keeps rendering the rest of the dashboard. Failed card providers are logged and replaced with an unavailable card state.
 
-## Sidebar Grouping
+## Sidebar grouping
 
 The sidebar groups pages by `DashboardPage.Group`. Groups are visually separated. Built-in bITdevKit pages use the `bdk` group. Application pages should use an application-specific group such as `Application`, `Catalog`, `Operations`, or the module name.
 
@@ -621,7 +663,7 @@ new DashboardPage("orders", "Orders", "receipt", "/_bdk/dashboard/orders")
 };
 ```
 
-## Refresh Strategy
+## Refresh strategy
 
 The dashboard shell uses fragment endpoints for refreshable regions:
 
@@ -641,7 +683,7 @@ The browser-side refresh strategy:
 
 Project-specific pages can use the same pattern when only part of a page should update. Add a fragment RazorSlice, map a second dashboard endpoint, and replace a scoped content container from JavaScript.
 
-## External Plugin Assemblies
+## External plugin assemblies
 
 Dashboard plugins can live in separate packages or application assemblies. A plugin assembly should provide:
 
@@ -672,7 +714,7 @@ The dashboard scans configured plugin assemblies for endpoint and page provider 
 - OIDC login does not start: Ensure the dashboard is configured with an authentication scheme whose challenge forwards to the OIDC handler, and that the identity provider client includes the dashboard callback URI.
 - Refresh shows stale content: Confirm the fragment endpoint returns updated server-rendered HTML and that the browser interval is not set to `Off`.
 
-## Appendix A — Minimal Plugin
+## Appendix A: minimal plugin
 
 The following is the smallest useful dashboard plugin with the recommended page-set API: one route, one page, one sidebar item, and one card.
 

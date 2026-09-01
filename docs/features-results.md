@@ -1,4 +1,4 @@
-# Results Feature Documentation
+# Results
 
 > Represent success, failure, messages, and errors explicitly with immutable Result types.
 
@@ -6,49 +6,50 @@
 
 ## Overview
 
-### Challenges
+## Challenges
 
-When developing modern applications, handling operation outcomes effectively presents several
-challenges:
+Application operations need one contract for expected success and failure outcomes:
 
-1. **Inconsistent Error Handling**: Different parts of the application may handle errors in
-   different ways, leading to inconsistent error reporting and handling.
-2. **Context Loss**: Important error context and details can be lost when exceptions are caught and
-   rethrown up the call stack.
-3. **Mixed Concerns**: Business logic errors often get mixed with technical exceptions, making it
-   harder to handle each appropriately.
-4. **Pagination Complexity**: Managing paginated data with associated metadata adds complexity to
-   result handling.
-5. **Type Safety**: Maintaining type safety while handling both successful and failed operations can
-   be challenging.
-6. **Error Propagation**: Propagating errors through multiple layers of the application while
-   preserving context.
+1. Different layers can otherwise report and classify errors in different ways.
+2. Catching and rethrowing exceptions can lose useful context.
+3. Expected business failures need a different path from unexpected technical exceptions.
+4. Paged data needs values and pagination metadata in the same outcome.
+5. Composed operations must preserve typed errors when an earlier step fails.
 
-### Solution
+## Solution
 
-The Result pattern implementation provides a comprehensive solution by:
+The Results feature provides readonly result structs and composition extensions:
 
-1. Providing a standardized way to handle operation outcomes
-2. Encapsulating success/failure status, messages, and errors in a single object
-3. Supporting generic result types for operations that return values
-4. Offering specialized support for paginated results
-5. Enabling strongly-typed error handling
-6. Maintaining immutability with a fluent interface design
+1. `Result` represents an outcome without a value.
+2. `Result<T>` adds a typed value.
+3. `ResultPaged<T>` adds values and pagination metadata.
+4. `IResultError` provides a common contract for typed errors.
+5. Fluent methods return a new result with added messages or errors.
 
-### Architecture
+## Key Features
 
-> A type-safe Result pattern implementation for explicit success/failure handling with optional
+- Readonly `Result`, `Result<T>`, and `ResultPaged<T>` structs
+- Typed errors through `IResultError` and `ResultErrorBase`
+- Message and error aggregation
+- Synchronous and asynchronous composition extensions
+- Conditional factories, merging, validation, and collection operations
+- Scoped operations with commit and rollback callbacks
+- ASP.NET Core typed-result mappings
+- `System.Text.Json` converters
+- `Either<T1, T2>` for two valid alternative value types
+
+## Architecture
+
+> A type-safe Result pattern implementation for explicit success and failure handling with
 > functional extensions.
 
-The Result pattern consists of three primary classes in hierarchy: `Result` provides base
-success/failure tracking with message and error collections, `ResultT` adds generic type support for
-strongly-typed value handling, and `ResultPagedT` extends this for collection scenarios with
-pagination metadata. Each maintains a fluent interface with factory methods (`Success()`,
-`Failure()`). Error handling is supported through `IResultError`, enabling custom error types across
-the hierarchy.
+The feature has three independent readonly structs. `Result` tracks success, messages, and errors.
+`Result<T>` also carries one typed value. `ResultPaged<T>` carries a sequence and its pagination
+metadata. The structs implement `IResult`, `IResult<T>`, or `IResultPaged<T>` as applicable.
+`IResultError` supports custom error types across all three result forms.
 
-The pattern can be enhanced with optional functional extensions like `Map/Bind` for transformations,
-`Tap` for side effects, and `Filter/Unless` for conditionals and more.
+The package includes functional extensions such as `Map` and `Bind` for transformations, `Tap` for
+side effects, and `Filter` and `Unless` for conditions.
 See [Appendix B: Functional Extensions](#appendix-b-functional-extensions) for an overview
 of the available functional operations.
 
@@ -74,9 +75,17 @@ classDiagram
         +bool HasError()
     }
 
-    class IResultT {
+    class IResultOfT["IResult<T>"] {
         <<interface>>
         +T Value
+    }
+
+    class IResultPagedOfT["IResultPaged<T>"] {
+        <<interface>>
+        +IEnumerable~T~ Value
+        +long TotalCount
+        +int CurrentPage
+        +int PageSize
     }
 
     class Result {
@@ -94,65 +103,66 @@ classDiagram
         +static Result Failure()
     }
 
-    class ResultT {
+    class ResultOfT["Result<T>"] {
         -List messages
         -List errors
         -bool success
         +T Value
-        +ResultT WithMessage(string)
-        +ResultT WithMessages(IEnumerable)
-        +ResultT WithError(IResultError)
-        +ResultT WithErrors(IEnumerable)
+        +ResultOfT WithMessage(string)
+        +ResultOfT WithMessages(IEnumerable)
+        +ResultOfT WithError(IResultError)
+        +ResultOfT WithErrors(IEnumerable)
         +Result For()
-        +static ResultT Success(T value)
-        +static ResultT Failure()
+        +static ResultOfT Success(T value)
+        +static ResultOfT Failure()
     }
 
-    class ResultPagedT {
+    class ResultPagedOfT["ResultPaged<T>"] {
         +int CurrentPage
         +int TotalPages
         +long TotalCount
         +int PageSize
         +bool HasPreviousPage
         +bool HasNextPage
-        +static ResultPagedT Success(IEnumerable, long, int, int)
-        +static ResultPagedT Failure()
+        +static ResultPagedOfT Success(IEnumerable, long, int, int)
+        +static ResultPagedOfT Failure()
     }
 
     IResultError <|.. ResultErrorBase
-    IResult <|-- IResultT
+    IResult <|-- IResultOfT
+    IResult <|-- IResultPagedOfT
     IResult <|.. Result
-    IResultT <|.. ResultT
-    ResultT <|-- ResultPagedT
+    IResultOfT <|.. ResultOfT
+    IResultPagedOfT <|.. ResultPagedOfT
     Result ..> IResultError : uses
-    ResultT ..> IResultError : uses
-    ResultPagedT ..> IResultError : uses
+    ResultOfT ..> IResultError : uses
+    ResultPagedOfT ..> IResultError : uses
     IResult ..> IResultError : contains
 ```
 
-### Use Cases
+## Use Cases
 
-The Result pattern is particularly useful in the following scenarios:
+Use results in these scenarios:
 
-1. **Service Layer Operations**
+1. **Service layer operations**
 
 - Handling business rule validations
 - Processing complex operations with multiple potential failure points
 - Returning domain-specific errors
 
-2. **Data Access Operations**
+2. **Data access operations**
 
 - Managing database operations
 - Handling entity not found scenarios
 - Dealing with validation errors
 
-3. **API Endpoints**
+3. **API endpoints**
 
 - Returning paginated data
 - Handling complex operation outcomes
 - Providing detailed error information
 
-4. **Complex Workflows**
+4. **Complex workflows**
 
 - Managing multi-step processes
 - Handling conditional operations
@@ -160,7 +170,39 @@ The Result pattern is particularly useful in the following scenarios:
 
 ## Basic Usage
 
-### Result Operations
+This example validates a title, checks the failure path, and prints the successful value:
+
+```csharp
+static Result<string> NormalizeTitle(string title)
+{
+	if (string.IsNullOrWhiteSpace(title))
+	{
+		return Result<string>.Failure(
+			new ValidationError("A title is required.", nameof(title)));
+	}
+
+	return Result<string>.Success(title.Trim());
+}
+
+var result = NormalizeTitle("  Release notes  ");
+
+if (result.IsFailure)
+{
+	Console.Error.WriteLine(
+		string.Join(Environment.NewLine, result.Errors.Select(error => error.Message)));
+	return;
+}
+
+Console.WriteLine(result.Value);
+```
+
+Output:
+
+```text
+Release notes
+```
+
+### Result operations
 
 ```csharp
 // Creating success results
@@ -189,12 +231,12 @@ if (failure.HasError<ValidationError>())
 }
 
 // Paged result
-var resultPaged = ResultPagedT<Item>.Success(
-    items, totalCount: 100, page: 1, pageSize: 10
+var resultPaged = ResultPaged<Item>.Success(
+    items, count: 100, page: 1, pageSize: 10
 );
 ```
 
-### Result with Values
+### Results with values
 
 ```csharp
 public class UserService
@@ -221,7 +263,7 @@ public class UserService
 }
 ```
 
-### Imperative vs Declaritive
+### Imperative and declarative styles
 
 Imperative programming expresses logic as a sequence of explicit steps and checks. Declarative programming describes the desired outcome.
 In the Result pattern, imperative style requires explicit success checks and error handling, while declarative style creates a clean pipeline of operations using the functional extensions.
@@ -232,17 +274,17 @@ public Result<UserDto> ProcessRegistration(UserRequest request)
 {
     var validationResult = ValidateUser(request);     // Validate user
     if (validationResult.IsFailure)
-        return Result<UserDto>.Failure(validationResult.Errors);
+        return Result<UserDto>.Failure(validationResult);
 
 
     var user = new User(request);     // Create user
     var saveResult = SaveUser(user);
     if (saveResult.IsFailure)
-        return Result<UserDto>.Failure(saveResult.Errors);
+        return Result<UserDto>.Failure(saveResult);
 
     var emailResult = SendWelcomeEmail(user);     // Send email
     if (emailResult.IsFailure)
-        return Result<UserDto>.Failure(emailResult.Errors);
+        return Result<UserDto>.Failure(emailResult);
 
     return Result<UserDto>.Success(user.ToDto());
 }
@@ -257,7 +299,7 @@ public Result<UserDto> ProcessRegistration(UserRequest request) =>
         .Map(user => user.ToDto());
 ```
 
-### Error Handling
+### Error handling
 
 ```csharp
 public class ValidationError : ResultErrorBase
@@ -305,7 +347,7 @@ public class ValidationService
 }
 ```
 
-### Working with Messages
+### Working with messages
 
 ```csharp
 public class WorkflowService
@@ -330,7 +372,7 @@ public class WorkflowService
 }
 ```
 
-### Paged Results
+### Paged results
 
 ```csharp
 public class ProductService
@@ -369,7 +411,7 @@ public class ProductService
 }
 ```
 
-### Custom Error Types
+### Custom error types
 
 ```csharp
 public class ValidationResultError : ResultErrorBase
@@ -420,7 +462,7 @@ public class OrderService
 }
 ```
 
-### Exception Handling
+### Exception handling
 
 ```csharp
 public class DataService
@@ -454,7 +496,7 @@ public class DataService
 }
 ```
 
-### Best Practices
+### Best practices
 
 1. **Early Returns**: Return failures as soon as possible to avoid unnecessary processing.
 
@@ -502,7 +544,7 @@ public class OrderNotFoundError : ResultErrorBase
 
 ## Examples
 
-### Repository Pattern Example
+### Repository pattern example
 
 ```csharp
 public class UserRepository
@@ -518,10 +560,10 @@ public class UserRepository
     {
         try
         {
-            var user = this.dbContext.Users.FindById(id);
+            var user = this.dbContext.Users.Find(id);
             if (user == null)
             {
-                return Result<User>.Failure<NotFoundResultError>();
+                return Result<User>.Failure<NotFoundError>();
             }
 
             return Result<User>.Success(user);
@@ -536,7 +578,7 @@ public class UserRepository
 }
 ```
 
-### Service Layer Example
+### Service layer example
 
 ```csharp
 public class UserService
@@ -572,7 +614,9 @@ public class UserService
         if (!validationResult.IsValid)
         {
             return Result<UserDto>.Failure()
-                .WithError(new ValidationResultError("User", validationResult.Error));
+                .WithError(new ValidationResultError(
+                    "User",
+                    string.Join(", ", validationResult.Errors.Select(error => error.ErrorMessage))));
         }
 
         var savedUser = this.repository.Save(user);
@@ -581,7 +625,7 @@ public class UserService
 }
 ```
 
-### API Controller Example
+### API controller example
 
 ```csharp
 [ApiController]
@@ -625,7 +669,7 @@ public class ProductsController : ControllerBase
 }
 ```
 
-### Complex Workflow Example
+### Complex workflow example
 
 ```csharp
 public class OrderProcessor
@@ -840,9 +884,9 @@ This example demonstrates:
 
 - Proper cleanup in case of failures
 - Structured error handling
-- Comprehensive logging
+- Structured logging
 
-## Result Operation Scope
+## Result operation scope
 
 ### Overview
 
@@ -855,18 +899,18 @@ This example demonstrates:
 
 It implements the Railway-Oriented Programming pattern with automatic resource management, ensuring that all operations within the scope are either committed on success or rolled back on failure.
 
-### Key Features
+### Key features
 
 - **Lazy Operation Start**: Operation is only started when the first async operation is executed
 - **Automatic Commit/Rollback**: Operation is automatically committed on success or rolled back on failure/exception
-- **Fluent API**: Seamless chaining of operations with full async/await support
+- **Fluent API**: Chaining of operations with async/await support
 - **Railway-Oriented Programming**: Short-circuits on failure, continuing only on success path
 - **Clean Architecture**: Abstract interface pattern allows any scoped operation implementation
 - **Generic Pattern**: Works with transactions, locks, file operations, API sessions, sagas, and more
 
-### Basic Usage
+### Basic usage
 
-#### Simple Transaction Example
+#### Simple transaction example
 
 ```csharp
 var result = await Result<User>.Success(user)
@@ -889,7 +933,7 @@ var result = await Result<User>.Success(user)
     .EndOperationAsync(cancellationToken);
 ```
 
-#### Complex Example: TodoItem Creation with Transaction in Command
+#### Complex example: TodoItem creation with transaction in command
 
 ```csharp
 protected override async Task<Result<TodoItemModel>> HandleAsync(
@@ -934,9 +978,9 @@ protected override async Task<Result<TodoItemModel>> HandleAsync(
         .Map(mapper.Map<TodoItem, TodoItemModel>);
 ```
 
-### API Reference
+### API reference
 
-#### Starting an Operation Scope
+#### Starting an operation scope
 
 ```csharp
 // With async operation factory
@@ -952,7 +996,7 @@ public static ResultOperationScope<T, TOperation> StartOperation<T, TOperation>(
     where TOperation : class
 ```
 
-#### Available Operations
+#### Available operations
 
 All standard Result operations are available within the scope:
 
@@ -962,9 +1006,9 @@ All standard Result operations are available within the scope:
 - **Ensure / EnsureAsync**: Validate conditions (fails if predicate returns false)
 - **UnlessAsync**: Validate conditions (fails if predicate returns true or if Rule validation fails)
 
-#### Ending an Operation Scope
+#### Ending an operation scope
 
-##### Simplified API (Recommended for IOperationScope implementations)
+##### Simplified API (recommended for IOperationScope implementations)
 
 ```csharp
 public async Task<Result<T>> EndOperationAsync(
@@ -982,7 +1026,7 @@ var result = await Result<User>.Success(user)
     .EndOperationAsync(cancellationToken); // Clean and simple!
 ```
 
-##### Delegate-Based API (For custom operations or legacy code)
+##### Delegate-based API (for custom operations or legacy code)
 
 ```csharp
 public async Task<Result<T>> EndOperationAsync(
@@ -993,9 +1037,9 @@ public async Task<Result<T>> EndOperationAsync(
 
 Use this overload for operations that don't implement `IOperationScope` or when you need custom commit/rollback logic.
 
-### Operation Scope Interfaces
+### Operation scope interfaces
 
-#### IOperationScope (Base Interface)
+#### IOperationScope (base interface)
 
 The `IOperationScope` interface is the foundation for all scoped operations in the Result pattern. Any operation implementing this interface can be used with the simplified `EndOperationAsync` API.
 
@@ -1050,11 +1094,11 @@ public interface ITransactionOperationScope : IOperationScope
 }
 ```
 
-### Use Cases Beyond Database Transactions
+### Use cases beyond database transactions
 
 While `ResultOperationScope` is demonstrated with database transactions, this pattern is a **generic scoped operation pattern** applicable to many scenarios:
 
-#### 1. File System Operations
+#### 1. File system operations
 
 **Scenario**: Create multiple files atomically - if any operation fails, cleanup all created files.
 
@@ -1093,11 +1137,12 @@ public class FileSystemScope : IOperationScope
 }
 ```
 
-#### 2. Saga/Workflow Orchestration
+#### 2. Saga/Workflow orchestration
 
 The [Saga design pattern](https://learn.microsoft.com/en-us/azure/architecture/patterns/saga) helps maintain data consistency in distributed systems by coordinating transactions across multiple services. A saga is a sequence of local transactions where each service performs its operation and initiates the next step through events or messages. If a step in the sequence fails, the saga performs compensating transactions to undo the completed steps. This approach helps maintain data consistency.
 
-**Scenario**: Execute multi-step workflow with compensation logic for rollback. An example can be found [here](/tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs)
+**Scenario**: Execute a multi-step workflow with compensation logic for rollback. See the
+[saga scope tests](../tests/Common.UnitTests/Results/ResultOperationSagaScopeTests.cs).
 
 ```csharp
 // Usage: Book trip (flight + hotel + car) with compensations
@@ -1121,7 +1166,7 @@ var result = await Result<TripBooking>.Success(new TripBooking())
     .EndOperationAsync(cancellationToken); // Commit or rollback entire saga, calling compensations as needed
 ```
 
-## Appendix A: Repository Extensions
+## Appendix A: repository extensions
 
 > The bITdevKit provides extension methods for repositories that don't natively support the Result
 > pattern. These extensions wrap standard repository operations in Result objects, providing
@@ -1129,7 +1174,7 @@ var result = await Result<TripBooking>.Success(new TripBooking())
 
 This appendix shows Result-based repository usage. For the repository abstraction itself, see [Domain Repositories](./features-domain-repositories.md), and for reusable query criteria, see [Domain Specifications](./features-domain-specifications.md).
 
-### Available Extensions
+### Available extensions
 
 1. Read-Only Repository Extensions (`GenericReadOnlyRepositoryResultExtensions`):
 
@@ -1144,9 +1189,9 @@ This appendix shows Result-based repository usage. For the repository abstractio
 - Upsert operations
 - Delete operations
 
-### Usage Examples
+### Usage examples
 
-#### Basic CRUD Operations
+#### Basic CRUD operations
 
 ```csharp
 public class UserService
@@ -1173,7 +1218,7 @@ public class UserService
 }
 ```
 
-#### Query Operations
+#### Query operations
 
 ```csharp
 public class ProductService
@@ -1205,7 +1250,7 @@ public class ProductService
 }
 ```
 
-#### Advanced Queries
+#### Advanced queries
 
 ```csharp
 public class OrderService
@@ -1235,7 +1280,7 @@ public class OrderService
 }
 ```
 
-#### Error Handling
+#### Error handling
 
 The extensions automatically handle exceptions and wrap them in Result objects:
 
@@ -1263,7 +1308,7 @@ public class InventoryService
 }
 ```
 
-### Best Practices
+### Best practices
 
 1. **Consistent Usage**: Use these extensions throughout the application for consistent error
    handling:
@@ -1331,15 +1376,15 @@ public async Task<ResultPaged<Order>> GetOrdersAsync(FilterModel filterModel)
 }
 ```
 
-These extensions provide a seamless way to integrate the Result pattern with existing repository
-implementations, ensuring consistent error handling and operation results across your application.
+These extensions integrate the Result pattern with repository implementations so repository
+operations return the same result forms as the rest of the application.
 
-## Appendix B: Functional Extensions
+## Appendix B: functional extensions
 
-> Composable, type-safe operations for elegant Result error handling and flow control.
+> Composable, type-safe operations for Result error handling and flow control.
 
 The functional programming extensions transform the Result pattern from a simple success/failure
-container into a powerful composition tool. By providing fluent, chainable operations like `Map`,
+container into a composition type. By providing fluent, chainable operations like `Map`,
 `Bind`, and `Match`, complex workflows can be expressed as a series of small, focused
 transformations. This approach eliminates nested error handling, reduces complexity, and makes the
 code's intent clearer.
@@ -1351,7 +1396,7 @@ and maintainable. This functional style particularly shines in handling complex 
 operations must be composed together, each potentially failing, with proper error context preserved
 throughout the chain.
 
-### Core Operations
+### Core operations
 
 > Essential value transformations and validations ensuring Result integrity.
 
@@ -1388,7 +1433,7 @@ await result.ValidateAsync(new UserValidator(),
     strategy => strategy.IncludeRuleSets("Create"));
 ```
 
-### Side Effects
+### Side effects
 
 > Execute operations without changing Result value.
 
@@ -1418,7 +1463,7 @@ await result.DoAsync(async ct => await InitializeSystemAsync(ct));
 await result.AndThenAsync(async (user, ct) => await ValidateUserAsync(user));
 ```
 
-### Control Flow
+### Control flow
 
 > Conditional logic and alternative paths.
 
@@ -1510,7 +1555,7 @@ await result.ChooseAsync(async (user, ct) =>
 await result.CollectAsync(async (user, ct) => await ValidateUserAsync(user));
 ```
 
-### Pattern Matching
+### Pattern matching
 
 > Success/failure case handling.
 
@@ -1572,7 +1617,7 @@ await result
         new Error("Invalid status"));
 ```
 
-### Usage Example
+### Usage example
 
 > Clean validation, external integration and transformation flow with automatic error propagation.
 
@@ -1580,7 +1625,7 @@ The chain processes a list of persons through a series of validations and transf
 Starting with input validation (age checks, location requirements), it transforms the data (email
 normalization), interacts with external services (email notifications), and performs final
 validations (database checks). Each operation in the chain either transforms the data or validates
-it, with errors propagating automatically through the chain (`ResultT`).
+it, with errors propagating automatically through the chain (`Result<T>`).
 
 The functional style ensures that if
 any step fails, subsequent operations are skipped and the error context is preserved. The chain
@@ -1623,7 +1668,7 @@ flowchart TB
 
 ```csharp
 var people = new List<Person>{ personA, personB };
-var result = await Result<List>.Success(people)
+var result = await Result<List<Person>>.Success(people)
     .Do(() => logger.LogInformation("Starting person processing"))
     .Validate(validator)
     .Ensure(
@@ -1648,11 +1693,11 @@ var result = await Result<List>.Success(people)
     );
 ```
 
-# Appendix C: Result Creation Methods
+## Appendix C: Result creation methods
 
 > Guidance to creating and initializing Result<T> instances.
 
-## Success Creation
+### Success creation
 
 ```csharp
 // Basic success with value
@@ -1670,7 +1715,7 @@ var result3 = Result<Order>.Success(
 var result4 = Result<List<string>>.Success();
 ```
 
-## Failure Creation
+### Failure creation
 
 ```csharp
 // Basic failure (default value)
@@ -1697,12 +1742,12 @@ var result7 = Result<Product>.Failure(
     new[] { "Validation failed", "Invalid price" },
     new IResultError[]
     {
-        new ValidationError("price", "Must be positive"),
+        new ValidationError("Must be positive", "price"),
         new DomainError("Invalid product state")
     });
 ```
 
-## Conditional Creation
+### Conditional creation
 
 ```csharp
 // Success if condition is met
@@ -1730,19 +1775,20 @@ var result4 = Result<User>.FailureIf(
     new ValidationError("User is blacklisted"));
 ```
 
-## Operation Wrapping
+### Operation wrapping
 
 ```csharp
 // Wrap synchronous operation
-var result1 = Result<User>.For(() =>
+var result1 = Result.Bind(() =>
     userRepository.GetById(userId));
 
 // Wrap async operation
-var result2 = await Result<Order>.ForAsync(async () =>
-    await orderRepository.GetByIdAsync(orderId));
+var result2 = await Result.BindAsync(
+    ct => orderRepository.GetByIdAsync(orderId, ct),
+    cancellationToken);
 
 // Wrap operation with error handling
-var result3 = Result<decimal>.For(() =>
+var result3 = Result.Bind(() =>
 {
     if (amount <= 0)
         throw new ArgumentException("Amount must be positive");
@@ -1750,22 +1796,22 @@ var result3 = Result<decimal>.For(() =>
 });
 
 // Wrap async operation with cancellation
-var result4 = await Result<List<Product>>.ForAsync(async ct =>
-    await productRepository.GetAllAsync(ct),
+var result4 = await Result.BindAsync(
+    ct => productRepository.GetAllAsync(ct),
     cancellationToken);
 ```
 
-## Type Conversion
+### Type conversion
 
 ```csharp
 // Convert to non-generic Result
 Result baseResult = Result<int>.Success(42);
 
-// Convert to different Result<T> type
-var result1 = userResult.For<UserDto>();
+// Map a successful value to a different Result<T> type
+var result1 = userResult.Map(user => new UserDto(user));
 
-// Convert with new value
-var result2 = orderResult.For(orderDto);
+// Preserve failure information while mapping a value
+var result2 = orderResult.Map(order => new OrderDto(order));
 
 // Implicit conversion to bool
 bool isSuccess = Result<User>.Success(user);
@@ -1778,25 +1824,27 @@ IResult<User> interfaceResult = GetUser();
 Result<User> result4 = interfaceResult;
 ```
 
-# Appendix D: Either Type
+## Appendix D: `Either<T1, T2>`
 
-## Overview
+### Overview
 
 The Either type represents a value that can be one of two different types. Unlike Result, which specifically handles success and failure states, Either provides a more general mechanism for working with two distinct types. This makes it particularly valuable in scenarios where an operation might produce different but equally valid outcomes.
 
-The type brings several advantages to your codebase. It enforces type safety by eliminating the need for type casting and null checks. It follows functional programming principles, offering immutable value semantics and composable operations. Furthermore, it integrates seamlessly with the Result type when you need to transition between different error handling approaches.
+The type makes both alternatives explicit and stores its selected value in init-only state. It
+integrates with `Result<T>` when one alternative becomes a failure at an application boundary.
 
-## When to Use Either
+### When to use `Either`
 
-Either shines in scenarios where an operation can produce two different but valid result types. For instance, when parsing data that could be either numeric or textual, or when an API might return different response types based on certain conditions. It's particularly useful when you need type-safe handling of alternatives and want to avoid the pitfalls of null checking or type casting.
+Use `Either<T1, T2>` when an operation can produce two different but valid value types. Examples
+include input that can be numeric or textual and an API that has two valid response shapes.
 
 However, Either isn't always the right choice. When you're primarily concerned with success and failure scenarios, the Result type is more appropriate. Similarly, if one of your types represents an error state, Result provides better semantics for that use case. Either also isn't suitable when you need to handle more than two types or when a simple null check would suffice.
 
-## Basic Usage
+### Basic usage
 
 The Either type provides multiple ways to create and handle values:
 
-### Direct Creation
+#### Direct creation
 
 
 ```csharp
@@ -1809,19 +1857,19 @@ Either<int, string> textCase = "Hello";
 Either<int, string> secondCase = Either<int, string>.FromSecond("Hello");
 
 // Check which type is contained
-if (result.IsFirst) { }
-if (result.IsSecond) { }
+if (numericCase.IsFirst) { }
+if (textCase.IsSecond) { }
 
 // Safe access to values
-int number = result.FirstValue;  // Throws if not first type
-string text = result.SecondValue;  // Throws if not second type
+int number = numericCase.FirstValue;  // Throws if not first type
+string text = textCase.SecondValue;  // Throws if not second type
 ```
 
-## Pattern Matching
+### Pattern matching
 
-The Either type provides comprehensive pattern matching capabilities through Match and Switch operations. These methods ensure type-safe handling of both possible values:
+`Match` and `Switch` require handlers for both possible values:
 
-### Synchronous Pattern Matching
+#### Synchronous pattern matching
 
 ```csharp
 // Basic matching
@@ -1831,8 +1879,8 @@ string result = either.Match(
 
 // Async matching
 await either.MatchAsync(
-    async (number, ct) => await ProcessNumberAsync(number),
-    async (text, ct) => await ProcessTextAsync(text));
+    async number => await ProcessNumberAsync(number),
+    async text => await ProcessTextAsync(text));
 
 // Action matching with Switch
 either.Switch(
@@ -1852,28 +1900,28 @@ numericEither.Switch(
     _ => throw new Exception("Should not execute"));
 ```
 
-### Asynchronous Pattern Matching
+#### Asynchronous pattern matching
 
 ```csharp
 // Async match operations
 await either.MatchAsync(
-    async (number, ct) => await ProcessNumberAsync(number),
-    async (text, ct) => await ProcessTextAsync(text));
+    async number => await ProcessNumberAsync(number),
+    async text => await ProcessTextAsync(text));
 
-// Async switch with cancellation
+// Async switch
 await either.SwitchAsync(
-    async (num, ct) => {
-        await Task.Delay(100, ct);
+    async num => {
+        await Task.Delay(100);
         return ProcessNumber(num);
     },
-    async (text, ct) => {
-        await Task.Delay(100, ct);
+    async text => {
+        await Task.Delay(100);
         return ProcessText(text);
     });
 ```
 
 
-## Error Handling and Try Operations
+### Error handling and try operations
 
 Either provides built-in support for handling operations that might fail:
 
@@ -1891,7 +1939,7 @@ var filtered = either.Filter(
     "Number must be positive");
 ```
 
-## Integration with Result
+### Integration with `Result`
 
 Either integrates naturally with the Result type, allowing you to transition between the two approaches when needed:
 
@@ -1900,7 +1948,7 @@ Either integrates naturally with the Result type, allowing you to transition bet
 Result<int> result = either.ToResult(
     firstMatch: num => num,
     secondMatch: text => int.Parse(text),
-    error => new ValidationError(error));
+    errorFactory: error => new ValidationError(error));
 
 // Using Try operations
 Either<int, Exception> parsed = Either<int, Exception>
@@ -1923,13 +1971,13 @@ var simpleResult = either.ToResult(
 ```
 
 
-## Real World Examples
+### Examples
 
 Here's how Either can be used in practical scenarios:
 
-### API Response Handling
+#### API response handling
 
-The Either type provides elegant handling of different API response types:
+The following example handles two API response types:
 
 ```csharp
 public class ApiExample
@@ -1959,9 +2007,9 @@ public class ApiExample
 }
 ```
 
-### Data Processing
+#### Data processing
 
-Either can elegantly handle different outcomes in data processing scenarios:
+The following example handles parsed data and validation errors:
 
 ```csharp
 public class DataProcessor
@@ -1984,27 +2032,29 @@ public class DataProcessor
 }
 ```
 
-## Best Practices
+### Usage guidance
 
 When working with Either, focus on using it for truly bifurcated scenarios where both types represent valid outcomes. Always handle both cases through pattern matching to ensure type-safe operations. Consider async operations when dealing with I/O or time-consuming processes.
 
 Avoid using Either for simple boolean conditions or null checks, as these scenarios are better served by simpler constructs. Don't use Either when you need to handle more than two types, and avoid throwing exceptions in Either handlers as this defeats its purpose of type-safe handling.
 
-## Technical Considerations
+### Technical considerations
 
-Either is implemented as a value type, providing thread-safety and immutability by design. It's memory-efficient and supports both synchronous and asynchronous operations. The implementation ensures that you can't accidentally access the wrong type without explicitly handling both cases, providing robust type safety at compile time.
-
-Here's the updated appendix with `MapHttpOkAll` added to the list of mapping methods. It remains concise and includes C# usage examples, tailored for minimal API usage with `Mediator` responses.
+`Either<T1, T2>` is a reference type with init-only stored values. `FirstValue` and `SecondValue`
+throw `InvalidOperationException` when the instance contains the other type. Prefer `Match`, `Switch`,
+`TryGetFirstValue`, or `TryGetSecondValue` when the selected type is not already known.
 
 ---
 
-# Appendix E: Mapping Results to HTTP Responses (Minimal API)
+## Appendix E: Mapping results to HTTP responses
 
-The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>`, and `ResultPaged<T>` instance to HTTP responses in ASP.NET Core minimal APIs. These methods convert operation outcomes into appropriate HTTP results, supporting success, errors, and custom handling.
+`ResultMapExtensions` provides extension methods that map `Result`, `Result<T>`, and
+`ResultPaged<T>` instances to typed ASP.NET Core minimal API responses. The extensions delegate to
+`ResultMapHttpExtensions` for the default success and error mappings.
 
-## Mapping Methods
+### Mapping methods
 
-### MapHttpNoContent
+#### `MapHttpNoContent`
 - Maps a non-generic `Result` to a response for no-content operations (e.g., DELETE).
 - **Usage**:
   ```csharp
@@ -2013,7 +2063,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: `204 No Content`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttpOk<T> (Generic)
+#### `MapHttpOk<T>`
 - Maps a `Result<T>` to a response with a value (e.g., GET).
 - **Usage**:
   ```csharp
@@ -2022,7 +2072,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: `200 OK` with `T`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttpOk (Non-Generic)
+#### `MapHttpOk`
 - Maps a non-generic `Result` to a simple success response.
 - **Usage**:
   ```csharp
@@ -2031,16 +2081,16 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: `200 OK`, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttpOkAll<T>
+#### `MapHttpOkAll<T>`
 - Maps a `Result<T>` to a response with a value, excluding not-found errors (e.g., broad success cases).
 - **Usage**:
   ```csharp
   var response = await mediator.Send(new GetItemQuery(id));
   return response.Result.MapHttpOkAll(logger);
   ```
-- **Outcomes**: `200 OK` with `IEnumerable<T>`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
+- **Outcomes**: `200 OK` with `T`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttpCreated<T>
+#### `MapHttpCreated<T>`
 - Maps a `Result<T>` to a create response (e.g., POST), with URI or location factory.
 - **Usage**:
   ```csharp
@@ -2051,7 +2101,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: `201 Created` with `T` and `Location`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttpAccepted and MapHttpAccepted<T>
+#### `MapHttpAccepted` and `MapHttpAccepted<T>`
 - Maps a `Result` or `Result<T>` to a `202 Accepted` response for long-running tasks.
 - **Usage**:
   ```csharp
@@ -2060,7 +2110,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: `202 Accepted` (with `T` if generic), `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttpOkPaged<T>
+#### `MapHttpOkPaged<T>`
 - Maps a `ResultPaged<T>` to a paginated data response.
 - **Usage**:
   ```csharp
@@ -2069,7 +2119,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: `200 OK` with `PagedResponse<T>`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttpFile
+#### `MapHttpFile`
 - Maps a `Result<FileContent>` to a file download response.
 - **Usage**:
   ```csharp
@@ -2078,7 +2128,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: File download, `404 Not Found`, `401 Unauthorized`, `400 Bad Request`, or `500 Problem`.
 
-### MapHttp<TSuccess, ...> (Generic)
+#### `MapHttp<TSuccess, ...>`
 - Flexible mapping for custom success and error types.
 - **Usage**:
   ```csharp
@@ -2088,7 +2138,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Outcomes**: Depends on types; errors typically `500 Problem`.
 
-## Custom Error Handling
+### Custom error handling
 - **Registering Handlers**: Override defaults with `RegisterErrorHandler<TError>`.
   ```csharp
   ResultMapHttpExtensions.RegisterErrorHandler<ValidationError>((logger, result) =>
@@ -2096,7 +2146,7 @@ The `ResultMapHttpExtensions` class provides methods to map `Result`, `Result<T>
   ```
 - **Behavior**: Specific methods wrap unrecognized custom results in `ProblemHttpResult`; generic `MapHttp` uses `MapError<TProblem>`.
 
-## Notes
+### Notes
 - **Usage Context**: These methods are designed for minimal API endpoints.
 - **Logging**: Pass an optional `ILogger` for debug/error logging.
 - **Error Precedence**: First matching error type determines the response.

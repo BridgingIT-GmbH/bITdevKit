@@ -1,4 +1,4 @@
-# Rules Feature Documentation
+# Rules
 
 > Express business rules as composable validations with consistent Result-based outcomes.
 
@@ -6,10 +6,9 @@
 
 ## Overview
 
-The Rules feature provides a centralized approach to defining and evaluating business rules in a
-composable and maintainable way. This feature is designed to handle evaluation, business logic
-enforcement, and complex conditional rule chains while integrating seamlessly with the [Result](./features-results.md)
-pattern.
+The Rules feature defines and evaluates business rules through `IRule`, the `Rule` entry point,
+`RuleBuilder`, and the predefined `RuleSet`. Every evaluation integrates with the
+[Results feature](./features-results.md).
 
 Key benefits:
 
@@ -19,12 +18,70 @@ Key benefits:
 - Rich set of predefined rules through RuleSet
 - Extensible design for custom rules
 
+## Challenges
+
+Business rules often become scattered conditions with inconsistent failure handling. Applications
+also need to evaluate several rules, collect failures when required, apply rules conditionally, and
+classify collections without duplicating control flow.
+
+## Solution
+
+Rules implement `IRule` and return `Result`. Use `Rule.Check` for one rule or `RuleBuilder` for a
+chain. `RuleSet` supplies common value, text, date, time, collection, and FluentValidation-backed
+rules. Synchronous and asynchronous base classes support custom rules.
+
+## Key Features
+
+- Direct synchronous and asynchronous rule evaluation
+- Fluent rule chains with stop-on-failure or failure aggregation
+- Conditional rules through `When`, `Unless`, and condition-count extensions
+- Collection classification through `Filter`, `FilterAsync`, `Switch`, and `SwitchAsync`
+- Configurable failure and exception handling
+- Custom rules through `RuleBase`, `AsyncRuleBase`, and delegate-backed rules
+
+## Architecture
+
+`IRule` defines synchronous and asynchronous evaluation. `RuleBase` and `AsyncRuleBase` provide the
+standard enabled-state behavior. The static `Rule` class evaluates individual rules and creates
+`RuleBuilder` instances. A builder executes an ordered rule list or classifies items by applying
+item rules. See [Architecture details](#architecture-details) for the component diagram.
+
+## Use Cases
+
+- Validate command and domain inputs with typed result errors.
+- Collect several validation failures before returning to a caller.
+- Apply shipping, payment, or permission rules only when their conditions hold.
+- Separate matching and non-matching collection items for different handlers.
+- Wrap application-specific synchronous or asynchronous checks in reusable rules.
+
 ## Basic Usage
 
 The Rules feature provides a fluent API for validating conditions and enforcing business rules. Here
 are the most common usage patterns:
 
-### Single Rule Validation
+```csharp
+var result = Rule
+    .Add(RuleSet.IsNotEmpty("Ada"))
+    .Add(RuleSet.GreaterThan(42, 17))
+    .Check();
+
+if (result.IsFailure)
+{
+    Console.Error.WriteLine(
+        string.Join(Environment.NewLine, result.Errors.Select(error => error.Message)));
+    return;
+}
+
+Console.WriteLine("All rules passed.");
+```
+
+Output:
+
+```text
+All rules passed.
+```
+
+### Single rule validation
 
 ```csharp
 // Basic rule check
@@ -41,7 +98,7 @@ var result = Rule
     .Check();
 ```
 
-### Conditional Rules
+### Conditional rules
 
 ```csharp
 // Basic conditional rule
@@ -59,29 +116,29 @@ var result = Rule
     .Check();
 ```
 
-### Working with Collections
+### Working with collections
 
 ```csharp
 // Filter valid items
 var result = Rule
-    .Add(RuleSet.GreaterThan(o => o.Amount, 0))
-    .Add(RuleSet.IsNotEmpty(o => o.CustomerId))
+    .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
+    .Add<Order>(o => RuleSet.IsNotEmpty(o.CustomerId))
     .Filter(orders);
 
 // Split and process valid/invalid items
 var result = Rule
-    .Add(RuleSet.GreaterThan(o => o.Amount, 0))
+    .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
     .Switch(orders,
         validOrders => ProcessValidOrders(validOrders),
         invalidOrders => LogInvalidOrders(invalidOrders));
 ```
 
-# Rule Builder Patterns
+## Rule builder patterns
 
 The Rule Builder provides a fluent interface for combining multiple rules and conditions into
 expressive evaluation chains. This section covers common patterns for building and composing rules.
 
-## Building Basic Rule Chains
+### Building basic rule chains
 
 Rule chains allow you to combine multiple evaluations in a readable sequence:
 
@@ -103,7 +160,7 @@ var result = Rule
     .Check();
 ```
 
-## Conditional Rules
+### Conditional rules
 
 Apply rules based on conditions using `When`, `Unless`, and other conditional methods:
 
@@ -126,7 +183,7 @@ var result = Rule
     .Check();
 ```
 
-## Multiple Conditions
+### Multiple conditions
 
 Handle complex scenarios with multiple conditions:
 
@@ -151,40 +208,45 @@ var result = Rule
     .Check();
 ```
 
-## Collection Processing
+### Collection processing
 
 The Rules feature provides two ways to process collections of items:
 
-### Filtering Collections
+#### Filtering collections
 
 Use Filter to get valid items matching your rules:
 
+`Filter` and `FilterAsync` return a successful result containing only matching items. Rejected
+items do not turn the result into a failure. Use `Switch` when both groups must be handled.
+
 ```csharp
 var result = Rule
-    .Add(RuleSet.GreaterThan(o => o.Amount, 0))
-    .Add(RuleSet.IsNotEmpty(o => o.CustomerId))
+    .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
+    .Add<Order>(o => RuleSet.IsNotEmpty(o.CustomerId))
     .Filter(orders);
 
-if (result.IsSuccess)
+if (result.IsFailure)
 {
-    var validOrders = result.Value;
-    // Process valid orders
+    return;
 }
+
+var validOrders = result.Value;
+// Process valid orders. Rejected items do not make Filter fail.
 ```
 
-### Splitting Collections
+#### Splitting collections
 
 Use Switch to handle valid and invalid items separately:
 
 ```csharp
 var result = Rule
-    .Add(RuleSet.GreaterThan(o => o.Amount, 0))
+    .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
     .Switch(orders,
         validOrders => ProcessValidOrders(validOrders),
         invalidOrders => HandleInvalidOrders(invalidOrders));
 ```
 
-## Practical Example
+### Practical example
 
 Here's a complete example showing multiple patterns together:
 
@@ -213,9 +275,9 @@ public Result ValidateOrder(Order order)
 }
 ```
 
-# Architecture
+## Architecture details
 
-## Component Overview
+### Component overview
 
 The Rules feature consists of several key components that work together to provide flexible rule evaluation:
 
@@ -233,14 +295,14 @@ classDiagram
     %% Base Classes
     class RuleBase {
         <<abstract>>
-        #Result Execute()*
+        +Result Execute()*
         +Result IsSatisfied()
         +Task~Result~ IsSatisfiedAsync()
     }
 
     class AsyncRuleBase {
         <<abstract>>
-        #Task~Result~ ExecuteAsync()*
+        +Task~Result~ ExecuteAsync(CancellationToken)*
         +Result IsSatisfied()
         +Task~Result~ IsSatisfiedAsync()
     }
@@ -276,11 +338,11 @@ classDiagram
     RuleSet --> IRule
 ```
 
-## Key Components
+### Key components
 
-### Rule Static Class
+#### `Rule` static class
 
-The `Rule` class serves as the main entry point for rule evaluation:
+The `Rule` class is the main entry point for rule evaluation:
 
 - Provides static methods for rule checking and rule chain building
 - Handles rule execution and error aggregation
@@ -294,7 +356,7 @@ var result = Rule.Check(someRule);
 var builder = Rule.Add();
 ```
 
-### RuleBuilder
+#### `RuleBuilder`
 
 The `RuleBuilder` enables fluent rule chain construction:
 
@@ -309,7 +371,7 @@ var builder = Rule
     .When(condition, conditionalRule);
 ```
 
-### RuleSet
+#### `RuleSet`
 
 The `RuleSet` class contains predefined rules for common evaluation scenarios:
 
@@ -323,9 +385,9 @@ var emailRule = RuleSet.IsValidEmail(email);
 var rangeRule = RuleSet.NumericRange(amount, 0, 100);
 ```
 
-## Rule Types
+### Rule types
 
-### Value Rules
+#### Value rules
 
 Rules that validate simple values or properties:
 
@@ -333,7 +395,7 @@ Rules that validate simple values or properties:
 - Numeric comparisons
 - String operations
 
-### Collection Rules
+#### Collection rules
 
 Rules for validating collections or sequences:
 
@@ -341,7 +403,7 @@ Rules for validating collections or sequences:
 - Item evaluation
 - Aggregation checks
 
-### Composite Rules
+#### Composite rules
 
 Rules that combine multiple evaluations:
 
@@ -349,7 +411,7 @@ Rules that combine multiple evaluations:
 - Rule chains
 - Complex business rules
 
-## Integration with Result Pattern
+### Integration with the Result pattern
 
 The Rules feature integrates with the Result pattern to provide consistent error handling:
 
@@ -357,13 +419,13 @@ The Rules feature integrates with the Result pattern to provide consistent error
 - Failed evaluations include detailed error information
 - Results can be combined and aggregated
 
-# Advanced Usage
+## Advanced usage
 
 This section covers advanced patterns and scenarios for using the Rules feature.
 
-## Complex Rule Chains
+### Complex rule chains
 
-Combine multiple evaluation conditions and rules for sophisticated business logic:
+Combine several conditions and rules for application-specific business logic:
 
 ```csharp
 public Result ValidateOrder(Order order)
@@ -395,9 +457,9 @@ public Result ValidateOrder(Order order)
 }
 ```
 
-## Working with Collections
+### Working with collections
 
-### Collection Filtering with Complex Rules
+#### Collection filtering with several rules
 
 Apply multiple rules to filter collections:
 
@@ -405,15 +467,16 @@ Apply multiple rules to filter collections:
 public Result<IEnumerable<Order>> GetValidOrders(IEnumerable<Order> orders)
 {
     return Rule
-        .Add(RuleSet.IsNotEmpty(o => o.Id))
-        .Add(RuleSet.GreaterThan(o => o.Amount, 0))
-        .When(o => o.IsInternational, builder => builder
-            .Add(RuleSet.IsNotEmpty(o => o.CustomsDeclaration)))
+        .Add<Order>(o => RuleSet.IsNotEmpty(o.Id))
+        .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
+        .Add<Order>(
+            o => !o.IsInternational || !string.IsNullOrWhiteSpace(o.CustomsDeclaration),
+            "International orders require a customs declaration.")
         .Filter(orders);
 }
 ```
 
-### Advanced Collection Processing
+#### Collection processing with `Switch`
 
 Handle complex collection scenarios with Switch:
 
@@ -421,8 +484,8 @@ Handle complex collection scenarios with Switch:
 public Result ProcessOrders(IEnumerable<Order> orders)
 {
     return Rule
-        .Add(RuleSet.IsNotEmpty(o => o.Id))
-        .Add(RuleSet.GreaterThan(o => o.Amount, 0))
+        .Add<Order>(o => RuleSet.IsNotEmpty(o.Id))
+        .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
         .Switch(orders,
             validOrders => {
                 // Process valid orders
@@ -443,16 +506,16 @@ public Result ProcessOrders(IEnumerable<Order> orders)
 }
 ```
 
-## Custom Rules
+### Custom rules
 
 Create custom rules by inheriting from RuleBase:
 
 ```csharp
-public class BusinessHoursRule : RuleBase
+public class OfficeHoursRule : RuleBase
 {
     private readonly DateTime dateTime;
 
-    public BusinessHoursRule(DateTime dateTime)
+    public OfficeHoursRule(DateTime dateTime)
     {
         this.dateTime = dateTime;
     }
@@ -460,7 +523,7 @@ public class BusinessHoursRule : RuleBase
     public override string Message =>
         "Operation must be performed during business hours (9 AM - 5 PM)";
 
-    protected override Result Execute()
+    public override Result Execute()
     {
         return Result.SuccessIf(
             dateTime.Hour >= 9 &&
@@ -472,11 +535,11 @@ public class BusinessHoursRule : RuleBase
 
 // Using custom rule
 var result = Rule
-    .Add(new BusinessHoursRule(DateTime.Now))
+    .Add(new OfficeHoursRule(DateTime.Now))
     .Check();
 ```
 
-## Domain Validation Example
+### Domain validation example
 
 Here's a complete example showing how to validate a domain entity with complex rules:
 
@@ -520,12 +583,12 @@ public class OrderValidator
 }
 ```
 
-# Appendix A: Async Usage
+## Appendix A: Async usage
 
 While the Rules feature is primarily used synchronously, it also supports asynchronous operations.
 This appendix provides a brief overview of async usage patterns.
 
-## Basic Async Validation
+### Basic async validation
 
 Use `CheckAsync` for async rule evaluation:
 
@@ -534,12 +597,12 @@ public async Task<Result> ValidateOrderAsync(Order order)
 {
     return await Rule
         .Add(RuleSet.IsNotEmpty(order.Id))
-        .Add(new ValidateCustomerAsync(order.CustomerId))
+        .Add(new ActiveCustomerRule(order.CustomerId, customerService))
         .CheckAsync();
 }
 ```
 
-## Async Conditional Rules
+### Async conditional rules
 
 Async conditions can be used with `WhenAsync`:
 
@@ -555,17 +618,17 @@ public async Task<Result> ValidateOrderAsync(Order order)
 }
 ```
 
-## Custom Async Rules
+### Custom async rules
 
 Create async rules by inheriting from AsyncRuleBase:
 
 ```csharp
-public class ValidateCustomerAsync : AsyncRuleBase
+public class ActiveCustomerRule : AsyncRuleBase
 {
     private readonly string customerId;
     private readonly ICustomerService customerService;
 
-    public ValidateCustomerAsync(string customerId, ICustomerService customerService)
+    public ActiveCustomerRule(string customerId, ICustomerService customerService)
     {
         this.customerId = customerId;
         this.customerService = customerService;
@@ -573,7 +636,7 @@ public class ValidateCustomerAsync : AsyncRuleBase
 
     public override string Message => "Customer evaluation failed";
 
-    protected override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
+    public override async Task<Result> ExecuteAsync(CancellationToken cancellationToken)
     {
         var customer = await customerService.GetCustomerAsync(customerId, cancellationToken);
         return Result.SuccessIf(customer != null && customer.IsActive);
@@ -581,7 +644,7 @@ public class ValidateCustomerAsync : AsyncRuleBase
 }
 ```
 
-## Async Collection Processing
+### Async collection processing
 
 Both Filter and Switch operations support async rules:
 
@@ -590,20 +653,21 @@ public async Task<Result> ProcessOrdersAsync(IEnumerable<Order> orders)
 {
     // Async filtering
     var validOrders = await Rule
-        .Add(RuleSet.GreaterThan(o => o.Amount, 0))
-        .Add(async token => await ValidateCustomerAsync(token))
+        .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
+        .Add<Order>(async (o, token) =>
+            await customerService.ExistsAsync(o.CustomerId, token))
         .FilterAsync(orders);
 
     // Async switch operation
     return await Rule
-        .Add(RuleSet.GreaterThan(o => o.Amount, 0))
+        .Add<Order>(o => RuleSet.GreaterThan(o.Amount, 0))
         .SwitchAsync(orders,
             async valid => await ProcessValidOrdersAsync(valid),
             async invalid => await HandleInvalidOrdersAsync(invalid));
 }
 ```
 
-## Important Notes
+### Important notes
 
 1. All async methods accept an optional CancellationToken parameter
 2. Async rules should inherit from AsyncRuleBase
@@ -611,7 +675,7 @@ public async Task<Result> ProcessOrdersAsync(IEnumerable<Order> orders)
 4. Async and sync rules can be mixed in the same chain
 5. For best performance, prefer sync rules when async operations aren't required
 
-# Appendix B: Disclaimer
+## Appendix B: scope
 
 > The Rules feature is designed to be a lightweight, code-based solution for handling business
 > rules and evaluations within your application.
@@ -623,11 +687,11 @@ rules, complex workflow orchestration, or long-running rule processes, a dedicat
 engine might be more appropriate. Similarly, if you need rule persistence, versioning, or dynamic
 rule compilation, consider exploring specialized solutions.
 
-## When to Use the Rules Feature
+### When to use the Rules feature
 
-The feature excels through its low barrier to entry, requiring minimal setup and working out of the
-box. Since it's part of your application code with no external dependencies, it integrates
-seamlessly with your existing codebase and other bITdevKit features.
+The feature requires no external rule engine or persisted rule model. Because rules remain part of
+the application code, they can use the same types and Results conventions as other bITdevKit
+features.
 
 Remember: Choose the simplest tool that meets your requirements. The feature provides a
 lightweight, code-based approach to handling business rules, while staying consistent with

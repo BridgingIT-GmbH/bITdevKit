@@ -1,4 +1,4 @@
-# Application Commands and Queries Feature Documentation
+# Application commands and queries
 
 > Separate application writes and reads into focused handlers with shared behaviors and clear boundaries.
 
@@ -8,25 +8,29 @@
 
 ### Background
 
-The [Command Query Separation](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation#:~:text=Command%2Dquery%20separation%20(CQS),the%20caller%2C%20but%20not%20both.) (CQS) principle, introduced by Bertrand Meyer, divides operations into commands, which modify system state, and queries, which retrieve data without side effects. This separation enhances code clarity, predictability and maintainability by ensuring methods have distinct roles. By moving away from bloated application services that centralize all logic, commands and queries encapsulate specific business operations in smaller, focused units. This reduces the number of dependencies injected into each handler, improves testability by allowing isolated testing and promotes a cleaner architecture.
+The [Command Query Separation](https://en.wikipedia.org/wiki/Command%E2%80%93query_separation) (CQS) principle divides operations into commands, which modify system state, and queries, which retrieve data without side effects. Commands and queries place individual application operations in focused handlers instead of one application service with every dependency. This makes each operation and its dependencies explicit and allows handlers to be tested separately.
 
 - **Commands**: Perform state-changing actions such as creating or updating data. They typically return `Result<Unit>` for actions with no meaningful return or `Result<T>` for minimal data such as an identifier or summary model.
-- **Queries**: Retrieve data without altering state. They return `Result<T>` with the requested data and are idempotent.
+- **Queries**: Retrieve data without intentionally altering state. They return `Result<T>` with the requested data and should be idempotent.
 
-In Domain-Driven Design (DDD), commands and queries align with application services, encapsulating business logic and data access. The `Requester` feature in bITDevKit implements CQS using a mediator-like pattern, dispatching requests to handlers with type-safe `Result<T>` outcomes and extensible pipeline behaviors such as validation, retries, and timeouts. This reduces coupling, as callers are unaware of handler implementations, minimizes dependency injection in handlers, and enables consistent handling of cross-cutting concerns, making the codebase more modular and testable.
+In Domain-Driven Design (DDD), commands and queries act as focused application services. The
+`Requester` feature dispatches requests to handlers with type-safe `Result<T>` outcomes and ordered
+pipeline behaviors such as validation, retries, and timeouts. Callers depend on `IRequester` rather
+than concrete handlers, while each generated handler resolves only the services declared by its
+`[Handle]` method.
 
 Many handlers also depend on the shared mapping abstraction to translate between request models, domain objects, and response DTOs; see [Common Mapping](./common-mapping.md).
 
 For application-layer pub/sub workflows that do not fit a single request/response interaction, see [Application Events](./features-application-events.md).
 
-### Challenges
+## Challenges
 
 - **Inconsistent Handling**: Ad hoc implementations lead to unpredictable behavior.
 - **Mixed Concerns**: Combining state changes and data retrieval causes unintended side effects.
 - **Extensibility**: Adding concerns like logging or validation requires modifying core logic.
 - **Error Propagation**: Preserving error context across layers is complex.
 
-### Solution
+## Solution
 
 The `Requester` system provides:
 
@@ -36,9 +40,19 @@ The `Requester` system provides:
 
 Behaviors such as `ValidationPipelineBehavior` and `RetryPipelineBehavior` handle concerns without altering business logic.
 
-### Flow Diagram
+## Key Features
 
-The following Mermaid diagram illustrates the command/query flow:
+- Source-generated command and query request contracts
+- Response-type inference from `Result<T>` returned by `[Handle]`
+- Handler dependency injection through method parameters
+- Generated FluentValidation validators from validation attributes and `[Validate]`
+- Ordered request pipeline behaviors
+- `Result<T>`-based success and failure handling
+- Per-request retry, timeout, authorization, and transaction policies
+
+## Architecture
+
+The requester resolves the generated handler and registered behaviors for the concrete request type:
 
 ```mermaid
 sequenceDiagram
@@ -51,25 +65,33 @@ sequenceDiagram
 
     Client->>Requester: SendAsync(Request)
     Requester->>Pipeline: Apply Behaviors (Validation, Retry, etc.)
-    Pipeline->>Handler: HandleAsync(Request)
+    Pipeline->>Handler: Invoke [Handle] method
     Handler->>Repository: Perform Operation (e.g., Insert, Find)
     Repository->>Database: Execute (e.g., Save, Query)
     Database-->>Repository: Result
-    Repository-->>Handler: Result<T>
+    Repository-->>Handler: Entity, collection, or operation result
     Handler-->>Pipeline: Result<T>
     Pipeline-->>Requester: Result<T>
     Requester-->>Client: Result<T>
 ```
 
-## Setup
+## Use Cases
+
+- Create, update, or delete an aggregate through a focused command
+- Return a model or paged collection through a side-effect-free query
+- Apply the same validation, retry, timeout, tracing, or transaction behavior to many handlers
+- Keep endpoint and UI code independent from concrete handler types
+- Test one application operation with only its declared dependencies
+
+## Basic Usage
 
 Register the `Requester` in the dependency injection container:
 
 ```csharp
 services.AddRequester()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>()
-    .WithBehavior<RetryPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>));
 ```
 
 Add the code generation package to the project that contains the commands and queries:
@@ -80,9 +102,38 @@ Add the code generation package to the project that contains the commands and qu
                   PrivateAssets="all" />
 ```
 
-## Basic Usage
+After defining `CustomerCreateCommand` as shown below, dispatch it and handle both outcomes:
 
-### Defining a Command
+```csharp
+var result = await requester.SendAsync(
+    new CustomerCreateCommand
+    {
+        FirstName = "Ada",
+        LastName = "Lovelace",
+        Email = "ada@example.test"
+    },
+    cancellationToken: cancellationToken);
+
+if (result.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        Environment.NewLine,
+        result.Errors.Select(error => error.Message)));
+    return;
+}
+
+Console.WriteLine($"Created customer {result.Value.Id}");
+```
+
+The success path prints the identifier returned by the handler, for example:
+
+```text
+Created customer 5f6b5ba2-85d5-44bb-87a7-f876a65cdb09
+```
+
+## Command and query reference
+
+### Defining a command
 
 Commands modify state and return `Result<Unit>` or `Result<T>`.
 
@@ -99,6 +150,7 @@ public partial class CustomerCreateCommand
     [Handle]
     private async Task<Result<Customer>> HandleAsync(
         // DI services declared as parameters are resolved automatically
+        IMapper mapper,
         IGenericRepository<Customer> repository,
         CancellationToken cancellationToken)
     {
@@ -111,7 +163,7 @@ public partial class CustomerCreateCommand
 }
 ```
 
-### Validating a Command
+### Validating a command
 
 For simple cases, place validation directly on the properties:
 
@@ -159,7 +211,7 @@ public partial class CustomerImportCommand
 }
 ```
 
-### Defining a Query
+### Defining a query
 
 Queries retrieve data and return `Result<T>`.
 
@@ -167,6 +219,11 @@ Queries retrieve data and return `Result<T>`.
 [Query] // Marker attribute to indicate this is a query
 public partial class CustomerFindOneQuery
 {
+    public CustomerFindOneQuery(string customerId)
+    {
+        this.CustomerId = customerId;
+    }
+
     [ValidateNotEmptyGuid("CustomerId is required.")]
     public string CustomerId { get; }
 
@@ -176,12 +233,12 @@ public partial class CustomerFindOneQuery
         IGenericRepository<Customer> repository,
         CancellationToken cancellationToken)
     {
-        var customer = await repository.FindOneAsync(CustomerId, cancellationToken: cancellationToken);
+        var customer = await repository.FindOneAsync(this.CustomerId, cancellationToken: cancellationToken);
 
         // Returning Success with a value, which will be the Result<Customer> type of the query
         return customer != null
             ? Success(customer)
-            : Failure($"Customer with ID {CustomerId} was not found.");
+            : Failure($"Customer with ID {this.CustomerId} was not found.");
     }
 }
 ```
@@ -211,11 +268,15 @@ else
     Console.WriteLine($"Errors: {string.Join(", ", commandResult.Errors.Select(e => e.Message))}");
 }
 
-var query = new CustomerFindOneQuery("some-guid");
+var query = new CustomerFindOneQuery("5f6b5ba2-85d5-44bb-87a7-f876a65cdb09");
 var queryResult = await requester.SendAsync(query); // Returns Result<Customer>
 if (queryResult.IsSuccess)
 {
     Console.WriteLine($"Found customer: {queryResult.Value.FirstName}");
+}
+else
+{
+    Console.Error.WriteLine(string.Join(", ", queryResult.Errors.Select(e => e.Message)));
 }
 ```
 

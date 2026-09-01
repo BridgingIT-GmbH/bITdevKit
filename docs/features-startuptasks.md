@@ -1,12 +1,13 @@
-# StartupTasks Feature Documentation
 
-> Run application startup work in a structured, observable, and dependency-aware way.
+# Startup tasks
+
+> Run application startup work after the host reports that it has started.
 
 [TOC]
 
 ## Overview
 
-The StartupTasks feature provides a structured way to execute initialization tasks during application startup in ASP.NET Core applications. It allows developers to define, configure, and manage tasks that need to run when the application starts, such as database seeding, configuration validation, or system checks.
+The Startup Tasks feature executes registered initialization work after `IHostApplicationLifetime.ApplicationStarted` fires. Use it for work such as development data seeding, resource checks or cache preparation that does not need to block `IHostedService.StartAsync`.
 
 ```mermaid
 sequenceDiagram
@@ -18,7 +19,7 @@ sequenceDiagram
     App->>STS: StartAsync()
     Note over STS: Wait for ApplicationStarted
     STS->>STS: Apply StartupDelay
-    loop For each task
+    par For each enabled task
         STS->>Behavior: Execute
         Behavior->>Task: ExecuteAsync
         Task-->>Behavior: Complete
@@ -29,20 +30,35 @@ sequenceDiagram
 
 ## Challenges
 
-- Managing the order of initialization tasks
+- Avoiding hidden dependencies between concurrently started initialization tasks
 - Handling task failures gracefully
 - Configuring different behaviors for development and production environments
 - Controlling task execution timing and delays
 
 ## Solution
 
-The StartupTasks feature solves these challenges by providing:
+The Startup Tasks feature provides:
 
-- A flexible configuration system
-- Task execution ordering
-- Environment-specific task enabling/disabling
-- Configurable delays and parallel execution
-- Built-in logging and error handling
+- service-level and task-level enablement and startup delays
+- per-task dependency-injection scopes
+- a behavior pipeline around each task
+- structured start, completion, duration and failure logs
+- optional process termination when a task fails
+
+## Key Features
+
+- Register class-based tasks or task factories with `WithTask`.
+- Enable or disable the service and individual tasks.
+- Apply global and per-task startup delays.
+- Wrap all tasks with retry, timeout, circuit-breaker, chaos or custom behaviors.
+- Run each enabled task in its own dependency-injection scope.
+- Cancel in-flight tasks during host shutdown and wait for up to ten seconds.
+
+## Architecture
+
+`AddStartupTasks` registers `StartupTasksService` as a hosted service. Its `StartAsync` method registers a callback and returns immediately. After `ApplicationStarted`, the service applies the global delay, creates one asynchronous operation per enabled definition, resolves each task in a new scope and executes the global behavior chain around `IStartupTask.ExecuteAsync`.
+
+Tasks currently run concurrently through `Task.WhenAll`. `Order` sorts definitions before their operations are started, but it does not create a dependency or sequential execution guarantee. `MaxDegreeOfParallelism` exists on `StartupTaskServiceOptions`, but the current service does not apply it. Do not use either option to coordinate tasks that depend on each other.
 
 ## Use Cases
 
@@ -52,9 +68,9 @@ The StartupTasks feature solves these challenges by providing:
 - Resource preparation and validation
 - Integration testing setup
 
-## Usage
+## Basic Usage
 
-### Basic Setup
+### Basic setup
 
 Add startup tasks to your application in `Program.cs`:
 
@@ -65,34 +81,43 @@ builder.Services.AddStartupTasks(o => o
     .WithTask<DatabaseSeederTask>(o => o
         .Enabled(builder.Environment.IsDevelopment())
         .StartupDelay("00:00:03"));
+
+var app = builder.Build();
+app.Run();
 ```
 
-### Creating a Startup Task
+### Creating a startup task
 
 Implement the `IStartupTask` interface:
 
 ```csharp
-public class DatabaseSeederTask : IStartupTask
+public sealed class DatabaseSeederTask(
+    ILogger<DatabaseSeederTask> logger,
+    AppDbContext dbContext) : IStartupTask, IRetryStartupTask, ITimeoutStartupTask
 {
-    private readonly ILogger<DatabaseSeederTask> _logger;
-    private readonly IDbContext _dbContext;
-
-    public DatabaseSeederTask(ILogger<DatabaseSeederTask> logger, IDbContext dbContext)
+    RetryStartupTaskOptions IRetryStartupTask.Options => new()
     {
-        _logger = logger;
-        _dbContext = dbContext;
-    }
+        Attempts = 3,
+        Backoff = TimeSpan.FromSeconds(2)
+    };
+
+    TimeoutStartupTaskOptions ITimeoutStartupTask.Options => new()
+    {
+        Timeout = TimeSpan.FromSeconds(30)
+    };
 
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
-        _logger.LogInformation("Starting database seeding...");
-        // Seeding logic here
-        await _dbContext.SeedAsync(cancellationToken);
+        logger.LogInformation("Starting database seeding");
+        await dbContext.SeedAsync(cancellationToken);
+        logger.LogInformation("Database seeding completed");
     }
 }
 ```
 
-### Configuration Options
+When the host has started and both configured delays have elapsed, the application log contains `Database seeding completed`. An exception is logged by the service; setting `HaltOnFailure()` at service or task level terminates the process with `Environment.FailFast`.
+
+### Configuration options
 
 Tasks can be configured with various options:
 
@@ -101,21 +126,21 @@ builder.Services.AddStartupTasks()
     .WithTask<ConfigValidationTask>(o => o
         .Enabled(true)        // Enable/disable the task
         .StartupDelay("00:00:02")  // Add delay before execution
-        .Order(1))            // Set execution order
+        .Order(1))            // Sort launch order; does not make execution sequential
     .WithTask<CacheWarmupTask>(o => o
         .Enabled(builder.Environment.IsProduction())
         .Order(2));
 ```
 
-### Adding Behaviors
+### Adding behaviors
 
 Add behaviors to modify task execution:
 
 ```csharp
 builder.Services.AddStartupTasks()
-    .WithTask<DataInitializerTask>()
-    .WithBehavior<LoggingBehavior>()
-    .WithBehavior<RetryBehavior>();
+    .WithTask<DatabaseSeederTask>()
+    .WithBehavior<RetryStartupTaskBehavior>()
+    .WithBehavior<TimeoutStartupTaskBehavior>();
 ```
 
-The StartupTasks feature provides a clean and organized way to handle application initialization, making it easier to manage complex startup sequences while maintaining code clarity and separation of concerns.
+Built-in retry and timeout behaviors act on tasks that implement `IRetryStartupTask` and `ITimeoutStartupTask`, respectively. Behaviors are global and wrap every registered startup task; each behavior decides whether it applies to the current task.

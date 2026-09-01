@@ -1,11 +1,25 @@
-# Fake Identity Provider Feature Documentation
 
-> A lightweight OAuth2/OpenID Connect identity provider supporting multiple grant types and hardcoded users, designed for development and testing scenarios.
+# Fake Identity Provider
+
+> A lightweight OAuth 2.0 and OpenID Connect identity provider with configured users and clients for development and testing.
 
 [TOC]
 
-## Features
-- OAuth2 and OpenID Connect support
+## Overview
+
+The Fake Identity Provider supplies local OAuth 2.0 and OpenID Connect endpoints for development and automated tests. It uses configured in-memory users and clients, issues signed JWTs and provides a browser-based user selection page. It is not a production identity system.
+
+## Challenges
+
+Applications that use OAuth or OpenID Connect need realistic local flows, redirect validation and token claims. Connecting every developer machine and test run to an external identity service adds setup, network and test-data dependencies. A simplistic token stub does not exercise authorization-code redirects, refresh tokens, client credentials or user-info requests.
+
+## Solution
+
+`AddFakeIdentityProvider(...)` registers a development provider, its endpoint group, token services, cookie authentication and a named CORS policy. Fluent options configure users, public or confidential clients, issuer, endpoint paths, token lifetimes and token shape. `MapEndpoints()` exposes the configured endpoints with the other DevKit endpoint groups.
+
+## Key Features
+
+- OAuth 2.0 and OpenID Connect support
 - Public and confidential client support
 - Multiple grant types (authorization code, password, client credentials, refresh token)
 - JWT token generation
@@ -15,69 +29,162 @@
 - CORS support
 - Client redirect URI validation
 - Support for SPA, server, and API tool clients
-- Cookie-based Single Sign-On (SSO) across browser tabs
+- Cookie-based single sign-on (SSO) across browser tabs
 
-## Setup
+## Architecture
 
-### 1. Install Package
+```mermaid
+flowchart LR
+    A[Application startup] --> B[AddFakeIdentityProvider]
+    B --> C[Provider options]
+    B --> D[Cookie authentication]
+    B --> E[Token and user-info services]
+    B --> F[Named CORS policy]
+    B --> G[FakeIdentityProviderEndpoints]
+    H[MapEndpoints] --> G
+    G --> I[Authorize and callback]
+    G --> J[Token and refresh]
+    G --> K[UserInfo and discovery]
+    G --> L[Logout and debug information]
+```
+
+`FakeIdentityProviderEndpoints` validates authorization requests and delegates token work to `IFakeIdentityProvider`, `ITokenService`, `IAuthorizationCodeService` and `IUserInfoService`. The default provider signs JWTs locally; optional token providers adjust the token shape for Entra ID v2, Keycloak or ADFS test scenarios.
+
+## Use Cases
+
+- Run authorization-code flows for SPAs, Blazor clients and server-rendered applications during local development.
+- Test password, client-credentials and refresh-token requests without an external identity system.
+- Exercise role and claim handling with deterministic fake users.
+- Test registered redirect URIs and confidential-client secrets.
+- Use browser-cookie SSO across local application tabs.
+- Inspect discovery and debug endpoints while configuring a client.
+
+## Basic Usage
+
+Register the provider only for Development, configure at least one user and client, add the authentication middleware and map DevKit endpoints.
+
+```csharp
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Presentation.Web;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddAuthorization();
+builder.Services.AddFakeIdentityProvider(options => options
+    .Enabled(builder.Environment.IsDevelopment())
+    .WithIssuer("https://localhost:5001")
+    .WithUsers([
+        new FakeUser(
+            "luke.skywalker@starwars.com",
+            "Luke Skywalker",
+            ["Administrators", "Users"],
+            password: "development-only",
+            isDefault: true)
+    ])
+    .WithClient(
+        "Local SPA",
+        "spa-client",
+        "https://localhost:5001/authentication/login-callback"));
+
+var app = builder.Build();
+
+app.UseHttpsRedirection();
+app.UseCors();
+app.UseAuthentication();
+app.UseAuthorization();
+app.MapEndpoints();
+
+app.Run();
+```
+
+After the application starts, request the discovery document and check the HTTP result before reading it:
+
+```csharp
+using var client = new HttpClient();
+using var response = await client.GetAsync(
+    "https://localhost:5001/_bdk/api/identity/connect/.well-known/openid-configuration");
+
+if (!response.IsSuccessStatusCode)
+{
+    Console.Error.WriteLine($"Identity discovery failed: {(int)response.StatusCode}");
+    return;
+}
+
+Console.WriteLine(await response.Content.ReadAsStringAsync());
+```
+
+A successful response contains the configured issuer and URLs for the authorize, token, user-info and logout endpoints.
+
+
+## Detailed setup
+
+### Install the package
+
 ```xml
 <PackageReference Include="BridgingIT.DevKit.Presentation.Web" Version="x.y.z" />
 ```
 
 ```csharp
-builder.Services.AddFakeIdentityProvider(options => {
-   options.Enabled(builder.Environment.IsDevelopment())
-          .WithIssuer("https://localhost:5001")
-          .WithUsers(Fakes.Users)
-          .WithTokenLifetimes(
-              accessToken: TimeSpan.FromMinutes(30),
-              refreshToken: TimeSpan.FromDays(1))
-          .EnableCookieSingleSignOn()   // Optional; enabled by default
-          .EnablePersistentRefreshTokens() // Required for cookie SSO; enabled by default
-          // Public Client (SPA)
-          .WithClient(
-              "spa-client",
-              "Angular SPA",
-              "http://localhost:4200/callback")
-          // Blazor WASM (Public Client)
-          .WithClient(
-              "blazor-wasm",
-              "Blazor WASM Frontend",
-              "https://localhost:5001/authentication/login-callback",
-              "https://localhost:5001/authentication/logout-callback")
-          // Confidential Client (Server)
-          .WithConfidentalClient(
-              "mvc-app",
-              "MVC Server",
-              "mvc-secret",
-              ["https://localhost:5002/signin-oidc"])
-          // Blazor Server (Confidential Client)
-          .WithConfidentalClient(
-              "blazor-server",
-              "Blazor Server Frontend",
-              "server-secret",
-              ["https://localhost:5003/signin-oidc"])
-          // WebAPI Backend
-          .WithConfidentalClient(
-              "api-backend",
-              "API Backend",
-              "api-secret",
-              ["https://localhost:5001"])
-          // API Tools
-          .WithClient(
-              "swagger",
-              "Swagger UI",
-              "https://localhost:5001/swagger/oauth2-redirect.html");
+builder.Services.AddFakeIdentityProvider(options =>
+{
+    options.Enabled(builder.Environment.IsDevelopment())
+        .WithIssuer("https://localhost:5001")
+        .WithUsers(Fakes.Users)
+        .WithTokenLifetimes(
+            accessToken: TimeSpan.FromMinutes(30),
+            refreshToken: TimeSpan.FromDays(1))
+        .EnableCookieSingleSignOn() // Optional; enabled by default
+        .EnablePersistentRefreshTokens() // Required for cookie SSO; enabled by default
+        // Public client (SPA)
+        .WithClient(
+            "Angular SPA",
+            "spa-client",
+            "http://localhost:4200/callback")
+        // Blazor WebAssembly public client
+        .WithClient(
+            "Blazor WebAssembly frontend",
+            "blazor-wasm",
+            "https://localhost:5001/authentication/login-callback",
+            "https://localhost:5001/authentication/logout-callback")
+        // Confidential server client
+        .WithConfidentalClient(
+            "MVC server",
+            "mvc-app",
+            "mvc-secret",
+            ["https://localhost:5002/signin-oidc"])
+        .WithConfidentalClient(
+            "Blazor Server frontend",
+            "blazor-server",
+            "server-secret",
+            ["https://localhost:5003/signin-oidc"])
+        // Web API backend
+        .WithConfidentalClient(
+            "API backend",
+            "api-backend",
+            "api-secret",
+            ["https://localhost:5001"])
+        // API documentation client
+        .WithClient(
+            "Swagger UI",
+            "swagger",
+            "https://localhost:5001/swagger/oauth2-redirect.html");
 });
 ```
 
-### 3. Define Users
+The `WithClient` and `WithConfidentalClient` methods take the display name first and the client ID second. `WithConfidentalClient` retains its current misspelling for API compatibility.
+
+Complete the ASP.NET Core pipeline with `UseCors()`, `UseAuthentication()`, `UseAuthorization()` and `MapEndpoints()` as shown in [Basic Usage](#basic-usage).
+
+### Define users
+
 ```csharp
 public static class Fakes
 {
     public static readonly FakeUser[] Users = [
         new("luke.skywalker@starwars.com", "Luke Skywalker",
-            [Role.Administrators, Role.Users], isDefault: true),
+            [Role.Administrators, Role.Users],
+            password: "development-only",
+            isDefault: true),
         new("yoda@starwars.com", "Yoda",
             [Role.Administrators])
         // ...... Add more users
@@ -85,27 +192,33 @@ public static class Fakes
 }
 ```
 
-## Token Types
+## Token types
 
-### Access Token
+### Access token
+
 JSON Web Token (JWT) containing:
+
 - User identity (sub, email)
 - User info (name, roles)
 - Token metadata (iss, aud, exp)
 - Scope permissions
 
-### ID Token
+### ID token
+
 OpenID Connect token with:
+
 - Required claims (iss, sub, aud, exp)
 - Profile data (name, email)
 - Role information
 
-### Refresh Token
+### Refresh token
+
 Long-lived token for obtaining new access tokens.
 
-## Authentication Flows
+## Authentication flows
 
-### Public Client Flow (SPA, Mobile)
+### Public client flow (SPA or mobile)
+
 ```mermaid
 sequenceDiagram
     participant Client
@@ -128,12 +241,14 @@ sequenceDiagram
 ```
 
 Key points:
-- No client secret
-- State parameter required
-- Access token in Authorization header
-- Refresh token for token renewal
 
-### Confidential Client Flow (Server Apps)
+- Public clients do not send a client secret.
+- Clients should send and verify `state` to correlate the authorization response.
+- Send the access token in the `Authorization` header when calling user-info or protected APIs.
+- Use the refresh token to obtain replacement tokens.
+
+### Confidential client flow (server applications)
+
 ```mermaid
 sequenceDiagram
     participant Client
@@ -156,16 +271,16 @@ sequenceDiagram
 ```
 
 Key points:
-- Client secret required
-- Secure token storage
-- Server-side token management
-- Valid redirect URIs enforced
 
-## Cookie Single Sign-On (SSO)
+- A configured confidential client must send its client secret when exchanging an authorization code or using client credentials.
+- Keep tokens and the client secret on the server.
+- The authorize and callback endpoints validate the redirect URI against the configured client.
+
+## Cookie single sign-on
 
 When enabled (default), the fake identity provider sets an HTTP-only authentication cookie during the first authorization code flow. On subsequent `/authorize` requests, the provider checks this cookie and immediately redirects with a new authorization code if the user is still authenticated, skipping the user selection page.
 
-### How it Works
+### How it works
 
 ```mermaid
 sequenceDiagram
@@ -193,9 +308,9 @@ sequenceDiagram
 | Option | Default | Description |
 |--------|---------|-------------|
 | `EnableCookieSingleSignOn` | `true` | When `true`, the authorize endpoint checks for an existing auth cookie and skips the login page for already-authenticated users. |
-| `EnablePersistentRefreshTokens` | `true` | Must be `true` for cookie SSO to work; this sets the auth cookie during token exchange. |
+| `EnablePersistentRefreshTokens` | `true` | Controls cookie sign-in during authorization-code and refresh-token exchange. Keep it enabled when using cookie SSO. |
 
-### Opting Out
+### Opting out
 
 To disable cookie SSO and always show the login page:
 
@@ -209,27 +324,29 @@ builder.Services.AddFakeIdentityProvider(options =>
 });
 ```
 
-### Security Notes
+### Security notes
 
 - The authorize endpoint still validates `client_id` and `redirect_uri` before the SSO redirect, even when a valid cookie is present.
 - The cookie is HTTP-only (`options.Cookie.HttpOnly = true`) and Secure (`options.Cookie.SecurePolicy = CookieSecurePolicy.Always`).
-- The cookie inherits the refresh token lifetime (default 1 day).
+- The cookie uses the refresh-token lifetime, which defaults to 7 days.
 
-## Client Integration Examples
+## Client integration examples
 
-### 1. Angular (Public Client)
+### Angular public client
+
 ```typescript
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const authConfig: AuthConfig = {
-  issuer: 'http://localhost:5000',
+  issuer: 'https://localhost:5001',
   redirectUri: window.location.origin + '/callback',
   clientId: 'spa-client',
   scope: 'openid profile email roles'
 };
 ```
 
-### 2. ASP.NET Core MVC (Confidential Client)
+### ASP.NET Core MVC confidential client
+
 ```csharp
 builder.Services.AddAuthentication(options => {
     options.DefaultScheme = CookieAuthenticationDefaults.AuthenticationScheme;
@@ -237,7 +354,7 @@ builder.Services.AddAuthentication(options => {
 })
 .AddCookie()
 .AddOpenIdConnect(options => {
-    options.Authority = "http://localhost:5000";
+    options.Authority = "https://localhost:5001";
     options.ClientId = "mvc-app";
     options.ClientSecret = "mvc-secret";
     options.ResponseType = "code";
@@ -245,7 +362,8 @@ builder.Services.AddAuthentication(options => {
 });
 ```
 
-### 3. Blazor WebAssembly
+### Blazor WebAssembly
+
 ```csharp
 // Client Program.cs
 builder.Services.AddOidcAuthentication(options =>
@@ -272,7 +390,8 @@ builder.Services.AddOidcAuthentication(options =>
 </CascadingAuthenticationState>
 ```
 
-### 4. WebAPI Backend
+### Web API backend
+
 ```csharp
 // Program.cs
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -282,7 +401,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateAudience = true,
-            ValidAudience = "api",
+            ValidAudience = "api-backend",
             ValidateIssuer = true,
             ValidIssuer = "https://localhost:5001"
         };
@@ -316,23 +435,27 @@ public class WeatherForecastController : ControllerBase
 }
 ```
 
-## API Reference
+## API reference
 
-### Authorization Endpoint
-Start OAuth2 flow and user selection.
+### Authorization endpoint
+
+Start the OAuth 2.0 authorization flow and user selection.
 
 ```http
 GET /_bdk/api/identity/connect/authorize
 ```
 
 Parameters:
+
 - `response_type`: "code"
 - `client_id`: Client identifier
 - `redirect_uri`: Return URL
 - `scope`: Requested permissions
-- `state`: Security token
+- `state`: Client-generated correlation value that the provider returns unchanged
+- `nonce`: Optional value included in the ID token
 
-### Token Endpoint
+### Token endpoint
+
 Issue tokens using various grant types.
 
 ```http
@@ -340,32 +463,39 @@ POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 ```
 
-Grant Types:
-1. Authorization Code
+Grant types:
+
+1. Authorization code
+
 ```http
 grant_type=authorization_code
 &client_id=client_id
+&client_secret=secret_for_confidential_clients
 &code=auth_code
 &redirect_uri=callback_url
 ```
 
-2. Password Grant
+1. Password Grant
+
 ```http
 grant_type=password
 &client_id=client_id
 &username=user@example.com
-&password=password
+&password=configured_development_password
 &scope=openid profile
 ```
 
-3. Client Credentials
+1. Client Credentials
+
 ```http
 grant_type=client_credentials
 &client_id=client_id
+&client_secret=secret_for_confidential_clients
 &scope=api
 ```
 
-4. Refresh Token
+1. Refresh token
+
 ```http
 grant_type=refresh_token
 &client_id=client_id
@@ -373,18 +503,26 @@ grant_type=refresh_token
 ```
 
 Response:
+
 ```json
 {
   "access_token": "eyJhbGci...",
   "expires_in": 1800,
+  "refresh_expires_in": 86400,
   "refresh_token": "eyJhbGci...",
   "token_type": "Bearer",
   "scope": "openid profile",
-  "id_token": "eyJhbGci..."
+  "id_token": "eyJhbGci...",
+  "session_state": "5adfe1762f184803a0b321c678c49b5b"
 }
 ```
 
-### UserInfo Endpoint
+The ID token is present only when the requested scope contains `openid`. Client-credentials responses contain an access token but no refresh token or ID token.
+
+The discovery response advertises `client_secret_basic`, but the current token endpoint reads `client_secret` from form data. Use `client_secret_post` in clients that require a secret.
+
+### User-info endpoint
+
 Get authenticated user data.
 
 ```http
@@ -393,16 +531,22 @@ Authorization: Bearer token
 ```
 
 Response:
+
 ```json
 {
   "sub": "user_id",
   "name": "User Name",
+  "given_name": "User",
+  "family_name": "Name",
+  "preferred_username": "user@example.com",
   "email": "user@example.com",
+  "email_verified": true,
   "roles": ["Admin", "User"]
 }
 ```
 
-### Debug Endpoint
+### Debug endpoint
+
 Development information about configuration.
 
 ```http
@@ -410,14 +554,17 @@ GET /_bdk/api/identity/connect/debuginfo
 ```
 
 Response:
+
 ```json
 {
   "tokenIssuer": "https://localhost:5001",
+  "tokenProvider": "Default",
   "configuredClients": [
     {
       "clientId": "spa-client",
       "name": "SPA App",
-      "redirectUris": ["http://localhost:4200/callback"]
+      "redirectUris": ["http://localhost:4200/callback"],
+      "allowedScopes": ["openid", "profile", "email", "roles", "offline_access"]
     }
   ],
   "configuredUsers": [
@@ -430,27 +577,45 @@ Response:
 }
 ```
 
-### Well-Known Configuration
+### Discovery endpoints
+
 OpenID Connect discovery document.
 
 ```http
-GET /_bdk/api/identity/.well-known/openid-configuration
+GET /_bdk/api/identity/connect/.well-known/openid-configuration
+GET /.well-known/openid-configuration
 ```
 
 Response:
+
 ```json
 {
   "issuer": "https://localhost:5001",
   "authorization_endpoint": "https://localhost:5001/_bdk/api/identity/connect/authorize",
   "token_endpoint": "https://localhost:5001/_bdk/api/identity/connect/token",
   "userinfo_endpoint": "https://localhost:5001/_bdk/api/identity/connect/userinfo",
-  "end_session_endpoint": "https://localhost:5001/_bdk/api/identity/connect/logout"
+  "end_session_endpoint": "https://localhost:5001/_bdk/api/identity/connect/logout",
+  "grant_types_supported": ["authorization_code", "password", "client_credentials", "refresh_token"],
+  "response_types_supported": ["code"],
+  "response_modes_supported": ["query", "form_post"],
+  "scopes_supported": ["openid", "profile", "email", "roles", "offline_access"],
+  "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic", "none"]
 }
 ```
 
-## Error Handling
+### Logout endpoint
 
-Standard OAuth2 error responses:
+Sign out of the provider cookie and optionally redirect back to a client:
+
+```http
+GET /_bdk/api/identity/connect/logout?post_logout_redirect_uri=https%3A%2F%2Flocalhost%3A5001&state=abc123
+```
+
+The current implementation accepts the redirect URI directly; it does not validate it against the registered client redirect URIs. Use this endpoint only in the intended local development environment.
+
+## Error handling
+
+OAuth 2.0 failures use responses such as:
 
 ```json
 {
@@ -459,193 +624,135 @@ Standard OAuth2 error responses:
 }
 ```
 
-Common error codes:
-- invalid_request
-- invalid_client
-- invalid_grant
-- unauthorized_client
-- unsupported_grant_type
+Common error codes include `invalid_request`, `invalid_client`, `invalid_grant`, `unsupported_response_type` and `unsupported_grant_type`.
 
-## Security Considerations
+## Security considerations
 
-### Development Use Only
-- Designed for development and testing
-- No production security measures
-- Hardcoded users and clients
-- No token encryption requirements
+### Development use only
 
-### Default Behaviors
-- Client secrets not validated
-- Access tokens never expire by default
-- No real user authentication
-- CORS enabled for all origins
-- Debug endpoints exposed
+- The provider is designed for development and testing.
+- Users, passwords and client secrets are configured in application code.
+- The provider does not implement the controls expected from a production identity service.
 
-### Cookie Single Sign-On
+### Default behaviors
+
+- Access tokens expire after 24 hours and refresh tokens after 7 days unless configured otherwise.
+- JWT signing is disabled when `SigningKey` is empty. `WithSigningKey(...)` enables HS256 signing.
+- Configured confidential-client secrets are validated for authorization-code and client-credentials grants.
+- Client and redirect-URI validation applies when at least one client is configured.
+- The named identity-provider CORS policy allows any origin, header and method.
+- The debug endpoint exposes configured clients, users and endpoint URLs.
+
+### Cookie single sign-on
+
 - Cookie SSO is enabled by default for development convenience
 - The auth cookie is scoped to the IDP origin and shared across browser tabs
 - Client validation (`client_id`, `redirect_uri`) still applies to SSO redirects
 - For testing scenarios where each request should show the login page, disable with `EnableCookieSingleSignOn(false)`
 
-## Development Tips
+## Development tips
 
-### Custom Client Setup
+### Custom client setup
+
 ```csharp
 // Multiple redirect URIs
 .WithClient(
-    "angular-app",
     "Angular Frontend",
+    "angular-app",
     ["http://localhost:4200/callback",
      "http://localhost:4200/silent-refresh"])
 
 // API documentation tools
 .WithClient(
-    "swagger",
     "Swagger UI",
+    "swagger",
     "https://localhost:5001/swagger/oauth2-redirect.html")
 ```
 
-### Testing Scenarios
+### Testing scenarios
+
 - Multiple users
 - Role-based access
 - Token validation
 - Authentication flows
 - Client registrations
 
-## Related Resources
-- OAuth 2.0 RFC
-- OpenID Connect Specification
-- JWT Documentation
+## Related resources
 
+- [OAuth 2.0 (RFC 6749)](https://www.rfc-editor.org/rfc/rfc6749)
+- [OpenID Connect Core 1.0](https://openid.net/specs/openid-connect-core-1_0.html)
+- [JSON Web Token (RFC 7519)](https://www.rfc-editor.org/rfc/rfc7519)
 
 
+## Additional request examples
 
+This section retains expanded request and response examples for the same provider configuration described above.
 
+### Minimal-host characteristics
 
+- OAuth 2.0 and OpenID Connect endpoints
+- Authorization code, password, client credentials and refresh-token grants
+- Configured users and clients without a database
+- Local JWT generation
 
+### Minimal setup
 
+#### Install the package
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-# Bare-Bones Identity Provider Documentation
-
-A lightweight OAuth2/OpenID Connect identity provider supporting multiple grant types and hardcoded users. Perfect for development and testing scenarios where a full-fledged identity provider would be overkill.
-
-## Features
-- OAuth2 and OpenID Connect support
-- Multiple grant types (authorization code, password, client credentials, refresh token)
-- Hardcoded user management
-- JWT token generation
-- No database required
-- Minimal setup
-
-## Setup
-
-### 1. Install Package
 ```xml
-<PackageReference Include="BridgingIT.DevKit.Presentation.Web" Version="1.0.0" />
+<PackageReference Include="BridgingIT.DevKit.Presentation.Web" Version="x.y.z" />
 ```
 
-### 2. Configure Services
-In your `Program.cs`:
+#### Configure services
+
+In `Program.cs`:
+
 ```csharp
-builder.Services.AddFakeIdentityProvider(options =>
-{
-    options.Users = Fakes.Users;  // Your hardcoded users
-    options.TokenIssuer = "http://localhost:5000";  // Your IDP base URL
-    options.GroupPrefix = "/_bdk/api/identity";  // Base route for all endpoints
-});
+builder.Services.AddFakeIdentityProvider(options => options
+    .Enabled(builder.Environment.IsDevelopment())
+    .WithIssuer("https://localhost:5001")
+    .WithUsers(Fakes.Users)
+    .WithGroupPath("/_bdk/api/identity/connect")
+    .WithClient("Angular application", "spa-client", "http://localhost:4200/callback"));
 ```
 
-### 3. Define Users
+#### Define users
+
 ```csharp
 public static class Fakes
 {
     public static readonly FakeUser[] Users =
     [
         new("luke.skywalker@starwars.com", "Luke Skywalker",
-            [Role.Administrators, Role.Users], isDefault: true),
+            [Role.Administrators, Role.Users],
+            password: "development-only",
+            isDefault: true),
         new("yoda@starwars.com", "Yoda",
             [Role.Administrators])
     ];
 }
 ```
 
-## Client Integration Examples
+### Client integration examples
 
-### 1. Angular Application (Authorization Code Flow)
+#### Angular application (authorization-code flow)
 
 Configure your Angular application with OIDC client library:
+
 ```typescript
 import { AuthConfig } from 'angular-oauth2-oidc';
 
 export const authConfig: AuthConfig = {
-  issuer: 'http://localhost:5000',
+  issuer: 'https://localhost:5001',
   redirectUri: window.location.origin + '/callback',
-  clientId: 'any_client_id',
+  clientId: 'spa-client',
   scope: 'openid profile email roles',
   responseType: 'code'
 };
 ```
-#### Authorization Code Flow
+
+##### Authorization-code flow
+
 ``` mermaid
 sequenceDiagram
     participant Browser
@@ -667,61 +774,66 @@ sequenceDiagram
     IDP->>App: 11. Return user info
 ```
 
-### 2. Direct API Access (Password Grant)
+#### Direct API access (password grant)
 
 ```http
 POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=password
-&client_id=any_client_id
+&client_id=spa-client
 &username=luke.skywalker@starwars.com
+&password=development-only
 &scope=openid profile email roles
 ```
 
-### 3. Service-to-Service (Client Credentials)
+#### Service-to-service access (client credentials)
 
 ```http
 POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=client_credentials
-&client_id=any_client_id
+&client_id=api-backend
+&client_secret=api-secret
 &scope=api
 ```
 
-Note: This IDP implementation does not validate client_ids.
-Any string can be used as client_id in the requests.
+When clients are configured, the provider validates the client ID. It also validates the secret for configured confidential clients during authorization-code and client-credentials grants. If no clients are configured, the current implementation accepts an arbitrary non-empty client ID; configure clients when testing client validation.
 
-## API Reference
+### Expanded API reference
 
-### Authorization Endpoint
-Starts the OAuth2 authorization flow with user selection.
+#### Authorization endpoint
+
+Starts the OAuth 2.0 authorization flow with user selection.
 
 ```http
 GET /_bdk/api/identity/connect/authorize?
     response_type=code
-    &client_id=any_client_id
+    &client_id=spa-client
     &redirect_uri=http://localhost:4200/callback
     &scope=openid profile email roles
     &state=abc123
 ```
 
-### Token Endpoint
+#### Token endpoint
+
 Issues tokens using various grant types.
 
-#### Authorization Code Grant
+##### Authorization-code grant
+
 ```http
 POST /_bdk/api/identity/connect/token
 Content-Type: application/x-www-form-urlencoded
 
 grant_type=authorization_code
-&client_id=any_client_id
+&client_id=spa-client
 &code=xyz789
 &redirect_uri=http://localhost:4200/callback
 ```
 
-Sample Response:
+Sample response:
+
 ```json
 {
   "access_token": "eyJhbGci...",
@@ -734,7 +846,8 @@ Sample Response:
 }
 ```
 
-### UserInfo Endpoint
+#### User-info endpoint
+
 Returns information about the authenticated user.
 
 ```http
@@ -743,6 +856,7 @@ Authorization: Bearer eyJhbGci...
 ```
 
 Response:
+
 ```json
 {
   "sub": "749ecbc50c2364add0caa40f9afc2bbf",
@@ -756,21 +870,23 @@ Response:
 }
 ```
 
-### OpenID Configuration
+#### OpenID Connect configuration
+
 Returns the OpenID Connect discovery document.
 
 ```http
-GET /_bdk/api/identity/.well-known/openid-configuration
+GET /_bdk/api/identity/connect/.well-known/openid-configuration
 ```
 
 Response:
+
 ```json
 {
-  "issuer": "http://localhost:5000",
-  "authorization_endpoint": "http://localhost:5000/_bdk/api/identity/connect/authorize",
-  "token_endpoint": "http://localhost:5000/_bdk/api/identity/connect/token",
-  "userinfo_endpoint": "http://localhost:5000/_bdk/api/identity/connect/userinfo",
-  "end_session_endpoint": "http://localhost:5000/_bdk/api/identity/connect/logout",
+  "issuer": "https://localhost:5001",
+  "authorization_endpoint": "https://localhost:5001/_bdk/api/identity/connect/authorize",
+  "token_endpoint": "https://localhost:5001/_bdk/api/identity/connect/token",
+  "userinfo_endpoint": "https://localhost:5001/_bdk/api/identity/connect/userinfo",
+  "end_session_endpoint": "https://localhost:5001/_bdk/api/identity/connect/logout",
   "grant_types_supported": [
     "authorization_code",
     "password",
@@ -778,7 +894,8 @@ Response:
     "refresh_token"
   ],
   "response_types_supported": ["code"],
-  "scopes_supported": ["openid", "profile", "email", "roles"],
+  "response_modes_supported": ["query", "form_post"],
+  "scopes_supported": ["openid", "profile", "email", "roles", "offline_access"],
   "claims_supported": [
     "sub",
     "name",
@@ -786,22 +903,26 @@ Response:
     "given_name",
     "preferred_username",
     "email",
-    "email_verified"
-  ]
+    "email_verified",
+    "nonce"
+  ],
+  "token_endpoint_auth_methods_supported": ["client_secret_post", "client_secret_basic", "none"]
 }
 ```
 
-### Logout Endpoint
+#### Logout endpoint
+
 Handles user logout with optional redirect.
 
 ```http
-POST /_bdk/api/identity/connect/logout?
+GET /_bdk/api/identity/connect/logout?
     post_logout_redirect_uri=http://localhost:4200
     &state=abc123
 ```
 
-## Error Handling
-All endpoints return OAuth2 compliant error responses:
+### Error response example
+
+OAuth-related endpoint failures use an `OAuth2Error` response such as:
 
 ```json
 {
@@ -810,21 +931,15 @@ All endpoints return OAuth2 compliant error responses:
 }
 ```
 
-Common error codes:
-- invalid_request
-- invalid_client
-- invalid_grant
-- unauthorized_client
-- unsupported_grant_type
-- invalid_scope
+The exact error codes depend on the endpoint and validation branch. See [Error handling](#error-handling) for the implemented common cases.
 
-## Disclaimer
+### Development-only disclaimer
 
-This Identity Provider is designed exclusively for development and testing environments, with intentionally simplified security measures that make it unsuitable for production use. It provides basic OAuth2 and OpenID Connect flows without rigorous security validation. User credentials are stored in plaintext, authentication is simplified, and token validation is minimal. Security features like rate limiting, audit logging, and proper session management are omitted for development convenience.
+This identity provider is designed exclusively for development and testing environments, with intentionally simplified security measures that make it unsuitable for production use. It provides basic OAuth 2.0 and OpenID Connect flows without rigorous security validation. User credentials are stored in application configuration, authentication is simplified, and token validation is minimal. Security features such as rate limiting, audit logging and production session management are omitted.
 
 The provider includes development-friendly features like debug endpoints and permissive CORS policies that would pose security risks in production. Use this provider only in controlled development environments, ideally on localhost or protected development networks. Never expose it to public networks, use it with production data, or connect it to production services. For production deployments, always use a properly secured identity provider.
 
-- This IDP is designed for development and testing
-- Uses symmetric key signing (HS256)
-- No real user authentication
-- No real client secret validation
+- This provider is designed for development and testing.
+- `WithSigningKey(...)` enables symmetric HS256 signing; tokens are unsigned when the signing key is empty.
+- User authentication is intentionally simplified.
+- Configured confidential-client secrets are validated only in the grant paths described above.

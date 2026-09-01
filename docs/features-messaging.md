@@ -1,4 +1,5 @@
-# Messaging Feature Documentation
+
+# Messaging
 
 > Decouple producers and consumers with resilient asynchronous messaging and outbox-backed delivery.
 
@@ -6,11 +7,11 @@
 
 ## Overview
 
-Messaging provides asynchronous publish/subscribe communication between parts of your application and across modules. It decouples producers from consumers, improves resilience, enables eventual consistency, and scales background work without blocking request flows.
+Messaging provides asynchronous publish/subscribe communication between parts of an application and across modules. Producers depend on `IMessageBroker` instead of calling consumers directly. Delivery, durability and retry behavior depend on the selected broker.
 
 Messaging payloads and outbox messages build on the shared serializer abstractions and JSON conventions documented in [Common Serialization](./common-serialization.md), while correlation and trace instrumentation are closely related to [Common Observability / Tracing](./common-observability-tracing.md).
 
-The feature now supports an Entity Framework backed broker for durable, database-local message transport and an accompanying operational endpoint surface for inspecting, retrying, archiving, and purging persisted broker messages from your server application.
+The Entity Framework broker provides durable, database-local message transport and operational endpoints for inspecting, retrying, archiving and purging persisted broker messages.
 
 ## Challenges
 
@@ -27,6 +28,16 @@ The feature now supports an Entity Framework backed broker for durable, database
 - Behaviors: Publisher and handler behavior pipelines add cross-cutting concerns (module scoping, metrics, retry, timeout, chaos) consistently.
 - Operations: `IMessageBrokerService` and the web messaging endpoints expose persisted broker state for support and diagnostics.
 - Execution model: publish → transport → process → handle (sequence diagram below).
+
+## Key Features
+
+- One publish API across in-process, Entity Framework, RabbitMQ, Azure Service Bus and Azure Queue Storage brokers.
+- Static subscription registration with `WithSubscription<TMessage, THandler>()` and runtime subscribe/unsubscribe support on broker implementations.
+- Publisher and handler behavior chains for module context, metrics, retry, timeout and fault injection.
+- Optional transactional outbox integration for Entity Framework contexts.
+- Durable Entity Framework message state with leases, per-handler status, retry, expiration and archiving.
+- Operational APIs for the persisted Entity Framework broker.
+- Correlation and trace metadata propagation where supported by the transport.
 
 ## Architecture
 
@@ -62,55 +73,53 @@ sequenceDiagram
      end
 ```
 
-## Core Contracts
+### Core contracts
 
-- `IMessageBroker` ([src/Application.Messaging/IMessageBroker.cs](src/Application.Messaging/IMessageBroker.cs))
+- `IMessageBroker` ([src/Common.Abstractions/Messaging/IMessageBroker.cs](../src/Common.Abstractions/Messaging/IMessageBroker.cs))
+  - **Publish(IMessage, CancellationToken):** Publish through the configured broker.
+- `IMessageBrokerRuntime` ([src/Application.Messaging/IMessageBrokerRuntime.cs](../src/Application.Messaging/IMessageBrokerRuntime.cs))
   - **Subscribe<TMessage,THandler>() / Subscribe(Type,Type):** Bind a message type to a handler type.
   - **Unsubscribe<TMessage,THandler>() / Unsubscribe(Type,Type) / Unsubscribe():** Remove bindings.
-  - **Publish(IMessage, CancellationToken):** Validate and run publisher behaviors, then enqueue/send via the broker.
-  - **Process(MessageRequest):** Resolve subscriptions, run handler behaviors, invoke each `IMessageHandler<T>`.
-- `IMessageBrokerService` ([src/Application.Messaging/IMessageBrokerService.cs](src/Application.Messaging/IMessageBrokerService.cs))
+  - **Process(MessageRequest):** Resolve subscriptions, run handler behaviors and invoke each `IMessageHandler<T>`.
+- `IMessageBrokerService` ([src/Application.Messaging/IMessageBrokerService.cs](../src/Application.Messaging/IMessageBrokerService.cs))
   - Query persisted broker messages, payloads, handler states, and aggregate statistics.
   - Retry a full message or a single failed handler, release a lease, archive terminal rows, and purge old rows.
 - `MessageRequest`: Envelope carrying the message and cancellation for processing (created by brokers when messages are consumed).
 - Validation & serialization: Message validation (FluentValidation) and serialization are configured via the messaging builder.
 
-## Getting Started
+## Use Cases
+
+Use messaging when a producer should hand work to one or more handlers without a direct dependency, when work may be processed after the originating request, or when an integration requires a transport boundary. Use the in-process broker for ordered work inside one process, the Entity Framework broker for database-local durability, or an external broker when messages must cross process or host boundaries. A direct method or Requester call is clearer when the caller needs an immediate typed response.
+
+## Basic Usage
 
 ### DI setup
 
-Minimal example that adds behaviors, the outbox, the Entity Framework broker, and the operational endpoints:
+The following registration uses the in-process broker so the example requires no external infrastructure. `WithSubscription` registers the handler before the broker is created.
 
 ```csharp
 // In Program.cs or your composition root
 builder.Services.AddMessaging(builder.Configuration, o => o.StartupDelay("00:00:30"))
-  // Register messages and handlers
   .WithSubscription<UserRegisteredMessage, UserRegisteredHandler>()
-  // Publisher/handler behavior pipelines
   .WithBehavior<RetryMessageHandlerBehavior>()
   .WithBehavior<TimeoutMessageHandlerBehavior>()
-  // Choose a broker
-  .WithEntityFrameworkBroker<AppDbContext>()
-  // Optional operational endpoints from Presentation.Web.Messaging
-  .AddEndpoints(options => options.RequireAuthorization());
-  //.WithInProcessBroker();
-  //.WithRabbitMQBroker();
-  //.WithServiceBusBroker();
-  //.WithAzureQueueStorageBroker();
+  .WithInProcessBroker();
 ```
 
-If you prefer separate registration, the existing `builder.Services.AddMessagingEndpoints(options => options.RequireAuthorization())` helper is also available.
+For durable Entity Framework transport, replace `WithInProcessBroker()` with `WithEntityFrameworkBroker<AppDbContext>()`. Add authorized operational endpoints with `.AddEndpoints(options => options.RequireAuthorization())` or the separate `AddMessagingEndpoints(...)` service registration.
 
 ### Define a message and handler
 
 ```csharp
-public sealed record UserRegisteredMessage(Guid UserId, string Email) : IMessage;
-
-public sealed class UserRegisteredHandler : IMessageHandler<UserRegisteredMessage>
+public sealed class UserRegisteredMessage(Guid userId, string email) : MessageBase
 {
-  private readonly ILogger<UserRegisteredHandler> logger;
-  public UserRegisteredHandler(ILogger<UserRegisteredHandler> logger) => this.logger = logger;
+  public Guid UserId { get; } = userId;
+  public string Email { get; } = email;
+}
 
+public sealed class UserRegisteredHandler(ILogger<UserRegisteredHandler> logger)
+  : IMessageHandler<UserRegisteredMessage>
+{
   public Task Handle(UserRegisteredMessage message, CancellationToken cancellationToken)
   {
     logger.LogInformation("Welcome email scheduled for {UserId} ({Email})", message.UserId, message.Email);
@@ -121,13 +130,13 @@ public sealed class UserRegisteredHandler : IMessageHandler<UserRegisteredMessag
 
 ### Subscribe a handler
 
-Subscribe during startup (e.g., in a hosted startup task or module initialization).
+`WithSubscription` is the normal dependency-injection setup. A broker also supports runtime subscription when an application needs it:
 
 ```csharp
 public sealed class MessagingSubscriptionsStartupTask : IHostedService
 {
-  private readonly IMessageBroker broker;
-  public MessagingSubscriptionsStartupTask(IMessageBroker broker) => this.broker = broker;
+  private readonly IMessageBrokerRuntime broker;
+  public MessagingSubscriptionsStartupTask(IMessageBrokerRuntime broker) => this.broker = broker;
 
   public async Task StartAsync(CancellationToken cancellationToken)
   {
@@ -138,7 +147,7 @@ public sealed class MessagingSubscriptionsStartupTask : IHostedService
 }
 ```
 
-Subscribe during program  initialization (e.g. in a module's `IModule.Register`):
+Register the same subscription during application initialization, for example in a module's `IModule.Register`:
 
 ```csharp
 services.AddMessaging(configuration)
@@ -148,26 +157,33 @@ services.AddMessaging(configuration)
 ### Publish a message
 
 ```csharp
-public sealed class RegistrationService
-{
-  private readonly IMessageBroker broker;
-  public RegistrationService(IMessageBroker broker) => this.broker = broker;
-
-  public async Task RegisterAsync(Guid userId, string email, CancellationToken ct)
+app.MapPost("/users/{userId:guid}/registered", async (
+  Guid userId,
+  UserRegistrationRequest request,
+  IMessageBroker broker,
+  CancellationToken cancellationToken) =>
   {
-    // ... domain work ...
-    await broker.Publish(new UserRegisteredMessage(userId, email), ct);
-  }
-}
+    await broker.Publish(
+      new UserRegisteredMessage(userId, request.Email),
+      cancellationToken);
+
+    return Results.Accepted();
+  });
+
+app.Run();
+
+public sealed record UserRegistrationRequest(string Email);
 ```
 
-## Outbox (Reliability)
+A successful request returns HTTP 202. With the in-process broker, the handler writes `Welcome email scheduled for ...` to the application log before `Publish` completes. Message validation or cancellation exceptions are left to the application's standard exception handling rather than being treated as a successful publish.
 
-Use the transactional outbox to achieve “at least once” delivery: domain changes and an outbox record are persisted in the same transaction, and a background worker publishes messages from the outbox until processed.
+## Outbox reliability
 
-- Entity: [src/Domain.Outbox/Message/OutboxMessage.cs](src/Domain.Outbox/Message/OutboxMessage.cs)
+Use the transactional outbox for "at least once" delivery. The same transaction persists the domain changes and the outbox record. A background worker publishes the message from the outbox until a handler processes it.
+
+- Entity: [src/Domain.Outbox/Message/OutboxMessage.cs](../src/Domain.Outbox/Message/OutboxMessage.cs)
   - Fields: `AggregateId`, `AggregateType`, `EventType`, `Aggregate`, `AggregateEvent`, `TimeStamp`, `IsProcessed`, `RetryAttempt`, `MessageId`.
-- Registration: `.WithOutbox<TContext>(...)` wires the publisher behavior, hosted service, and worker. See [src/Infrastructure.EntityFramework/Messaging/Outbox/ServiceCollectionExtensions.cs](src/Infrastructure.EntityFramework/Messaging/Outbox/ServiceCollectionExtensions.cs).
+- Registration: `.WithOutbox<TContext>(...)` wires the publisher behavior, hosted service, and worker. See [src/Infrastructure.EntityFramework/Messaging/Outbox/ServiceCollectionExtensions.cs](../src/Infrastructure.EntityFramework/Messaging/Outbox/ServiceCollectionExtensions.cs).
   - Common options: `ProcessingInterval`, `StartupDelay` (advanced: `ProcessingModeImmediate`, use cautiously).
 
 Outbox flow:
@@ -206,22 +222,22 @@ Best practices:
 - Monitor retries and consider DLQ/alerting for persistent failures.
 - Set appropriate TTL/expiration and durability settings per transport.
 
-## Broker Implementations
+## Broker implementations
 
-### InProcessMessageBroker
+### `InProcessMessageBroker`
 
 - Ordered, single-threaded handling using TPL Dataflow (`ActionBlock` with `EnsureOrdered=true`).
 - Options: `ProcessDelay` (simulated work), `MessageExpiration` (drop before processing).
-- See [src/Application.Messaging/Brokers/InProcessMessageBroker.cs](src/Application.Messaging/Brokers/InProcessMessageBroker.cs).
+- See [src/Application.Messaging/Brokers/InProcessMessageBroker.cs](../src/Application.Messaging/Brokers/InProcessMessageBroker.cs).
 
-### EntityFrameworkMessageBroker
+### `EntityFrameworkMessageBroker`
 
 - Persists each published message into the current `DbContext` via `IMessagingContext.BrokerMessages` and processes it asynchronously through a background worker.
 - Uses provider-neutral optimistic concurrency (`ConcurrencyVersion`) plus renewable leases (`LockedBy`, `LockedUntil`) to coordinate multi-node workers safely.
 - Stores per-handler execution state inside the broker row, enabling aggregate status, handler-level retry, expiration, dead-lettering, and auto-archiving.
 - Exposes the persisted work through `IMessageBrokerService` and the optional server endpoints from `Presentation.Web.Messaging`.
 - Supports **runtime pause/resume per message type** via `MessageBrokerControlState`. When a type is paused, the worker skips messages of that type without claiming leases; resumed types pick up pending work on the next tick.
-- See [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs), [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs](src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs), and [src/Presentation.Web.Messaging/MessagingEndpoints.cs](src/Presentation.Web.Messaging/MessagingEndpoints.cs).
+- See [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker{TContext}.cs](../src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBroker%7BTContext%7D.cs), [src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker{TContext}.cs](../src/Infrastructure.EntityFramework/Messaging/EntityFrameworkMessageBrokerWorker%7BTContext%7D.cs), and [src/Presentation.Web.Messaging/MessagingEndpoints.cs](../src/Presentation.Web.Messaging/MessagingEndpoints.cs).
 
 Multi-host deployment notes:
 
@@ -255,19 +271,19 @@ sequenceDiagram
     Api->>Table: Query/retry/archive/purge persisted rows
 ```
 
-### RabbitMQMessageBroker
+### `RabbitMQMessageBroker`
 
 The RabbitMQ messaging broker uses a **single fanout exchange** (default name: `messaging`). Every message published to this exchange is broadcast to **all bound queues**, regardless of message type. Each subscriber gets its own queue bound to the exchange. The broker then filters messages at the consumer by looking up the actual message type from the `Type` AMQP header, so only handlers for that type are invoked.
 
 - **Exchange:** one fanout exchange per configured `ExchangeName`.
-- **Queues:** one queue per subscriber (not per message type). The queue name defaults to a random value unless you set `QueueName`. Use `QueueNameSuffix` for test isolation.
+- **Queues:** one queue per broker instance, not one queue per handler or message type. The queue name defaults to a random value unless `QueueName` is set. The lower-level options builder also supports `QueueNameSuffix`.
 - **Binding:** each queue is bound to the exchange using the message type name as the routing key. Because the exchange is fanout, the routing key does not restrict delivery; it is used only for binding consistency.
 - **Acknowledgement:** auto-ack (`autoAck: true`). Messages are acknowledged by RabbitMQ as soon as they are delivered to the consumer. **Handler failures do not trigger broker redelivery.** Use handler-level retry behaviors (e.g., `RetryMessageHandlerBehavior`) and design handlers to be idempotent.
-- **Durability:** `IsDurable` controls exchange durability and message persistence (`Persistent` flag). Queue flags `ExclusiveQueue` and `AutoDeleteQueue` default to `true`, which means queues are deleted when the consumer disconnects. For production multi-host scenarios, set `ExclusiveQueue = false` and `AutoDeleteQueue = false`, and provide a stable `QueueName` so that all instances of the same application share a queue.
+- **Durability:** lower-level broker options use `IsDurable` for exchange durability and the message `Persistent` flag. `ExclusiveQueue` and `AutoDeleteQueue` default to `true`. The current `WithRabbitMQBroker(RabbitMQMessageBrokerConfiguration)` messaging registration does not expose these three flags, so use a custom broker registration if a durable, shared, non-exclusive queue is required.
 - **Expiration:** per-message TTL via AMQP `Expiration` property.
 - **Correlation:** `CorrelationId` populated from Activity baggage when present.
 - **ProcessDelay:** artificial delay before invoking handlers (useful for testing or throttling).
-- See [src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs](src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs).
+- See [src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs](../src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs).
 
 RabbitMQ topology (fanout exchange with one queue per subscriber):
 
@@ -288,28 +304,23 @@ flowchart LR
 
 2. **Competing consumers for the same application.** If you run three replicas of the same module and want them to compete (one message handled by exactly one replica), all replicas must use the **same queue name**. The default behavior (random queue name + exclusive + auto-delete) creates a unique queue per instance, which means every replica receives every message. To enable competing consumers, set a stable `QueueName` and disable exclusivity:
    ```csharp
-   .WithRabbitMQBroker(new RabbitMQMessageBrokerConfiguration
-   {
-       ConnectionString = "...",
-       ExchangeName = "messaging",
-       QueueName = "my-module-queue",
-       ExclusiveQueue = false,
-       AutoDeleteQueue = false,
-       IsDurable = true
-   })
+   // WithRabbitMQBroker(...) accepts a stable QueueName, but its current
+   // configuration overload does not expose the non-exclusive/durable flags.
+   // Register a RabbitMQMessageBroker built with RabbitMQMessageBrokerOptionsBuilder
+   // when multiple replicas must share one durable queue.
    ```
 
 3. **Multi-type on the same exchange is safe.** You can subscribe `HandlerA` for `MessageA` and `HandlerB` for `MessageB` on the same broker instance. Both message types flow through the same exchange. Each consumer deserializes using the correct type from the header, so cross-type handling does not occur.
 
 4. **No broker-level retry.** Because consumption uses auto-ack, a handler exception does not return the message to RabbitMQ. The message is considered delivered and done. Always use `RetryMessageHandlerBehavior` or make handlers idempotent if retry is required.
 
-### ServiceBusMessageBroker
+### `ServiceBusMessageBroker`
 
-- Topic per message name with optional `TopicScope` suffix; subscription per consumer; topics/subscriptions created if missing.
+- Topic per message name with an optional lower-level `TopicScope` suffix; subscription per consumer; topics and subscriptions are created if missing. The current `WithServiceBusBroker(ServiceBusMessageBrokerConfiguration)` overload does not map its `MessageScope` property to `TopicScope`.
 - TTL: defaults to ~60 minutes unless overridden.
 - On success: completes messages. On failure: abandons messages so they can be redelivered.
 - Correlation: `CorrelationId` populated from Activity baggage when present.
-- See [src/Infrastructure.Azure.ServiceBus/ServiceBusMessageBroker.cs](src/Infrastructure.Azure.ServiceBus/ServiceBusMessageBroker.cs).
+- See [src/Infrastructure.Azure.ServiceBus/ServiceBusMessageBroker.cs](../src/Infrastructure.Azure.ServiceBus/Messaging/ServiceBusMessageBroker.cs).
 
 Service Bus topology (topic/subscriptions):
 
@@ -320,7 +331,7 @@ flowchart LR
   T --> Sn[Subscription Consumer N]
 ```
 
-### AzureQueueStorageMessageBroker
+### `AzureQueueStorageMessageBroker`
 
 Because Azure Queue Storage does not support native topics or subscriptions, this broker emulates pub/sub by creating **one queue per message type**. When a message is published, it is sent to the queue for that message type. The broker starts a single background poller per message type that receives messages using visibility timeout semantics. When a message is successfully received, `Process` dispatches it to **all subscribed handlers** for that message type, achieving fan-out behavior.
 
@@ -331,7 +342,7 @@ Because Azure Queue Storage does not support native topics or subscriptions, thi
 - **TTL:** `MessageExpiration` controls the time-to-live for messages in the queue (default: 7 days).
 - **Auto-create:** queues are created automatically at runtime when `AutoCreateQueue` is `true`.
 - **Correlation:** `CorrelationId` populated from Activity baggage when present.
-- **See:** [src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs](src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs).
+- **See:** [src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs](../src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs).
 
 Azure Queue Storage topology (one queue per message type, shared by all handlers):
 
@@ -352,14 +363,14 @@ flowchart LR
 
 4. **No ordering guarantees.** Azure Queue Storage does not guarantee FIFO ordering, especially when multiple consumers are polling the same queue.
 
-## Configuration & Options
+## Configuration and options
 
 - InProcess: `ProcessDelay`, `MessageExpiration`.
 - Entity Framework: `StartupDelay`, `ProcessingInterval`, `ProcessingDelay`, `ProcessingCount`, `LeaseDuration`, `LeaseRenewalInterval`, `MaxDeliveryAttempts`, `MessageExpiration`, `AutoArchiveAfter`, `AutoArchiveStatuses`.
-- RabbitMQ: `HostName`/`ConnectionString`, `ExchangeName`, `QueueName`/`QueueNameSuffix`, `IsDurable`, `ExclusiveQueue`, `AutoDeleteQueue`, `MessageExpiration`, `ProcessDelay`, `Retries`.
-- Service Bus: `ConnectionString`, `TopicScope`, `MessageExpiration` (TTL).
+- RabbitMQ configuration overload: `HostName` or `ConnectionString`, `ExchangeName`, `QueueName`, `MessageExpiration`, and `ProcessDelay`. Lower-level broker options also define `QueueNameSuffix`, `Retries`, `IsDurable`, `ExclusiveQueue`, and `AutoDeleteQueue`.
+- Service Bus configuration overload: `ConnectionString`, `MessageExpiration` (TTL), and `ProcessDelay`. The lower-level broker options also define `TopicScope`.
 - Azure Queue Storage: `ConnectionString`, `QueueNamePrefix`/`QueueNameSuffix`, `AutoCreateQueue`, `MaxConcurrentCalls`, `VisibilityTimeout`, `PollingInterval`, `MessageExpiration`, `ProcessDelay`.
-- Naming/routing: message type name is used for routing; `TopicScope` adds a suffix to Service Bus topics; `QueueNamePrefix`/`QueueNameSuffix` isolate Azure Queue Storage queues.
+- Naming/routing: the message type name is used for routing. Lower-level `TopicScope` adds a suffix to Service Bus topics; `QueueNamePrefix` and `QueueNameSuffix` isolate Azure Queue Storage queues.
 
 Entity Framework broker configuration example:
 
@@ -393,9 +404,6 @@ RabbitMQ broker configuration example:
       "ConnectionString": "amqp://guest:guest@localhost:5672/",
       "ExchangeName": "messaging",
       "QueueName": "my-module-queue",
-      "IsDurable": true,
-      "ExclusiveQueue": false,
-      "AutoDeleteQueue": false,
       "MessageExpiration": "1.00:00:00",
       "ProcessDelay": 0
     }
@@ -432,7 +440,7 @@ public class AppDbContext : DbContext, IMessagingContext
 }
 ```
 
-## Operational Endpoints
+## Operational endpoints
 
 When you add `Presentation.Web.Messaging`, the server can expose an operational API for persisted broker messages.
 
@@ -446,7 +454,7 @@ When you add `Presentation.Web.Messaging`, the server can expose an operational 
 - `GET /{id}/content`: stored payload content.
 - `POST /{id}/retry`: retry all retryable handler work for a message.
 - `POST /{id}/handlers/retry`: retry one failed/expired/dead-lettered handler entry.
-- `POST /{id}/lease/release`: release the current worker lease.
+- `POST /{id}/lease/release`: implemented by `IMessageBrokerService`, but the endpoint mapping is currently disabled in `MessagingEndpoints`.
 - `POST /{id}/archive`: archive a terminal broker row.
 - `POST /types/{type}/pause`: pause processing for a message type.
 - `POST /types/{type}/resume`: resume processing for a message type.
@@ -454,11 +462,11 @@ When you add `Presentation.Web.Messaging`, the server can expose an operational 
 
 These endpoints are intended for support and operations workflows. In production, prefer enabling them behind authorization and limiting access to privileged roles or policies.
 
-## Reliability & Observability
+## Reliability and observability
 
 - Idempotency: design handlers to be safe on re-execution; deduplicate via `MessageId` if required.
 - Entity Framework durability: messages survive process restarts in the application database and can be retried or archived without broker-specific infrastructure.
-- Durability: enable persistent messages and durable queues (RabbitMQ) and rely on persisted topics/subscriptions (Service Bus).
+- Durability: the Entity Framework broker persists messages in the application database. RabbitMQ persistence and durable, non-exclusive queues require lower-level/custom broker registration with the current API. Service Bus uses persisted topics and subscriptions.
 - Ordering: guaranteed with InProcess; not guaranteed across distributed consumers for RabbitMQ/Service Bus.
 - Expiration/TTL: prevent processing stale data; in-process broker drops expired messages before processing, while the Entity Framework broker expires rows based on `MessageExpiration`.
 - Retries/redelivery: prefer handler retry behaviors; the Entity Framework broker also supports operational retries through stored handler state; Service Bus will redeliver after abandon; RabbitMQ auto-ack means no redelivery on failures.
@@ -471,24 +479,24 @@ These endpoints are intended for support and operations workflows. In production
 - InProcess broker for unit/integration tests: deterministic ordering and simple setup.
 - Entity Framework broker tests: validate claim/finalize, lease renewal, retry state transitions, and endpoint operations with focused broker and store-service tests, including SQLite, SQL Server, and PostgreSQL integration coverage for the durable worker paths.
 - RabbitMQ broker tests: validate publish/subscribe, multi-type filtering, exchange isolation, and handler invocation. Run against a local RabbitMQ container.
-  - [tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs](tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs)
+  - [tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs](../tests/Infrastructure.IntegrationTests/RabbitMQ/Messaging/RabbitMQMessageBrokerTests.cs)
 - Azure Queue Storage broker tests: validate publish/subscribe, multi-handler fan-out, message type isolation, no-subscriber behavior, and batch handling. Run against Azurite (local Azure Storage emulator).
-  - [tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs](tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs)
+  - [tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs](../tests/Infrastructure.IntegrationTests/Azure.Storage/Messaging/AzureQueueStorageMessageBrokerTests.cs)
 - Transport-backed integration tests: run RabbitMQ/Service Bus/Azure Queue Storage locally (containers/emulators), ensure subscriptions exist before publishing, and assert side-effects and idempotency.
 
-## Minimal Examples
+## Minimal examples
 
 - Switch brokers via DI (single lines): `.WithInProcessBroker()`, `.WithEntityFrameworkBroker<AppDbContext>()`, `.WithRabbitMQBroker()`, `.WithServiceBusBroker()`, `.WithAzureQueueStorageBroker()`.
 - Subscribe in startup and publish from application services (see snippets above).
 
-## Appendix A — Behaviors
+## Appendix A: behaviors
 
 Behaviors wrap the publish and handle pipelines to add cross-cutting concerns consistently. You can compose multiple behaviors; registration order defines execution order (outermost first).
 
 - Publisher behaviors: implement `IMessagePublisherBehavior` and wrap `Publish(...)`.
 - Handler behaviors: implement `IMessageHandlerBehavior` and wrap `Handle(...)`.
 
-Common built-ins include module scoping, metrics, retry, timeout, and (optionally) chaos. Add them via the messaging builder’s `.WithBehavior<TBehavior>()` method.
+Common built-ins include module scoping, metrics, retry, timeout, and optional chaos injection. Add them through the messaging builder's `.WithBehavior<TBehavior>()` method.
 
 ### Creating a custom publisher behavior
 
@@ -565,10 +573,10 @@ Notes:
 
 | Behavior | Pipeline | Purpose | Recommended use |
 |---|---|---|---|
-| ModuleScopeMessagePublisherBehavior | Publisher | Propagate module context across publish pipeline | Always for multi-module apps |
-| ModuleScopeMessageHandlerBehavior | Handler | Propagate module context into handlers | Always for multi-module apps |
-| MetricsMessagePublisherBehavior | Publisher | Emit publish counters/timers | Recommended in all environments |
-| MetricsMessageHandlerBehavior | Handler | Emit handler counters/timers | Recommended in all environments |
+| ModuleScopeMessagePublisherBehavior | Publisher | Propagate module context across publish pipeline | Multi-module applications that use module context |
+| ModuleScopeMessageHandlerBehavior | Handler | Propagate module context into handlers | Multi-module applications that use module context |
+| MetricsMessagePublisherBehavior | Publisher | Emit publish counters/timers | Applications that collect messaging metrics |
+| MetricsMessageHandlerBehavior | Handler | Emit handler counters/timers | Applications that collect messaging metrics |
 | RetryMessageHandlerBehavior | Handler | Retry transient failures in handlers | Use when handlers call unreliable external systems; ensure idempotency |
 | TimeoutMessageHandlerBehavior | Handler | Enforce a time budget for handling | Use to prevent runaway handlers; set sensible defaults |
 | ChaosExceptionMessageHandlerBehavior | Handler | Fault injection for resilience testing | Use only in test/staging to validate recovery |

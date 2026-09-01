@@ -1,6 +1,6 @@
 # Common Utilities Documentation
 
-> Collect low-level utility building blocks for resiliency, activity helpers, ids, hashing, cloning, and more.
+> Use shared utilities for resiliency, composition, diagrams, calendars, metrics, storage, and runtime support.
 
 [TOC]
 
@@ -26,7 +26,7 @@ This includes:
 
 Some of those areas also have higher-level feature docs elsewhere in `docs/`. This page focuses on the shared utilities available across the devkit and gives a short usage example for each main utility family.
 
-## Business Calendars
+## Business calendars
 
 Business calendars provide culture-aware working-day calculations for due dates, planning windows, and date ranges.
 
@@ -99,7 +99,7 @@ Resolution order is:
 - neutral language code, such as `nl`
 - default calendar
 
-### DI-Aware Calendars
+### DI-aware calendars
 
 Calendars that need services can be registered with factories or implementation types. This is useful for calendars that need configuration, tenants, repositories, or other scoped services.
 
@@ -139,7 +139,7 @@ if (!info.IsBusinessDay)
 }
 ```
 
-### Dynamic Holidays
+### Dynamic holidays
 
 Use `DynamicBusinessCalendar` when holidays are calculated by year instead of stored as a fixed list. The built-in `CalculatedHolidayProvider` supports simple year-based rules, and projects can implement `IHolidayProvider` for richer logic.
 
@@ -168,7 +168,7 @@ var calendar = new DynamicBusinessCalendar(
     ]);
 ```
 
-## Human-Readable Duration Text
+## Human-readable duration text
 
 Human-readable duration and relative-time text formats durations and relative values using the language registered for the current or supplied culture. Use it for activity feeds, notification text, dashboard ages, and compact duration labels.
 
@@ -268,7 +268,7 @@ var text = TimeSpan.FromMinutes(3).ToDurationText(
     new RelativeTimeFormatOptions { Culture = CultureInfo.GetCultureInfo("sv-SE") });
 ```
 
-## Date And Time Ranges
+## Date and time ranges
 
 The range types use half-open `[start, end)` semantics and support one open boundary:
 
@@ -477,7 +477,7 @@ var services = new ServiceCollection();
 services.AddComposition();
 ```
 
-### Pattern Guide
+### Pattern guide
 
 | Pattern | Use it when | Typical result |
 | --- | --- | --- |
@@ -488,7 +488,7 @@ services.AddComposition();
 | `Composite` | You need to treat many implementations as one service. | One contract backed by a configured child set. |
 | `Chain` | You need ordered handlers that may handle or pass on a request. | A `next`-driven pipeline with handled/unhandled outcomes. |
 
-### Full Showcase
+### Combined registration example
 
 `AddComposition()` is additive, so multiple modules can contribute registrations and the final service resolves with the configured composition order of decorators, explicit interceptors, runtime interception behaviors, and the concrete implementation.
 
@@ -784,7 +784,7 @@ public sealed class CsvImportHandler : IImportHandler
 }
 ```
 
-### Choosing A Pattern
+### Choosing a pattern
 
 - Use `Decorator` when the behavior should be visible as an explicit wrapper class and still implement the same contract.
 - Use `Adapter` when the implementation already exists but the consuming code needs a different contract.
@@ -850,7 +850,7 @@ var svg = factory.Render(
     .GetText();
 ```
 
-## Resiliency Helpers
+## Resiliency helpers
 
 The strongest concentration of reusable behavior here is the resiliency set.
 
@@ -888,7 +888,7 @@ await retryer.ExecuteAsync(
     cancellationToken);
 ```
 
-### Debouncer And SimpleDebouncer
+### Debouncer and SimpleDebouncer
 
 `Debouncer` delays execution until no new call arrived during the configured interval. It is useful for noisy inputs such as UI typing, file-change bursts, or repeated refresh triggers.
 
@@ -1083,7 +1083,7 @@ var worker = new BackgroundWorkerBuilder(async (ct, p) =>
 await worker.StartAsync(cancellationToken);
 ```
 
-### SimpleNotifier And SimpleRequester
+### SimpleNotifier and SimpleRequester
 
 These two types are lightweight in-process messaging helpers:
 
@@ -1119,7 +1119,7 @@ requester.RegisterHandler<Ping, string>((request, ct) => new ValueTask<string>($
 var response = await requester.SendAsync<Ping, string>(new Ping("hello"), cancellationToken: cancellationToken);
 ```
 
-### Progress Types
+### Progress types
 
 The resiliency family also defines typed progress models such as:
 
@@ -1151,7 +1151,7 @@ It does not invent a separate metrics runtime. Instead, it builds on the standar
 
 The shared devkit meter name is `bdk`.
 
-### What It Provides
+### What it provides
 
 - `Metrics` for normalized series naming and high-resolution timestamps
 - `IMetricsService` and `MetricsService` as the single abstraction for creating and recording devkit-owned instruments
@@ -1160,7 +1160,7 @@ The shared devkit meter name is `bdk`.
 - optional system metrics endpoints via `AddMetrics(options => options.AddEndpoints())`
 - optional built-in metrics behaviors for requester, notifier, messaging, queueing, jobs, orchestrations, repositories, and storage
 
-### Registering Metrics
+### Registering metrics
 
 Register the feature once in the host. Use the configuration callback explicitly so this devkit registration is unambiguous alongside the .NET metrics APIs:
 
@@ -1176,7 +1176,7 @@ Metrics are optional. Omitting `AddMetrics(...)`, or configuring `.Enabled(false
 
 Applications that inject `IMetricsService` directly into their own required services should therefore register metrics. Feature composition code that treats metrics as optional can resolve `IMetricsService` with `GetService<IMetricsService>()`.
 
-### Emitting Custom Metrics
+### Emitting custom metrics
 
 Use `IMetricsService` in application or infrastructure code when you want custom metrics without dealing with raw `Meter` APIs directly.
 
@@ -1217,7 +1217,7 @@ Metric names are normalized automatically and follow the shared naming pattern:
 
 Prefer low-cardinality parts such as operation names, message types, or status values. Avoid ids, titles, emails, or other unbounded values in metric parts.
 
-### Tagged And High-Fidelity Metrics
+### Tagged and high-fidelity metrics
 
 Use the direct instrument methods when the metric has a stable name with dimensions expressed as tags:
 
@@ -1273,7 +1273,7 @@ The direct API supports:
 
 Keep tag values bounded. Values such as operation, provider, store, outcome, or a small known warehouse set are appropriate. Customer ids, blob names, message ids, exception messages, and other unbounded values are not.
 
-### Built-In Feature Metrics
+### Built-in feature metrics
 
 Several devkit features already have ready-made behaviors that emit metrics without additional custom instrumentation in your handlers or services.
 
@@ -1306,7 +1306,7 @@ services.AddJobScheduling(builder.Configuration)
     .WithBehavior<MetricsJobSchedulingBehavior>();
 ```
 
-### OpenTelemetry And Collector Compatibility
+### OpenTelemetry and collector compatibility
 
 The instrumentation itself is OpenTelemetry-friendly because it uses the standard .NET diagnostics metrics stack.
 
@@ -1345,9 +1345,9 @@ The `bdk` snapshot groups requester, messaging, queueing, jobs, orchestration, r
 
 They are not an OTLP endpoint, and they are not a Prometheus scrape endpoint. Those concerns belong to the host application's OpenTelemetry configuration.
 
-## Requester Utilities
+## Requester utilities
 
-The devkit also includes a fuller in-process request/notification stack than the simple resiliency helpers.
+The devkit also includes a fuller in-process request and notification stack than the small resiliency helpers.
 
 It includes:
 
@@ -1373,7 +1373,7 @@ services.AddNotifier()
     .AddHandlers();
 ```
 
-## Pipeline Utilities
+## Pipeline utilities
 
 The pipeline utilities compose named, in-process workflows from reusable synchronous or asynchronous
 steps. Pipelines can carry a strongly typed context and can include conditions, hooks, behaviors,
@@ -1398,7 +1398,7 @@ var result = await pipeline.ExecuteAsync(
 Use [Pipelines](./features-pipelines.md) for the complete definition, registration, execution, control
 flow, observability, testing, and source-generation guidance.
 
-## Startup Task Utilities
+## Startup task utilities
 
 The devkit includes shared startup-task primitives and behaviors, including:
 
@@ -1420,7 +1420,7 @@ var options = new StartupTaskOptionsBuilder()
     .Build();
 ```
 
-## Activity And Tracing Helpers
+## Activity and tracing helpers
 
 The devkit provides lower-level helpers around `System.Diagnostics.Activity` and `ActivitySource`.
 
@@ -1449,7 +1449,7 @@ await source.StartActvity(
     cancellationToken: cancellationToken);
 ```
 
-### Outbound HTTP Correlation Propagation
+### Outbound HTTP correlation propagation
 
 `CorrelationIdPropagationHandler` adds the application correlation identifier to the
 `CorrelationId` header of outbound requests. It is independent from W3C trace-context propagation,
@@ -1492,7 +1492,7 @@ services.AddHttpClient<IWeatherClient, WeatherClient>()
     .AddCorrelationIdPropagation();
 ```
 
-## Reflection And Expression Helpers
+## Reflection and expression helpers
 
 ### PredicateBuilder
 
@@ -1526,7 +1526,7 @@ var predicate = new PredicateBuilder<Customer>()
 var customers = dbContext.Customers.Where(predicate);
 ```
 
-### ReflectionHelper And PrivateReflection
+### ReflectionHelper and PrivateReflection
 
 `ReflectionHelper` provides cached reflection access and helpers for:
 
@@ -1552,7 +1552,7 @@ var handlers = ReflectionHelper.FindTypes(
     typeof(Customer).Assembly);
 ```
 
-## Shared State And Value Helpers
+## Shared state and value helpers
 
 ### TimeProviderAccessor
 
@@ -1597,7 +1597,7 @@ var shortText = current.ToString(VersionFormat.Short);
 
 ### ValueList
 
-`ValueList<T>` is a tiny immutable list optimized for very small collections. It works well when a value object or helper only needs to carry a handful of items.
+`ValueList<T>` is an immutable list designed for very small collections. It works well when a value object or helper only needs to carry a handful of items.
 
 Use it when:
 
@@ -1659,7 +1659,7 @@ var retries = values["retries"];
 var missing = values["unknown"]; // returns 0
 ```
 
-### Enumeration And Smart Enumeration
+### Enumeration and smart enumeration
 
 `Enumeration` is the devkit's smart-enum base type. It lets you model fixed values as rich types instead of plain enums, while still supporting lookup by id or value.
 
@@ -1684,7 +1684,7 @@ var status = Enumeration.FromValue<OrderStatus>("Submitted");
 var allStatuses = Enumeration.GetAll<OrderStatus>();
 ```
 
-## Data And Content Helpers
+## Data and content helpers
 
 ### ByteSize
 
@@ -1774,7 +1774,7 @@ Set `Placeholder` to an empty string when the shortened representation must not 
 
 Segment-based strategies always fit the configured budget. When parent-segment abbreviation is still too long, `OverflowTruncation` selects the fallback: `Left` (the default) preserves the final filename or identifier, while `Right` preserves the beginning of the abbreviated path.
 
-### Content Types
+### Content types
 
 The content-type helpers define a `ContentType` model plus extension methods for:
 
@@ -1844,7 +1844,7 @@ await decompressor.CopyToAsync(target, cancellationToken);
 - byte arrays
 - streams
 
-It uses AES-CBC/PKCS7 and centralizes key-size validation, initialization-vector generation, and stream creation for features that need symmetric encryption.
+It uses AES-CBC/PKCS7 and centralizes key-size validation, initialization-vector generation, and stream creation for features that need symmetric encryption. AES-CBC does not authenticate the ciphertext. Use an authenticated encryption scheme when an attacker can modify the stored or transported payload.
 
 Use the string and byte-array helpers for small payloads that are already in memory. These helpers generate a new initialization vector per encryption operation. The byte-array payload format is `IV || ciphertext`; the string payload is Base64 for that same binary envelope.
 
@@ -1896,7 +1896,7 @@ Rules:
 - Generate a new initialization vector for every encrypted payload.
 - Store keys in application configuration or a secret store, not in source files.
 
-### Encryption Key Providers
+### Encryption key providers
 
 `IEncryptionKeyProvider` separates active write-key selection from historical read-key lookup. `EncryptionKeyMaterial` copies supplied key bytes, and `DictionaryEncryptionKeyProvider` provides an immutable in-memory implementation suitable for configuration-backed key sets and tests.
 
@@ -1915,7 +1915,7 @@ var historical = await keys.GetKeyAsync("2026-01", cancellationToken);
 
 Keep old key ids available until no persisted encrypted value references them.
 
-### Stream Operations And Temporary Files
+### Stream operations and temporary files
 
 `StreamHelper` is the shared location for stream operations. Its `CopyAsync` method performs pooled asynchronous copies while optionally enforcing a maximum byte count and calculating an incremental hash. It leaves caller streams open and throws `StreamSizeLimitExceededException` before writing bytes beyond the configured limit.
 
@@ -1940,7 +1940,7 @@ await using var temporary = TemporaryFileHelper.Create(prefix: "bdk-export-");
 await source.CopyToAsync(temporary.Stream, cancellationToken);
 ```
 
-### Base64Url Encoding
+### Base64Url encoding
 
 `Base64UrlHelper` converts binary values to canonical unpadded Base64Url text and back. `Encode` replaces the standard Base64 `+` and `/` characters with URL-safe characters and omits padding. `Decode` accepts only that canonical unpadded representation, rejecting malformed input, standard Base64 padding, and alternate encodings of the same bytes.
 
@@ -1951,7 +1951,7 @@ var decoded = Base64UrlHelper.Decode(encoded);
 
 Use this helper for URL, key, token, and metadata formats that explicitly require Base64Url. Continue using standard `Convert.ToBase64String` and `Convert.FromBase64String` when a protocol requires regular padded Base64.
 
-### Property Scalar Encoding
+### Property scalar encoding
 
 `PropertyBagScalarCodec` preserves scalar property types across string-only persistence systems. Encoded values use a versioned `bdk_v1_` Base64Url envelope. Strings remain strings even when they look like numbers or booleans; legacy unprefixed values are read as strings.
 
@@ -1962,7 +1962,7 @@ var encoded = PropertyBagScalarCodec.Encode(DateTimeOffset.UtcNow);
 var decoded = (DateTimeOffset)PropertyBagScalarCodec.Decode(encoded);
 ```
 
-### Opaque Continuation Tokens
+### Opaque continuation tokens
 
 `OpaqueContinuationTokenCodec` serializes purpose-bound, versioned tokens. Without an `IContinuationTokenProtector`, tokens are unsigned. With `HmacContinuationTokenProtector`, tokens use HMAC-SHA256 and reject unsigned, modified, incorrectly signed, or wrong-purpose payloads.
 
@@ -2005,9 +2005,9 @@ or serializer changes.
 For persisted storage content, prefer `ContentHashHelper`. It produces and validates the canonical
 `sha256:<lowercase-hex>` representation and can calculate the hash while copying a stream.
 
-### CloneHelper And CloneHelperNew
+### CloneHelper and CloneHelperNew
 
-`CloneHelper` performs deep cloning through serialization-based copying. `CloneHelperNew` appears to be the newer alternative that exists alongside the original helper.
+`CloneHelper` clones through Newtonsoft.Json with non-public constructor support and type metadata. `CloneHelperNew` uses System.Text.Json with reference preservation, field inclusion, and runtime discovery of derived types.
 
 These helpers are useful when:
 
@@ -2023,7 +2023,7 @@ var snapshot = CloneHelper.Clone(order);
 var snapshot2 = CloneHelperNew.Clone(order);
 ```
 
-## Id And Key Helpers
+## ID and key helpers
 
 The generators serve different purposes:
 
@@ -2068,7 +2068,7 @@ Generated names and operational IDs can collide and should not be used as databa
 guarantees without a constraint and collision-handling strategy. Random keys should still be stored and
 transported according to the application's secret-management requirements.
 
-## Factory Helpers
+## Factory helpers
 
 `Factory<T>` and the non-generic `Factory` provide dynamic construction helpers. These are useful in framework-style code, plugin scenarios, or places where types are resolved dynamically and you want the call site to stay terse.
 
@@ -2084,7 +2084,7 @@ var customer = Factory<Customer>.Create(new Dictionary<string, object>
 var handler = Factory.Create(typeof(MyHandler), serviceProvider);
 ```
 
-## Validation Helpers
+## Validation helpers
 
 The devkit includes `FluentValidatorExtensions`, including `AddRangeRule<T>(...)`.
 
@@ -2099,7 +2099,7 @@ var property = typeof(Product).GetProperty(nameof(Product.Price));
 validator.AddRangeRule(property, 0m, 9999m, "Price must stay within the allowed range.");
 ```
 
-## Other Helpers
+## Other helpers
 
 Several smaller low-level helpers round out this utility set:
 
@@ -2140,7 +2140,7 @@ var workspaceRoot = WorkspacePathUtilities.ResolveWorkspaceRoot(
     builder.Environment.ContentRootPath);
 ```
 
-### Background Service Health Checks
+### Background service health checks
 
 `BackgroundServiceHealthCheck<TService>` reports whether a registered hosted service has not started,
 is running, completed, was cancelled, or faulted. The registration helper is idempotent by health-check
@@ -2156,7 +2156,7 @@ Use this for operational visibility into long-running `BackgroundService` implem
 service can be healthy or degraded depending on whether it represents completed startup work or a
 worker that was expected to remain active.
 
-## Storage-Neutral Utilities
+## Storage-neutral utilities
 
 Storage features share the following helpers instead of implementing local byte, stream, expiration, hashing, initialization, or key-display logic:
 
@@ -2391,7 +2391,7 @@ dashboard's existing authorization. The default page path is
 `/_bdk/dashboard/broadcasting`; no application-specific dashboard registration is required beyond the
 existing `AddDashboard(...)` call.
 
-## Related Documentation
+## Related documentation
 
 - [Requester and Notifier](./features-requester-notifier.md)
 - [Pipelines](./features-pipelines.md)

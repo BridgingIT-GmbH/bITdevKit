@@ -1,4 +1,4 @@
-# Domain Feature Documentation
+# Domain model
 
 > Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
 
@@ -21,15 +21,90 @@ Typed ids and smart enumerations from the domain layer also integrate with the s
 
 ## Challenges
 
+Domain models need stable identity, equality semantics, consistency boundaries, domain events, and
+types that express business meaning. Primitive identifiers, repeated mutation checks, and plain C#
+enums can make invalid combinations easier to construct and state transitions harder to audit.
+
 ## Solution
+
+The Domain packages provide entity and aggregate-root base classes, value objects, typed entity IDs,
+enumerations, domain events, and an ordered change builder. These types are infrastructure-neutral
+and can be composed without exposing persistence concerns to the domain model.
+
+## Key Features
+
+- Identity-based equality through `Entity<TId>`
+- Aggregate boundaries and event registration through `AggregateRoot<TId>`
+- Structural equality through `ValueObject`
+- Enumeration base types with optional partial-class source generation
+- Typed entity ID generation for `Guid`, `int`, `long`, and `string` values
+- Ordered entity changes with change detection, guards, result propagation, and event registration
+
+## Architecture
+
+`Entity<TId>` supplies identity and equality behavior. `AggregateRoot<TId>` adds a `DomainEvents`
+collection. Value objects and enumerations model concepts without entity identity. The
+`[TypedEntityId<T>]` generator creates an `EntityId<T>` subclass for an attributed class. The
+`Change()` extension creates an `EntityChangeBuilder<TEntity>` that applies queued operations in
+declaration order.
 
 ## Use Cases
 
-## Appendix A: Smart Enumerations
+- Model entities and aggregate roots with explicit identity semantics.
+- Prevent identifiers for different entity types from being mixed accidentally.
+- Represent domain states that need data or behavior beyond a C# `enum`.
+- Apply several aggregate mutations and raise events only when values change.
+- Propagate recoverable validation failures through `Result<TEntity>`.
+
+## Basic Usage
+
+This aggregate validates a new name before applying the change and then prints the updated value:
+
+```csharp
+public sealed class Customer : AggregateRoot<Guid>
+{
+	public Customer(Guid id, string name)
+	{
+		this.Id = id;
+		this.Name = name;
+	}
+
+	public string Name { get; set; }
+
+	public Result<Customer> Rename(string name)
+	{
+		return this.Change()
+			.Ensure(_ => !string.IsNullOrWhiteSpace(name), "A name is required.")
+			.Set(customer => customer.Name, name.Trim())
+			.Apply();
+	}
+}
+
+var customer = new Customer(Guid.NewGuid(), "Ada Lovelace");
+var result = customer.Rename(" Grace Hopper ");
+
+if (result.IsFailure)
+{
+	Console.Error.WriteLine(
+		string.Join(Environment.NewLine, result.Errors.Select(error => error.Message)));
+	return;
+}
+
+Console.WriteLine(result.Value.Name);
+```
+
+Output:
+
+```text
+Grace Hopper
+```
+
+## Appendix A: Smart enumerations
 
 ### Overview
 
-In domain modeling, representing a fixed set of options or states is a common requirement. While C# provides the enum type for this purpose, it often proves too limiting for real-world domain models. The Smart Enumeration pattern offers a more powerful alternative that combines the simplicity of enums with the flexibility of full-fledged objects.
+In domain modeling, a fixed set of options or states often needs more data or behavior than a C#
+enum can provide. The Enumeration pattern represents those options as typed objects.
 
 ### Challenge
 
@@ -41,7 +116,7 @@ Traditional C# enums work well for simple flags or states but fall short when re
 - Hard to extend or version
 - No validation beyond basic type checking
 
-### Solution: Smart Enumerations
+### Solution: Smart enumerations
 
 ```mermaid
 sequenceDiagram
@@ -62,25 +137,21 @@ sequenceDiagram
 ### Usage
 
 ```csharp
-public class TodoStatus : Enumeration
+public partial class TodoStatus : Enumeration
 {
     public static readonly TodoStatus New = new(1, nameof(New), "Newly created task");
     public static readonly TodoStatus InProgress = new(2, nameof(InProgress), "Task is being worked on");
     public static readonly TodoStatus Completed = new(3, nameof(Completed), "Task has been completed");
 
-    private TodoStatus(int id, string value, string description)
-        : base(id, value)
-    {
-        this.Description = description;
-    }
-
-    public string Description { get; }
-
-    public static IEnumerable<TodoStatus> GetAll() => GetAll<TodoStatus>();
+    public string Description { get; private set; }
 }
 ```
 
-#### Entity Framework Configuration
+For a non-generic `partial` class derived from `Enumeration`, the source generator adds the private
+constructors, `GetAll`, `GetById`, and conversions from `int` and `string`. A non-partial class can
+define those members manually instead.
+
+#### Entity Framework configuration
 
 ```csharp
 public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem>
@@ -96,21 +167,23 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
 
 ### Benefits
 
-Smart Enumerations transform enumerated values from simple flags into rich domain concepts. They shine in real applications by providing:
+Smart Enumerations turn enumerated values into domain types with data and behavior:
 
-- **Rich Domain Expression** - Instead of bare numbers, enumerations carry meaning through additional properties and behavior. When a developer looks at a todo item's status, they see not just a value but also its description, business rules, and any metadata.
+- **Rich domain expression** - Instead of bare numbers, enumerations carry a value, description, business rules, and metadata.
 
 - **Natural Evolution** - As applications grow, enumerations often need additional properties or behaviors. Smart Enumerations accommodate this growth naturally - adding a new status property or validation rule doesn't break existing code.
 
 - **Safety with Simplicity** - While providing rich domain features, they maintain the simplicity of traditional enums in usage. The type system prevents errors like assigning a priority to a status field, while Entity Framework Core's value converters ensure clean persistence.
 
-The result is code that better expresses business concepts while remaining maintainable and safe - a perfect fit for domain-driven applications that need to evolve over time.
+This approach keeps enumeration-specific data and behavior with the domain concept it describes.
 
-## Appendix B: Strongly-Typed Entity IDs
+## Appendix B: Strongly typed entity IDs
 
 ### Overview
 
-In domain-driven design and clean architecture, entity identifiers play a crucial role. However, using primitive types like `Guid` or `int` as identifiers can lead to subtle bugs and unclear code. Consider a system managing both `Todo`s and `TodoStep`s, each using GUIDs as identifiers. A method that accidentally accepts a `TodoStep` ID when it should work with `Todo` IDs will compile successfully because both are GUIDs.
+Entity identifiers define identity, but primitive types such as `Guid` or `int` do not identify the
+entity type they belong to. In a system with `Todo` and `TodoStep` entities, a method can accept the
+wrong identifier and still compile when both identifiers are GUIDs.
 
 This common anti-pattern is known as "[primitive obsession](https://wiki.c2.com/?PrimitiveObsession)" - using primitive types where a dedicated type would better express domain concepts and prevent errors.
 
@@ -134,7 +207,7 @@ sequenceDiagram
     CS->>App: Compile final assembly
 ```
 
-### Features (Generator)
+### Generated features
 
 The source generator creates ID classes with:
 
@@ -146,44 +219,52 @@ The source generator creates ID classes with:
 - Factory methods for creation
 - Null handling
 
+Calling the parameterless `Create()` generates a new value only for `Guid` IDs. The generated
+parameterless method throws `NotImplementedException` for `int`, `long`, `string`, and unsupported
+ID types; supply a value through `Create(value)` or provide an application-specific generation
+strategy.
+
 ### Usage
 
-#### Domain Entity
+#### Domain entity
 
 ```csharp
 [TypedEntityId<Guid>] // triggers the generator
-public class TodoItem : Entity<TodoId> // generated id
+public class TodoItem : Entity<TodoItemId> // generated id
 {
     public string Title { get; set; }
     //...
 }
 ```
 
-#### Application Code
+#### Application code
 
 ```csharp
 // Type safety prevents mixing different ID types
-public async Task<Todo> GetTodo(TodoId id) // ✅
-public async Task<Todo> GetTodo(TodoStepId id) // ❌ Won't compile
+TodoItemId todoId = Guid.NewGuid();
+TodoStepId stepId = Guid.NewGuid();
+
+await todoService.GetTodo(todoId);
+// await todoService.GetTodo(stepId); // Does not compile: TodoStepId is not TodoItemId.
 
 // Convenient implicit conversions
 TodoItemId id = Guid.NewGuid();  // Guid to TodoItemId
 Guid guid = id;                  // TodoItemId to Guid
 ```
 
-#### Entity Framework Configuration
+#### Entity Framework configuration
 
 The strongly-typed IDs require proper Entity Framework configuration to map between domain types and database primitives:
 
 ```csharp
-public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<Todo>
+public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem>
 {
     public void Configure(EntityTypeBuilder<TodoItem> builder)
     {
         builder.Property(e => e.Id).ValueGeneratedOnAdd()
             .HasConversion(
-                id => id.Value,                      // To database: TodoId -> Guid
-                value => TodoItemId.Create(value));  // From database: Guid -> TodoId
+                id => id.Value,                      // To database: TodoItemId -> Guid
+                value => TodoItemId.Create(value));  // From database: Guid -> TodoItemId
 
         // Navigation property configuration
         builder.OwnsMany(x => x.Steps, sb =>
@@ -202,12 +283,12 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<Todo>
 - **Convenience**: Implicit conversions to/from primitive types
 - **Debugging**: Meaningful string representation
 - **JSON Support**: Built-in serialization handling
-- **Persistence**: Seamless Entity Framework integration
+- **Persistence**: Entity Framework conversion to the underlying value
 - **Value Semantics**: Proper equality comparison
 
 The TypedEntityId pattern transforms primitive identifiers into first-class domain concepts, making code both safer and more expressive. It prevents a whole class of bugs while better communicating domain intent through the type system.
 
-## Appendix C: Fluent Aggregate Updates
+## Appendix C: Fluent aggregate updates
 
 ### Overview
 
@@ -243,9 +324,15 @@ public void ChangeEmail(string newEmail)
 }
 ```
 
-### Solution: Fluent Change Builder
+### Solution: Fluent change builder
 
-The `AggregateRoot` extensions provide a fluent, transactional builder pattern (`this.Change()`) to handle state mutations declaratively. It encapsulates the complexity of change detection, validation, and event registration into a clean, readable API.
+The `Change()` extension provides an ordered builder for state mutations, change detection,
+validation, and event registration.
+
+The builder is not a rollback mechanism. If an operation fails, mutations made by earlier
+operations remain on the in-memory entity. A false `When` also preserves earlier mutations and
+registers events queued before the circuit breaker. Apply changes to a detached or otherwise safe
+instance when the caller requires all-or-nothing state.
 
 **Key Feature: Declaration-Order Execution**
 
@@ -280,20 +367,16 @@ sequenceDiagram
         Builder->>Builder: Queue Event
         Builder->>Events: Register Events at Apply() end
         Builder-->>Dev: Success Result
-    else When Guard Fails (Circuit Breaker)
+    else When guard fails
         Note over Builder: Skip remaining operations<br/>Property1 changed, Property2 unchanged
         Builder->>Events: Register events for changes before When
         Builder-->>Dev: Success Result (partial changes)
-    end
-        Builder-->>Dev: Return Success Result
-    else If Invalid or No Change
-        Builder-->>Dev: Return Failure or Success(NoOp)
     end
 ```
 
 ### Usage
 
-#### Basic Property Update
+#### Basic property update
 
 ```csharp
 public Result<Customer> ChangeName(string firstName, string lastName)
@@ -301,12 +384,12 @@ public Result<Customer> ChangeName(string firstName, string lastName)
     return this.Change()
         .Set(c => c.FirstName, firstName)
         .Set(c => c.LastName, lastName)
-        .Regisiter(c => new CustomerNameChangedEvent(c.Id))
+        .Register(c => new CustomerNameChangedEvent(c.Id))
         .Apply();
 }
 ```
 
-#### Conditional Logic with When (Circuit Breaker)
+#### Conditional logic with `When`
 
 The `When` method acts as a circuit breaker at its declared position. Operations **before** When execute normally, operations **after** When only execute if the condition is true.
 
@@ -325,7 +408,7 @@ public Result<Customer> PromoteToVIP()
 
 **Important:** If When fails, `LastReviewed` is still updated, but `Status` remains unchanged and no promotion event is registered. This allows for partial updates with conditional logic.
 
-#### Side Effects with OnChanged
+#### Side effects with `OnChanged`
 
 The `OnChanged` method queues actions that execute only if changes occurred, useful for side effects like audit updates or logging.
 
@@ -341,10 +424,14 @@ public Result<Customer> ChangeStatus(CustomerStatus status)
 }
 ```
 
-#### Validation with Check and Ensure
+#### Validation with `Check` and `Ensure`
 
-- **`Ensure`**: Pre-condition check - aborts **before** making changes if false
-- **`Check`**: Post-condition validation - executes **immediately** at its position, after changes
+- **`Ensure`**: Guard that runs at its declared position. Place it before mutations when it must be
+  a precondition.
+- **`Check`**: Validation that runs immediately at its declared position.
+
+Both methods return a failure and skip later operations when their predicate is false. Neither
+method rolls back mutations made by earlier operations.
 
 ```csharp
 public Result<Customer> UpdateProfile(string name, int age)
@@ -359,7 +446,7 @@ public Result<Customer> UpdateProfile(string name, int age)
 }
 ```
 
-#### Using Result-Returning Factories (Fail Fast)
+#### Using Result-returning factories
 
 If the value generation itself can fail (e.g., creating a Value Object), the builder handles the `Result` automatically. If `EmailAddress.Create` returns a Failure, the chain stops, and `Apply()` returns that failure.
 
@@ -369,22 +456,22 @@ public Result<Customer> ChangeEmail(string emailString)
     return this.Change()
         // If Create returns Failure, the chain aborts here
         .Set(c => c.Email, EmailAddress.Create(emailString))
-        .Regisiter((c, ctx) => new EmailChangedEvent(
+        .Register((c, ctx) => new EmailChangedEvent(
              ctx.GetOldValue<EmailAddress>(nameof(Email)),
              c.Email))
         .Apply();
 }
 ```
 
-#### Collection Management
+#### Collection management
 
 ```csharp
 // Add/Remove items
 public Result<Customer> AddTag(string tag)
 {
     return this.Change()
-        .Add(c => c.Tags, tag)
         .Ensure(c => c.Tags.Count < 10, "Tag limit reached")
+        .Add(c => c.Tags, tag)
         .Apply();
 }
 
@@ -424,7 +511,7 @@ public Result<Customer> SetPrimaryAddress(AddressId addressId)
 }
 ```
 
-#### Executing Methods with Result Propagation
+#### Executing methods with Result propagation
 
 When you need to call other domain methods that return `Result`, use `Set` to chain them. If any method fails, the entire chain stops and returns that failure.
 
@@ -461,9 +548,10 @@ public Result<Customer> ResetData()
 }
 ```
 
-#### Result Transformations with Execute
+#### Result transformations with `Execute`
 
-The `Execute` method can also be used to apply Result functional extensions (Map, Bind, Tap, Ensure, Filter, etc.) after all operations complete. This enables powerful post-processing, validation, and side effects while maintaining the Result pattern:
+The `Execute` method can also apply Result functional extensions (`Map`, `Bind`, `Tap`, `Ensure`,
+`Filter`, and others) at its declared position:
 
 ```csharp
 public Result<Customer> PromoteToAdult()
@@ -535,15 +623,15 @@ public Result<Customer> ComplexUpdate(string name, int age)
 |-----------|-------------|
 | **`Set`** | Updates a property at its declaration position. Supports direct values, computed factories, `Result<T>` factories (fail-fast), and Result-returning methods for chaining domain logic. Only updates if value differs (automatic change detection). **Also applies actions to collection items:** all items, filtered items, or single item by ID. |
 | **`Add` / `Remove` / `Clear`** | Manages collection properties with automatic change detection. `Remove` fails with `NotFoundError` if item not found. Executes at declaration position. |
-| **`Ensure`** | Pre-condition guard that executes **before** making changes. If false, aborts transaction immediately. Executes at declaration position. |
+| **`Ensure`** | Runs a guard at its declaration position. A false predicate returns a failure and skips later operations; earlier mutations remain. |
 | **`Check`** | Post-condition validation that executes **immediately at its position** after preceding operations. If false, returns Failure result. Use for immediate validation after specific changes. |
 | **`When`** | **Circuit breaker** that executes at its declaration position. If condition is false, **cancels all remaining operations** after it. Operations before When execute normally. Enables conditional operation chains. |
 | **`Execute`** | Two overloads: (1) Runs arbitrary void actions at declaration position with automatic exception handling. (2) Applies Result transformations (Map, Bind, Tap, Ensure) at declaration position. Both short-circuit on failure. |
-| **`Register`** | Queues a Domain Event at declaration position to be registered at Apply() end if changes occurred. Provides access to `ChangeContext` for old values. Events only register if changes made and no cancellation. |
-| **`OnChanged`** | Queues an action at declaration position to be executed at Apply() end if changes occurred. Actions run on the entity in declaration order. Exceptions in actions cause Apply() to return failure. |
-| **`Apply`** | Executes all queued operations in declaration order, registers queued events and executes OnChanged actions (if changes occurred), and returns a `Result`. |
+| **`Register`** | Queues a Domain Event at declaration position for registration at the end of `Apply` when changes occurred. Events queued before a false `When` are still registered. Provides `EntityChangeContext` access to old values. |
+| **`OnChanged`** | Queues an action for the end of `Apply` when changes occurred. Actions run after event registration. An exception returns a failure but does not undo state or registered events. |
+| **`Apply`** | Executes operations in declaration order, registers queued events, runs `OnChanged` actions when changes occurred, and returns a `Result<TEntity>`. |
 
-### Execution Model
+### Execution model
 
 **Declaration Order Guarantee:**
 
@@ -577,5 +665,5 @@ public Result<Customer> ComplexUpdate(string name, int age)
 2. **Automatic Change Detection**: Properties are only updated if values actually differ; events are only raised if updates occurred.
 3. **Consistency**: Enforces a standard pattern for all aggregate updates.
 4. **Reduced Boilerplate**: Removes repetitive `if (old != new)` checks and event registration code.
-5. **Fail-Fast Safety**: Integrates seamlessly with the `Result` pattern to abort operations on validation errors.
+5. **Failure Propagation**: Uses the `Result` pattern to skip remaining operations after a failure.
 6. **Context Awareness**: Easy access to "Old Value" vs "New Value" when creating domain events.

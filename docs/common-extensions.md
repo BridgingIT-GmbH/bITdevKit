@@ -1,12 +1,14 @@
 # Common Extensions
 
-> Reuse a broad set of shared helper extensions for composition, collections, async flows, and more.
+> Reuse shared extensions for collections, asynchronous flows, date and time values, configuration, and reflection.
 
-`Common.Abstractions` contains a broad extensions layer under [Extensions](/f:/projects/bit/bITdevKit/src/Common.Abstractions/Extensions). This is the shared utility surface that many other devkit packages build on.
+[TOC]
+
+`Common.Abstractions` contains a broad extensions layer under `src/Common.Abstractions/Extensions`. This is the shared utility layer that many other devkit packages build on.
 
 This page is intentionally an overview, not an API catalog. The goal is to show what kinds of extensions are available and where to look when you need them.
 
-## How The Extensions Are Organized
+## How the extensions are organized
 
 The folder contains two styles of extension classes:
 
@@ -15,9 +17,9 @@ The folder contains two styles of extension classes:
 
 That means the package is best understood by capability area rather than by a single class name.
 
-## Main Categories
+## Main categories
 
-## Collection And Sequence Helpers
+## Collection and sequence helpers
 
 These extensions help with shaping, slicing, filtering, and traversing in-memory collections.
 
@@ -47,7 +49,7 @@ Typical use cases:
 - building tree structures from flat data
 - working with `IAsyncEnumerable<T>` without pulling in another utility package
 
-## Fluent Optional And Null-Safe Composition
+## Fluent optional and null-safe composition
 
 This area overlaps with the higher-level extension docs in [Extensions](./features-extensions.md), but the code lives here in `Common.Abstractions`.
 
@@ -75,7 +77,7 @@ Typical use cases:
 
 If you want the conceptual guidance for these fluent patterns, start with [Extensions](./features-extensions.md). This page is the package-level map of where those helpers live.
 
-## Date And Time Helpers
+## Date and time helpers
 
 These extensions provide common date and time calculations and parsing helpers.
 
@@ -94,7 +96,7 @@ Typical use cases:
 - parsing dates from multiple string formats
 - range checks and date/time convenience operations
 
-## Text, Enum, And Argument Helpers
+## Text, enum, and argument helpers
 
 These extensions focus on small but frequently used text and enum operations.
 
@@ -113,9 +115,9 @@ Typical use cases:
 - string cleanup and matching
 - working with multiple prefixes or tokens
 - enum metadata and helper logic
-- building shell or command arguments safely
+- combining object argument arrays
 
-## Stream, Task, And Async Helpers
+## Stream, task, and async helpers
 
 These support lower-level workflow code where streams, tasks, and async pipelines are common.
 
@@ -131,7 +133,7 @@ Typical use cases:
 - async sequence querying and projection
 - task composition helpers used by infrastructure code
 
-## Reflection, Type, And Expression Helpers
+## Reflection, type, and expression helpers
 
 These are support extensions for infrastructure code, configuration, and dynamic behavior.
 
@@ -149,7 +151,7 @@ Typical use cases:
 - extracting useful exception information
 - reflection-heavy infrastructure code
 
-## Configuration And DI Helpers
+## Configuration and DI helpers
 
 These extensions help with configuration access and service-collection inspection.
 
@@ -164,18 +166,18 @@ Typical use cases:
 - checking whether a service has already been added to `IServiceCollection`
 - finding or locating a registered service descriptor during startup composition
 
-## Practical Guidance
+## Practical guidance
 
 - Use these helpers to reduce boilerplate, not to hide business logic.
 - Prefer the narrowly named extension classes when you are browsing for behavior such as date, string, or configuration helpers.
 - Expect many small general-purpose methods to live in the partial `Extensions` class.
 - For the fluent null-safe and query-composition style, read [Extensions](./features-extensions.md) for the conceptual usage patterns and this page for the package layout.
 
-## What This Page Does Not Cover
+## What this page does not cover
 
 This page does not list every overload or method. The extensions folder is too broad for that to stay useful. Treat this page as a map of the available families of helpers, then go to the specific file when you need exact behavior.
 
-## Related Docs
+## Related docs
 
 - [Extensions](./features-extensions.md)
 - [Common Infrastructure](./INDEX.md)

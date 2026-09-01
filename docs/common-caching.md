@@ -2,11 +2,13 @@
 
 > Provide a small, shared caching abstraction with a default in-memory provider and optional persistent document storage providers.
 
+[TOC]
+
 `Common.Caching` provides the devkit's shared caching building block. It centers around the shared `ICacheProvider` contract from `Common.Abstractions`, ships the default `IMemoryCache` implementation, and offers fluent DI wiring that storage packages can extend with persistent cache providers.
 
 The package is intentionally small. It gives other packages a consistent cache abstraction without forcing them to depend directly on `IMemoryCache`.
 
-## What It Provides
+## What it provides
 
 - `ICacheProvider` as the shared cache contract.
 - `AddCaching()` and `WithInMemoryProvider()` for DI registration.
@@ -15,7 +17,7 @@ The package is intentionally small. It gives other packages a consistent cache a
 - `InMemoryCacheProvider` as the default implementation.
 - `MemoryCacheExtensions` for key enumeration and prefix-based invalidation.
 
-## Recommended Registration
+## Recommended registration
 
 Register caching during application startup, usually with settings from configuration:
 
@@ -32,7 +34,7 @@ If you omit the explicit configuration object, `WithInMemoryProvider()` will bin
 
 `AddCaching()` also registers `IMemoryCache` if it is not already present.
 
-## Persistent Caching With Document Storage
+## Persistent caching with Document Storage
 
 If you need cache entries to survive process restarts or be shared across multiple hosts, switch the cache provider to a document storage backed implementation.
 
@@ -71,7 +73,7 @@ The storage packages also expose provider-specific persistent registrations such
 - `WithAzureBlobDocumentStoreProvider(...)`
 - `WithAzureTableDocumentStoreProvider(...)`
 
-## How To Use It
+## How to use it
 
 Use the provider for simple read-through caching, lookup tables, and invalidation patterns:
 
@@ -104,7 +106,7 @@ The provider exposes the expected cache operations:
 
 Prefix-based keys work especially well with `RemoveStartsWith()`, so a stable key naming convention is important.
 
-## Integration Points
+## Integration points
 
 - `DocumentStorage` uses cache behaviors to speed up repeated reads.
 - `DocumentStorage` can also back `ICacheProvider` itself through `DocumentStoreCacheProvider`, which enables persistent cache entries over EF, Cosmos DB, Azure Blob Storage, or Azure Table Storage.
@@ -119,7 +121,7 @@ Prefix-based keys work especially well with `RemoveStartsWith()`, so a stable ke
 - `LoggingCacheProviderBehavior` currently exists in the codebase, but its members throw `NotImplementedException`. Do not treat it as a supported production decorator yet.
 - Cache keys should be explicit and predictable. The invalidation helpers are most effective when keys share a clear prefix per feature or aggregate.
 
-## Related Docs
+## Related docs
 
 - [DocumentStorage](./features-storage-documents.md)
 - [Requester and Notifier](./features-requester-notifier.md)

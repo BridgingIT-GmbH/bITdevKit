@@ -1,34 +1,88 @@
-# LINQ Extensions Feature Documentation
+# LINQ extensions
 
-> Use focused LINQ and helper extensions to write cleaner, more expressive application code.
+> Apply null-aware value operations and cancellation-aware asynchronous sequence operators.
+
+[TOC]
 
 ## Overview
 
-The LINQ Extensions provide a comprehensive set of methods to work with sequences, async enumerables, and optional values. They are organized into functional groups based on their purpose and context of use.
+The LINQ extensions provide focused operations for nullable values, fluent synchronous/asynchronous value chains, and `IAsyncEnumerable<T>` sequences. They live in `Common.Abstractions` under the `BridgingIT.DevKit.Common` namespace.
 
 This page focuses on the LINQ-oriented extension families. For a broader package-level overview of the extension helpers available from `Common.Abstractions`, see [Common Extensions](./common-extensions.md).
 
----
+## Challenges
 
-# Fluent Extensions
+Application code often mixes optional values, conditional transformations, asynchronous work, and streamed sequences. Repeated null branches and manual `await foreach` loops obscure the operation being performed. Standard LINQ also does not cover every project-specific null-safe or asynchronous-sequence convention.
 
-The LINQ Fluent Extensions provide a fluent, functional approach to handling null values, conditional operations, and async/sync mixing in C# applications. These extensions complement standard LINQ by enabling cleaner, more readable code when dealing with optional values and complex filtering scenarios.
+These helpers must be used with care: not every fluent delegate can be translated by an `IQueryable<T>` provider, and some operators enumerate a source completely or keep state proportional to the number of distinct items.
 
-## Overview
+## Solution
 
-### Key Benefits
+`LinqFluentExtensions` adds null-aware lookup, branching, transformation, side-effect, validation, matching, and fallback methods for values and tasks. `AsyncEnumerableExtensions` adds cancellation-aware querying and lazy transformation for `IAsyncEnumerable<T>`.
 
-1. **Null-Safe Chaining**: Seamlessly work with nullable values without null checks
-2. **Functional Composition**: Chain operations elegantly using a fluent interface
-3. **Async/Sync Flexibility**: Mix synchronous and asynchronous operations in a single chain
-4. **Readable Intent**: Code reads like natural language describing the operation flow
-5. **Error Prevention**: Compile-time type safety eliminates common null-reference exceptions
+The extensions return the original value, a transformed value, a task, or another asynchronous sequence according to the operation. Callers choose when to materialize or otherwise consume a lazy sequence.
 
-### Architecture
+## Key Features
+
+- Null-safe `Find`, `WhenNotNull`, `WhenNull`, `Match`, and `OrElse` operations.
+- Conditional value transformations through `When` and `Unless`.
+- Sync-to-async and task-to-async composition through `SelectAsync`, `DoAsync`, and related overloads.
+- Explicit validation through `Throw` and `ThrowWhen`.
+- Cancellation-aware query, filter, projection, partition, and deduplication for asynchronous sequences.
+- Lazy async-sequence operators except for terminal operations such as `CountAsync`, `FirstAsync`, and `LastAsync`.
+
+## Architecture
+
+Both extension families are static classes in `Common.Abstractions`. `LinqFluentExtensions` operates on in-memory values, `IEnumerable<T>`, nullable structs, and `Task<T>`. `AsyncEnumerableExtensions` consumes `IAsyncEnumerable<T>` with `WithCancellation(...)` and returns either a `ValueTask<T>` terminal result or a lazy `IAsyncEnumerable<T>` pipeline.
+
+They are in-memory operators. Calling them after `AsAsyncEnumerable()` moves subsequent work out of a database query provider.
+
+## Use Cases
+
+- Find an optional item and handle the present and absent branches.
+- Apply a transformation only when a predicate matches.
+- Add logging or auditing without changing the value flowing through a chain.
+- Validate a value and throw an application-specific exception.
+- Filter, page, concatenate, or deduplicate streamed results.
+- Stop asynchronous enumeration through a propagated cancellation token.
+
+## Basic Usage
+
+Reference `Common.Abstractions`, import the namespace, and handle both lookup outcomes explicitly:
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+var message = users
+    .Find(user => user.IsActive)
+    .Match(
+        some: user => $"Active user: {user.Name}",
+        none: () => "No active user found");
+
+Console.WriteLine(message);
+```
+
+For an active user named Ada, the visible result is `Active user: Ada`. `Find` returns `null` when the source, predicate, or matching item is absent, and `Match` selects the `none` branch in that case.
+
+## Fluent extensions
+
+The LINQ fluent extensions handle null values, conditional operations, and task/value composition. They complement standard LINQ with operations for optional values and fluent asynchronous transitions.
+
+### Overview
+
+#### Key benefits
+
+1. **Null-aware chaining**: Run actions or select branches according to a value's null state.
+2. **Functional composition**: Chain related operations through a fluent interface.
+3. **Async/sync composition**: Continue from a `Task<T>` with synchronous or asynchronous work.
+4. **Explicit side effects**: Keep logging and other non-transforming operations visible through `Do`.
+5. **Reference and value-type support**: Use dedicated overloads for reference values and nullable structs.
+
+#### Architecture
 
 The extensions are organized into logical groups:
 
-- **Find Operations**: More fluent alternatives to `FirstOrDefault/First/Last`
+- **Find operations**: Null-returning lookup for reference types and nullable lookup for value types
 - **Null Handling**: Conditional execution based on null state
 - **String Checks**: Specialized null/empty validation for strings
 - **Conditional Logic**: When/Unless for predicate-based operations
@@ -38,9 +92,9 @@ The extensions are organized into logical groups:
 - **Pattern Matching**: Match for both-case handling
 - **Fallback Values**: OrElse for default factories
 
-## Common Usage Patterns
+### Common usage patterns
 
-### Basic Null Checking
+#### Basic null checking
 
 Replace traditional null checks with fluent null handling:
 
@@ -58,7 +112,7 @@ await users
     .WhenNotNullAsync(async u => await emailService.SendAsync(u.Email), cancellationToken);
 ```
 
-### Conditional LINQ Chains
+#### Conditional LINQ chains
 
 Apply filters and transformations conditionally:
 
@@ -72,24 +126,24 @@ if (minPrice.HasValue)
 
 var results = await query.ToListAsync();
 
-// Using extensions - cleaner with single-branch When
+// Using the single-branch When overload
 var results = await orders
-    .When(!string.IsNullOrEmpty(searchTerm),
+    .When(_ => !string.IsNullOrEmpty(searchTerm),
         q => q.Where(o => o.Description.Contains(searchTerm)))
-    .When(minPrice.HasValue,
+    .When(_ => minPrice.HasValue,
         q => q.Where(o => o.Total >= minPrice.Value))
     .ToListAsync();
 
 // Or with Unless for inverted conditions
 var results = await orders
-    .Unless(string.IsNullOrEmpty(searchTerm),
+    .Unless(_ => string.IsNullOrEmpty(searchTerm),
         q => q.Where(o => o.Description.Contains(searchTerm)))
-    .Unless(!minPrice.HasValue,
+    .Unless(_ => !minPrice.HasValue,
         q => q.Where(o => o.Total >= minPrice.Value))
     .ToListAsync();
 ```
 
-### Validation and Error Handling
+#### Validation and error handling
 
 Chain validations with proper error propagation:
 
@@ -109,23 +163,27 @@ var product = products
     .ThrowWhen(p => p.Stock == 0, p => new OutOfStockException());
 ```
 
-### Async/Sync Mixing
+#### Async/sync mixing
 
 Seamlessly transition between async and sync operations:
 
 ```csharp
 // Load async, then process sync, then transform async
 var result = await users
-    .FindAsync(u => u.IsActive, cancellationToken)           // Async find
+    .FindAsync(async (u, ct) => await IsActiveAsync(u, ct), cancellationToken) // Async find
     .Select(u => u.Profile)                                  // Sync select
     .SelectAsync(async p => await enrichService.EnrichAsync(p), cancellationToken)  // Async select
-    .Do(p => logger.LogInfo($"Processed: {p.Name}"))        // Sync side effect
+    .DoAsync(p =>
+    {
+        logger.LogInformation("Processed: {Name}", p.Name);
+        return Task.CompletedTask;
+    }, cancellationToken)
     .DoAsync(async p => await cache.StoreAsync(p), cancellationToken);  // Async side effect
 ```
 
-## Extension Reference
+### Extension reference
 
-### Find Operations
+#### Find operations
 
 **Find** fluent alternatives to `FirstOrDefault`:
 
@@ -133,8 +191,8 @@ var result = await users
 // Find first matching element
 var user = users.Find(u => u.IsAdmin);
 
-// Find first element (any)
-var first = orders.FindFirst();
+// Find first element that satisfies an always-true predicate
+var first = orders.Find(_ => true);
 
 // Async find with async predicate
 var product = await products.FindAsync(
@@ -142,7 +200,7 @@ var product = await products.FindAsync(
     cancellationToken);
 ```
 
-### Null Handling
+#### Null handling
 
 **WhenNotNull/WhenNull** execute operations based on null state:
 
@@ -156,7 +214,7 @@ await user
     .WhenNullAsync(async ct => await CreateDefaultUserAsync(ct), cancellationToken);
 ```
 
-### String Checks
+#### String checks
 
 **String-specific checks** for empty/whitespace:
 
@@ -175,7 +233,7 @@ input
     .WhenNullOrWhiteSpace(() => UseDefaultValue());
 ```
 
-### Conditional Logic
+#### Conditional logic
 
 **When** applies operations based on predicates. Use the single-branch overload when you only want to transform if the condition is true:
 
@@ -193,9 +251,9 @@ var filtered = items
 
 // Practical example - filtering on conditions
 var results = orders
-    .When(!string.IsNullOrEmpty(searchTerm),
+    .When(_ => !string.IsNullOrEmpty(searchTerm),
         q => q.Where(o => o.Description.Contains(searchTerm)))
-    .When(minPrice.HasValue,
+    .When(_ => minPrice.HasValue,
         q => q.Where(o => o.Total >= minPrice.Value))
     .ToListAsync();
 
@@ -216,22 +274,22 @@ var result = users
 
 // Practical example - skip filters on exclusion conditions
 var results = orders
-    .Unless(string.IsNullOrEmpty(searchTerm),
+    .Unless(_ => string.IsNullOrEmpty(searchTerm),
         q => q.Where(o => o.Description.Contains(searchTerm)))
-    .Unless(!minPrice.HasValue,
+    .Unless(_ => !minPrice.HasValue,
         q => q.Where(o => o.Total >= minPrice.Value))
     .ToListAsync();
 ```
 
-### Transformations
+#### Transformations
 
-**Select/SelectAsync** transform values fluently:
+`Select` continues a `Task<T>` with a synchronous transformation. `SelectAsync` applies an asynchronous transformation to a value or task:
 
 ```csharp
-// Sync transformation
-var emails = users
-    .Find(u => u.IsActive)
-    .Select(u => u.Email);
+// Synchronous transformation after a task
+var profile = await userService
+    .GetUserAsync(userId, cancellationToken)
+    .Select(user => user.Profile, cancellationToken);
 
 // Async transformation
 var enriched = await user
@@ -239,12 +297,12 @@ var enriched = await user
 
 // Bridge sync to async
 var result = await users
-    .FindAsync(u => u.IsActive, cancellationToken)
+    .FindAsync(async (u, ct) => await IsActiveAsync(u, ct), cancellationToken)
     .Select(u => u.Profile)                    // Sync after async
     .SelectAsync(async p => await EnrichAsync(p), cancellationToken);
 ```
 
-### Side Effects
+#### Side effects
 
 **Do** execute operations without changing the value (Tap):
 
@@ -252,7 +310,7 @@ var result = await users
 // Log without changing value
 var user = repository
     .Find(u => u.Id == id)
-    .Do(u => logger.LogInfo($"Found: {u.Name}"))
+    .Do(u => logger.LogInformation("Found: {Name}", u.Name))
     .Do(u => auditService.Log(u.Id));
 
 // Async side effects
@@ -261,7 +319,7 @@ await order
     .DoAsync(async (o, ct) => await analytics.TrackAsync(o.Id, ct), cancellationToken);
 ```
 
-### Error Handling
+#### Error handling
 
 **Throw/ThrowWhen** validate and throw conditionally:
 
@@ -284,7 +342,7 @@ await user
         cancellationToken);
 ```
 
-### Pattern Matching
+#### Pattern matching
 
 **Match** handle both success and failure cases:
 
@@ -302,7 +360,7 @@ var result = await order
         cancellationToken);
 ```
 
-### Fallback Values
+#### Fallback values
 
 **OrElse** provide default factories:
 
@@ -318,25 +376,25 @@ var config = await cachedConfig
         cancellationToken);
 ```
 
-## Common Scenarios
+### Common scenarios
 
-### API Request Processing
+#### API request processing
 
 ```csharp
-app.MapGet("/api/users/{id}", async Task<IResult>
+app.MapGet("/api/users/{id}", async Task<Microsoft.AspNetCore.Http.IResult>
     (int id, IUserRepository repository, ILogger<Program> logger, CancellationToken ct) =>
 {
     return await repository
         .FindAsync(u => u.Id == id, ct)
         .DoAsync(async u => await logger.LogAccessAsync(u.Id, ct), ct)
         .MatchAsync(
-            some: async (user, c) => TypedResults.Ok(user),
-            none: async _ => TypedResults.NotFound(),
+            some: (user, _) => Task.FromResult<Microsoft.AspNetCore.Http.IResult>(TypedResults.Ok(user)),
+            none: _ => Task.FromResult<Microsoft.AspNetCore.Http.IResult>(TypedResults.NotFound()),
             cancellationToken: ct);
 });
 ```
 
-### Data Validation Pipeline
+#### Data validation pipeline
 
 ```csharp
 var validatedData = await inputData
@@ -345,25 +403,26 @@ var validatedData = await inputData
     .SelectAsync(async d => await ValidateAsync(d, ct), ct)
     .ThrowWhenAsync(
         async (d, c) => !(await IsUniqueAsync(d, c)),
-        d => new ValidationError("Email already exists"),
+        (d, _) => Task.FromResult<Exception>(
+            new ValidationException("Email already exists")),
         ct);
 ```
 
-### Conditional Query Building
+#### Conditional query building
 
 ```csharp
 var results = await orders
-    .When(filterCriteria.HasCategory,
+    .When(_ => filterCriteria.HasCategory,
         q => q.Where(o => o.Category == filterCriteria.Category))
-    .When(!filterCriteria.IncludeArchived,
+    .When(_ => !filterCriteria.IncludeArchived,
         q => q.Where(o => !o.IsArchived))
-    .When(filterCriteria.MinPrice.HasValue,
+    .When(_ => filterCriteria.MinPrice.HasValue,
         q => q.Where(o => o.Total >= filterCriteria.MinPrice.Value))
     .OrderBy(o => o.CreatedDate)
     .ToListAsync();
 ```
 
-### Multi-Step Processing
+#### Multi-step processing
 
 ```csharp
 var processed = await users
@@ -377,66 +436,67 @@ var processed = await users
         ct);
 ```
 
-## Best Practices
+### Best practices
 
-### 1. Choose the Right Conditional Method
+#### 1. Choose the right conditional method
 
 Use `When` for positive conditions and `Unless` for negative conditions:
 
 ```csharp
 // Clear with When
-items.When(isActive, q => q.Where(i => i.Status == "active"))
+items.When(_ => isActive, q => q.Where(i => i.Status == "active"))
 
 // Clear with Unless
-items.Unless(isArchived, q => q.Where(i => i.Status != "archived"))
+items.Unless(_ => isArchived, q => q.Where(i => i.Status != "archived"))
 
 // Avoid double negation
-items.Unless(!isArchived, q => ...)  // Hard to read
+items.Unless(_ => !isArchived, q => ...)  // Hard to read
 ```
 
-### 2. Use Single-Branch When for Filters
+#### 2. Use single-branch `When` for filters
 
 Only use the both-branch overload when you actually need two different transformations:
 
 ```csharp
 // Good - single branch, simple filtering
-items.When(hasFilter, q => q.Where(...))
+items.When(_ => hasFilter, q => q.Where(...))
 
 // Good - both branches needed for different transformations
-items.When(sortAsc,
+items.When(_ => sortAsc,
     q => q.OrderBy(x => x.Date),      // then
     q => q.OrderByDescending(x => x.Date))  // else
 
 // Avoid - unnecessary both-branch when else does nothing
-items.When(condition,
+items.When(_ => condition,
     q => q.Where(...),
     q => q)  // Redundant
 ```
 
-### 3. Mix Sync and Async Naturally
+#### 3. Mix sync and async naturally
 
 Use `Select` to bridge from async to sync operations:
 
 ```csharp
 // Natural flow: async -> sync -> async
 await orders
-    .FindAsync(o => o.IsPending, ct)      // Async
+    .FindAsync(async (o, token) => await IsPendingAsync(o, token), ct) // Async
     .Select(o => o.Items)                  // Sync
     .SelectAsync(async i => await EnrichAsync(i), ct);  // Async
 ```
 
-### 4. Use Do for Observability
+#### 4. Use `Do` for observability
 
 Keep side effects explicit without changing flow:
 
 ```csharp
-var result = data
-    .Do(d => logger.LogInfo($"Processing: {d.Id}"))
-    .Do(d => metrics.Increment("processed"))
-    .Select(d => Transform(d));
+var observed = data
+    .Do(d => logger.LogInformation("Processing: {Id}", d.Id))
+    .Do(d => metrics.Increment("processed"));
+
+var result = Transform(observed);
 ```
 
-### 5. Combine Operations Meaningfully
+#### 5. Combine operations meaningfully
 
 Chain operations that form a complete workflow:
 
@@ -445,41 +505,42 @@ var finalResult = await initial
     .SelectAsync(async x => await ValidateAsync(x, ct), ct)
     .ThrowWhenAsync(
         async (x, c) => await IsInvalidAsync(x, c),
-        x => new ValidationException(x.ToString()),
+        (x, _) => Task.FromResult<Exception>(
+            new ValidationException(x.ToString())),
         ct)
     .DoAsync(async (x, c) => await LogSuccessAsync(x, c), ct)
     .SelectAsync(async (x, c) => await SaveAsync(x, c), ct);
 ```
 
-## Performance Considerations
+### Performance considerations
 
-1. **Lazy Evaluation**: Operations are executed only when needed in async chains
-2. **Minimal Allocations**: Extensions use value types where possible
-3. **Efficient Null Checks**: Direct null comparisons, no reflection
-4. **Cancellation Support**: All async operations respect cancellation tokens
+1. **Execution timing**: Value and task extensions execute when called; any `IEnumerable<T>` returned by a transformation retains that sequence's normal lazy behavior.
+2. **Async predicates**: `FindAsync` checks items sequentially and stops at the first match.
+3. **Null checks**: The null-aware methods use direct null or `HasValue` checks.
+4. **Cancellation**: Async overloads accept cancellation tokens, but supplied delegates must also observe the token when appropriate.
 
-## Limitations and Gotchas
+### Limitations and gotchas
 
-### QueryProvider Compatibility
+#### QueryProvider compatibility
 
-When using `When/Unless` with LINQ-to-Database providers (EF Core, LINQ to SQL), ensure the entire chain remains translatable:
+`When` and `Unless` invoke a delegate that returns the next value in the chain. They can return an `IQueryable<T>`, but any expression inside that query must still be translatable by the database provider:
 
 ```csharp
 // Works - filter is translatable
 var results = await context.Orders
-    .When(minPrice.HasValue,
+    .When(_ => minPrice.HasValue,
         q => q.Where(o => o.Total >= minPrice.Value))
     .ToListAsync();
 
 // Won't work - filtering happens in memory
 var results = await context.Orders
     .ToList()  // Materializes to memory
-    .When(minPrice.HasValue,
+    .When(_ => minPrice.HasValue,
         q => q.Where(o => o.Total >= minPrice.Value))
-    .ToListAsync();
+    .ToList();
 ```
 
-### Async Context
+#### Async context
 
 Always maintain the async context properly:
 
@@ -493,24 +554,24 @@ value.SelectAsync(async v => await ProcessAsync(v), ct).Result;
 
 ---
 
-# Async Enumerable Extensions
+## Async enumerable extensions
 
-The Async Enumerable Extensions provide LINQ-like operations for `IAsyncEnumerable<T>` sequences, enabling efficient async iteration and transformation of sequences with proper cancellation support.
+The async enumerable extensions provide LINQ-like operations for `IAsyncEnumerable<T>` sequences with cancellation-aware iteration and transformation.
 
-## Overview
+### Overview
 
 These extensions enable working with asynchronous sequences in a familiar LINQ style while maintaining proper async/await semantics and cancellation support. They are particularly useful when working with database queries, API streams, and other async data sources.
 
-### Key Benefits
+#### Key benefits
 
 1. **Familiar API**: LINQ-like methods you already know
 2. **Async-Aware**: Built for async scenarios with cancellation support
 3. **Efficient**: Lazy evaluation and streaming where appropriate
 4. **Memory-Friendly**: Process large sequences without materializing to memory
 
-## Extension Reference
+### Extension reference
 
-### Querying Operations
+#### Querying operations
 
 **AnyAsync** - Check if any elements match a condition:
 
@@ -539,15 +600,15 @@ int total = await items.CountAsync(cancellationToken);
 int activeCount = await items.CountAsync(i => i.IsActive, cancellationToken);
 ```
 
-### Filtering Operations
+#### Filtering operations
 
-**WhereAsync** - Filter elements asynchronously:
+**WhereAsync** - Lazily filter an asynchronous sequence with a synchronous predicate:
 
 ```csharp
 // Filter active items
 var active = items
     .WhereAsync(i => i.IsActive, cancellationToken)
-    .Select(i => i.Name);
+    .SelectAsync(i => i.Name, cancellationToken);
 ```
 
 **WhereNotNull** - Filter out null values:
@@ -571,23 +632,20 @@ var populated = strings.WhereNotNullOrEmpty(cancellationToken);
 var meaningful = strings.WhereNotNullOrWhiteSpace(cancellationToken);
 ```
 
-### Selection Operations
+#### Selection operations
 
-**SelectAsync** - Transform elements asynchronously:
+**SelectAsync** - Lazily transform elements with a synchronous selector:
 
 ```csharp
 // Transform each item
 var names = users
     .SelectAsync(u => u.Name, cancellationToken);
 
-// With async transformation
-var enriched = users
-    .SelectAsync(
-        async (u, ct) => await LoadDetailsAsync(u, ct),
-        cancellationToken);
 ```
 
-### Aggregation Operations
+This `IAsyncEnumerable<T>` extension does not accept an asynchronous selector. Use `await foreach` when each projection needs asynchronous work.
+
+#### Aggregation operations
 
 **FirstAsync** - Get first element or matching element:
 
@@ -623,7 +681,7 @@ var lastActive = await items.LastAsync(i => i.IsActive, cancellationToken);
 var lastActive = await items.LastOrDefaultAsync(i => i.IsActive, cancellationToken);
 ```
 
-### Partitioning Operations
+#### Partitioning operations
 
 **TakeAsync** - Take first N elements:
 
@@ -645,11 +703,17 @@ var remaining = items.SkipAsync(20, cancellationToken);
 
 // Pagination pattern
 var page = items
-    .SkipAsync((pageNumber - 1) * pageSize, cancellationToken)
     .TakeAsync(pageSize, cancellationToken);
+
+if (pageNumber > 1)
+{
+    page = items
+        .SkipAsync((pageNumber - 1) * pageSize, cancellationToken)
+        .TakeAsync(pageSize, cancellationToken);
+}
 ```
 
-### Deduplication Operations
+#### Deduplication operations
 
 **DistinctAsync** - Remove duplicate elements:
 
@@ -673,7 +737,7 @@ var unique = items
     .DistinctByAsync(i => i.Category, categoryComparer, cancellationToken);
 ```
 
-### Concatenation
+#### Concatenation
 
 **ConcatAsync** - Combine two async sequences:
 
@@ -684,19 +748,23 @@ var combined = source1
     .ConcatAsync(source3, cancellationToken);
 ```
 
-## Common Scenarios
+### Common scenarios
 
-### Streaming Results
+#### Streaming results
 
 ```csharp
 // Process large result set without materializing
-await database.GetOrdersAsync(cancellationToken)
+await foreach (var order in database
+    .GetOrdersAsync(cancellationToken)
     .WhereAsync(o => o.Total > 100, cancellationToken)
-    .SelectAsync(async o => await EnrichAsync(o, cancellationToken), cancellationToken)
-    .ForEachAsync(o => logger.LogInfo($"Order {o.Id}"), cancellationToken);
+    .WithCancellation(cancellationToken))
+{
+    var enriched = await EnrichAsync(order, cancellationToken);
+    logger.LogInformation("Order {OrderId}", enriched.Id);
+}
 ```
 
-### Pagination
+#### Pagination
 
 ```csharp
 // Implement pagination without loading entire set
@@ -707,9 +775,13 @@ public async IAsyncEnumerable<Item> GetPagedItemsAsync(
 {
     var skip = (pageNumber - 1) * pageSize;
     
-    await foreach (var item in database
-        .GetItemsAsync(cancellationToken)
-        .SkipAsync(skip, cancellationToken)
+    var source = database.GetItemsAsync(cancellationToken);
+    if (skip > 0)
+    {
+        source = source.SkipAsync(skip, cancellationToken);
+    }
+
+    await foreach (var item in source
         .TakeAsync(pageSize, cancellationToken)
         .WithCancellation(cancellationToken))
     {
@@ -718,18 +790,26 @@ public async IAsyncEnumerable<Item> GetPagedItemsAsync(
 }
 ```
 
-### Filtering and Validation
+`SkipAsync(0)` currently produces an empty sequence. Bypass `SkipAsync` when the calculated skip count is zero, as the example does.
+
+#### Filtering and validation
 
 ```csharp
-// Chain multiple filters
-var validItems = await source
+// Combine synchronous stream filtering with asynchronous validation
+var validItems = new List<Item>();
+await foreach (var item in source
     .WhereNotNull(cancellationToken)
-    .WhereAsync(i => await ValidateAsync(i, cancellationToken), cancellationToken)
     .WhereAsync(i => i.IsActive, cancellationToken)
-    .ToListAsync(cancellationToken);
+    .WithCancellation(cancellationToken))
+{
+    if (await ValidateAsync(item, cancellationToken))
+    {
+        validItems.Add(item);
+    }
+}
 ```
 
-### Deduplication
+#### Deduplication
 
 ```csharp
 // Remove duplicates by category and keep first occurrence
@@ -742,9 +822,9 @@ var filtered = items
     .DistinctAsync(cancellationToken);
 ```
 
-## Best Practices
+### Best practices
 
-### 1. Use Lazy Evaluation
+#### 1. Use lazy evaluation
 
 Leverage lazy evaluation for large sequences:
 
@@ -755,11 +835,15 @@ var processed = source
     .SelectAsync(i => Transform(i), cancellationToken)
     .TakeAsync(100, cancellationToken);
 
-// Then materialize when needed
-var results = await processed.ToListAsync(cancellationToken);
+// Then consume when needed
+var results = new List<Item>();
+await foreach (var item in processed.WithCancellation(cancellationToken))
+{
+    results.Add(item);
+}
 ```
 
-### 2. Chain Efficiently
+#### 2. Chain efficiently
 
 Order operations to filter early:
 
@@ -775,28 +859,32 @@ var results = items
     .WhereAsync(i => i.IsValid, cancellationToken);
 ```
 
-### 3. Respect Cancellation
+#### 3. Respect cancellation
 
 Always pass cancellation tokens:
 
 ```csharp
 // Good - cancellation is respected
-var results = await items
+await foreach (var item in items
     .WhereAsync(i => i.IsActive, cancellationToken)
-    .ToListAsync(cancellationToken);
+    .WithCancellation(cancellationToken))
+{
+    await ProcessAsync(item, cancellationToken);
+}
 
 // Avoid - no cancellation support
-var results = await items
-    .WhereAsync(i => i.IsActive)
-    .ToListAsync();
+await foreach (var item in items.WhereAsync(i => i.IsActive))
+{
+    await ProcessAsync(item);
+}
 ```
 
-### 4. Handle Large Sequences
+#### 4. Handle large sequences
 
-Process in batches to avoid memory issues:
+Cap a single pass when only an initial segment is needed:
 
 ```csharp
-// Process in chunks
+// Process at most one segment
 const int batchSize = 1000;
 var processed = 0;
 
@@ -809,28 +897,28 @@ await foreach (var item in items
 }
 ```
 
-## Performance Considerations
+### Performance considerations
 
-1. **Lazy Evaluation**: Methods return `IAsyncEnumerable<T>` for lazy processing
-2. **Memory Efficiency**: Only materialized when explicitly called (`.ToListAsync()`)
-3. **Cancellation**: Full cancellation support throughout the chain
-4. **No Double Enumeration**: Be careful not to enumerate multiple times
+1. **Lazy evaluation**: Sequence-returning methods defer enumeration.
+2. **Memory use**: Lazy operators stream items, while `DistinctAsync` and `DistinctByAsync` retain a set of seen values or keys.
+3. **Cancellation**: Operators pass the supplied token into source enumeration; caller-provided work must observe its token separately.
+4. **Repeated enumeration**: Enumerating the same pipeline again reruns its source and operators.
 
-## Limitations
+### Limitations
 
-### Database Query Providers
+#### Database query providers
 
 Some async enumerable operations may not translate to database queries:
 
 ```csharp
-// May not translate - use LINQ-to-Entities instead
-var results = await dbContext.Orders
+// Runs client-side after AsAsyncEnumerable
+var distinctCount = await dbContext.Orders
     .AsAsyncEnumerable()
     .DistinctByAsync(o => o.CustomerId, cancellationToken)
-    .ToListAsync(cancellationToken);
+    .CountAsync(cancellationToken);
 
 // Better - use LINQ-to-Entities
-var results = await dbContext.Orders
+var serverResults = await dbContext.Orders
     .GroupBy(o => o.CustomerId)
     .Select(g => g.First())
     .ToListAsync(cancellationToken);

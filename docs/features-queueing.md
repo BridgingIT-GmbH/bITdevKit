@@ -1,4 +1,5 @@
-# Queueing Feature Documentation
+
+# Queueing
 
 > Process single-consumer work items through in-process or durable queue brokers with retained-message inspection, retry/archive controls, and queue/type pause-resume control.
 
@@ -35,6 +36,17 @@ The feature also includes an operational web endpoint surface for queue broker s
 - Providers: brokers implement `QueueBrokerBase`; provider-specific background work plugs into the single runtime through `IQueueBrokerBackgroundProcessor`.
 - Operations: `IQueueBrokerService` and `Presentation.Web.Queueing` expose broker inspection and operational controls, including retained-message queries, retry/archive actions, waiting-message inspection, purge, and queue/type pause-resume management.
 
+## Key Features
+
+- One handler registration per queue message type.
+- In-process, Entity Framework, RabbitMQ, Azure Service Bus and Azure Queue Storage providers.
+- Enqueue and provider-specific enqueue-and-wait operations.
+- Enqueuer and handler behavior chains for cross-cutting concerns.
+- Waiting-for-handler state when work arrives before a subscription is active.
+- Pause and resume control by queue name or message type.
+- Durable leases, retries, expiration, dead-letter state and archiving with the Entity Framework provider.
+- Operational APIs for summaries, subscriptions, retained messages and provider controls.
+
 ## Architecture
 
 ```mermaid
@@ -60,33 +72,37 @@ sequenceDiagram
  end
 ```
 
-## Core Contracts
+### Core contracts
 
-- `IQueueBroker` ([src/Application.Queueing/IQueueBroker.cs](src/Application.Queueing/IQueueBroker.cs))
-  - Subscribe/unsubscribe queue handlers.
-  - Enqueue messages and optionally wait for provider-specific persistence confirmation.
-  - Process messages through the shared queue dispatch pipeline.
-- `IQueueBrokerService` ([src/Application.Queueing/IQueueBrokerService.cs](src/Application.Queueing/IQueueBrokerService.cs))
+- `IQueueBroker` ([src/Common.Abstractions/Queueing/IQueueBroker.cs](../src/Common.Abstractions/Queueing/IQueueBroker.cs))
+  - Enqueue messages and optionally wait for provider-specific confirmation.
+- `IQueueBrokerRuntime` ([src/Application.Queueing/IQueueBrokerRuntime.cs](../src/Application.Queueing/IQueueBrokerRuntime.cs))
+  - Subscribe or unsubscribe queue handlers and process messages through the shared dispatch pipeline.
+- `IQueueBrokerService` ([src/Application.Queueing/IQueueBrokerService.cs](../src/Application.Queueing/IQueueBrokerService.cs))
   - Inspect queue summary, subscriptions, and waiting messages.
   - Pause or resume queues and specific message types.
-- `QueueBrokerBase` ([src/Application.Queueing/QueueBrokerBase.cs](src/Application.Queueing/QueueBrokerBase.cs))
+- `QueueBrokerBase` ([src/Application.Queueing/QueueBrokerBase.cs](../src/Application.Queueing/QueueBrokerBase.cs))
   - Validates messages, runs behaviors, resolves handlers, and enforces queue semantics.
-- `QueueingService` ([src/Application.Queueing/QueueingService.cs](src/Application.Queueing/QueueingService.cs))
+- `QueueingService` ([src/Application.Queueing/QueueingService.cs](../src/Application.Queueing/QueueingService.cs))
   - The single hosted service for the whole feature.
 
-## Getting Started
+## Use Cases
+
+Use Queueing for commands to background workers, document generation, import jobs, email work items or other tasks where one registered handler should own each item. Use the Entity Framework or external providers when work must survive a process restart. Use Messaging instead when one event should be delivered to several independent handlers, and use a direct Requester call when the caller needs an immediate typed response.
+
+## Basic Usage
 
 ### In-process broker
 
 ```csharp
 builder.Services.AddQueueing(builder.Configuration)
-  .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>())
+  .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
   .WithInProcessBroker(new InProcessQueueBrokerConfiguration
   {
     MaxDegreeOfParallelism = 1,
     EnsureOrdered = true
   })
- .AddEndpoints();
+  .AddEndpoints();
 ```
 
 ### Entity Framework broker
@@ -156,11 +172,12 @@ public sealed class OrderQueuedMessage(Guid orderId) : QueueMessageBase
  public Guid OrderId { get; } = orderId;
 }
 
-public sealed class OrderQueuedHandler : IQueueMessageHandler<OrderQueuedMessage>
+public sealed class OrderQueuedHandler(ILogger<OrderQueuedHandler> logger)
+ : IQueueMessageHandler<OrderQueuedMessage>
 {
  public Task Handle(OrderQueuedMessage message, CancellationToken cancellationToken)
  {
-  // process one logical work item
+  logger.LogInformation("Processing queued order {OrderId}", message.OrderId);
   return Task.CompletedTask;
  }
 }
@@ -178,9 +195,29 @@ public sealed class OrdersService(IQueueBroker queueBroker)
 }
 ```
 
-## Operational Endpoints
+Expose a small endpoint and map the optional operational endpoints:
 
-The retained-message operational surface lives in [src/Presentation.Web.Queueing/QueueingEndpoints.cs](src/Presentation.Web.Queueing/QueueingEndpoints.cs).
+```csharp
+var app = builder.Build();
+
+app.MapPost("/orders/{orderId:guid}/queue", async (
+  Guid orderId,
+  IQueueBroker queueBroker,
+  CancellationToken cancellationToken) =>
+{
+  await queueBroker.Enqueue(new OrderQueuedMessage(orderId), cancellationToken);
+  return Results.Accepted();
+});
+
+app.MapEndpoints();
+app.Run();
+```
+
+A successful request returns HTTP 202. The in-process consumer then writes `Processing queued order ...` to the application log. Enqueue validation and cancellation exceptions flow to the application's standard exception handling instead of being reported as accepted.
+
+## Operational endpoints
+
+The retained-message operational surface lives in [src/Presentation.Web.Queueing/QueueingEndpoints.cs](../src/Presentation.Web.Queueing/QueueingEndpoints.cs).
 
 When you reference `Presentation.Web.Queueing`, you can register it directly from the fluent queueing builder:
 
@@ -206,7 +243,7 @@ Routes:
 - `GET /_bdk/api/queueing/messages/stats`
 - `GET /_bdk/api/queueing/messages/waiting?take=50`
 - `POST /_bdk/api/queueing/messages/{id}/retry`
-- `POST /_bdk/api/queueing/messages/{id}/lease/release`
+- `POST /_bdk/api/queueing/messages/{id}/lease/release` is implemented by `IQueueBrokerService`, but its endpoint mapping is currently disabled.
 - `POST /_bdk/api/queueing/messages/{id}/archive`
 - `DELETE /_bdk/api/queueing/messages`
 - `POST /_bdk/api/queueing/queues/{queueName}/pause`
@@ -333,7 +370,7 @@ flowchart LR
 **Competing consumers:**
 
 - Multiple application instances that use the same `QueueNamePrefix`/`QueueNameSuffix` and subscribe to the same message type consume from the **same queue**.
-- RabbitMQ round-robins messages across all connected consumers on that queue.
+- Connected consumers compete for messages from the same RabbitMQ queue; the broker dispatches each delivery to one consumer.
 - A message is delivered to **exactly one consumer** at a time.
 
 **Acknowledgement and retry:**
@@ -363,7 +400,7 @@ flowchart LR
 
 **EnqueueAndWait:**
 
-- `EnqueueAndWait` enables publisher confirms (`ConfirmSelect`) and calls `WaitForConfirmsOrDie` with a 30-second timeout. This guarantees the message has been persisted by RabbitMQ before the call returns.
+- `EnqueueAndWait` enables publisher confirms (`ConfirmSelect`) and calls `WaitForConfirmsOrDie` with a 30-second timeout. This confirms that RabbitMQ accepted the persistent publish; it is not an end-to-end handler completion guarantee.
 
 **Operational visibility:**
 
@@ -438,7 +475,7 @@ The Azure Queue Storage broker maps queueing semantics to Azure Queue Storage us
 **Competing consumers:**
 
 - Multiple application instances that use the same `QueueNamePrefix`/`QueueNameSuffix` and subscribe to the same message type consume from the **same queue**.
-- Azure Queue Storage round-robins messages across all connected consumers on that queue.
+- Connected consumers compete for messages from the same Azure Queue Storage queue.
 - A message is delivered to **exactly one consumer** at a time while it remains within the visibility timeout.
 
 **Retry and dead-letter:**
@@ -479,14 +516,14 @@ For Entity Framework, the most relevant broker-specific retention options are:
 - `AutoArchiveAfter` to archive terminal messages automatically after a retention period.
 - `AutoArchiveStatuses` to limit auto-archival to specific terminal states such as `Succeeded`, `DeadLettered`, or `Expired`.
 
-## Runtime Behavior
+## Runtime behavior
 
 - Duplicate handlers fail fast. A second handler for the same queue message type is rejected.
 - Missing handlers produce `WaitingForHandler` instead of immediate failure.
 - Durable providers use at-least-once delivery semantics; handlers should remain idempotent.
 - `AddQueueing(...)` may be called from multiple modules. Registrations accumulate, but queueing still uses one hosted service.
 
-### Multi-host Deployment Notes
+### Multi-host deployment notes
 
 - `EntityFrameworkQueueBroker<TContext>` is intended to support **multiple host instances competing for work** against the same durable store.
 - For real multi-host deployments, prefer **SQL Server** or **PostgreSQL** so lease claim and renewal can use efficient conditional updates in the database.
@@ -497,6 +534,6 @@ For Entity Framework, the most relevant broker-specific retention options are:
 - `SQLite` is suitable for local/dev and lightweight durable scenarios, but it is **not the recommended storage engine for distributed multi-host queue processing**.
 - Workers verify `LockedBy` before finalizing state. If another node took ownership, the older worker skips finalization rather than overwriting the newer lease owner.
 
-## Relation To Messaging
+## Relation to Messaging
 
 Use Messaging when one event should fan out to many handlers. Use Queueing when one work item should be owned by one handler execution. The APIs are intentionally similar so the developer experience stays familiar, but the runtime semantics are different.

@@ -1,12 +1,14 @@
-# Cors Configuration Feature Documentation
+# CORS Configuration
 
 > Configure browser cross-origin access through fluent, settings-driven CORS policies.
 
+[TOC]
+
 ## Overview
 
-CORS (Cross-Origin Resource Sharing) is a security mechanism that controls which origins (domains) can access your API from a browser. By default, browsers block cross-origin requests to protect users from malicious websites.
+CORS (Cross-Origin Resource Sharing) lets a server relax the browser's same-origin policy for selected cross-origin requests. It does not authenticate or authorize callers, and non-browser clients are not constrained by browser CORS enforcement.
 
-> Builds on the standard [ASP.NET Cors](https://learn.microsoft.com/en-us/aspnet/core/security/cors) implementation and basicaly provides a configuration (appsettings) system for it.
+> Builds on standard [ASP.NET Core CORS](https://learn.microsoft.com/en-us/aspnet/core/security/cors) and adds configuration binding from `appsettings`.
 
 This feature uses a flexible, configuration-driven CORS setup that supports:
 
@@ -16,43 +18,112 @@ This feature uses a flexible, configuration-driven CORS setup that supports:
 - **Wildcard subdomain matching**
 - **Fine-grained control** over origins, methods, headers, and credentials
 
-### Key Concepts
+## Challenges
+
+Browser applications often run on a different scheme, host, or port from an API. The API must identify trusted origins and decide which methods, headers, response headers, and credentials each origin may use. Incorrect combinations can either block valid browser calls or expose authenticated endpoints too broadly.
+
+## Solution
+
+`AddCors(IConfiguration)` binds the `Cors` section, validates its named policies, and registers ASP.NET Core CORS services. `UseCors(IConfiguration)` conditionally adds the middleware. Applications can select one configured default policy or apply named policies through endpoint routing and controller attributes.
+
+## Key Features
+
+- settings-driven named CORS policies
+- optional global default policy
+- exact-origin and wildcard-subdomain matching
+- method, request-header, exposed-header, and credential controls
+- configurable preflight cache duration
+- startup validation for missing policies and invalid credential combinations
+- Minimal API, route-group, and controller policy application
+
+## Architecture
+
+The DevKit registration extension translates each `CorsPolicyOptions` value into an ASP.NET Core `CorsPolicyBuilder`. The application extension reads the same configuration and adds `UseCors()` only when CORS is enabled. ASP.NET Core middleware then evaluates request origin and endpoint metadata against the selected policy.
+
+## Use Cases
+
+- allow a browser SPA to call an authenticated API from a known origin
+- expose a credential-free public API to any origin
+- assign different policies to public, frontend, and administrative endpoints
+- allow controlled subdomains owned by one organization
+- tune preflight caching for production browser clients
+
+## Basic Usage
+
+Configure one exact frontend origin in `appsettings.json`:
+
+```json
+{
+  "Cors": {
+    "Enabled": true,
+    "DefaultPolicy": "Frontend",
+    "Policies": {
+      "Frontend": {
+        "AllowedOrigins": ["https://app.example.com"],
+        "AllowAnyMethod": true,
+        "AllowAnyHeader": true,
+        "AllowCredentials": true
+      }
+    }
+  }
+}
+```
+
+Register the policies and place the conditional middleware after routing and before authorization:
+
+```csharp
+var builder = WebApplication.CreateBuilder(args);
+builder.Services.AddCors(builder.Configuration);
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
+app.UseRouting();
+app.UseCors(builder.Configuration);
+app.UseAuthorization();
+
+app.MapGet("/api/status", () => Results.Ok(new { Status = "ready" }));
+app.Run();
+```
+
+A browser request to `/api/status` from `https://app.example.com` receives `Access-Control-Allow-Origin: https://app.example.com`. Other origins do not receive an allow-origin response header.
+
+## Key concepts
 
 - **Origin**: The combination of scheme, host, and port (e.g., `https://example.com:443`)
 - **Preflight Request**: An OPTIONS request the browser sends before certain cross-origin requests
-- **Simple Request**: GET/POST requests that don't trigger preflight
+- **Simple Request**: A request that satisfies the browser's method, header, and content-type conditions and therefore does not require preflight
 - **Credentials**: Cookies, authorization headers, or client certificates
 
-## Configuration Schema
+## Configuration schema
 
-### CorsConfiguration Properties
+### `CorsConfiguration` properties
 
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
-| `Enabled` | `bool` | Yes | `false` | Whether CORS is enabled. When false, all cross-origin requests are blocked. |
+| `Enabled` | `bool` | No | `false` | Whether DevKit registers and applies CORS. When false, the server emits no DevKit CORS headers. |
 | `DefaultPolicy` | `string` | No | `null` | Name of the policy to apply globally. Leave null for endpoint-level control only. |
 | `Policies` | `Dictionary<string, CorsPolicyOptions>` | Yes* | `{}` | Named policies. At least one required when Enabled is true. |
 
 *Required when `Enabled` is `true`
 
-### CorsPolicyOptions Properties
+### `CorsPolicyOptions` properties
 
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
-| `AllowedOrigins` | `string[]` | No | `null` | Array of allowed origins (e.g., `["https://example.com"]`). Cannot use with `AllowAnyOrigin`. |
-| `AllowedMethods` | `string[]` | No | `null` | Array of allowed HTTP methods (e.g., `["GET", "POST"]`). Cannot use with `AllowAnyMethod`. |
-| `AllowedHeaders` | `string[]` | No | `null` | Array of allowed request headers. Cannot use with `AllowAnyHeader`. |
+| `AllowedOrigins` | `string[]` | No | `null` | Allowed origins. Ignored when `AllowAnyOrigin` is `true`. |
+| `AllowedMethods` | `string[]` | No | `null` | Allowed HTTP methods. Ignored when `AllowAnyMethod` is `true`. |
+| `AllowedHeaders` | `string[]` | No | `null` | Allowed request headers. Ignored when `AllowAnyHeader` is `true`. |
 | `ExposeHeaders` | `string[]` | No | `null` | Array of response headers to expose to JavaScript. |
-| `AllowCredentials` | `bool?` | No | `false` | Allow credentials (cookies, auth headers). Cannot use with `AllowAnyOrigin = true`. |
-| `AllowAnyOrigin` | `bool?` | No | `false` | Allow any origin (*). Cannot use with `AllowCredentials = true`. **Use only in development!** |
-| `AllowAnyMethod` | `bool?` | No | `false` | Allow any HTTP method. Overrides `AllowedMethods`. |
-| `AllowAnyHeader` | `bool?` | No | `false` | Allow any header. Overrides `AllowedHeaders`. |
-| `AllowWildcardSubdomains` | `bool?` | No | `false` | Enable wildcard subdomain matching (e.g., `*.example.com`). |
+| `AllowCredentials` | `bool?` | No | `null` (false) | Allow credentials. Cannot be `true` with `AllowAnyOrigin = true`. |
+| `AllowAnyOrigin` | `bool?` | No | `null` (false) | Allow any origin (`*`). Use only for credential-free public endpoints or controlled development scenarios. |
+| `AllowAnyMethod` | `bool?` | No | `null` (false) | Allow any HTTP method. Overrides `AllowedMethods`. |
+| `AllowAnyHeader` | `bool?` | No | `null` (false) | Allow any request header. Overrides `AllowedHeaders`. |
+| `AllowWildcardSubdomains` | `bool?` | No | `null` (false) | Enable matching for wildcard origins such as `https://*.example.com`. |
 | `PreflightMaxAgeSeconds` | `int?` | No | `null` | Preflight cache duration in seconds. Recommended: 600-3600 for production. |
 
-## Configuration Examples
+## Configuration examples
 
-### Example 1: Production (Secure Configuration)
+### Example 1: Production configuration
 
 Specific origins with credentials support:
 
@@ -77,7 +148,7 @@ Specific origins with credentials support:
 }
 ```
 
-### Example 2: Development (Permissive Configuration)
+### Example 2: Development configuration
 
 Allow common localhost ports (included in `appsettings.Development.json`):
 
@@ -114,7 +185,7 @@ Common ports:
 - **3000/3001**: React, Node.js default ports
 - **4200**: Angular default port
 
-### Example 3: Public API (No Credentials)
+### Example 3: Public API without credentials
 
 Allow any origin without credentials:
 
@@ -135,9 +206,9 @@ Allow any origin without credentials:
 }
 ```
 
-⚠️ **Note**: Cannot use `AllowCredentials: true` with `AllowAnyOrigin: true`.
+**Note**: Do not use `AllowCredentials: true` with `AllowAnyOrigin: true`; registration rejects that combination.
 
-### Example 4: Wildcard Subdomains
+### Example 4: Wildcard subdomains
 
 Allow any subdomain of example.com:
 
@@ -149,7 +220,7 @@ Allow any subdomain of example.com:
     "Policies": {
       "SubdomainPolicy": {
         "AllowedOrigins": [
-          "https://example.com"
+          "https://*.example.com"
         ],
         "AllowWildcardSubdomains": true,
         "AllowAnyMethod": true,
@@ -168,7 +239,7 @@ This allows:
 - `https://admin.example.com`
 - Any other subdomain of `example.com`
 
-### Example 5: Multiple Named Policies
+### Example 5: Multiple named policies
 
 Different policies for different endpoints:
 
@@ -200,7 +271,7 @@ Different policies for different endpoints:
 }
 ```
 
-### Example 6: API-Only (Specific Methods and Headers)
+### Example 6: API with specific methods and headers
 
 Restrictive configuration for internal API:
 
@@ -223,9 +294,9 @@ Restrictive configuration for internal API:
 }
 ```
 
-## Applying Policies
+## Applying policies
 
-### Global Default Policy
+### Global default policy
 
 Apply a policy to all endpoints by specifying `DefaultPolicy`:
 
@@ -247,13 +318,13 @@ Apply a policy to all endpoints by specifying `DefaultPolicy`:
 
 In `Program.cs`:
 
-```csMharp
-builder.Services.AddAppCors(builder.Configuration);
+```csharp
+builder.Services.AddCors(builder.Configuration);
 // ...
-app.UseAppCors(builder.Configuration); // Applies DefaultPolicy globally
+app.UseCors(builder.Configuration); // Applies DefaultPolicy globally
 ```
 
-### Per-Endpoint Policy (Minimal API)
+### Per-endpoint policy for Minimal APIs
 
 Apply different policies to specific Minimal API endpoints using `RequireCors()`:
 
@@ -283,9 +354,9 @@ productsGroup.MapGet("/{id}", (int id) => Results.Ok(GetProduct(id)));
 productsGroup.MapPost("/", (Product product) => Results.Created($"/api/products/{product.Id}", product));
 ```
 
-**Note**: Unlike controller-based APIs, Minimal API does not support `[DisableCors]` directly. Simply omit `RequireCors()` on endpoints that should not allow CORS.
+Use `.DisableCors()` on a Minimal API endpoint or route group when it must opt out of inherited CORS metadata. Omitting `RequireCors()` is sufficient only when no default or parent-group policy applies.
 
-### Per-Endpoint Policy (Controller-Based)
+### Per-endpoint policy for controllers
 
 If using controllers, apply policies using the `[EnableCors]` attribute:
 
@@ -330,22 +401,22 @@ public class ProductsController : ControllerBase
 }
 ```
 
-### Policy Precedence
+### Policy selection
 
-When both default and endpoint-level policies are configured:
+Choose one clear policy model where possible:
 
-1. **Endpoint-level** `RequireCors("PolicyName")` or `[EnableCors("PolicyName")]` takes precedence over all
-2. **Endpoint-level** `RequireCors()` or `[EnableCors()]` without parameters uses the configured default policy
-3. **Group-level** `MapGroup().RequireCors()` applies to all endpoints in the group (Minimal API)
-4. **Controller-level** `[EnableCors()]` applies to all actions (Controller-based)
-5. **Global default policy** applies when no endpoint configuration is present
-6. **`[DisableCors]`** disables CORS for specific controller endpoints
+1. Set `DefaultPolicy` and call `UseCors(builder.Configuration)` when one policy should apply globally.
+2. Leave `DefaultPolicy` unset and use `RequireCors("PolicyName")` or `[EnableCors("PolicyName")]` for endpoint-level control.
+3. `RequireCors()` and `[EnableCors()]` without a name use the registered default policy.
+4. Route-group and controller metadata flow to their child endpoints.
+5. Avoid combining a global middleware policy with controller `[EnableCors]` policies; ASP.NET Core can apply both rather than treating one as a simple override.
+6. Use `.DisableCors()` for endpoint-routing metadata or `[DisableCors]` for controller attributes, while noting that `[DisableCors]` does not cancel CORS added through endpoint routing's `RequireCors`.
 
-**Minimal API Example:**
+**Minimal API example:**
 
 ```csharp
-// Global default policy applies to all endpoints
-app.UseAppCors(builder.Configuration);
+// DefaultPolicy is null, so middleware uses endpoint metadata
+app.UseCors(builder.Configuration);
 
 // Group with specific policy
 var apiGroup = app.MapGroup("/api")
@@ -353,24 +424,26 @@ var apiGroup = app.MapGroup("/api")
 
 apiGroup.MapGet("/products", () => Results.Ok(products)); // Uses ApiPolicy
 
-// Override group policy for specific endpoint
-apiGroup.MapGet("/products/special", () => Results.Ok(specialProducts))
-        .RequireCors("SpecialPolicy"); // Uses SpecialPolicy instead
+// Use a separate group for another named policy
+var specialGroup = app.MapGroup("/api/special")
+                      .RequireCors("SpecialPolicy");
 
-// Endpoint without RequireCors uses global default
-app.MapGet("/public", () => Results.Ok("public data")); // Uses global default policy
+specialGroup.MapGet("/products", () => Results.Ok(specialProducts));
+
+// No CORS policy applies to this endpoint
+app.MapGet("/internal", () => Results.Ok("internal data"));
 ```
 
-**Controller-based Example:**
+**Controller-based example:**
 
 ```csharp
-[EnableCors()] // Controller-level: uses configured default policy
 public class ValuesController : ControllerBase
 {
+    [EnableCors("DefaultPolicy")]
     [HttpGet]
-    public IActionResult Get() { } // Uses default policy from controller
+    public IActionResult Get() { }
 
-    [EnableCors("SpecialPolicy")] // Overrides with specific named policy
+    [EnableCors("SpecialPolicy")]
     [HttpGet("special")]
     public IActionResult GetSpecial() { }
 
@@ -380,9 +453,9 @@ public class ValuesController : ControllerBase
 }
 ```
 
-## Security Best Practices
+## Security best practices
 
-### Production Recommendations
+### Production recommendations
 
 1. **Never use `AllowAnyOrigin: true` with `AllowCredentials: true`**
    - This violates the CORS specification
@@ -425,7 +498,7 @@ public class ValuesController : ControllerBase
 
    Reduces overhead by caching preflight responses
 
-### Development vs Production
+### Development and production
 
 **Development** (`appsettings.Development.json`):
 
@@ -439,13 +512,13 @@ public class ValuesController : ControllerBase
 - Longer preflight cache (3600 seconds)
 - Minimal permissions (only required methods/headers)
 
-### Wildcard Subdomains
+### Wildcard subdomains
 
 **Safe** when you control all subdomains:
 
 ```json
 {
-  "AllowedOrigins": ["https://example.com"],
+  "AllowedOrigins": ["https://*.example.com"],
   "AllowWildcardSubdomains": true,
   "AllowCredentials": true
 }
@@ -484,7 +557,7 @@ has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pres
 
    ```csharp
    app.UseRouting();
-   app.UseAppCors(builder.Configuration); // Must be here
+   app.UseCors(builder.Configuration); // Must be here
    app.UseAuthorization();
    ```
 
@@ -536,7 +609,7 @@ Cannot use `AllowAnyOrigin: true` with `AllowCredentials: true`:
 1. **Ensure methods are allowed**
 
    ```json
-   "AllowedMethods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+   "AllowedMethods": ["GET", "POST", "PUT", "DELETE"]
    ```
 
    Or:
@@ -544,6 +617,8 @@ Cannot use `AllowAnyOrigin: true` with `AllowCredentials: true`:
    ```json
    "AllowAnyMethod": true
    ```
+
+   Configure the method used by the actual request. The CORS middleware handles the `OPTIONS` preflight request.
 
 2. **Check custom headers are allowed**
 
@@ -643,7 +718,7 @@ Ensure `DefaultPolicy` name matches a policy in `Policies`:
 }
 ```
 
-### Debugging Tips
+### Debugging tips
 
 1. **Check browser console** for detailed CORS error messages
 2. **Use browser DevTools Network tab** to inspect:
@@ -671,15 +746,15 @@ Ensure `DefaultPolicy` name matches a policy in `Policies`:
 
    Then narrow down to identify the specific restriction causing issues.
 
-## Additional Resources
+## Additional resources
 
-### Official Documentation
+### Official documentation
 
 - [ASP.NET Core CORS Documentation](https://learn.microsoft.com/en-us/aspnet/core/security/cors)
 - [MDN CORS Guide](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS)
-- [W3C CORS Specification](https://www.w3.org/TR/cors/)
+- [Fetch Standard: CORS protocol](https://fetch.spec.whatwg.org/#http-cors-protocol)
 
-### Common Scenarios
+### Common scenarios
 
 | Scenario | Recommended Configuration |
 |----------|---------------------------|

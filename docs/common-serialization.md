@@ -2,7 +2,9 @@
 
 > Share consistent serializer abstractions and JSON conventions across the devkit.
 
-`Common.Serialization` is the shared serialization layer used across the devkit. It provides a small serializer abstraction, several concrete serializers, Base64Url and scalar codecs, continuation-token encoding, and the devkit's default JSON conventions for results, filtering, smart enumerations, and metadata objects.
+[TOC]
+
+`Common.Serialization` is the shared serialization layer used across the devkit. It provides a small serializer abstraction, several concrete serializers, Base64Url and scalar codecs, continuation-token encoding, converters for common devkit types, and the default JSON conventions for results, filtering, and metadata objects.
 
 This package matters because many higher-level features depend on consistent serialization behavior:
 
@@ -12,7 +14,7 @@ This package matters because many higher-level features depend on consistent ser
 - HTTP payload helpers
 - result and error serialization
 
-## Core Abstractions
+## Core abstractions
 
 ### `ISerializer`
 
@@ -26,11 +28,11 @@ This package matters because many higher-level features depend on consistent ser
 
 `ITextSerializer` extends the serializer model for text-based formats. Use it when the transport or persistence format is naturally textual, such as JSON or CSV.
 
-## Built-In Serializers
+## Built-in serializers
 
 ### `SystemTextJsonSerializer`
 
-The default System.Text.Json-based serializer for most application-facing JSON work. Use this when you want:
+The System.Text.Json-based serializer for application-facing JSON work. Use this when you want:
 
 - modern .NET JSON support
 - integration with the devkit's JSON defaults
@@ -42,7 +44,7 @@ A Newtonsoft.Json-based alternative for scenarios that need its contract model o
 
 ### `MessagePackSerializer`
 
-A binary serializer intended for compact, fast payloads. This is also the serializer returned by `DefaultSerializer.Create`, which means the package's default serializer choice is optimized for internal transport/storage scenarios rather than human-readable output.
+A binary serializer for internal payloads. `DefaultSerializer.Create` is a shared `MessagePackSerializer` instance, so the package's static default is binary rather than human-readable.
 
 ### `CsvSerializer`
 
@@ -52,7 +54,7 @@ A CSV-oriented serializer for tabular data scenarios. This is useful when the co
 
 A decorator that wraps another serializer and adds compression. Use this when payload size matters more than raw readability and you want to keep the underlying serialization format unchanged.
 
-## Shared Codecs
+## Shared codecs
 
 ### `Base64UrlHelper`
 
@@ -73,7 +75,7 @@ Base64Url is appropriate for opaque URL segments, continuation tokens, and strin
 
 `OpaqueContinuationTokenCodec` serializes purpose-bound continuation-token payloads using Base64Url. It supports unsigned values and optional HMAC-SHA256 protection through `IContinuationTokenProtector`.
 
-## Default JSON Conventions
+## Default JSON conventions
 
 `DefaultJsonSerializerOptions.Create()` defines the devkit's baseline System.Text.Json behavior.
 
@@ -91,11 +93,11 @@ Key defaults include:
 
 Those defaults are important because they make common devkit types work consistently without each feature having to register custom converters on its own.
 
-## Important Converters And Resolvers
+## Important converters and resolvers
 
-### Smart Enumerations
+### Smart enumerations
 
-`EnumerationJsonConverter` handles the devkit's smart-enum pattern so those types can move through JSON payloads without custom hand-written conversion every time.
+The generic `EnumerationJsonConverter` types support the devkit's smart-enum pattern. `DefaultJsonSerializerOptions.Create()` does not register them because each converter requires the concrete enumeration type. Add the required converter through a `Create(...)` overload.
 
 ### Filtering
 
@@ -109,13 +111,13 @@ Result converters make `Result`, `Result<T>`, and paged results serialize in a s
 
 `PropertyBagJsonConverter` preserves the flexible metadata bag used across errors, saga data, and other extensibility points.
 
-### Private Constructors And Setters
+### Private constructors and setters
 
 Resolvers such as `UniversalContractResolver`, `PrivateConstructorContractResolver`, and `PrivateSetterContractResolver` help the serializer work with richer domain models that do not expose public setters or public constructors.
 
 That support is especially useful in a DDD-oriented codebase where encapsulation matters.
 
-## Recommended Usage
+## Recommended usage
 
 Use explicit serializers for application-facing code rather than relying on the static default unless the binary-first default is exactly what you want.
 
@@ -143,7 +145,7 @@ var serializer = new CompressionSerializer(
     new SystemTextJsonSerializer(DefaultJsonSerializerOptions.Create()));
 ```
 
-## Choosing The Right Serializer
+## Choosing the right serializer
 
 Use `SystemTextJsonSerializer` when:
 
@@ -171,20 +173,20 @@ Use `CompressionSerializer` when:
 - payload size matters
 - you want to wrap an existing serialization strategy rather than change it
 
-## Tradeoffs And Caveats
+## Tradeoffs and caveats
 
-- `DefaultSerializer.Create` returns a `MessagePackSerializer`, which can surprise readers who assume the default is JSON.
+- `DefaultSerializer.Create` is a shared `MessagePackSerializer` instance, not a JSON serializer.
 - JSON defaults are opinionated, so if a feature needs different naming or converter ordering, create an explicit `JsonSerializerOptions` instance instead of assuming the shared defaults fit every case.
 - The serializer abstraction is intentionally small. It does not try to replace ASP.NET Core formatters or model binding.
-- Binary serializers are great for internal transport, but they are harder to debug than JSON.
+- Binary serializers reduce readability during diagnostics compared with JSON.
 
-## Storage Envelopes
+## Storage envelopes
 
 `ContentTransformEnvelopeCodec` encodes versioned `bdk_` metadata for ordered payload transforms. `PropertyBagScalarCodec` preserves supported scalar property types in a `bdk_v1_` Base64Url envelope, while legacy unprefixed values remain strings. `OpaqueContinuationTokenCodec` creates purpose-bound JSON token envelopes and can use `IContinuationTokenProtector` for HMAC protection.
 
-These codecs are shared by Blob and Document Storage. Payload transforms execute in registration order on writes and reverse order on reads; stored and logical SHA-256 hashes are verified before deserialization.
+Blob and Document Storage both use `PropertyBagScalarCodec` and `OpaqueContinuationTokenCodec`. Document Storage also uses `ContentTransformEnvelopeCodec` for transform metadata. `DocumentStoreClient<T>` applies payload transforms in registration order on writes and in reverse order on reads, then verifies the stored and logical SHA-256 hashes before deserialization.
 
-## Related Docs
+## Related docs
 
 - [Filtering](./features-filtering.md)
 - [Results](./features-results.md)

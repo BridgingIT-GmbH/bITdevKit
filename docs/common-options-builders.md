@@ -2,6 +2,8 @@
 
 > Use a lightweight fluent builder convention for feature-specific configuration objects.
 
+[TOC]
+
 `Common.Options` provides the lightweight builder pattern that many devkit packages use for configuration objects. It is not a replacement for `Microsoft.Extensions.Options`; it is a small, reusable convention for constructing feature-specific options with fluent APIs.
 
 This explains why many devkit packages expose configuration like:
@@ -12,7 +14,7 @@ builder.Services.AddSomething(o => o
     .WithY(...));
 ```
 
-## Why This Pattern Exists
+## Why this pattern exists
 
 The devkit uses builder-based options when a package needs:
 
@@ -21,13 +23,13 @@ The devkit uses builder-based options when a package needs:
 - optional logging support on the options object itself
 - reusable configuration code across runtime and tests
 
-This pattern keeps package configuration small and explicit while still being pleasant to use.
+This pattern keeps package configuration small and gives feature packages a consistent fluent setup API.
 
-## Core Types
+## Core types
 
 ### `IOptionsBuilder` and `IOptionsBuilder<T>`
 
-These interfaces define the minimal contract for builders that construct option objects. They expose the underlying target object and a `Build()` method.
+`IOptionsBuilder` exposes the underlying target object. `IOptionsBuilder<T>` adds the `Build()` method that returns the configured options.
 
 ### `OptionsBuilder<T>`
 
@@ -46,7 +48,7 @@ Use this when your options type does not need special logging or additional flue
 - `CreateLogger(string categoryName)`
 - `CreateLogger<T>()`
 
-This is useful for infrastructure options that need to create internal loggers without forcing every caller to wire that manually.
+This is useful for infrastructure options that create internal loggers. Both methods return a null logger when `LoggerFactory` is not set.
 
 ### `OptionsBuilderBase<TOption, TBuilder>`
 
@@ -58,9 +60,9 @@ Its main shared feature is:
 
 Builders in other packages often inherit from this class so they automatically support fluent logger configuration plus package-specific settings.
 
-## Typical Usage Pattern
+## Typical usage pattern
 
-### Simple Builder
+### Simple builder
 
 Use `OptionsBuilder<T>` when you just need a small builder around a plain options class:
 
@@ -80,7 +82,7 @@ public class MyFeatureOptionsBuilder : OptionsBuilder<MyFeatureOptions>
 }
 ```
 
-### Logger-Aware Builder
+### Logger-aware builder
 
 Use `OptionsBase` plus `OptionsBuilderBase<TOption, TBuilder>` when the option object should be able to create loggers:
 
@@ -101,7 +103,7 @@ public class MyProviderOptionsBuilder
 }
 ```
 
-## Where You Will See It
+## Where you will see it
 
 This pattern appears across the devkit in package-specific builders for:
 
@@ -114,7 +116,7 @@ This pattern appears across the devkit in package-specific builders for:
 
 That shared base pattern is what keeps those APIs feeling similar even though they live in different packages.
 
-## Relationship To `Microsoft.Extensions.Options`
+## Relationship to `Microsoft.Extensions.Options`
 
 This package solves a different problem than the built-in options stack.
 
@@ -132,14 +134,14 @@ Use `Microsoft.Extensions.Options` when:
 
 The two approaches can coexist. The devkit builder pattern is often used to create or refine options during registration, while configuration binding may still happen elsewhere.
 
-## Design Guidance
+## Design guidance
 
 - Keep builders small and specific to one package.
 - Put shared fluent behavior into the base classes, not into every feature package.
 - Use `OptionsBase` only when logger creation on the options object is genuinely useful.
-- Avoid turning these builders into mini-frameworks. Their value is simplicity.
+- Keep these builders limited to constructing options.
 
-## Related Docs
+## Related docs
 
 - [Common Caching](./common-caching.md)
 - [Common Mapping](./common-mapping.md)

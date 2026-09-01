@@ -1,4 +1,5 @@
-# Modules Feature Documentation
+
+# Modules
 
 > Structure modular monoliths as independently configurable feature modules within one host.
 
@@ -6,50 +7,54 @@
 
 ## Overview
 
-The `Modules` feature in bITDevKit enables developers to build modular monoliths, where an application is organized into independent, self-contained feature modules within a single host and repository. Each feature module encapsulates its own business logic, data access and presentation, providing clear boundaries for development and testing.
+The `Modules` feature in bITdevKit supports modular monoliths: applications organized into feature modules within one host and repository. A module owns service registration, can contribute middleware and, for web modules, can map endpoints. Teams can use those lifecycle boundaries to keep business logic, data access and presentation code grouped by domain.
 
-Designed for .NET developers, this feature supports parallel development, feature toggling and request scoping, all while leveraging shared infrastructure. Modules integrate seamlessly with bITDevKit components like requesters, notifiers and repositories, using strongly-typed configurations and pluggable behaviors to ensure flexibility and maintainability.
+The feature also provides configuration binding, module enablement and request-context resolution. Modules can use other bITdevKit components, including Requester, Notifier and repositories, through normal dependency injection.
 
 ### Background
 
-A modular monolith combines the simplicity of a monolithic application, with single deployment, shared runtime, and a unified codebase, with the modularity of microservices. By dividing the application into logical modules aligned with business domains, it avoids the "big ball of mud" problem of traditional monoliths, where code becomes tangled and hard to maintain. This approach allows teams to develop and test features independently within the same repository, reducing coordination overhead compared to microservices while enabling scalability and potential migration to distributed systems. The `Modules` feature supports this by providing tools to define, configure and manage modules, ensuring each operates as a cohesive unit with minimal dependencies, enhancing testability and maintainability.
+A modular monolith combines a single deployment, shared runtime and unified codebase with explicit internal boundaries. Dividing an application into modules aligned with business domains can reduce accidental coupling and make ownership clearer. These boundaries still depend on the application design: the Modules feature supplies lifecycle and context mechanisms, but it does not enforce data or source-code isolation.
 
-### Challenges
+## Challenges
 
-Traditional monoliths often suffer from tightly coupled code, making changes risky and slowing development. Teams struggle to work on features in parallel and toggling functionality or scaling specific components is cumbersome. Managing configurations and request scoping across logical boundaries is also challenging, leading to inconsistent behavior and maintenance overhead.
+In a growing monolith, service registration, middleware, endpoints and configuration can become difficult to associate with the feature that owns them. Disabling a feature or identifying the active feature for an HTTP request or an in-process request also requires consistent conventions.
 
-### Solution
+## Solution
 
-The `Modules` feature addresses these issues by enabling developers to define modules that encapsulate specific functionality, such as customer or order management. Each module handles its own services, configurations and endpoints, with support for enabling/disabling modules, scoping requests and integrating with other bITDevKit features. This modular structure reduces coupling, simplifies testing and supports independent development, all within a single host, making it ideal for modern .NET applications.
+Define each feature as an `IModule` or `IWebModule`. The host discovers modules, registers selected modules, runs their application-pipeline hooks and maps web-module routes. Configuration controls whether a module is enabled, while context accessors resolve a module from an HTTP request or .NET type. Disabled modules can then be rejected by HTTP middleware or a Requester/Notifier pipeline behavior.
 
-### Key Features
+## Key Features
 
-- **Independent Modules**: Encapsulate business logic, data access and endpoints within a single module.
-- **Configuration Binding**: Bind module settings from `appsettings.json` or environment variables with validation.
-- **Feature Toggling**: Enable or disable modules per environment for flexible deployment.
-- **Request Scoping**: Route requests to specific modules based on paths or headers, with logging and error handling.
-- **DI Integration**: Register module-specific services via dependency injection, minimizing dependencies.
-- **Extensibility**: Use behaviors for cross-cutting concerns like validation or retries in requesters and notifiers.
+- **Module lifecycle**: Use `Register`, `Use` and, for web modules, `Map` to group startup responsibilities.
+- **Configuration binding**: Bind and validate settings from the `Modules:{module-name}` configuration section.
+- **Module enablement**: Set `Modules:{module-name}:Enabled` to `false` to mark a module as disabled.
+- **Request context**: Resolve a module from the `ModuleName` header or query parameter, a module segment in the path or a configured API path selector.
+- **Type context**: Resolve a module from a request type's assembly metadata or namespace.
+- **Diagnostics**: Add the module name to logging scopes, tracing baggage, metrics tags and HTTP response headers.
+- **Pipeline integration**: Reject Requester and Notifier operations associated with disabled modules by using `ModuleScopeBehavior<,>`.
 
 ## Architecture
 
-The `Modules` feature centers on the `IModule` and `IWebModule` interfaces, defining lifecycle methods: `Register` for service registration, `Use` for middleware configuration and `Map` for endpoint routing. The `AddModules` extension initializes the system, discovering modules and binding configurations from `appsettings.json` sections (e.g., "Modules:CustomerModule"). The `RequestModuleMiddleware` scopes HTTP requests to modules, adding metadata to logs and headers and throws `ModuleNotEnabledException` for disabled modules. The `ModuleScopeBehavior` ensures commands and notifications execute only for enabled modules. Modules integrate with requesters, notifiers and repositories, leveraging behaviors for logging, auditing or event publishing, resolved via dependency injection for testability.
+The `Modules` feature centers on the `IModule` and `IWebModule` interfaces. `IModule.Register` adds services, `IModule.Use` contributes to the application pipeline and `IWebModule.Map` contributes routes. `AddModules` discovers module types and registers the modules selected with `WithModule<T>()`; the assembly-scanning overload can register every discovered module instead.
+
+`ModuleBase` derives the default module name by removing `Module` from the class name and converting the result to lowercase. For example, `CustomerModule` is named `customer`, so its configuration section is `Modules:customer`. A module is disabled only when its `Enabled` value is `false`; registration and lifecycle callbacks still run, while context-aware middleware and behaviors reject work associated with that disabled module.
+
+`RequestModuleMiddleware`, installed by `UseRequestModuleContext`, resolves an HTTP request's module. For a resolved module, it adds the module name to the log scope, activity baggage, response headers and request items. `ModuleScopeBehavior<,>` performs the corresponding enablement check for Requester and Notifier operations whose request type can be associated with a module.
 
 ```mermaid
 sequenceDiagram
     participant Client
     participant Middleware as RequestModuleMiddleware
-    participant Module as IWebModule
-    participant Services as Module Services
-    participant Database
+    participant Endpoint as ASP.NET Core endpoint
+    participant Services as Module services
 
     Client->>Middleware: HTTP Request (e.g., /api/customers)
-    Middleware->>Module: Identify Module (e.g., CustomerModule)
+    Middleware->>Middleware: Resolve module context
     alt Module Enabled
-        Middleware->>Services: Route to Module Services
-        Services->>Database: Execute Operation
-        Database-->>Services: Result
-        Services-->>Middleware: Response
+        Middleware->>Endpoint: Continue request pipeline
+        Endpoint->>Services: Execute operation
+        Services-->>Endpoint: Result
+        Endpoint-->>Middleware: HTTP response
         Middleware-->>Client: HTTP Response
     else Module Disabled
         Middleware-->>Client: ModuleNotEnabledException
@@ -58,13 +63,13 @@ sequenceDiagram
 
 ## Use Cases
 
-This feature is ideal for scenarios requiring clear separation of business domains, such as managing customers and orders in an e-commerce platform. It supports rapid development by allowing teams to work on isolated modules, simplifies feature toggling for beta or environment-specific functionality and enables request scoping for multi-tenant applications. Modules are also suitable for prototyping, as they can be developed and tested independently and provide a foundation for transitioning to microservices if needed.
+Use modules to group domain-aligned features such as customer and order management, to keep feature-specific startup code together or to make a feature unavailable through configuration. Module context is also useful for adding a feature identifier to logs and traces. A modular structure can make later extraction into a separate service easier, but extraction and independent deployment are not provided by this feature.
 
 ## Basic Usage
 
 Start by defining a module class and configuring the application host. The following example shows a `CustomerModule` for managing customer data.
 
-### Module Definition and Setup
+### Module definition and setup
 
 ```csharp
 public class CustomerModule : WebModuleBase
@@ -91,6 +96,22 @@ public class CustomerModule : WebModuleBase
 
         return services;
     }
+
+    public override IApplicationBuilder Use(
+        IApplicationBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
+    {
+        return app;
+    }
+
+    public override IEndpointRouteBuilder Map(
+        IEndpointRouteBuilder app,
+        IConfiguration configuration = null,
+        IWebHostEnvironment environment = null)
+    {
+        return app;
+    }
 }
 ```
 
@@ -99,7 +120,7 @@ Configure the module in `appsettings.json`:
 ```json
 {
   "Modules": {
-    "CustomerModule": {
+    "customer": {
       "Enabled": true,
       "ConnectionStrings": {
         "Default": "Server=(localdb)\\MSSQLLocalDB;Database=customers;Trusted_Connection=True"
@@ -135,15 +156,19 @@ Register the module in the host:
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddModules(builder.Configuration, builder.Environment)
-    .WithModule<CustomerModule>()
-    .WithModuleContextAccessors()
-    .WithRequestModuleContextAccessors();
+    .WithModule<CustomerModule>();
 
 var app = builder.Build();
+app.UseRequestModuleContext();
+app.UseModules();
 app.MapModules();
+app.MapEndpoints();
+app.Run();
 ```
 
-### Defining Endpoints
+With the module enabled, `GET /api/customers/{id}` reaches `CustomerEndpoints`. `MapHttpOk` converts a successful result to HTTP 200 and maps a failed result to the configured HTTP error response instead of reading a missing value.
+
+### Defining endpoints
 
 Define module-specific endpoints using minimal APIs:
 
@@ -175,12 +200,12 @@ Register endpoints in the module:
 services.AddEndpoints<CustomerEndpoints>();
 ```
 
-### Scoping Requests
+### Scoping requests
 
-Use the `RequestModuleMiddleware` to scope HTTP requests to modules:
+Install `RequestModuleMiddleware` to resolve module context for HTTP requests:
 
 ```csharp
-app.UseRequestModule();
+app.UseRequestModuleContext();
 ```
 
 For commands and queries, apply the `ModuleScopeBehavior`:
@@ -191,35 +216,35 @@ services.AddRequester()
     .WithBehavior(typeof(ModuleScopeBehavior<,>));
 ```
 
-This ensures requests and commands are processed only if the module is enabled, with errors for disabled modules.
+The behavior rejects a command, query or notification when its request type resolves to a disabled module. If no accessor resolves the type, the operation continues with the module name `UnknownModule`.
 
-### Feature Toggling
+### Feature toggling
 
 Toggle modules by setting the `Enabled` property in `appsettings.json`:
 
 ```json
 {
   "Modules": {
-    "CustomerModule": {
+    "customer": {
       "Enabled": false
     }
   }
 }
 ```
 
-Disabled modules throw a `ModuleNotEnabledException` when accessed.
+When middleware or `ModuleScopeBehavior<,>` resolves a disabled module, it throws `ModuleNotEnabledException`. Disabling a module does not skip its `Register`, `Use` or `Map` callback.
 
-## Best Practices
+## Best practices
 
 - Align modules with business domains (e.g., customers vs. orders) for clear boundaries.
 - Use separate database contexts or schemas to isolate module data.
-- Leverage shared modules for common utilities to avoid duplication.
-- Enable or disable modules per environment for flexible feature management.
-- Test modules independently with mocked dependencies for faster iteration.
-- Design modules to be extractable as microservices if future needs arise.
+- Keep shared utilities outside domain modules when they do not have a clear domain owner.
+- Use environment-specific configuration when module availability differs by environment.
+- Test module registration, middleware and endpoint mapping independently where practical.
+- Keep cross-module dependencies explicit if later extraction is a requirement.
 - Use strongly-typed configurations with validation to prevent runtime errors.
 
-## Appendix A: Comparison with Microservices
+## Appendix A: Comparison with microservices
 
 ### Summary
 
@@ -227,7 +252,7 @@ Modules in a monolith contrast with microservices, which are independently deplo
 
 ### Characteristics
 
-#### Modular Monolith
+#### Modular monolith
 
 - **Approach**: Single deployment with logically separated modules, sharing a runtime and repository.
 - **Strengths**: Simplifies deployment, reduces distributed system complexity, supports parallel development.
@@ -246,6 +271,6 @@ Modules in a monolith contrast with microservices, which are independently deplo
 - **Development**: Modules support parallel work within one repo, while microservices require cross-team coordination.
 - **Migration**: Modules can be extracted to microservices, providing a transition path.
 
-### Practical Considerations
+### Practical considerations
 
-The Modules feature is ideal for teams seeking modularity without microservices’ overhead. It supports rapid development and testing, with a clear path to distributed systems if needed. For complex, high-scale systems, microservices may be more suitable, but modules offer a simpler starting point.
+Choose modules when one deployment and runtime fit the operational requirements but explicit feature boundaries are still useful. Choose separate services when independent deployment, scaling or failure isolation justify the additional network and operational concerns. The Modules feature does not automate a later migration; it provides lifecycle boundaries that can support one.

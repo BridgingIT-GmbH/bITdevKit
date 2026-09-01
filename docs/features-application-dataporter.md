@@ -1,4 +1,4 @@
-# DataPorter Feature Documentation
+# DataPorter
 
 > Import and export structured data through a flexible, format-agnostic data transfer framework.
 
@@ -6,7 +6,7 @@
 
 ## Overview
 
-A flexible, extensible data export/import framework for .NET supporting multiple file formats with both profile-based and attribute-based configuration.
+DataPorter imports and exports structured .NET data through a common API. It supports Excel, CSV, typed-row CSV, JSON, XML, and PDF output, with profile-based or attribute-based configuration.
 
 ```mermaid
 flowchart LR
@@ -24,20 +24,47 @@ For download-oriented scenarios, `IDataExporter` can also return `Result<FileCon
 
 For the lower-level serializer abstractions and JSON converter conventions that sit underneath parts of the import/export stack, see [Common Serialization](./common-serialization.md).
 
-## Features
+## Challenges
 
-- **Multiple Format Support**: Excel (.xlsx), CSV, typed-row CSV, JSON, XML, and PDF (export only)
-- **Extensible Format Selection**: Built-in formats plus custom project-defined providers
-- **Dual Configuration Approaches**: Profile-based (similar to AutoMapper) or attribute-based
-- **Streaming Support**: Incremental import and export using `IAsyncEnumerable`
-- **Validation**: Built-in validation with customizable rules and error handling
-- **Value Converters**: Transform values during import/export with custom converters
-- **Result Pattern**: Integrated with bIT.bITdevKit Result pattern for consistent error handling
-- **Conditional Styling**: Apply styles based on cell values (Excel)
+Applications often need to exchange the same domain data in several formats. Each format has different mapping, validation, streaming, packaging, and error-reporting behavior. Implementing those concerns separately can produce inconsistent APIs and can require complete data sets to be buffered in memory.
 
-## Quick Start
+Import workflows also need an explicit boundary between parsing data and persisting it. Row-level processing, aggregate reconstruction, and provider-specific bulk insertion have different consistency and memory characteristics.
 
-### Service Registration
+## Solution
+
+DataPorter provides `IDataExporter` and `IDataImporter` as format-independent entry points. `DataPorterService` builds an effective configuration for each operation, resolves the selected provider, applies converters, validation, progress reporting, compression, and row interceptors, and returns a typed result.
+
+Format providers retain control of format-specific reading and writing. Applications can use built-in providers or register a custom provider without changing the orchestration pipeline.
+
+## Key Features
+
+- **Multiple format support**: Excel (`.xlsx`), CSV, typed-row CSV, JSON, XML, and PDF export.
+- **Extensible format selection**: Built-in formats and project-defined providers.
+- **Two configuration approaches**: Profile-based or attribute-based mapping.
+- **Streaming support**: Incremental import and export through `IAsyncEnumerable<T>`.
+- **Validation**: Configurable validation and error-handling behavior.
+- **Value converters**: Value transformation during import and export.
+- **Result pattern**: Typed results for success, warnings, and errors.
+- **Conditional styling**: Value-based styling for Excel exports.
+
+## Architecture
+
+Application code calls `IDataExporter` or `IDataImporter`. `DataPorterService` coordinates the operation and delegates serialization to the provider registered for the selected `Format`. Profiles, attributes, converters, interceptors, and runtime options contribute to the effective configuration without exposing provider internals to callers.
+
+The [detailed architecture](#detailed-architecture) section describes the orchestration and extension points.
+
+## Use Cases
+
+- Export application data as downloadable CSV, Excel, JSON, XML, or PDF files.
+- Import partner or user-provided data with mapping and validation feedback.
+- Stream large data sets without buffering the complete payload.
+- Generate annotated templates for supported import formats.
+- Package an exported payload as GZip or a single-entry ZIP archive.
+- Process rows through interceptors or persist a validated batch through a repository abstraction.
+
+## Basic Usage
+
+### Service registration
 
 ```csharp
 services.AddDataPorter(configuration)
@@ -59,7 +86,7 @@ services.AddDataPorter(configuration)
 
 For import and export calls, DataPorter supports both the regular options objects and a fluent builder lambda. The examples below prefer the fluent builder syntax.
 
-### Basic Export
+### Basic export
 
 ```csharp
 public class MyService
@@ -71,7 +98,10 @@ public class MyService
         this.exporter = exporter;
     }
 
-    public async Task ExportOrdersAsync(IEnumerable<Order> orders, Stream output)
+    public async Task ExportOrdersAsync(
+        IEnumerable<Order> orders,
+        Stream output,
+        CancellationToken cancellationToken = default)
     {
         var result = await this.exporter.ExportAsync(
             orders,
@@ -80,17 +110,28 @@ public class MyService
                 .WithProgress(report =>
                 {
                     Console.WriteLine($"Exported {report.ProcessedRows} rows");
-                }));
+                }),
+            cancellationToken);
 
-        if (result.IsSuccess)
+        if (result.IsFailure)
         {
-            Console.WriteLine($"Exported {result.Value.TotalRows} rows");
+            Console.Error.WriteLine(
+                $"Export failed: {string.Join("; ", result.Errors.Select(error => error.Message))}");
+            return;
         }
+
+        Console.WriteLine($"Exported {result.Value.TotalRows} rows");
     }
 }
 ```
 
-### Export To FileContent
+For two input rows, the final line is:
+
+```text
+Exported 2 rows
+```
+
+### Export to `FileContent`
 
 ```csharp
 var result = await exporter.ExportToFileContentAsync(
@@ -103,7 +144,7 @@ if (result.IsSuccess)
 }
 ```
 
-### Basic Import
+### Basic import
 
 ```csharp
 public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
@@ -117,24 +158,28 @@ public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
                 Console.WriteLine($"Processed {report.ProcessedRows} rows");
             }));
 
-    if (result.IsSuccess && !result.Value.HasErrors)
+    if (result.IsFailure)
+    {
+        Console.Error.WriteLine(
+            $"Import failed: {string.Join("; ", result.Errors.Select(error => error.Message))}");
+        return [];
+    }
+
+    if (!result.Value.HasErrors)
     {
         return result.Value.Data;
     }
 
-    if (result.IsSuccess)
+    foreach (var error in result.Value.Errors)
     {
-        foreach (var error in result.Value.Errors)
-        {
-            Console.WriteLine($"Row {error.RowNumber}: {error.Message}");
-        }
+        Console.WriteLine($"Row {error.RowNumber}: {error.Message}");
     }
 
     return [];
 }
 ```
 
-### Progress Reporting
+### Progress reporting
 
 `ExportOptions` and `ImportOptions` support optional runtime progress reporting through `IProgress<TReport>`.
 
@@ -165,7 +210,7 @@ await importer.ImportAsync<Order>(
 
 For true streaming operations, `TotalRows` and `PercentageComplete` can remain `null` until the final completion report because the total row count is not always known up front.
 
-### Compression And Packaging
+### Compression and packaging
 
 `ExportOptions` and `ImportOptions` support explicit payload compression or packaging through `PayloadCompressionOptions`.
 
@@ -194,7 +239,7 @@ HTTP transport compression is a separate concern:
 - in that mode, DataPorter still reads and writes the plain CSV/JSON/XML stream
 - use DataPorter compression only when the artifact itself should be downloadable or uploadable as `.gz` or `.zip`
 
-### Template Generation
+### Template generation
 
 `IDataExporter` can generate annotated import templates through dedicated template-generation methods and `TemplateOptions`.
 
@@ -269,14 +314,15 @@ public sealed class EdiX12TemplateProvider : IDataExportProvider, IDataTemplateP
         CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        // put domain-specific template here
+        // Write the domain-specific template to outputStream.
+        throw new NotImplementedException();
     }
 
     // regular export members omitted
 }
 ```
 
-### Row Interceptors
+### Row interceptors
 
 `ExportOptions` and `ImportOptions` can flow through typed row interceptors that are resolved from dependency injection.
 
@@ -328,7 +374,7 @@ public sealed class NormalizeCustomerNameInterceptor : IImportRowInterceptor<Ord
 }
 ```
 
-### Custom Formats
+### Custom formats
 
 DataPorter format selection is not limited to the built-in CSV, CsvTyped, Excel, JSON, XML, and PDF providers. Projects can add their own import/export providers for domain-specific formats without changing the DataPorter pipeline.
 
@@ -440,9 +486,9 @@ public sealed class TodoItemBulkImportInterceptor(
 
 Use `BeforeImportAsync` and `AfterImportAsync` when each row should be handled independently, for example upserts, validation enrichment, or streaming imports. Use `AfterImportCompletedAsync` with `IEntityBulkInserter<TEntity>` when the import should be accepted as a batch and written with a provider-specific high-performance insert path after all rows are valid.
 
-The native capability writes only the aggregate root table (plus same-table owned values). Clear or reject populated child collections explicitly before calling it; the DoFiesta example retains `entity.Steps.Clear()` to make that boundary visible. Inputs stay detached and database-generated values are not populated. Use `InsertSetAsync` instead when the import requires graph persistence, tracking, returned generated values, or a repository semantic that has no native equivalent. Unsupported semantics fail by default unless repository fallback was explicitly enabled during registration.
+The native capability writes only the aggregate root table (plus same-table owned values). Clear or reject populated child collections explicitly before calling it; the DoFiesta example retains `entity.Steps.Clear()` to make that boundary visible. Inputs stay detached and database-generated values are not populated. Use `InsertSetAsync` instead when the import requires graph persistence, tracking, returned generated values, or a repository semantic that has no native equivalent. Unsupported provider or mapping semantics return a failed bulk-insert result; there is no row-by-row fallback.
 
-### Import Options
+### Import options
 
 `ImportOptions` controls runtime parsing behavior for a specific import request:
 
@@ -470,7 +516,7 @@ ORD-1001;Ada;1,23
 
 In this example, `HeaderRowIndex = 1` tells the importer to use the second line as the header row, and `Culture = new CultureInfo("de-DE")` allows the default decimal parser to read `1,23` correctly.
 
-## Architecture Overview
+## Detailed architecture
 
 `Application.DataPorter` is built around a small orchestration core with pluggable format providers. For developers working on the feature, the key idea is that `DataPorterService` owns the workflow, while providers own the format-specific reading and writing logic. The service validates the request, resolves the provider for the selected `Format`, builds the effective configuration, applies optional progress reporting, compression, and row interception, and then delegates the actual import or export work.
 
@@ -528,9 +574,9 @@ When extending DataPorter, a useful rule of thumb is:
 - add behavior to a provider when it is truly format-specific
 - add a new provider when you need a new external representation, not when you only need different configuration for an existing one
 
-## Configuration Approaches
+## Configuration approaches
 
-### 1. Attribute-Based Configuration
+### Attribute-based configuration
 
 Use attributes directly on your DTOs for simple scenarios:
 
@@ -565,11 +611,11 @@ public class ProductDto
 | `[DataPorterConverter]`  | Property | Specifies a custom value converter   |
 | `[DataPorterValidation]` | Property | Adds validation rules                |
 
-### 2. Profile-Based Configuration
+### Profile-based configuration
 
 Use profiles for complex scenarios with full control:
 
-#### Export Profile
+#### Export profile
 
 ```csharp
 public class OrderExportProfile : ExportProfileBase<Order>
@@ -611,7 +657,7 @@ public class OrderExportProfile : ExportProfileBase<Order>
 }
 ```
 
-#### Import Profile
+#### Import profile
 
 ```csharp
 public class OrderImportProfile : ImportProfileBase<Order>
@@ -647,7 +693,7 @@ public class OrderImportProfile : ImportProfileBase<Order>
 }
 ```
 
-### Registering Profiles
+### Registering profiles
 
 ```csharp
 services.AddDataPorter(configuration)
@@ -657,9 +703,9 @@ services.AddDataPorter(configuration)
     .AddProfilesFromAssembly<OrderExportProfile>();
 ```
 
-## Format Providers
+## Format providers
 
-### Excel Provider
+### Excel provider
 
 Uses [ClosedXML](https://github.com/ClosedXML/ClosedXML) for Excel file handling.
 
@@ -675,7 +721,7 @@ services.AddDataPorter()
     });
 ```
 
-### Typed-Row CSV Provider
+### Typed-row CSV provider
 
 Uses [CsvHelper](https://joshclose.github.io/CsvHelper/) with a typed-rows schema for hierarchical object graphs in a single CSV file.
 
@@ -750,13 +796,13 @@ PreviousAddress,person-2,prev-3,person-2,PreviousAddresses,0,,,,,,,,Cobol Lane 1
 
 **Features:**
 
-- Table formatting with styles
-- Auto-fit columns
-- Freeze header row
-- Conditional formatting
-- Multi-sheet export/import
+- Explicit root and child row schema for hierarchical data.
+- Object-graph export and import through stable relationship columns.
+- Incremental export after the payload schema is determined.
+- Bounded grouped streaming import when rows for each `RootId` are contiguous.
+- Validation at the reconstructed aggregate boundary.
 
-### CSV Provider
+### CSV provider
 
 Uses CsvHelper for CSV file handling.
 
@@ -822,7 +868,7 @@ Export behavior:
 
 When `UseNesting` is disabled, nested structured properties without explicit converters are ignored for CSV export/import. This is useful when only scalar columns should participate.
 
-### JSON Provider
+### JSON provider
 
 Uses [System.Text.Json](https://learn.microsoft.com/en-us/dotnet/api/system.text.json?view=net-10.0) for JSON handling.
 
@@ -846,7 +892,7 @@ Behavior:
 - malformed JSON after earlier valid items produces earlier successes first and then a failed result
 - `ImportAsync(...)` and `ValidateAsync(...)` use the same incremental item-processing pipeline
 
-### XML Provider
+### XML provider
 
 Uses [System.Xml](https://learn.microsoft.com/en-us/dotnet/api/system.xml?view=net-10.0) for XML handling.
 
@@ -872,7 +918,7 @@ Behavior:
 - malformed XML after earlier valid items produces earlier successes first and then a failed result
 - `ImportAsync(...)` and `ValidateAsync(...)` use the same incremental item-processing pipeline
 
-### PDF Provider (Export Only)
+### PDF provider (export only)
 
 Uses [PDFsharp-MigraDoc](https://www.pdfsharp.com/) for PDF generation (MIT licensed).
 
@@ -917,7 +963,7 @@ When `UseNesting` is disabled, nested structured properties without explicit con
 
 The PDF provider now uses a platform-aware font resolver so exports can work on Windows and Linux environments such as Ubuntu, provided common system fonts are installed. Clients can also override the primary and fallback PDFsharp font resolvers during setup when they need custom font resolution behavior.
 
-## Advanced Features
+## Advanced features
 
 ### Streaming APIs
 
@@ -943,31 +989,37 @@ await foreach (var result in importer.ImportAsyncEnumerable<Order>(stream, optio
 }
 ```
 
-### Advanced Streaming Scenarios
+### Advanced streaming scenarios
 
 Advanced usage samples such as HTTP streaming endpoints, background file processing, and scheduled partner-feed exports are collected in the appendix so the main flow can stay focused on the core dataporter concepts.
 
-### Validation Without Import
+### Validation without import
 
 Validate data without actually importing:
 
 ```csharp
 var validationResult = await importer.ValidateAsync<Order>(stream, options);
 
-if (validationResult.IsSuccess && validationResult.Value.IsValid)
+if (validationResult.IsFailure)
+{
+    Console.Error.WriteLine(
+        $"Validation failed: {string.Join("; ", validationResult.Errors.Select(error => error.Message))}");
+    return;
+}
+
+if (validationResult.Value.IsValid)
 {
     Console.WriteLine($"All {validationResult.Value.TotalRows} rows are valid");
+    return;
 }
-else
+
+foreach (var error in validationResult.Value.Errors)
 {
-    foreach (var error in validationResult.Value.Errors)
-    {
-        Console.WriteLine($"Row {error.RowNumber}, Column {error.Column}: {error.Message}");
-    }
+    Console.WriteLine($"Row {error.RowNumber}, Column {error.Column}: {error.Message}");
 }
 ```
 
-### Multi-Dataset Export
+### Multi-dataset export
 
 Export multiple data sets in a single operation. Depending on the provider this becomes worksheets, top-level sections, or sequential sections in the generated output:
 
@@ -994,7 +1046,7 @@ var dataSets = new[]
 await exporter.ExportAsync(dataSets, stream, o => o.AsJson());
 ```
 
-### Custom Value Converters
+### Custom value converters
 
 Create custom converters for complex transformations:
 
@@ -1052,7 +1104,7 @@ This is useful when the exported shape differs from the .NET type, for example:
 
 Converters can be configured per column, which allows different representations for the same .NET type in different import/export profiles.
 
-### Built-in Converters
+### Built-in converters
 
 | Converter                       | Description                                                                                                                |
 | ------------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
@@ -1112,7 +1164,7 @@ ForColumn(o => o.Status)
     });
 ```
 
-### Validation Behaviors
+### Validation behaviors
 
 Control how validation errors are handled during import:
 
@@ -1127,20 +1179,16 @@ public enum ImportValidationBehavior
 
 Streaming behavior depends on the provider:
 
-- **CSV** exports rows directly as they are enumerated
-- **Typed CSV** exports rows directly after computing the header schema from the configured type graph
-- **JSON** exports top-level array items incrementally
-- **XML** exports top-level item elements incrementally
-- **JSON** streams top-level array items incrementally
-- **XML** streams top-level item elements incrementally
-- **CSV** streams flat rows directly, and streams nested-collection imports as completed aggregates once the grouping key changes
-- **Typed CSV** streams one completed aggregate once the next `RootId` is seen
+- **CSV export** writes rows as they are enumerated; grouped import emits a completed aggregate when its grouping key changes.
+- **Typed CSV export** writes rows after computing the header schema; import emits a completed aggregate when the next `RootId` is seen.
+- **JSON export and import** process top-level array items incrementally.
+- **XML export and import** process top-level item elements incrementally.
 
 For grouped CSV and typed CSV streaming, rows for the same logical aggregate must be contiguous in the input. If an already completed aggregate key or `RootId` appears again later, streaming import fails explicitly because the stream can no longer be reconstructed with bounded buffering.
 
 With `CollectErrors`, invalid rows are reported in `ImportResult.Errors` and excluded from `ImportResult.Data`. They are not partially materialized into the returned data set.
 
-### Conditional Styling (Excel)
+### Conditional styling (Excel)
 
 Apply styles based on values in Excel exports:
 
@@ -1157,7 +1205,7 @@ ForColumn(o => o.Amount)
             .WithBackgroundColor("#00FF00"));
 ```
 
-## Error Handling
+## Error handling
 
 The framework uses the Result pattern for consistent error handling:
 
@@ -1180,7 +1228,7 @@ if (result.IsFailure)
 }
 ```
 
-## Configuration via appsettings.json
+## Configuration through appsettings.json
 
 Providers can be configured via configuration:
 
@@ -1223,15 +1271,15 @@ Use provider configuration for application-wide defaults, and `ImportOptions`/`E
 
 | Package           | Version  | Purpose                       |
 | ----------------- | -------- | ----------------------------- |
-| ClosedXML         | Latest   | Excel file handling           |
-| CsvHelper         | Latest   | CSV file handling             |
-| PDFsharp-MigraDoc | 6.2.0    | PDF generation (MIT licensed) |
+| ClosedXML         | 0.105.1  | Excel file handling           |
+| CsvHelper         | 33.1.0   | CSV file handling             |
+| PDFsharp-MigraDoc | 6.2.4    | PDF generation (MIT licensed) |
 | System.Text.Json  | Built-in | JSON handling                 |
 | System.Xml.Linq   | Built-in | XML handling                  |
 
-## Appendix A: Advanced Usage Scenarios
+## Appendix A: Advanced usage scenarios
 
-### HTTP API Streaming
+### HTTP API streaming
 
 This scenario shows a modern ASP.NET Core Minimal API that streams export data directly into the HTTP response body and streams import data directly from the HTTP request body.
 
@@ -1254,7 +1302,7 @@ sequenceDiagram
 using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Common;
 
-app.MapGet("/api/orders/export", async Task<IResult> (
+app.MapGet("/api/orders/export", async Task<Microsoft.AspNetCore.Http.IResult> (
     HttpContext httpContext,
     IDataExporter exporter,
     OrderRepository repository,
@@ -1294,7 +1342,7 @@ app.MapGet("/api/orders/export", async Task<IResult> (
 .Produces(StatusCodes.Status200OK, contentType: ContentType.CSV.MimeType())
 .ProducesProblem(StatusCodes.Status500InternalServerError);
 
-app.MapPost("/api/orders/import", async Task<IResult> (
+app.MapPost("/api/orders/import", async Task<Microsoft.AspNetCore.Http.IResult> (
     HttpRequest request,
     IDataImporter importer,
     OrderRepository repository,
@@ -1390,7 +1438,7 @@ What happens in this scenario:
 - the endpoint handles each imported row as soon as it is parsed
 - the same pattern also works with `Format.Xml`, `Format.Csv`, and `Format.CsvTyped`
 
-### Background File Import Pipeline
+### Background file import pipeline
 
 This scenario fits a worker service that watches a drop folder or object store and imports large partner files without loading the whole file into memory first.
 
@@ -1469,7 +1517,7 @@ What happens in this scenario:
 - successful rows are persisted immediately instead of waiting for the whole file
 - invalid rows can be logged or dead-lettered while valid rows continue to flow through
 
-### Scheduled Partner Feed Export
+### Scheduled partner feed export
 
 This scenario fits a scheduled job that produces a large outbound feed and writes it directly into storage without first creating a full in-memory document.
 
@@ -1532,7 +1580,7 @@ What happens in this scenario:
 - the storage provider receives the feed incrementally as bytes are produced
 - peak memory usage stays bounded by the provider writer and stream buffers instead of the full export size
 
-### FileStorage Export/Import Roundtrip
+### FileStorage export/import round trip
 
 This scenario fits a simpler buffered workflow where the exported payload is materialized once, persisted through `IFileStorageProvider.WriteFileAsync(...)`, and later read back through `IFileStorageProvider.ReadFileAsync(...)` for import.
 

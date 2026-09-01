@@ -1,4 +1,4 @@
-# DevKit CLI Feature Documentation
+# DevKit CLI
 
 > Use `bdk` as the repository-local command-line surface for DevKit local-development workflows, host discovery, host Console Command forwarding and MCP diagnostics.
 
@@ -8,7 +8,17 @@
 
 The DevKit CLI provides a single local-development command entry point for DevKit workflows. It is packaged as the `BridgingIT.DevKit.Cli` .NET tool and exposes the `bdk` command.
 
-The CLI foundation provides:
+## Challenges
+
+DevKit applications can expose local diagnostics and operations through several processes and transports. Developers need a consistent way to discover the hosts for the current workspace, select one safely, forward commands and connect MCP clients without copying endpoint addresses or transport details.
+
+## Solution
+
+The `bdk` tool combines local command dispatch, workspace-aware host discovery, selected-host storage, Console Command forwarding and a STDIO MCP server. Running DevKit web hosts advertise supported local endpoints through user-local descriptors; the CLI resolves those descriptors without loading application assemblies or accessing application databases directly.
+
+## Key Features
+
+The CLI provides:
 
 - local CLI commands registered through the existing Console Commands dispatcher
 - workspace resolution
@@ -19,6 +29,56 @@ The CLI foundation provides:
 - STDIO MCP hosting through `bdk mcp`
 - runtime diagnostics, operations and admin MCP tools
 - official DevKit documentation tools for agents
+
+## Architecture
+
+```mermaid
+flowchart LR
+    User[Developer or MCP client] --> CLI[bdk CLI]
+    CLI --> Commands[Local CLI commands]
+    CLI --> Registry[Workspace host registry]
+    Registry --> Descriptor[Host descriptors]
+    CLI --> ConsoleIPC[Console Command IPC]
+    CLI --> McpSTDIO[MCP over STDIO]
+    McpSTDIO --> McpIPC[Runtime MCP IPC]
+    ConsoleIPC --> Host[Running DevKit web host]
+    McpIPC --> Host
+```
+
+The CLI owns parsing, output, workspace resolution and local protocol clients. The web host owns descriptor publication and application-specific command or MCP execution.
+
+## Use Cases
+
+- Restore one repository-local tool and use it consistently across developer machines.
+- List, select, inspect, clean or terminate DevKit hosts for the current workspace.
+- Forward a registered Console Command to a selected host process.
+- Expose bounded diagnostics and operations to an MCP-compatible IDE or agent.
+- Query official DevKit guides and generated API reference data through stable MCP tools.
+- Produce JSON output and stable exit codes for scripts and CI tasks.
+
+## Basic Usage
+
+Create or restore the repository-local tool, run a command and check its exit code before consuming the result.
+
+```powershell
+dotnet tool restore
+
+$versionJson = dotnet tool run bdk version --output json
+if ($LASTEXITCODE -ne 0) {
+    throw "bdk version failed with exit code $LASTEXITCODE."
+}
+
+$versionJson
+```
+
+The command writes a JSON object containing the CLI version, registered modules and exit code `0`. Once a Development host is running, list hosts for the same workspace:
+
+```powershell
+dotnet tool run bdk hosts list --output json
+if ($LASTEXITCODE -ne 0) {
+    throw "Host discovery failed with exit code $LASTEXITCODE."
+}
+```
 
 ## Packages
 
@@ -64,7 +124,7 @@ dotnet run --project src/Presentation.Cli/Presentation.Cli.csproj -- version
 
 This path uses the same command host as the packaged tool. Only the process launch mechanism differs.
 
-## Global Options
+## Global options
 
 | Option | Description |
 | ---- | ---- |
@@ -83,7 +143,7 @@ This path uses the same command host as the packaged tool. Only the process laun
 
 The CLI can render an animated startup banner to standard error for interactive text sessions. It is suppressed for JSON, quiet, CI and non-interactive invocations unless `--banner` is supplied.
 
-## Workspace Resolution
+## Workspace resolution
 
 Workspace-aware commands use a deterministic workspace path so host filtering and selected-host storage are stable.
 
@@ -95,7 +155,7 @@ Resolution order:
 
 The resolved path is normalized before the CLI computes the workspace hash used for selection files.
 
-## Host Runtime Registry
+## Host runtime registry
 
 Running DevKit web hosts created with `DevKitWebApplication.CreateBuilder(args)` can write host descriptors to an OS user-local registry.
 
@@ -126,7 +186,7 @@ flowchart LR
     Cli -->|"uses selected host for host run and MCP"| WebHost
 ```
 
-## Host Descriptor Shape
+## Host descriptor shape
 
 Host descriptors use shared DTOs from `Common.Abstractions/HostDiscovery`.
 
@@ -240,7 +300,7 @@ This command reads descriptor metadata only. It does not enumerate all assemblie
 
 ### `bdk hosts clean`
 
-Removes stale or invalid descriptors when explicitly confirmed.
+Removes stale, invalid or unreachable descriptors when explicitly confirmed.
 
 ```bash
 bdk hosts clean
@@ -285,7 +345,7 @@ Starts the CLI as a STDIO MCP server for local agents and IDEs.
 bdk mcp
 bdk mcp --toolset diagnostics,operations
 bdk mcp --toolset diagnostics,operations,admin
-bdk mcp --runtime commerce-api-5001
+bdk mcp --runtime-id commerce-api-5001
 ```
 
 The command speaks JSON-RPC over standard input and output. Human logs and diagnostics must go to standard error so MCP clients can parse standard output safely.
@@ -300,7 +360,7 @@ Toolsets:
 | `operations` | Runtime actions such as retry, pause, resume, signal or trigger. |
 | `admin` | Destructive maintenance tools such as purge. Admin tools also require `confirm=true` and the operation-specific `confirmation` phrase. |
 
-## Exit Codes
+## Exit codes
 
 | Exit code | Category | Meaning |
 | ----: | ---- | ---- |
@@ -313,7 +373,7 @@ Toolsets:
 | `6` | ProtocolVersionMismatch | CLI and host protocol versions are incompatible. |
 | `7` | InternalError | Unexpected CLI error. |
 
-## Local Trust Model
+## Local trust model
 
 The CLI is a local-development tool. Host discovery and command forwarding use OS user-local descriptor and IPC locations.
 
@@ -327,7 +387,7 @@ Rules:
 
 The nonce helps avoid accidental use of stale or spoofed descriptors in the same user-local registry. It is not production authentication.
 
-## Relationship to Console Commands
+## Relationship to console commands
 
 The CLI aligns terminal behavior with the existing Console Commands feature. Local `bdk` commands use the same Spectre.Console style, while `bdk host run` executes the selected host's `IConsoleCommand` implementation in the host process.
 
@@ -357,7 +417,7 @@ MCP is implemented as a command module inside `bdk`. The CLI owns STDIO protocol
 
 The stable catalog includes runtime tools, investigation tools, logs/errors, health/metrics, messaging, queueing, jobs, orchestrations, documentation and project-owned operation dispatch. Project operations remain discoverable through capabilities and callable through `bdk_project_call`; they are not added as dynamic MCP tools by default.
 
-## Appendix: How MCP Works Inside the CLI
+## Appendix: how MCP works inside the CLI
 
 `bdk mcp` is a local bridge between an MCP client and one or more running DevKit hosts in the same workspace.
 
@@ -455,7 +515,7 @@ Key components:
 
 Runtime selection follows the same rules as host commands:
 
-1. `--runtime <id>` on `bdk mcp` wins.
+1. `--runtime-id <id>` or `--host <id>` on `bdk mcp` wins.
 2. A saved workspace selection from `bdk_runtimes_select` or `bdk hosts select` is used.
 3. If exactly one ready MCP runtime exists, it is selected automatically.
 4. If multiple ready runtimes exist, runtime-bound tools return `runtime_selection_required`.
@@ -463,7 +523,7 @@ Runtime selection follows the same rules as host commands:
 ```mermaid
 flowchart TD
     Start([Runtime-bound MCP tool call])
-    Explicit{--runtime supplied?}
+    Explicit{--runtime-id or --host supplied?}
     ExplicitReady{Matching ready MCP runtime?}
     Saved{Workspace selection exists?}
     SavedReady{Selected runtime ready?}
@@ -493,7 +553,7 @@ The CLI enforces coarse toolset authorization before any IPC call. The host disp
 
 Feature packages contribute MCP handlers through their presentation registration extensions. For example, messaging, queueing, job scheduling and orchestration presentation packages register their handlers when their endpoints or console commands are registered. Built-in Presentation.Web handlers provide health, metrics and retained-log diagnostics when the corresponding services are available.
 
-Documentation tools are different from runtime tools. `bdk_docs_search` and `bdk_docs_get` read official online DevKit documentation sources, not the local repository. This keeps the CLI useful when developers use it from another project whose repository is not the DevKit source tree.
+Documentation tools are different from runtime tools. `bdk_docs_search` and `bdk_docs_get` read the official DevKit documentation from GitHub. API-reference tools first use generated Pages data under `.github/pages/api` when it exists in the resolved workspace, then fall back to the published GitHub Pages API reference.
 
 MCP client configuration can be source-controlled for the repo:
 
@@ -501,7 +561,7 @@ MCP client configuration can be source-controlled for the repo:
 - `.vscode/mcp.json` for VS Code.
 - Rider and Visual Studio can be configured with the same command shape documented in [MCP Clients](./features-cli-mcp-clients.md).
 
-## Appendix: Adding new MCP Tools
+## Appendix: adding new MCP tools
 
 The MCP catalog is intentionally stable. Adding tools should be deliberate because every `bdk_*` tool becomes part of the agent-facing CLI surface.
 
@@ -594,11 +654,11 @@ Typical file changes for a new stable runtime tool:
 
 ## Troubleshooting
 
-### No Hosts Are Listed
+### No hosts are listed
 
 Start a DevKit web application that uses `DevKitWebApplication.CreateBuilder(args)` in `Development`. Raw `WebApplication.CreateBuilder(args)` applications do not write host descriptors by convention.
 
-### Host Command Forwarding Is Unavailable
+### Host command forwarding is unavailable
 
 Check that the selected host advertises `features.consoleCommands`:
 
@@ -619,7 +679,7 @@ Also verify local CLI integration is not disabled by configuration:
 }
 ```
 
-### Multiple Hosts Match
+### Multiple hosts match
 
 Select a host once for the workspace:
 
@@ -633,7 +693,7 @@ Or pass an explicit selector:
 bdk host run --host commerce-api-5001 -- status
 ```
 
-## Related Documentation
+## Related documentation
 
 - [Presentation Host](./features-presentation.md)
 - [DevKit MCP](./features-cli-mcp.md)

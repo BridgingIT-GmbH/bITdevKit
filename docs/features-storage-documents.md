@@ -1,5 +1,7 @@
 # Document Storage
 
+[TOC]
+
 ## Overview
 
 Document Storage is the typed JSON-document companion to Blob Storage. Applications use `IDocumentStoreClient<T>` with a two-part `DocumentKey` (`PartitionKey`, `RowKey`); providers persist serialized bytes and provider-neutral metadata.
@@ -8,7 +10,99 @@ The client owns validation, serialization, canonical SHA-256 hashes, size limits
 
 Document Storage does not replace `ICacheProvider`. `DocumentStoreCacheProvider` is an adapter for deployments that intentionally use a document store as cache persistence; the abstractions remain separate.
 
-## Good Fit
+## Challenges
+
+Typed JSON data needs more than provider-specific CRUD. Callers need stable keys, optimistic concurrency, bounded queries, portable metadata, expiration, payload limits, and integrity checks without changing application code when the persistence provider changes.
+
+## Solution
+
+`IDocumentStoreClient<T>` owns the provider-neutral document contract and returns `Result` values for expected failures. It validates and serializes logical documents before a provider stores bytes and metadata. Registration binds one document type and normalized client name to an in-memory, database, or cloud provider.
+
+## Key Features
+
+- typed reads and writes with two-part `DocumentKey` values
+- ETag-based conditional updates and deletes
+- bounded paging with query-bound continuation tokens
+- size limits and logical/stored SHA-256 integrity checks
+- scalar properties, expiration, retention, compression, and encryption
+- named clients, behaviors, diagnostics, dashboard, and MCP integration
+- in-memory, Entity Framework, Azure Blob, Azure Table, and Cosmos providers
+
+## Architecture
+
+The outer client validates keys, queries, sizes, and continuation tokens. Registered behaviors wrap a core `DocumentStoreClient<T>`, which serializes the value, applies payload transforms, and calls `IDocumentStoreProvider`. Providers own conditional persistence, paging, initialization, and provider-native retention. The factory resolves existing keyed registrations by document type and client name.
+
+## Use Cases
+
+- store shared typed configuration or reference documents
+- keep temporary documents with explicit expiration and retention
+- page through partition or row-key prefixes without exposing provider queries
+- move documents between named stores of the same type
+- protect writes with ETags and content hashes
+
+## Basic Usage
+
+This example registers an in-memory client, writes one typed document, checks both operation results, and reads the stored value back for a visible HTTP response.
+
+```csharp
+using BridgingIT.DevKit.Application.Storage;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddDocumentStorage()
+    .WithProvider<CustomerDocument>(
+        _ => new InMemoryDocumentStoreProvider());
+
+var app = builder.Build();
+
+app.MapPost("/documents/customers/{id}", async (
+    string id,
+    IDocumentStoreClient<CustomerDocument> documents,
+    CancellationToken cancellationToken) =>
+{
+    var key = new DocumentKey("customers", id);
+    var stored = await documents.UpsertAsync(
+        key,
+        new CustomerDocument { Name = $"Customer {id}" },
+        cancellationToken: cancellationToken);
+
+    if (stored.IsFailure)
+    {
+        return Results.Problem(string.Join(
+            "; ",
+            stored.Errors.Select(error => error.Message)));
+    }
+
+    var read = await documents.GetAsync(key, cancellationToken);
+    if (read.IsFailure)
+    {
+        return Results.Problem(string.Join(
+            "; ",
+            read.Errors.Select(error => error.Message)));
+    }
+
+    return Results.Ok(new
+    {
+        read.Value.Key.PartitionKey,
+        read.Value.Key.RowKey,
+        read.Value.Value.Name,
+        read.Value.ETag,
+        read.Value.ContentHash
+    });
+});
+
+app.Run();
+
+public sealed class CustomerDocument
+{
+    public string Name { get; set; }
+}
+```
+
+`POST /documents/customers/42` returns the typed value with its key, ETag, and logical content hash. The in-memory provider retains it only for the process lifetime.
+
+
+## Selection guidance
 
 Use Document Storage when data is:
 
@@ -38,9 +132,25 @@ var created = await documents.UpsertAsync(
     },
     cancellationToken);
 
+if (created.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        "; ",
+        created.Errors.Select(error => error.Message)));
+    return;
+}
+
 var current = await documents.GetAsync(
     new DocumentKey("customers", "42"),
     cancellationToken);
+
+if (current.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        "; ",
+        current.Errors.Select(error => error.Message)));
+    return;
+}
 
 var updated = await documents.UpdatePropertiesAsync(
     new DocumentPropertiesUpdate(current.Value.Key)
@@ -49,6 +159,13 @@ var updated = await documents.UpdatePropertiesAsync(
         Expiration = ExpirationChange.Clear
     },
     cancellationToken);
+
+if (updated.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        "; ",
+        updated.Errors.Select(error => error.Message)));
+}
 ```
 
 Core operations:
@@ -66,7 +183,7 @@ Core operations:
 
 `DocumentEntry<T>` and `DocumentInfo` expose provider-neutral `ETag`, logical `ContentHash`, creation/modification timestamps, `ExpiresAt`, and cloned scalar properties. The stored transformed hash remains an internal integrity value.
 
-## Query Safety
+## Query safety
 
 Reads are page-based and deterministic. Full scans require consent in both `DocumentStoreOptions` and the individual query. Provider capabilities decide whether exact, prefix, suffix, count, and key-only operations are accepted or require client-side filtering.
 
@@ -74,7 +191,7 @@ Continuation tokens are opaque and bind the normalized client name, document typ
 
 See [Document Storage Paging Specification](./specs/spec-application-storage-documents-paging.md).
 
-## Size And Integrity
+## Size and integrity
 
 `DocumentStoreOptions.MaxDocumentSize` defaults to `ByteSize.Megabytes(1)` and is enforced against logical serialized bytes before provider I/O. A provider may advertise a lower stored-size limit.
 
@@ -85,7 +202,7 @@ Every write computes:
 
 `DocumentWriteOptions.ExpectedContentHash` can enforce the caller's expected logical hash. Reads verify the stored hash before reversing transforms and verify the logical hash before deserialization. Mismatches return `DocumentStoreIntegrityError`.
 
-## Properties And Transforms
+## Properties and transforms
 
 Properties are scalar `PropertyBag` values. Supported values include null, strings, Boolean and numeric primitives, `Guid`, date/time values, `TimeSpan`, and byte arrays. Providers use `PropertyBagScalarCodec` where text persistence is required.
 
@@ -100,7 +217,7 @@ services.AddDocumentStorage()
 
 The encryption transform requires a registered `IEncryptionKeyProvider`. Standard provider registrations resolve the configured `ISerializer`, `TimeProvider`, `IContinuationTokenProtector`, and transforms from dependency injection.
 
-## Expiration And Retention
+## Expiration and retention
 
 Writes use `ExpirationChange`:
 
@@ -124,7 +241,7 @@ services.AddDocumentStorage(options => options.WithRetention(retention =>
 
 The defaults are enabled retention, a 15-second startup delay, one-hour interval, batch size 1000, at most 10 batches per client, no batch delay, and a 10-second stop timeout.
 
-## Named Clients And DI
+## Named clients and DI
 
 `AddDocumentStorage` is the feature registration entry point. Registrations are keyed by document CLR type and normalized case-insensitive client name. At most one registration for a type is the explicit default exposed through direct `IDocumentStoreClient<T>` injection. Resolve other clients through `IDocumentStoreClientFactory.CreateClient<T>(name)`.
 
@@ -149,7 +266,7 @@ Behaviors are composed between the provider adapter and the outer validating/ser
 - Exact-read caching with named-client-aware keys and mutation invalidation.
 - Chaos behavior for controlled resilience testing.
 
-## Transfers And Maintenance
+## Transfers and maintenance
 
 `EnumerateAsync` and `EnumerateKeysAsync` require a positive maximum item count. `DeleteByQueryAsync` is bounded, supports dry-run and optional continue-on-error, reads the matching entry metadata, and conditionally deletes the ETag observed during enumeration. Partial results expose every failed key in input order.
 
@@ -157,7 +274,7 @@ Behaviors are composed between the provider adapter and the outer validating/ser
 
 ## Providers
 
-### In-Memory
+### In-memory
 
 Process-local provider for tests and ephemeral use. It stores copied bytes in private synchronized state and returns cloned records.
 
@@ -177,17 +294,17 @@ Requires only `TableServiceClient` or an account connection string. The provider
 
 Uses provider-owned database/container initialization through `CosmosSqlProvider`, enables per-item TTL, persists provider continuation state inside document tokens, and applies logical expiration filtering while native deletion remains eventual.
 
-## Azure Resource Ownership
+## Azure resource ownership
 
 Azure providers depend on an existing account, not pre-created feature resources. Resource names are deterministic from `normalizedClientName + "\n" + documentTypeIdentity`; optional prefixes are validated. Initialization is asynchronous and idempotent. Concurrent callers and nodes may race safely, cancellation/failure is retryable, unrelated account resources are untouched, and disposal never removes the table/container.
 
-## Dashboard And Diagnostics
+## Dashboard and diagnostics
 
 The Document Storage dashboard inherits the shared dashboard authorization and antiforgery conventions. It selects named clients, lists document pages from 25 to 500 rows, and presents partition/row keys, serialized JSON size, modification time, and expiration in the compact table. Manual and interval refreshes use the currently applied client, key filters, query mode, page size, continuation state, and selected document. The standard refresh interval is off by default and remembered in browser-local storage. The details dialog exposes ETags, hashes, timestamps, expiration, scalar properties, and conditional save/delete actions without adding retention or transform administration to the browsing surface.
 
 `IDocumentStorageDiagnosticsService` reports non-sensitive registration identity, lifetime, capabilities, size limits, configured transform identifiers, latest retention outcome, and health. `DocumentStorageMcpHandler` exposes `documents.summary`, `documents.clients`, and `documents.probe` when the MCP runtime is registered. Neither surface exposes payloads, continuation tokens, encryption material, or secrets.
 
-## Shared Common APIs
+## Shared common APIs
 
 Document and Blob Storage share:
 

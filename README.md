@@ -69,6 +69,7 @@ The best entry point into the current documentation set is the
 - [Common Mapping](./docs/common-mapping.md)
 - [Common Caching](./docs/common-caching.md)
 - [Common Observability Tracing](./docs/common-observability-tracing.md)
+- [Metrics](./docs/features-metrics.md)
 
 ### Core Domain and Application
 
@@ -91,6 +92,7 @@ The best entry point into the current documentation set is the
 - [Requester and Notifier](./docs/features-requester-notifier.md)
 - [Messaging](./docs/features-messaging.md)
 - [Queueing](./docs/features-queueing.md)
+- [Broadcasting](./docs/features-broadcasting.md)
 - [Notifications](./docs/features-notifications.md)
 - [Modules](./docs/features-modules.md)
 - [Pipelines](./docs/features-pipelines.md)
@@ -99,12 +101,15 @@ The best entry point into the current documentation set is the
 
 ### Security and Access
 
+- [Presentation Authentication](./docs/features-presentation-authentication.md)
 - [Entity Permissions](./docs/features-entitypermissions.md)
 - [Fake Identity Provider](./docs/features-identityprovider.md)
 
 ### Presentation and Host
 
 - [Presentation Host](./docs/features-presentation.md)
+- [Presentation Configuration](./docs/features-presentation-configuration.md)
+- [Presentation Logging](./docs/features-presentation-logging.md)
 - [Presentation Correlation IDs](./docs/features-presentation-correlationid.md)
 - [Presentation Endpoints](./docs/features-presentation-endpoints.md)
 - [DevKit CLI](./docs/features-cli.md)

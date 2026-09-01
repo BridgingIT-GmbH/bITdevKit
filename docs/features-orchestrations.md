@@ -1,4 +1,5 @@
-# Orchestrations Feature Documentation
+
+# Orchestrations
 
 > Define durable, stateful workflows in code with explicit states, activities, signals, timers, persisted history, and operational query endpoints.
 
@@ -27,7 +28,41 @@ The feature is split across three projects:
 
 At the API surface, orchestration runtime and query operations follow the devkit `Result` pattern. That means callers inspect `IsSuccess`, `IsFailure`, `Messages`, and `Errors` explicitly rather than inferring business/runtime outcomes from exceptions alone.
 
-## When To Use It
+## Challenges
+
+Long-running business processes must preserve state across requests, restarts and external waits. They also need explicit transition rules, idempotent signal handling, recoverable timers, concurrency control and enough persisted history for operators to understand a stalled instance. Implementing those concerns independently in each application service creates inconsistent recovery and control behavior.
+
+## Solution
+
+Define a state machine with `Orchestration<TData>`, activities, transitions, signals and timers. `IOrchestrationService` starts and controls instances through `Result`-returning APIs. The in-memory provider supports local execution and tests; the Entity Framework provider persists instances, history, signals, timers and leases. An internal recovery service resumes due or incomplete work when background execution is enabled.
+
+## Key Features
+
+- Code-first states, activities, conditional transitions and terminal outcomes.
+- Durable signals and timers for external input and scheduled continuation.
+- Inline, background and dispatch-and-wait execution modes.
+- Retry, compensation, child orchestration, parallel branch and loop helpers.
+- Global activity behaviors for metrics, tracing, policy enforcement or fault injection.
+- Pause, resume, cancel, terminate, query and administration operations.
+- In-memory and Entity Framework persistence providers.
+- Optional operational endpoints and diagram projection.
+
+## Architecture
+
+`AddOrchestrations` registers the executor, public service, recovery service, query and administration services, diagram services and in-memory persistence. `WithEntityFramework<TContext>` replaces the storage interfaces with durable implementations. Registered definitions are resolved by orchestration type, and class-based activities are created through `ActivatorUtilities`, so their dependencies come from the application container.
+
+### Core concepts
+
+- `Orchestration<TData>` defines the workflow in code.
+- States are durable business phases such as `Created`, `AwaitingApproval`, or `Confirmed`.
+- Activities perform work inside a state and return `OrchestrationOutcome` values such as `Continue`, `Retry`, `Wait`, `Complete`, `Cancel`, or `Terminate`.
+- Transitions move the instance to the next state.
+- Signals are durable external inputs correlated to a specific orchestration instance.
+- Timers are durable wake-up points used for timeouts, delayed retries, and scheduled continuation.
+- The orchestration context carries typed data plus a property bag for execution-scoped metadata.
+
+
+## Use Cases
 
 Orchestration is a good fit for:
 
@@ -43,19 +78,10 @@ It is usually not the best fit for:
 - pure pub/sub event fan-out, here the [Messaging](./features-messaging.md) feature is a better fit
 - simple queue-based background jobs with one handler and no business state machine, here the [Queueing](./features-queueing.md) feature is a better fit
 
-## Core Concepts
 
-- `Orchestration<TData>` defines the workflow in code.
-- States are durable business phases such as `Created`, `AwaitingApproval`, or `Confirmed`.
-- Activities perform work inside a state and return `OrchestrationOutcome` values such as `Continue`, `Retry`, `Wait`, `Complete`, `Cancel`, or `Terminate`.
-- Transitions move the instance to the next state.
-- Signals are durable external inputs correlated to a specific orchestration instance.
-- Timers are durable wake-up points used for timeouts, delayed retries, and scheduled continuation.
-- The orchestration context carries typed data plus a property bag for execution-scoped metadata.
+## Basic Usage
 
-## Registration
-
-### In-memory Runtime
+### In-memory runtime
 
 `AddOrchestrations()` registers the orchestration runtime and uses the in-memory persistence provider by default. This is a good default for local development, tests, and workflows that do not need durable storage.
 
@@ -68,7 +94,58 @@ builder.Services
     .WithOrchestration<TelephoneCallOrchestration>();
 ```
 
-### Durable Entity Framework Runtime
+The following minimal orchestration completes inline and exposes its result through an endpoint:
+
+```csharp
+builder.Services.AddOrchestrations()
+    .WithOrchestration<GreetingOrchestration>();
+
+var app = builder.Build();
+app.MapPost("/orchestrations/greeting", async (
+    GreetingData data,
+    IOrchestrationService orchestrations,
+    CancellationToken cancellationToken) =>
+{
+    var result = await orchestrations.ExecuteAsync<GreetingOrchestration, GreetingData>(
+        data,
+        cancellationToken);
+
+    return result.IsSuccess
+        ? Results.Ok(new
+        {
+            result.Value.InstanceId,
+            result.Value.Status,
+            data.Message
+        })
+        : Results.Problem(string.Join("; ", result.Errors.Select(error => error.Message)));
+});
+
+app.Run();
+
+public sealed class GreetingData : IOrchestrationData
+{
+    public string Name { get; set; }
+    public string Message { get; set; }
+}
+
+public sealed class GreetingOrchestration : Orchestration<GreetingData>
+{
+    protected override void Define(IOrchestrationBuilder<GreetingData> builder)
+    {
+        builder.State("CreateGreeting", state => state
+            .Activity((context, cancellationToken) =>
+            {
+                context.Data.Message = $"Hello, {context.Data.Name}.";
+                return Task.FromResult(OrchestrationOutcome.Continue());
+            })
+            .Complete());
+    }
+}
+```
+
+A successful request returns HTTP 200 with the instance id, terminal status and `Hello, {name}.`. Failures are mapped without reading `result.Value`.
+
+### Durable Entity Framework runtime
 
 To switch from in-memory persistence to durable storage, implement `IOrchestrationContext` on your application `DbContext` and chain `WithEntityFramework<TContext>()`.
 
@@ -93,7 +170,7 @@ builder.Services
     .WithEntityFramework<AppDbContext>();
 ```
 
-### Add Operational Endpoints
+### Add operational endpoints
 
 If you want the built-in orchestration management and query routes, add the endpoint package and register the endpoint group from the orchestration builder.
 
@@ -108,7 +185,7 @@ builder.Services
 
 The default route group is `/_bdk/api/orchestrations`.
 
-### Add Global Orchestration Behaviors
+### Add global orchestration behaviors
 
 Orchestration behaviors are global runtime decorators. They are not registered per orchestration type. Once registered on `AddOrchestrations()`, they wrap activity execution for all orchestrations in the current application.
 
@@ -175,7 +252,7 @@ public class OrderApprovalOrchestration : Orchestration<OrderApprovalData>, ICha
 }
 ```
 
-### Background Execution Settings
+### Background execution settings
 
 Automatic timer continuation and wait-boundary recovery are controlled through the `AddOrchestrations` fluent builder. The builder configures `OrchestrationExecutionSettings` for the runtime.
 
@@ -194,7 +271,7 @@ When background execution is enabled, the runtime uses:
 - in-process timer watchers for low-latency same-process wakeups
 - an internal background recovery worker that sweeps due timers and repairs incomplete waiting boundaries after restarts or mid-boundary failures
 
-## Authoring Model
+## Authoring model
 
 An orchestration is a class derived from `Orchestration<TData>`.
 
@@ -220,7 +297,7 @@ Or non-generic when only the signal name matters:
 
 - `WaitForSignal("CallDialed", ...)`
 
-### State Surface
+### State surface
 
 The core state DSL is intentionally small. A state can declare:
 
@@ -258,7 +335,7 @@ state.WhenSignal("HungUp", signal => signal
     .TransitionTo("OffHook"));
 ```
 
-### Activity Configuration
+### Activity configuration
 
 Activities are context-centered. They read from `context.Data`, write durable workflow data back into the context, and return an `OrchestrationOutcome` that tells the runtime what to do next.
 
@@ -282,7 +359,7 @@ This keeps retry and compensation behavior close to the activity that owns the s
 
 Retries still execute through the global orchestration behavior pipeline, so cross-cutting behaviors observe each activity attempt individually.
 
-### Writing Custom Activities
+### Writing custom activities
 
 Use a custom activity class when the step is reusable, needs constructor-injected services, or is large enough that an inline lambda would hide the intent of the workflow.
 
@@ -298,7 +375,7 @@ public interface IOrchestrationActivity<TData>
 }
 ```
 
-#### Minimal Custom Activity
+#### Minimal custom activity
 
 ```csharp
 public class DetermineApprovalRequirementActivity : IOrchestrationActivity<OrderApprovalData>
@@ -319,7 +396,7 @@ This is the simplest pattern:
 - update durable workflow data on `context.Data` or `context.Properties`
 - return an explicit outcome
 
-#### Activity With Constructor Injection
+#### Activity with constructor injection
 
 Custom activities can use constructor injection for application services. The runtime creates class-based activities through `ActivatorUtilities`, so the activity type itself does not need special orchestration-specific registration, but any dependencies it uses must already be registered in the container.
 
@@ -356,7 +433,7 @@ builder.State("PaymentReservation", state => state
     .TransitionTo("Confirmed"));
 ```
 
-#### Returning Outcomes Correctly
+#### Returning outcomes correctly
 
 Custom activities control execution by returning `OrchestrationOutcome` values.
 
@@ -389,7 +466,7 @@ public class ReservePaymentActivity : IOrchestrationActivity<OrderApprovalData>
 }
 ```
 
-#### What A Custom Activity Should And Should Not Do
+#### What a custom activity should and should not do
 
 Good custom activities:
 
@@ -416,7 +493,7 @@ As a rule of thumb:
 - if another business step or external caller needs to understand the value, put it in `context.Data`
 - if the value is mainly runtime/helper metadata, put it in `context.Properties`
 
-#### When To Use An Inline Activity Instead
+#### When to use an inline activity instead
 
 Inline activities are still the better choice for very small, orchestration-local mutations:
 
@@ -430,7 +507,7 @@ state.Activity((context, cancellationToken) =>
 
 Move that logic into a custom activity class when it becomes reusable, needs injected services, or deserves its own test surface.
 
-#### Optional: Add Your Own DSL Wrapper
+#### Optional: Add your own DSL wrapper
 
 If your application uses the same custom activity in many orchestrations, you can wrap it in your own extension method so the orchestration reads in product language instead of infrastructure language.
 
@@ -444,7 +521,7 @@ public static IOrchestrationStateBuilder<OrderApprovalData> ReservePayment(
 
 That keeps the runtime model unchanged while making orchestration definitions more expressive.
 
-### Built-In Activity Helpers
+### Built-in activity helpers
 
 A focused set of authoring helpers on top of the base state DSL is available.
 
@@ -488,7 +565,7 @@ Returns a waiting outcome, optionally with a delay and reason.
 state.WaitActivity(TimeSpan.FromHours(1), "Waiting before retrying downstream sync.");
 ```
 
-#### Built-In Outbound Integrations
+#### Built-in outbound integrations
 
 `QueryActivity(...)`, `CommandActivity(...)`, and `SendRequestActivity(...)` are outbound orchestration activities built on top of `IRequester`.
 
@@ -663,7 +740,7 @@ state.HumanTaskActivity(activity => activity
 
 The built-in helpers above are part of the current public authoring surface. If you need domain-specific helpers beyond those, prefer adding application-level wrapper extensions on top of the existing activity model instead of extending orchestration runtime internals first.
 
-### Activity Outcome And Completion Semantics
+### Activity outcome and completion semantics
 
 The activity lifecycle is more important than it first appears because it defines the feature's durability behavior.
 
@@ -692,7 +769,7 @@ Two details matter for authors:
 
 That is why activities should be idempotent and why any data needed later in the workflow must be written into orchestration context rather than kept in local variables.
 
-## Example: Order Approval
+## Example: Order approval
 
 The `OrderApprovalOrchestration` example shows a typical business workflow:
 
@@ -716,7 +793,7 @@ stateDiagram-v2
     Rejected --> [*]
 ```
 
-### Context Data
+### Context data
 
 ```csharp
 public class OrderApprovalData : IOrchestrationData
@@ -741,7 +818,7 @@ public class OrderApprovalData : IOrchestrationData
 }
 ```
 
-### Definition Sketch
+### Definition sketch
 
 ```csharp
 public class OrderApprovalOrchestration : Orchestration<OrderApprovalData>
@@ -776,7 +853,7 @@ public class OrderApprovalOrchestration : Orchestration<OrderApprovalData>
 }
 ```
 
-### Start the Workflow
+### Start the workflow
 
 ```csharp
 public class OrdersApplicationService(IOrchestrationService orchestrations)
@@ -794,7 +871,8 @@ public class OrdersApplicationService(IOrchestrationService orchestrations)
 
         if (result.IsFailure)
         {
-            throw new InvalidOperationException(string.Join(", ", result.Messages));
+            throw new InvalidOperationException(
+                string.Join(", ", result.Errors.Select(error => error.Message)));
         }
 
         return result.Value; // instanceId
@@ -802,7 +880,7 @@ public class OrdersApplicationService(IOrchestrationService orchestrations)
 }
 ```
 
-### Approve or Reject
+### Approve or reject
 
 ```csharp
 var approve = await orchestrations.SignalAsync(
@@ -826,7 +904,7 @@ var reject = await orchestrations.SignalAsync(
     cancellationToken: cancellationToken);
 ```
 
-## Example: Telephone Call State Machine
+## Example: Telephone call state machine
 
 The `TelephoneCallOrchestration` example shows a signal-driven workflow where external events control all meaningful progression.
 
@@ -844,7 +922,7 @@ stateDiagram-v2
     PhoneDestroyed --> [*]
 ```
 
-### Context Data
+### Context data
 
 ```csharp
 public class TelephoneCallData : IOrchestrationData
@@ -861,7 +939,7 @@ public class TelephoneCallData : IOrchestrationData
 }
 ```
 
-### Definition Sketch
+### Definition sketch
 
 ```csharp
 public class TelephoneCallOrchestration : Orchestration<TelephoneCallData>
@@ -913,7 +991,7 @@ public class TelephoneCallOrchestration : Orchestration<TelephoneCallData>
 }
 ```
 
-### Drive It With Signals
+### Drive it with signals
 
 ```csharp
 await orchestrations.SignalAsync(instanceId, "CallDialed", cancellationToken: cancellationToken);
@@ -922,7 +1000,7 @@ await orchestrations.SignalAsync(instanceId, "PlacedOnHold", cancellationToken: 
 await orchestrations.SignalAsync(instanceId, "TakenOffHold", cancellationToken: cancellationToken);
 ```
 
-## Durable Timers and Signals
+## Durable timers and signals
 
 Durable orchestration combines durable timers with durable signals.
 
@@ -983,13 +1061,13 @@ Because both timers and signals are persisted artifacts, they are inspectable an
 - which timers were scheduled, consumed, or are still pending
 - the durable reason and plan for the current waiting boundary
 
-That visibility is what makes durable orchestration practical for long-running workflows. The engine is not just waiting in memory; it is recording the exact reason why the instance is paused and what event or time boundary will wake it next.
+The engine records why an instance is paused and which event or time boundary will resume it. This persisted state lets long-running workflows survive process restarts.
 
-## Starting And Controlling Instances
+## Starting and controlling instances
 
 The runtime surface is built around `IOrchestrationService`.
 
-### Execute Inline
+### Execute inline
 
 Use `ExecuteAsync` when the orchestration is expected to finish inline without entering a waiting or paused boundary.
 
@@ -1006,7 +1084,7 @@ var result = await orchestrations.ExecuteAsync<OrderApprovalOrchestration, Order
     cancellationToken);
 ```
 
-### Dispatch for Background Progression
+### Dispatch for background progression
 
 Use `DispatchAsync` for workflows that may wait for signals or timers.
 
@@ -1021,7 +1099,7 @@ var result = await orchestrations.DispatchAsync<OrderApprovalOrchestration, Orde
     cancellationToken);
 ```
 
-### Dispatch And Wait for a Milestone
+### Dispatch and wait for a milestone
 
 Use `DispatchAndWaitAsync` when you want background execution but still need to wait for completion, a specific state, or a specific outcome.
 
@@ -1038,7 +1116,7 @@ var result = await orchestrations.DispatchAndWaitAsync<OrderApprovalOrchestratio
     cancellationToken: cancellationToken);
 ```
 
-### Pause, Resume, Cancel, And Terminate
+### Pause, resume, cancel, and terminate
 
 ```csharp
 await orchestrations.PauseAsync(instanceId, "Waiting for manual review", cancellationToken);
@@ -1047,9 +1125,9 @@ await orchestrations.CancelAsync(instanceId, "Customer withdrew request", cancel
 await orchestrations.TerminateAsync(instanceId, "Manual operator stop", cancellationToken);
 ```
 
-### What The Control Actions Actually Do
+### What the control actions actually do
 
-These actions are not just convenience methods. Each one changes persisted orchestration state under the instance lease and becomes part of the durable execution history.
+Each action changes persisted orchestration state under the instance lease and becomes part of the durable execution history.
 
 #### `PauseAsync(...)`
 
@@ -1122,14 +1200,14 @@ What happens:
 
 Termination is also terminal. It is the right choice for cases such as irrecoverable operator intervention, unsupported runtime conditions, or explicit stop decisions that should not be interpreted as normal business cancellation.
 
-#### Choosing The Right Action
+#### Choosing the right action
 
 - pause: temporarily stop progression, keep the workflow resumable
 - resume: continue a paused workflow from its persisted point
 - cancel: end the workflow as a controlled cancelled business/operational outcome
 - terminate: end the workflow as an explicit hard stop
 
-#### Common Validation Failures
+#### Common validation failures
 
 The runtime returns `Result` failures for invalid lifecycle operations. Common examples are:
 
@@ -1140,7 +1218,7 @@ The runtime returns `Result` failures for invalid lifecycle operations. Common e
 
 That behavior is consistent across the programmatic API and the operational endpoints.
 
-## Querying Persisted State
+## Querying persisted state
 
 Use `IOrchestrationQueryService` for operational reads. Query data is derived from persisted state, not worker-local memory.
 
@@ -1182,7 +1260,7 @@ Useful filters on `OrchestrationQueryRequest` include:
 
 Use `OrchestrationTestHarness` for deterministic unit tests. The harness runs on the in-memory runtime and includes a fake clock for timer-driven workflows.
 
-### Approval Flow Test
+### Approval flow test
 
 ```csharp
 await using var harness = OrchestrationTestHarness.CreateBuilder()
@@ -1208,7 +1286,7 @@ await harness.Assert(dispatch.Value).BeCompletedAsync("Confirmed");
 await harness.Assert(dispatch.Value).HaveHistoryEventAsync("SignalProcessed");
 ```
 
-### Timeout Test
+### Timeout test
 
 ```csharp
 await using var harness = OrchestrationTestHarness.CreateBuilder()
@@ -1229,7 +1307,7 @@ await harness.Assert(dispatch.Value).HaveStatusAsync(OrchestrationStatus.Termina
 await harness.Assert(dispatch.Value).HaveCurrentStateAsync("Rejected");
 ```
 
-### Telephone Call Test
+### Telephone call test
 
 ```csharp
 await using var harness = OrchestrationTestHarness.CreateBuilder()
@@ -1248,7 +1326,7 @@ await harness.Assert(dispatch.Value).HaveCurrentStateAsync("PhoneDestroyed");
 await harness.Assert(dispatch.Value).HaveStatusAsync(OrchestrationStatus.Terminated);
 ```
 
-## Operational Endpoints
+## Operational endpoints
 
 When `Presentation.Web.Orchestrations` is registered, the default group path is `/_bdk/api/orchestrations`.
 
@@ -1278,11 +1356,11 @@ These routes are intended for:
 - operator-driven control actions
 - repair operations for stuck instances
 
-## Architecture
+## Architecture details
 
 Internally, orchestration definitions are executed by `IOrchestrationService` through a lease-protected runtime loop that evaluates states, activities, signals, and timers, persists context snapshots plus execution history through the configured persistence provider, and exposes the resulting durable state through query services and optional operational endpoints for inspection, control, and repair.
 
-### Internal Layers
+### Internal layers
 
 The implementation is easiest to understand as four cooperating layers:
 
@@ -1345,7 +1423,7 @@ sequenceDiagram
     Query-->>Caller: Durable operational view
 ```
 
-### Runtime Execution Loop
+### Runtime execution loop
 
 At a high level, one orchestration instance advances like this:
 
@@ -1361,9 +1439,9 @@ At a high level, one orchestration instance advances like this:
 
 The important consequence is that the next decision is always derived from persisted state, not from ambient in-memory worker state.
 
-### Durable Boundaries
+### Durable boundaries
 
-The runtime persists orchestration data at every meaningful boundary, not just at final completion. The practical boundaries to keep in mind are:
+The runtime persists orchestration data at each execution boundary and at final completion. The boundaries are:
 
 - instance creation
 - entry into the initial or next state
@@ -1377,7 +1455,7 @@ The runtime persists orchestration data at every meaningful boundary, not just a
 
 This is why the system can recover from restarts and lease loss without replaying hidden in-memory mutations.
 
-### Lease And Concurrency Model
+### Lease and concurrency model
 
 State mutation is single-instance serialized through a lease. Multiple orchestration instances can progress concurrently, but only one worker may advance a given instance at a time.
 
@@ -1392,7 +1470,7 @@ That lease protects:
 
 If a worker loses the lease, it must stop mutating the instance. Another worker resumes only from the latest persisted snapshot.
 
-### Signal And Timer Processing
+### Signal and timer processing
 
 Signals and timers are durable records, not in-memory callbacks.
 
@@ -1411,7 +1489,7 @@ Timer processing works like this:
 - timers that are no longer relevant because state already changed are marked obsolete
 - consumed timers either resume waiting execution or trigger a configured timeout transition
 
-### Persistence Model
+### Persistence model
 
 The persistence provider stores several different kinds of orchestration data:
 
@@ -1423,7 +1501,7 @@ The persistence provider stores several different kinds of orchestration data:
 
 The in-memory provider is useful for tests and local execution. The Entity Framework provider makes the same runtime contract durable in the application database through `IOrchestrationContext`.
 
-### Query And Operations Model
+### Query and operations model
 
 Runtime writes state; query services and endpoints read persisted state.
 
@@ -1446,13 +1524,13 @@ Important implementation rules for authors:
 
 For most developers, the practical takeaway is simple: keep orchestration context serializable, treat activities as retryable units, and model long-running behavior with explicit states and signals rather than hidden ambient state.
 
-## Example Sources
+## Example sources
 
 The examples used in this guide are based on the runnable unit-test orchestrations in:
 
-- `tests/Application.UnitTests/Orchestration/OrderApprovalOrchestration.cs`
-- `tests/Application.UnitTests/Orchestration/TelephoneCallOrchestration.cs`
-- `tests/Application.UnitTests/Orchestration/OrderApprovalOrchestrationTests.cs`
-- `tests/Application.UnitTests/Orchestration/TelephoneCallOrchestrationTests.cs`
+- [OrderApprovalOrchestration.cs](../tests/Application.UnitTests/Orchestrations/OrderApprovalOrchestration.cs)
+- [TelephoneCallOrchestration.cs](../tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestration.cs)
+- [OrderApprovalOrchestrationTests.cs](../tests/Application.UnitTests/Orchestrations/OrderApprovalOrchestrationTests.cs)
+- [TelephoneCallOrchestrationTests.cs](../tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestrationTests.cs)
 
-The original design specification is documented in `docs/specs/spec-application-orchestration.md`.
+The original design is documented in [spec-application-orchestration.md](./specs/spec-application-orchestration.md).

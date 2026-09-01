@@ -1,4 +1,5 @@
-# Profiling Feature Documentation
+
+# Profiling
 
 > Collect bounded local runtime snapshots, compare them, and compute deterministic evidence-backed performance signals without an AI service or an overall score.
 
@@ -19,7 +20,107 @@ Evaluation always targets one selected node. It can use all available snapshots 
 
 Profiling is not an APM or production-monitoring product. It does not continuously monitor applications, compare nodes or sessions, calculate one overall performance score, or use AI analysis.
 
-## Quick Start: Local Development
+## Challenges
+
+Local performance investigations need repeatable evidence without turning development builds into a production monitoring system. Raw point-in-time counters are difficult to interpret unless snapshots share a bounded session, node identity, timing, and data-quality context.
+
+## Solution
+
+Profiling collects immutable runtime snapshots in bounded sessions and stores the related runtime context, markers, segments, and custom metrics. Dashboard, console, and programmatic APIs share one lifecycle service. Evaluation applies fixed rules to one node's timeline or to two ordered snapshots and returns evidence, confidence, actions, and limitations without persisting an overall score.
+
+## Key Features
+
+- bounded CPU, memory, allocation, and garbage-collection sampling
+- in-memory and Entity Framework stores
+- dashboard, console-command, and programmatic control
+- phase markers, measured segments, metadata, and supported custom metrics
+- deterministic timeline and two-snapshot evaluation
+- portable archive and one-way Perfetto export
+- shared-store and Broadcasting support for multi-node development sessions
+
+## Architecture
+
+`IProfilingControlService` coordinates session lifecycle over Broadcasting. Each participating node uses the collector and runtime probe to append snapshots to `IProfilingStore`. `IProfilingQueryService` reads sessions and computes evaluations on demand. Measurement, archive, Perfetto, dashboard, and console adapters build on those same contracts.
+
+## Use Cases
+
+- reproduce and inspect allocation churn or memory growth in a local workload
+- compare snapshots before and after a controlled operation
+- mark warm-up, workload, and recovery phases on one timeline
+- retain or transfer a terminal session for later inspection
+- collect one development session from several directly reachable processes
+
+## Basic Usage
+
+The following development-only endpoint starts a bounded in-memory session, records a marker, waits for samples, and stops the session. Each result is checked before its value is used, and the response reports the session key and final state.
+
+```csharp
+using BridgingIT.DevKit.Common;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddProfiling(options => options
+    .Enabled(builder.Environment.IsDevelopment())
+    .SamplingInterval(TimeSpan.FromSeconds(1))
+    .Duration(TimeSpan.FromSeconds(10)));
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.MapPost("/dev/profiling/sample", async (
+        IProfilingControlService profiling,
+        CancellationToken cancellationToken) =>
+    {
+        var started = await profiling.StartAsync(
+            new ProfilingStartRequest("sample workload"),
+            cancellationToken);
+
+        if (started.IsFailure)
+        {
+            return Results.Problem(string.Join(
+                "; ",
+                started.Errors.Select(error => error.Message)));
+        }
+
+        var marked = await profiling.AddPhaseMarkerAsync(
+            "workload started",
+            cancellationToken);
+
+        if (marked.IsFailure)
+        {
+            await profiling.StopAsync(CancellationToken.None);
+            return Results.Problem(string.Join(
+                "; ",
+                marked.Errors.Select(error => error.Message)));
+        }
+
+        await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+
+        var stopped = await profiling.StopAsync(cancellationToken);
+        if (stopped.IsFailure)
+        {
+            return Results.Problem(string.Join(
+                "; ",
+                stopped.Errors.Select(error => error.Message)));
+        }
+
+        return Results.Ok(new
+        {
+            Session = stopped.Value.Session.Identity.Key,
+            stopped.Value.Session.State,
+            ParticipatingNodes = stopped.Value.NodeOutcomes.Count
+        });
+    });
+}
+
+app.Run();
+```
+
+Calling `POST /dev/profiling/sample` returns the readable session key and a terminal state. The session remains available in the in-memory store until retention removes it or the process exits.
+
+
+## Local development setup
 
 Start with the process-local in-memory provider when profiling one application process. Keep collection, the dashboard, and Console Commands restricted to Development.
 
@@ -78,7 +179,7 @@ The dashboard groups the workflow into four tabs:
 
 Session controls above the tabs start or stop collection, take a manual snapshot, request a normal `GC.Collect()`, add phase markers, edit metadata, export or import sessions, and remove stored data. Information icons explain metrics and evaluation results in plain language.
 
-### Dashboard Usage Guide
+### Dashboard usage guide
 
 1. **Start a session.** Enter a short **Name**, choose the sampling interval and maximum duration, and select the green start control. The control becomes a red stop control while collection is running. Use **History** when you want to inspect an existing session instead.
 2. **Reproduce one focused scenario.** Exercise the code path you want to investigate. Add phase markers before transitions such as warm-up, workload, and recovery so those moments are visible on the charts.
@@ -93,7 +194,7 @@ A manual snapshot works during collection. When no session is active, it creates
 
 Session and node selection remain visible above the tabs. Metadata is viewed and edited through a compact button and standard dashboard dialog. Session operations use icon controls with tooltips and an overflow panel for import and destructive actions. The Sessions and Current Snapshot sections can be collapsed to make more room for the charts.
 
-### Optional Local Stress Workload
+### Optional local stress workload
 
 The flame action immediately left of the refresh interval starts the default stress workload and returns without blocking the dashboard request. It uses dedicated CPU workers, sustains short-lived and large-object allocations, retains a bounded 32–128 MiB based on available memory, and forces one full GC while retained objects remain reachable. The complete background workload is recorded as a named `Profiling stress test` segment so its duration is visible as a labeled range on both charts. A second run is rejected until the current 30-second run finishes. The workload affects only the process hosting the dashboard and stops during application shutdown.
 
@@ -101,7 +202,7 @@ Application code can reuse `IProfilingStressService` with a `ProfilingStressRequ
 
 Use this workload only to verify that collection and visualization work or to learn how known CPU, allocation, memory, and GC activity appears. It is not a benchmark and does not represent an application's real workload.
 
-### Live Analysis, Refresh, and Charts
+### Live analysis, refresh, and charts
 
 The browser-wide **Live analysis** switch is off by default. When enabled, it evaluates only after a new snapshot, never overlaps evaluation calls, and cannot run more frequently than dashboard refresh. This switch changes browser behavior only; it does not enable collection or alter console/programmatic evaluation.
 
@@ -113,7 +214,7 @@ The charts use Plotly's standard interaction controls, including area-selection 
 
 Profiling dashboard routes inherit the dashboard's authentication and authorization policy. Do not expose the dashboard anonymously. There is intentionally no evaluation export, copy, or download route.
 
-## Console Commands
+## Console commands
 
 Register commands with `.AddConsoleCommands()`. The primary group is `profiling` and the short group alias is `prof`.
 
@@ -136,7 +237,7 @@ Register commands with `.AddConsoleCommands()`. The primary group is `profiling`
 
 `profiling clear` without `--yes` changes nothing. Clear is also rejected while a session is active.
 
-## Programmatic Usage
+## Programmatic usage
 
 `IProfilingControlService` is the shared lifecycle path used by dashboard and Console Commands:
 
@@ -214,7 +315,7 @@ Imported sessions appear in the normal session list and can be selected, inspect
 
 Application code can also emit supported stable, untagged .NET `Meter` counters, gauges, and durations. Profiling bounds accepted instrument identities and does not accept high-cardinality tags.
 
-## Durable and Multi-Node Registration
+## Durable and multi-node registration
 
 Most local profiling needs only the in-memory setup. Use this section when profiling must survive process restarts or one session must collect from multiple application processes.
 
@@ -244,7 +345,7 @@ builder.Services
 
 Profiling rejects start and snapshot operations before creating a session or publishing a command when multiple targets are present and the selected Profiling store reports that it is process-local. This prevents a misleading partial multi-node session.
 
-### Entity Framework Context
+### Entity Framework context
 
 The consuming application owns its `DbContext` and implements `IProfilingContext`:
 
@@ -271,7 +372,7 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 
 The bITdevKit repository does not provide a Profiling migration. After implementing `IProfilingContext`, the consuming application creates, reviews, and deploys its own EF migration using its normal migration workflow.
 
-## Session and Node Semantics
+## Session and node semantics
 
 - Start freezes one exact Broadcast target snapshot. Only nodes that accept that start command are expected participants.
 - A later manual snapshot targets all currently registered nodes. A late node contributes as an ad-hoc participant and does not change the expected set.
@@ -281,11 +382,11 @@ The bITdevKit repository does not provide a Profiling migration. After implement
 - Late records cannot recreate a deleted or cleared session.
 - Retention removes old unpinned terminal sessions by age and count. Pinned sessions are retained until explicitly deleted or included in a confirmed clear-all operation.
 
-## Deterministic Evaluation
+## Deterministic evaluation
 
 Evaluation returns independent KPIs, evidence-backed signals, suggested actions, data quality, and limitations. There is explicitly no combined performance score. Rule thresholds and labels are built in and cannot be configured, extended, or versioned.
 
-Timeline analysis needs at least five valid snapshots spanning five seconds before it emits interpretive signals. High confidence additionally needs at least ten snapshots spanning ten seconds, complete required evidence, acceptable sampling quality, and no attached debugger. Two-snapshot signals are always low confidence.
+Timeline analysis needs at least five valid snapshots spanning five seconds before it emits interpretive signals. High confidence also needs at least ten snapshots spanning ten seconds, complete required evidence, acceptable sampling quality, and no attached debugger. Two-snapshot signals are always low confidence.
 
 The principal fixed rules are:
 
@@ -300,7 +401,7 @@ The principal fixed rules are:
 
 Signals use only the simple labels `Notable` and `Investigate`. They focus on CPU, memory, allocation, and GC evidence and return one short fixed suggested action.
 
-### Evaluation Limitations
+### Evaluation limitations
 
 The result explicitly reports limitations instead of manufacturing certainty when:
 
@@ -313,7 +414,7 @@ The result explicitly reports limitations instead of manufacturing certainty whe
 
 Runtime availability differs by operating system and .NET runtime. An unavailable metric is represented as unavailable and suppresses only the rules that require it.
 
-## Export Boundary
+## Export boundary
 
 Raw JSON export contains normal immutable runtime snapshots only. A selected node export contains that node's snapshots; a complete-session export contains snapshots from expected and ad-hoc contributors. It excludes runtime context, markers, segments, custom metrics, evaluation KPIs, signals, actions, and limitations.
 
@@ -323,7 +424,7 @@ Portable archives are a separate fixed JSON contract for durable local transfer.
 
 Perfetto export is a separate, one-way Trace Event JSON representation for visual investigation. It includes session and runtime context, readable keys, snapshot counters, shared phase markers, node actions, measured segments, and custom metric counters. It excludes internal GUIDs and computed evaluation results. Perfetto JSON is not accepted by `profiling import`; use the portable archive when a session must be restored to History.
 
-## Security and Operational Guidance
+## Security and operational guidance
 
 - Enable Profiling only for trusted local Development environments. Snapshot collection and forced GC change runtime behavior and consume CPU, memory, and storage.
 - Protect the dashboard with the existing dashboard authentication and authorization policy.
@@ -332,7 +433,7 @@ Perfetto export is a separate, one-way Trace Event JSON representation for visua
 - Do not put secrets, personal data, request payloads, or high-cardinality identifiers in session metadata, marker names, segment names, or custom metrics.
 - Prefer the in-memory provider for one local process. Use shared Profiling and Broadcast providers only when multiple independent development processes must participate.
 
-## Related Features
+## Related features
 
 - [Presentation Dashboard](./features-presentation-dashboard.md)
 - [Console Commands](./features-presentation-console-commands.md)

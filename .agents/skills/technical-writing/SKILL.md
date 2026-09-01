@@ -1,6 +1,6 @@
 ---
 name: technical-writing
-description: "Layered technical-writing standard: Diátaxis structure, Google developer style sentences, STE instruction rules, Global English syntax. Use for /technical-writing or when writing or reviewing docs, RFCs, readmes, PR descriptions, or commit messages."
+description: "Writes and reviews technical docs with a layered feature-guide structure, Diátaxis, Google developer style, STE, and Global English. Use this when editing feature documentation, RFCs, readmes, PR descriptions, or commit messages."
 disable-model-invocation: true
 ---
 
@@ -46,9 +46,66 @@ Use the compass on a whole document or on one sentence. Reach for it whenever yo
 
 **Explanation: understanding and why.** One bounded topic, readable away from the product. Each title should tolerate an implicit "About..." in front. Anchor on a real why question. Give context: design decisions, history, constraints, alternatives. Opinion is allowed here and nowhere else.
 
-Don't mix modes: no reference tables inside a tutorial, no tutorial hand-holding inside reference, no arguing inside a how-to. Split and link instead.
+Don't mix modes without a deliberate document profile. A single-purpose document uses one mode: no reference tables inside a tutorial, no tutorial hand-holding inside reference, and no arguing inside a how-to. Split and link when the repository has no established combined format.
 
 Source: diataxis.fr, fetched 2026-07-18.
+
+## Preserve the feature-document spine
+
+Repository feature documents use a deliberate layered profile. They combine explanation, a quickstart, and reference material in one page so a reader can understand, evaluate, start, and then look up the feature without changing documents.
+
+This profile is an explicit exception to the one-document, one-mode default. The headings mark the mode changes. Apply the correct mode inside each section instead of flattening the whole page into one mode.
+
+Feature documents use these sections in this order:
+
+1. **Overview** identifies the feature, its place in the product, and its relation to established concepts. Keep it short enough to orient a new reader.
+2. **Challenges** states the concrete problems that motivated the feature. Name observable development or operational costs. Do not invent a problem to justify an existing implementation.
+3. **Solution** maps each challenge to a mechanism in the feature. Use real types, extension methods, configuration keys, or runtime behavior.
+4. **Key Features** gives a scannable, source-verified capability list. Each item names one capability and its practical effect.
+5. **Architecture** describes the components, boundaries, dependencies, operation flow, and lifetimes. Derive diagrams and names from the current code.
+6. **Use Cases** says where the feature fits and where another project feature or pattern fits better. Use concrete scenarios and state limits without sales language.
+7. **Basic Usage** provides a minimal end-to-end quickstart. Use one coherent example model, current setup APIs, safe result handling, and a visible outcome.
+
+Detailed reference sections can follow `Basic Usage`. Common examples include behaviors, configuration options, generated features, lifecycle callbacks, transactions, limits, and comparisons with alternatives.
+
+Use this outline for a new feature document:
+
+```markdown
+# Feature name
+
+> One sentence that states the feature's job.
+
+[TOC]
+
+## Overview
+
+## Challenges
+
+## Solution
+
+## Key Features
+
+## Architecture
+
+## Use Cases
+
+## Basic Usage
+
+## Detailed reference section
+
+## Appendix
+```
+
+When an existing feature document contains this spine, preserve the sections and their order. Improve their content in place. Do not remove, merge, rename, split, or demote them unless the user explicitly asks for a structural change.
+
+Keep the layers distinct:
+
+- `Overview`, `Challenges`, `Solution`, and `Use Cases` explain the feature.
+- `Key Features` and `Architecture` provide lookup-oriented facts.
+- `Basic Usage` teaches the shortest working path.
+- Sections after `Basic Usage` provide detailed reference or bounded explanation.
+
+Do not repeat the same material in every layer. The overview orients, the quickstart proves the path, and the reference supplies the details.
 
 ## Write sentences to the reader (Google developer style)
 
@@ -61,7 +118,7 @@ Source: diataxis.fr, fetched 2026-07-18.
 - Don't pre-announce ("we will soon support...") and don't start consecutive sentences with the same phrase.
 - Read the awkward sentence aloud. If it stays awkward, rewrite it.
 - Link with words that say where the link goes: the page title or a short description. Never "click here". Prefer a sentence of context on the page over a link off it.
-- Headings carry the point, not just the topic ("Pick the mode first", not "Modes"). Sentence case. A task heading is a bare verb phrase ("Create an instance"). A concept heading is a noun phrase. One h1 per page, no skipped levels.
+- Headings carry the point, not just the topic ("Pick the mode first", not "Modes"). Use sentence case except for repository-mandated labels in the feature-document spine. A task heading is a bare verb phrase ("Create an instance"). A concept heading is a noun phrase. One h1 per page, no skipped levels.
 - Numbered lists for sequences, bullets for everything else. Introduce a list with a complete sentence. Keep items parallel.
 - Code goes in code font. UI elements go in bold. Use serial commas. Drop "etc." and say up front that a list is partial.
 
@@ -118,9 +175,9 @@ The fixes, by layer: "configuration is performed" becomes "`budget.mjs` reads", 
 
 ## Review checklist
 
-Apply to any prose this skill covers. Item 1 applies only to document sets:
+Apply to any prose this skill covers. Item 1 applies only to document sets and deliberate layered profiles:
 
-1. Is each file one Diátaxis mode, with links where modes meet?
+1. Does each single-purpose file use one Diátaxis mode? If it is a feature document, does it preserve the feature-document spine and keep each section in its assigned mode?
 2. Is every instruction written as a command, with its condition in front?
 3. Does any sentence carry two instructions or two thoughts? Split it.
 4. Can any word be cut without losing meaning? Cut it.
@@ -128,3 +185,4 @@ Apply to any prose this skill covers. Item 1 applies only to document sets:
 6. Does each thing have exactly one name across the docs?
 7. Would a developer say these words out loud? Replace invented metaphors and fancy synonyms with the plain word or the real symbol name.
 8. Are all symbols, paths, and counts real at this commit, with the commands that regenerate the counts?
+9. Does `Basic Usage` use one coherent example, safe failure handling, current setup APIs, and a visible result?

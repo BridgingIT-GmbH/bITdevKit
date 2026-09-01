@@ -1,30 +1,30 @@
-# ActiveEntity Feature Documentation
+# ActiveEntity
 
-> Combine entity-centric CRUD convenience with provider-based persistence and Result-driven outcomes.
+> Add CRUD and query operations to an entity while a configured provider handles persistence.
 
 [TOC]
 
 ## Overview
 
-The ActiveEntity feature in the bITDevKit reimagines the classic [Active Record pattern](https://en.wikipedia.org/wiki/Active_record_pattern), for .NET developers. This modern take embeds CRUD operations and queries directly into entity classes, providing a streamlined data access solution. Unlike its traditional form, it is persistence-neutral, relying on pluggable providers that can integrate with Entity Framework Core (EF Core), in-memory stores or custom data sources, configurable per entity. Entities inherit from `ActiveEntity<TEntity, TId>`, extending the `Entity<TId>` base class for ID handling, equality and transient checks, while employing the `Result` pattern for consistent operation outcomes (success/failure with messages and errors). Tailored for developers building CRUD-heavy or domain-rich applications, it complements complex query needs with repository patterns when necessary, aligning with the bITdevKit commitment to modular, effective solutions.
+ActiveEntity is bITdevKit's provider-based implementation of the [Active Record pattern](https://www.martinfowler.com/eaaCatalog/activeRecord.html). An entity inherits from `ActiveEntity<TEntity, TId>` and gains CRUD and query methods. A provider configured for that entity type performs the persistence work. Operations return `Result`, `Result<T>`, or `ResultPaged<T>` so callers handle failures without depending on provider exceptions.
 
 ## Challenges
 
-Managing data access in modern applications often involves repetitive CRUD code that obscures business logic, tight coupling to specific persistence technologies and difficulties in testing or extending functionality. Consistency in error handling across operations is elusive, while adding concerns like auditing or logging requires significant refactoring. The classic ActiveEntity pattern, while intuitive, traditionally struggles with inflexibility when switching data stores and poor separation of concerns, limiting its adaptability to evolving needs.
+CRUD-focused features often repeat repository methods that only forward insert, update, delete, and lookup calls. If those calls depend directly on EF Core, changing the data store or testing the entity requires different infrastructure code. Logging, auditing, validation, and domain-event publishing can also become mixed into each operation. Different failure conventions then force callers to handle the same class of error in several ways.
 
 ## Solution
 
-This contemporary ActiveEntity implementation tackles these issues by embedding persistence logic within entities while decoupling data access through interchangeable providers, configurable per entity for multi-store support. It supports diverse persistence mechanisms, ensuring flexibility beyond EF Core to include in-memory or custom solutions. Pluggable behaviors manage cross-cutting concerns like logging and auditing, resolved via dependency injection (DI) for extensibility and testability. The `Result` pattern unifies operation outcomes, reducing boilerplate and enhancing robustness. This evolution retains the classic pattern's simplicity for CRUD operations while introducing modularity and neutrality, making it versatile for .NET applications.
+`ActiveEntity<TEntity, TId>` exposes the operations on the entity type and delegates each operation to one configured `IActiveEntityEntityProvider<TEntity, TId>`. You can select a different provider for each entity type. `IActiveEntityBehavior<TEntity>` implementations add logging, auditing, validation, metrics, or domain-event publishing in registration order. The operation and behavior results merge into one `Result` value for the caller.
 
 ## Key Features
 
-- **Persistence Neutrality**: Supports multiple providers (e.g., EF Core, InMemory) per entity without altering entity code.
-- **Embedded Operations**: Entities include CRUD and query methods, minimizing boilerplate.
-- **Pluggable Behaviors**: Extensible hooks for logging, auditing and domain event publishing.
-- **DI Integration**: Seamless integration with ASP.NET Core DI for provider and behavior resolution.
-- **Result Pattern**: Consistent success/failure handling with `Result`, `Result<T>` and `ResultPaged<T>`.
-- **Testability**: InMemory provider facilitates unit testing.
-- **Concurrency and Auditing**: Optional support via `IConcurrency` and `IAuditable` interfaces.
+- **Provider selection.** Configure one EF Core, in-memory, or custom provider for each entity type without changing the entity's operations.
+- **Entity operations.** Call CRUD and query methods on the entity instance or entity type.
+- **Behaviors.** Add logging, metrics, auditing, validation, or domain-event publishing in the operation pipeline.
+- **Dependency injection.** Resolve the provider and behaviors from the same dependency injection scope.
+- **Results.** Receive failures and values through `Result`, `Result<T>`, and `ResultPaged<T>`.
+- **Generated queries.** Opt in to convention finders, specifications, a query DSL, and static query forwarders.
+- **Audit and concurrency state.** Add `IAuditable` or `IConcurrency` to entities that need those behaviors.
 
 ## Architecture
 
@@ -34,8 +34,9 @@ The [Active Record pattern is described by Martin Fowler](https://www.martinfowl
 
 ### Components
 
-The feature centers on `ActiveEntity<TEntity, TId>`, which embeds persistence logic and delegates to an `IActiveEntityEntityProvider<TEntity, TId>` for data access. Behaviors, implementing `IActiveEntityEntityBehavior<T>`, intercept operations to manage concerns like logging or auditing, executed in registration order. The global service provider, configured via `ActiveEntityConfigurator`, resolves these components at runtime, ensuring flexibility and testability.
-The **`ActiveEntityContext<TEntity, TId>`** is a lightweight object that bundles the `IActiveEntityEntityProvider` and its associated `IActiveEntityEntityBehavior` instances, ensuring that all components within a given operation share the same underlying DI scope and transactional context, simplifying complex scenarios.
+`ActiveEntity<TEntity, TId>` delegates persistence to `IActiveEntityEntityProvider<TEntity, TId>`. The pipeline runs registered `IActiveEntityBehavior<TEntity>` instances in registration order. `ActiveEntityConfigurator` stores the application's service provider so an operation can create a dependency injection scope when the caller does not supply a context.
+
+`ActiveEntityContext<TEntity, TId>` contains the provider and behaviors resolved from one scope. Reusing a context keeps those services in the same scope. A context shares a transaction only when the provider has started one, such as inside `WithTransactionAsync`.
 
 ```mermaid
 classDiagram
@@ -48,37 +49,36 @@ classDiagram
 
     class ActiveEntity~TEntity, TId~ {
         <<abstract>>
-        +InsertAsync() Result~T~
-        +UpdateAsync() Result~T~
-        +UpsertAsync() Result~(TEntity, ActionResult)~
+        +InsertAsync() Result~TEntity~
+        +UpdateAsync() Result~TEntity~
+        +UpsertAsync() Result~(TEntity, RepositoryActionResult)~
         +DeleteAsync() Result
-        +static DeleteAsync(id) Result~ActionResult~
-        +static FindOneAsync(...) Result~T~
-        +static FindAllAsync(...) Result~IEnumerable~T~~
-        +static FindAllPagedAsync(...) ResultPaged~T~
+        +static DeleteAsync(id) Result
+        +static FindOneAsync(...) Result~TEntity~
+        +static FindAllAsync(...) Result~IEnumerable~TEntity~~
+        +static FindAllPagedAsync(...) ResultPaged~TEntity~
         +static ProjectAllAsync(...) Result~IEnumerable~TProjection~~
         +static ExistsAsync(...) Result~bool~
         +static CountAsync(...) Result~long~
         +static FindAllIdsAsync(...) Result~IEnumerable~TId~~
         +static FindAllIdsPagedAsync(...) ResultPaged~TId~
         +static WithTransactionAsync(...) Result
-        +static WithContextAsync(...) Result // General helper to get context
+        +static WithContextAsync(...) TResult
     }
 
     class IActiveEntityEntityProvider~TEntity, TId~ {
         <<interface>>
-        +InsertAsync(entity) Result~T~
-        +UpdateAsync(entity) Result~T~
-        +UpsertAsync(entity) Result~(TEntity, ActionResult)~
+        +InsertAsync(entity) Result~TEntity~
+        +UpdateAsync(entity) Result~TEntity~
+        +UpsertAsync(entity) Result~(TEntity, RepositoryActionResult)~
         +DeleteAsync(entity) Result
-        +DeleteAsync(id) Result~ActionResult~
-        +FindOneAsync(id) Result~T~
-        +FindAllAsync(options) Result~IEnumerable~T~~
-        +FindAllAsync(specification) Result~IEnumerable~T~~
-        +FindAllAsync(specifications) Result~IEnumerable~T~~
-        +FindAllPagedAsync(options) ResultPaged~T~
-        +FindAllPagedAsync(specification) ResultPaged~T~
-        +FindAllPagedAsync(specifications) ResultPaged~T~
+        +FindOneAsync(id) Result~TEntity~
+        +FindAllAsync(options) Result~IEnumerable~TEntity~~
+        +FindAllAsync(specification) Result~IEnumerable~TEntity~~
+        +FindAllAsync(specifications) Result~IEnumerable~TEntity~~
+        +FindAllPagedAsync(options) ResultPaged~TEntity~
+        +FindAllPagedAsync(specification) ResultPaged~TEntity~
+        +FindAllPagedAsync(specifications) ResultPaged~TEntity~
         +ProjectAllAsync(projection) Result~IEnumerable~TProjection~~
         +ExistsAsync() Result~bool~
         +ExistsAsync(id) Result~bool~
@@ -93,16 +93,16 @@ classDiagram
         +FindAllIdsPagedAsync(options) ResultPaged~TId~
         +FindAllIdsPagedAsync(specification) ResultPaged~TId~
         +FindAllIdsPagedAsync(specifications) ResultPaged~TId~
-        +BeginTransactionAsync() Result
+        +BeginTransactionAsync() Result~IDatabaseTransaction~
         +CommitTransactionAsync() Result
         +RollbackAsync() Result
     }
 
-    class ActiveEntityEntityFrameworkProvider~TEntity, TId, TContext~ {
-        +ActiveEntityEntityFrameworkProvider(context, options)
+    class EntityFrameworkActiveEntityProvider~TEntity, TId, TContext~ {
+        +EntityFrameworkActiveEntityProvider(context, options)
     }
 
-    class IActiveEntityEntityBehavior~T~ {
+    class IActiveEntityBehavior~T~ {
         <<interface>>
         +BeforeInsertAsync(entity, ct) Task~Result~
         +AfterInsertAsync(entity, success, ct) Task~Result~
@@ -119,14 +119,14 @@ classDiagram
 
     class ActiveEntityContext~TEntity, TId~ {
         +IActiveEntityEntityProvider~TEntity, TId~ Provider
-        +IReadOnlyCollection~IActiveEntityEntityBehavior~T~~ Behaviors
+        +IReadOnlyCollection~IActiveEntityBehavior~T~~ Behaviors
     }
 
     class ActiveEntityContextScope {
         +static UseAsync(...)
     }
 
-    class ActiveEntityEntityLoggingBehavior~T~ {
+    class ActiveEntityLoggingBehavior~T~ {
         +BeforeInsertAsync(...) Task~Result~
         +AfterInsertAsync(...) Task~Result~
         +BeforeUpdateAsync(...) Task~Result~
@@ -151,7 +151,7 @@ classDiagram
         +AfterUpsertAsync(...) Task~Result~
     }
 
-    class ActiveEntityEntityAuditStateBehavior~T~ {
+    class ActiveEntityAuditStateBehavior~T~ {
         +BeforeInsertAsync(...) Task~Result~
         +AfterInsertAsync(...) Task~Result~
         +BeforeUpdateAsync(...) Task~Result~
@@ -165,26 +165,28 @@ classDiagram
     ActiveEntity --|> Entity
     ActiveEntity --> ActiveEntityContext : Uses
     ActiveEntityContext --> IActiveEntityEntityProvider : Has
-    ActiveEntityContext --> IActiveEntityEntityBehavior : Has
-    IActiveEntityEntityProvider <|-- ActiveEntityEntityFrameworkProvider
-    IActiveEntityEntityBehavior <|-- ActiveEntityEntityLoggingBehavior
-    IActiveEntityEntityBehavior <|-- ActiveEntityDomainEventPublishingBehavior
-    IActiveEntityEntityBehavior <|-- ActiveEntityEntityAuditStateBehavior
+    ActiveEntityContext --> IActiveEntityBehavior : Has
+    IActiveEntityEntityProvider <|-- EntityFrameworkActiveEntityProvider
+    IActiveEntityBehavior <|-- ActiveEntityLoggingBehavior
+    IActiveEntityBehavior <|-- ActiveEntityDomainEventPublishingBehavior
+    IActiveEntityBehavior <|-- ActiveEntityAuditStateBehavior
 ```
 
-### Sequence Diagram for Update Operation
+### Update operation sequence
 
 ```mermaid
 sequenceDiagram
     participant User
     participant Entity as ActiveEntity<TEntity, TId>
+    participant Scope as ActiveEntityContextScope
     participant Provider as IActiveEntityEntityProvider
-    participant Behavior as IActiveEntityEntityBehavior
+    participant Behavior as IActiveEntityBehavior
     participant DB as Database
 
     User->>Entity: UpdateAsync()
-    Entity->>Provider: GetProvider()
-    Entity->>Behavior: Resolve Behaviors
+    Entity->>Scope: UseAsync()
+    Scope->>Provider: Resolve scoped provider
+    Scope->>Behavior: Resolve scoped behaviors
     loop For each Behavior
         Entity->>Behavior: BeforeUpdateAsync()
     end
@@ -196,113 +198,170 @@ sequenceDiagram
     Entity->>User: Result<T>
 ```
 
-The architecture resolves providers and behaviors via the global service provider, executing hooks sequentially. Providers manage database interactions, while behaviors handle additional logic like auditing or event publishing, ensuring a modular and extensible design.
+When an operation has no context, `ActiveEntityContextScope` creates a dependency injection scope and resolves the provider and behaviors from it. The operation runs behavior hooks in sequence and delegates the database call to the provider. The context scope disposes the dependency injection scope after the operation completes.
 
 ## Use Cases
 
-This feature suits scenarios where simplicity is key or reducing dependencies on additional layers like repositories is beneficial. For example, an e-commerce platform can manage `Customer` and `Order` entities with minimal setup, avoiding repository overhead. It supports rapid prototyping with an InMemory provider, implements auditing for compliance and is ideal for test-driven development with isolated unit tests. It also supports Domain-Driven Design (DDD) scenarios with domain events and typed IDs, leveraging EF Core features for complete aggregates.
+Use ActiveEntity when most persistence work consists of CRUD operations and queries that belong near the entity type. It fits small modules, prototypes that use the in-memory provider, and domain models that use typed IDs or domain events.
+
+Use a repository or an application service when a use case coordinates several aggregate types, external services, or database-specific queries. One entity type has one configured provider. If the same entity must write to several data stores, keep that coordination outside the entity.
 
 ## Basic Usage
 
-Begin by defining an entity class and setting up the DI configuration. The following example uses the `Customer` entity from the integration tests.
+The following example configures an in-memory `Customer` entity, inserts one customer, and prints its generated ID.
 
-### Class Definition and Setup
+### Define the entity
 
 ```csharp
-// Entity Definition
-[TypedEntityId<Guid>] // Generates CustomerId
-public class Customer : ActiveEntity<Customer, CustomerId>, IAuditable, IConcurrency
+[TypedEntityId<Guid>]
+[ActiveEntityFeatures]
+public partial class Customer : ActiveEntity<Customer, CustomerId>, IAuditable, IConcurrency
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Title { get; set; }
-    public EmailAddressStub Email { get; set; }
-    public int Visits { get; set; } = 0;
+    public string Email { get; set; }
+    public bool IsActive { get; set; } = true;
+    public int Visits { get; set; }
+    public DateTime? LastVisited { get; set; }
+    public AuditState AuditState { get; set; } = new();
+    public Guid ConcurrencyVersion { get; set; }
 }
-
-// DI Setup
-services.AddDbContext<DbContext>(options => options.UseSqlServer(connectionString)); // register dbContext
-services.AddActiveEntity(cfg => // configure ActiveEntity
-{
-    cfg.For<Customer, CustomerId>()
-        .UseEntityFrameworkProvider(o => o.UseContext<DbContext>())
-        .AddLoggingBehavior()
-        .AddAuditStateBehavior(new ActiveEntityEntityAuditStateBehaviorOptions { SoftDeleteEnabled = true });
-});
-ActiveEntityConfigurator.SetGlobalServiceProvider(services.BuildServiceProvider());
-// or when using ASP.NET
-app.UseActiveEntity(app.Services);
 ```
 
-### Insert a new entity
+`[TypedEntityId<Guid>]` generates `CustomerId`. `[ActiveEntityFeatures]` enables all optional generated query features. The entity is `partial` because those features add generated members to `Customer`.
+
+### Configure the provider
+
+```csharp
+var services = new ServiceCollection();
+services.AddLogging();
+services.AddActiveEntity(cfg =>
+{
+    cfg.For<Customer, CustomerId>()
+        .UseInMemoryProvider()
+        .AddLoggingBehavior()
+        .AddAuditStateBehavior(o => o.EnableSoftDelete());
+});
+
+await using var serviceProvider = services.BuildServiceProvider();
+ActiveEntityConfigurator.SetGlobalServiceProvider(serviceProvider);
+```
+
+In ASP.NET Core, register ActiveEntity on `builder.Services`. After you build the application, call `app.UseActiveEntity()` instead of `ActiveEntityConfigurator.SetGlobalServiceProvider(...)`.
+
+### Insert an entity
 
 ```csharp
 var customer = new Customer
 {
     FirstName = "John",
     LastName = "Doe",
+    Email = "john.doe@example.com",
     Title = "Mr."
 };
-var insertResult = await customer.InsertAsync();
 
-if (insertResult.IsSuccess)
+var insertResult = await customer.InsertAsync();
+if (insertResult.IsFailure)
 {
-    var insertedCustomer = insertResult.Value;
-    Console.WriteLine($"Inserted customer ID: {insertedCustomer.Id}");
+    Console.Error.WriteLine(string.Join(Environment.NewLine, insertResult.Errors.Select(e => e.Message)));
+    return;
 }
+
+Console.WriteLine($"Inserted customer ID: {insertResult.Value.Id}");
 ```
+
+The final line prints the generated `CustomerId`.
+
+## Operation reference
+
+The following examples use the `Customer` entity and provider configuration from `Basic Usage`.
 
 ### Insert multiple entities
 
 ```csharp
 var results = await Customer.InsertAsync(
 [
-    new() { FirstName = "John", LastName = "Doe", Email = EmailAddressStub.Create("john.doe@example.com"), Title = "Mr." },
-    new() { FirstName = "Jane", LastName = "Doe", Email = EmailAddressStub.Create("jane.doe@example.com"), Title = "Ms." }
+    new() { FirstName = "John", LastName = "Doe", Email = "john.doe@example.com", Title = "Mr." },
+    new() { FirstName = "Jane", LastName = "Doe", Email = "jane.doe@example.com", Title = "Ms." }
 ]);
 
 foreach (var result in results)
 {
-    var customer = result.Value;
-    Console.WriteLine($"Inserted customer ID: {customer.Id}");
+    if (result.IsSuccess)
+    {
+        Console.WriteLine($"Inserted customer ID: {result.Value.Id}");
+    }
+    else
+    {
+        Console.Error.WriteLine(string.Join(Environment.NewLine, result.Errors.Select(e => e.Message)));
+    }
 }
 ```
 
 ### Update an existing entity
 
-First, load the entity, modify it and then call `UpdateAsync`.
+Load the entity, handle a lookup failure, and then call `UpdateAsync`.
 
 ```csharp
-var customer = (await Customer.FindOneAsync(customerId)).Value;
+var findResult = await Customer.FindOneAsync(customerId);
+if (findResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, findResult.Errors.Select(e => e.Message)));
+    return;
+}
+
+var customer = findResult.Value;
 customer.FirstName = "Janet";
 var updateResult = await customer.UpdateAsync();
 
-if (updateResult.IsSuccess)
+if (updateResult.IsFailure)
 {
-    var updatedCustomer = updateResult.Value;
-    Console.WriteLine($"Updated customer ID: {updatedCustomer.Id}");
+    Console.Error.WriteLine(string.Join(Environment.NewLine, updateResult.Errors.Select(e => e.Message)));
+    return;
 }
+
+Console.WriteLine($"Updated customer ID: {updateResult.Value.Id}");
 ```
 
 ### Update multiple existing entities
 
-First, load the entities, modify them and then call `UpdateAsync` with a collection.
+Load the entities, modify them, and pass the collection to `UpdateAsync`.
 
 ```csharp
-var customer1 = (await Customer.FindOneAsync(customerId1)).Value;
-var customer2 = (await Customer.FindOneAsync(customerId2)).Value;
-customer1.FirstName = "Janet";
-customer2.FirstName = "Johnu";
+var customerIds = new[] { customerId1, customerId2 };
+var findResult = await Customer.FindAllAsync(c => customerIds.Contains(c.Id));
+if (findResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, findResult.Errors.Select(e => e.Message)));
+    return;
+}
 
-await Customer.UpdateAsync([customer1, customer2]);
+foreach (var customer in findResult.Value)
+{
+    customer.IsActive = false;
+}
+
+var updateResults = await Customer.UpdateAsync(findResult.Value);
+foreach (var failure in updateResults.Where(r => r.IsFailure))
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, failure.Errors.Select(e => e.Message)));
+}
 ```
 
-### Update existing entity properties directly
+### Update selected properties
 
-For an entity instance only specific properties are updated using a fluent syntax.
+Use the update-set builder to change selected properties on one entity.
 
 ```csharp
-var customer = (await Customer.FindOneAsync(customerId)).Value;
+var findResult = await Customer.FindOneAsync(customerId);
+if (findResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, findResult.Errors.Select(e => e.Message)));
+    return;
+}
+
+var customer = findResult.Value;
 var updateResult = await customer.UpdateAsync(u => u
     .Set(c => c.FirstName, "Janet")              // constant assignment
     .Set(c => c.Visits, c => c.Visits + 1)       // computed assignment
@@ -314,7 +373,7 @@ if (updateResult.IsSuccess)
 }
 ```
 
-### Update multiple entities their properties directly
+### Update a set of entities
 
 Use `UpdateSetAsync` to update multiple entities in one operation without loading them individually.
 
@@ -333,12 +392,19 @@ if (updateResult.IsSuccess)
 }
 ```
 
-### Delete an existing entity
+### Delete an entity
 
-First, load the entity and then call `DeleteAsync`.
+Load the entity, handle a lookup failure, and then call `DeleteAsync`.
 
 ```csharp
-var customer = (await Customer.FindOneAsync(customerId)).Value;
+var findResult = await Customer.FindOneAsync(customerId);
+if (findResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, findResult.Errors.Select(e => e.Message)));
+    return;
+}
+
+var customer = findResult.Value;
 var deleteResult = await customer.DeleteAsync();
 
 if (deleteResult.IsSuccess)
@@ -349,27 +415,37 @@ if (deleteResult.IsSuccess)
 
 ### Delete multiple existing entities
 
-First, load the entities and then call `DeleteAsync` with a collection.
+Load the entities and pass the collection to `DeleteAsync`.
 
 ```csharp
-var customer1 = (await Customer.FindOneAsync(customerId1)).Value;
-var customer2 = (await Customer.FindOneAsync(customerId2)).Value;
+var customerIds = new[] { customerId1, customerId2 };
+var findResult = await Customer.FindAllAsync(c => customerIds.Contains(c.Id));
+if (findResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, findResult.Errors.Select(e => e.Message)));
+    return;
+}
 
-await Customer.DeleteAsync([customer1, customer2]);
+var deleteResults = await Customer.DeleteAsync(findResult.Value);
+foreach (var failure in deleteResults.Where(r => r.IsFailure))
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, failure.Errors.Select(e => e.Message)));
+}
 ```
 
 ### Delete multiple existing entities by ID
 
-First, load the entities and then call `DeleteAsync` with a collection of IDs.
+Pass the IDs directly when you do not need the entity values.
 
 ```csharp
-var customer1 = (await Customer.FindOneAsync(customerId1)).Value;
-var customer2 = (await Customer.FindOneAsync(customerId2)).Value;
-
-await Customer.DeleteAsync([customer1.Id, customer2.Id]);
+var deleteResults = await Customer.DeleteAsync([customerId1, customerId2]);
+foreach (var failure in deleteResults.Where(r => r.IsFailure))
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, failure.Errors.Select(e => e.Message)));
+}
 ```
 
-### Delete a set of entities directly
+### Delete a set of entities
 
 Use `DeleteSetAsync` to delete multiple entities in one operation.
 
@@ -384,7 +460,7 @@ if (deleteResult.IsSuccess)
 }
 ```
 
-### Find a single entity by ID
+### Find an entity by ID
 
 Find an entity by its ID.
 
@@ -397,7 +473,7 @@ if (findResult.IsSuccess)
 }
 ```
 
-### Find multiple entities (unfiltered)
+### Find all entities
 
 ```csharp
 var findAllResult = await Customer.FindAllAsync();
@@ -411,7 +487,7 @@ if (findAllResult.IsSuccess)
 }
 ```
 
-### Find multiple entities (filtered)
+### Find filtered entities
 
 ```csharp
 var findAllResult = await Customer.FindAllAsync(e => e.LastName == "Doe");
@@ -425,88 +501,102 @@ if (findAllResult.IsSuccess)
 }
 ```
 
-### Find multiple entities with a specification as a paged result
+### Find a page of entities
 
 ```csharp
 var options = new FindOptions<Customer> { Skip = 0, Take = 10 };
 var pagedResult = await Customer.FindAllPagedAsync(options);
 if (pagedResult.IsSuccess)
 {
-    var customers = pagedResult.Value.Items;
-    var totalCount = pagedResult.Value.TotalCount;
-    Console.WriteLine($"Total customers: {totalCount}");
+    foreach (var customer in pagedResult.Value)
+    {
+        Console.WriteLine(customer.FirstName);
+    }
+
+    Console.WriteLine($"Total customers: {pagedResult.TotalCount}");
 }
 ```
 
-### General Context Access (`WithContextAsync`)
+### Reuse a context with `WithContextAsync`
 
-For scenarios where you need to perform **multiple ActiveEntity actions within a single, consistent scope (provider)**, but *not* necessarily as part of a transaction, you can use the static `ActiveEntity.WithContextAsync` helpers. These methods ensure that all subsequent operations within your delegate use the same provider instance and set of behaviors, guaranteeing consistency and avoiding scope-related issues.
+Use `WithContextAsync` when several operations on one entity type must use the same provider and behavior instances. The helper creates one dependency injection scope for the delegate. It does not start a transaction.
 
 ```csharp
-// Example: Performing multiple operations with a guaranteed single provider instance
 public static class CustomerService
 {
     public static Task<Result> RegisterNewCustomerAndLogAsync(Customer newCustomer, CancellationToken ct = default)
     {
-        return Customer.WithContextAsync(async ctx => // ctx contains provider and behaviors, scoped for this operation
+        return Customer.WithContextAsync(async context =>
         {
-            var insertResult = await newCustomer.InsertAsync(ctx); // Use the provided ctx
-            if (insertResult.IsFailure) return insertResult;
-
-            // Perform another operation using the same provider instance (ctx.Provider)
-            var updatedCustomer = (await ctx.Provider.FindOneAsync(newCustomer.Id, null, ct)).Value;
-            if (updatedCustomer == null) return Result.Failure("Customer not found after insert.");
-
-            updatedCustomer.Visits = 1;
-            var updateResult = await updatedCustomer.UpdateAsync(ctx); // Use the same ctx for consistency
-            if (updateResult.IsFailure) return updateResult;
-
-            // Behaviors are automatically available in the context
-            foreach (var behavior in ctx.Behaviors)
+            var insertResult = await newCustomer.InsertAsync(context);
+            if (insertResult.IsFailure)
             {
-                // Example: custom logging behavior specific to this service's logic
-                // You might need to adjust the behavior interface to accept additional arguments
-                // await behavior.LogSomethingAsync(updatedCustomer, ct);
+                return insertResult;
             }
 
-            return Result.Success();
+            var findResult = await context.Provider.FindOneAsync(newCustomer.Id, null, ct);
+            if (findResult.IsFailure)
+            {
+                return findResult;
+            }
+
+            var updatedCustomer = findResult.Value;
+            updatedCustomer.Visits = 1;
+            return await updatedCustomer.UpdateAsync(context);
         });
     }
 }
 
-// Usage:
-var newCustomer = new Customer { FirstName = "Bob", LastName = "Builder" };
+var newCustomer = new Customer
+{
+    FirstName = "Bob",
+    LastName = "Builder",
+    Email = "bob.builder@example.com"
+};
 var serviceResult = await CustomerService.RegisterNewCustomerAndLogAsync(newCustomer);
-if (serviceResult.IsSuccess) { /* ... */ }
+if (serviceResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, serviceResult.Errors.Select(e => e.Message)));
+}
 ```
 
-### Transactions (`WithTransactionAsync`)
+### Run a transaction with `WithTransactionAsync`
 
-Use `WithTransactionAsync` to execute multiple operations **atomically** within a single database transaction, with automatic commit on success and rollback on failure. This helper manages a dedicated scope and creates an `ActiveEntityContext` for your transaction. All ActiveEntity operations within your delegate *must* use this provided context (`ctx`) to ensure they operate on the same provider instance and share the same `DbContext` (if using EF Core) for the duration of the transaction. If your action completes successfully, the transaction is committed; otherwise, it's rolled back.
+Use `WithTransactionAsync` when the configured provider returns an `IDatabaseTransaction` and several operations must succeed or fail together. The helper commits when the delegate returns success and rolls back when the delegate returns failure. Pass the supplied context to every ActiveEntity operation in the delegate.
+
+The following examples assume that `Customer` uses `UseEntityFrameworkProvider<ActiveEntityDbContext>()`. The in-memory provider does not provide transaction isolation.
 
 ```csharp
 var customer = new Customer
 {
     FirstName = "John",
     LastName = "Doe",
-    Email = EmailAddressStub.Create("john.doe@example.com"),
+    Email = "john.doe@example.com",
     Title = "Mr."
 };
-var transactionResult = await Customer.WithTransactionAsync(async ctx => // ctx contains provider and behaviors
+var transactionResult = await Customer.WithTransactionAsync(async context =>
 {
-    // All CRUD operations within this block must use the provided 'ctx'
-    var insertResult = await customer.InsertAsync(ctx);
-    if (insertResult.IsFailure) return Result.Failure(insertResult.Errors); // propagate failure, will trigger rollback
+    var insertResult = await customer.InsertAsync(context);
+    if (insertResult.IsFailure)
+    {
+        return Result.Failure(insertResult.Errors);
+    }
 
-    // Perform another operation in the same transaction
-    var updatedCustomer = (await ctx.Provider.FindOneAsync(customer.Id)).Value;
-    if (updatedCustomer == null) return Result.Failure("Customer not found in transaction.");
+    var findResult = await context.Provider.FindOneAsync(customer.Id);
+    if (findResult.IsFailure)
+    {
+        return Result.Failure(findResult.Errors);
+    }
 
+    var updatedCustomer = findResult.Value;
     updatedCustomer.Title = "Sir";
-    var updateResult = await updatedCustomer.UpdateAsync(ctx); // use ctx to ensure it's part of the same transaction
-    if (updateResult.IsFailure) return Result.Failure(updateResult.Errors); // propagate failure, will trigger rollback
+    var updateResult = await updatedCustomer.UpdateAsync(context);
+    if (updateResult.IsFailure)
+    {
+        return Result.Failure(updateResult.Errors);
+    }
 
-    return Result.Success(); // If all operations succeed, transaction commits here
+    return Result.Success();
 });
 
 if (transactionResult.IsSuccess)
@@ -522,13 +612,22 @@ else
 You can also return a value from a transaction using `WithTransactionAsync<T>`:
 
 ```csharp
-var newCustomer = new Customer { FirstName = "Alice", LastName = "Wonder" };
+var newCustomer = new Customer
+{
+    FirstName = "Alice",
+    LastName = "Wonder",
+    Email = "alice.wonder@example.com"
+};
 
 var transactionResultWithReturn = await Customer.WithTransactionAsync<Customer>(async ctx =>
 {
     var insertResult = await newCustomer.InsertAsync(ctx);
-    if (insertResult.IsFailure) return Result<Customer>.Failure(insertResult.Errors);
-    return Result.Success(insertResult.Value); // Return the inserted customer
+    if (insertResult.IsFailure)
+    {
+        return Result<Customer>.Failure(insertResult.Errors);
+    }
+
+    return Result.Success(insertResult.Value);
 });
 
 if (transactionResultWithReturn.IsSuccess)
@@ -541,7 +640,7 @@ else
 }
 ```
 
-This diagram illustrates how multiple operations are executed within a single transaction using WithTransactionAsync.
+The following sequence shows the successful `WithTransactionAsync` path.
 
 ```mermaid
 sequenceDiagram
@@ -555,7 +654,7 @@ sequenceDiagram
     Entity->>Context: Create Transaction Context
     Context->>Provider: BeginTransactionAsync()
     loop For each operation in transaction
-        Entity->>Provider: Perform Operation (e.g., InsertAsync)
+        Entity->>Provider: Perform operation
         Provider->>DB: Execute Operation
     end
     Context->>Provider: CommitTransactionAsync()
@@ -564,490 +663,377 @@ sequenceDiagram
 
 ## Behaviors
 
-Behaviors enhance entities with cross-cutting concerns, executed in registration order within the ActiveEntity pipeline. Each behavior intercepts specific operations (e.g., insert, update, delete) to add functionality such as logging, event publishing, auditing, or validation, ensuring modularity and extensibility. Note that **behavior hooks no longer receive the `IActiveEntityEntityProvider` as a direct parameter**, as the provider is now encapsulated within the `ActiveEntityContext` which is made available to the CRUD method calling the behavior.
+ActiveEntity runs behaviors in registration order before and after supported operations. A behavior receives the entity or query arguments, the operation result where applicable, and the cancellation token. Behavior hooks do not receive the provider or `ActiveEntityContext`.
 
-### LoggingBehavior
+### Logging behavior
 
-Logs all operations for debugging purposes.
+`AddLoggingBehavior` registers `ActiveEntityLoggingBehavior<TEntity>` for the entity type.
 
-- **Example**:
+```csharp
+services.AddActiveEntity(cfg =>
+{
+    cfg.For<Customer, CustomerId>()
+        .UseEntityFrameworkProvider<ActiveEntityDbContext>()
+        .AddLoggingBehavior();
+});
+```
 
-    ```csharp
-    services.AddActiveEntity(cfg =>
-    {
-        cfg.For<Customer, CustomerId>()
-            .UseEntityFrameworkProvider(o => o.UseContext<ActiveEntityDbContext>())
-            .AddLoggingBehavior();
-    });
-    ```
+### Domain-event publishing behavior
 
-    This configuration logs details of CRUD operations (e.g., insert, update, delete) for `Customer` entities, including entity state and operation outcomes, using the configured logger.
-
-### DomainEventPublishingBehavior
-
-Publishes domain events before or after operations.
+`AddDomainEventPublishingBehavior` publishes registered domain events before or after a successful operation. Set `PublishBefore` to select the position.
 
 For the aggregate event model and the repository-based domain-event outbox, see [Domain Events](./features-domain-events.md).
 
-- **Example**:
+```csharp
+services.AddActiveEntity(cfg =>
+{
+    cfg.For<Customer, CustomerId>()
+        .UseEntityFrameworkProvider<ActiveEntityDbContext>()
+        .AddDomainEventPublishingBehavior(
+            new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
+});
+```
 
-    ```csharp
-    services.AddActiveEntity(cfg =>
-    {
-        cfg.For<Customer, CustomerId>()
-            .UseEntityFrameworkProvider(o => o.UseContext<ActiveEntityDbContext>())
-            .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
-    });
-    ```
+### Audit-state behavior
 
-    This setup ensures domain events (e.g., `CustomerCreatedDomainEvent`) are published after successful operations, such as after an insert or update, using the registered `IDomainEventPublisher`.
-
-### AuditStateBehavior
-
-Manages audit trails and optional soft deletes.
-
-- **Example**:
-
-    ```csharp
-    services.AddActiveEntity(cfg =>
-    {
-        cfg.For<Customer, CustomerId>()
-            .UseEntityFrameworkProvider(o => o.UseContext<ActiveEntityDbContext>())
-            .AddAuditStateBehavior(new ActiveEntityEntityAuditStateBehaviorOptions { SoftDeleteEnabled = false });
-    });
-    ```
-
-    This configuration tracks audit information (e.g., `CreatedBy`, `UpdatedDate`) for `Customer` entities and optionally enables soft deletes, marking entities as deleted without removing them from the database.
-
-### AnnotationsValidatorBehavior (DataAnnotations)
-
-Validates entity properties using System.ComponentModel.DataAnnotations attributes before persistence operations. Supported annotations include:
-
-- [Required]: Ensures a property is not null or empty.
-- [MinLength], [MaxLength], [StringLength]: Enforce minimum and/or maximum length for strings.
-- [Range]: Ensures a numeric value falls within a specified range.
-- [RegularExpression]: Validates a string against a regex pattern.
-- [EmailAddress]: Checks for a valid email format.
-- [Compare]: Ensures two properties have the same value.
-- [Url], [Phone]: Validate URL or phone number formats.
-
-- **Example**:
-
-    ```csharp
-    services.AddActiveEntity(cfg =>
-    {
-        cfg.For<Supplier, Guid>()
-            .UseEntityFrameworkProvider(o => o.Context<ActiveEntityDbContext>())
-            .AddAnnotationsValidator();
-    });
-    ```
-
-    ```csharp
-    // Entity with DataAnnotations
-    public class Supplier : ActiveEntity<Supplier, Guid>, IAuditable, IConcurrency
-    {
-        [Required]
-        [MinLength(3)]
-        [MaxLength(100)]
-        public string Name { get; set; }
-
-        [Required]
-        [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
-        public string Email { get; set; }
-
-        [Range(1, 5)]
-        public int Rating { get; set; }
-
-        public ICollection<Book> Books { get; set; } = [];
-        public AuditState AuditState { get; set; } = new AuditState();
-        public Guid ConcurrencyVersion { get; set; }
-    }
-
-    // Usage
-    var supplier = new Supplier
-    {
-        Name = "Penguin", // Valid
-        Email = "contact@penguin.com", // Valid
-        Rating = 4 // Valid
-    };
-    var insertResult = await supplier.InsertAsync(); // Succeeds
-
-    var invalidSupplier = new Supplier
-    {
-        Name = "A", // Too short
-        Email = "invalid-email", // Invalid format
-        Rating = 6 // Out of range
-    };
-    var invalidInsertResult = await invalidSupplier.InsertAsync(); // Fails with ValidationError
-    ```
-
-    This behavior validates `Supplier` properties against their DataAnnotations before insert, update, or delete operations. If validation fails, a `Result` with a `ValidationError` is returned, detailing the specific issues (e.g., "Name must be at least 3 characters long").
-
-### ValidatorBehavior<TValidator> (FluentValidation)
-
-Enables custom validation logic using FluentValidation validators, allowing complex business rules to be applied selectively to insert, update, or delete operations.
-
-- **Example**:
-
-    ```csharp
-    // Custom FluentValidation validator
-    public class BasicCustomerValidator : AbstractValidator<Customer>
-    {
-        public BasicCustomerValidator()
-        {
-            RuleFor(c => c.FirstName).NotEmpty().WithMessage("First name is required");
-            RuleFor(c => c.LastName).NotEmpty().WithMessage("Last name is required");
-        }
-    }
-
-    public class BusinessCustomerValidator : AbstractValidator<Customer>
-    {
-        public BusinessCustomerValidator()
-        {
-            RuleFor(c => c.Email).NotEmpty().EmailAddress().WithMessage("Valid email is required");
-        }
-    }
-
-    public class DeleteCustomerValidator : AbstractValidator<Customer>
-    {
-        public DeleteCustomerValidator()
-        {
-            RuleFor(c => c.Id).MustAsync(async (id, ct) =>
-            !(await Order.ExistsAsync(o => o.CustomerId == id && o.Status == OrderStatus.Pending, null, ct)).Value)
-              .WithMessage("Cannot delete customer with pending orders.");
-        }
-    }
-
-    // Configuration
-    services.AddActiveEntity(cfg =>
-    {
-        cfg.For<Customer, CustomerId>()
-            .UseEntityFrameworkProvider(o => o.Context<ActiveEntityDbContext>())
-            .AddValidatorBehavior<Customer, CustomerId, BasicCustomerValidator>(o => o.ApplyOnInsert())
-            .AddValidatorBehavior<Customer, CustomerId, BusinessCustomerValidator>(o => o.ApplyOnUpdate())
-            .AddValidatorBehavior<Customer, CustomerId, DeleteCustomerValidator>(o => o.ApplyOnDelete());
-    });
-
-    // Usage
-    var customer = new Customer
-    {
-        FirstName = "John",
-        LastName = "Doe",
-        Email = EmailAddressStub.Create("john.doe@example.com"),
-        Title = "Mr."
-    };
-    var insertResult = await customer.InsertAsync(); // Succeeds if FirstName and LastName are valid
-
-    customer.Email = EmailAddressStub.Create("invalid"); // Invalid email
-    var updateResult = await customer.UpdateAsync(); // Fails with FluentValidationError in the result
-
-    customer.Orders.Add(new Order { Status = OrderStatus.Pending });
-    var deleteResult = await customer.DeleteAsync(); // Fails with FluentValidationError in the result, due to pending orders
-    ```
-
-    This behavior applies custom FluentValidation rules to `Customer` entities, with specific validators for insert, update, or delete operations. Failures return a `Result` with a `FluentValidationError`, listing validation errors (e.g., "Valid email is required"). The `ApplyOn*` methods allow fine-grained control over when each validator is executed.
-
-### Custom Behaviors
-
-Extend `ActiveEntityEntityBehaviorBase` to simplify custom logic implementation.
-
-- **Example**:
-
-    ```csharp
-    public class CustomBehavior<T> : ActiveEntityEntityBehaviorBase<T> where T : class, IEntity
-    {
-        protected override Task<Result> BeforeInsertAsync(T entity, CancellationToken ct)
-        {
-            // Custom logic before insert
-            return Task.FromResult(Result.Success());
-        }
-        // Override other hooks as needed...
-    }
-
-    services.AddActiveEntity(cfg =>
-    {
-        cfg.For<Customer, CustomerId>()
-            .UseEntityFrameworkProvider(o => o.UseContext<ActiveEntityDbContext>())
-            .AddBehaviorType<CustomBehavior<Customer>>();
-    });
-    ```
-
-    This custom behavior allows developers to implement specific logic, such as additional validation or preprocessing, by overriding pipeline hooks like `BeforeInsertAsync`.
-
-## Advanced Usage
-
-Beyond the basic functionality, the ActiveEntity implementation offers several powerful, optional features that can significantly enhance developer productivity and query capabilities. These features are enabled on a per-entity basis using the `[ActiveEntityFeatures]` attribute on the entity, allowing extra functionality for specific needs.
-
-### Enabling Features with `[ActiveEntityFeatures]`
-
-To unlock advanced features for an entity, decorate its class with the `[ActiveEntityFeatures]` attribute. You can specify which features to enable using the `ActiveEntityFeatures` enum.
+`AddAuditStateBehavior` updates the `AuditState` of an `IAuditable` entity. Soft delete records the deletion in `AuditState` instead of removing the entity.
 
 ```csharp
-[Flags]
-public enum ActiveEntityFeatures
+services.AddActiveEntity(cfg =>
 {
-    None = 0,
-    Forwarders = 1 << 0,
-    ConventionFinders = 1 << 1,
-    Specifications = 1 << 2,
-    QueryDsl = 1 << 3,
-    All = ~0
+    cfg.For<Customer, CustomerId>()
+        .UseEntityFrameworkProvider<ActiveEntityDbContext>()
+        .AddAuditStateBehavior(o => o.EnableSoftDelete(false));
+});
+```
+
+### Data-annotation validation behavior
+
+`AddAnnotationsValidator` validates entity properties before persistence operations. Supported `System.ComponentModel.DataAnnotations` attributes include:
+
+- `[Required]` rejects a null or empty value.
+- `[MinLength]`, `[MaxLength]`, and `[StringLength]` constrain string length.
+- `[Range]` constrains a numeric value.
+- `[RegularExpression]` matches a string against a regular expression.
+- `[EmailAddress]`, `[Url]`, and `[Phone]` validate common text formats.
+- `[Compare]` compares two property values.
+
+Register the behavior for an entity:
+
+```csharp
+services.AddActiveEntity(cfg =>
+{
+    cfg.For<Supplier, Guid>()
+        .UseEntityFrameworkProvider<ActiveEntityDbContext>()
+        .AddAnnotationsValidator();
+});
+```
+
+The entity declares its constraints with data-annotation attributes:
+
+```csharp
+public class Supplier : ActiveEntity<Supplier, Guid>, IAuditable, IConcurrency
+{
+    [Required]
+    [MinLength(3)]
+    [MaxLength(100)]
+    public string Name { get; set; }
+
+    [Required]
+    [RegularExpression(@"^[^@\s]+@[^@\s]+\.[^@\s]+$")]
+    public string Email { get; set; }
+
+    [Range(1, 5)]
+    public int Rating { get; set; }
+
+    public AuditState AuditState { get; set; } = new();
+    public Guid ConcurrencyVersion { get; set; }
 }
 ```
 
-**Example: Enabling Specific Features**
+An invalid entity returns a failed result:
 
-You can combine multiple features using the bitwise OR `|` operator.
+```csharp
+var supplier = new Supplier
+{
+    Name = "A",
+    Email = "invalid-email",
+    Rating = 6
+};
+
+var insertResult = await supplier.InsertAsync();
+if (insertResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(Environment.NewLine, insertResult.Errors.Select(e => e.Message)));
+}
+```
+
+Validation failures contain a `FluentValidationError`.
+
+### FluentValidation behavior
+
+`AddValidatorBehavior` registers a FluentValidation validator for selected operations. The delete validator below assumes that `Order` also has a configured provider.
+
+```csharp
+public class BasicCustomerValidator : AbstractValidator<Customer>
+{
+    public BasicCustomerValidator()
+    {
+        RuleFor(c => c.FirstName).NotEmpty().WithMessage("First name is required");
+        RuleFor(c => c.LastName).NotEmpty().WithMessage("Last name is required");
+    }
+}
+
+public class BusinessCustomerValidator : AbstractValidator<Customer>
+{
+    public BusinessCustomerValidator()
+    {
+        RuleFor(c => c.Email).NotEmpty().EmailAddress().WithMessage("A valid email address is required");
+    }
+}
+
+public class DeleteCustomerValidator : AbstractValidator<Customer>
+{
+    public DeleteCustomerValidator()
+    {
+        RuleFor(c => c.Id)
+            .MustAsync(async (id, ct) =>
+            {
+                var existsResult = await Order.ExistsAsync(
+                    o => o.CustomerId == id && o.Status == OrderStatus.Pending,
+                    null,
+                    ct);
+
+                return existsResult.IsSuccess && !existsResult.Value;
+            })
+            .WithMessage("Cannot delete a customer with pending orders.");
+    }
+}
+
+services.AddActiveEntity(cfg =>
+{
+    cfg.For<Customer, CustomerId>()
+        .UseEntityFrameworkProvider<ActiveEntityDbContext>()
+        .AddValidatorBehavior<Customer, CustomerId, BasicCustomerValidator>(o => o.ApplyOnInsert())
+        .AddValidatorBehavior<Customer, CustomerId, BusinessCustomerValidator>(o => o.ApplyOnUpdate())
+        .AddValidatorBehavior<Customer, CustomerId, DeleteCustomerValidator>(o => o.ApplyOnDelete());
+});
+
+var customer = new Customer
+{
+    FirstName = "John",
+    LastName = "Doe",
+    Email = "john.doe@example.com",
+    Title = "Mr."
+};
+var insertResult = await customer.InsertAsync();
+
+customer.Email = "invalid";
+var updateResult = await customer.UpdateAsync();
+
+// Assume a pending order exists for customer.Id.
+var deleteResult = await customer.DeleteAsync();
+```
+
+Each `ApplyOn*` method limits its validator to the selected operation. Validation failures contain a `FluentValidationError`.
+
+### Custom behaviors
+
+Extend `ActiveEntityBehaviorBase<TEntity>` and override the hooks that the behavior needs.
+
+```csharp
+public sealed class CustomBehavior<TEntity> : ActiveEntityBehaviorBase<TEntity>
+    where TEntity : class, IEntity
+{
+    public override Task<Result> BeforeInsertAsync(
+        TEntity entity,
+        CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(Result.Success());
+    }
+}
+
+services.AddActiveEntity(cfg =>
+{
+    cfg.For<Customer, CustomerId>()
+        .UseEntityFrameworkProvider<ActiveEntityDbContext>()
+        .AddBehaviorType(typeof(CustomBehavior<Customer>));
+});
+```
+
+## Advanced usage
+
+`[ActiveEntityFeatures]` enables source-generated query members on a `partial` entity class. With no argument, the attribute enables `ActiveEntityFeatures.All`. Pass one or more enum values to limit generation.
+
+### Enable generated features
+
+The available values are `Forwarders`, `ConventionFinders`, `Specifications`, and `QueryDsl`.
 
 ```csharp
 [TypedEntityId<Guid>]
-[ActiveEntityFeatures(ActiveEntityFeatures.ConventionFinders | ActiveEntityFeatures.QueryDsl)]
+[ActiveEntityFeatures(
+    ActiveEntityFeatures.Forwarders |
+    ActiveEntityFeatures.ConventionFinders |
+    ActiveEntityFeatures.Specifications |
+    ActiveEntityFeatures.QueryDsl)]
 public partial class Customer : ActiveEntity<Customer, CustomerId>
 {
-    // ... properties
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public bool IsActive { get; set; }
+    public int Visits { get; set; }
+    public DateTime? LastVisited { get; set; }
 }
 ```
 
-If you omit the parameters, all available features are enabled by default (`ActiveEntityFeatures.All`).
+### Convention finders
 
-#### Feature: Convention Finders
+`ConventionFinders` generates two methods for each supported property:
 
-When enabled, this feature provides static "finder" methods on your entity for each supported property, following a simple naming convention. This is ideal for quick, common lookups without needing to write a full query.
+- `FindAllBy<PropertyName>Async(value)` returns all matching entities.
+- `FindOneBy<PropertyName>Async(value)` returns the first matching entity.
 
-- **`FindAllBy<PropertyName>Async(value)`**: Returns all entities matching the property's value.
-- **`FindOneBy<PropertyName>Async(value)`**: Returns the first entity matching the property's value.
-
-These methods are automatically available for primitives, `ValueObject`s, `Enumeration` types, and Typed IDs.
-
-**Usage Example:**
+The generator supports primitive values, value objects, enumerations, and typed IDs.
 
 ```csharp
-// Find all customers with the last name "Doe"
-var doesResult = await Customer.FindAllByLastNameAsync("Doe");
-
-// Find a single customer by their unique email address (a ValueObject)
-var janeResult = await Customer.FindOneByEmailAsync(EmailAddressStub.Create("jane.doe@example.com"));
-
-// Find all orders with a specific CustomerId (a TypedId)
-var customerOrdersResult = await Order.FindAllByCustomerIdAsync(janeResult.Value.Id);
+var customersResult = await Customer.FindAllByLastNameAsync("Doe");
+if (customersResult.IsSuccess)
+{
+    foreach (var customer in customersResult.Value)
+    {
+        Console.WriteLine(customer.FirstName);
+    }
+}
 ```
 
-#### Feature: Specifications
+### Generated specifications
 
-This feature provides a nested static `Specifications` class inside your entity, providing a rich set of pre-built, reusable `ISpecification<T>` objects for each property. This promotes a clean, reusable, and type-safe way to define query criteria, fully aligned with the `FilterOperator` model.
-
-For the underlying specification model beyond ActiveEntity-generated helpers, see [Domain Specifications](./features-domain-specifications.md).
-
-**Usage Example:**
+`Specifications` generates a nested `Customer.Specifications` class. The generated methods cover equality and the comparisons supported by each property type.
 
 ```csharp
-// Find all active customers
-var activeSpec = Customer.Specifications.IsActiveEquals(true);
-var activeCustomers = await Customer.FindAllAsync(activeSpec);
-
-// Find all customers with the last name "Doe" who have more than 5 visits
-var complexSpec = Customer.Specifications.LastNameEquals("Doe")
+var specification = Customer.Specifications.LastNameEquals("Doe")
     .And(Customer.Specifications.VisitsGreaterThan(5));
-var frequentDoes = await Customer.FindAllAsync(complexSpec);
 
-// Find customers named John or Jane
-var johnOrJaneSpec = Customer.Specifications.FirstNameEquals("John")
-    .Or(Customer.Specifications.FirstNameEquals("Jane"));
-var johnsAndJanes = await Customer.FindAllAsync(johnOrJaneSpec);
+var customersResult = await Customer.FindAllAsync(specification);
 ```
 
-#### Feature: Fluent Query DSL
+For the underlying specification model, see [Domain Specifications](./features-domain-specifications.md).
 
-For more complex queries, the Query feature provides a powerful, LINQ-like fluent API that starts with the `Query()` static method on your entity. It allows you to chain together filters, ordering, includes, and projections in a highly readable way, while still returning a `Result<T>`.
+### Fluent query DSL
 
-**Key Methods:**
-
-- `.Where(expression)` / `.Where(specification)`
-- `.And(specification)` / `.Or(specification)`
-- `.Include(navigationProperty)`
-- `.OrderBy(keySelector)` / `.OrderByDescending(keySelector)`
-- `.Skip(count)` / `.Take(count)`
-- **Execution Methods**: `.ToListAsync()`, `.ToPagedListAsync()`, `.FirstOrDefaultAsync()`, `.FirstAsync()`, `.AnyAsync()`, `.CountAsync()`, `.ProjectAllAsync(selector)`.
-
-**Usage Example:**
+`QueryDsl` generates `Query()` and a typed query builder. The builder supports filters, specifications, includes, ordering, paging, counts, existence checks, and projections.
 
 ```csharp
-// Find the first 10 active customers with the last name "Doe",
-// ordered by their first name, and include their orders.
-var pagedDoesWithOrders = await Customer.Query()
+var pagedResult = await Customer.Query()
     .Where(Customer.Specifications.IsActiveEquals(true))
     .And(Customer.Specifications.LastNameEquals("Doe"))
-    .Include(c => c.Orders)
     .OrderBy(c => c.FirstName)
     .Skip(0)
     .Take(10)
     .ToPagedListAsync();
 
-if (pagedDoesWithOrders.IsSuccess)
+if (pagedResult.IsSuccess)
 {
-    foreach(var customer in pagedDoesWithOrders.Value.Items)
+    foreach (var customer in pagedResult.Value)
     {
-        Console.WriteLine($"Customer: {customer.FirstName}, Orders: {customer.Orders.Count}");
+        Console.WriteLine(customer.FirstName);
     }
+
+    Console.WriteLine($"Total customers: {pagedResult.TotalCount}");
 }
 ```
 
-#### Feature: Seamless Integration of Custom Static Queries
+### Static query forwarders
 
-This feature allows the definition of custom, reusable query logic as extension methods and have them appear as if they were native static methods on the entity itself. This is perfect for encapsulating complex, domain-specific queries.
-
-**How it works:**
-
-1. Define a static extension method on `ActiveEntity<TEntity, TId>` in a seperate extension class.
-2. Enable the `Forwarders` feature.
-3. Call the method directly on the entity class.
-
-**Usage Example:**
-
-**1. Define a Custom Extension Method:**
+`Forwarders` exposes compatible extension methods as static methods on the entity class. Define the extension on `ActiveEntity<TEntity, TId>`, enable `Forwarders`, and keep the entity class `partial`.
 
 ```csharp
 public static class CustomerQueryExtensions
 {
     /// <summary>
-    * Finds all customers who have placed an order in the last 30 days.
+    /// Finds customers who visited in the last 30 days.
     /// </summary>
-    public static Task<Result<IEnumerable<Customer>>> FindAllRecentCustomersAsync(
-        this ActiveEntity<Customer, CustomerId> _, CancellationToken ct = default)
+    public static Task<Result<IEnumerable<Customer>>> FindAllRecentlyVisitedAsync(
+        this ActiveEntity<Customer, CustomerId> _,
+        CancellationToken cancellationToken = default)
     {
-        var thirtyDaysAgo = DateTimeOffset.UtcNow.AddDays(-30);
-        var spec = new Specification<Customer>(c => c.Orders.Any(o => o.DateSubmitted >= thirtyDaysAgo));
-        return Customer.FindAllAsync(spec, null, ct);
+        var since = DateTime.UtcNow.AddDays(-30);
+        return Customer.FindAllAsync(
+            customer => customer.LastVisited >= since,
+            null,
+            cancellationToken);
     }
 }
+
+var customersResult = await Customer.FindAllRecentlyVisitedAsync();
 ```
 
-**2. Call it Directly on the Entity:**
+### Lifecycle callbacks
+
+`ActiveEntity<TEntity, TId>` defines callbacks such as `OnBeforeInsertAsync` and `OnAfterUpdateAsync`. Each callback receives the configured `IActiveEntityEntityProvider<TEntity, TId>` and a cancellation token. A failed result from a `Before` callback stops the operation.
 
 ```csharp
-// No need for awkward extension method syntax. It feels like a built-in method.
-var recentCustomersResult = await Customer.FindAllRecentCustomersAsync();
-```
-
----
-
-### Lifecycle Callbacks
-
-Lifecycle callbacks are methods in `ActiveEntity` that hook directly into the persistence pipeline (e.g., `OnBeforeInsertAsync`, `OnAfterUpdateAsync`). They allow an entity to enforce rules or trigger actions related to its own state.
-
-By returning a `Result.Failure`, such a callback can immediately halt the entire operation (e.g., prevent a `DeleteAsync` from proceeding), making them ideal for simple, entity-specific business rules.
-
-#### Usage Example
-
-Override the desired `On...Async` method in the entity class to implement custom logic. Note that **callbacks now receive an `ActiveEntityContext<TEntity, TId>` as a parameter**, which provides access to the `IActiveEntityEntityProvider` for internal queries within the same scope.
-
-```csharp
+[TypedEntityId<Guid>]
 public partial class Order : ActiveEntity<Order, OrderId>
 {
-    // ... properties ...
+    public decimal Subtotal { get; set; }
+    public decimal Shipping { get; set; }
+    public decimal Tax { get; set; }
+    public decimal Total => this.Subtotal + this.Shipping + this.Tax;
 
-    protected override async Task<Result> OnBeforeInsertAsync(ActiveEntityContext<Order, OrderId> context, CancellationToken ct)
-    {   // Rule: An order can only be placed by an active customer.
-        var customerId = this.Customer?.Id ?? this.CustomerId;
-        var customerResult = await Customer.FindOneAsync(context, e => e.Id == customerId && e.IsActive, null, ct);
-        if (customerResult.IsFailure)
-        {
-            // Halts the InsertAsync operation by returning a failure.
-            return Result.Failure("Order cannot be placed for an inactive or non-existent customer.");
-        }
-
-        return Result.Success();
+    protected override Task<Result> OnBeforeInsertAsync(
+        IActiveEntityEntityProvider<Order, OrderId> _,
+        CancellationToken cancellationToken)
+    {
+        return Task.FromResult(this.Total < 0
+            ? Result.Failure("The order total cannot be negative.")
+            : Result.Success());
     }
 }
 ```
 
-#### A Word of Caution
+Use callbacks for rules that depend on the entity's own state. Use behaviors for concerns shared by several entity types. Use an application service or command when a process coordinates several entities or external services.
 
-While powerful, callbacks should be used sparingly for logic that is truly intrinsic to the entity. For reusable, cross-cutting concerns (like auditing, logging, or generic validation), prefer **Behaviors**. For more complex business processes that orchestrate multiple entities or external services, use a dedicated **Application Service** or **Command** to keep your entities clean and maintainable.
+## Appendix A: limits
 
----
+ActiveEntity has these boundaries:
 
-## Appendix A: Disclaimer
+- One provider is configured for each entity type.
+- The EF Core provider still requires normal EF Core entity and relationship configuration.
+- Provider capabilities determine transaction and batch-operation behavior.
+- Cross-entity workflows belong in an application service, command, or orchestration.
+- Database-specific queries can use a repository or the database API directly.
 
-The ActiveEntity feature provides a modern, entity-embedded approach to data access, ideal for CRUD-heavy applications within the bITDevKit ecosystem. It is not a replacement for comprehensive ORM frameworks or repository patterns in scenarios requiring complex queries, high-performance batch operations or multi-database support. Entity configurations are standard EF Core configurations, defined in `OnModelCreating` using the fluent API, ensuring compatibility with existing EF Core workflows. For advanced use cases, consider integrating with repositories or using EF Core directly. This feature prioritizes simplicity and alignment with bITdevKit principles, allowing developers to choose the simplest tool that meets their needs.
+## Appendix B: Repository comparison
 
-## Appendix B: Comparison with Repository Pattern
+ActiveEntity places persistence methods on the entity type. This keeps common CRUD calls close to the model and makes those calls easy to discover. The provider and behavior abstractions keep the entity methods independent of one persistence implementation.
 
-### Overview
+A repository keeps persistence behind a separate dependency. Prefer it when the application layer must control query composition, when several implementations need different contracts, or when a use case depends on database-specific operations.
 
-The Active Record (AR) pattern embeds data access and domain logic directly into entities, making them responsible for their own persistence. The Repository pattern, a common alternative in the bITDevKit, abstracts persistence behind a repository interface, treating entities as plain data objects and separating data access from domain logic. Both patterns are supported within the bITdevKit, with AR offering a modern twist through per-entity providers and behaviors, while Repository provides a traditional abstraction layer.
+Both patterns support typed IDs, domain events, specifications, paging, and EF Core aggregate mapping. A module can use ActiveEntity for one aggregate and repositories for another. For a longer design comparison, see [Repository versus ActiveEntity](./site/decisions-repository-vs-activeentity.md).
 
-### Characteristics of Each Pattern
+## Appendix C: `ActiveEntityContext` and `ActiveEntityContextScope`
 
-#### Active Record Pattern
+### Scope ownership
 
-- **Approach**: Entities manage their own persistence via embedded methods, supported by pluggable providers configurable per entity.
-- **Strengths**: Simplifies development with fewer layers, enhances cohesion by uniting domain and persistence logic and supports rapid setup with discoverable methods (e.g., `customer.InsertAsync()`).
-- **Considerations**: Requires providers for flexibility, may grow complex with extensive behaviors and relies on DI for testability.
+`ActiveEntityContext<TEntity, TId>` exposes two read-only properties:
 
-#### Repository Pattern
+- `Provider` is the `IActiveEntityEntityProvider<TEntity, TId>` for the operation.
+- `Behaviors` is the collection of `IActiveEntityBehavior<TEntity>` instances for the operation.
 
-- **Approach**: A separate interface (e.g., `IGenericRepository<TEntity>`) handles persistence, keeping entities free of data access code.
-- **Strengths**: Offers clear separation of concerns, facilitates mocking for unit tests and scales well for complex queries or multiple data stores.
-- **Considerations**: Introduces additional layers, potentially leading to anemic models and requires more setup for simple CRUD operations.
+When `ActiveEntityContextScope` creates the context, it resolves both properties from the same dependency injection scope. Scoped dependencies such as an EF Core `DbContext` are therefore shared for the lifetime of that context.
 
-### Tradeoffs
+Do not cache a context or use it after its delegate completes. The helper disposes a scope that it creates, and later access to services from that scope can throw `ObjectDisposedException`.
 
-- **Simplicity vs. Abstraction**: AR reduces setup complexity by embedding logic, ideal for straightforward scenarios, while Repository adds abstraction for better isolation, suited for layered architectures.
-- **Cohesion vs. Separation**: AR fosters cohesive entities but may mix concerns without careful behavior design; Repository separates concerns but can fragment domain logic across layers.
-- **Testability**: AR leverages providers (e.g., InMemory) for testing, requiring DI setup, whereas Repository allows easy mocking without database ties (or re-configure repository implementation).
-- **Extensibility**: Both AR and Repository offer extensibility through behaviors.
-- **Domain-Driven Design (DDD)**: Both support DDD with typed IDs, domain events and aggregates. They leverages EF Core features like owned entities and auto-includes for complete aggregates, matching Repository's capability for complex domain models.
+### Context reuse
 
-### Practical Considerations
-
-AR's design mitigates classic limitations through per-entity providers and behaviors, aligning with Repository features like specifications and paging. It handles complete aggregates (e.g., `Order` with `OrderBooks`) using EF Core's owned entities and auto-includes, making it suitable for DDD scenarios alongside Repository. Developers can choose AR for simplicity and reduced dependencies or Repository for strict separation, with the option to use both in hybrid setups for maximum flexibility.
-
----
-
-## Appendix C: Technical Details: `ActiveEntityContext` and `ActiveEntityContextScope`
-
-The robustness and predictability of ActiveEntity operations in bITDevKit are rooted in a carefully designed system for managing DI scopes and operation contexts.
-
-### The Problem of Scope Mismatch
-
-When combining domain logic with persistence, ensuring that all related components (like a database provider and associated behaviors) operate within the same "unit of work" (e.g., an EF Core `DbContext` or a database transaction) is critical. Without proper management, components might inadvertently resolve their dependencies from different DI scopes. This can lead to:
-
-- Inconsistent `DbContext` instances being used for a single logical operation, causing data integrity issues.
-- `ObjectDisposedException` if a parent scope is disposed while a child operation is still attempting to use its resources.
-- Complex, error-prone manual transaction management across different layers.
-
-### The Solution: Consistent Context and Scoping
-
-To resolve these, `ActiveEntityContext` and `ActiveEntityContextScope` work together to guarantee a consistent execution environment for all ActiveEntity operations.
-
-#### `ActiveEntityContext<TEntity, TId>`
-
-This sealed, immutable container bundles the essential services for an ActiveEntity operation within a consistent DI scope:
-
-- **`Provider`**: The `IActiveEntityEntityProvider<TEntity, TId>` instance, acting as the transactional anchor.
-- **`Behaviors`**: A collection of `IActiveEntityEntityBehavior<TEntity>` instances, representing the lifecycle hooks.
-
-Crucially, both `Provider` and `Behaviors` are always resolved **from the *same* underlying `IServiceProvider` instance**. This guarantees they share the same scoped dependencies (e.g., a single `DbContext` instance) and are valid for the same duration.
-
-**Lifetime Warning**: An `ActiveEntityContext<TEntity, TId>` instance is bound to the DI scope from which its components were resolved. It is a transient object valid only for the duration of that specific scope. **Do not cache it** or pass it beyond the immediate execution of its originating scope (e.g., storing it in a long-lived service or passing it across disconnected asynchronous operations). Misusing the context after its scope has been disposed will result in an `ObjectDisposedException`. Always use it within the `action` delegate where it was provided.
-
-#### `ActiveEntityContextScope`
-
-This static helper centralizes and abstracts DI scope management. Its primary public method is `UseAsync`:
+`ActiveEntityContextScope.UseAsync` accepts an existing context or `null`:
 
 ```csharp
 public static Task<TResult> UseAsync<TEntity, TId, TResult>(
-    ActiveEntityContext<TEntity, TId>? context, // Can be null
+    ActiveEntityContext<TEntity, TId> context,
     Func<ActiveEntityContext<TEntity, TId>, Task<TResult>> action)
     where TEntity : ActiveEntity<TEntity, TId>
 ```
 
-`UseAsync` dynamicaly provides an `ActiveEntityContext` to your operations:
-
-- **If `context` is provided (not null)**: It directly passes this existing context to the `action`. This is vital for scenarios like transactions, where a context is already managing an active scope and must be reused. The `ActiveEntityContextScope` does *not* create or dispose a new scope in this case.
-- **If `context` is `null`**: It automatically creates a new, dedicated DI scope, resolves the `Provider` and `Behaviors` from it, constructs an `ActiveEntityContext`, and invokes the `action`. It then reliably disposes this new scope after the `action` completes, even if errors occur, using `await using` and `try/finally` semantics.
-
-This abstraction frees individual ActiveEntity CRUD methods from managing DI plumbing. They simply require an `ActiveEntityContext` (which can be null), and `ActiveEntityContextScope` ensures the environment is correctly set up—either by reusing an existing context/scope or by safely creating and managing a new one. This design guarantees consistent, scope-safe operations across the entire ActiveEntity feature.
-
-![ar meme](https://justactiverecord.com/just-active-record.webp)
+If `context` is not null, `UseAsync` passes it to the action and does not create or dispose a scope. If `context` is null, `UseAsync` creates an asynchronous dependency injection scope, resolves the provider and behaviors, invokes the action, and disposes the scope in a `finally` block.

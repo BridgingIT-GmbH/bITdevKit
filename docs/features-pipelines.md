@@ -1,4 +1,5 @@
-# Pipelines Feature Documentation
+
+# Pipelines
 
 > Build structured, observable multi-step workflows with low-friction defaults.
 
@@ -27,7 +28,7 @@ Typical examples:
 - multi-step integration calls
 - operational scripts that need tracing, logging, and retries
 
-### Challenges
+## Challenges
 
 When implementing workflow-style application logic directly in services or handlers, teams often run
 into the same problems:
@@ -39,7 +40,7 @@ into the same problems:
 5. **Background execution friction**: Running workflows in the background with tracking and completion callbacks adds plumbing.
 6. **Boilerplate for simple flows**: Developers end up writing too much code for small workflows.
 
-### Solution
+## Solution
 
 The Pipelines feature addresses these problems with:
 
@@ -56,7 +57,7 @@ The Pipelines feature addresses these problems with:
 6. **Composable extensibility**
    Hooks observe lifecycle events and behaviors wrap execution around the pipeline and its steps.
 
-### High-Level Flow
+### High-level flow
 
 ```mermaid
 flowchart LR
@@ -71,7 +72,7 @@ flowchart LR
     D --> I[Logging, Tracking, Tracing]
 ```
 
-### Key Concepts
+## Key Features
 
 - `Pipeline`
   An ordered workflow with a name, optional shared context, steps, hooks, and behaviors.
@@ -86,6 +87,88 @@ flowchart LR
 - `Behavior`
   Wraps execution around the whole pipeline and around each step attempt.
 
+Definitions can be packaged in reusable classes, constructed with a builder or registered inline. The runtime also supports context validation, convention-based names, conditional component registration, background execution tracking and optional source generation.
+
+## Architecture
+
+`AddPipelines` registers a singleton definition registry, factory, runtime, in-memory execution tracker and context-validation invoker. `IPipelineFactory` resolves a registered definition and creates a typed or untyped pipeline instance. Each execution creates a dependency-injection scope, validates the context, invokes hooks and behaviors, and then runs the ordered step definitions.
+
+### Component overview
+
+```mermaid
+classDiagram
+    class IPipeline {
+        <<interface>>
+        +ExecuteAsync()
+        +ExecuteAndForgetAsync()
+    }
+
+    class IPipelineFactory {
+        <<interface>>
+        +Create()
+    }
+
+    class IPipelineDefinition {
+        <<interface>>
+        +string Name
+        +Type ContextType
+        +IReadOnlyList Steps
+    }
+
+    class IPipelineStep {
+        <<interface>>
+        +string Name
+        +ExecuteAsync()
+    }
+
+    class PipelineControl {
+        +PipelineControlOutcome Outcome
+        +Result Result
+        +string Message
+    }
+
+    class PipelineContextBase {
+        +PipelineExecutionContext Pipeline
+    }
+
+    class IPipelineHook {
+        <<interface>>
+    }
+
+    class IPipelineBehavior {
+        <<interface>>
+        +ExecuteAsync()
+        +ExecuteStepAsync()
+    }
+
+    IPipelineFactory --> IPipeline
+    IPipeline --> IPipelineDefinition
+    IPipelineDefinition --> IPipelineStep
+    IPipelineStep --> PipelineControl
+    IPipeline --> PipelineContextBase
+    IPipelineDefinition --> IPipelineHook
+    IPipelineDefinition --> IPipelineBehavior
+```
+
+### Folder structure
+
+The implementation is organized by sub-feature:
+
+- `Behaviors`
+- `Configuration`
+- `Context`
+- `Definitions`
+- `Execution`
+- `Hooks`
+- `Registration`
+- `Steps`
+- `Tracking`
+- `Validation`
+
+## Use Cases
+
+Use pipelines for import and synchronization flows, validation and enrichment sequences, multi-step integration calls, or background work that needs progress tracking. They fit work with an explicit order, shared context and meaningful stop or retry decisions. For a single operation without step-level control or observation, a regular method or Requester handler is usually simpler.
+
 ## Basic Usage
 
 There are three main ways to define pipelines:
@@ -94,7 +177,7 @@ There are three main ways to define pipelines:
 2. direct fluent builders
 3. inline registration during DI setup
 
-### Packaged Pipeline Definition
+### Packaged pipeline definition
 
 Packaged definitions are a good default when a pipeline is reusable or belongs clearly to one feature.
 
@@ -114,7 +197,6 @@ public class OrderImportPipeline : PipelineDefinition<OrderImportContext>
         builder
             .AddStep<ValidateOrderImportStep>()
             .AddStep<LoadOrdersStep>()
-            .AddStep<PersistOrdersStep>()
             .AddHook<PipelineAuditHook>()
             .AddBehavior<PipelineTracingBehavior>()
             .AddBehavior<PipelineTimingBehavior>();
@@ -154,7 +236,32 @@ public class LoadOrdersStep : AsyncPipelineStep<OrderImportContext>
 }
 ```
 
-### Context Validation
+Register, resolve and execute the definition through dependency injection:
+
+```csharp
+var services = new ServiceCollection();
+services.AddLogging();
+services.AddPipelines()
+    .WithPipeline<OrderImportPipeline>();
+
+await using var serviceProvider = services.BuildServiceProvider();
+var pipelineFactory = serviceProvider.GetRequiredService<IPipelineFactory>();
+var pipeline = pipelineFactory.Create<OrderImportPipeline, OrderImportContext>();
+var context = new OrderImportContext { SourceFileName = "orders.csv" };
+
+var result = await pipeline.ExecuteAsync(context);
+if (result.IsFailure)
+{
+    Console.Error.WriteLine(string.Join("; ", result.Errors.Select(error => error.Message)));
+    return;
+}
+
+Console.WriteLine($"Imported {context.ImportedOrderCount} orders.");
+```
+
+The example writes `Imported 42 orders.` after both steps complete. It reports errors without reading success-only state from a failed result.
+
+### Context validation
 
 When the context type declares validation attributes or a static `[Validate]` method, the pipeline engine validates the context before hooks, behaviors, and steps run.
 
@@ -182,27 +289,26 @@ Add the code-generation analyzer package to the project that contains the pipeli
                   PrivateAssets="all" />
 ```
 
-### Authoring and Registration Options
+### Authoring and registration options
 
 ```mermaid
 flowchart TD
     A[Developer] --> B{How to define pipeline?}
     B -->|Reusable feature workflow| C[PipelineDefinition<TContext>]
-    B -->|Programmatic definition| D[PipelineDefinitionBuilder<TContext>]
+    B -->|Inspect or test a definition| D[PipelineDefinitionBuilder<TContext>]
     B -->|Small local workflow| E[services.AddPipelines.WithPipeline]
 
     C --> F[Register packaged pipeline]
-    D --> G[Build IPipelineDefinition]
+    D --> G[Build IPipelineDefinition directly]
     E --> H[Register inline pipeline]
 
     F --> I[IPipelineFactory]
-    G --> I
     H --> I
 ```
 
-### Direct Builder
+### Direct builder
 
-Use the builder directly when you want to construct a definition programmatically.
+Use the builder directly when you need to inspect or test a definition programmatically. `Build()` creates an `IPipelineDefinition`; it does not add that definition to the dependency-injection registry. Use inline registration when the factory must resolve the pipeline.
 
 ```csharp
 var definition = new PipelineDefinitionBuilder<OrderImportContext>("order-import")
@@ -218,7 +324,7 @@ var definition = new PipelineDefinitionBuilder<OrderImportContext>("order-import
     .Build();
 ```
 
-### Inline Registration During DI Setup
+### Inline registration during DI setup
 
 Inline registration is useful for small, local pipelines that do not need a dedicated class.
 
@@ -231,9 +337,9 @@ services.AddPipelines()
         .AddBehavior<PipelineTracingBehavior>());
 ```
 
-## Registration and Resolution
+## Registration and resolution
 
-### Registering Pipelines
+### Registering pipelines
 
 Register packaged pipelines:
 
@@ -264,7 +370,7 @@ services.AddPipelines()
 
 `AddPipelines()` is additive, so multiple modules in the same host may call it independently.
 
-### Resolving Pipelines
+### Resolving pipelines
 
 Resolve by name:
 
@@ -286,7 +392,7 @@ var pipeline = pipelineFactory.Create<FileCleanupPipeline>();
 
 ## Execution
 
-### Awaited Execution
+### Awaited execution
 
 ```csharp
 var context = new OrderImportContext
@@ -301,7 +407,7 @@ var result = await pipeline.ExecuteAsync(
         .MaxRetryAttemptsPerStep(3));
 ```
 
-### Fire-and-Forget Execution
+### Fire-and-forget execution
 
 ```csharp
 var handle = await pipeline.ExecuteAndForgetAsync(
@@ -315,7 +421,7 @@ var handle = await pipeline.ExecuteAndForgetAsync(
 var snapshot = await tracker.GetAsync(handle.ExecutionId);
 ```
 
-### Execution Options
+### Execution options
 
 Pipeline execution can be configured per run through `PipelineExecutionOptions` or the fluent
 options builder passed to `ExecuteAsync(...)` and `ExecuteAndForgetAsync(...)`.
@@ -352,7 +458,7 @@ var result = await pipeline.ExecuteAsync(
             Console.WriteLine($"{report.Operation}: {report.PercentageComplete}%"))));
 ```
 
-### Runtime Execution Flow
+### Runtime execution flow
 
 ```mermaid
 sequenceDiagram
@@ -385,9 +491,9 @@ sequenceDiagram
     Runtime-->>Caller: Result / PipelineExecutionHandle
 ```
 
-## Step Authoring
+## Step authoring
 
-### Class-Based Steps
+### Class-based steps
 
 Use class-based steps for reusable or non-trivial workflow logic.
 
@@ -406,7 +512,7 @@ public class PersistOrdersStep : AsyncPipelineStep<OrderImportContext>
 }
 ```
 
-### Inline Steps
+### Inline steps
 
 Inline steps are convenient for small workflow fragments.
 
@@ -439,7 +545,7 @@ builder.AddAsyncStep(async execution =>
 });
 ```
 
-## Flow Control
+## Flow control
 
 Every step returns a `PipelineControl`, which combines:
 
@@ -478,7 +584,7 @@ Stop the pipeline intentionally without continuing.
 return PipelineControl.Terminate(result.WithError(new Error("Import blocked.")));
 ```
 
-### Failures and Exceptions
+### Failures and exceptions
 
 If a step throws:
 
@@ -489,7 +595,7 @@ If a step throws:
 
 This makes thrown exceptions behave consistently with class-based and inline steps alike.
 
-### Step Outcome Model
+### Step outcome model
 
 ```mermaid
 flowchart TD
@@ -507,7 +613,7 @@ flowchart TD
     I -->|Yes and stop policy| J[Return failed pipeline result]
 ```
 
-## Hooks and Behaviors
+## Hooks and behaviors
 
 ### Hooks
 
@@ -553,7 +659,7 @@ builder
     .AddBehavior<PipelineTimingBehavior>();
 ```
 
-### Extensibility Roles
+### Extensibility roles
 
 ```mermaid
 flowchart TD
@@ -574,18 +680,18 @@ flowchart TD
     E --> M[Return PipelineControl]
 ```
 
-## Naming Conventions and Defaults
+## Naming conventions and defaults
 
 The feature intentionally uses low-friction defaults.
 
-### Pipeline Names
+### Pipeline names
 
 Packaged pipeline definitions default to kebab-case from the type name with a trailing `Pipeline`
 removed:
 
 - `OrderImportPipeline` -> `order-import`
 
-### Step Names
+### Step names
 
 Class-based steps default to kebab-case from the type name with a trailing `Step` removed:
 
@@ -605,7 +711,7 @@ These names are used consistently for:
 - tracing
 - diagnostics
 
-## Conditional Registration
+## Conditional registration
 
 Steps, hooks, and behaviors can be included or excluded when building the definition.
 
@@ -622,9 +728,9 @@ builder
 If `enabled` is `false`, the component is not registered into the built definition at all. It is
 not present at runtime.
 
-## Logging and Tracing
+## Logging and tracing
 
-### Internal Logging
+### Internal logging
 
 The engine logs pipeline progression internally using the pipeline and step names, not CLR type
 names.
@@ -691,7 +797,7 @@ Statuses:
 - `Failed`
 - `Cancelled`
 
-### Background Execution State Model
+### Background execution state model
 
 ```mermaid
 stateDiagram-v2
@@ -705,83 +811,7 @@ stateDiagram-v2
     Cancelled --> [*]
 ```
 
-## Architecture
-
-### Component Overview
-
-```mermaid
-classDiagram
-    class IPipeline {
-        <<interface>>
-        +ExecuteAsync()
-        +ExecuteAndForgetAsync()
-    }
-
-    class IPipelineFactory {
-        <<interface>>
-        +Create()
-    }
-
-    class IPipelineDefinition {
-        <<interface>>
-        +string Name
-        +Type ContextType
-        +IReadOnlyList Steps
-    }
-
-    class IPipelineStep {
-        <<interface>>
-        +string Name
-        +ExecuteAsync()
-    }
-
-    class PipelineControl {
-        +PipelineControlOutcome Outcome
-        +Result Result
-        +string Message
-    }
-
-    class PipelineContextBase {
-        +PipelineExecutionContext Pipeline
-    }
-
-    class IPipelineHook {
-        <<interface>>
-    }
-
-    class IPipelineBehavior {
-        <<interface>>
-        +ExecuteAsync()
-        +ExecuteStepAsync()
-    }
-
-    IPipelineFactory --> IPipeline
-    IPipeline --> IPipelineDefinition
-    IPipelineDefinition --> IPipelineStep
-    IPipelineStep --> PipelineControl
-    IPipeline --> PipelineContextBase
-    IPipelineDefinition --> IPipelineHook
-    IPipelineDefinition --> IPipelineBehavior
-```
-
-### Folder Structure
-
-The implementation is organized by sub-feature:
-
-- `Configuration`
-- `Context`
-- `Definitions`
-- `Execution`
-- `Registration`
-- `Steps`
-- `Tracking`
-- `Observability`
-- `Hooks`
-- `Behaviors`
-
-This keeps authoring, runtime, tracking, and extensibility concerns easier to navigate.
-
-## Best Practices
+## Best practices
 
 1. **Prefer packaged pipelines for reusable workflows**
    Use `PipelineDefinition<TContext>` when a flow belongs clearly to a feature or module.
@@ -800,7 +830,7 @@ This keeps authoring, runtime, tracking, and extensibility concerns easier to na
 8. **Rely on defaults when they are good enough**
    Convention-based names and fluent builders exist to reduce friction.
 
-## When to Use Pipelines
+## When to use pipelines
 
 Pipelines are a strong fit when:
 
@@ -818,7 +848,7 @@ Pipelines are usually not the best choice when:
 Choose the simplest tool that fits. Pipelines are intended to be lightweight workflow composition,
 not a full workflow engine.
 
-## Relation to Other Features
+## Relation to other features
 
 The Pipelines feature integrates especially well with:
 
@@ -830,13 +860,13 @@ The Pipelines feature integrates especially well with:
 Together, these features support explicit flow control, rich validation, and consistent outcome
 handling without introducing a heavyweight orchestration framework.
 
-## Appendix A: Pipeline Code Generation
+## Appendix A: Pipeline code generation
 
 The Pipelines feature also offers an optional source-generation layer for packaged pipelines. It is
 meant to remove repetitive authoring boilerplate, while still using the same runtime, the same
 registration model, and the same execution semantics described above.
 
-### What It Adds
+### What it adds
 
 Code generation is focused on packaged pipeline definitions:
 
@@ -905,7 +935,7 @@ public partial class OrderImportPipeline
 }
 ```
 
-### Supported Step Signatures
+### Supported step signatures
 
 Generated step methods may use these runtime inputs:
 
@@ -932,7 +962,7 @@ The runtime behavior matches manual steps:
 - `PipelineControl` and `Task<PipelineControl>` provide full flow control, including `Retry(...)`,
   `Break(...)`, and `Terminate(...)`
 
-### Naming and Diagnostics
+### Naming and diagnostics
 
 Generated pipelines follow the same naming conventions as manual pipelines:
 

@@ -1,4 +1,4 @@
-# ChangeHistory Feature Documentation
+# Change history
 
 > Record property-level entity changes, query grouped change sets, and restore selected values through explicit domain-safe policies.
 
@@ -22,7 +22,28 @@ ChangeHistory can capture:
 
 For a design-level view of the implemented requirements, see [ChangeHistory Specification](./specs/change-history.md).
 
-## How It Works
+## Challenges
+
+Audit timestamps show that a record changed, but they do not identify the changed values or group
+related changes. A general-purpose history mechanism must also protect sensitive values, preserve
+transaction boundaries, limit the cost of bulk capture, and restore data through domain rules.
+
+## Solution
+
+ChangeHistory decorates repository and native bulk-insert operations. It converts configured changes
+into property-level rows, groups those rows into change sets, applies value-protection policies, and
+provides query and opt-in restore services without making domain entities depend on EF Core.
+
+## Key Features
+
+- Property-level create, update, bulk-update, native bulk-insert, and restore records
+- Change-set and bulk-operation grouping
+- Repository snapshot, EF change-tracker, and explicit `EntityChange` capture strategies
+- Include, exclude, redact, hash-only, and oversized-value policies
+- Configured owned-value, collection, and graph capture
+- Paged queries, minimal API endpoints, authorization hooks, and domain-safe restore policies
+
+## Architecture
 
 At runtime, ChangeHistory sits beside repository persistence. Domain and Application code stay persistence-ignorant, while the EF repository behavior translates configured entity changes into rows in the `__ChangeHistory` table.
 
@@ -49,7 +70,7 @@ flowchart LR
     Endpoints --> Behavior
 ```
 
-### Capture Flow
+### Capture flow
 
 The repository behavior chooses the capture source from the configured operation and strategy. Every captured property row belongs to a `ChangeSetId`; bulk updates also share a `BulkOperationId`.
 
@@ -94,7 +115,7 @@ flowchart TD
     Summary --> Save
 ```
 
-### Query Flow
+### Query flow
 
 Read APIs use the query service over stored history rows. Grouped change-set queries first page distinct change sets and then load the rows for those selected groups.
 
@@ -123,7 +144,7 @@ sequenceDiagram
     Endpoint-->>Caller: HTTP response
 ```
 
-### Restore Flow
+### Restore flow
 
 Restore is an explicit write operation. It is allowed only for rows with stored values and configured restore policies. The original history stays unchanged; the restore itself is recorded as a new `Restore` change set.
 
@@ -159,7 +180,7 @@ sequenceDiagram
     Endpoint-->>Caller: HTTP response
 ```
 
-## When To Use It
+## Use Cases
 
 Use ChangeHistory when a module needs inspectable and optionally restoreable value history for regular entities:
 
@@ -171,21 +192,84 @@ Use ChangeHistory when a module needs inspectable and optionally restoreable val
 
 Use [Event Sourcing](./features-event-sourcing.md) instead when the event stream is the aggregate source of truth and the aggregate is rebuilt by replaying domain events.
 
-## Core Concepts
+## Basic Usage
 
-### Change Rows
+Register capture for the entity, add the repository behavior, and register query services:
+
+```csharp
+services.AddChangeHistory(options => options
+    .Track<Customer>()
+    .CaptureChanges());
+
+services.AddEntityFrameworkRepository<Customer, AppDbContext>()
+    .WithTransactions()
+    .WithBehavior<RepositoryChangeHistoryBehavior<Customer, AppDbContext>>();
+
+services.AddChangeHistoryServices<AppDbContext>();
+```
+
+Apply an explicit change, persist it, and inspect the recorded values:
+
+```csharp
+var changeResult = customer.Change()
+    .Set(e => e.Name, "Ada Lovelace")
+    .Apply();
+
+if (changeResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        Environment.NewLine,
+        changeResult.Errors.Select(error => error.Message)));
+    return;
+}
+
+await repository.UpdateAsync(customer, cancellationToken);
+
+var historyResult = await queryService.FindAllAsync(
+    new ChangeHistoryFindAllQuery
+    {
+        EntityType = nameof(Customer),
+        EntityId = customer.Id.ToString(),
+        PropertyName = nameof(Customer.Name),
+        IncludeValues = true
+    },
+    cancellationToken);
+
+if (historyResult.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        Environment.NewLine,
+        historyResult.Errors.Select(error => error.Message)));
+    return;
+}
+
+foreach (var row in historyResult.Value)
+{
+    Console.WriteLine($"{row.PropertyName}: {row.OldValue} -> {row.NewValue}");
+}
+```
+
+For a customer renamed from `Ada` to `Ada Lovelace`, the output is:
+
+```text
+Name: "Ada" -> "Ada Lovelace"
+```
+
+## Core concepts
+
+### Change rows
 
 Each persisted row represents one captured value change. Rows include the entity type and id, property name/path, old value, new value, operation, capture source, status, user/request metadata, and grouping ids.
 
 The default table name is `__ChangeHistory`.
 
-### Change Sets
+### Change sets
 
 `ChangeSetId` groups values changed together. For example, one `.Change().Apply()` call that updates a title and due date produces one change set with two rows.
 
 Bulk updates use one `BulkOperationId` for the overall set-based operation and one change set per affected entity.
 
-### Capture Sources
+### Capture sources
 
 ChangeHistory distinguishes where a row came from:
 
@@ -196,7 +280,7 @@ ChangeHistory distinguishes where a row came from:
 - `UpdateSet`: repository set-based update capture
 - `Restore`: a restore command writing the undo operation as new history
 
-### Value Policies
+### Value policies
 
 Captured values are serialized through the devkit JSON conventions. Per-property policies control whether values are stored, redacted, hashed, or excluded.
 
@@ -280,9 +364,9 @@ options.Track<TodoItem>()
 
 Detailed mode fails before the native write when the batch exceeds its configured limit. It also requires stable client-assigned identifiers; native database-generated identifiers are not hydrated back into input entities. When an outbox behavior is present, register it before the ChangeHistory behavior so the outbox remains the outer transaction owner.
 
-## Options Reference
+## Options reference
 
-### Global Options
+### Global options
 
 Configure global defaults through `services.AddChangeHistory(options => ...)`.
 
@@ -301,7 +385,7 @@ Configure global defaults through `services.AddChangeHistory(options => ...)`.
 | `GetEntityOptions(type)` | n/a | Returns entity-specific options for runtime code, or `null` when the entity is not tracked. |
 | `Validate()` | n/a | Throws when a restore policy is incomplete or detailed bulk-insert capture has no positive safety limit. `AddChangeHistory(...)` calls this after configuration. |
 
-### Tracked Entity Options
+### Tracked entity options
 
 `Track<TEntity>()` returns `ChangeHistoryEntityOptionsBuilder<TEntity>`. These options apply only to that entity type.
 
@@ -349,7 +433,7 @@ Configure global defaults through `services.AddChangeHistory(options => ...)`.
 | `RestoreConcurrencyPolicy` | Concurrency policy used by restore commands. |
 | `RestoreAuthorizerType` | Optional `IChangeHistoryRestoreAuthorizer<TEntity>` implementation type. |
 
-### Value Policies
+### Value policies
 
 Value policies determine whether stored rows contain serialized values and whether those rows can be restored.
 
@@ -360,7 +444,7 @@ Value policies determine whether stored rows contain serialized values and wheth
 | `Redact` | yes | redaction marker | yes | no |
 | `HashOnly` | yes | none | yes | no |
 
-### Oversized Value Policies
+### Oversized value policies
 
 `UseOversizedValuePolicy(policy, maxStoredValueLength)` applies after serialization.
 
@@ -371,7 +455,7 @@ Value policies determine whether stored rows contain serialized values and wheth
 | `HashOnly` | Stores only hashes for oversized values. |
 | `Reject` | Rejects capture when a serialized value exceeds the configured maximum. In `Required` capture paths this aborts the repository operation. |
 
-### Capture Modes
+### Capture modes
 
 Capture modes describe what happens when a configured source cannot capture safely.
 
@@ -381,7 +465,7 @@ Capture modes describe what happens when a configured source cannot capture safe
 | `Required` | Fails before the repository operation is saved when capture cannot be completed safely. |
 | `Disabled` | Disables that capture source. Builder methods set the corresponding enabled flag to `false`. |
 
-### Capture Paths
+### Capture paths
 
 `ChangeHistoryCapturePathOptions` is created by `CaptureOwned(...)`, `CaptureCollection(...)`, and `CaptureGraph(...)`.
 
@@ -409,7 +493,7 @@ Path builders provide:
 | `ChangeHistoryGraphOptionsBuilder<TEntity>` | `UseRestorePlan<TRestorePlan>()` | Records a typed graph restore plan. |
 | `ChangeHistoryGraphOptionsBuilder<TEntity>` | `Done()` | Returns to the entity builder. |
 
-### Restore Options
+### Restore options
 
 `AllowRestore(property)` returns `ChangeHistoryRestorePropertyOptionsBuilder<TEntity, TProperty>`.
 
@@ -445,7 +529,7 @@ Restore selection modes:
 | `ChangeSet` | Restores only values captured by the selected change set. |
 | `PointInTime` | Restores values from the selected change set plus earlier rows needed to rebuild the entity state at that point. |
 
-### Endpoint Options
+### Endpoint options
 
 `AddChangeHistoryEndpoints<TEntity, TContext>(...)` accepts `ChangeHistoryEndpointsOptions` or `ChangeHistoryEndpointsOptionsBuilder`.
 
@@ -474,7 +558,7 @@ Inherited endpoint group options from `EndpointsOptionsBase` also apply:
 | `RequireRateLimitingPolicy`, `DisableRateLimiting` | Rate limiting metadata for the group. |
 | `Metadata` | Additional metadata objects added to the endpoint group. |
 
-### Query Contract
+### Query contract
 
 `ChangeHistoryFindAllQuery` drives row and grouped change-set queries.
 
@@ -501,7 +585,7 @@ Inherited endpoint group options from `EndpointsOptionsBase` also apply:
 
 `ChangeHistoryRecord` projects every persisted `ChangeHistoryEntry` field. `OldValue` and `NewValue` remain conditional on `IncludeValues`; all capture and restore diagnostics are always available.
 
-### Service Registration Reference
+### Service registration reference
 
 | Method | Registers |
 | --- | --- |
@@ -516,7 +600,7 @@ Inherited endpoint group options from `EndpointsOptionsBase` also apply:
 | `DbSet<ChangeHistoryEntry> ChangeHistory` | Adds the annotated EF Core `ChangeHistoryEntry` mapping to the DbContext model. Defaults to `__ChangeHistory`. |
 | `AddEntityFrameworkRepository<TEntity, TContext>().WithBehavior<RepositoryChangeHistoryBehavior<TEntity, TContext>>()` | Repository capture behavior for inserts, updates, upserts, and set-based updates. |
 
-### Extension Points
+### Extension points
 
 | Extension point | Method/context | Purpose |
 | --- | --- | --- |
@@ -531,7 +615,7 @@ Inherited endpoint group options from `EndpointsOptionsBase` also apply:
 | `IChangeHistoryRestoreRequestAuthorizer<TEntity, TContext>` | `AuthorizeAsync(ChangeHistoryRestoreRequestAuthorizationContext context, CancellationToken)` | Authorizes restore before command execution. |
 | `ChangeHistoryRestoreRequestAuthorizationContext` | `Policy`, `EntityType`, `EntityId`, `ChangeSetId` | Context passed to restore request authorizers. |
 
-### Result Models
+### Result models
 
 | Model | Purpose |
 | --- | --- |
@@ -543,7 +627,7 @@ Inherited endpoint group options from `EndpointsOptionsBase` also apply:
 | `ChangeHistoryRestoreRequestModel` | HTTP restore body with `Reason`, `ExpectedConcurrencyVersion`, and `RestoreMode`. |
 | `ChangeHistoryRestoreResponseModel` | HTTP restore response with restored change set id and restored property count. |
 
-### Stored Row Schema
+### Stored row schema
 
 `ChangeHistoryEntry` is the EF Core row type. The recommended mapping indexes the fields used for entity, change-set, user, time, operation, capture source, and bulk queries.
 
@@ -571,23 +655,24 @@ Inherited endpoint group options from `EndpointsOptionsBase` also apply:
 | `CorrelationId`, `FlowId`, `ModuleName`, `ActivityParentId` | Request/activity/module diagnostics. |
 | `Properties` | Optional metadata JSON. |
 
-### Enum Reference
+### Enum reference
 
 | Enum | Values |
 | --- | --- |
 | `ChangeHistoryCaptureStrategy` | `EntityChangeOnly`, `RepositorySnapshot`, `EfChangeTracker` |
 | `ChangeHistoryCaptureMode` | `BestEffort`, `Required`, `Disabled` |
+| `ChangeHistoryBulkInsertCaptureMode` | `Disabled`, `Summary`, `Detailed` |
 | `ChangeHistoryCapturePathKind` | `Owned`, `Collection`, `Graph` |
-| `ChangeHistoryCaptureSource` | `EntityChange`, `RepositorySnapshot`, `EfChangeTracker`, `Create`, `UpdateSet`, `Restore` |
+| `ChangeHistoryCaptureSource` | `EntityChange`, `RepositorySnapshot`, `EfChangeTracker`, `Create`, `UpdateSet`, `NativeBulkInsert`, `Restore` |
 | `ChangeHistoryCaptureStatus` | `Captured`, `Skipped`, `Failed`, `Summary` |
-| `ChangeHistoryOperation` | `Update`, `Create`, `Restore`, `BulkUpdate`, `CollectionChanged`, `GraphChanged` |
+| `ChangeHistoryOperation` | `Update`, `Create`, `Restore`, `BulkUpdate`, `BulkInsert`, `CollectionChanged`, `GraphChanged` |
 | `ChangeHistoryOversizedValuePolicy` | `Include`, `Truncate`, `HashOnly`, `Reject` |
 | `ChangeHistoryValuePolicy` | `Include`, `Exclude`, `Redact`, `HashOnly` |
 | `ChangeHistoryRestoreConcurrencyPolicy` | `None`, `ExpectedVersion`, `RequireExpectedVersion` |
 | `ChangeHistoryRestoreExecutionMode` | `DomainLogic`, `RestorePlan`, `ValidatedSetter` |
 | `ChangeHistoryRestoreMode` | `ChangeSet`, `PointInTime` |
 
-## Capture Strategies
+## Capture strategies
 
 ### EntityChangeOnly
 
@@ -620,7 +705,7 @@ options.Track<Customer>()
     .CaptureDirectMutations(ChangeHistoryCaptureStrategy.EfChangeTracker, ChangeHistoryCaptureMode.Required);
 ```
 
-## Owned Values, Collections, And Graphs
+## Owned values, collections, and graphs
 
 Scalar properties are captured automatically when the entity is tracked. More complex paths must be declared so the baseline and restore metadata are clear.
 
@@ -637,7 +722,7 @@ options.Track<Customer>()
 
 Collection and graph capture needs stable item identity. EF key metadata can infer simple identities in some cases, but explicit identity configuration is the clearest option for application code.
 
-## Bulk Update Capture
+## Bulk update capture
 
 `UpdateSetAsync(...)` capture records per-entity history for set-based updates when the affected row count stays inside the configured safety limit.
 
@@ -648,7 +733,7 @@ options.Track<Customer>()
 
 In `Required` mode, exceeding the limit fails before the update. In `BestEffort` mode, the operation can continue and persist a non-restoreable summary row instead of detailed per-entity rows.
 
-## Querying History
+## Querying history
 
 Register services directly when application code needs query and restore APIs:
 
@@ -677,7 +762,7 @@ The query model supports filters such as:
 
 Grouped change-set queries load change-set keys first and then load the rows for the selected page.
 
-## HTTP Endpoints
+## HTTP endpoints
 
 `Presentation.Web.EntityFramework` can expose minimal API endpoints for one entity/context pair:
 
@@ -753,7 +838,7 @@ services.AddChangeHistory(options => options
 
 `UseRestoreAuthorizer<TAuthorizer>()` also registers the concrete entity-level authorizer as scoped unless an explicit registration already exists.
 
-## Operational Notes
+## Operational notes
 
 - Capture is transactional with repository persistence when the behavior participates in the same repository transaction.
 - Create rows are not restoreable by default because "before create" would imply delete or deactivate semantics.
@@ -762,7 +847,7 @@ services.AddChangeHistory(options => options
 - `RepositorySnapshot` can require additional include/capture path configuration for owned values, collections, and graphs.
 - Bulk capture trades performance for auditability; keep safety limits conservative and raise them deliberately.
 
-## Relationship To Other Features
+## Relationship to other features
 
 - [Domain](./features-domain.md) owns entity modeling and fluent `EntityChange` patterns.
 - [Domain Repositories](./features-domain-repositories.md) provide the repository operations that ChangeHistory decorates.

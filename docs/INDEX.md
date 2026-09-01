@@ -11,6 +11,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Common Mapping](./common-mapping.md): Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.
 - [Common Caching](./common-caching.md): Provide a small, shared in-process caching abstraction with a default memory-cache implementation.
 - [Common Observability Tracing](./common-observability-tracing.md): Add lightweight `Activity`-based tracing around services without pulling in a full observability framework.
+- [Metrics](./features-metrics.md): Record devkit and application measurements through the standard .NET metrics runtime.
 - [Profiling](./features-profiling.md): Collect bounded runtime snapshots and compute deterministic CPU, memory, allocation, and GC evidence for local development.
 - [Utilities](./features-utilities.md): Group shared application-layer utility services for startup tasks, log-entry contracts and time-provider registration.
 
@@ -19,7 +20,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Domain](./features-domain.md): Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
 - [Domain Events](./features-domain-events.md): Capture business-significant events in aggregates and publish side effects outside the domain model.
 - [Event Sourcing](./features-event-sourcing.md): Persist aggregates as immutable event streams and rebuild state through replay and snapshots.
-- [ChangeHistory](./features-change-history.md): Record property-level entity changes, query grouped change sets and restore selected values through explicit policies.
+- [ChangeHistory](./features-domain-change-history.md): Record property-level entity changes, query grouped change sets and restore selected values through explicit policies.
 - [Domain Repositories](./features-domain-repositories.md): Access aggregates through type-safe repositories with rich querying, paging and loading options.
 - [Domain Specifications](./features-domain-specifications.md): Model reusable business criteria as composable specifications for queries and in-memory evaluation.
 - [ActiveEntity](./features-domain-activeentity.md): Combine entity-centric CRUD convenience with provider-based persistence and Result-driven outcomes.
@@ -35,6 +36,7 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 - [Requester and Notifier](./features-requester-notifier.md): Dispatch requests and notifications through handler pipelines with reusable cross-cutting behaviors.
 - [Messaging](./features-messaging.md): Decouple producers and consumers with resilient asynchronous messaging and outbox-backed delivery.
 - [Queueing](./features-queueing.md): Process single-consumer work items through in-process or durable queue brokers with retained-message inspection, retry/archive controls and queue/type pause-resume management.
+- [Broadcasting](./features-broadcasting.md): Send short-lived typed notifications to every active application node in one or more scopes.
 - [Notifications](./features-notifications.md): Send and queue application notifications through transport-agnostic contracts with clear delivery boundaries.
 - [Modules](./features-modules.md): Structure modular monoliths as independently configurable feature modules within one host.
 - [Pipelines](./features-pipelines.md): Build structured, observable multi-step workflows with low-friction defaults.
@@ -44,12 +46,15 @@ This lists the feature documentation pages in `docs/features-*.md` plus the shar
 
 ## Security and Access
 
+- [Presentation Authentication](./features-presentation-authentication.md): Validate JWT bearer tokens and expose the current HTTP principal through `ICurrentUserAccessor`.
 - [Entity Permissions](./features-entitypermissions.md): Enforce fine-grained, entity-level authorization with fluent configuration and runtime evaluation.
 - [Fake Identity Provider](./features-identityprovider.md): Documents the lightweight development identity provider for OAuth2 and OpenID Connect flows, JWT issuance and test users and clients.
 
 ## Presentation and Host
 
 - [Presentation Host](./features-presentation.md): Configure ASP.NET Core applications through the DevKit web application builder and package-owned starter extensions.
+- [Presentation Configuration](./features-presentation-configuration.md): Compose JSON, Azure, and environment-variable configuration providers in the devkit host order.
+- [Presentation Logging](./features-presentation-logging.md): Configure Serilog once for a devkit host and change its global minimum level at runtime.
 - [Presentation Correlation IDs](./features-presentation-correlationid.md): Correlate use cases across inbound HTTP, async execution, logs, activities, outbound HTTP and supported transport boundaries.
 - [Presentation Endpoints](./features-presentation-endpoints.md): Define minimal API endpoints as modular classes with automatic discovery and mapping.
 - [DevKit CLI](./features-cli.md): Use the `bdk` command-line tool for host discovery, workspace-scoped host selection and host Console Command forwarding.

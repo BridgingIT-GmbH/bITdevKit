@@ -1,4 +1,4 @@
-# DevKit MCP Feature Documentation
+# DevKit MCP
 
 > Use `bdk mcp` to give local coding agents official DevKit documentation plus a safe, workspace-aware diagnostics and operations surface for running DevKit applications.
 
@@ -25,7 +25,24 @@ Use MCP when you want a coding agent to understand DevKit patterns and inspect a
 
 MCP is a local development feature. It is not an HTTP endpoint, not a production administration API and not a replacement for application authorization.
 
-## Mental Model
+## Challenges
+
+Coding agents need exact framework guidance and bounded runtime evidence, but application internals should not be exposed through an unrestricted remote administration endpoint. Multiple local hosts also make runtime selection ambiguous unless discovery is tied to the current workspace.
+
+## Solution
+
+`bdk mcp` hosts MCP over standard input and output. Documentation, API-reference and guidance tools run in the CLI process. Runtime tools resolve a ready workspace host and forward a bounded DevKit request over user-local IPC to a registered `IMcpHandler`. Stable toolsets separate inspection, controlled operations and destructive administration.
+
+## Key Features
+
+- Stable `bdk_*` tool names and JSON schemas.
+- Documentation, generated API-reference and curated guidance tools that do not require a running application.
+- Workspace-aware runtime discovery and selection.
+- Feature-owned and project-owned app-side handlers without an MCP SDK dependency.
+- Diagnostics enabled by default, with explicit operations and admin toolsets.
+- Structured unavailable responses, bounded data and suggested next calls.
+
+## Architecture
 
 ```mermaid
 flowchart LR
@@ -53,7 +70,34 @@ The application must run separately. `bdk mcp` does not start the app. It only d
 
 Guidance and documentation tools are available even before a runtime is selected. Runtime tools require a running DevKit host.
 
-## Agent Context Model
+## Use Cases
+
+- Read DevKit guidance and exact API symbols before editing application code.
+- Orient an agent on the selected runtime, modules and advertised capabilities.
+- Inspect health, metrics, logs, errors and correlated activity.
+- Run supported retries, triggers, signals, pause or resume operations after enabling the operations toolset.
+- Perform explicitly confirmed cleanup with the admin toolset.
+- Expose bounded project-specific diagnostics through application-owned handlers.
+
+## Basic Usage
+
+Restore the local tool and configure the MCP client to launch `bdk mcp` over STDIO:
+
+```json
+{
+  "servers": {
+    "bdk": {
+      "type": "stdio",
+      "command": "dotnet",
+      "args": ["tool", "run", "bdk", "mcp"]
+    }
+  }
+}
+```
+
+Restart or reload the MCP client, then call `bdk_mcp_status`. Check the response's `available` value before using `data`. A successful call identifies the resolved workspace and MCP server state. If no application is running, documentation and guidance tools remain available while runtime-bound calls return a structured `no_runtime_found` response.
+
+## Agent context model
 
 MCP gives an agent four complementary angles while it codes:
 
@@ -83,7 +127,7 @@ Use guidance for compact task checklists, docs for official concepts, API refere
 
 For client-specific setup, see [MCP Client Configuration](./features-cli-mcp-clients.md).
 
-## Basic Setup
+## Detailed setup
 
 For applications that consume the packaged CLI through a local .NET tool manifest:
 
@@ -133,7 +177,7 @@ When developing the DevKit repository itself, run the CLI from source:
 | Toolset       | Enables                          | Example tools                                                         |
 | ------------- | -------------------------------- | --------------------------------------------------------------------- |
 | `diagnostics` | Read-only inspection.            | `bdk_health_snapshot`, `bdk_logs_query`, `bdk_jobs_runs`              |
-| `operations`  | Non-destructive runtime actions. | `bdk_jobs_trigger`, `bdk_queueing_retry`, `bdk_orchestrations_signal` |
+| `operations`  | Controlled runtime actions that do not purge retained data. | `bdk_jobs_trigger`, `bdk_queueing_retry`, `bdk_orchestrations_signal` |
 | `admin`       | Destructive maintenance actions. | `bdk_logs_purge`, `bdk_messages_purge`, `bdk_orchestrations_purge`    |
 
 Enable additional toolsets explicitly:
@@ -145,14 +189,21 @@ bdk mcp --toolset diagnostics,operations,admin
 
 Admin tools also require operation-level confirmation arguments, such as `confirm=true` and an operation-specific `confirmation` phrase. This lets a client expose admin tools without allowing accidental purge calls.
 
-## Runtime Selection
+## Runtime selection
 
 Runtime-bound tools need one selected running host.
+
+Select the host when starting the server with either supported selector:
+
+```bash
+bdk mcp --runtime-id commerce-api-5001
+bdk mcp --host commerce-api-5001
+```
 
 ```mermaid
 flowchart TD
     ToolCall([Runtime-bound tool call])
-    RuntimeArg{bdk mcp --runtime supplied?}
+    RuntimeArg{bdk mcp --runtime-id or --host supplied?}
     Saved{Workspace selection saved?}
     Count{Ready MCP runtimes}
     Explicit[Use explicit runtime]
@@ -182,7 +233,7 @@ Useful runtime tools:
 | `bdk_capabilities_get` | Lists operations advertised by the selected runtime.                                 |
 | `bdk_project_summary`  | Summarizes selected runtime metadata, registered modules and MCP capabilities.        |
 
-## Common Developer Prompts
+## Common developer prompts
 
 Use prompts that ask the agent to inspect first, then act only when necessary:
 
@@ -228,11 +279,11 @@ For destructive maintenance, be explicit:
 Use the bdk MCP admin tools to purge retained local test data older than yesterday. Show me what you will call first, and only proceed with the required confirmation arguments after I approve.
 ```
 
-## Tool Areas
+## Tool areas
 
 The MCP catalog is stable. Tools can return structured unavailable responses when the selected runtime does not expose the required feature.
 
-| Area               | Tools                                                                                                                                   |
+| Area               | Selected tools                                                                                                                          |
 | ------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
 | Runtime            | `bdk_mcp_status`, `bdk_mcp_self_test`, `bdk_runtimes_*`, `bdk_capabilities_get`                                                          |
 | Health and metrics | `bdk_health_snapshot`, `bdk_metrics_snapshot`, `bdk_metrics_query`                                                                      |
@@ -249,7 +300,7 @@ The MCP catalog is stable. Tools can return structured unavailable responses whe
 | Project summary    | `bdk_project_summary`                                                                                                                    |
 | Project operations | `bdk_project_operations`, `bdk_project_call`                                                                                            |
 
-## Curated Guidance
+## Curated guidance
 
 `bdk_guidance_list` and `bdk_guidance_get` provide compact implementation guidance for agentic coding. Guidance is intentionally exposed through one generic operation to avoid tool explosion as more DevKit feature areas are added. Agents can call it with either an exact `topic` or a natural-language `query`.
 
@@ -326,7 +377,7 @@ Additional examples:
 }
 ```
 
-## Documentation-Aware Development
+## Documentation-aware development
 
 `bdk_docs_search`, `bdk_docs_get`, `bdk_api_search` and `bdk_api_get` let an agent consult official DevKit documentation and API reference metadata while it works in a consuming project. This is intentionally owned by the CLI MCP server rather than the selected runtime, so docs and API lookup work even when the app is not running yet.
 
@@ -362,7 +413,7 @@ Example API reference call:
 }
 ```
 
-## Project Summary
+## Project summary
 
 `bdk_project_summary` is the quickest runtime orientation tool. It returns selected runtime metadata, registered modules, MCP operation counts grouped by feature/toolset/owner, and project-owned operations. Use it before feature work so an agent can understand the app shape without scanning unrelated files.
 
@@ -376,7 +427,7 @@ Use bdk_project_summary to orient on this app before editing. Then choose the re
 Use bdk_project_summary and tell me which DevKit capabilities this runtime advertises before adding a dashboard page.
 ```
 
-## Project-Owned Operations
+## Project-owned operations
 
 Applications can expose their own local diagnostics and controlled local operations through app-side `IMcpHandler` implementations. This is the supported extension point for customer and project-specific MCP tools: the CLI stays stable, while each consuming project can advertise its own operations from the running application.
 
@@ -398,7 +449,27 @@ public sealed class CommerceMcpHandler(IRequester requester) : IMcpHandler
 
     public ValueTask<McpResponse> HandleAsync(McpRequest request, CancellationToken cancellationToken)
     {
-        // Resolve request.Operation, use application services and return bounded data.
+        if (!string.Equals(request.Operation, "commerce_inspect_customer", StringComparison.Ordinal))
+        {
+            return ValueTask.FromResult(McpResponse.Unavailable(
+                McpErrorCode.FeatureUnavailable,
+                $"Operation '{request.Operation}' is not supported."));
+        }
+
+        var customerNumber = request.Arguments.TryGetProperty("customerNumber", out var value)
+            ? value.GetString()
+            : null;
+        if (string.IsNullOrWhiteSpace(customerNumber))
+        {
+            return ValueTask.FromResult(McpResponse.Unavailable(
+                McpErrorCode.OperationFailed,
+                "customerNumber is required."));
+        }
+
+        // Use requester to load a bounded application model here.
+        return ValueTask.FromResult(McpResponse.Success(
+            $"Inspected customer '{customerNumber}'.",
+            new { customerNumber, warnings = Array.Empty<string>() }));
     }
 }
 
@@ -460,15 +531,15 @@ Example prompt:
 Use bdk_project_operations to inspect project-owned operations, then call the operation that checks whether customer CUST-10042 has recent failed orders or account warnings.
 ```
 
-## Documentation And API Tools
+## Documentation and API tools
 
-`bdk_docs_search` and `bdk_docs_get` use official online DevKit documentation sources. `bdk_api_search` and `bdk_api_get` use generated API reference metadata published with the DevKit GitHub Pages site. They do not read the local repository docs.
+`bdk_docs_search` and `bdk_docs_get` use official DevKit documentation from GitHub rather than local repository docs. `bdk_api_search` and `bdk_api_get` first read generated metadata from `.github/pages/api` in the resolved workspace when it exists, then fall back to the published DevKit GitHub Pages API reference.
 
 This matters because most developers use `bdk mcp` from consuming application repositories, not from the DevKit source repository. The local repository may have no DevKit docs at all.
 
-## Safety Model
+## Safety model
 
-- MCP is enabled only for local development hosts by default.
+- App-side MCP hosting is enabled only for local Development hosts by default.
 - The app does not host an MCP network endpoint.
 - The CLI speaks MCP over STDIO to the client and local IPC to the app.
 - Runtime descriptors and IPC endpoints are stored in OS user-local locations.
@@ -479,7 +550,7 @@ This matters because most developers use `bdk mcp` from consuming application re
 
 ## Troubleshooting
 
-### The Agent Says No Runtime Was Found
+### The agent says no runtime was found
 
 Start the application with `DevKitWebApplication.CreateBuilder(args)` in `Development`, then ask the agent to call `bdk_runtimes_list`.
 
@@ -489,7 +560,7 @@ You can also check manually:
 bdk hosts list --feature mcp
 ```
 
-### Multiple Runtimes Are Running
+### Multiple runtimes are running
 
 Ask the agent to call `bdk_runtimes_list`, then select one:
 
@@ -503,7 +574,7 @@ Or select manually:
 bdk hosts select commerce-api-5001
 ```
 
-### Operations Are Unauthorized
+### Operations are unauthorized
 
 The MCP server may have been started with only `diagnostics`. Restart it with the needed toolset:
 
@@ -513,15 +584,15 @@ bdk mcp --toolset diagnostics,operations
 
 For purge and other destructive maintenance, also provide the required confirmation arguments.
 
-### A Feature Is Unavailable
+### A feature is unavailable
 
 The selected runtime may not register that DevKit feature or its presentation package. Ask the agent to call `bdk_capabilities_get` and compare the advertised operations with the tool you want to use.
 
-### Docs Tools Work But Runtime Tools Do Not
+### Docs tools work but runtime tools do not
 
 Documentation tools do not require a running app. Runtime tools do. Start the app and run `bdk_mcp_self_test`.
 
-## Related Documentation
+## Related documentation
 
 - [DevKit CLI](./features-cli.md)
 - [MCP Client Configuration](./features-cli-mcp-clients.md)

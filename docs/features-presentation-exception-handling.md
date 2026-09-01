@@ -1,10 +1,12 @@
-# Exception Handler Configuration Feature Documentation
+# Exception Handler Configuration
 
 > Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.
 
+[TOC]
+
 ## Overview
 
-The Exception Handler is a comprehensive, configuration-driven system for handling exceptions in ASP.NET Core applications. It provides a unified approach to converting exceptions into consistent HTTP responses following the [Problem Details for HTTP APIs](https://tools.ietf.org/html/rfc7807) standard.
+The Exception Handler is a configuration-driven system for handling exceptions in ASP.NET Core applications. It provides a unified approach to converting exceptions into consistent HTTP responses that use the [Problem Details for HTTP APIs](https://www.rfc-editor.org/rfc/rfc9457.html) format.
 
 > Builds on the standard [ASP.NET Core Exception Handler Middleware](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling) and provides a fluent, extensible configuration system for managing application and infrastructure exceptions.
 
@@ -19,30 +21,92 @@ This feature supports:
 - **Audit logging** with user and request context
 - **Entity Framework Core database exception handling**
 
-### Key Concepts
+## Challenges
+
+Unhandled exceptions need consistent HTTP responses without disclosing stack traces or infrastructure details. Applications also need predictable handler ordering, mappings for application-specific exceptions, database error handling, logging, and environment-specific diagnostics.
+
+## Solution
+
+`AddExceptionHandler(...)` registers an ordered ASP.NET Core `IExceptionHandler` chain. Custom handlers run by configured priority, fluent mappings run next, built-in handlers cover common DevKit exceptions, and `GlobalExceptionHandler` provides the final 500 response. `UseExceptionHandler()` adds the middleware that invokes the chain.
+
+## Key Features
+
+- built-in handlers for validation, domain, security, module, and infrastructure exceptions
+- fluent exception-to-status or exception-to-`ProblemDetails` mappings
+- priority-ordered custom handlers and conditional registration
+- exact-type ignore and rethrow filters
+- optional logging and response enrichment
+- Entity Framework Core handlers from `Presentation.Web.EntityFramework`
+- development-only debug details and audit logging handlers
+
+## Architecture
+
+ASP.NET Core's exception-handler middleware calls registered `IExceptionHandler` implementations in order. Each handler either declines the exception or writes a `ProblemDetails` response and stops the chain. DevKit registers additional handlers first, followed by mappings, built-in handlers, and the global catch-all handler.
+
+## Use Cases
+
+- map an application exception to a stable HTTP status and title
+- return validation errors as a structured client response
+- hide exception details in production while retaining server-side logs
+- classify Entity Framework concurrency and constraint failures
+- add audit or development diagnostics without replacing the standard middleware
+
+## Basic Usage
+
+This example maps `KeyNotFoundException` to 404, hides details outside Development, enriches the response with a trace identifier, and exposes a route that demonstrates the result.
+
+```csharp
+using BridgingIT.DevKit.Presentation.Web;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddExceptionHandler(options =>
+{
+    options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
+    options.EnableLogging = true;
+    options.Map<KeyNotFoundException>(
+        StatusCodes.Status404NotFound,
+        "Resource Not Found");
+    options.EnrichProblemDetails = (context, problem, _) =>
+        problem.Extensions["traceId"] = context.TraceIdentifier;
+});
+
+var app = builder.Build();
+app.UseExceptionHandler();
+
+app.MapGet("/products/{id:int}", GetProduct);
+app.Run();
+
+static IResult GetProduct(int id) =>
+    throw new KeyNotFoundException($"Product {id} was not found.");
+```
+
+`GET /products/42` returns a 404 Problem Details response titled `Resource Not Found`. In production, the response omits the exception message; the server still logs the exception.
+
+## Key concepts
 
 - **Exception Handler**: A service that attempts to handle a specific exception type and produce an HTTP response
 - **Handler Chain**: A sequence of handlers executed in priority order; the first to handle stops the chain
-- **Problem Details**: A standardized JSON format for error responses (RFC 7807)
+- **Problem Details**: A standardized JSON format for HTTP API error responses (RFC 9457)
 - **Handler Priority**: Higher values execute first; enables fine-grained control over handler ordering
 
-## Configuration Schema
+## Configuration schema
 
-### GlobalExceptionHandlerOptions Properties
+### `GlobalExceptionHandlerOptions` properties
 
 | Property | Type | Required | Default | Description |
 |----------|------|----------|---------|-------------|
 | `IncludeExceptionDetails` | `bool` | No | `true` | Include exception details (type, message) in responses. Set to `false` in production. |
 | `EnableLogging` | `bool` | No | `false` | Log exceptions to the logging system. Recommended: `true` in all environments. |
-| `AdditionalHandlers` | `List<HandlerRegistration>` | No | `[]` | Custom exception handlers with optional priority. |
+| `AdditionalHandlers` | `List<ExceptionHandlerRegistration>` | No | `[]` | Custom exception handlers with optional priority. |
 | `Mappings` | `List<ExceptionMapping>` | No | `[]` | Fluent exception-to-response mappings. |
 | `IgnoredExceptions` | `HashSet<Type>` | No | `{}` | Exception types to ignore (no response, no logging). |
 | `RethrowExceptions` | `HashSet<Type>` | No | `{}` | Exception types to rethrow (bypass handler, propagate up). |
 | `EnrichProblemDetails` | `Action<HttpContext, ProblemDetails, Exception>` | No | `null` | Callback to enrich problem details with additional data. |
 
-## Configuration Examples
+## Configuration examples
 
-### Example 1: Production (Secure Configuration)
+### Example 1: Production configuration
 
 Hide implementation details, enable logging:
 
@@ -84,7 +148,7 @@ app.UseExceptionHandler();
 }
 ```
 
-### Example 2: Development (Detailed Configuration)
+### Example 2: Development configuration
 
 Include full exception details for debugging:
 
@@ -95,13 +159,13 @@ builder.Services.AddExceptionHandler(options =>
     options.EnableLogging = true;
     
     // Debug handler with highest priority in development
-    options.AddHandler<DebugExceptionHandler>(priority: 1000);
+    options.AddHandler<DebugExceptionHandler>(priority: 999);
     
     // Audit handler to track errors
-    options.AddHandler<AuditExceptionHandler>(priority: 999);
+    options.AddHandler<AuditExceptionHandler>(priority: 1000);
     
     // Add database handlers
-    options.UseEntityFramework();
+    options.AddEntityFrameworkHandlers();
     
     // Detailed enrichment for development
     options.EnrichProblemDetails = (context, problem, exception) =>
@@ -136,7 +200,7 @@ app.UseExceptionHandler();
 }
 ```
 
-### Example 3: Fluent Exception Mapping
+### Example 3: Fluent exception mapping
 
 Quick configuration without custom handlers:
 
@@ -169,7 +233,7 @@ builder.Services.AddExceptionHandler(options =>
 app.UseExceptionHandler();
 ```
 
-### Example 4: Custom Handlers with Priority
+### Example 4: Custom handlers with priority
 
 Multiple custom handlers with controlled execution order:
 
@@ -179,11 +243,11 @@ builder.Services.AddExceptionHandler(options =>
     options.IncludeExceptionDetails = builder.Environment.IsDevelopment();
     options.EnableLogging = true;
     
-    // Security handler: highest priority
+    // Audit handler runs first and returns false so handling can continue
+    options.AddHandler<AuditExceptionHandler>(priority: 1100);
+
+    // Security handler handles matching exceptions
     options.AddHandler<SecurityExceptionHandler>(priority: 1000);
-    
-    // Audit handler: logs all exceptions
-    options.AddHandler<AuditExceptionHandler>(priority: 999);
     
     // Business logic handlers: medium priority
     options.AddHandler<BusinessRuleExceptionHandler>(priority: 500);
@@ -196,7 +260,7 @@ builder.Services.AddExceptionHandler(options =>
 app.UseExceptionHandler();
 ```
 
-### Example 5: Exception Filtering (Ignore & Rethrow)
+### Example 5: Exception filtering
 
 Control which exceptions are handled vs ignored:
 
@@ -222,7 +286,7 @@ builder.Services.AddExceptionHandler(options =>
 app.UseExceptionHandler();
 ```
 
-### Example 6: Conditional Handler Registration
+### Example 6: Conditional handler registration
 
 Register handlers based on environment or feature flags:
 
@@ -251,14 +315,14 @@ builder.Services.AddExceptionHandler(options =>
         priority: 500);
     
     // Add database handlers if using EF Core
-    options.UseEntityFramework(
+    options.AddEntityFrameworkHandlers(
         when: featureFlags.GetValue<bool>("UseEntityFramework"));
 });
 
 app.UseExceptionHandler();
 ```
 
-### Example 7: Complete Production Setup
+### Example 7: Complete production setup
 
 Comprehensive configuration combining all features:
 
@@ -271,8 +335,8 @@ builder.Services.AddExceptionHandler(options =>
     options.EnableLogging = true;
     
     // --- Handlers ---
-    options.AddHandler<AuditExceptionHandler>(priority: 999);
-    options.AddHandler<DebugExceptionHandler>(when: isDevelopment, priority: 1000);
+    options.AddHandler<AuditExceptionHandler>(priority: 1000);
+    options.AddHandler<DebugExceptionHandler>(when: isDevelopment, priority: 999);
     
     // --- Exception Mapping ---
     options.Map<NotFoundException>(StatusCodes.Status404NotFound, "Resource Not Found")
@@ -286,7 +350,7 @@ builder.Services.AddExceptionHandler(options =>
            .Rethrow<OutOfMemoryException>();
     
     // --- Database Handlers ---
-    options.UseEntityFramework();
+    options.AddEntityFrameworkHandlers();
     
     // --- Problem Details Enrichment ---
     options.EnrichProblemDetails = (context, problem, exception) =>
@@ -307,9 +371,9 @@ builder.Services.AddExceptionHandler(options =>
 app.UseExceptionHandler();
 ```
 
-## Built-In Exception Handlers
+## Built-in exception handlers
 
-### Domain & Application Exceptions
+### Domain and application exceptions
 
 | Handler | Exception | Status | Use Case |
 |---------|-----------|--------|----------|
@@ -319,21 +383,21 @@ app.UseExceptionHandler();
 | `AggregateNotFoundExceptionHandler` | `AggregateNotFoundException` | 404 | Domain aggregate not found |
 | `EntityNotFoundExceptionHandler` | `EntityNotFoundException` | 404 | Entity not found |
 | `SecurityExceptionHandler` | `SecurityException` | 401 | Security violations |
-| `ConflictExceptionHandler` | `ConflictException` | 409 | Resource conflicts |
+| `MappedExceptionHandler` | Configured exception types | Configured | Fluent exception mappings |
 | `NotImplementedExceptionHandler` | `NotImplementedException` | 501 | Not implemented features |
 | `HttpRequestExceptionHandler` | `HttpRequestException` | 503 | External service errors |
 | `ModuleNotEnabledExceptionHandler` | `ModuleNotEnabledException` | 503 | Disabled modules |
 
-### Diagnostic Handlers
+### Diagnostic handlers
 
 | Handler | Exception | When to Use |
 |---------|-----------|------------|
-| `DebugExceptionHandler` | `Exception` (catch-all) | Development only; shows full stack traces & context |
-| `AuditExceptionHandler` | `Exception` (catch-all) | Track user, request, and exception context |
+| `DebugExceptionHandler` | `Exception` (catch-all) | Register explicitly in Development; writes full stack traces and context |
+| `AuditExceptionHandler` | `Exception` (observes and returns `false`) | Register explicitly before handling handlers to log user, request, and exception context |
 
-### Database Exception Handlers (Entity Framework Core)
+### Database exception handlers
 
-Register with `options.UseEntityFramework()`:
+Register with `options.AddEntityFrameworkHandlers()`:
 
 | Handler | Exception | Status | Use Case |
 |---------|-----------|--------|----------|
@@ -341,7 +405,7 @@ Register with `options.UseEntityFramework()`:
 | `DbUpdateExceptionHandler` | `DbUpdateException` | 422/409 | Constraint violations, FK errors |
 | `DbExceptionHandler` | `DbException` | 503 | Connection errors, general DB errors |
 
-#### DbUpdateConcurrencyExceptionHandler
+#### `DbUpdateConcurrencyExceptionHandler`
 
 Handles optimistic concurrency violations when multiple users modify the same entity simultaneously.
 
@@ -360,7 +424,7 @@ await dbContext.SaveChangesAsync(); // User B already saved with Version=2
 // Throws DbUpdateConcurrencyException
 ```
 
-**Response:**
+**Production response:**
 
 ```json
 {
@@ -369,25 +433,25 @@ await dbContext.SaveChangesAsync(); // User B already saved with Version=2
   "status": 409,
   "detail": "The record was modified by another user. Please refresh and try again.",
   "instance": "/api/products/1",
+  "traceId": "0HN4GBRMVDVP8:00000001"
+}
+```
+
+**In development** (when `IncludeExceptionDetails = true`), the detail and affected entities are included:
+
+```json
+{
+  "detail": "[DbUpdateConcurrencyException] Concurrency conflict detected for: Product. Store update, insert, or delete statement affected an unexpected number of rows.",
   "affectedEntities": [
     {
       "entity": "Product",
       "state": "Modified"
     }
-  ],
-  "traceId": "0HN4GBRMVDVP8:00000001"
+  ]
 }
 ```
 
-**In development** (when `IncludeExceptionDetails = true`):
-
-```json
-{
-  "detail": "[DbUpdateConcurrencyException] Concurrency conflict detected for: Product. Store update, insert, or delete statement affected an unexpected number of rows."
-}
-```
-
-#### DbUpdateExceptionHandler
+#### `DbUpdateExceptionHandler`
 
 Handles database constraint violations including unique constraints, foreign key errors, and check constraints. Automatically classifies errors based on exception message to return appropriate status codes.
 
@@ -403,7 +467,7 @@ await dbContext.SaveChangesAsync(); // Email already exists (unique index)
 // Throws DbUpdateException
 ```
 
-**Response (409 Conflict):**
+**Response with exception details enabled (409 Conflict):**
 
 ```json
 {
@@ -426,7 +490,7 @@ await dbContext.SaveChangesAsync();
 // Throws DbUpdateException
 ```
 
-**Response (422 Unprocessable Entity):**
+**Response with exception details enabled (422 Unprocessable Entity):**
 
 ```json
 {
@@ -440,7 +504,7 @@ await dbContext.SaveChangesAsync();
 }
 ```
 
-**Error Type Classification:**
+**Error type classification:**
 
 | Classification | Keywords | Status |
 |---|---|---|
@@ -451,7 +515,7 @@ await dbContext.SaveChangesAsync();
 | `DataTruncation` | TRUNCAT, TOO LONG, DATA TOO LONG | 422 |
 | `DatabaseError` | (default/unrecognized) | 422 |
 
-#### DbExceptionHandler
+#### `DbExceptionHandler`
 
 Handles general database errors including connection timeouts, deadlocks, and other infrastructure issues.
 
@@ -483,21 +547,22 @@ await dbContext.Products.ToListAsync();
 
 ```json
 {
-  "detail": "[SqlException] Timeout expired. The timeout period elapsed prior to completion of the operation.",
-  "errorCode": "-2"
+  "detail": "[SqlException] Timeout expired. The timeout period elapsed prior to completion of the operation."
 }
 ```
 
-## Problem Details Response Format
+The handler writes the provider error code to the server log; it does not add that code to the response.
 
-All exception handlers produce RFC 7807 Problem Details responses:
+## Problem Details response format
+
+Exception handlers produce Problem Details responses. Extension members such as `traceId` and `timestamp` appear only when a handler or `EnrichProblemDetails` adds them:
 
 ```json
 {
-  "type": "https://httpstatuses.io/422",
-  "title": "Validation Failed",
-  "status": 422,
-  "detail": "[ValidationException] One or more validation errors occurred.",
+  "type": "https://httpstatuses.io/400",
+  "title": "Bad Request",
+  "status": 400,
+  "detail": "[ValidationException] A model validation error has occurred while executing the request",
   "instance": "/api/products",
   "errors": {
     "name": ["Name is required"],
@@ -508,16 +573,16 @@ All exception handlers produce RFC 7807 Problem Details responses:
 }
 ```
 
-### Standard Properties
+### Standard properties
 
 - **type**: URI identifying the problem type (links to HTTP status documentation)
 - **title**: Short human-readable summary
 - **status**: HTTP status code
-- **detail**: Detailed explanation (hidden in production by default)
+- **detail**: Detailed explanation; set `IncludeExceptionDetails = false` to omit exception details in production (the option defaults to `true`)
 - **instance**: Request path that triggered the error
-- **extensions**: Custom key-value pairs (added via `EnrichProblemDetails` or handlers)
+- **extension members**: Custom key-value pairs added through `ProblemDetails.Extensions`; JSON serialization places them beside the standard properties
 
-## Using Exception Handlers in Minimal APIs
+## Using exception handlers in Minimal APIs
 
 Exception handlers apply globally by default:
 
@@ -530,9 +595,8 @@ group.MapPost("/", CreateProduct);
 
 async Task<IResult> GetProducts() => Results.Ok(await _service.GetAllAsync());
 
-async Task<IResult> GetProduct(int id) 
-    => Results.Ok(await _service.GetByIdAsync(id))
-    ?? Results.NotFound();
+async Task<IResult> GetProduct(int id)
+    => Results.Ok(await _service.GetRequiredByIdAsync(id));
 
 async Task<IResult> CreateProduct(CreateProductRequest request)
 {
@@ -545,16 +609,17 @@ async Task<IResult> CreateProduct(CreateProductRequest request)
 
 1. `CreateProduct` validation throws `ValidationException`
 2. `ValidationExceptionHandler` catches it
-3. Returns 422 with validation errors
+3. Returns 400 with validation errors
 4. `GetProduct` throws `EntityNotFoundException` (not found)
 5. `EntityNotFoundExceptionHandler` catches it
 6. Returns 404 with "Entity Not Found"
 
-## Custom Exception Handlers
+## Custom exception handlers
 
 Extend `ExceptionHandlerBase<TException>` to create custom handlers:
 
 ```csharp
+using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Presentation.Web;
 
 public class MyBusinessException : DomainException
@@ -613,7 +678,7 @@ builder.Services.AddExceptionHandler(options =>
 });
 ```
 
-## Security Best Practices
+## Security best practices
 
 1. **Never include exception details in production**
 
@@ -660,8 +725,8 @@ builder.Services.AddExceptionHandler(options =>
    ```
 
 2. **Check middleware order**
-   - Must be early in pipeline, after routing
-   - Typically: routing → exception handler → authorization
+   - Place it before the middleware and endpoints whose exceptions it must handle
+   - A common order is routing → exception handler → authorization → endpoints
 
    ```csharp
    app.UseRouting();
@@ -703,7 +768,7 @@ Use highest priority for most specific handlers.
 options.IncludeExceptionDetails = false; // Set explicitly
 ```
 
-### Debugging Tips
+### Debugging tips
 
 1. **Enable detailed logging**
 
@@ -735,7 +800,7 @@ options.IncludeExceptionDetails = false; // Set explicitly
    Assert.Equal(StatusCodes.Status400BadRequest, context.Response.StatusCode);
    ```
 
-## Additional Resources
+## Additional resources
 
 - [ASP.NET Core Error Handling](https://learn.microsoft.com/en-us/aspnet/core/fundamentals/error-handling)
-- [Problem Details for HTTP APIs (RFC 7807)](https://tools.ietf.org/html/rfc7807)
+- [Problem Details for HTTP APIs (RFC 9457)](https://www.rfc-editor.org/rfc/rfc9457.html)

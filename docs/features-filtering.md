@@ -1,4 +1,5 @@
-# Filtering Feature Documentation
+# Filtering
+
 
 > Simplify complex entity queries with a unified filtering solution.
 
@@ -6,7 +7,7 @@
 
 ## Overview
 
-The Filtering feature provides a flexible and powerful way to filter, sort, and paginate data through API requests. It allows clients to construct complex queries using a JSON-based filter model that gets translated into domain specifications and FindOptions on the server side. The translated filter model can easily be handled by the bITdevKit repositories.
+The Filtering feature lets clients describe filtering, ordering, includes, hierarchy traversal, and paging in a `FilterModel`. Server-side builders translate that model into domain specifications and repository `FindOptions<TEntity>`.
 
 Filtering is a consumer of two lower-level domain features:
 
@@ -22,9 +23,9 @@ graph LR
     P-.->|Result_IEnumerable_T|R
 ```
 
-### Challenges
+## Challenges
 
-> Modern applications require complex data querying capabilities where clients need to:
+Applications commonly need to:
 
 - Filter data based on multiple conditions
 - Combine different filter types (equality, ranges, text search, etc.)
@@ -34,43 +35,59 @@ graph LR
 - Handle nested entity relationships
 - Support dynamic query building
 
-> Traditional REST APIs often struggle with these requirements, leading to:
+Representing each query shape as a separate endpoint or set of query parameters can lead to:
 
 - Multiple specialized endpoints for different query scenarios
 - Complex URL parameters that are hard to maintain
 - Limited query capabilities
 - Poor reusability across different entity types
 
-### Solution
+## Solution
 
-> The Filtering feature solves these challenges by providing:
+The Filtering feature provides one model for query criteria and a set of builders that translate the model into repository specifications and options.
 
-1. **Unified Query Interface**
+1. **Unified query interface**
 
 - Single, consistent way to express complex queries
 - Works across different entity types
 - Supports both simple and complex filtering scenarios
-- No need to create custom endpoints for each query scenario╬
+- Reduces the need for an endpoint for each query scenario
 
-2. **Type-Safe Implementation**
+2. **Typed server implementation**
 
-- Strongly-typed models for both client and server (Swagger)
-- Compile-time validation of filter structures
-- Clear contract between frontend and backend (FilterModel)
+- Typed server models and generated OpenAPI schemas
+- A documented `FilterModel` contract between clients and endpoints
+- Expression-based builder methods for server-created filters
 
-3. **Flexible Architecture**
+3. **Repository integration**
 
-- Extensible design for more custom filter types [TODO]
-- Support for additional domain-specific specifications
-- Easy integration with existing repositories (FindOptions)
+- Built-in custom filter types and named specifications
+- Translation to repository `FindOptions<TEntity>`
+- Support for additional domain specifications
 
-4. **Performance Optimization**
+4. **Query controls**
 
-- Built-in pagination support
-- Efficient query building (Expressions)
-- Optimized database access through specifications
+- Paging and multiple orderings
+- Selective eager-loading includes
+- No-tracking queries by default
 
-### Use Cases
+## Key Features
+
+- Standard comparison, string, null, empty, and collection operators.
+- Custom date, time, text, numeric, enum, and specification filters.
+- Multiple orderings, paging, navigation includes, and hierarchy options.
+- JSON query-string and request-body parsing for ASP.NET Core endpoints.
+- OpenAPI metadata through `WithFilterSchema(...)`.
+- Type-safe server-side construction through `FilterModelBuilder.For<TEntity>()`.
+- Direct execution through bITdevKit repository extensions.
+
+## Architecture
+
+`FilterModel` and its JSON representation are defined in `Common.Abstractions`. The Domain layer translates filter criteria into specifications and converts ordering, include, hierarchy, paging, and tracking fields into `FindOptions<TEntity>`. Presentation helpers read the model from HTTP and add its schema to OpenAPI operations. Repository extensions execute the resulting query.
+
+The [request flow diagram](#request-flow-diagram) shows these components in sequence.
+
+## Use Cases
 
 1. **Data Grids, Tables and Lists**
 
@@ -89,7 +106,40 @@ graph LR
 - Dynamic data loading for select components
 - Type-ahead/autocomplete requests
 
-## Request Flow Diagram
+## Basic Usage
+
+The following minimal API accepts a JSON filter model, validates that a body was supplied, executes a paged repository query, and returns either the result or a visible problem response:
+
+```csharp
+app.MapPost("/api/users/search", async Task<Microsoft.AspNetCore.Http.IResult> (
+    HttpContext context,
+    IGenericReadOnlyRepository<User> repository,
+    CancellationToken cancellationToken) =>
+{
+    var filter = await context.FromBodyFilterAsync();
+    if (filter is null)
+    {
+        return context.Response.HasStarted
+            ? Results.Empty
+            : Results.BadRequest(new { error = "A valid filter model is required." });
+    }
+
+    var result = await repository.FindAllResultPagedAsync(
+        filter,
+        cancellationToken: cancellationToken);
+
+    return result.IsSuccess
+        ? Results.Ok(result)
+        : Results.Problem(
+            title: "User search failed",
+            detail: string.Join("; ", result.Errors.Select(error => error.Message)));
+})
+.WithFilterSchema(isRequestBody: true);
+```
+
+A request body such as `{"page":1,"pageSize":20,"filters":[{"field":"LastName","operator":"startswith","value":"S"}]}` returns the first page of matching users and its pagination metadata.
+
+## Request flow diagram
 
 ```mermaid
 sequenceDiagram
@@ -104,7 +154,7 @@ sequenceDiagram
 
     C->>+A: HTTP Request with FilterModel
     A->>+H: Send Query(FilterModel)
-    H->>+R: FindAllAsync(FilterModel)
+    H->>+R: FindAllResultPagedAsync(FilterModel)
 
     par Build FindOptions
         R->>+S: Build
@@ -125,7 +175,7 @@ sequenceDiagram
 The following sections detail the implementation and usage of the Filtering feature, providing
 comprehensive examples and best practices for common scenarios.
 
-## Filter Model Structure
+## Filter model structure
 
 ```json
 {
@@ -133,7 +183,7 @@ comprehensive examples and best practices for common scenarios.
   "pageSize": 10,
   "filters": [
     {
-      "field": "name",
+      "field": "Name",
       "operator": "eq|neq|isnull|isnotnull|isempty|isnotempty|gt|gte|lt|lte|contains|doesnotcontain|startswith|doesnotstartwith|endswith|doesnotendwith|any|all|none",
       "value": "any",
       "logic": "and|or",
@@ -150,7 +200,7 @@ comprehensive examples and best practices for common scenarios.
   ],
   "orderings": [
     {
-      "field": "name",
+      "field": "Name",
       "direction": "asc|desc"
     }
   ],
@@ -160,12 +210,15 @@ comprehensive examples and best practices for common scenarios.
 }
 ```
 
-## API Implementation
+`field`, `fields`, ordering fields, and include paths are CLR property paths. Their segments are case-sensitive because the builders resolve them with expression-tree property access. For example, use `Department.Name`, not the JSON-style name `department.name`.
 
-### ASP.NET Controller Example
+## API implementation
+
+### ASP.NET controller example
 
 ```csharp
-[ApiController][Route("api/[controller]")]
+[ApiController]
+[Route("api/[controller]")]
 public class UsersController : ControllerBase
 {
     [HttpGet]
@@ -190,7 +243,7 @@ public class UsersController : ControllerBase
 }
 ```
 
-### ASP.NET Minimal API Example
+### ASP.NET minimal API example
 
 ```csharp
 app.MapGet("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFound>>
@@ -208,7 +261,7 @@ app.MapGet("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFou
 app.MapPost("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFound>>
   (HttpContext context, IMediator mediator, CancellationToken cancellationToken) =>
 {
-    var filter = await context.FromQueryFilterAsync();
+    var filter = await context.FromBodyFilterAsync();
     var response = await mediator.Send(
         new UserSearchQuery(filter), cancellationToken); // handler calls repository.FindAllResultPagedAsync(filter)
 
@@ -216,7 +269,7 @@ app.MapPost("/api/users/search", async Task<Results<Ok<ResultPaged<User>>, NotFo
 }).WithFilterSchema(true); // adds openapi schema for the filter model
 ```
 
-### Repository Usage (QueryHandler)
+### Repository usage (QueryHandler)
 
 ```csharp
 public class UserQueryHandler : IRequestHandler<UserFindAllQuery, ResultPaged<User>>
@@ -232,16 +285,16 @@ public class UserQueryHandler : IRequestHandler<UserFindAllQuery, ResultPaged<Us
         UserFindAllQuery query,
         CancellationToken cancellationToken)
     {
-        return await repository.FindAllResultAsync(
+        return await repository.FindAllResultPagedAsync(
             query.Filter,
             cancellationToken: cancellationToken);
     }
 }
 ```
 
-## HTTP Request Examples
+## HTTP request examples
 
-### GET Request
+### GET request
 
 Simple filter as URL parameters:
 
@@ -253,7 +306,7 @@ Accept: application/json
 URL-encoded for more complex filters:
 
 [URL-encode](https://en.wikipedia.org/wiki/Percent-encoding) the filter JSON and put it into a
-single query string parameter named `filter`.:
+single query string parameter named `filter`:
 
 ```json
 {
@@ -261,16 +314,18 @@ single query string parameter named `filter`.:
   "pageSize": 10,
   "filters": [
     {
-      "field": "name",
+      "field": "Name",
       "operator": "eq",
       "value": "John"
     }
   ]
-} // encoded to %7B%22page%22%3A1%2C%22pageSize%2....
+}
 ```
 
+The encoded value starts with `%7B%22page%22%3A1%2C%22pageSize%22...`.
+
 ```http
-GET /api/users?filter=api/users?filter=%7B%22page%22%3A1%2C%22pageSize%22%3A10%2C%22filters%22%3A%5B%7B%22field%22%3A%22name%22%2C%22operator%22%3A%22eq%22%2C%22value%22%3A%22John%22%7D%5D%7D HTTP/1.1
+GET /api/users?filter=%7B%22page%22%3A1%2C%22pageSize%22%3A10%2C%22filters%22%3A%5B%7B%22field%22%3A%22name%22%2C%22operator%22%3A%22eq%22%2C%22value%22%3A%22John%22%7D%5D%7D HTTP/1.1
 Accept: application/json
 ```
 
@@ -281,7 +336,7 @@ The following considerations apply to HTTP GET requests:
 - HTTP GET requests parameters are visible in logs and browser history.
 - HTTP GET requests should be kept short and readable for maintainability.
 
-### POST Request
+### POST request
 
 ```http
 POST /api/users/search HTTP/1.1
@@ -296,14 +351,14 @@ Accept: application/json
         {
             "customType": "daterange",
             "customParameters": {
-                "field": "createdAt",
+                "field": "CreatedAt",
                 "startDate": "2024-01-01T00:00:00Z",
                 "endDate": "2024-12-31T23:59:59Z",
                 "inclusive": true
             }
         },
         {
-            "field": "department.name",
+            "field": "Department.Name",
             "operator": "eq",
             "value": "Engineering",
             "logic": "and"
@@ -311,7 +366,7 @@ Accept: application/json
     ],
     "orderings": [
         {
-            "field": "lastName",
+            "field": "LastName",
             "direction": "asc"
         }
     ],
@@ -325,17 +380,17 @@ Accept: application/json
 The following considerations apply to HTTP POST requests:
 
 - HTTP POST requests can handle larger payloads than GET requests.
-- HTTP POST requests are more secure for sensitive data.
+- HTTP POST request bodies are less likely than query strings to appear in browser history, but HTTPS and appropriate logging controls are still required.
 - HTTP POST requests can be used for complex filter models.
 - HTTP POST requests are not cached by browsers.
 
-## HTTP Response Format
+## HTTP response format
 
-### Successful Response
+### Successful response
 
 ```json
 {
-  "success": true,
+  "isSuccess": true,
   "messages": [
     "Data retrieved successfully"
   ],
@@ -361,11 +416,11 @@ The following considerations apply to HTTP POST requests:
 }
 ```
 
-### Error Response
+### Error response
 
 ```json
 {
-  "success": false,
+  "isSuccess": false,
   "messages": [
     "Failed to retrieve data"
   ],
@@ -375,26 +430,26 @@ The following considerations apply to HTTP POST requests:
       "message": "Invalid filter parameters provided"
     }
   ],
-  "value": null,
-  "currentPage": 0,
+  "value": [],
+  "currentPage": 1,
   "totalPages": 0,
   "totalCount": 0,
-  "pageSize": 0,
+  "pageSize": 10,
   "hasPreviousPage": false,
   "hasNextPage": false
 }
 ```
 
-### Response Properties
+### Response properties
 
-#### Base Result Properties
+#### Base result properties
 
-- `success`: Indicates if the request was successful
+- `isSuccess`: Indicates whether the request succeeded
 - `messages`: Array of informational or error messages
-- `errors`: Array of structured error objects when success is false
+- `errors`: Array of structured error objects when `isSuccess` is `false`
 - `value`: Collection of items for the current page
 
-#### Pagination Metadata
+#### Pagination metadata
 
 - `currentPage`: Current page number (1-based)
 - `totalPages`: Total number of pages available
@@ -403,13 +458,13 @@ The following considerations apply to HTTP POST requests:
 - `hasPreviousPage`: Indicates if a previous page exists
 - `hasNextPage`: Indicates if a next page exists
 
-## Best Practices
+## Best practices
 
 1. **Request Method Selection**
 
 - Use GET for simple queries and basic filtering
 - Use POST for complex filters or when URL length might be an issue
-- Consider using POST when sending sensitive filter data
+- Do not put secrets in either form; POST does not replace HTTPS or safe logging
 
 2. **Performance Considerations**
 
@@ -419,244 +474,246 @@ The following considerations apply to HTTP POST requests:
 
 3. **Error Handling**
 
-- Always check the `success` property in responses
+- Always check the `isSuccess` property in responses
 - Handle error messages appropriately in your client application
 - Log error details for debugging purposes
 
 4. **Security**
 
-- Validate all filter inputs server-side
+- Validate or allowlist exposed fields, orderings, includes, and specification names
 - Implement appropriate rate limiting
-- Consider adding pagination limits to prevent DOS attacks
+- Enforce an application-specific maximum page size; the Filtering feature does not impose one
 
-# Standard Filter Operators
+## Standard filter operators
 
-## Comparison Operators
+### Comparison operators
 
-### Equal (eq)
+#### Equal (`eq`)
 
 Matches exact values
 
 ```json
 {
-  "field": "status",
+  "field": "Status",
   "operator": "eq",
   "value": "active"
 }
 ```
 
-### Not Equal (neq)
+#### Not equal (`neq`)
 
 Matches values that are not equal
 
 ```json
 {
-  "field": "status",
+  "field": "Status",
   "operator": "neq",
   "value": "deleted"
 }
 ```
 
-### Greater Than (gt)
+#### Greater than (`gt`)
 
 ```json
 {
-  "field": "age",
+  "field": "Age",
   "operator": "gt",
   "value": 18
 }
 ```
 
-### Greater Than or Equal (gte)
+#### Greater than or equal (`gte`)
 
 ```json
 {
-  "field": "price",
+  "field": "Price",
   "operator": "gte",
   "value": 100.00
 }
 ```
 
-### Less Than (lt)
+#### Less than (`lt`)
 
 ```json
 {
-  "field": "stock",
+  "field": "Stock",
   "operator": "lt",
   "value": 10
 }
 ```
 
-### Less Than or Equal (lte)
+#### Less than or equal (`lte`)
 
 ```json
 {
-  "field": "temperature",
+  "field": "Temperature",
   "operator": "lte",
   "value": 25.5
 }
 ```
 
-## String Operators
+### String operators
 
-### Contains
+#### Contains
 
 ```json
 {
-  "field": "description",
+  "field": "Description",
   "operator": "contains",
   "value": "premium"
 }
 ```
 
-### Does Not Contain
+#### Does not contain
 
 ```json
 {
-  "field": "title",
+  "field": "Title",
   "operator": "doesnotcontain",
   "value": "test"
 }
 ```
 
-### Starts With
+#### Starts with
 
 ```json
 {
-  "field": "email",
+  "field": "Email",
   "operator": "startswith",
   "value": "admin"
 }
 ```
 
-### Does Not Start With
+#### Does not start with
 
 ```json
 {
-  "field": "code",
+  "field": "Code",
   "operator": "doesnotstartwith",
   "value": "TMP"
 }
 ```
 
-### Ends With
+#### Ends with
 
 ```json
 {
-  "field": "filename",
+  "field": "FileName",
   "operator": "endswith",
   "value": ".pdf"
 }
 ```
 
-### Does Not End With
+#### Does not end with
 
 ```json
 {
-  "field": "url",
+  "field": "Url",
   "operator": "doesnotendwith",
   "value": "/temp"
 }
 ```
 
-## Null Checks
+### Null checks
 
-### Is Null
+#### Is null
 
 ```json
 {
-  "field": "deletedAt",
+  "field": "DeletedAt",
   "operator": "isnull"
 }
 ```
 
-### Is Not Null
+#### Is not null
 
 ```json
 {
-  "field": "email",
+  "field": "Email",
   "operator": "isnotnull"
 }
 ```
 
-## Empty Checks
+### Empty checks
 
-### Is Empty
+#### Is empty
 
 ```json
 {
-  "field": "notes",
+  "field": "Notes",
   "operator": "isempty"
 }
 ```
 
-### Is Not Empty
+#### Is not empty
 
 ```json
 {
-  "field": "phoneNumber",
+  "field": "PhoneNumber",
   "operator": "isnotempty"
 }
 ```
 
-## Collection Operators
+### Collection operators
 
-### Any
+#### Any
 
 Matches if any child element satisfies the condition
 
 ```json
 {
-  "field": "orders",
+  "field": "Orders",
   "operator": "any",
   "value": {
-    "field": "total",
+    "field": "Total",
     "operator": "gt",
     "value": 1000
   }
 }
 ```
 
-### All
+#### All
 
 Matches if all child elements satisfy the condition
 
 ```json
 {
-  "field": "orderItems",
+  "field": "OrderItems",
   "operator": "all",
   "value": {
-    "field": "quantity",
+    "field": "Quantity",
     "operator": "gt",
     "value": 0
   }
 }
 ```
 
-### None
+#### None
 
 Matches if no child elements satisfy the condition
 
 ```json
 {
-  "field": "reviews",
+  "field": "Reviews",
   "operator": "none",
   "value": {
-    "field": "rating",
+    "field": "Rating",
     "operator": "lt",
     "value": 3
   }
 }
 ```
 
-# Custom Filter Types
+## Custom filter types
 
 > Custom filter types provide more specialized filtering capabilities. They are used by setting the
 `customType` property instead of using the standard `operator`.
 
-## Date and Time Filters
+Standard filter and ordering fields support dotted property paths. The current custom-filter builder resolves `customParameters.field` and full-text `fields` as direct properties only, so do not use dotted paths for those values.
 
-### Date Range
+### Date and time filters
+
+#### Date range
 
 Filter entries within a specific date range
 
@@ -664,7 +721,7 @@ Filter entries within a specific date range
 {
   "customType": "daterange",
   "customParameters": {
-    "field": "createdAt",
+    "field": "CreatedAt",
     "startDate": "2024-01-01T00:00:00Z",
     "endDate": "2024-12-31T23:59:59Z",
     "inclusive": true
@@ -672,7 +729,7 @@ Filter entries within a specific date range
 }
 ```
 
-### Date Relative
+#### Date relative
 
 Filter based on relative date periods
 
@@ -680,7 +737,7 @@ Filter based on relative date periods
 {
   "customType": "daterelative",
   "customParameters": {
-    "field": "lastLogin",
+    "field": "LastLogin",
     "unit": "day",
     "amount": 7,
     "direction": "past"
@@ -688,7 +745,7 @@ Filter based on relative date periods
 }
 ```
 
-### Time Range
+#### Time range
 
 Filter entries within a specific time range
 
@@ -696,7 +753,7 @@ Filter entries within a specific time range
 {
   "customType": "timerange",
   "customParameters": {
-    "field": "shiftStart",
+    "field": "ShiftStart",
     "startTime": "09:00:00",
     "endTime": "17:00:00",
     "inclusive": true
@@ -704,15 +761,15 @@ Filter entries within a specific time range
 }
 ```
 
-### Time Relative
+#### Time relative
 
-Filter based on relative time periods
+`timerelative` is part of the serialized `FilterCustomType` contract, but `CustomSpecificationBuilder` does not currently dispatch it. Sending this filter to the standard builder throws `NotSupportedException`. The payload shape reserved by the contract is:
 
 ```json
 {
   "customType": "timerelative",
   "customParameters": {
-    "field": "lastActivity",
+    "field": "LastActivity",
     "unit": "hour",
     "amount": 2,
     "direction": "past"
@@ -720,9 +777,9 @@ Filter based on relative time periods
 }
 ```
 
-## Text Search Filters
+### Text search filters
 
-### Full Text Search
+#### Full-text search
 
 Search across multiple fields
 
@@ -732,15 +789,15 @@ Search across multiple fields
   "customParameters": {
     "searchTerm": "important document",
     "fields": [
-      "title",
-      "description",
-      "content"
+      "Title",
+      "Description",
+      "Content"
     ]
   }
 }
 ```
 
-### Text In
+#### Text in
 
 Match against a list of possible values
 
@@ -748,13 +805,13 @@ Match against a list of possible values
 {
   "customType": "textin",
   "customParameters": {
-    "field": "status",
+    "field": "Status",
     "values": "active;pending;review"
   }
 }
 ```
 
-### Text Not In
+#### Text not in
 
 Exclude matches from a list of values
 
@@ -762,15 +819,15 @@ Exclude matches from a list of values
 {
   "customType": "textnotin",
   "customParameters": {
-    "field": "category",
+    "field": "Category",
     "values": "archived;deleted;draft"
   }
 }
 ```
 
-## Numeric Filters
+### Numeric filters
 
-### Numeric Range
+#### Numeric range
 
 Filter numbers within a range
 
@@ -778,7 +835,7 @@ Filter numbers within a range
 {
   "customType": "numericrange",
   "customParameters": {
-    "field": "price",
+    "field": "Price",
     "min": 10.00,
     "max": 50.00,
     "inclusive": true
@@ -786,7 +843,7 @@ Filter numbers within a range
 }
 ```
 
-### Numeric In
+#### Numeric in
 
 Match against a list of numeric values
 
@@ -794,13 +851,13 @@ Match against a list of numeric values
 {
   "customType": "numericin",
   "customParameters": {
-    "field": "priority",
+    "field": "Priority",
     "values": "1;2;3"
   }
 }
 ```
 
-### Numeric Not In
+#### Numeric not in
 
 Exclude specific numeric values
 
@@ -808,15 +865,15 @@ Exclude specific numeric values
 {
   "customType": "numericnotin",
   "customParameters": {
-    "field": "errorCode",
+    "field": "ErrorCode",
     "values": "404;500;503"
   }
 }
 ```
 
-## Enum Filters
+### Enum filters
 
-### Enum Values
+#### Enum values
 
 Filter by enum values using names or integers
 
@@ -824,15 +881,15 @@ Filter by enum values using names or integers
 {
   "customType": "enumvalues",
   "customParameters": {
-    "field": "status",
+    "field": "Status",
     "values": "Active;Pending"
   }
 }
 ```
 
-## Null Check Filters
+### Null-check filters
 
-### Is Null
+#### Is null
 
 Explicit null check filter
 
@@ -840,12 +897,12 @@ Explicit null check filter
 {
   "customType": "isnull",
   "customParameters": {
-    "field": "canceledAt"
+    "field": "CanceledAt"
   }
 }
 ```
 
-### Is Not Null
+#### Is not null
 
 Explicit non-null check filter
 
@@ -853,14 +910,14 @@ Explicit non-null check filter
 {
   "customType": "isnotnull",
   "customParameters": {
-    "field": "completedAt"
+    "field": "CompletedAt"
   }
 }
 ```
 
-## Specification Filters
+### Specification filters
 
-### Named Specification
+#### Named specification
 
 Use pre-registered domain specifications
 
@@ -874,7 +931,7 @@ For the underlying specification model itself, including `ISpecification<T>`, co
 }
 ```
 
-### Composite Specification
+#### Composite specification
 
 Combine multiple specifications with logical operators
 
@@ -907,18 +964,18 @@ Combine multiple specifications with logical operators
 }
 ```
 
-# Complex Filter Examples
+## Complex filter examples
 
-## Overview
+### Overview
 
 > Complex filters allow you to create sophisticated queries by combining different filter types,
 > using nested conditions, and applying custom filter types. They are particularly useful when
 > simple
 > equality or comparison filters aren't sufficient.
 
-## Use Cases and Examples
+### Use cases and examples
 
-### 1. Date Range with Status Filter
+#### 1. Date range with status filter
 
 Useful for finding records within a specific date range that match certain status criteria.
 
@@ -930,14 +987,14 @@ Useful for finding records within a specific date range that match certain statu
     {
       "customType": "daterange",
       "customParameters": {
-        "field": "createdAt",
+        "field": "CreatedAt",
         "startDate": "2024-01-01T00:00:00Z",
         "endDate": "2024-12-31T23:59:59Z",
         "inclusive": true
       }
     },
     {
-      "field": "status",
+      "field": "Status",
       "operator": "eq",
       "value": "active",
       "logic": "and"
@@ -948,7 +1005,7 @@ Useful for finding records within a specific date range that match certain statu
 
 **Use Case:** Finding all active users who registered during 2024.
 
-### 2. Full-Text Search with Multiple Fields
+#### 2. Full-text search with multiple fields
 
 Perfect for implementing search functionality across multiple text fields.
 
@@ -960,10 +1017,10 @@ Perfect for implementing search functionality across multiple text fields.
       "customParameters": {
         "searchTerm": "project management",
         "fields": [
-          "title",
-          "description",
-          "skills",
-          "notes"
+          "Title",
+          "Description",
+          "Skills",
+          "Notes"
         ]
       }
     }
@@ -973,7 +1030,7 @@ Perfect for implementing search functionality across multiple text fields.
 
 **Use Case:** Searching for employees with specific skills or experience across their profile data.
 
-### 3. Nested Entity Filtering
+#### 3. Nested entity filtering
 
 Useful when you need to filter based on related entity properties.
 
@@ -981,31 +1038,31 @@ Useful when you need to filter based on related entity properties.
 {
   "filters": [
     {
-      "field": "department.name",
+      "field": "Department.Name",
       "operator": "eq",
       "value": "Engineering",
       "logic": "and"
     },
     {
-      "field": "projects",
+      "field": "Projects",
       "operator": "any",
       "value": {
-        "field": "status",
+        "field": "Status",
         "operator": "eq",
         "value": "Active"
       }
     }
   ],
   "includes": [
-    "department",
-    "projects"
+    "Department",
+    "Projects"
   ]
 }
 ```
 
 **Use Case:** Finding engineers who are assigned to active projects.
 
-### 4. Multiple Date-Related Conditions
+#### 4. Multiple date-related conditions
 
 Combines multiple date-based filters for temporal analysis.
 
@@ -1015,7 +1072,7 @@ Combines multiple date-based filters for temporal analysis.
     {
       "customType": "daterange",
       "customParameters": {
-        "field": "hireDate",
+        "field": "HireDate",
         "startDate": "2023-01-01T00:00:00Z",
         "endDate": "2023-12-31T23:59:59Z",
         "inclusive": true
@@ -1024,7 +1081,7 @@ Combines multiple date-based filters for temporal analysis.
     {
       "customType": "daterelative",
       "customParameters": {
-        "field": "lastActivity",
+        "field": "LastActivity",
         "unit": "day",
         "amount": 30,
         "direction": "past"
@@ -1037,7 +1094,7 @@ Combines multiple date-based filters for temporal analysis.
 
 **Use Case:** Finding employees hired in 2023 who have been active in the last 30 days.
 
-### 5. Complex Numeric Conditions
+#### 5. Complex numeric conditions
 
 Useful for financial or metric-based filtering.
 
@@ -1047,22 +1104,22 @@ Useful for financial or metric-based filtering.
     {
       "customType": "numericrange",
       "customParameters": {
-        "field": "salary",
+        "field": "Salary",
         "min": 50000,
         "max": 100000
       }
     },
     {
-      "field": "performance.rating",
+      "field": "Performance.Rating",
       "operator": "gte",
       "value": 4,
       "logic": "and"
     },
     {
-      "field": "projects",
+      "field": "Projects",
       "operator": "any",
       "value": {
-        "field": "budget",
+        "field": "Budget",
         "operator": "gt",
         "value": 100000
       },
@@ -1075,7 +1132,7 @@ Useful for financial or metric-based filtering.
 **Use Case:** Finding high-performing employees within a specific salary range working on
 high-budget projects.
 
-### 6. Time-Based Working Hours Filter
+#### 6. Time-based working-hours filter
 
 Useful for scheduling and availability queries.
 
@@ -1085,14 +1142,14 @@ Useful for scheduling and availability queries.
     {
       "customType": "timerange",
       "customParameters": {
-        "field": "workingHours.start",
+        "field": "WorkingHoursStart",
         "startTime": "09:00:00",
         "endTime": "17:00:00",
         "inclusive": true
       }
     },
     {
-      "field": "timezone",
+      "field": "TimeZone",
       "operator": "eq",
       "value": "UTC+1",
       "logic": "and"
@@ -1103,7 +1160,7 @@ Useful for scheduling and availability queries.
 
 **Use Case:** Finding employees working during specific hours in a particular timezone.
 
-### 7. Enum and Collection Filtering
+#### 7. Enum and collection filtering
 
 Combines enum values with collection checks.
 
@@ -1113,19 +1170,17 @@ Combines enum values with collection checks.
     {
       "customType": "enumvalues",
       "customParameters": {
-        "field": "employmentType",
+        "field": "EmploymentType",
         "values": "FullTime;PartTime"
       }
     },
     {
-      "field": "skills",
+      "field": "Skills",
       "operator": "all",
       "value": {
-        "customType": "enumvalues",
-        "customParameters": {
-          "field": "level",
-          "values": "Expert;Advanced"
-        }
+        "field": "Level",
+        "operator": "eq",
+        "value": "Expert"
       },
       "logic": "and"
     }
@@ -1133,9 +1188,9 @@ Combines enum values with collection checks.
 }
 ```
 
-**Use Case:** Finding full-time or part-time employees who are experts in all their listed skills.
+**Use Case:** Finding full-time or part-time employees whose listed skills are all at the expert level.
 
-### 8. Complex Text Pattern Matching
+#### 8. Complex text-pattern matching
 
 Useful for advanced text search scenarios.
 
@@ -1143,20 +1198,20 @@ Useful for advanced text search scenarios.
 {
   "filters": [
     {
-      "field": "email",
+      "field": "Email",
       "operator": "endswith",
       "value": "@company.com"
     },
     {
       "customType": "textin",
       "customParameters": {
-        "field": "department",
+        "field": "Department",
         "values": "Engineering;Research;Development"
       },
       "logic": "and"
     },
     {
-      "field": "notes",
+      "field": "Notes",
       "operator": "contains",
       "value": "leadership",
       "logic": "and"
@@ -1168,24 +1223,24 @@ Useful for advanced text search scenarios.
 **Use Case:** Finding internal employees from specific departments with leadership mentions in their
 notes.
 
-## Advanced Combinations
+### Advanced combinations
 
-### Combined Project and Team Filter
+#### Combined project and team filter
 
 ```json
 {
   "filters": [
     {
-      "field": "teams",
+      "field": "Teams",
       "operator": "any",
       "value": {
-        "field": "members",
+        "field": "Members",
         "operator": "all",
         "value": {
-          "field": "skills",
+          "field": "Skills",
           "operator": "any",
           "value": {
-            "field": "level",
+            "field": "Level",
             "operator": "gte",
             "value": 3
           }
@@ -1195,7 +1250,7 @@ notes.
     {
       "customType": "daterange",
       "customParameters": {
-        "field": "projects.deadline",
+        "field": "ProjectDeadline",
         "startDate": "2024-01-01T00:00:00Z",
         "endDate": "2024-12-31T23:59:59Z",
         "inclusive": true
@@ -1204,10 +1259,10 @@ notes.
     }
   ],
   "includes": [
-    "teams",
-    "teams.members",
-    "teams.members.skills",
-    "projects"
+    "Teams",
+    "Teams.Members",
+    "Teams.Members.Skills",
+    "Projects"
   ]
 }
 ```
@@ -1215,7 +1270,7 @@ notes.
 **Use Case:** Finding teams where all members have advanced skills (level ≥ 3) and are working on
 projects due in 2024.
 
-# Appendix A: Angular Usage Guide
+## Appendix A: Angular usage guide
 
 > This appendix provides detailed information about using the Filtering feature in an
 > Angular application.
@@ -1228,44 +1283,55 @@ This implementation provides a complete Angular solution including:
 - Error handling
 - HTTP parameter building
 
-## Type Definitions
+### Type definitions
 
-### Core Filter Model Interfaces
+#### Core filter-model interfaces
 
 ```typescript
 // models/filter.model.ts
 export interface FilterCriteria {
-  field: string;
-  operator: string;
+  field?: string;
+  operator?: string;
   value?: any;
   logic?: 'and' | 'or';
+  filters?: FilterCriteria[];
   customType?: string;
   customParameters?: Record<string, any>;
+  specificationName?: string;
+  specificationArguments?: any[];
 }
 
 export interface FilterModel {
   page: number;
   pageSize: number;
+  noTracking?: boolean;
   filters: FilterCriteria[];
   orderings?: Array<{
     field: string;
     direction: 'asc' | 'desc';
   }>;
   includes?: string[];
+  hierarchy?: string;
+  hierarchyMaxDepth?: number;
 }
 
 export interface ResultPaged<T> {
-  items: T[];
+  isSuccess: boolean;
+  value: T[];
+  messages: string[];
+  errors: Array<{ message: string }>;
+  currentPage: number;
   totalCount: number;
-  pageNumber: number;
   pageSize: number;
   totalPages: number;
+  hasPreviousPage: boolean;
+  hasNextPage: boolean;
 }
 ```
 
-## Service Implementation
+### Service implementation
 
-### API Service
+#### API service
 
 ```typescript
 // services/api.service.ts
@@ -1292,52 +1358,15 @@ export class ApiService<T> {
 
   // GET (querystring)
   getFiltered(filterModel: FilterModel): Observable<ResultPaged<T>> {
-    let params = new HttpParams()
-      .set('page', filterModel.page.toString())
-      .set('pageSize', filterModel.pageSize.toString());
-
-    filterModel.filters.forEach((filter, index) => {
-      params = params
-        .set(`filters[${index}].field`, filter.field)
-        .set(`filters[${index}].operator`, filter.operator);
-
-      if (filter.value !== undefined) {
-        params = params.set(`filters[${index}].value`, filter.value.toString());
-      }
-
-      if (filter.logic) {
-        params = params.set(`filters[${index}].logic`, filter.logic);
-      }
-
-      if (filter.customType) {
-        params = params.set(`filters[${index}].customType`, filter.customType);
-        if (filter.customParameters) {
-          Object.entries(filter.customParameters).forEach(([key, value]) => {
-            params = params.set(
-              `filters[${index}].customParameters.${key}`,
-              value.toString()
-            );
-          });
-        }
-      }
-    });
-
-    filterModel.orderings?.forEach((order, index) => {
-      params = params
-        .set(`orderings[${index}].field`, order.field)
-        .set(`orderings[${index}].direction`, order.direction);
-    });
-
-    filterModel.includes?.forEach((include, index) => {
-      params = params.set(`includes[${index}]`, include);
-    });
+    const params = new HttpParams()
+      .set('filter', JSON.stringify(filterModel));
 
     return this.http.get<ResultPaged<T>>(this.baseUrl, {params});
   }
 }
 ```
 
-### Entity-Specific Service
+#### Entity-specific service
 
 ```typescript
 // services/user.service.ts
@@ -1357,9 +1386,9 @@ export class UserService extends ApiService<User> {
 }
 ```
 
-## Component Implementation
+### Component implementation
 
-### List Component Example
+#### List component example
 
 ```typescript
 // components/user-list/user-list.component.ts
@@ -1395,7 +1424,7 @@ import {finalize} from 'rxjs/operators';
                 </tr>
             </thead>
             <tbody>
-                <tr *ngFor="let user of users.items">
+                <tr *ngFor="let user of users.value">
                     <td>{{ user.firstName }} {{ user.lastName }}</td>
                     <td>{{ user.email }}</td>
                     <td>{{ user.department }}</td>
@@ -1404,11 +1433,11 @@ import {finalize} from 'rxjs/operators';
         </table>
 
         <div class="pagination" *ngIf="users">
-            <button (click)="previousPage()" [disabled]="users.pageNumber === 1">
+            <button (click)="previousPage()" [disabled]="!users.hasPreviousPage">
                 Previous
             </button>
-            <span>Page {{ users.pageNumber }} of {{ users.totalPages }}</span>
-            <button (click)="nextPage()" [disabled]="users.pageNumber === users.totalPages">
+            <span>Page {{ users.currentPage }} of {{ users.totalPages }}</span>
+            <button (click)="nextPage()" [disabled]="!users.hasNextPage">
                 Next
             </button>
         </div>
@@ -1436,13 +1465,17 @@ export class UserListComponent implements OnInit {
     this.loading = true;
     this.error = null;
 
-    this.userService.getFiltered|searchFiltered(this.currentFilter)
+    this.userService.getFiltered(this.currentFilter)
       .pipe(
         finalize(() => this.loading = false)
       )
       .subscribe({
         next: (result) => {
-          this.users = result;
+          if (result.isSuccess) {
+            this.users = result;
+          } else {
+            this.error = result.errors.map(error => error.message).join('; ');
+          }
         },
         error: (error) => {
           this.error = 'Failed to load users. Please try again.';
@@ -1456,7 +1489,7 @@ export class UserListComponent implements OnInit {
       ...this.currentFilter,
       filters: [
         {
-          field: 'department',
+          field: 'Department',
           operator: 'eq',
           value: department
         }
@@ -1476,7 +1509,7 @@ export class UserListComponent implements OnInit {
         {
           customType: 'daterange',
           customParameters: {
-            field: 'createdAt',
+            field: 'CreatedAt',
             startDate: startDate.toISOString(),
             endDate: endDate.toISOString(),
             inclusive: true
@@ -1503,7 +1536,7 @@ export class UserListComponent implements OnInit {
 }
 ```
 
-# Appendix B: Flow Diagram
+## Appendix B: Flow diagram
 
 ```mermaid
 graph TD
@@ -1520,13 +1553,13 @@ graph TD
     H -->|ResultPaged| I[Response]
 ```
 
-# Appendix C: Filter Model Builder
+## Appendix C: Filter model builder
 
 > Build a Filter Model using Fluent C# syntax.
 
 Can be used in a Blazor or server side environment to construct complex filters.
 
-## Basic Example
+### Basic example
 
 ```csharp
 var filterModel = FilterModelBuilder.For<PersonStub>()
@@ -1550,11 +1583,11 @@ filterModel.PageSize.ShouldBe((int)PageSize.Large);
 // etc.
 ```
 
-## AddInclude Methods
+### `AddInclude` methods
 
 The `AddInclude` method is available in two overloads to support different scenarios:
 
-### Expression-Based Include (Type-Safe)
+#### Expression-based include (type-safe)
 
 Use lambda expressions for compile-time safety and refactoring support:
 
@@ -1565,7 +1598,7 @@ var filterModel = FilterModelBuilder.For<Customer>()
     .Build();
 ```
 
-### String-Based Include (Flexible)
+#### String-based include (flexible)
 
 Use string paths for dynamic includes or nested navigation properties:
 
@@ -1577,7 +1610,7 @@ var filterModel = FilterModelBuilder.For<Customer>()
     .Build();
 ```
 
-### Conditional Includes
+#### Conditional includes
 
 Both overloads support conditional inclusion using the `condition` parameter:
 
@@ -1591,7 +1624,7 @@ var filterModel = FilterModelBuilder.For<Customer>()
     .Build();
 ```
 
-### When to Use Each Overload
+#### When to use each overload
 
 **Expression-Based (`AddInclude(c => c.Property)`):**
 - Provides compile-time safety and IntelliSense support
@@ -1605,7 +1638,7 @@ var filterModel = FilterModelBuilder.For<Customer>()
 - Useful when property names come from configuration or user input
 - Can specify complex paths like `"Orders.OrderItems.Product"`
 
-### Combined Example
+#### Combined example
 
 ```csharp
 var filterModel = FilterModelBuilder.For<Order>()
@@ -1618,11 +1651,11 @@ var filterModel = FilterModelBuilder.For<Order>()
     .Build();
 ```
 
-## ThenInclude - Nested Navigation Properties
+### `ThenInclude` - nested navigation properties
 
 The `ThenInclude` feature enables type-safe chaining of navigation properties for eager loading deeply nested entity graphs.
 
-### Basic Usage
+#### Basic usage
 
 **Reference Navigation** (single related entity):
 ```csharp
@@ -1644,7 +1677,7 @@ var filterModel = FilterModelBuilder.For<Customer>()
 
 Supports all common collection types: `IEnumerable<T>`, `ICollection<T>`, `IReadOnlyCollection<T>`, `IReadOnlyList<T>`, `List<T>`.
 
-### Multiple Include Chains
+#### Multiple include chains
 
 ```csharp
 var filterModel = FilterModelBuilder.For<Order>()
@@ -1657,7 +1690,7 @@ var filterModel = FilterModelBuilder.For<Order>()
     .Build();
 ```
 
-### Conditional Includes
+#### Conditional includes
 
 ```csharp
 var filterModel = FilterModelBuilder.For<Product>()
@@ -1668,7 +1701,7 @@ var filterModel = FilterModelBuilder.For<Product>()
 
 When `condition: false`, all subsequent ThenIncludes in that chain are skipped.
 
-### Integration with Filters and Ordering
+#### Integration with filters and ordering
 
 ThenInclude works seamlessly with other builder methods:
 
@@ -1682,7 +1715,7 @@ var filterModel = FilterModelBuilder.For<Customer>()
     .Build();
 ```
 
-### Example
+#### Example
 
 ```csharp
 var filterModel = FilterModelBuilder.For<Order>()
@@ -1698,10 +1731,9 @@ var filterModel = FilterModelBuilder.For<Order>()
     .Build();
 ```
 
-# Appendix D: Disclaimer
+## Appendix D: disclaimer
 
-> This Filtering feature described here is designed to provide a pragmatic, flexible filtering
-> solution for REST APIs and Repositories.
+The Filtering feature provides a structured filtering model for REST APIs and repositories.
 
 It is not intended to replace or compete with comprehensive query technologies like:
 
@@ -1710,10 +1742,9 @@ It is not intended to replace or compete with comprehensive query technologies l
 - **OData**: A standardized protocol for building and consuming RESTful APIs with rich query
   capabilities
 
-## When to Use the Filtering Feature
+### When to use the Filtering feature
 
-- When already using the bITdevKit ecosystem, providing seamless integration with its repository
-  and specification patterns
+- When already using bITdevKit repository and specification patterns
 - For REST APIs needing structured filtering
 - When requiring a balance between flexibility and simplicity
 - Need for a typed, maintainable filtering solution without the overhead of implementing larger
@@ -1721,8 +1752,7 @@ It is not intended to replace or compete with comprehensive query technologies l
 
 If the application requires complex schema definitions, introspection, or full query language
 capabilities, consider using GraphQL or OData instead. The Filtering feature focuses on providing a
-straightforward, typed approach to common filtering scenarios while maintaining REST principles and
-leveraging DevbITdevKitKit features.
+structured approach to common filtering scenarios while using bITdevKit repository and specification features.
 
 Remember: Choose the simplest tool that meets your requirements. The feature provides a
 lightweight, code-based approach to handle filtering, while staying consistent with

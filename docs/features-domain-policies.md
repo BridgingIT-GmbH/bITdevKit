@@ -1,4 +1,4 @@
-# Domain Policies Feature Documentation
+# Domain policies
 
 > Encapsulate domain decisions as reusable, context-aware policy objects.
 
@@ -17,9 +17,37 @@ In bITdevKit, a domain policy:
 
 The feature is meant for domain-level decision logic, not infrastructure authorization policies and not low-level fluent validation. It complements [Rules](./features-rules.md) and [Results](./features-results.md) rather than replacing them.
 
-## When To Use It
+## Challenges
 
-Domain policies are a good fit when:
+Some business decisions depend on several domain objects and need more context than a single
+predicate. Callers may also need to skip inapplicable decisions, aggregate several failures, stop at
+the first failure, or retain a typed output from each decision.
+
+## Solution
+
+An `IDomainPolicy<TContext>` separates applicability from evaluation. `DomainPolicies.ApplyAsync`
+executes enabled policies in order and produces a `DomainPolicyResult<TContext>` with combined
+messages, errors, and per-policy values.
+
+## Key Features
+
+- Asynchronous applicability and evaluation
+- Reusable context-specific policy classes
+- Continue, stop, or throw processing modes
+- Aggregated messages and errors
+- Typed per-policy values keyed by policy type
+- Compatibility with the shared `IResult` contract
+
+## Architecture
+
+`IDomainPolicy<TContext>` defines `IsEnabledAsync` and `ApplyAsync`.
+`DomainPolicyBase<TContext>` enables a policy by default. `DomainPolicies` evaluates policy arrays
+sequentially, combines each `IResult`, and records its value in `DomainPolicyResults<TContext>`.
+`DomainPolicyProcessingMode` controls what happens after a failed policy.
+
+## Use Cases
+
+Use domain policies when:
 
 - a business decision spans multiple entities or value objects
 - the check needs a dedicated context object rather than a single input value
@@ -29,7 +57,50 @@ Domain policies are a good fit when:
 
 Typical examples are eligibility checks, approval preconditions, order-placement constraints, or workflow transition rules.
 
-## Core Building Blocks
+## Basic Usage
+
+The following example applies one policy, checks the result before continuing, and prints the
+outcome:
+
+```csharp
+var context = new CheckoutContext(CustomerIsActive: true);
+var result = await DomainPolicies.ApplyAsync(
+	context,
+	new ActiveCustomerPolicy(),
+	CancellationToken.None);
+
+if (result.IsFailure)
+{
+	var details = result.Messages.Concat(result.Errors.Select(error => error.Message));
+	Console.Error.WriteLine(string.Join(Environment.NewLine, details));
+	return;
+}
+
+Console.WriteLine("Checkout policies passed.");
+
+public sealed record CheckoutContext(bool CustomerIsActive);
+
+public sealed class ActiveCustomerPolicy : DomainPolicyBase<CheckoutContext>
+{
+	public override Task<IResult> ApplyAsync(
+		CheckoutContext context,
+		CancellationToken cancellationToken = default)
+	{
+		return Task.FromResult<IResult>(
+			context.CustomerIsActive
+				? Result.Success()
+				: Result.Failure().WithMessage("Customer must be active."));
+	}
+}
+```
+
+Output:
+
+```text
+Checkout policies passed.
+```
+
+## Core building blocks
 
 ### `IDomainPolicy<TContext>`
 
@@ -38,7 +109,7 @@ This is the core contract:
 - `IsEnabledAsync(...)` decides whether the policy should run for the supplied context
 - `ApplyAsync(...)` performs the actual business check and returns an `IResult`
 
-That separation is important because some policies are conditional rather than universally applicable.
+This separation allows a policy to be skipped for contexts where it does not apply.
 
 ### `DomainPolicyBase<TContext>`
 
@@ -65,7 +136,7 @@ When applying multiple policies, you can choose how failures are handled:
 - `StopOnPolicyFailure`: stop at the first failure and return the partial result
 - `ThrowOnPolicyFailure`: raise a `DomainPolicyException` on the first failure
 
-## Basic Usage
+## Policy definitions
 
 ### Define a policy context
 
@@ -124,7 +195,7 @@ public sealed class LargeOrderApprovalPolicy : DomainPolicyBase<CheckoutContext>
 }
 ```
 
-## Executing Policies
+## Executing policies
 
 ### Single policy
 
@@ -150,13 +221,13 @@ var result = await DomainPolicies.ApplyAsync(
 
 If a policy is disabled through `IsEnabledAsync(...)`, it is skipped and does not contribute to the aggregated result.
 
-## Returning Policy-Specific Values
+## Returning policy-specific values
 
 Policies are not limited to plain success/failure. Because `ApplyAsync(...)` returns `IResult`, a policy can return `Result<T>` or `DomainPolicyResult<T>`, and `DomainPolicies` stores the underlying value in `PolicyResults`.
 
 That makes policies useful for decision outputs such as risk scores, approval levels, or computed limits.
 
-Conceptually:
+If `LargeOrderApprovalPolicy.ApplyAsync` returns a `Result<ApprovalLevel>`, retrieve that value with:
 
 ```csharp
 var approvalLevel = result.PolicyResults
@@ -165,7 +236,10 @@ var approvalLevel = result.PolicyResults
 
 This lets one policy set produce both validation failures and domain decision data.
 
-## Failure Handling
+Values are keyed by the concrete policy type. If the same policy type runs more than once in one
+call, the later value replaces the earlier value.
+
+## Failure handling
 
 ### Continue
 
@@ -177,9 +251,11 @@ Use `StopOnPolicyFailure` when later policies depend on earlier policies being s
 
 ### Throw
 
-Use `ThrowOnPolicyFailure` when a policy violation should escape as an exception. In that case the framework throws `DomainPolicyException`, which carries the underlying result and integrates naturally with the presentation-layer exception handling documented in [Exception Handling](./features-presentation-exception-handling.md).
+Use `ThrowOnPolicyFailure` when a policy violation should escape as an exception. In that case the
+framework throws `DomainPolicyException`, which carries the aggregated result and can be handled by
+the presentation-layer exception handling documented in [Exception Handling](./features-presentation-exception-handling.md).
 
-## Domain Policies vs Rules
+## Domain policies and rules
 
 Use domain policies when:
 
@@ -194,9 +270,9 @@ Use [Rules](./features-rules.md) when:
 - the checks are mostly local predicates
 - you want inline rule composition rather than named policy objects
 
-These features work well together. A domain policy can internally use the Rules feature and then return a `Result`.
+A domain policy can use the Rules feature internally and return its `Result`.
 
-## Relationship To Other Features
+## Relationship to other features
 
 - [Domain](./features-domain.md) covers aggregates, value objects, typed ids, and fluent aggregate changes.
 - [Results](./features-results.md) explains the result model used by domain policies.

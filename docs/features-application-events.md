@@ -1,4 +1,4 @@
-# Application Events Feature Documentation
+# Application events
 
 > Publish and handle application-layer events through `INotifier` with explicit `Result`-based outcomes.
 
@@ -18,17 +18,6 @@ In bITdevKit, application events are built on the `Notifier` infrastructure. Tha
 - a low-boilerplate source-generated authoring model through `[Event]`
 
 This page focuses on application-layer events published intentionally from services, handlers, or endpoints. These are not the same as domain events raised from aggregates. For domain-originated events, see [Domain Events](./features-domain-events.md).
-
-### When To Use Application Events
-
-Application events work well when:
-
-- a command or endpoint needs to trigger several in-process follow-up actions
-- the publisher should not depend on concrete subscribers
-- the work belongs to the application layer rather than the domain model
-- handlers should use the same validation and resiliency pipeline as other app-layer interactions
-
-Application events are a good fit for orchestration and side effects inside one application process. If you need durable cross-process delivery, see [Messaging](./features-messaging.md). If you need aggregate-originated business events, see [Domain Events](./features-domain-events.md).
 
 ## Challenges
 
@@ -50,15 +39,63 @@ The application-events approach uses the existing notifier building blocks:
 
 Handlers return `Result`, which keeps success, failure, messages, and typed errors explicit. See [Results](./features-results.md) for the underlying outcome model and [Requester and Notifier](./features-requester-notifier.md) for the runtime infrastructure.
 
-## Setup
+## Key Features
+
+- Fan-out from one event to multiple handlers
+- Source-generated handlers from `[Event]` and `[Handle]`
+- Manual and generated handlers for the same event type
+- Generated property and FluentValidation rules
+- Ordered notifier pipeline behaviors and handler policies
+- Aggregated `IResult` outcomes returned to the publisher
+
+## Architecture
+
+`INotifier` discovers every handler for the concrete event type. Notification behaviors wrap the
+publication, and handler behaviors wrap individual subscribers. The notifier combines handler
+outcomes into the `IResult` returned to the publisher.
+
+```mermaid
+flowchart LR
+    Publisher[Application service or endpoint]
+    Notifier[INotifier]
+    Pipeline[Notification behaviors]
+    Audit[Audit handler]
+    Email[Email handler]
+    Metrics[Metrics handler]
+    Result[Aggregated Result]
+
+    Publisher --> Notifier --> Pipeline
+    Pipeline --> Audit
+    Pipeline --> Email
+    Pipeline --> Metrics
+    Audit --> Result
+    Email --> Result
+    Metrics --> Result
+    Result --> Publisher
+```
+
+## Use Cases
+
+Application events work well when:
+
+- a command or endpoint needs to trigger several in-process follow-up actions
+- the publisher should not depend on concrete subscribers
+- the work belongs to the application layer rather than the domain model
+- handlers should use the same validation and resiliency pipeline as other application interactions
+
+Use application events for orchestration and side effects inside one application process. For durable
+cross-process delivery, see [Messaging](./features-messaging.md). For aggregate-originated business
+events, see [Domain Events](./features-domain-events.md).
+
+## Basic Usage
 
 Register the notifier in the dependency injection container:
 
 ```csharp
 services.AddNotifier()
     .AddHandlers()
-    .WithBehavior<ValidationPipelineBehavior<,>>()
-    .WithBehavior<RetryPipelineBehavior<,>>();
+    .WithBehavior(typeof(ValidationPipelineBehavior<,>))
+    .WithBehavior(typeof(RetryPipelineBehavior<,>));
 ```
 
 If you want to use the source-generated authoring model, add the code generation package to the project that contains the events:
@@ -69,9 +106,37 @@ If you want to use the source-generated authoring model, add the code generation
                   PrivateAssets="all" />
 ```
 
-## Basic Usage
+After defining `UserRegisteredEvent` as shown below, publish it and inspect the aggregated result:
 
-### Defining An Application Event
+```csharp
+var result = await notifier.PublishAsync(
+    new UserRegisteredEvent
+    {
+        UserId = "5f6b5ba2-85d5-44bb-87a7-f876a65cdb09",
+        Email = "ada@example.test"
+    },
+    cancellationToken: cancellationToken);
+
+if (result.IsFailure)
+{
+    Console.Error.WriteLine(string.Join(
+        Environment.NewLine,
+        result.Errors.Select(error => error.Message)));
+    return;
+}
+
+Console.WriteLine("User registration handlers completed.");
+```
+
+After all handlers succeed, the final line is:
+
+```text
+User registration handlers completed.
+```
+
+## Authoring application events
+
+### Defining an application event
 
 The lowest-boilerplate authoring model uses `[Event]` and one or more `[Handle]` methods:
 
@@ -115,9 +180,10 @@ public partial class UserRegisteredEvent
 }
 ```
 
-Each `[Handle]` method becomes its own generated `NotificationHandlerBase<UserRegisteredEvent>` implementation. That means one event can fan out to multiple generated subscribers without additional ceremony.
+Each `[Handle]` method becomes its own generated `NotificationHandlerBase<UserRegisteredEvent>`
+implementation, so one event can fan out to multiple generated subscribers.
 
-### Manual Handlers Still Work
+### Manual handlers
 
 Source-generated and manual handlers can be mixed freely:
 
@@ -137,7 +203,7 @@ public class UserRegisteredMetricsHandler : NotificationHandlerBase<UserRegister
 
 When `INotifier.PublishAsync(...)` is called, the generated handlers and the manual handler above all run under the normal notifier execution rules.
 
-### Publishing An Event
+### Publishing an event
 
 Inject `INotifier` anywhere in the application layer that needs to publish the event:
 
@@ -159,7 +225,7 @@ public class RegistrationService(INotifier notifier)
 }
 ```
 
-The returned `Result` aggregates the notifier outcome, which makes failure handling explicit at the call site.
+The returned `IResult` aggregates the notifier outcome, which makes failure handling explicit at the call site.
 
 ## Validation
 
@@ -210,7 +276,7 @@ public partial class CustomerImportCompletedEvent
 
 The generated validator is picked up by the normal notifier validation pipeline, so the event authoring model stays aligned with commands and queries.
 
-## Handler Parameters And Behaviors
+## Handler parameters and behaviors
 
 `[Handle]` methods can declare:
 
@@ -244,7 +310,7 @@ public partial class ReportGeneratedEvent
 
 For runtime execution modes such as sequential, concurrent, or fire-and-forget publication, see [Requester and Notifier](./features-requester-notifier.md).
 
-## Application Events vs Domain Events
+## Application events and domain events
 
 Use application events when the application layer decides to publish a follow-up signal.
 
@@ -264,9 +330,9 @@ The distinction keeps domain logic and application orchestration separate. For t
 - Additional manual `INotificationHandler<TEvent>` subscribers remain fully supported.
 - `[Handle]` methods must return `Result` or `Task<Result>`.
 - If the event does not inherit `NotificationBase`, the generator adds it automatically.
-- Publishing returns `Result`, which is useful when handlers need to surface failure information to the caller.
+- Publishing returns `IResult`, while individual handlers return `Result`.
 
-## Relationship To Other Features
+## Relationship to other features
 
 - [Requester and Notifier](./features-requester-notifier.md) covers the underlying runtime dispatching model, behaviors, and source-generated event appendix.
 - [Results](./features-results.md) explains the `Result` abstraction used by event handlers and publishers.

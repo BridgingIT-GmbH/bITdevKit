@@ -1,4 +1,4 @@
-# Console Commands Feature Documentation
+# Console Commands
 
 > Expose operational and administrative actions through discoverable console commands and an interactive shell.
 
@@ -11,9 +11,9 @@ The Console Commands feature provides an integrated, extensible command executio
 1. Non-interactive command execution ("single-shot") suitable for automation, scripting, diagnostics or administrative tasks at startup.
 2. Interactive in-process console ("interactive shell") that runs alongside a locally hosted ASP.NET Core application using Kestrel.
 
-Commands are lightweight classes derived from `ConsoleCommandBase` and discovered through dependency injection. They expose arguments and options via attributes, support grouped subcommand hierarchies, leverage Spectre.Console for rich terminal output and share a uniform binding & help system managed by the internal `ConsoleCommandBinder`.
+Commands are lightweight classes derived from `ConsoleCommandBase` and registered through dependency injection. They expose arguments and options through attributes, support grouped subcommand hierarchies, use Spectre.Console for terminal output and share binding and help behavior through `ConsoleCommandExecutor` and `ConsoleCommandBinder`.
 
-### Challenges
+## Challenges
 
 Modern local development and operational workflows often face:
 
@@ -23,12 +23,12 @@ Modern local development and operational workflows often face:
 - Difficulties in adding structured, option-rich commands without verbose parsing code.
 - Need for both interactive exploration and automation-friendly single-run invocation.
 
-### Solution
+## Solution
 
 The feature addresses these challenges by supplying:
 
 - A unified command abstraction (`IConsoleCommand`) with a lean base class (`ConsoleCommandBase`).
-- Attribute-driven option & argument binding (`ConsoleCommandOptionAttribute`, `ConsoleCommandArgumentAttribute`).
+- Attribute-driven option and argument binding (`ConsoleCommandOptionAttribute`, `ConsoleCommandArgumentAttribute`).
 - Grouped subcommands (`IGroupedConsoleCommand`) enabling hierarchical organization (e.g. `history list`, `diag perf`).
 - Automatic help generation and validation errors through a central binder.
 - Interactive loop with history persistence and restart support for local development.
@@ -37,7 +37,7 @@ The feature addresses these challenges by supplying:
 - Extensible registration via fluent builders (`AddConsoleCommands`, `AddConsoleCommandsInteractive`).
 - Spectre.Console-based formatting (tables, markup, rules) for clear developer feedback.
 
-### Use Cases
+### Use case catalog
 
 | Scenario | Description | Example |
 | ---------- | ------------- | --------- |
@@ -49,6 +49,15 @@ The feature addresses these challenges by supplying:
 | Console theme selection | Change the native console prompt and console log colors | `console theme` `console theme matrix` |
 | GC experimentation | Force collections in development to validate memory patterns | `diag gc --force` |
 | Extension via custom commands | Project-specific automation (seed data, cache warmup, export) | `seed data --count=50` |
+
+## Key Features
+
+- Shared command contracts for single-shot and interactive execution.
+- Attribute-based binding for positional arguments, named options, aliases, required values and defaults.
+- Grouped command hierarchies such as `history list` and `diag perf`.
+- Consistent help, validation and result handling through `ConsoleCommandExecutor` and `ConsoleCommandBinder`.
+- Persistent history, console themes and development-only restart support for interactive hosts.
+- Spectre.Console output for tables, markup and other terminal components.
 
 ## Architecture
 
@@ -68,7 +77,7 @@ flowchart LR
  H --> I[Spectre.Console Output]
 ```
 
-### Core Components
+### Core components
 
 | Component | Responsibility |
 | ----------- | ---------------- |
@@ -82,9 +91,46 @@ flowchart LR
 | `ConsoleTheme` | Persists and serves the native console theme used by prompts and console log output. |
 | Diagnostic helpers (diag group) | Aggregated runtime tables (`DiagnosticTablesBuilder`). |
 
-## Setup
+## Use Cases
 
-### Register Non-Interactive Commands (Console)
+Use Console Commands to expose local diagnostics, maintenance operations and application-specific developer tools through one command model. Single-shot hosts suit scripts and CI tasks. The interactive loop suits local ASP.NET Core development. The [use case catalog](#use-case-catalog) lists representative commands.
+
+## Basic Usage
+
+Register a command, build the host and pass the process arguments to `ConsoleCommandExecutor`. Check the returned result so the process reports failure to its caller.
+
+```csharp
+using BridgingIT.DevKit.Presentation;
+using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
+
+var builder = DevKitApplication.CreateBuilder(args, builder => builder
+    .AddConsoleCommands(commands => commands
+        .WithCommand<EchoConsoleCommand>()));
+
+using var host = builder.Build();
+var console = host.Services.GetRequiredService<IAnsiConsole>();
+var executor = new ConsoleCommandExecutor();
+var result = await executor.ExecuteAsync(
+    args,
+    console,
+    host.Services,
+    ConsoleCommandExecutionSource.Terminal);
+
+return result.Succeeded ? 0 : 1;
+```
+
+With the example command defined below, this invocation writes two numbered uppercase lines and exits with code `0`:
+
+```bash
+app echo "hello" --repeat=2 --upper
+```
+
+Unknown commands and binding errors write help or error details and return a failed result, allowing the process to exit with code `1`.
+
+## Detailed setup
+
+### Register non-interactive commands
 
 Use when you need single-run invocation (e.g. hosted service executing a command supplied via args).
 
@@ -96,8 +142,15 @@ var builder = DevKitApplication.CreateBuilder(args, builder => builder
     }));
 
 using var host = builder.Build();
+var console = host.Services.GetRequiredService<IAnsiConsole>();
+var executor = new ConsoleCommandExecutor();
+var result = await executor.ExecuteAsync(
+    args,
+    console,
+    host.Services,
+    ConsoleCommandExecutionSource.Terminal);
 
-return await ConsoleCommands.RunAsync(host.Services, args);
+return result.Succeeded ? 0 : 1;
 ```
 
 `DevKitApplication` keeps local CLI host advertisement disabled by default, so single-shot console command applications do not need to opt out of descriptor writing.
@@ -124,7 +177,7 @@ builder.Services.AddConsoleCommands(cfg =>
 
 Use `docs` to open the official documentation in the default browser, or `docs --url` to write the URL without opening a browser. The packaged `bdk docs` command uses this same shared command with CLI-specific JSON and CI behavior layered around it.
 
-### Register Interactive Commands (Kestrel)
+### Register interactive commands
 
 Enable the interactive loop for local development.
 
@@ -138,40 +191,55 @@ var app = builder.Build();
 app.UseConsoleCommandsInteractive();
 ```
 
-### Environment Constraints
+### Environment constraints
 
 The interactive loop is automatically bypassed in non-development environments (local checks).
 
-## Command Definition
+## Command definition
 
-### Options & Arguments
+### Options and arguments
 
 Annotate public properties:
 
 - `ConsoleCommandOptionAttribute`: Named option (`--name value` or short alias `-n value`) plus optional default.
 - `ConsoleCommandArgumentAttribute`: Positional argument by index.
 
-Binding Rules:
+Binding rules:
 
 - Booleans are treated as flags (presence => true unless explicitly `false`).
 - Missing required options/arguments produce binder errors and detailed help output.
 - Unrecognized tokens yield validation feedback.
 
-### Example: Simple Echo Command
+### Example: simple echo command
 
 ```csharp
 public class EchoConsoleCommand : ConsoleCommandBase
 {
- [ConsoleCommandArgument(0, Description = "Text to echo", Required = true)] public string Text { get; set; }
- [ConsoleCommandOption("repeat", Alias = "r", Description = "Repeat count", Default =1)] public int Repeat { get; set; }
- [ConsoleCommandOption("upper", Alias = "u", Description = "Uppercase output")] public bool Upper { get; set; }
- public EchoConsoleCommand() : base("echo", "Echo text with optional repetition") { }
- public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services)
- {
-  var output = Upper ? Text.ToUpperInvariant() : Text;
-  for (var i =0; i < Repeat; i++) console.MarkupLine($"[green]{Markup.Escape(output)}[/]");
-  return Task.CompletedTask;
- }
+    [ConsoleCommandArgument(0, Description = "Text to echo", Required = true)]
+    public string Text { get; set; }
+
+    [ConsoleCommandOption("repeat", Alias = "r", Description = "Repeat count", Default = 1)]
+    public int Repeat { get; set; }
+
+    [ConsoleCommandOption("upper", Alias = "u", Description = "Uppercase output")]
+    public bool Upper { get; set; }
+
+    public EchoConsoleCommand()
+        : base("echo", "Echo text with optional repetition") { }
+
+    public override Task ExecuteAsync(
+        IAnsiConsole console,
+        IServiceProvider services,
+        CancellationToken cancellationToken = default)
+    {
+        var output = this.Upper ? this.Text.ToUpperInvariant() : this.Text;
+        for (var i = 0; i < this.Repeat; i++)
+        {
+            console.MarkupLine($"[green]{Markup.Escape(output)}[/]");
+        }
+
+        return Task.CompletedTask;
+    }
 }
 ```
 
@@ -181,7 +249,7 @@ Usage:
 echo "hello world" --repeat=3 --upper
 ```
 
-### Example: Grouped Command (history)
+### Example: grouped command
 
 Grouped commands share a `GroupName` token followed by subcommand names.
 
@@ -193,11 +261,11 @@ history search restart
 
 Each subcommand class implements `IGroupedConsoleCommand` and supplies its own `Name` / `Description` while inheriting group metadata.
 
-### Life Cycle Hook
+### Lifecycle hook
 
 `OnAfterBind(console, tokens)` allows post-binding adjustment / validation (e.g. deriving repeat count from another option).
 
-## Interactive Mode
+## Interactive mode
 
 ### Launch
 
@@ -207,13 +275,13 @@ When registered and running locally, a banner appears and the loop waits for use
 - `quit` / `exit` / `q`: graceful shutdown.
 - `restart`: development-only restart (spawns new process, sets environment marker).
 
-### Help System
+### Help system
 
 - `help` lists all commands and grouped subcommands.
 - `help history` shows group subcommands.
 - `help history list` shows detailed option/argument help for a specific subcommand.
 
-### History Management
+### History management
 
 | Command | Purpose |
 | --------- | --------- |
@@ -221,37 +289,49 @@ When registered and running locally, a banner appears and the loop waits for use
 | `history search cache` | Find entries containing a substring. |
 | `history clear --keep-last=10` | Trim or fully clear persisted history file. |
 
-### Restart Flow
+### Restart flow
 
 `restart` (development only) sets a transient environment variable to prevent nested restarts, spawns a new instance then stops current process.
 
-## Diagnostics (diag Group)
+## Diagnostics (`diag` group)
 
 The `diag` group centralizes point-in-time runtime introspection.
 
 | Subcommand | Description | Key Metrics |
 | ------------ | ------------- | ------------- |
-| `diag gc [--force]` | GC memory & collections; optional full collection. | Heap size, fragmented bytes, gen counts. |
-| `diag threads` | Thread pool configuration & usage. | Min/max/available/used, pending work items. |
-| `diag mem` | Detailed process & managed memory summary. | Working set, private bytes, heap, fragment. |
+| `diag gc [--force]` | GC memory and collections; optional full collection in Development. | Heap size, fragmented bytes, generation counts. |
+| `diag threads` | Thread pool configuration and usage. | Min/max/available/used, pending work items. |
+| `diag mem` | Detailed process and managed memory summary. | Working set, private bytes, heap, fragment. |
 | `diag perf` | Aggregate performance snapshot. | CPU %, avg latency, request/failure counts. |
-| `diag env` | Runtime & environment info. | Framework, OS, arch, GC mode, build config. |
+| `diag env` | Runtime and environment information. | Framework, OS, architecture, GC mode, build configuration. |
 
 All output is tabular via Spectre.Console for readability and consistent formatting.
 
-## Non-Interactive Invocation
+## Non-interactive invocation
 
 You can host commands in a console entry point to perform a single operation based on command-line args:
 
 ```csharp
-var line = string.Join(' ', args);
-var tokens = Split(line);
-// Resolve registered IConsoleCommand services and execute matching command (reuse binder).
+var console = host.Services.GetRequiredService<IAnsiConsole>();
+var executor = new ConsoleCommandExecutor();
+var result = await executor.ExecuteAsync(
+    args,
+    console,
+    host.Services,
+    ConsoleCommandExecutionSource.Terminal,
+    cancellationToken);
+
+if (!result.Succeeded)
+{
+    return 1;
+}
+
+return 0;
 ```
 
-This approach enables automation (CI tasks, maintenance jobs) while reusing the exact same command implementations as interactive mode.
+The executor handles quoted input, grouped commands, scoped dependency resolution, binding, help output, history and execution failures. This approach enables automation (CI tasks, maintenance jobs) while reusing the same command implementations as interactive mode.
 
-## Error Handling & Validation
+## Error handling and validation
 
 - Binding errors enumerate missing or invalid tokens and automatically print detailed help.
 - Execution exceptions are caught and rendered in red markup with the message only (stack framing left to external logging).
@@ -259,22 +339,22 @@ This approach enables automation (CI tasks, maintenance jobs) while reusing the 
 
 ## Extensibility
 
-### Add Custom Commands
+### Add custom commands
 
 1. Create a class deriving `ConsoleCommandBase` (or implementing `IGroupedConsoleCommand` for groups).
 2. Decorate properties with option / argument attributes.
 3. Register via builder (`cfg.WithCommand<YourCommand>()`).
 4. Implement `ExecuteAsync` producing Spectre.Console output (tables, markup, panels).
 
-### Introduce New Groups
+### Introduce new groups
 
 Group multiple related sub-operations (e.g. `cache warm`, `cache stats`). Provide a consistent `GroupName` and optional aliases. Each subcommand remains small and focused.
 
-### Share Utilities
+### Share utilities
 
 Refactor repeated metrics/data gathering into internal static helper classes (similar to `DiagnosticTablesBuilder`) to keep execution methods lean.
 
-## Best Practices
+## Best practices
 
 | Practice | Recommendation |
 | ---------- | --------------- |
@@ -299,32 +379,32 @@ Refactor repeated metrics/data gathering into internal static helper classes (si
 | Restart does nothing | Already restarting or not development | Clear marker env var; verify environment name. |
 | History empty | First run or file inaccessible | Execute multiple commands; check temp path permissions. |
 | GC metrics static | `--no-collect` or insufficient allocations | Use commands that allocate or force collection where permitted. |
-| High failure counts | Underlying app endpoints returning5xx | Investigate application logs; metrics only report counts. |
-| CPU% shows0 | Very short uptime vs sampling | Wait a few seconds and re-run `diag perf`. |
+| High failure counts | Underlying application endpoints return 5xx responses | Investigate application logs; metrics only report counts. |
+| CPU percentage shows zero | Uptime is too short for a representative sample | Wait a few seconds and run `diag perf` again. |
 
-## Advanced Topics
+## Advanced topics
 
-### Integrating With External Scripts
+### Integrating with external scripts
 
 Non-interactive commands can be wrapped by shell scripts or scheduled tasks (e.g. Windows Task Scheduler) by passing the command tokens as part of process args. Consistent parsing semantics ensure parity with interactive usage.
 
-### Custom Output Formats
+### Custom output formats
 
 While tables are recommended, commands may output JSON for machine consumption. Provide a `--json` option where appropriate and serialize with indentation for clarity.
 
-### Security Considerations
+### Security considerations
 
 Do not expose interactive console capabilities in production internet-facing environments. Group names or command names should not leak sensitive operational intentions. Restrict potentially destructive commands via environment checks and role guards if extended.
 
-### Future Extensions (Suggested Roadmap)
+### Future extensions (suggested roadmap)
 
 - Latency distribution and percentiles in `diag perf`.
 - Endpoint-specific HTTP statistics (per route breakdown).
-- Snapshot diff & export (`diag diff`, `diag export`).
+- Snapshot comparison and export (`diag diff`, `diag export`).
 - Tracing capture (`diag trace`).
 - Pluggable authorization for privileged commands.
 
-## Appendix A: Command Lifecycle (Interactive)
+## Appendix A: command lifecycle (interactive)
 
 ```mermaid
 sequenceDiagram
@@ -349,16 +429,16 @@ sequenceDiagram
 end
 ```
 
-## Appendix B: Key Interfaces & Base Class
+## Appendix B: key interfaces and base class
 
 | Type | Summary |
 | ------ | --------- |
 | `IConsoleCommand` | Name, aliases, description, matching, lifecycle hook, async execution. |
-| `IGroupedConsoleCommand` | Extends command with group identity & aliases for hierarchical invocation. |
+| `IGroupedConsoleCommand` | Extends a command with a group identity and aliases for hierarchical invocation. |
 | `ConsoleCommandBase` | Implements common plumbing; derived classes only override `ExecuteAsync`. |
 | `ConsoleCommandBinder` | Discovers annotated properties, parses tokens, assigns values, emits help. |
 
-## Appendix C: Example Group Design
+## Appendix C: example group design
 
 ```bash
 Group: diag
@@ -367,22 +447,21 @@ Goal: Centralize diagnostics; each subcommand returns one cohesive table.
 Additions (future): heap, latency, http, allocations, exceptions.
 ```
 
-## Appendix D: Non-Interactive Pattern
+## Appendix D: non-interactive pattern
 
 Minimal bootstrap for executing a single command outside interactive mode:
 
 ```csharp
-using var scope = host.Services.CreateScope();
-var all = scope.ServiceProvider.GetServices<IConsoleCommand>();
-var tokens = args; // already split
-var primary = tokens.FirstOrDefault();
-var cmd = all.FirstOrDefault(c => c.Matches(primary));
-if (cmd == null) return;
-var bindTokens = tokens.Skip(1).ToArray();
-var (ok, errors) = ConsoleCommandBinder.TryBind(cmd, bindTokens);
-if (!ok) { /* print help */ return; }
+var console = host.Services.GetRequiredService<IAnsiConsole>();
+var executor = new ConsoleCommandExecutor();
+var result = await executor.ExecuteAsync(
+    args,
+    console,
+    host.Services,
+    ConsoleCommandExecutionSource.Terminal,
+    cancellationToken);
 
-await cmd.ExecuteAsync(console, scope.ServiceProvider);
+return result.Succeeded ? 0 : 1;
 ```
 
 ## Disclaimer

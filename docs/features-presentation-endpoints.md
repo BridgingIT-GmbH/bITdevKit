@@ -1,4 +1,5 @@
-# Presentation Endpoints Feature Documentation
+
+# Presentation Endpoints
 
 > Define minimal API endpoints as modular classes with automatic discovery and mapping.
 
@@ -8,52 +9,118 @@
 
 The Endpoints feature provides a clean, modular way to define Minimal API endpoints as composable classes. Each endpoint set implements a small contract and can be registered and mapped automatically, with configurable route groups, OpenAPI metadata, authorization, CORS, rate limiting, and discovery via DI scanning.
 
-### Challenges
+## Challenges
 
 - Modularity: Keep endpoint definitions isolated per feature or module.
 - Discovery: Register endpoints without manual wiring for each class.
 - Consistency: Apply route grouping, endpoint metadata, authorization, CORS, and rate limiting consistently across endpoints.
 - Observability: Log registration to aid debugging in multi-module apps.
 
-### Solution
+## Solution
 
 - Contracts: `IEndpoints` defines the minimal surface; `EndpointsBase` provides group and route-name helpers.
 - Registration: DI helpers add endpoints by type, instance, or assembly scanning.
 - Mapping: A single `MapEndpoints()` call maps all registered endpoints.
 - Group configuration: `EndpointsOptionsBase` and `EndpointsOptionsBuilderBase` centralize group path, tags, OpenAPI metadata, authorization, CORS, rate limiting, route naming, and custom metadata.
 
-## Core Contracts
+## Key Features
 
-- `IEndpoints` ([src/Presentation.Web/Endpoints/IEndpoints.cs](src/Presentation.Web/Endpoints/IEndpoints.cs))
+- endpoint sets implemented as independent `IEndpoints` classes
+- explicit, instance-based, and assembly-scanned DI registration
+- one `MapEndpoints()` call with duplicate-mapping protection
+- shared route grouping, naming, OpenAPI, authorization, CORS, and rate-limiting options
+- optional mapping beneath an existing `RouteGroupBuilder`
+- Result-to-Minimal-API response helpers
+
+## Architecture
+
+Endpoint classes are singleton `IEndpoints` services. Each class maps its own routes, usually through `EndpointsBase.MapGroup(...)`. At startup, `MapEndpoints()` resolves every enabled, unmapped endpoint set from DI, calls `Map(...)`, and marks that instance as registered.
+
+## Use Cases
+
+- keep one module's routes together without central route wiring
+- discover endpoint sets from one or more assemblies
+- apply shared authorization and cross-cutting metadata to a route group
+- map DevKit `Result` values to consistent Minimal API responses
+- mount all registered endpoints under an application-level route group
+
+## Basic Usage
+
+This example defines an endpoint set, registers its options and endpoint type, maps all endpoint sets once, and returns a visible response.
+
+```csharp
+using BridgingIT.DevKit.Presentation.Web;
+using Microsoft.AspNetCore.Routing;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddSingleton<EchoEndpointsOptions>();
+builder.Services.AddEndpoints<EchoEndpoints>();
+
+var app = builder.Build();
+app.MapEndpoints();
+app.Run();
+
+public sealed record EchoResponse(string Message);
+
+public sealed class EchoEndpoints(EchoEndpointsOptions options) : EndpointsBase
+{
+    public override void Map(IEndpointRouteBuilder app)
+    {
+        var group = this.MapGroup(app, options);
+
+        group.MapGet("", (string message = "pong") =>
+                TypedResults.Ok(new EchoResponse(message)))
+            .WithName(options, "Get")
+            .Produces<EchoResponse>();
+    }
+}
+
+public sealed class EchoEndpointsOptions : EndpointsOptionsBase
+{
+    public EchoEndpointsOptions()
+    {
+        this.GroupPath = "/api/echo";
+        this.GroupTag = "Echo";
+        this.RouteNamePrefix = "Echo";
+    }
+}
+```
+
+`GET /api/echo?message=hello` returns `{"message":"hello"}`. Repeated calls to `app.MapEndpoints()` do not remap the same singleton endpoint instance.
+
+## Core contracts
+
+- `IEndpoints` ([src/Presentation.Web/Endpoints/IEndpoints.cs](../src/Presentation.Web/Endpoints/IEndpoints.cs))
   - `Enabled`: Toggle endpoint availability.
   - `IsRegistered`: Prevent duplicate mapping.
   - `Map(IEndpointRouteBuilder)`: Define routes.
-- `EndpointsBase` ([src/Presentation.Web/Endpoints/EndpointsBase.cs](src/Presentation.Web/Endpoints/EndpointsBase.cs))
+- `EndpointsBase` ([src/Presentation.Web/Endpoints/EndpointsBase.cs](../src/Presentation.Web/Endpoints/EndpointsBase.cs))
   - `MapGroup(app, options)`: Build a `RouteGroupBuilder` with path, tags, OpenAPI metadata, authorization, CORS, rate limiting, and custom metadata.
   - `BuildRouteName(options, name)`: Build endpoint names with an optional group-level route name prefix.
   - Common properties: `Enabled`, `IsRegistered`.
-- Endpoint naming extensions ([src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs](src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs))
+- Endpoint naming extensions ([src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs](../src/Presentation.Web/Endpoints/EndpointConventionBuilderExtensions.cs))
   - `WithName(options, name)`: Assign an endpoint name after internally calling `BuildRouteName(options, name)`.
-- `EndpointsOptionsBase` ([src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs](src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs))
+- `EndpointsOptionsBase` ([src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs](../src/Presentation.Web/Endpoints/EndpointsOptionsBase.cs))
   - Routing and docs: `GroupPath`, `NormalizeGroupPath`, `GroupTag`, `GroupTags`, `GroupName`, `Summary`, `Description`, `Deprecated`, `ExcludeFromDescription`.
   - Authorization: `RequireAuthorization`, `AllowAnonymous`, `RequireRoles`, `RequirePolicy`, `RequireAuthenticationSchemes`.
   - Cross-cutting group policies: `RequireCorsPolicy`, `DisableCors`, `RequireRateLimitingPolicy`, `DisableRateLimiting`.
   - Extensibility: `RouteNamePrefix`, `Metadata`.
-- `EndpointsOptionsBuilderBase<TOptions,TBuilder>` ([src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs](src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs))
+- `EndpointsOptionsBuilderBase<TOptions,TBuilder>` ([src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs](../src/Presentation.Web/Endpoints/EndpointsOptionsBuilderBase.cs))
   - Fluent builder base for concrete endpoint options builders.
   - Exposes shared methods such as `GroupPath(...)`, `GroupTag(...)`, `RequirePolicy(...)`, `RequireCorsPolicy(...)`, and `WithMetadata(...)`.
-- `EndpointRouteNamePrefixMetadata` ([src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs](src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs))
+- `EndpointRouteNamePrefixMetadata` ([src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs](../src/Presentation.Web/Endpoints/EndpointRouteNamePrefixMetadata.cs))
   - Stores the configured route-name prefix as endpoint metadata.
   - Endpoint implementations still call `BuildRouteName(options, name)` when assigning names with `WithName(...)`.
-- Registration helpers ([src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs](src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs))
+- Registration helpers ([src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs](../src/Presentation.Web/Endpoints/ServiceCollectionExtensions.cs))
   - `AddEndpoints(assemblies)` / `AddEndpoints(assembly)` / `AddEndpoints<T>()` / `AddEndpoints(endpoints)`.
   - Logs added endpoint types for visibility.
-- Mapping extension ([src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs](src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs))
+- Mapping extension ([src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs](../src/Presentation.Web/Endpoints/ApplicationBuilderExtensions.cs))
   - `MapEndpoints(WebApplication, RouteGroupBuilder?)`: Iterates `IEndpoints` in DI and calls `Map` when `Enabled && !IsRegistered`.
 
-## Architecture
+## Architecture details
 
-### Class Diagram
+### Class diagram
 
 ```mermaid
 classDiagram
@@ -107,7 +174,7 @@ classDiagram
   ApplicationApplicationExtensions ..> IEndpoints : map
 ```
 
-### Sequence (Registration → Mapping)
+### Registration and mapping sequence
 
 ```mermaid
 sequenceDiagram
@@ -127,9 +194,9 @@ sequenceDiagram
   Ext-->>Ep: IsRegistered = true
 ```
 
-## Getting Started
+## Getting started
 
-### DI Registration
+### DI registration
 
 Register endpoints explicitly by type, by instance, or via assembly scanning. Type-based registrations are added as singleton `IEndpoints` services.
 
@@ -142,7 +209,7 @@ services.AddEndpoints<CoreEnumerationEndpoints>();
 services.AddEndpoints(AppDomain.CurrentDomain.GetAssemblies());
 ```
 
-### Mapping in the Pipeline
+### Mapping in the pipeline
 
 Map all registered endpoints once during app startup.
 
@@ -155,7 +222,7 @@ var api = app.MapGroup("/api");
 app.MapEndpoints(api);
 ```
 
-### Grouping and Authorization
+### Grouping and authorization
 
 Use `EndpointsBase.MapGroup(...)` with options to apply path, tags, OpenAPI metadata, authorization, CORS, rate limiting, and custom metadata consistently.
 
@@ -201,21 +268,22 @@ var options = new MyEndpointsOptionsBuilder()
   .Build();
 ```
 
-## Built-in Endpoints
+## Built-in endpoints
 
-- `SystemEndpoints` ([src/Presentation.Web/Endpoints/SystemEndpoints.cs](src/Presentation.Web/Endpoints/SystemEndpoints.cs))
+- `SystemEndpoints` ([src/Presentation.Web/Endpoints/SystemEndpoints.cs](../src/Presentation.Web/Endpoints/SystemEndpoints.cs))
   - Grouped under a configurable `GroupPath`; provides a root discovery route plus optional `echo`, `info`, and `modules` routes.
   - `HideSensitiveInformation` hides host, network, process, runtime, memory, URL, and timezone values from the `info` response.
-  - Options: `SystemEndpointsOptions` ([src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs](src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs)).
-- `LogEntryEndpoints` ([src/Presentation.Web/Logging/LogEntryEndpoints.cs](src/Presentation.Web/Logging/LogEntryEndpoints.cs))
+  - Options: `SystemEndpointsOptions` ([src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs](../src/Presentation.Web/Endpoints/SystemEndpointsOptions.cs)).
+- `LogEntryEndpoints` ([src/Presentation.Web/Logging/LogEntryEndpoints.cs](../src/Presentation.Web/Logging/LogEntryEndpoints.cs))
   - Minimal logging-related endpoints; configured via `LogEntryEndpointsOptions`.
 
-- `JobSchedulingEndpoints` ([src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs](src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs))
+- `JobSchedulingEndpoints` ([src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs](../src/Presentation.Web.JobScheduling/JobSchedulingEndpoints.cs))
   - Job management endpoints: list jobs, get job details, runs (with filters), run stats, triggers.
   - Control endpoints: trigger, pause, resume, interrupt, purge runs.
   - Uses Minimal API method chains: `Produces<T>()`, `WithName(...)`, `WithDescription(...)` for metadata.
 
-## Example Usage
+
+## Detailed example
 
 Define a minimal endpoint using `EndpointsBase` that serves `GET /echo`:
 
@@ -272,7 +340,7 @@ app.MapEndpoints();
 - Route names missing prefix: Use `.WithName(options, name)` or `BuildRouteName(options, name)` when calling `WithName(...)`; the prefix metadata is not applied automatically by ASP.NET Core.
 - Discovery by assembly: Confirm assemblies contain concrete classes implementing `IEndpoints`.
 
-## Appendix A — Minimal API Syntax
+## Appendix A: minimal API syntax
 
 Endpoints follow ASP.NET Core Minimal API conventions via fluent mapping on `RouteGroupBuilder`.
 
@@ -317,7 +385,7 @@ group.MapDelete("items/{id}", async ([FromServices] IRequester requester,
 // Task<Result<TValue>> SendAsync<TValue>(IRequest<TValue> request, SendOptions options = null, CancellationToken ct = default);
 ```
 
-### Grouping and Authorization Options
+### Grouping and authorization options
 
 - Build groups with `EndpointsBase.MapGroup(app, options)` for consistent path, tags, docs metadata, authorization, CORS, rate limiting, and custom metadata.
 - Routing and OpenAPI options:
@@ -347,7 +415,7 @@ group.MapDelete("items/{id}", async ([FromServices] IRequester requester,
   - `Metadata`: attach arbitrary endpoint metadata to the whole group.
 - `ExcludeFromDescription = true`: hide endpoints from OpenAPI description.
 
-### Endpoint Registration and Mapping Lifecycle
+### Endpoint registration and mapping lifecycle
 
 1. Register endpoint instances, types, or assemblies with `AddEndpoints(...)`.
 2. Build the `WebApplication`.
@@ -357,27 +425,27 @@ group.MapDelete("items/{id}", async ([FromServices] IRequester requester,
 
 This lifecycle keeps endpoint classes modular while still making duplicate mapping explicit and avoidable.
 
-### Endpoint System Test Coverage
+### Endpoint system test coverage
 
-The endpoint system is covered by focused unit tests in [tests/Presentation.UnitTests/Web/Endpoints](tests/Presentation.UnitTests/Web/Endpoints):
+The endpoint system is covered by focused unit tests in [tests/Presentation.UnitTests/Web/Endpoints](../tests/Presentation.UnitTests/Web/Endpoints):
 
 - `EndpointsBaseTests`: group metadata, authorization precedence, path normalization, CORS, rate limiting, route-name prefix metadata, and custom metadata.
 - `EndpointsOptionsBuilderBaseTests`: fluent builder methods and null-array normalization.
 - `EndpointRegistrationTests`: DI registration overloads, disabled registration, type registration, `MapEndpoints(...)`, duplicate prevention, and mapping into a supplied route group.
 
-### Result and Metadata
+### Result and metadata
 
 - Map `Result<T>` to HTTP using helpers (e.g., `MapHttpOk()`, `MapHttpOkAll()`, `MapHttpCreated(...)`, `MapHttpNoContent()`).
 - Add descriptive metadata with `Produces<T>()`, `WithName(...)`, `WithDescription(...)` to improve API docs.
 
-### Result Mapping Helpers
+### Result mapping helpers
 
 The endpoint examples above use the built-in mapping helpers that convert `Result` and `Result<T>` to typed Minimal API responses. These live in:
 
-- Result helpers: [src/Presentation.Web/Result/Map/ResultMapExtensions.cs](src/Presentation.Web/Result/Map/ResultMapExtensions.cs)
-- Core mapping: [src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs](src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs)
+- Result helpers: [src/Presentation.Web/Result/Map/ResultMapExtensions.cs](../src/Presentation.Web/Result/Map/ResultMapExtensions.cs)
+- Core mapping: [src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs](../src/Presentation.Web/Result/Map/ResultMapHttpExtensions.cs)
 
-#### Helper Overview
+#### Helper overview
 
 - **`MapHttpOk<T>(Result<T>)`**: Returns `Ok<T>` on success; maps errors to `Unauthorized`, `BadRequest`, or `Problem`. For single resources.
 - **`MapHttpOkAll<T>(Result<T>)`**: Returns `Ok<T>` on success without `NotFound` branch (for collections where empty is valid).
@@ -392,7 +460,7 @@ The endpoint examples above use the built-in mapping helpers that convert `Resul
 
 All helpers perform error-to-HTTP mapping and support optional logging via `ILogger`.
 
-#### Usage Examples
+#### Usage examples
 
 ```csharp
 // Paged listing (ResultPaged<T> → HTTP)
@@ -417,7 +485,7 @@ group.MapGet("items/export", async ([FromServices] IRequester requester, Cancell
   .WithName("Items.Export");
 ```
 
-#### Custom Error Handlers
+#### Custom error handlers
 
 You can plug in custom error-to-HTTP mapping for specific Result errors. Register handlers once at startup; the registry is consulted before default mapping.
 
@@ -434,7 +502,7 @@ ResultMapHttpExtensions.RegisterErrorHandler<CustomBusinessError>((logger, resul
 });
 ```
 
-#### Notes and Constraints
+#### Notes and constraints
 
 - `MapHttpOk<T>`/`MapHttpCreated<T>` require `T : class`; null `Value` on success throws `InvalidOperationException`.
 - `MapHttpCreated<T>` with `uriFactory` only computes the URI for successful results; failure paths ignore the URI.

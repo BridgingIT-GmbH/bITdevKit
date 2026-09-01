@@ -1,4 +1,5 @@
-# Blob Storage Feature Documentation
+
+# Blob Storage
 
 > Store binary content through Result-native, stream-first, provider-neutral blob clients.
 
@@ -16,7 +17,110 @@ Implemented providers:
 - Entity Framework Core
 - Azure Blob Storage
 
-## Key Rules
+## Challenges
+
+Binary content must remain stream-first while still supporting provider-neutral metadata, integrity, optimistic concurrency, bounded listing, and predictable ownership. Large transfers also need size limits and admission control without forcing application code to depend on a database or cloud SDK.
+
+## Solution
+
+Named `IBlobStoreClient` instances expose Result-native upload, download, property, existence, listing, and delete operations. The validating client enforces common rules before delegating to an in-memory, Entity Framework, or Azure provider. Optional behaviors add logging, metrics, retry, timeout, caching, transforms, checksum verification, chaos, and upload admission.
+
+## Key Features
+
+- stream-first uploads and caller-disposed downloads
+- provider-neutral keys, metadata, ETags, expiration, and SHA-256 hashes
+- query-bound continuation tokens and guarded full scans
+- named clients with in-memory, Entity Framework, and Azure Blob providers
+- compression, encryption, content-type detection, caching, and verification behaviors
+- bounded upload concurrency and provider-native retention
+- optional HTTP, dashboard, diagnostics, MCP, and maintenance-job integration
+
+## Architecture
+
+`IBlobStoreClientFactory` resolves a named decorated client. Client behaviors wrap `BlobStoreClient`, which validates provider-neutral requests and calls `IBlobStoreProvider`. Providers own persistence and native paging; the client and behaviors own cross-provider semantics. The retention service resolves providers directly so cleanup remains bounded and provider-native.
+
+## Use Cases
+
+- store reports, exports, images, attachments, and generated artifacts
+- stream large content without materializing it in application memory
+- serve public reads separately from protected maintenance endpoints
+- transfer content between blob and file-storage providers
+- retain temporary blobs and delete guarded prefixes
+
+## Basic Usage
+
+This example registers an in-memory named client, uploads UTF-8 content, checks each result, disposes the returned download, and returns the stored content and metadata.
+
+```csharp
+using System.Text;
+using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
+
+var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddBlobStorage()
+    .WithInMemoryClient("reports");
+
+var app = builder.Build();
+
+app.MapPut("/blobs/reports/{name}", async (
+    string name,
+    IBlobStoreClientFactory factory,
+    CancellationToken cancellationToken) =>
+{
+    var blobs = factory.CreateClient("reports");
+    var content = Encoding.UTF8.GetBytes($"Report: {name}");
+    await using var source = new MemoryStream(content, writable: false);
+
+    var uploaded = await blobs.UploadAsync(new BlobUpload
+    {
+        Key = new BlobKey("reports", name),
+        Content = source,
+        ContentType = ContentType.TXT
+    }, cancellationToken);
+
+    if (uploaded.IsFailure)
+    {
+        return Results.Problem(string.Join(
+            "; ",
+            uploaded.Errors.Select(error => error.Message)));
+    }
+
+    var downloaded = await blobs.DownloadAsync(
+        uploaded.Value.Key,
+        cancellationToken);
+
+    if (downloaded.IsFailure)
+    {
+        return Results.Problem(string.Join(
+            "; ",
+            downloaded.Errors.Select(error => error.Message)));
+    }
+
+    await using var download = downloaded.Value;
+    using var reader = new StreamReader(
+        download.Content,
+        Encoding.UTF8,
+        leaveOpen: true);
+    var text = await reader.ReadToEndAsync(cancellationToken);
+
+    return Results.Ok(new
+    {
+        download.Info.Key.Container,
+        download.Info.Key.Name,
+        download.Info.Length,
+        download.Info.ContentHash,
+        Content = text
+    });
+});
+
+app.Run();
+```
+
+`PUT /blobs/reports/june.txt` returns the uploaded key, length, content hash, and `Report: june.txt`. The upload stream stays caller-owned; disposing `BlobDownload` closes the returned content stream.
+
+
+## Rules and limits
 
 - `BlobKey` contains `Container` and `Name`.
 - Upload and download are stream-first.
@@ -88,7 +192,7 @@ services.AddBlobStorage(options => options
 
 `AddBlobStorage` also registers the provider-neutral `IBlobStorageDiagnosticsService` and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.
 
-## High-Volume Uploads
+## High-volume uploads
 
 Use the optional upload-concurrency behavior when bursts must not open an unbounded number of provider operations, contexts, transactions, or database connections. Admission is shared by every DI scope in one process and isolated by case-insensitive named store.
 
@@ -132,7 +236,7 @@ When Blob Storage is registered in a DevKit web host with local MCP enabled, `Ad
 
 The MCP handler is diagnostics-only. It exposes registration, provider capability, and non-mutating health probe data; it does not expose blob content, raw provider clients, provider SDK types, or mutating blob operations. If MCP is disabled by the DevKit local tooling policy, the handler is not registered.
 
-## HTTP Endpoints
+## HTTP endpoints
 
 `Presentation.Web.Storage` can expose Blob Storage over Minimal API endpoints. Maintenance endpoints and read-only content endpoints are deliberately separate so applications can protect or expose them differently.
 
@@ -210,7 +314,7 @@ The dashboard page is provider-neutral and uses the configured `IBlobStoreClient
 
 The compact list shows content type, size, modification time, expiration, and content hash. Manual and interval refreshes use the currently applied store, container, prefix, page size, full-scan consent, and continuation state. The standard refresh interval is off by default and remembered in browser-local storage. The dashboard renders metadata only and does not download blob content for list, exists, or property-style operations. The download action streams the selected blob and disposes the returned `BlobDownload`.
 
-## Compression and Encryption Behaviors
+## Compression and encryption behaviors
 
 Blob Storage can transparently transform content with provider-neutral client behaviors. These behaviors do not change `IBlobStoreClient` or provider contracts.
 
@@ -248,7 +352,7 @@ Compression uses GZip. Encryption uses AES with a random initialization vector p
 
 Transform behaviors use temporary files while preparing transformed upload and download streams. They avoid loading full blobs into memory solely for compression or encryption, but they do require local temporary disk space for the transformed payload.
 
-## Content-Type Detection and Checksum Verification
+## Content-type detection and checksum verification
 
 Use `WithContentTypeDetectionBehavior()` when uploads that omit `ContentType` should infer it from the blob name extension. The behavior uses `ContentTypeExtensions.FromFileName(...)` and does not inspect or sniff stream content. Extensionless blob names stay unchanged.
 
@@ -294,7 +398,7 @@ services.AddBlobStorage()
     .WithAzureBlobClient("media");
 ```
 
-## Download Caching Behavior
+## Download caching behavior
 
 Use `WithCacheBehavior()` when repeated exact-key downloads should be served from an `ICacheProvider`. The behavior caches only successful `DownloadAsync` results and stores `BlobInfo` plus the downloaded bytes. Every cache hit returns a new read-only `MemoryStream`, so callers still own and dispose the returned `BlobDownload`.
 
@@ -328,7 +432,7 @@ services.AddBlobStorage()
     .WithAzureBlobClient("media");
 ```
 
-## Chaos Behavior
+## Chaos behavior
 
 Use `WithChaosBehavior()` in tests, local development, or controlled resilience drills to inject Result-native upload and download failures without changing providers or application code.
 
@@ -365,7 +469,7 @@ services.AddBlobStorage()
 
 Keep chaos behavior opt-in. Do not enable it for normal production traffic unless the deployment is explicitly running a resilience experiment.
 
-## Entity Framework Context
+## Entity Framework context
 
 An EF Core context used for blob storage must implement `IBlobStoreContext`. Consuming applications own their migrations.
 
@@ -382,13 +486,13 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 }
 ```
 
-## Azure Commit Semantics
+## Azure commit semantics
 
 Azure uploads stage uniquely named blocks while streaming and hashing the caller content once. The provider enforces size and expected-hash constraints before committing the block list. Content type, custom metadata, content hash, expiration metadata/tags, overwrite conditions, and the staged block ids are applied in the final commit, so cancellation or validation failure does not replace the currently committed blob.
 
 Azure property updates read a complete state snapshot and apply headers, metadata, and tags through ETag-conditional mutations. On an operation error or cancellation, the provider restores the original state with a non-cancelable cleanup token. If restoration also fails, the result contains `BlobStorePartialUpdateError` with both failure descriptions.
 
-## Named Clients
+## Named clients
 
 Resolve clients by configured store name only.
 
@@ -444,7 +548,7 @@ var mimeType = info.ContentType?.MimeType();
 
 Blob Storage reads from the supplied stream but does not dispose it.
 
-## Expiration and Retention
+## Expiration and retention
 
 Set `BlobUpload.ExpiresAt` when a blob should be automatically deleted after a UTC timestamp. Providers normalize non-UTC `DateTimeOffset` values to UTC before storing metadata. The timestamp is returned through `BlobInfo.ExpiresAt`, can be replaced or cleared through `BlobPropertiesUpdate.ExpiresAt`, and is provider-neutral.
 
@@ -483,7 +587,7 @@ Provider behavior:
 
 Multiple application nodes can run the background service at the same time. Provider sweeps must be idempotent and lease- or condition-protected; a blob already deleted by another node is treated as a successful cleanup outcome.
 
-## Expected Hash
+## Expected hash
 
 Use the blob hash helper when the content stream is seekable. Reset the stream before upload because hashing reads from the current position.
 
@@ -527,7 +631,7 @@ if (downloadResult.IsSuccess)
 
 The caller owns and disposes the returned `BlobDownload`, which disposes the returned content stream.
 
-## Verified Download
+## Verified download
 
 Use `DownloadVerifiedToAsync` when the destination should only be considered valid after the downloaded bytes match the stored SHA-256 content hash.
 
@@ -558,7 +662,7 @@ var verifiedFileResult = await blobs.DownloadVerifiedToFileAsync(
     cancellationToken: cancellationToken);
 ```
 
-## File Storage Integration
+## File Storage integration
 
 Blob Storage can transfer content to and from any `IFileStorageProvider` without changing the core blob client contract. This keeps blob operations provider-neutral while allowing files to come from local disk, in-memory storage, network shares, SQL-backed file storage, or any other configured file provider.
 
@@ -629,7 +733,7 @@ if (downloadResult.IsSuccess)
 
 `SaveToFileAsync` does not dispose the `BlobDownload`; ownership stays with the caller.
 
-## Text and Serialized Content
+## Text and serialized content
 
 Blob Storage also includes small convenience helpers for textual content and serialized class instances. These helpers are extension methods on `IBlobStoreClient`; they do not change the core stream-first blob client contract.
 
@@ -818,7 +922,7 @@ if (pageResult.IsSuccess)
 }
 ```
 
-## Full Scan
+## Full scan
 
 Full scans require both `BlobStoreOptions.AllowFullScans = true` on the named client and `.AllowFullScan()` on the query.
 
@@ -893,7 +997,7 @@ var deleteResult = await blobs.DeleteAsync(
 
 An ETag mismatch returns `BlobStoreConflictError` and leaves the current blob unchanged.
 
-## Copy, Move, and Prefix Delete
+## Copy, move, and prefix delete
 
 Blob-to-blob transfer helpers are extension methods over the public `IBlobStoreClient` contract. They can copy or move between different providers because they only depend on download, upload, and delete operations.
 
@@ -936,11 +1040,11 @@ var deleteResult = await blobs.DeleteByPrefixAsync(
 
 Prefix delete requires a non-empty prefix unless `AllowFullScan` is explicitly set. Use dry runs before scheduled cleanup jobs.
 
-## Health Checks
+## Health checks
 
 When Blob Storage is enabled and at least one named client is registered, the package registers one aggregate health check named `BlobStorage`. The check probes every registered client with a non-mutating `ExistsAsync` probe. Missing probe blobs are healthy; provider failures make the aggregate health check unhealthy and identify failed client names in readable health-check data.
 
-## Diagnostics Snapshot
+## Diagnostics snapshot
 
 `IBlobStorageDiagnosticsService` returns a static provider-neutral snapshot of registered blob clients and their non-mutating probe status.
 
@@ -962,9 +1066,9 @@ if (snapshotResult.IsSuccess)
 }
 ```
 
-The snapshot includes client names, provider names, capabilities, readable health details, and—when upload admission is enabled—configured active/queue limits plus current active and queued counts. It does not expose queued blob keys, provider instances, or provider-specific SDK types.
+The snapshot includes client names, provider names, capabilities, and readable health details. When upload admission is enabled, it also includes configured active and queue limits with the current active and queued counts. It does not expose queued blob keys, provider instances, or provider-specific SDK types.
 
-## MCP Diagnostics
+## MCP diagnostics
 
 Blob Storage is exposed to local AI agents through the DevKit MCP runtime automatically when `AddBlobStorage()` runs in a DevKit web host with MCP enabled. The MCP adapter uses the diagnostics service that `AddBlobStorage` registers automatically.
 
@@ -982,7 +1086,7 @@ Use bdk MCP to inspect Blob Storage clients. Call bdk_blobs_summary first, then 
 
 The MCP operations use the same `IBlobStorageDiagnosticsService` as application diagnostics. They run non-mutating `ExistsAsync` probes against a reserved health probe key and treat a missing probe blob as healthy.
 
-## Maintenance Jobs
+## Maintenance jobs
 
 `Application.Storage.Jobs` includes `BlobDeletePrefixMaintenanceJob` for deleting blobs by prefix through a named blob client.
 
@@ -1006,7 +1110,7 @@ services.AddJobScheduler()
 
 The job uses the new `Application.Jobs` feature. It receives `BlobDeletePrefixMaintenanceJobData`, resolves the named blob client through `IBlobStoreClientFactory`, and calls `DeleteByPrefixAsync` directly. The job writes candidate/deleted counts into the execution context items and returns Result failures for expected delete or query failures.
 
-## Shared Storage Primitives
+## Shared storage primitives
 
 Blob Storage and Document Storage use the same `StorageRetentionOptions`, `ExpirationChange`/`ExpirationHelper`, `ContentHashHelper`, key-display strategies, Base64Url/token codecs, stream helpers, temporary-file leases, encryption-key resolution, and transform-envelope conventions. This alignment does not merge the APIs: Blob Storage remains stream-first binary storage, while Document Storage remains typed and queryable by partition/row key.
 

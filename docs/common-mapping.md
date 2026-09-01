@@ -2,11 +2,13 @@
 
 > Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.
 
-`Common.Mapping` provides the devkit's object-mapping building block. It sits at the boundary between domain/application code and presentation models, and it is designed to keep mapping logic explicit, testable, and easy to register per module.
+[TOC]
+
+`Common.Mapping` provides the devkit's object-mapping building block. It sits at the boundary between domain or application code and presentation models. The package keeps mapping logic explicit, testable, and registered per module.
 
 The package uses Mapster as the default engine, but it keeps a small abstraction layer in front of it so application code depends on `IMapper` instead of a concrete mapper implementation.
 
-## What It Provides
+## What it provides
 
 - `IMapper` and `IMapper<TSource, TTarget>` as the abstraction used by application code.
 - `AddMapping()` and `WithMapster()` for DI registration and configuration.
@@ -14,7 +16,7 @@ The package uses Mapster as the default engine, but it keeps a small abstraction
 - `ObjectMapper` and `ObjectMapperConfiguration<TSource, TTarget>` as a lightweight manual mapping path.
 - `MapperExtensions`, `ResultExtensions`, and `ResultTaskExtensions` for mapping collections and `Result<T>` values.
 
-## Recommended Registration
+## Recommended registration
 
 Mapping is normally registered in the presentation layer, per module, using Mapster registration classes.
 
@@ -34,7 +36,7 @@ builder.Services
 
 `WithMapster()` scans for Mapster `IRegister` implementations, creates a `TypeAdapterConfig`, and registers both Mapster's `IMapper` and the devkit `IMapper` abstraction.
 
-## How To Use It
+## How to use it
 
 Inject `IMapper` into application handlers or endpoint code when translating between domain objects and DTOs:
 
@@ -57,7 +59,7 @@ var modelResult = customerResult.MapResult<Customer, CustomerModel>(mapper);
 
 For async result pipelines, use `MapResultAsync()` on `Task<Result<T>>` when you want cancellation and exceptions to be translated into result errors in a consistent way.
 
-## When To Use ObjectMapper
+## When to use `ObjectMapper`
 
 `ObjectMapper` is the manual, explicit alternative. It is useful when you want a tiny mapping surface for tests, special cases, or very controlled property-to-property mapping.
 
@@ -78,7 +80,7 @@ Prefer Mapster for normal application mapping. `ObjectMapper` is intentionally s
 - `ObjectMapperConfiguration` is intentionally simple. If you need complex conversions, custom constructors, or rich nested object handling, use Mapster registrations instead.
 - Mapping failures are usually configuration problems, so each module should have tests that exercise its mapper registrations.
 
-## Related Docs
+## Related docs
 
 - [Application Commands and Queries](./features-application-commands-queries.md)
 - [Presentation Endpoints](./features-presentation-endpoints.md)

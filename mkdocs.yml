@@ -34,13 +34,14 @@ nav:
           - Common Mapping: reference/common-mapping.md
           - Common Caching: reference/common-caching.md
           - Common Observability Tracing: reference/common-observability-tracing.md
+          - Metrics: reference/features-metrics.md
           - Profiling: reference/features-profiling.md
           - Utilities: reference/features-utilities.md
       - Core Domain and Application:
           - Domain: reference/features-domain.md
           - Domain Events: reference/features-domain-events.md
           - Event Sourcing: reference/features-event-sourcing.md
-          - ChangeHistory: reference/features-change-history.md
+          - ChangeHistory: reference/features-domain-change-history.md
           - Domain Repositories: reference/features-domain-repositories.md
           - Domain Specifications: reference/features-domain-specifications.md
           - ActiveEntity: reference/features-domain-activeentity.md
@@ -54,6 +55,7 @@ nav:
           - Requester and Notifier: reference/features-requester-notifier.md
           - Messaging: reference/features-messaging.md
           - Queueing: reference/features-queueing.md
+          - Broadcasting: reference/features-broadcasting.md
           - Notifications: reference/features-notifications.md
           - Modules: reference/features-modules.md
           - Pipelines: reference/features-pipelines.md
@@ -61,10 +63,13 @@ nav:
           - Filtering: reference/features-filtering.md
           - Extensions: reference/features-extensions.md
       - Security and Access:
+          - Presentation Authentication: reference/features-presentation-authentication.md
           - Entity Permissions: reference/features-entitypermissions.md
           - Fake Identity Provider: reference/features-identityprovider.md
       - Presentation and Hosts:
           - Host: reference/features-presentation.md
+          - Configuration: reference/features-presentation-configuration.md
+          - Logging: reference/features-presentation-logging.md
           - Endpoints: reference/features-presentation-endpoints.md
           - CLI: reference/features-cli.md
           - MCP: reference/features-cli-mcp.md
@@ -72,6 +77,7 @@ nav:
           - Dashboard: reference/features-presentation-dashboard.md
           - Console Commands: reference/features-presentation-console-commands.md
           - CORS Configuration: reference/features-presentation-cors.md
+          - Correlation IDs: reference/features-presentation-correlationid.md
           - Exception Handling: reference/features-presentation-exception-handling.md
           - AppState: reference/features-presentation-appstate.md
       - Storage, Scheduling and Utilities:

@@ -939,7 +939,6 @@ public static class FileStorageProviderCompressionExtensions
 
     private static IWriter CreateWriter(Stream stream, FileCompressionOptions options)
     {
-
         var archiveType = MapArchiveType(options.ArchiveType);
         // only allow write support for the following zip/tar/bzip2/gzip/lzip are implemented.
         if (archiveType != ArchiveType.Zip && archiveType != ArchiveType.Tar && archiveType != ArchiveType.GZip)

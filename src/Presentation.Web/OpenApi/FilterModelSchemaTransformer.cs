@@ -94,40 +94,43 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     {
         schema.Type = JsonSchemaType.Object;
         schema.Description = "Represents a complete filter model for querying data with pagination, sorting, and filtering";
-        schema.Example = new JsonObject
-        {
-            ["page"] = 1,
-            ["pageSize"] = 150,
-
-            //["noTracking"] = true,  // uncomment if needed
-
-            ["orderings"] = new JsonArray
+        schema.Examples =
+        [
+            new JsonObject
             {
-                new JsonObject
+                ["page"] = 1,
+                ["pageSize"] = 150,
+
+                //["noTracking"] = true,  // uncomment if needed
+
+                ["orderings"] = new JsonArray
                 {
-                    ["field"] = "CreatedDate",
-                    ["direction"] = "desc"
-                }
-            },
+                    new JsonObject
+                    {
+                        ["field"] = "CreatedDate",
+                        ["direction"] = "desc"
+                    }
+                },
 
-            ["filters"] = new JsonArray
-            {
-                new JsonObject
+                ["filters"] = new JsonArray
                 {
-                    ["field"] = "Status",
-                    ["operator"] = "eq",
-                    ["value"] = "active"
-                }
-            },
+                    new JsonObject
+                    {
+                        ["field"] = "Status",
+                        ["operator"] = "eq",
+                        ["value"] = "active"
+                    }
+                },
 
-            ["includes"] = new JsonArray
-            {
-                "relatedEntity"
+                ["includes"] = new JsonArray
+                {
+                    "relatedEntity"
+                }
+
+                //["hierarchy"] = "children",
+                //["hierarchyMaxDepth"] = 3
             }
-
-            //["hierarchy"] = "children",
-            //["hierarchyMaxDepth"] = 3
-        };
+        ];
 
         schema.Properties ??= new Dictionary<string, IOpenApiSchema>();
 
@@ -201,13 +204,16 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
         schema.Type = JsonSchemaType.Object;
         schema.Description = "Represents a single filter criterion for filtering query results";
 
-        schema.Example = new JsonObject
-        {
-            ["field"] = "status",
-            ["operator"] = "eq",
-            ["value"] = "active",
-            ["logic"] = "and"
-        };
+        schema.Examples =
+        [
+            new JsonObject
+            {
+                ["field"] = "status",
+                ["operator"] = "eq",
+                ["value"] = "active",
+                ["logic"] = "and"
+            }
+        ];
 
         schema.Properties = new Dictionary<string, IOpenApiSchema>
         {
@@ -314,7 +320,7 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     {
         schema.Type = JsonSchemaType.String;
         schema.Description = "Order direction";
-        schema.Example = JsonValue.Create("asc");
+        schema.Examples = [JsonValue.Create("asc")];
         schema.Enum =
         [
             "asc",
@@ -373,12 +379,15 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
     {
         schema.Type = JsonSchemaType.Object;
         schema.Description = "A terminal specification node that references a named specification";
-        schema.Example = new JsonObject
-        {
-            ["type"] = "SpecificationLeaf",
-            ["name"] = "ActiveUserSpecification",
-            ["arguments"] = new JsonArray()
-        };
+        schema.Examples =
+        [
+            new JsonObject
+            {
+                ["type"] = "SpecificationLeaf",
+                ["name"] = "ActiveUserSpecification",
+                ["arguments"] = new JsonArray()
+            }
+        ];
         schema.Properties = new Dictionary<string, IOpenApiSchema>
         {
             ["type"] = new OpenApiSchema()
@@ -415,12 +424,15 @@ public sealed class FilterModelSchemaTransformer : IOpenApiSchemaTransformer
         schema.Type = JsonSchemaType.Object;
         schema.Description = "A composite specification group combining multiple child nodes with a logical operator";
 
-        schema.Example = new JsonObject
-        {
-            ["type"] = "SpecificationGroup",
-            ["logic"] = "and",
-            ["nodes"] = new JsonArray()
-        };
+        schema.Examples =
+        [
+            new JsonObject
+            {
+                ["type"] = "SpecificationGroup",
+                ["logic"] = "and",
+                ["nodes"] = new JsonArray()
+            }
+        ];
 
         schema.Properties = new Dictionary<string, IOpenApiSchema>
         {

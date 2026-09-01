@@ -15148,8 +15148,10 @@
     },
     "securitySchemes": {
       "Bearer": {
-        "type": "oauth2",
-        "description": "The JWT token in the format: Bearer {token}"
+        "type": "http",
+        "description": "The JWT token in the format: Bearer {token}",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   },

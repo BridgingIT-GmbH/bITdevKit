@@ -13398,6 +13398,14 @@
         }
       },
       "FilterCriteria": {
+        "examples": [
+          {
+            "field": "status",
+            "operator": "eq",
+            "value": "active",
+            "logic": "and"
+          }
+        ],
         "type": "object",
         "properties": {
           "field": {
@@ -13511,15 +13519,31 @@
             "$ref": "#/components/schemas/CompositeSpecification"
           }
         },
-        "description": "Represents a single filter criterion for filtering query results",
-        "example": {
-          "field": "status",
-          "operator": "eq",
-          "value": "active",
-          "logic": "and"
-        }
+        "description": "Represents a single filter criterion for filtering query results"
       },
       "FilterModel": {
+        "examples": [
+          {
+            "page": 1,
+            "pageSize": 150,
+            "orderings": [
+              {
+                "field": "CreatedDate",
+                "direction": "desc"
+              }
+            ],
+            "filters": [
+              {
+                "field": "Status",
+                "operator": "eq",
+                "value": "active"
+              }
+            ],
+            "includes": [
+              "relatedEntity"
+            ]
+          }
+        ],
         "type": "object",
         "properties": {
           "page": {
@@ -13552,6 +13576,14 @@
               "array"
             ],
             "items": {
+              "examples": [
+                {
+                  "field": "status",
+                  "operator": "eq",
+                  "value": "active",
+                  "logic": "and"
+                }
+              ],
               "type": "object",
               "oneOf": [
                 {
@@ -13670,13 +13702,7 @@
                   "$ref": "#/components/schemas/CompositeSpecification"
                 }
               },
-              "description": "Represents a single filter criterion for filtering query results",
-              "example": {
-                "field": "status",
-                "operator": "eq",
-                "value": "active",
-                "logic": "and"
-              }
+              "description": "Represents a single filter criterion for filtering query results"
             },
             "description": "Filter criteria to apply to the query"
           },
@@ -13712,27 +13738,7 @@
             "$ref": "#/components/schemas/SpecificationNode"
           }
         },
-        "description": "Represents a complete filter model for querying data with pagination, sorting, and filtering",
-        "example": {
-          "page": 1,
-          "pageSize": 150,
-          "orderings": [
-            {
-              "field": "CreatedDate",
-              "direction": "desc"
-            }
-          ],
-          "filters": [
-            {
-              "field": "Status",
-              "operator": "eq",
-              "value": "active"
-            }
-          ],
-          "includes": [
-            "relatedEntity"
-          ]
-        }
+        "description": "Represents a complete filter model for querying data with pagination, sorting, and filtering"
       },
       "FilterOrderCriteria": {
         "type": "object",
@@ -15880,13 +15886,15 @@
         }
       },
       "OrderDirection": {
+        "examples": [
+          "asc"
+        ],
         "enum": [
           "asc",
           "desc"
         ],
         "type": "string",
-        "description": "Order direction",
-        "example": "asc"
+        "description": "Order direction"
       },
       "ProblemDetails": {
         "type": "object",
@@ -16833,8 +16841,10 @@
     },
     "securitySchemes": {
       "Bearer": {
-        "type": "oauth2",
-        "description": "The JWT token in the format: Bearer {token}"
+        "type": "http",
+        "description": "The JWT token in the format: Bearer {token}",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   },

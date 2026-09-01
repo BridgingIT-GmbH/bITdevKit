@@ -15,14 +15,14 @@ using System; // for StringComparison
 /// </summary>
 /// <remarks>
 /// <para>
-/// This transformer adds OAuth 2.0 Bearer token authentication to the OpenAPI specification,
+/// This transformer adds HTTP Bearer token authentication to the OpenAPI specification,
 /// enabling API clients and documentation tools (such as Scalar) to support authentication
 /// through JWT bearer tokens.
 /// </para>
 /// <para>
 /// Key responsibilities:
 /// <list type="bullet">
-/// <item>Adds an OAuth 2.0 security scheme to the OpenAPI components</item>
+/// <item>Adds an HTTP Bearer security scheme to the OpenAPI components</item>
 /// <item>Applies the security requirement to all operations as the default authentication method</item>
 /// <item>Enables API documentation tools to provide authentication UI and token management</item>
 /// </list>
@@ -50,13 +50,13 @@ public class BearerSecurityRequirementDocumentTransformer : IOpenApiDocumentTran
     /// This method:
     /// <list type="number">
     /// <item>Ensures the document has a components section</item>
-    /// <item>Adds an OAuth 2.0 Bearer security scheme using the default JWT bearer authentication scheme name</item>
+    /// <item>Adds an HTTP Bearer security scheme using the default JWT bearer authentication scheme name</item>
     /// <item>Applies the security requirement to all operations, making Bearer authentication the default</item>
     /// </list>
     /// </para>
     /// <para>
-    /// The Bearer token is configured as an OAuth 2.0 scheme, which allows API documentation
-    /// tools and clients to properly handle authentication flows and display authentication UI.
+    /// The Bearer token is configured as an HTTP scheme, which is the OpenAPI representation
+    /// for a JWT supplied in the Authorization header.
     /// </para>
     /// </remarks>
     public Task TransformAsync(
@@ -78,13 +78,13 @@ public class BearerSecurityRequirementDocumentTransformer : IOpenApiDocumentTran
             document.Security = new List<OpenApiSecurityRequirement>();
         }
 
-        // Add the OAuth 2.0 Bearer security scheme to the components
+        // Add the HTTP Bearer security scheme to the components
         document.Components.SecuritySchemes.Add(
             JwtBearerDefaults.AuthenticationScheme,
             new OpenApiSecurityScheme
             {
-                Type = SecuritySchemeType.OAuth2,
-                Scheme = JwtBearerDefaults.AuthenticationScheme,
+                Type = SecuritySchemeType.Http,
+                Scheme = "bearer",
                 BearerFormat = "JWT",
                 Description = "The JWT token in the format: Bearer {token}"
             });

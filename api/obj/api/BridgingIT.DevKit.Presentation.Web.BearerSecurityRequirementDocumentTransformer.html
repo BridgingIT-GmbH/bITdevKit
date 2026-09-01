@@ -262,13 +262,13 @@ Class BearerSecurityRequirementDocumentTransformer
 
   <h2 id="BridgingIT_DevKit_Presentation_Web_BearerSecurityRequirementDocumentTransformer_remarks">Remarks</h2>
   <div class="markdown level0 remarks"><p>
-This transformer adds OAuth 2.0 Bearer token authentication to the OpenAPI specification,
+This transformer adds HTTP Bearer token authentication to the OpenAPI specification,
 enabling API clients and documentation tools (such as Scalar) to support authentication
 through JWT bearer tokens.
 </p>
 <p>
 Key responsibilities:
-<ul><li>Adds an OAuth 2.0 security scheme to the OpenAPI components</li><li>Applies the security requirement to all operations as the default authentication method</li><li>Enables API documentation tools to provide authentication UI and token management</li></ul>
+<ul><li>Adds an HTTP Bearer security scheme to the OpenAPI components</li><li>Applies the security requirement to all operations as the default authentication method</li><li>Enables API documentation tools to provide authentication UI and token management</li></ul>
 
 <p>
 References:
@@ -355,11 +355,11 @@ References:
   <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_BearerSecurityRequirementDocumentTransformer_TransformAsync_Microsoft_OpenApi_OpenApiDocument_Microsoft_AspNetCore_OpenApi_OpenApiDocumentTransformerContext_System_Threading_CancellationToken__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>
 This method:
-<ol><li>Ensures the document has a components section</li><li>Adds an OAuth 2.0 Bearer security scheme using the default JWT bearer authentication scheme name</li><li>Applies the security requirement to all operations, making Bearer authentication the default</li></ol>
+<ol><li>Ensures the document has a components section</li><li>Adds an HTTP Bearer security scheme using the default JWT bearer authentication scheme name</li><li>Applies the security requirement to all operations, making Bearer authentication the default</li></ol>
 
 <p>
-The Bearer token is configured as an OAuth 2.0 scheme, which allows API documentation
-tools and clients to properly handle authentication flows and display authentication UI.
+The Bearer token is configured as an HTTP scheme, which is the OpenAPI representation
+for a JWT supplied in the Authorization header.
 </p>
 </div>
 

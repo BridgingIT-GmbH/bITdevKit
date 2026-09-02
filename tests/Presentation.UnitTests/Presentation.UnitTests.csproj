@@ -37,6 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Presentation.UnitTests.ModulesFixtures\Presentation.UnitTests.ModulesFixtures.csproj" />
     <ProjectReference Include="..\..\src\Application.Jobs\Application.Jobs.csproj" />
     <ProjectReference Include="..\..\src\Application.JobScheduling\Application.JobScheduling.csproj" />
     <ProjectReference Include="..\..\src\Application.Orchestrations\Application.Orchestrations.csproj" />

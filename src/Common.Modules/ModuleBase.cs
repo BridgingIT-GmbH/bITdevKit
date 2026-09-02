@@ -11,8 +11,16 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
-///     Provides naming, priority, enablement, and registration state for application modules.
+///     Provides naming, priority, enablement, and compatibility registration metadata for application modules.
 /// </summary>
+/// <example>
+/// <code>
+/// public sealed class CustomerModule : ModuleBase
+/// {
+///     // Implement Register and Use for the customer feature.
+/// }
+/// </code>
+/// </example>
 public abstract class ModuleBase : IModule
 {
     /// <summary>

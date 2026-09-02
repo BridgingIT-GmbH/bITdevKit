@@ -26,8 +26,20 @@ public interface IModule
     bool Enabled { get; set; }
 
     /// <summary>
-    ///     Indicates whether the module has been registered within the system.
+    ///     Gets or sets compatibility metadata that indicates whether the module instance has completed registration in
+    ///     at least one host.
     /// </summary>
+    /// <remarks>
+    ///     Module registration does not use this property for idempotency. The current host's
+    ///     <see cref="IModuleRegistry" /> owns registration state, so reusing an instance in another host still invokes
+    ///     <see cref="Register" /> for that host.
+    /// </remarks>
+    /// <example>
+    /// <code>
+    /// var module = app.Services.GetRequiredService&lt;IModuleRegistry&gt;().Modules[0];
+    /// Console.WriteLine(module.IsRegistered);
+    /// </code>
+    /// </example>
     bool IsRegistered { get; set; }
 
     /// <summary>
@@ -69,7 +81,6 @@ public interface IModule
     /// <param name="configuration">Optional configuration settings for the modules.</param>
     /// <param name="environment">Optional hosting environment settings for the modules.</param>
     /// <returns>The modified application builder with the modules applied.</returns>
-    /// <exception cref="Exception">Thrown if no modules are found. Ensure modules are added with services.AddModules().</exception>
     IApplicationBuilder Use(
         IApplicationBuilder app,
         IConfiguration configuration = null,

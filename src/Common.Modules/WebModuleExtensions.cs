@@ -20,19 +20,14 @@ using Serilog;
 ///     and mapping of module services and controllers within an application's service collection
 ///     and endpoint route builder.
 /// </summary>
+/// <example>
+/// <code>
+/// var app = builder.Build();
+/// app.MapModules();
+/// </code>
+/// </example>
 public static class WebModuleExtensions
 {
-    /// <summary>
-    ///     A collection of web modules implemented from the IWebModule interface.
-    /// </summary>
-    private static List<IWebModule> modules;
-
-    /// <summary>
-    ///     Gets a collection of modules implementing the <see cref="IWebModule" /> interface.
-    /// </summary>
-    /// <returns>An enumerable collection of <see cref="IWebModule" /> instances.</returns>
-    public static IEnumerable<IWebModule> Modules => modules;
-
     /// <summary>
     ///     Maps the modules to the given <see cref="IEndpointRouteBuilder" />.
     /// </summary>
@@ -40,27 +35,25 @@ public static class WebModuleExtensions
     /// <param name="configuration">The configuration settings for the modules.</param>
     /// <param name="environment">The web hosting environment.</param>
     /// <returns>The <see cref="IEndpointRouteBuilder" /> with the modules mapped.</returns>
-    /// <exception cref="Exception">Thrown when no modules are found.</exception>
+    /// <exception cref="InvalidOperationException">The endpoint builder's services do not contain a module registry.</exception>
+    /// <example>
+    /// <code>
+    /// app.MapModules();
+    /// </code>
+    /// </example>
     public static IEndpointRouteBuilder MapModules(
         this IEndpointRouteBuilder app,
         IConfiguration configuration = null,
         IWebHostEnvironment environment = null)
     {
-        if (ModuleExtensions.Modules is null)
+        ArgumentNullException.ThrowIfNull(app);
+
+        var registry = app.ServiceProvider.GetService<ModuleRegistry>() ??
+            throw new InvalidOperationException(
+                "No host-scoped module registry was found. Register modules with services.AddModules() before building the application.");
+
+        foreach (var module in registry.Modules.OfType<IWebModule>())
         {
-            throw new Exception("No modules found. Add them first with services.AddModules()");
-        }
-
-        modules ??= FindModules()?.ToList();
-
-        foreach (var module in modules.SafeNull())
-        {
-            if (configuration is not null)
-            {
-                var disabled = configuration[$"Modules:{module.Name}:Enabled"].SafeEquals("False");
-                module.Enabled = !disabled;
-            }
-
             Log.Logger.Information(
                 "[{LogKey}] map (module={ModuleName}, enabled={ModuleEnabled}, priority={ModulePriority}) ",
                 ModuleConstants.LogKey,
@@ -99,6 +92,11 @@ public static class WebModuleExtensions
     /// <param name="context">The <see cref="ModuleBuilderContext" /> for configuring the module.</param>
     /// <param name="optionsAction">An optional <see cref="Action{IMvcBuilder}" /> to configure the MVC services.</param>
     /// <returns>The modified <see cref="ModuleBuilderContext" />.</returns>
+    /// <example>
+    /// <code>
+    /// modules.WithModuleControllers();
+    /// </code>
+    /// </example>
     public static ModuleBuilderContext WithModuleControllers(
         this ModuleBuilderContext context,
         Action<IMvcBuilder> optionsAction = null)
@@ -113,6 +111,11 @@ public static class WebModuleExtensions
     /// <param name="optionsAction">Optional action for configuring MVC builder.</param>
     /// <typeparam name="T">The type whose assembly to include for module controllers.</typeparam>
     /// <returns>The updated <see cref="ModuleBuilderContext" />.</returns>
+    /// <example>
+    /// <code>
+    /// modules.WithModuleControllers&lt;CustomerController&gt;();
+    /// </code>
+    /// </example>
     public static ModuleBuilderContext WithModuleControllers<T>(
         this ModuleBuilderContext context,
         Action<IMvcBuilder> optionsAction = null)
@@ -127,18 +130,22 @@ public static class WebModuleExtensions
     /// <param name="assemblies">The assemblies to add controllers from.</param>
     /// <param name="optionsAction">An optional action to configure the MVC builder.</param>
     /// <returns>The updated <see cref="ModuleBuilderContext" />.</returns>
+    /// <example>
+    /// <code>
+    /// modules.WithModuleControllers([typeof(CustomerModule).Assembly]);
+    /// </code>
+    /// </example>
     public static ModuleBuilderContext WithModuleControllers(
         this ModuleBuilderContext context,
         IEnumerable<Assembly> assemblies,
         Action<IMvcBuilder> optionsAction = null)
     {
-        modules ??= FindModules()?.ToList();
-
+        var registry = GetRegistry(context.Services);
         var builder = context.Services.AddControllers()
             .ConfigureApplicationPartManager(manager =>
             {
                 // only add the controllers from enabled modules
-                foreach (var module in modules.Where(m => m.Enabled))
+                foreach (var module in registry.Modules.Where(module => module.Enabled))
                 {
                     Log.Logger.Information("[{LogKey}] module assemblypart added (module={ModuleName})",
                         ModuleConstants.LogKey,
@@ -165,6 +172,11 @@ public static class WebModuleExtensions
     /// <param name="context">The <see cref="ModuleBuilderContext" /> which provides the services and configuration.</param>
     /// <param name="optionsAction">An optional action to configure the MVC builder.</param>
     /// <returns>The updated <see cref="ModuleBuilderContext" />.</returns>
+    /// <example>
+    /// <code>
+    /// modules.WithModuleFeatureProvider();
+    /// </code>
+    /// </example>
     public static ModuleBuilderContext WithModuleFeatureProvider(
         this ModuleBuilderContext context,
         Action<IMvcBuilder> optionsAction = null)
@@ -185,43 +197,15 @@ public static class WebModuleExtensions
         return context;
     }
 
-    /// <summary>
-    ///     Discovers and returns a list of all available modules that implement the <see cref="IWebModule" /> interface.
-    /// </summary>
-    /// <returns>
-    ///     A list of discovered <see cref="IWebModule" /> instances, ordered by their priority and name.
-    /// </returns>
-    private static List<IWebModule> FindModules()
+    private static ModuleRegistry GetRegistry(IServiceCollection services)
     {
-        var logResult = false;
-
-        if (modules is null)
-        {
-            Log.Logger.Information("[{LogKey}] module discovery (module={ModuleName}) ",
-                ModuleConstants.LogKey,
-                typeof(IWebModule).Name);
-            logResult = true;
-        }
-
-        modules ??= ReflectionHelper
-            .FindTypes(t => typeof(IWebModule).IsAssignableFrom(t) && !t.IsInterface && !t.IsAbstract,
-                ModuleExtensions.Modules.Select(m => m.GetType().Assembly).Distinct().ToArray())
-            ?.Select(t => Factory.Create(t))
-            ?.Cast<IWebModule>()
-            ?.OrderBy(m => m.Priority)
-            .ThenBy(m => m.Name)
-            ?.ToList();
-
-        if (logResult)
-        {
-            foreach (var module in modules.SafeNull())
-            {
-                Log.Logger.Debug("[{LogKey}] module discovered (name={ModuleName}) ",
-                    ModuleConstants.LogKey,
-                    module.Name);
-            }
-        }
-
-        return modules;
+        return services
+            .Where(descriptor => descriptor.ServiceType == typeof(ModuleRegistry))
+            .Select(descriptor => descriptor.ImplementationInstance)
+            .OfType<ModuleRegistry>()
+            .LastOrDefault() ??
+            throw new InvalidOperationException(
+                "No host-scoped module registry was found. Create a ModuleBuilderContext before configuring module controllers.");
     }
+
 }

@@ -21,11 +21,14 @@ In a growing monolith, service registration, middleware, endpoints and configura
 
 ## Solution
 
-Define each feature as an `IModule` or `IWebModule`. The host discovers modules, registers selected modules, runs their application-pipeline hooks and maps web-module routes. Configuration controls whether a module is enabled, while context accessors resolve a module from an HTTP request or .NET type. Disabled modules can then be rejected by HTTP middleware or a Requester/Notifier pipeline behavior.
+Define each feature as an `IModule` or `IWebModule`. Select known modules explicitly with `WithModule<TModule>()`, or discover modules from named assemblies. The host registers selected modules, runs their application-pipeline hooks and maps web-module routes. Configuration controls whether a module is enabled, while context accessors resolve a module from an HTTP request or .NET type. Disabled modules can then be rejected by HTTP middleware or a Requester/Notifier pipeline behavior.
 
 ## Key Features
 
 - **Module lifecycle**: Use `Register`, `Use` and, for web modules, `Map` to group startup responsibilities.
+- **Explicit registration**: Use `WithModule<TModule>()`, `WithModule(Type)` or `WithModule(IModule)` without relying on assembly discovery or load order.
+- **Host isolation**: Resolve `IModuleRegistry` to inspect the selected modules for one host.
+- **Assembly discovery**: Use `DiscoverModulesFrom<TMarker>()` or the assembly-scanning `AddModules` overload when a host must find every constructible module in an assembly.
 - **Configuration binding**: Bind and validate settings from the `Modules:{module-name}` configuration section.
 - **Module enablement**: Set `Modules:{module-name}:Enabled` to `false` to mark a module as disabled.
 - **Request context**: Resolve a module from the `ModuleName` header or query parameter, a module segment in the path or a configured API path selector.
@@ -35,9 +38,19 @@ Define each feature as an `IModule` or `IWebModule`. The host discovers modules,
 
 ## Architecture
 
-The `Modules` feature centers on the `IModule` and `IWebModule` interfaces. `IModule.Register` adds services, `IModule.Use` contributes to the application pipeline and `IWebModule.Map` contributes routes. `AddModules` discovers module types and registers the modules selected with `WithModule<T>()`; the assembly-scanning overload can register every discovered module instead.
+The `Modules` feature centers on the `IModule` and `IWebModule` interfaces. `IModule.Register` adds services, `IModule.Use` contributes to the application pipeline and `IWebModule.Map` contributes routes.
 
-`ModuleBase` derives the default module name by removing `Module` from the class name and converting the result to lowercase. For example, `CustomerModule` is named `customer`, so its configuration section is `Modules:customer`. A module is disabled only when its `Enabled` value is `false`; registration and lifecycle callbacks still run, while context-aware middleware and behaviors reject work associated with that disabled module.
+Each service collection owns one `IModuleRegistry`. Every `WithModule` overload selects a module through that registry and then uses one registration operation. The operation applies enablement, registers the module and its `ActivitySource`, and calls `Register` once for that host. `UseModules` and `MapModules` resolve the registry from the built application. Both methods use the same instances that ran `Register`.
+
+The registry orders modules by ascending `Priority`, then by `Name` with ordinal-ignore-case comparison. Registering the same instance or selecting an already selected type is idempotent. Registering a second instance of the same type fails because `WithModule` is not a replacement API. Different module types cannot use the same name, including names that differ only by case.
+
+Explicit registration does not scan assemblies. If the registry does not contain the exact type, `WithModule<TModule>()` and `WithModule(Type)` create it through `Factory.Create`. The type must be a concrete, closed `IModule` with a public parameterless constructor. Activation failures throw an `InvalidOperationException` that identifies the module type.
+
+Reflection discovery is separate. Use `DiscoverModulesFrom<TMarker>()` inside the registration callback to scan the marker's assembly. The assembly-scanning `AddModules` overload remains available. If that overload receives no assemblies, it scans the assemblies loaded at the time of the call. Every discovered instance enters the same registration operation as an explicitly selected module.
+
+`ModuleBase` derives the default module name by removing `Module` from the class name and converting the result to lowercase. For example, `CustomerModule` is named `customer`, so its configuration section is `Modules:customer`. The registry applies `Modules:{module-name}:Enabled` before `Register`. The same value is therefore visible in `Register`, `Use` and `Map`. Registration and lifecycle callbacks still run for disabled modules, while context-aware middleware and behaviors reject work associated with a disabled module.
+
+`IModule.IsRegistered` remains available as compatibility metadata, but the registry does not use it to decide whether to call `Register`. Reusing one module instance in two hosts calls `Register` once in each host. Module activity listeners follow host lifetime and share one process-wide callback while one or more module hosts are running.
 
 `RequestModuleMiddleware`, installed by `UseRequestModuleContext`, resolves an HTTP request's module. For a resolved module, it adds the module name to the log scope, activity baggage, response headers and request items. `ModuleScopeBehavior<,>` performs the corresponding enablement check for Requester and Notifier operations whose request type can be associated with a module.
 
@@ -153,10 +166,11 @@ public class CustomerModuleConfiguration
 Register the module in the host:
 
 ```csharp
-var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddModules(builder.Configuration, builder.Environment)
-    .WithModule<CustomerModule>();
+var builder = DevKitWebApplication.CreateBuilder(args)
+    .AddConfiguration()
+    .AddLogging()
+    .AddModules(modules => modules
+        .WithModule<CustomerModule>());
 
 var app = builder.Build();
 app.UseRequestModuleContext();
@@ -167,6 +181,33 @@ app.Run();
 ```
 
 With the module enabled, `GET /api/customers/{id}` reaches `CustomerEndpoints`. `MapHttpOk` converts a successful result to HTTP 200 and maps a failed result to the configured HTTP error response instead of reading a missing value.
+
+To inspect the modules selected for this host, resolve its read-only registry:
+
+```csharp
+var registry = app.Services.GetRequiredService<IModuleRegistry>();
+
+foreach (var module in registry.Modules)
+{
+    Console.WriteLine($"{module.Priority}: {module.Name}");
+}
+```
+
+### Discovering modules
+
+Use explicit registration when the host knows the module type. It is deterministic and does not depend on assembly load order.
+
+Use reflection discovery when the host must register every module in an assembly:
+
+```csharp
+var builder = DevKitWebApplication.CreateBuilder(args)
+    .AddConfiguration()
+    .AddLogging()
+    .AddModules(modules => modules
+        .DiscoverModulesFrom<CustomerModule>());
+```
+
+Discovery has the same construction requirements and duplicate checks as explicit registration. It does not create a second set of web modules for `Map`.
 
 ### Defining endpoints
 

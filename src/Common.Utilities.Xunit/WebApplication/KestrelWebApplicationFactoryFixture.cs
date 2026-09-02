@@ -97,12 +97,6 @@ public class KestrelWebApplicationFactoryFixture<TEntryPoint> : WebApplicationFa
 
         Log.Logger = loggerConfiguration.CreateLogger().ForContext<CustomWebApplicationFactory<TEntryPoint>>();
 
-        // reset the module registrations
-        foreach (var module in testHost.Services.GetServices<IModule>().SafeNull())
-        {
-            module.IsRegistered = false;
-        }
-
         // Create and start the Kestrel server before the test server,
         // otherwise due to the way the deferred host builder works
         // for minimal hosting, the server will not get "initialized

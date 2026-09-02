@@ -13,6 +13,7 @@ using Microsoft.Extensions.Hosting;
 /// <code>
 /// var builder = DevKitWebApplication.CreateBuilder(args)
 ///     .AddConfiguration()
+///     .AddLogging()
 ///     .AddModules(modules =&gt; modules.WithModule&lt;CoreModule&gt;());
 /// </code>
 /// </example>

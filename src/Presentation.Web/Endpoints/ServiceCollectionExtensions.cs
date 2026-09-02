@@ -9,7 +9,7 @@ using System.Reflection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 using Extensions;
-using Serilog;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 ///     Provides dependency injection extensions for registering modular endpoint sets.
@@ -21,8 +21,6 @@ using Serilog;
 /// </remarks>
 public static partial class ServiceCollectionExtensions
 {
-    private const string LogKey = "REQ";
-
     /// <summary>
     ///     Registers endpoint sets discovered from the currently loaded application domain assemblies.
     /// </summary>
@@ -31,7 +29,7 @@ public static partial class ServiceCollectionExtensions
     /// <returns>The original <paramref name="services" /> instance.</returns>
     /// <remarks>
     ///     The method scans loaded assemblies for concrete <see cref="IEndpoints" /> implementations, then delegates to the
-    ///     assembly registration overload. It logs each endpoint type that is registered.
+    ///     assembly registration overload. A startup diagnostic lists all registered endpoint types in one log entry.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services" /> is <c>null</c>.</exception>
     public static IServiceCollection AddEndpoints(this IServiceCollection services, bool enabled = true)
@@ -99,7 +97,7 @@ public static partial class ServiceCollectionExtensions
     /// <returns>The original <paramref name="services" /> instance.</returns>
     /// <remarks>
     ///     Each supplied endpoint instance is converted to a service descriptor for <see cref="IEndpoints" />. Null or empty
-    ///     collections do not add registrations. Each registered instance is logged with its implementation type name.
+    ///     collections do not add registrations. A startup diagnostic lists all registered endpoint types in one log entry.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services" /> is <c>null</c>.</exception>
     public static IServiceCollection AddEndpoints(
@@ -114,12 +112,7 @@ public static partial class ServiceCollectionExtensions
             var serviceDescriptors = endpoints.Select(e => new ServiceDescriptor(typeof(IEndpoints), e)).ToArray();
             if (serviceDescriptors.SafeAny())
             {
-                services.TryAddEnumerable(serviceDescriptors);
-
-                foreach (var serviceDescriptor in serviceDescriptors)
-                {
-                    Log.Logger.Information("[{LogKey}] api endpoints added (type={ApiEndpointsType})", LogKey, serviceDescriptor.ImplementationInstance.GetType().Name);
-                }
+                AddEndpointDescriptors(services, serviceDescriptors);
             }
         }
 
@@ -153,14 +146,7 @@ public static partial class ServiceCollectionExtensions
 
             if (serviceDescriptors.SafeAny())
             {
-                services.TryAddEnumerable(serviceDescriptors);
-
-                foreach (var serviceDescriptor in serviceDescriptors)
-                {
-                    Log.Logger.Information("[{LogKey}] api endpoints added (type={ApiEndpointsType})",
-                        LogKey,
-                        serviceDescriptor.ImplementationType.Name);
-                }
+                AddEndpointDescriptors(services, serviceDescriptors);
             }
         }
 
@@ -197,7 +183,8 @@ public static partial class ServiceCollectionExtensions
     /// <returns>The original <paramref name="services" /> instance.</returns>
     /// <remarks>
     ///     For each assembly, concrete non-abstract implementations of <see cref="IEndpoints" /> are registered as singleton
-    ///     endpoint services. Each registered type is logged. Null assembly collections are treated as empty collections.
+    ///     endpoint services. A startup diagnostic lists all registered endpoint types in one log entry. Null assembly
+    ///     collections are treated as empty collections.
     /// </remarks>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services" /> is <c>null</c>.</exception>
     public static IServiceCollection AddEndpoints(
@@ -221,17 +208,18 @@ public static partial class ServiceCollectionExtensions
 
             if (serviceDescriptors.SafeAny())
             {
-                services.TryAddEnumerable(serviceDescriptors);
-
-                foreach (var serviceDescriptor in serviceDescriptors)
-                {
-                    Log.Logger.Information("[{LogKey}] endpoints added (type={EndpointsType})",
-                        LogKey,
-                        serviceDescriptor.ImplementationType.Name);
-                }
+                AddEndpointDescriptors(services, serviceDescriptors);
             }
         }
 
         return services;
+    }
+
+    private static void AddEndpointDescriptors(
+        IServiceCollection services,
+        IEnumerable<ServiceDescriptor> serviceDescriptors)
+    {
+        services.TryAddEnumerable(serviceDescriptors);
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, EndpointStartupDiagnosticsService>());
     }
 }

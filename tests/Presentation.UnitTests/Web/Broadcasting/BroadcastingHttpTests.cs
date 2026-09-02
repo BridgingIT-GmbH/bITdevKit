@@ -24,6 +24,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 
+[Collection(BroadcastingHttpTestCollection.Name)]
 public class BroadcastingHttpTests
 {
     [Theory]
@@ -505,4 +506,16 @@ public class BroadcastingHttpTests
             return Task.FromResult(AuthenticateResult.Success(ticket));
         }
     }
+}
+
+/// <summary>
+///     Prevents the Kestrel-based broadcasting tests from competing with other test hosts for runtime resources.
+/// </summary>
+[CollectionDefinition(Name, DisableParallelization = true)]
+public sealed class BroadcastingHttpTestCollection
+{
+    /// <summary>
+    ///     Gets the xUnit collection name used by the broadcasting HTTP tests.
+    /// </summary>
+    public const string Name = "Broadcasting HTTP tests";
 }

@@ -42,6 +42,12 @@ public sealed class ProfilingWorkflowIntegrationTests
             new(started.Value.Session.Identity.Key, nodeKey)
         );
         var stopped = await control.StopAsync();
+        var stoppedData = await WaitForSessionDataAsync(
+            store,
+            started.Value.Session.Identity.Key,
+            data => data.Participations.Count == 1
+                && data.Participations[0].State == ProfilingParticipationState.Stopped
+        );
         var exported = await queries.ExportSnapshotsJsonAsync(
             started.Value.Session.Identity.Key,
             nodeKey
@@ -70,14 +76,14 @@ public sealed class ProfilingWorkflowIntegrationTests
         using (var document = JsonDocument.Parse(exported.Value))
         {
             document.RootElement.ValueKind.ShouldBe(JsonValueKind.Array);
-            document.RootElement.GetArrayLength().ShouldBe(collected.Value.Snapshots.Count);
+            document.RootElement.GetArrayLength().ShouldBe(stoppedData.Snapshots.Count);
             exported.Value.ShouldNotContain("signals", Case.Insensitive);
             exported.Value.ShouldNotContain("kpis", Case.Insensitive);
         }
 
         cleared.IsSuccess.ShouldBeTrue();
         cleared.Value.RemovedSessionCount.ShouldBe(1);
-        cleared.Value.RemovedSnapshotCount.ShouldBe(collected.Value.Snapshots.Count);
+        cleared.Value.RemovedSnapshotCount.ShouldBe(stoppedData.Snapshots.Count);
         remaining.IsSuccess.ShouldBeTrue();
         remaining.Value.ShouldBeEmpty();
         await node.StopAsync();

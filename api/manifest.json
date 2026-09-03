@@ -22680,6 +22680,20 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.IModuleRegistry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.IModuleRegistry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.IModuleRegistry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IModuleRegistry.yml\" sourcestartlinenumber=\"1\">Provides the modules selected for one application host.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.INotification.yml",
       "output": {
         ".html": {
@@ -24934,6 +24948,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ModuleActivityListenerCoordinator.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ModuleActivityListenerCoordinator.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ModuleActivityListenerCoordinator",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ModuleActivityListenerCoordinator.yml\" sourcestartlinenumber=\"1\">Coordinates leases for the process-wide activity listener used by module tracing.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ModuleActivityListenerService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ModuleActivityListenerService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ModuleActivityListenerService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ModuleActivityListenerService.yml\" sourcestartlinenumber=\"1\">Manages the shared activity listener used to trace module activity for an application host.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ModuleAttribute.yml",
       "output": {
         ".html": {
@@ -24958,7 +25000,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ModuleBase",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ModuleBase.yml\" sourcestartlinenumber=\"1\">Provides naming, priority, enablement, and registration state for application modules.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ModuleBase.yml\" sourcestartlinenumber=\"1\">Provides naming, priority, enablement, and compatibility registration metadata for application modules.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25043,6 +25085,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ModuleNotEnabledException",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ModuleNotEnabledException.yml\" sourcestartlinenumber=\"1\">Exception that is thrown when a requested module is not enabled.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ModuleRegistry.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.ModuleRegistry.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.ModuleRegistry",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ModuleRegistry.yml\" sourcestartlinenumber=\"1\">Stores the modules selected for one application host in deterministic lifecycle order.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -46505,6 +46561,20 @@
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Presentation.Web.EndpointRouteNamePrefixMetadata",
       "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EndpointRouteNamePrefixMetadata.yml\" sourcestartlinenumber=\"1\">Stores the route name prefix configured for an endpoint group.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EndpointStartupDiagnosticsService.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Presentation.Web.EndpointStartupDiagnosticsService.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Presentation.Web.EndpointStartupDiagnosticsService",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Presentation.Web.EndpointStartupDiagnosticsService.yml\" sourcestartlinenumber=\"1\">Writes separate summaries of application and system API endpoint sets during host startup.</p>\n"
     },
     {
       "type": "ManagedReference",

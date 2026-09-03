@@ -2020,6 +2020,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#discovering-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discovering modules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#defining-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -3953,6 +3964,17 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#discovering-modules" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Discovering modules
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#defining-endpoints" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4212,6 +4234,7 @@
 <li><a href="#use-cases">Use Cases</a></li>
 <li><a href="#basic-usage">Basic Usage</a><ul>
 <li><a href="#module-definition-and-setup">Module definition and setup</a></li>
+<li><a href="#discovering-modules">Discovering modules</a></li>
 <li><a href="#defining-endpoints">Defining endpoints</a></li>
 <li><a href="#scoping-requests">Scoping requests</a></li>
 <li><a href="#feature-toggling">Feature toggling</a></li>
@@ -4241,10 +4264,13 @@
 <h2 id="challenges">Challenges<a class="headerlink" href="#challenges" title="Permanent link">&para;</a></h2>
 <p>In a growing monolith, service registration, middleware, endpoints and configuration can become difficult to associate with the feature that owns them. Disabling a feature or identifying the active feature for an HTTP request or an in-process request also requires consistent conventions.</p>
 <h2 id="solution">Solution<a class="headerlink" href="#solution" title="Permanent link">&para;</a></h2>
-<p>Define each feature as an <code>IModule</code> or <code>IWebModule</code>. The host discovers modules, registers selected modules, runs their application-pipeline hooks and maps web-module routes. Configuration controls whether a module is enabled, while context accessors resolve a module from an HTTP request or .NET type. Disabled modules can then be rejected by HTTP middleware or a Requester/Notifier pipeline behavior.</p>
+<p>Define each feature as an <code>IModule</code> or <code>IWebModule</code>. Select known modules explicitly with <code>WithModule&lt;TModule&gt;()</code>, or discover modules from named assemblies. The host registers selected modules, runs their application-pipeline hooks and maps web-module routes. Configuration controls whether a module is enabled, while context accessors resolve a module from an HTTP request or .NET type. Disabled modules can then be rejected by HTTP middleware or a Requester/Notifier pipeline behavior.</p>
 <h2 id="key-features">Key Features<a class="headerlink" href="#key-features" title="Permanent link">&para;</a></h2>
 <ul>
 <li><strong>Module lifecycle</strong>: Use <code>Register</code>, <code>Use</code> and, for web modules, <code>Map</code> to group startup responsibilities.</li>
+<li><strong>Explicit registration</strong>: Use <code>WithModule&lt;TModule&gt;()</code>, <code>WithModule(Type)</code> or <code>WithModule(IModule)</code> without relying on assembly discovery or load order.</li>
+<li><strong>Host isolation</strong>: Resolve <code>IModuleRegistry</code> to inspect the selected modules for one host.</li>
+<li><strong>Assembly discovery</strong>: Use <code>DiscoverModulesFrom&lt;TMarker&gt;()</code> or the assembly-scanning <code>AddModules</code> overload when a host must find every constructible module in an assembly.</li>
 <li><strong>Configuration binding</strong>: Bind and validate settings from the <code>Modules:{module-name}</code> configuration section.</li>
 <li><strong>Module enablement</strong>: Set <code>Modules:{module-name}:Enabled</code> to <code>false</code> to mark a module as disabled.</li>
 <li><strong>Request context</strong>: Resolve a module from the <code>ModuleName</code> header or query parameter, a module segment in the path or a configured API path selector.</li>
@@ -4253,8 +4279,13 @@
 <li><strong>Pipeline integration</strong>: Reject Requester and Notifier operations associated with disabled modules by using <code>ModuleScopeBehavior&lt;,&gt;</code>.</li>
 </ul>
 <h2 id="architecture">Architecture<a class="headerlink" href="#architecture" title="Permanent link">&para;</a></h2>
-<p>The <code>Modules</code> feature centers on the <code>IModule</code> and <code>IWebModule</code> interfaces. <code>IModule.Register</code> adds services, <code>IModule.Use</code> contributes to the application pipeline and <code>IWebModule.Map</code> contributes routes. <code>AddModules</code> discovers module types and registers the modules selected with <code>WithModule&lt;T&gt;()</code>; the assembly-scanning overload can register every discovered module instead.</p>
-<p><code>ModuleBase</code> derives the default module name by removing <code>Module</code> from the class name and converting the result to lowercase. For example, <code>CustomerModule</code> is named <code>customer</code>, so its configuration section is <code>Modules:customer</code>. A module is disabled only when its <code>Enabled</code> value is <code>false</code>; registration and lifecycle callbacks still run, while context-aware middleware and behaviors reject work associated with that disabled module.</p>
+<p>The <code>Modules</code> feature centers on the <code>IModule</code> and <code>IWebModule</code> interfaces. <code>IModule.Register</code> adds services, <code>IModule.Use</code> contributes to the application pipeline and <code>IWebModule.Map</code> contributes routes.</p>
+<p>Each service collection owns one <code>IModuleRegistry</code>. Every <code>WithModule</code> overload selects a module through that registry and then uses one registration operation. The operation applies enablement, registers the module and its <code>ActivitySource</code>, and calls <code>Register</code> once for that host. <code>UseModules</code> and <code>MapModules</code> resolve the registry from the built application. Both methods use the same instances that ran <code>Register</code>.</p>
+<p>The registry orders modules by ascending <code>Priority</code>, then by <code>Name</code> with ordinal-ignore-case comparison. Registering the same instance or selecting an already selected type is idempotent. Registering a second instance of the same type fails because <code>WithModule</code> is not a replacement API. Different module types cannot use the same name, including names that differ only by case.</p>
+<p>Explicit registration does not scan assemblies. If the registry does not contain the exact type, <code>WithModule&lt;TModule&gt;()</code> and <code>WithModule(Type)</code> create it through <code>Factory.Create</code>. The type must be a concrete, closed <code>IModule</code> with a public parameterless constructor. Activation failures throw an <code>InvalidOperationException</code> that identifies the module type.</p>
+<p>Reflection discovery is separate. Use <code>DiscoverModulesFrom&lt;TMarker&gt;()</code> inside the registration callback to scan the marker's assembly. The assembly-scanning <code>AddModules</code> overload remains available. If that overload receives no assemblies, it scans the assemblies loaded at the time of the call. Every discovered instance enters the same registration operation as an explicitly selected module.</p>
+<p><code>ModuleBase</code> derives the default module name by removing <code>Module</code> from the class name and converting the result to lowercase. For example, <code>CustomerModule</code> is named <code>customer</code>, so its configuration section is <code>Modules:customer</code>. The registry applies <code>Modules:{module-name}:Enabled</code> before <code>Register</code>. The same value is therefore visible in <code>Register</code>, <code>Use</code> and <code>Map</code>. Registration and lifecycle callbacks still run for disabled modules, while context-aware middleware and behaviors reject work associated with a disabled module.</p>
+<p><code>IModule.IsRegistered</code> remains available as compatibility metadata, but the registry does not use it to decide whether to call <code>Register</code>. Reusing one module instance in two hosts calls <code>Register</code> once in each host. Module activity listeners follow host lifetime and share one process-wide callback while one or more module hosts are running.</p>
 <p><code>RequestModuleMiddleware</code>, installed by <code>UseRequestModuleContext</code>, resolves an HTTP request's module. For a resolved module, it adds the module name to the log scope, activity baggage, response headers and request items. <code>ModuleScopeBehavior&lt;,&gt;</code> performs the corresponding enablement check for Requester and Notifier operations whose request type can be associated with a module.</p>
 <pre class="mermaid"><code>sequenceDiagram
     participant Client
@@ -4350,10 +4381,11 @@
 <span class="p">}</span>
 </code></pre></div>
 <p>Register the module in the host:</p>
-<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">WebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">);</span>
-
-<span class="n">builder</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">AddModules</span><span class="p">(</span><span class="n">builder</span><span class="p">.</span><span class="n">Configuration</span><span class="p">,</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Environment</span><span class="p">)</span>
-<span class="w">    </span><span class="p">.</span><span class="n">WithModule</span><span class="o">&lt;</span><span class="n">CustomerModule</span><span class="o">&gt;</span><span class="p">();</span>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitWebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddLogging</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddModules</span><span class="p">(</span><span class="n">modules</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">modules</span>
+<span class="w">        </span><span class="p">.</span><span class="n">WithModule</span><span class="o">&lt;</span><span class="n">CustomerModule</span><span class="o">&gt;</span><span class="p">());</span>
 
 <span class="kt">var</span><span class="w"> </span><span class="n">app</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">builder</span><span class="p">.</span><span class="n">Build</span><span class="p">();</span>
 <span class="n">app</span><span class="p">.</span><span class="n">UseRequestModuleContext</span><span class="p">();</span>
@@ -4363,6 +4395,24 @@
 <span class="n">app</span><span class="p">.</span><span class="n">Run</span><span class="p">();</span>
 </code></pre></div>
 <p>With the module enabled, <code>GET /api/customers/{id}</code> reaches <code>CustomerEndpoints</code>. <code>MapHttpOk</code> converts a successful result to HTTP 200 and maps a failed result to the configured HTTP error response instead of reading a missing value.</p>
+<p>To inspect the modules selected for this host, resolve its read-only registry:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">registry</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">app</span><span class="p">.</span><span class="n">Services</span><span class="p">.</span><span class="n">GetRequiredService</span><span class="o">&lt;</span><span class="n">IModuleRegistry</span><span class="o">&gt;</span><span class="p">();</span>
+
+<span class="k">foreach</span><span class="w"> </span><span class="p">(</span><span class="kt">var</span><span class="w"> </span><span class="n">module</span><span class="w"> </span><span class="k">in</span><span class="w"> </span><span class="n">registry</span><span class="p">.</span><span class="n">Modules</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="w">    </span><span class="n">Console</span><span class="p">.</span><span class="n">WriteLine</span><span class="p">(</span><span class="s">$&quot;{module.Priority}: {module.Name}&quot;</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div>
+<h3 id="discovering-modules">Discovering modules<a class="headerlink" href="#discovering-modules" title="Permanent link">&para;</a></h3>
+<p>Use explicit registration when the host knows the module type. It is deterministic and does not depend on assembly load order.</p>
+<p>Use reflection discovery when the host must register every module in an assembly:</p>
+<div class="highlight"><pre><span></span><code><span class="kt">var</span><span class="w"> </span><span class="n">builder</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DevKitWebApplication</span><span class="p">.</span><span class="n">CreateBuilder</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddConfiguration</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddLogging</span><span class="p">()</span>
+<span class="w">    </span><span class="p">.</span><span class="n">AddModules</span><span class="p">(</span><span class="n">modules</span><span class="w"> </span><span class="o">=&gt;</span><span class="w"> </span><span class="n">modules</span>
+<span class="w">        </span><span class="p">.</span><span class="n">DiscoverModulesFrom</span><span class="o">&lt;</span><span class="n">CustomerModule</span><span class="o">&gt;</span><span class="p">());</span>
+</code></pre></div>
+<p>Discovery has the same construction requirements and duplicate checks as explicit registration. It does not create a second set of web modules for <code>Map</code>.</p>
 <h3 id="defining-endpoints">Defining endpoints<a class="headerlink" href="#defining-endpoints" title="Permanent link">&para;</a></h3>
 <p>Define module-specific endpoints using minimal APIs:</p>
 <div class="highlight"><pre><span></span><code><span class="k">public</span><span class="w"> </span><span class="k">class</span><span class="w"> </span><span class="nc">CustomerEndpoints</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">EndpointsBase</span>

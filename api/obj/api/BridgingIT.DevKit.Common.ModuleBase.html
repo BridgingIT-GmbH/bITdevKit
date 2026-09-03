@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ModuleBase | bITdevKit API Reference ">
       
-      <meta name="description" content="Provides naming, priority, enablement, and registration state for application modules.">
+      <meta name="description" content="Provides naming, priority, enablement, and compatibility registration metadata for application modules.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class ModuleBase
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Modules.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Provides naming, priority, enablement, and registration state for application modules.</p>
+  <div class="markdown summary"><p>Provides naming, priority, enablement, and compatibility registration metadata for application modules.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -262,6 +262,12 @@ Class ModuleBase
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Common_ModuleBase_examples">Examples</h2>
+  <pre><code class="lang-csharp">public sealed class CustomerModule : ModuleBase
+{
+    // Implement Register and Use for the customer feature.
+}</code></pre>
+
 
 
 
@@ -380,7 +386,8 @@ should generally be skipped or result in errors indicating that the module is no
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Indicates whether the module has been registered within the system.</p>
+  <div class="markdown level1 summary"><p>Gets or sets compatibility metadata that indicates whether the module instance has completed registration in
+at least one host.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -400,7 +407,16 @@ should generally be skipped or result in errors indicating that the module is no
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ModuleBase_IsRegistered_examples">Examples</h4>
+  <pre><code class="lang-csharp">var module = app.Services.GetRequiredService&lt;IModuleRegistry&gt;().Modules[0];
+Console.WriteLine(module.IsRegistered);</code></pre>
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ModuleBase_IsRegistered_remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Module registration does not use this property for idempotency. The current host's
+<a class="xref" href="BridgingIT.DevKit.Common.IModuleRegistry.html">IModuleRegistry</a> owns registration state, so reusing an instance in another host still invokes
+<a class="xref" href="BridgingIT.DevKit.Common.IModule.html#BridgingIT_DevKit_Common_IModule_Register_Microsoft_Extensions_DependencyInjection_IServiceCollection_Microsoft_Extensions_Configuration_IConfiguration_Microsoft_AspNetCore_Hosting_IWebHostEnvironment_">Register(IServiceCollection, IConfiguration, IWebHostEnvironment)</a> for that host.</p>
+</div>
 
 
 
@@ -568,12 +584,6 @@ scenarios where the initialization order of modules affects the application's be
 
 
 
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><span class="xref">Exception</span></dt>
-    <dd><p>Thrown if no modules are found. Ensure modules are added with services.AddModules().</p>
-</dd>
-  </dl>
 
 
 

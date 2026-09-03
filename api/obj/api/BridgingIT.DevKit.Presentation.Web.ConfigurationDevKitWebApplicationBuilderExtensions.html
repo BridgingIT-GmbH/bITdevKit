@@ -120,6 +120,7 @@ Class ConfigurationDevKitWebApplicationBuilderExtensions
   <h2 id="BridgingIT_DevKit_Presentation_Web_ConfigurationDevKitWebApplicationBuilderExtensions_examples">Examples</h2>
   <pre><code class="lang-csharp">var builder = DevKitWebApplication.CreateBuilder(args)
     .AddConfiguration()
+    .AddLogging()
     .AddModules(modules =&gt; modules.WithModule&lt;CoreModule&gt;());</code></pre>
 
 

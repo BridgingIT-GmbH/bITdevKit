@@ -4,6 +4,11 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 ## [Unreleased]
 
+## [10.0.112] - 2026-09-03
+
+- Added startup diagnostics that write deterministic debug-level summaries of registered application and DevKit system endpoints.
+- Fixed module state leaking across hosts. Each host now has its own module registry, reuses the same module instance for registration, middleware, and endpoint mapping, and manages activity logging correctly when multiple hosts run together.
+
 ## [10.0.111] - 2026-09-02
 
 - Added broadcasting for in-process and distributed delivery, with HTTP transport, node registration, dashboard and console controls, and correlation ID propagation.

@@ -74,6 +74,7 @@ The host now has a local runtime descriptor and IPC endpoint.
 
 ### 4. Configure the MCP client
 
+**Github Copilot:**
 For VS Code, add `.vscode/mcp.json` to the project repository:
 
 ```json
@@ -86,6 +87,21 @@ For VS Code, add `.vscode/mcp.json` to the project repository:
     }
   }
 }
+```
+
+**Codex:**
+For VS Code, add `.codex/config.toml` to the project repository:
+
+```text
+[mcp_servers.bdk]
+command = "dotnet"
+args = [
+  "tool", "run", "bdk", "mcp"
+]
+cwd = ".."
+startup_timeout_sec = 60
+tool_timeout_sec = 120
+enabled = true
 ```
 
 Other clients use different configuration files. Keep the command and arguments equivalent. See [MCP Client Configuration](reference/features-cli-mcp-clients.md) for VS Code, Visual Studio, Rider, and other supported clients.

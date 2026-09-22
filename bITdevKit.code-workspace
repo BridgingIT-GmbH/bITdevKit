@@ -31,7 +31,9 @@
         "titleBar.activeBackground": "#14389d",
         "titleBar.activeForeground": "#e7e7e7",
         "titleBar.inactiveBackground": "#14389d99",
-        "titleBar.inactiveForeground": "#e7e7e799"
+        "titleBar.inactiveForeground": "#e7e7e799",
+        "activityBar.activeBorder": "#e7e7e7",
+        "activityBarTop.activeBorder": "#e7e7e7"
     },
   }
 }

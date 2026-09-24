@@ -16,7 +16,7 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 /// </summary>
 public static class ResultMapErrorHandlerRegistry
 {
-    private static readonly Dictionary<Type, Func<ILogger, Result, IResult>> errorHandlers = [];
+    private static readonly Dictionary<Type, Func<ILogger, Result, IResult>> ErrorHandlers = [];
 
     /// <summary>
     /// Registers a custom error handler for a specific error type.
@@ -31,7 +31,7 @@ public static class ResultMapErrorHandlerRegistry
     {
         ArgumentNullException.ThrowIfNull(handler, nameof(handler));
 
-        errorHandlers[typeof(TError)] = handler;
+        ErrorHandlers[typeof(TError)] = handler;
     }
 
     /// <summary>
@@ -42,7 +42,7 @@ public static class ResultMapErrorHandlerRegistry
     public static bool RemoveHandler<TError>()
         where TError : IResultError
     {
-        return errorHandlers.Remove(typeof(TError));
+        return ErrorHandlers.Remove(typeof(TError));
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public static class ResultMapErrorHandlerRegistry
     /// </summary>
     public static void ClearHandlers()
     {
-        errorHandlers.Clear();
+        ErrorHandlers.Clear();
     }
 
     /// <summary>
@@ -61,7 +61,7 @@ public static class ResultMapErrorHandlerRegistry
     public static bool HasHandlerFor<TError>()
         where TError : IResultError
     {
-        return errorHandlers.ContainsKey(typeof(TError));
+        return ErrorHandlers.ContainsKey(typeof(TError));
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ public static class ResultMapErrorHandlerRegistry
     /// <returns>An enumerable of all registered error types.</returns>
     public static IEnumerable<Type> GetRegisteredErrorTypes()
     {
-        return errorHandlers.Keys;
+        return ErrorHandlers.Keys;
     }
 
     /// <summary>
@@ -89,7 +89,7 @@ public static class ResultMapErrorHandlerRegistry
             foreach (var error in result.Errors)
             {
                 var errorType = error.GetType();
-                if (errorHandlers.TryGetValue(errorType, out var handler))
+                if (ErrorHandlers.TryGetValue(errorType, out var handler))
                 {
                     customResult = handler(logger, result);
                     return true;

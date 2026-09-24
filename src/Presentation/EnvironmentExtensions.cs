@@ -14,8 +14,8 @@ using Microsoft.Extensions.Hosting;
 /// </summary>
 public static class EnvironmentExtensions
 {
-    private const string AZURE_FUNCTIONS_ENV = "AZURE_FUNCTIONS_ENVIRONMENT";
-    private const string AZURE_WEBSITES_ENV = "WEBSITE_SITE_NAME";
+    private const string AzureFunctionsEnv = "AZURE_FUNCTIONS_ENVIRONMENT";
+    private const string AzureWebsitesEnv = "WEBSITE_SITE_NAME";
 
     /// <summary>
     /// Determines if the app is currently running in a Docker container (via <c>DOTNET_RUNNING_IN_CONTAINER</c> env var).
@@ -33,13 +33,13 @@ public static class EnvironmentExtensions
     /// Determines if the app is currently running in Azure App Service (via <c>WEBSITE_SITE_NAME</c> env var).
     /// </summary>
     public static bool IsAzure() =>
-        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AZURE_WEBSITES_ENV));
+        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AzureWebsitesEnv));
 
     /// <summary>
     /// Determines if the app is currently running in Azure Functions (via <c>AZURE_FUNCTIONS_ENVIRONMENT</c> env var).
     /// </summary>
     public static bool IsAzureFunctions() =>
-        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AZURE_FUNCTIONS_ENV));
+        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AzureFunctionsEnv));
 
     /// <summary>
     /// Determines if the app runs in any cloud environment. Currently only checks for Azure.
@@ -63,11 +63,11 @@ public static class EnvironmentExtensions
 
     /// <inheritdoc cref="IsAzure"/>
     public static bool IsAzure(this IHostEnvironment env) =>
-        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AZURE_WEBSITES_ENV));
+        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AzureWebsitesEnv));
 
     /// <inheritdoc cref="IsAzureFunctions"/>
     public static bool IsAzureFunctions(this IHostEnvironment env) =>
-        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AZURE_FUNCTIONS_ENV));
+        !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AzureFunctionsEnv));
 
     /// <summary>
     /// Determines if the host environment is local development.

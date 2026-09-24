@@ -131,6 +131,7 @@ public sealed class ImportColumnConfiguration : IColumnConfiguration
     /// Converts the raw value to the target type.
     /// </summary>
     /// <param name="rawValue">The raw value from the import source.</param>
+    /// <param name="culture">The culture to use for value conversion.</param>
     /// <returns>The converted value.</returns>
     public object ConvertValue(string rawValue, System.Globalization.CultureInfo culture = null)
     {

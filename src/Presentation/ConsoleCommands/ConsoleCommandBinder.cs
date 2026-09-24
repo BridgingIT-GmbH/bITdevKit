@@ -14,8 +14,8 @@ using Spectre.Console;
 /// <summary>Command binding utility (reflection + caching).</summary>
 public static class ConsoleCommandBinder
 {
-    private static readonly Dictionary<Type, ConsoleCommandMeta> cache = [];
-    private static readonly object sync = new();
+    private static readonly Dictionary<Type, ConsoleCommandMeta> Cache = [];
+    private static readonly object Sync = new();
 
     /// <summary>
     /// Attempts to bind tokens to the properties of a console command.
@@ -147,9 +147,9 @@ public static class ConsoleCommandBinder
     /// <returns>The metadata for the command.</returns>
     private static ConsoleCommandMeta GetMeta(Type t)
     {
-        lock (sync)
+        lock (Sync)
         {
-            if (!cache.TryGetValue(t, out var meta))
+            if (!Cache.TryGetValue(t, out var meta))
             {
                 var props = t.GetProperties(BindingFlags.Instance | BindingFlags.Public);
                 var options = new List<OptionMeta>();
@@ -185,7 +185,7 @@ public static class ConsoleCommandBinder
                 }
 
                 meta = new ConsoleCommandMeta(options, args);
-                cache[t] = meta;
+                Cache[t] = meta;
             }
 
             return meta;

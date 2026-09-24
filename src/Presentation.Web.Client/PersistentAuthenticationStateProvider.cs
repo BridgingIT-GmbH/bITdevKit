@@ -38,7 +38,7 @@ public class PersistentAuthenticationStateProvider(
     private readonly IJSRuntime jsRuntime = jsRuntime;
     private readonly IConfiguration configuration = configuration;
     private static OpenIdConfiguration cachedConfiguration;
-    private static readonly SemaphoreSlim semaphore = new(1, 1);
+    private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
     /// <summary>
     /// Gets the current authentication state
@@ -107,7 +107,7 @@ public class PersistentAuthenticationStateProvider(
 
         try
         {
-            await semaphore.WaitAsync();
+            await Semaphore.WaitAsync();
             if (cachedConfiguration != null)
             {
                 return cachedConfiguration;
@@ -121,7 +121,7 @@ public class PersistentAuthenticationStateProvider(
         }
         finally
         {
-            semaphore.Release();
+            Semaphore.Release();
         }
     }
 

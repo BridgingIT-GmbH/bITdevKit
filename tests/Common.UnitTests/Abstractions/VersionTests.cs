@@ -211,18 +211,18 @@ public class VersionTests
 // Fake Assembly for testing
 public class FakeAssembly : Assembly
 {
-    private readonly string _informationalVersion;
+    private readonly string informationalVersion;
 
     public FakeAssembly(string informationalVersion)
     {
-        this._informationalVersion = informationalVersion;
+        this.informationalVersion = informationalVersion;
     }
 
     public override object[] GetCustomAttributes(Type attributeType, bool inherit)
     {
         if (attributeType == typeof(AssemblyInformationalVersionAttribute))
         {
-            return new[] { new AssemblyInformationalVersionAttribute(this._informationalVersion) };
+            return new[] { new AssemblyInformationalVersionAttribute(this.informationalVersion) };
         }
 
         return Array.Empty<object>();

@@ -16,7 +16,7 @@ using Microsoft.Extensions.Hosting;
 /// </summary>
 public static class ServiceCollectionMessagingExtensions
 {
-    private static readonly object subscriptionsLock = new();
+    private static readonly object SubscriptionsLock = new();
 
     /// <summary>
     /// Stores the subscriptions.
@@ -31,7 +31,7 @@ public static class ServiceCollectionMessagingExtensions
     /// <param name="handler">The handler type.</param>
     public static void AddSubscription(Type message, Type handler)
     {
-        lock (subscriptionsLock)
+        lock (SubscriptionsLock)
         {
             Subscriptions.Add((message, handler));
         }
@@ -45,7 +45,7 @@ public static class ServiceCollectionMessagingExtensions
     /// <param name="enabled">Whether the subscription should be present.</param>
     public static void SetSubscription(Type message, Type handler, bool enabled)
     {
-        lock (subscriptionsLock)
+        lock (SubscriptionsLock)
         {
             Subscriptions.RemoveAll(item => item.message == message && item.handler == handler);
             if (enabled)
@@ -61,7 +61,7 @@ public static class ServiceCollectionMessagingExtensions
     /// <returns>A snapshot that is safe to enumerate while other registrations change.</returns>
     public static (Type message, Type handler)[] GetSubscriptions()
     {
-        lock (subscriptionsLock)
+        lock (SubscriptionsLock)
         {
             return [.. Subscriptions];
         }

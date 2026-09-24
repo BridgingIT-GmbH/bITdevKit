@@ -18,7 +18,7 @@ using System.Linq;
 /// </example>
 public static class ConsoleThemeRegistry
 {
-    private static readonly IReadOnlyList<ConsoleThemePalette> themes =
+    private static readonly IReadOnlyList<ConsoleThemePalette> Themes =
     [
         new(
             "dark",
@@ -136,7 +136,7 @@ public static class ConsoleThemeRegistry
     /// foreach (var theme in ConsoleThemeRegistry.All) { }
     /// </code>
     /// </example>
-    public static IReadOnlyList<ConsoleThemePalette> All => themes;
+    public static IReadOnlyList<ConsoleThemePalette> All => Themes;
 
     /// <summary>
     /// Gets a theme by name.
@@ -149,7 +149,7 @@ public static class ConsoleThemeRegistry
     /// </code>
     /// </example>
     public static ConsoleThemePalette Get(string name) =>
-        TryGet(name, out var theme) ? theme : themes.First(t => t.Name == DefaultThemeName);
+        TryGet(name, out var theme) ? theme : Themes.First(t => t.Name == DefaultThemeName);
 
     /// <summary>
     /// Attempts to get a theme by name.
@@ -164,7 +164,7 @@ public static class ConsoleThemeRegistry
     /// </example>
     public static bool TryGet(string name, out ConsoleThemePalette theme)
     {
-        theme = themes.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
+        theme = Themes.FirstOrDefault(t => string.Equals(t.Name, name, StringComparison.OrdinalIgnoreCase));
         return theme is not null;
     }
 }

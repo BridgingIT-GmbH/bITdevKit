@@ -146,11 +146,11 @@ public sealed class AspNetMetricsTracker
     private long maxObservedConcurrentRequests;
     private long failedRequests;
     private long totalLatencyMs;
-    private long status1xx;
-    private long status2xx;
-    private long status3xx;
-    private long status4xx;
-    private long status5xx;
+    private long status1Xx;
+    private long status2Xx;
+    private long status3Xx;
+    private long status4Xx;
+    private long status5Xx;
     private long lastRequestUtcTicks;
     private readonly ConcurrentDictionary<string, AspNetRouteMetricsAccumulator> routes = new(StringComparer.OrdinalIgnoreCase);
 
@@ -197,19 +197,19 @@ public sealed class AspNetMetricsTracker
         switch (statusCode / 100)
         {
             case 1:
-                Interlocked.Increment(ref this.status1xx);
+                Interlocked.Increment(ref this.status1Xx);
                 break;
             case 2:
-                Interlocked.Increment(ref this.status2xx);
+                Interlocked.Increment(ref this.status2Xx);
                 break;
             case 3:
-                Interlocked.Increment(ref this.status3xx);
+                Interlocked.Increment(ref this.status3Xx);
                 break;
             case 4:
-                Interlocked.Increment(ref this.status4xx);
+                Interlocked.Increment(ref this.status4Xx);
                 break;
             default:
-                Interlocked.Increment(ref this.status5xx);
+                Interlocked.Increment(ref this.status5Xx);
                 break;
         }
 
@@ -250,11 +250,11 @@ public sealed class AspNetMetricsTracker
             AverageLatencyMs = total == 0 ? 0 : totalLatency / (double)total,
             TotalLatencyMs = totalLatency,
             RequestsPerMinute = uptimeSeconds <= 0 ? 0 : (total / uptimeSeconds) * 60d,
-            Status1xx = Interlocked.Read(ref this.status1xx),
-            Status2xx = Interlocked.Read(ref this.status2xx),
-            Status3xx = Interlocked.Read(ref this.status3xx),
-            Status4xx = Interlocked.Read(ref this.status4xx),
-            Status5xx = Interlocked.Read(ref this.status5xx),
+            Status1xx = Interlocked.Read(ref this.status1Xx),
+            Status2xx = Interlocked.Read(ref this.status2Xx),
+            Status3xx = Interlocked.Read(ref this.status3Xx),
+            Status4xx = Interlocked.Read(ref this.status4Xx),
+            Status5xx = Interlocked.Read(ref this.status5Xx),
             LastRequestAtUtc = lastRequestTicks <= 0 ? null : new DateTimeOffset(lastRequestTicks, TimeSpan.Zero)
         };
     }
@@ -313,11 +313,11 @@ public sealed class AspNetMetricsSnapshotService(AspNetMetricsTracker tracker) :
 internal sealed class AspNetRouteMetricsAccumulator(string method, string route)
 {
     private long requestCount;
-    private long status1xx;
-    private long status2xx;
-    private long status3xx;
-    private long status4xx;
-    private long status5xx;
+    private long status1Xx;
+    private long status2Xx;
+    private long status3Xx;
+    private long status4Xx;
+    private long status5Xx;
     private long failureCount;
     private long totalLatencyMs;
     private long lastRequestUtcTicks;
@@ -336,19 +336,19 @@ internal sealed class AspNetRouteMetricsAccumulator(string method, string route)
         switch (statusCode / 100)
         {
             case 1:
-                Interlocked.Increment(ref this.status1xx);
+                Interlocked.Increment(ref this.status1Xx);
                 break;
             case 2:
-                Interlocked.Increment(ref this.status2xx);
+                Interlocked.Increment(ref this.status2Xx);
                 break;
             case 3:
-                Interlocked.Increment(ref this.status3xx);
+                Interlocked.Increment(ref this.status3Xx);
                 break;
             case 4:
-                Interlocked.Increment(ref this.status4xx);
+                Interlocked.Increment(ref this.status4Xx);
                 break;
             default:
-                Interlocked.Increment(ref this.status5xx);
+                Interlocked.Increment(ref this.status5Xx);
                 break;
         }
     }
@@ -365,11 +365,11 @@ internal sealed class AspNetRouteMetricsAccumulator(string method, string route)
             Method = method,
             Route = route,
             RequestCount = count,
-            Status1xx = Interlocked.Read(ref this.status1xx),
-            Status2xx = Interlocked.Read(ref this.status2xx),
-            Status3xx = Interlocked.Read(ref this.status3xx),
-            Status4xx = Interlocked.Read(ref this.status4xx),
-            Status5xx = Interlocked.Read(ref this.status5xx),
+            Status1xx = Interlocked.Read(ref this.status1Xx),
+            Status2xx = Interlocked.Read(ref this.status2Xx),
+            Status3xx = Interlocked.Read(ref this.status3Xx),
+            Status4xx = Interlocked.Read(ref this.status4Xx),
+            Status5xx = Interlocked.Read(ref this.status5Xx),
             FailureCount = failures,
             FailureRatePercent = count == 0 ? 0 : (failures / (double)count) * 100d,
             TotalLatencyMs = totalLatency,

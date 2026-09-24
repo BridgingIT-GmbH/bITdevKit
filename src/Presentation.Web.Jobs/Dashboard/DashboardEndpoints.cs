@@ -32,7 +32,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     private const int RealtimeSessionSampleLimit = 180;
 
-    private static readonly ConcurrentDictionary<string, RealtimeGraphSession> realtimeGraphSessions = new(StringComparer.OrdinalIgnoreCase);
+    private static readonly ConcurrentDictionary<string, RealtimeGraphSession> RealtimeGraphSessions = new(StringComparer.OrdinalIgnoreCase);
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -320,7 +320,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
 
     private static IReadOnlyList<RealtimeGraphSample> AppendRealtimeSample(string sessionId, RealtimeGraphSample sample)
     {
-        var session = realtimeGraphSessions.GetOrAdd(sessionId, _ => new RealtimeGraphSession());
+        var session = RealtimeGraphSessions.GetOrAdd(sessionId, _ => new RealtimeGraphSession());
         lock (session.Samples)
         {
             session.LastTouchedUtc = DateTimeOffset.UtcNow;

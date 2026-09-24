@@ -22,7 +22,7 @@ public sealed class CsvTypedDataPorterProvider(
     CsvTypedConfiguration configuration = null,
     ILoggerFactory loggerFactory = null) : IDataExportProvider, IDataImportProvider, IDataTemplateProvider
 {
-    private static readonly string[] baseColumnNames = ["RecordType", "RootId", "RecordId", "ParentId", "Collection", "Index"];
+    private static readonly string[] BaseColumnNames = ["RecordType", "RootId", "RecordId", "ParentId", "Collection", "Index"];
     private readonly CsvTypedConfiguration configuration = configuration ?? new CsvTypedConfiguration();
     private readonly ILogger<CsvTypedDataPorterProvider> logger = loggerFactory?.CreateLogger<CsvTypedDataPorterProvider>() ?? NullLogger<CsvTypedDataPorterProvider>.Instance;
 
@@ -348,7 +348,7 @@ public sealed class CsvTypedDataPorterProvider(
             HasHeaderRecord = true
         });
 
-        foreach (var column in baseColumnNames)
+        foreach (var column in BaseColumnNames)
         {
             csv.WriteField(column);
         }
@@ -362,7 +362,7 @@ public sealed class CsvTypedDataPorterProvider(
 
         if (configuration.IncludeHints && configuration.AnnotationStyle == TemplateAnnotationStyle.Annotated)
         {
-            foreach (var column in baseColumnNames)
+            foreach (var column in BaseColumnNames)
             {
                 csv.WriteField(string.Empty);
             }
@@ -390,7 +390,7 @@ public sealed class CsvTypedDataPorterProvider(
 
     private async Task WriteHeaderAsync(CsvWriter csv, IReadOnlyList<string> payloadColumns)
     {
-        foreach (var column in baseColumnNames.Concat(payloadColumns))
+        foreach (var column in BaseColumnNames.Concat(payloadColumns))
         {
             csv.WriteField(column);
         }
@@ -1139,7 +1139,7 @@ public sealed class CsvTypedDataPorterProvider(
     {
         var payload = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var header in headers.Except(baseColumnNames, StringComparer.OrdinalIgnoreCase))
+        foreach (var header in headers.Except(BaseColumnNames, StringComparer.OrdinalIgnoreCase))
         {
             payload[header] = csv.GetField(header);
         }

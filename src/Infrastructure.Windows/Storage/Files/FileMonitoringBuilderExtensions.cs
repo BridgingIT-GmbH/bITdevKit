@@ -29,7 +29,7 @@ public static class FileMonitoringBuilderExtensions
     ///     monitoring.UseWindowsNetwork("NetworkDocs", "\\\\server\\docs", impersonationService, options =>
     ///     {
     ///         options.FilePattern = "*.docx";
-    ///         options.UseProcessor<FileLoggerProcessor>();
+    ///         options.UseProcessor&lt;FileLoggerProcessor&gt;();
     ///     });
     /// });
     /// </code>

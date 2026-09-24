@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Domain.Outbox;
 /// <summary>
 /// Represents outbox message.
 /// </summary>
-/// <typeparam name="Guid">The guid type.</typeparam>
 public class OutboxMessage : Entity<Guid> // TODO: rename to OutboxEventMessage
 {
     /// <summary>

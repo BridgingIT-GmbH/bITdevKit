@@ -22,8 +22,8 @@ using System.Text;
 /// </example>
 public static class ConsoleCommandHistory
 {
-    private static readonly object sync = new();
-    private static readonly List<string> items = [];
+    private static readonly object Sync = new();
+    private static readonly List<string> Items = [];
     private static string filePath;
     private static string historyKey;
 
@@ -51,7 +51,7 @@ public static class ConsoleCommandHistory
         {
             EnsureInitialized();
 
-            lock (sync)
+            lock (Sync)
             {
                 return filePath;
             }
@@ -69,7 +69,7 @@ public static class ConsoleCommandHistory
     /// </example>
     public static void Initialize(string assemblyName = null)
     {
-        lock (sync)
+        lock (Sync)
         {
             var key = NormalizeHistoryKey(assemblyName);
             if (string.Equals(historyKey, key, StringComparison.OrdinalIgnoreCase))
@@ -78,7 +78,7 @@ public static class ConsoleCommandHistory
             }
 
             historyKey = key;
-            items.Clear();
+            Items.Clear();
             filePath = GetHistoryFilePath(key);
 
             LoadFromFile();
@@ -97,7 +97,7 @@ public static class ConsoleCommandHistory
     {
         EnsureInitialized();
 
-        lock (sync)
+        lock (Sync)
         {
             LoadFromFile();
         }
@@ -122,7 +122,7 @@ public static class ConsoleCommandHistory
 
         EnsureInitialized();
 
-        lock (sync)
+        lock (Sync)
         {
             MoveToEnd(normalizedLine);
             try
@@ -149,9 +149,9 @@ public static class ConsoleCommandHistory
     {
         EnsureInitialized();
 
-        lock (sync)
+        lock (Sync)
         {
-            return items.ToList();
+            return Items.ToList();
         }
     }
 
@@ -168,11 +168,11 @@ public static class ConsoleCommandHistory
     {
         EnsureInitialized();
 
-        lock (sync)
+        lock (Sync)
         {
             if (keepLast <= 0)
             {
-                items.Clear();
+                Items.Clear();
                 try
                 {
                     if (File.Exists(filePath))
@@ -188,14 +188,14 @@ public static class ConsoleCommandHistory
                 return;
             }
 
-            if (keepLast >= items.Count)
+            if (keepLast >= Items.Count)
             {
                 return;
             }
 
-            var retained = items.Skip(Math.Max(0, items.Count - keepLast)).ToList();
-            items.Clear();
-            items.AddRange(retained);
+            var retained = Items.Skip(Math.Max(0, Items.Count - keepLast)).ToList();
+            Items.Clear();
+            Items.AddRange(retained);
             try
             {
                 SaveItems();
@@ -254,7 +254,7 @@ public static class ConsoleCommandHistory
 
     private static void LoadFromFile()
     {
-        items.Clear();
+        Items.Clear();
         if (!File.Exists(filePath))
         {
             return;
@@ -272,7 +272,7 @@ public static class ConsoleCommandHistory
                 }
             }
 
-            if (items.Count != lines.Count(line => !string.IsNullOrWhiteSpace(NormalizeHistoryLine(line))))
+            if (Items.Count != lines.Count(line => !string.IsNullOrWhiteSpace(NormalizeHistoryLine(line))))
             {
                 SaveItems();
             }
@@ -285,8 +285,8 @@ public static class ConsoleCommandHistory
 
     private static void MoveToEnd(string line)
     {
-        items.RemoveAll(item => string.Equals(item, line, StringComparison.Ordinal));
-        items.Add(line);
+        Items.RemoveAll(item => string.Equals(item, line, StringComparison.Ordinal));
+        Items.Add(line);
     }
 
     private static string NormalizeHistoryLine(string line) =>
@@ -295,7 +295,7 @@ public static class ConsoleCommandHistory
     private static void SaveItems()
     {
         Directory.CreateDirectory(Path.GetDirectoryName(filePath));
-        File.WriteAllLines(filePath, items);
+        File.WriteAllLines(filePath, Items);
     }
 
     private static void RecordError(Exception ex)

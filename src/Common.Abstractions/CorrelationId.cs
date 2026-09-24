@@ -25,7 +25,10 @@ using System.Diagnostics;
 /// </example>
 public static class CorrelationId
 {
-    private static readonly AsyncLocal<string> current = new();
+    private static class State
+    {
+        internal static readonly AsyncLocal<string> CurrentValue = new();
+    }
 
     /// <summary>
     /// Gets the maximum supported correlation identifier length.
@@ -54,7 +57,7 @@ public static class CorrelationId
     /// </value>
     /// <example><code>var correlationId = CorrelationId.Current;</code></example>
     public static string Current =>
-        current.Value ?? Activity.Current?.GetBaggageItem(ActivityBaggageName);
+        State.CurrentValue.Value ?? Activity.Current?.GetBaggageItem(ActivityBaggageName);
 
     /// <summary>
     /// Establishes a correlation identifier for the current asynchronous execution flow.
@@ -64,8 +67,8 @@ public static class CorrelationId
     /// <example><code>using var scope = CorrelationId.BeginScope(message.CorrelationId);</code></example>
     public static IDisposable BeginScope(string value)
     {
-        var previous = current.Value;
-        current.Value = value;
+        var previous = State.CurrentValue.Value;
+        State.CurrentValue.Value = value;
         return new CorrelationIdScope(previous);
     }
 
@@ -97,7 +100,7 @@ public static class CorrelationId
                 return;
             }
 
-            current.Value = previous;
+            State.CurrentValue.Value = previous;
             this.disposed = true;
         }
     }

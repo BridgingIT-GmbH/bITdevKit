@@ -14,7 +14,7 @@ using System.Threading;
 public static class ActiveEntityConfigurator
 {
     private static IServiceProvider serviceProvider;
-    private static readonly ReaderWriterLockSlim lockObject = new();
+    private static readonly ReaderWriterLockSlim LockObject = new();
 
     /// <summary>
     /// Gets the global service provider instance.
@@ -31,14 +31,14 @@ public static class ActiveEntityConfigurator
     /// </example>
     public static IServiceProvider GetGlobalServiceProvider()
     {
-        lockObject.EnterReadLock();
+        LockObject.EnterReadLock();
         try
         {
             return serviceProvider;
         }
         finally
         {
-            lockObject.ExitReadLock();
+            LockObject.ExitReadLock();
         }
     }
 
@@ -58,14 +58,14 @@ public static class ActiveEntityConfigurator
     {
         ArgumentNullException.ThrowIfNull(provider);
 
-        lockObject.EnterWriteLock();
+        LockObject.EnterWriteLock();
         try
         {
             serviceProvider = provider;
         }
         finally
         {
-            lockObject.ExitWriteLock();
+            LockObject.ExitWriteLock();
         }
     }
 }

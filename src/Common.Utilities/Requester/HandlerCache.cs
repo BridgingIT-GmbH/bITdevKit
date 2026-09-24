@@ -68,8 +68,8 @@ public class HandlerCache : IHandlerCache
 /// </summary>
 public static class HandlerCacheFactory
 {
-    private static readonly Lazy<IHandlerCache> handlerCache = new(() => new HandlerCache());
-    private static readonly Lazy<ConcurrentDictionary<Type, PolicyConfig>> policyCache = new(() => []);
+    private static readonly Lazy<IHandlerCache> HandlerCache = new(() => new HandlerCache());
+    private static readonly Lazy<ConcurrentDictionary<Type, PolicyConfig>> PolicyCache = new(() => []);
 
     /// <summary>
     /// Creates (or returns the existing) shared handler cache instance.
@@ -77,7 +77,7 @@ public static class HandlerCacheFactory
     /// <returns>The shared <see cref="IHandlerCache"/> instance.</returns>
     public static IHandlerCache Create()
     {
-        return handlerCache.Value;
+        return HandlerCache.Value;
     }
 
     /// <summary>
@@ -86,6 +86,6 @@ public static class HandlerCacheFactory
     /// <returns>The shared <see cref="ConcurrentDictionary{Type, PolicyConfig}"/> instance.</returns>
     public static ConcurrentDictionary<Type, PolicyConfig> CreatePolicyCache()
     {
-        return policyCache.Value;
+        return PolicyCache.Value;
     }
 }

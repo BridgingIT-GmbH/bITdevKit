@@ -5,6 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.DataPorter;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Options for export operations.
 /// </summary>

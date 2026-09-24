@@ -78,7 +78,7 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     /// <example>
     /// Usage:
     /// <code>
-    /// private readonly ILogger<CosmosSqlGenericRepository<MyEntity>> _logger;
+    /// private readonly ILogger<CosmosSqlGenericRepository<MyEntity>> logger;
     /// </code>
     /// </example>
     protected ILogger<CosmosSqlGenericRepository<TEntity>> Logger { get; }

@@ -1090,8 +1090,8 @@ public class PersonEntityWithRecursiveExportProfile : IExportProfile<PersonEntit
 {
     public Type SourceType => typeof(PersonEntity);
 
-    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
-    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+    private static readonly EnumerationConverter<PersonStatus> StatusConverter = new();
+    private static readonly BillingAddressValueObjectConverter BillingAddressConverter = new();
 
     public IReadOnlyList<ColumnConfiguration> Columns { get; } =
     [
@@ -1100,10 +1100,10 @@ public class PersonEntityWithRecursiveExportProfile : IExportProfile<PersonEntit
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.LastName), 2),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.ManagerId), 4),
-        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.BillingAddress), 5, BillingAddressConverter),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Address), 6),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.PreviousAddresses), 7),
-        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 8, statusConverter)
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 8, StatusConverter)
     ];
 
     public string SheetName => "Persons";
@@ -1212,7 +1212,7 @@ public class PersonEntityExportProfile : IExportProfile<PersonEntity>
 {
     public Type SourceType => typeof(PersonEntity);
 
-    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+    private static readonly BillingAddressValueObjectConverter BillingAddressConverter = new();
 
     public IReadOnlyList<ColumnConfiguration> Columns { get; } =
     [
@@ -1221,7 +1221,7 @@ public class PersonEntityExportProfile : IExportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.LastName), 2),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.ManagerId), 4),
-        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.BillingAddress), 5, BillingAddressConverter),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 6, new EnumerationConverter<PersonStatus>())
     ];
 
@@ -1236,7 +1236,7 @@ public class PersonEntityImportProfile : IImportProfile<PersonEntity>
 {
     public Type TargetType => typeof(PersonEntity);
 
-    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+    private static readonly BillingAddressValueObjectConverter BillingAddressConverter = new();
 
     public IReadOnlyList<ImportColumnConfiguration> Columns { get; } =
     [
@@ -1245,7 +1245,7 @@ public class PersonEntityImportProfile : IImportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.LastName), 2),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
-        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, BillingAddressConverter),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 6, new EnumerationConverter<PersonStatus>())
     ];
 
@@ -1268,8 +1268,8 @@ public class PersonEntityWithRecursiveImportProfile : IImportProfile<PersonEntit
 {
     public Type TargetType => typeof(PersonEntity);
 
-    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
-    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+    private static readonly EnumerationConverter<PersonStatus> StatusConverter = new();
+    private static readonly BillingAddressValueObjectConverter BillingAddressConverter = new();
 
     public IReadOnlyList<ImportColumnConfiguration> Columns { get; } =
     [
@@ -1278,10 +1278,10 @@ public class PersonEntityWithRecursiveImportProfile : IImportProfile<PersonEntit
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.LastName), 2),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
-        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, BillingAddressConverter),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Address), 6),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.PreviousAddresses), 7),
-        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 8, statusConverter)
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 8, StatusConverter)
     ];
 
     public string SheetName => "Persons";
@@ -1303,8 +1303,8 @@ public class PersonEntityWithChildExportProfile : IExportProfile<PersonEntity>
 {
     public Type SourceType => typeof(PersonEntity);
 
-    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
-    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+    private static readonly EnumerationConverter<PersonStatus> StatusConverter = new();
+    private static readonly BillingAddressValueObjectConverter BillingAddressConverter = new();
 
     public IReadOnlyList<ColumnConfiguration> Columns { get; } =
     [
@@ -1313,10 +1313,10 @@ public class PersonEntityWithChildExportProfile : IExportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.LastName), 2),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.ManagerId), 4),
-        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.BillingAddress), 5, BillingAddressConverter),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Address), 6),
         DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.PreviousAddresses), 7),
-        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 8, statusConverter)
+        DataPorterServiceRoundtripTests.CreateExportColumn(nameof(PersonEntity.Status), 8, StatusConverter)
     ];
 
     public string SheetName => "Persons";
@@ -1330,8 +1330,8 @@ public class PersonEntityWithChildImportProfile : IImportProfile<PersonEntity>
 {
     public Type TargetType => typeof(PersonEntity);
 
-    private static readonly EnumerationConverter<PersonStatus> statusConverter = new();
-    private static readonly BillingAddressValueObjectConverter billingAddressConverter = new();
+    private static readonly EnumerationConverter<PersonStatus> StatusConverter = new();
+    private static readonly BillingAddressValueObjectConverter BillingAddressConverter = new();
 
     public IReadOnlyList<ImportColumnConfiguration> Columns { get; } =
     [
@@ -1340,10 +1340,10 @@ public class PersonEntityWithChildImportProfile : IImportProfile<PersonEntity>
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.LastName), 2),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Age), 3),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.ManagerId), 4),
-        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, billingAddressConverter),
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.BillingAddress), 5, BillingAddressConverter),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Address), 6),
         DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.PreviousAddresses), 7),
-        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 8, statusConverter)
+        DataPorterServiceRoundtripTests.CreateImportColumn(nameof(PersonEntity.Status), 8, StatusConverter)
     ];
 
     public string SheetName => "Persons";

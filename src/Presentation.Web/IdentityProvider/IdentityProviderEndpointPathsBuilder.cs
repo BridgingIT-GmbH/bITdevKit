@@ -10,14 +10,14 @@ namespace BridgingIT.DevKit.Presentation.Web;
 /// </summary>
 public class IdentityProviderEndpointPathsBuilder
 {
-    private readonly FakeIdentityProviderEndpointPaths _paths;
+    private readonly FakeIdentityProviderEndpointPaths paths;
 
     /// <summary>
     /// Initializes a new instance of the <c>IdentityProviderEndpointPathsBuilder</c> class.
     /// </summary>
     public IdentityProviderEndpointPathsBuilder()
     {
-        this._paths = new FakeIdentityProviderEndpointPaths();
+        this.paths = new FakeIdentityProviderEndpointPaths();
     }
 
     /// <summary>
@@ -27,7 +27,7 @@ public class IdentityProviderEndpointPathsBuilder
     /// <returns>The result of the operation.</returns>
     public IdentityProviderEndpointPathsBuilder AuthorizePath(string path)
     {
-        this._paths.Authorize = path;
+        this.paths.Authorize = path;
         return this;
     }
 
@@ -38,7 +38,7 @@ public class IdentityProviderEndpointPathsBuilder
     /// <returns>The result of the operation.</returns>
     public IdentityProviderEndpointPathsBuilder TokenPath(string path)
     {
-        this._paths.Token = path;
+        this.paths.Token = path;
         return this;
     }
 
@@ -49,7 +49,7 @@ public class IdentityProviderEndpointPathsBuilder
     /// <returns>The result of the operation.</returns>
     public IdentityProviderEndpointPathsBuilder UserInfoPath(string path)
     {
-        this._paths.UserInfo = path;
+        this.paths.UserInfo = path;
         return this;
     }
 
@@ -60,7 +60,7 @@ public class IdentityProviderEndpointPathsBuilder
     /// <returns>The result of the operation.</returns>
     public IdentityProviderEndpointPathsBuilder LogoutPath(string path)
     {
-        this._paths.Logout = path;
+        this.paths.Logout = path;
         return this;
     }
 
@@ -71,7 +71,7 @@ public class IdentityProviderEndpointPathsBuilder
     /// <returns>The result of the operation.</returns>
     public IdentityProviderEndpointPathsBuilder WellKnownConfigurationPath(string path)
     {
-        this._paths.WellKnownConfiguration = path;
+        this.paths.WellKnownConfiguration = path;
         return this;
     }
 
@@ -82,7 +82,7 @@ public class IdentityProviderEndpointPathsBuilder
     /// <returns>The result of the operation.</returns>
     public IdentityProviderEndpointPathsBuilder AuthorizeCallbackPath(string path)
     {
-        this._paths.AuthorizeCallback = path;
+        this.paths.AuthorizeCallback = path;
         return this;
     }
 
@@ -92,6 +92,6 @@ public class IdentityProviderEndpointPathsBuilder
     /// <returns>The result of the operation.</returns>
     public FakeIdentityProviderEndpointPaths Build()
     {
-        return this._paths;
+        return this.paths;
     }
 }

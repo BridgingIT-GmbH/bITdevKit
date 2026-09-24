@@ -20,7 +20,10 @@ using System;
 /// </remarks>
 public static class TimeProviderAccessor
 {
-    private static readonly AsyncLocal<TimeProvider> current = new();
+    private static class State
+    {
+        internal static readonly AsyncLocal<TimeProvider> CurrentValue = new();
+    }
 
     /// <summary>
     /// Gets or sets the current <see cref="TimeProvider"/>.
@@ -31,8 +34,8 @@ public static class TimeProviderAccessor
     /// </value>
     public static TimeProvider Current
     {
-        get => current.Value ?? TimeProvider.System;
-        set => current.Value = value;
+        get => State.CurrentValue.Value ?? TimeProvider.System;
+        set => State.CurrentValue.Value = value;
     }
 
     /// <summary>
@@ -42,7 +45,7 @@ public static class TimeProviderAccessor
     /// <remarks>
     /// Useful in test teardown to avoid cross-test pollution.
     /// </remarks>
-    public static void Reset() => current.Value = null;
+    public static void Reset() => State.CurrentValue.Value = null;
 
     /// <summary>
     /// Sets the current <see cref="TimeProvider"/> instance.

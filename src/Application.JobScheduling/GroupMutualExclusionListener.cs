@@ -19,7 +19,7 @@ public partial class ConcurrentGroupExecutionListener(
     ILoggerFactory loggerFactory,
     JobGroupOptions options) : IJobListener, IDisposable
 {
-    private static readonly ConcurrentDictionary<string, SemaphoreSlim> groupSemaphores = [];
+    private static readonly ConcurrentDictionary<string, SemaphoreSlim> GroupSemaphores = [];
     private readonly ILogger<ConcurrentGroupExecutionListener> logger = loggerFactory?.CreateLogger<ConcurrentGroupExecutionListener>() ?? NullLogger<ConcurrentGroupExecutionListener>.Instance;
     private readonly JobGroupOptions options = options ?? throw new ArgumentNullException(nameof(options));
 
@@ -48,7 +48,7 @@ public partial class ConcurrentGroupExecutionListener(
             return;
         }
 
-        var semaphore = groupSemaphores.GetOrAdd(groupName, _ => new SemaphoreSlim(1, 1));
+        var semaphore = GroupSemaphores.GetOrAdd(groupName, _ => new SemaphoreSlim(1, 1));
 
         TypedLogger.LogJobWaitingForExclusiveAccess(this.logger, Constants.LogKey, jobName, groupName, entryId);
 
@@ -117,7 +117,7 @@ public partial class ConcurrentGroupExecutionListener(
 
     private void ReleaseSemaphore(string groupName)
     {
-        if (groupSemaphores.TryGetValue(groupName, out var semaphore))
+        if (GroupSemaphores.TryGetValue(groupName, out var semaphore))
         {
             semaphore.Release();
         }
@@ -128,12 +128,12 @@ public partial class ConcurrentGroupExecutionListener(
     /// </summary>
     public void Dispose()
     {
-        foreach (var semaphore in groupSemaphores.Values)
+        foreach (var semaphore in GroupSemaphores.Values)
         {
             semaphore?.Dispose();
         }
 
-        groupSemaphores.Clear();
+        GroupSemaphores.Clear();
     }
 
     /// <summary>

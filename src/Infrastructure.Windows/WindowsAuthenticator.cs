@@ -74,7 +74,7 @@ public class WindowsAuthenticator : IWindowsAuthenticator
         }
 
         if (!LogonUser(this.username, this.domain ?? Environment.MachineName, this.password,
-                     LOGON32_LOGON_NEW_CREDENTIALS, LOGON32_PROVIDER_DEFAULT, out var logonToken))
+                     Logon32LogonNewCredentials, Logon32ProviderDefault, out var logonToken))
         {
             var errorCode = Marshal.GetLastWin32Error();
             throw new System.ComponentModel.Win32Exception(errorCode, "Failed to logon user for Windows authentication.");
@@ -124,7 +124,7 @@ public class WindowsAuthenticator : IWindowsAuthenticator
     [DllImport("kernel32.dll", CharSet = CharSet.Auto)]
     private static extern bool CloseHandle(IntPtr handle);
 
-    private const int LOGON32_LOGON_NEW_CREDENTIALS = 9; // Use new credentials for network access
-    private const int LOGON32_PROVIDER_DEFAULT = 0;
+    private const int Logon32LogonNewCredentials = 9; // Use new credentials for network access
+    private const int Logon32ProviderDefault = 0;
     #endregion
 }

@@ -413,7 +413,7 @@ namespace {ns}
 /// Generates a static Specifications class for the entity.
 /// Example:
 ///   public static class Specifications {
-///       public static Specification<Customer> IsActiveEquals(bool value) => new(c => c.IsActive == value);
+///       public static Specification&lt;Customer&gt; IsActiveEquals(bool value) => new(c => c.IsActive == value);
 ///   }
 /// </summary>
 public class SpecificationFeature : IActiveEntityFeature

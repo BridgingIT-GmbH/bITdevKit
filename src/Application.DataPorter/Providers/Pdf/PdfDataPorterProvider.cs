@@ -34,9 +34,13 @@ public sealed class PdfDataPorterProvider(
     private readonly ILogger<PdfDataPorterProvider> logger =
         loggerFactory?.CreateLogger<PdfDataPorterProvider>()
         ?? NullLogger<PdfDataPorterProvider>.Instance;
-    private static readonly Lock fontResolverLock = new();
+    private static readonly Lock FontResolverLock = new();
     private static bool fontResolverInitialized;
-    private static readonly PlatformFontResolver platformFontResolver = new();
+
+    private static class ResolverState
+    {
+        internal static readonly PlatformFontResolver PlatformFontResolver = new();
+    }
 
     /// <inheritdoc/>
     public Format Format => Format.Pdf;
@@ -390,7 +394,7 @@ public sealed class PdfDataPorterProvider(
 
     private void EnsureFontResolution()
     {
-        lock (fontResolverLock)
+        lock (FontResolverLock)
         {
             if (fontResolverInitialized)
             {
@@ -435,14 +439,14 @@ public sealed class PdfDataPorterProvider(
 
                 if (fontResolverProperty?.GetValue(null) is null)
                 {
-                    fontResolverProperty?.SetValue(null, platformFontResolver);
+                    fontResolverProperty?.SetValue(null, ResolverState.PlatformFontResolver);
                 }
 
                 if (fallbackFontResolverProperty?.GetValue(null) is null)
                 {
                     fallbackFontResolverProperty?.SetValue(
                         null,
-                        this.configuration.FallbackFontResolver ?? platformFontResolver
+                        this.configuration.FallbackFontResolver ?? ResolverState.PlatformFontResolver
                     );
                 }
 
@@ -463,7 +467,7 @@ public sealed class PdfDataPorterProvider(
 
     private sealed class PlatformFontResolver : IFontResolver
     {
-        private static readonly Dictionary<string, string[]> fontFileNames = new(
+        private static readonly Dictionary<string, string[]> FontFileNames = new(
             StringComparer.OrdinalIgnoreCase
         )
         {
@@ -581,19 +585,19 @@ public sealed class PdfDataPorterProvider(
             ],
         };
 
-        private static readonly string[] fontDirectories = GetFontDirectories();
-        private static readonly IReadOnlyDictionary<string, string> fontFiles = GetFontFiles();
+        private static readonly string[] FontDirectories = GetFontDirectories();
+        private static readonly IReadOnlyDictionary<string, string> FontFiles = GetFontFiles();
 
         public byte[] GetFont(string faceName)
         {
-            if (!fontFileNames.TryGetValue(faceName, out var fileNames))
+            if (!FontFileNames.TryGetValue(faceName, out var fileNames))
             {
-                fileNames = fontFileNames["Arial#Regular"];
+                fileNames = FontFileNames["Arial#Regular"];
             }
 
             foreach (var fileName in fileNames)
             {
-                if (fontFiles.TryGetValue(fileName, out var path))
+                if (FontFiles.TryGetValue(fileName, out var path))
                 {
                     return File.ReadAllBytes(path);
                 }
@@ -619,7 +623,7 @@ public sealed class PdfDataPorterProvider(
             };
 
             var faceName = $"{normalizedFamily}#{style}";
-            if (!fontFileNames.ContainsKey(faceName))
+            if (!FontFileNames.ContainsKey(faceName))
             {
                 faceName = $"Arial#{style}";
             }
@@ -684,7 +688,7 @@ public sealed class PdfDataPorterProvider(
         {
             var files = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
-            foreach (var directory in fontDirectories)
+            foreach (var directory in FontDirectories)
             {
                 try
                 {

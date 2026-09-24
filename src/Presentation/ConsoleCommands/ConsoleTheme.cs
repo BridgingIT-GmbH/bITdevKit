@@ -18,7 +18,7 @@ using Spectre.Console;
 /// </example>
 public static class ConsoleTheme
 {
-    private static readonly object sync = new();
+    private static readonly object Sync = new();
     private static ConsoleThemePalette current;
     private static bool loaded;
 
@@ -35,7 +35,7 @@ public static class ConsoleTheme
         get
         {
             EnsureLoaded();
-            lock (sync)
+            lock (Sync)
             {
                 return current;
             }
@@ -69,7 +69,7 @@ public static class ConsoleTheme
             return false;
         }
 
-        lock (sync)
+        lock (Sync)
         {
             current = theme;
             loaded = true;
@@ -108,7 +108,7 @@ public static class ConsoleTheme
     /// </example>
     public static void Reload()
     {
-        lock (sync)
+        lock (Sync)
         {
             loaded = false;
             current = null;
@@ -119,7 +119,7 @@ public static class ConsoleTheme
 
     private static void EnsureLoaded()
     {
-        lock (sync)
+        lock (Sync)
         {
             if (loaded)
             {

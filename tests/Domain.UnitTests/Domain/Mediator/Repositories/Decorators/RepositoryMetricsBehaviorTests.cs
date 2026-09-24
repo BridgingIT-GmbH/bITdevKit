@@ -57,7 +57,7 @@ public class RepositoryMetricsBehaviorTests
         recorder.CounterSum("repositories_write_personstub_insert_current").ShouldBe(0);
     }
 
-    private sealed class TestMeterFactory : IMeterFactory, IDisposable
+    private sealed class TestMeterFactory : IMeterFactory
     {
         private readonly List<Meter> meters = [];
 
@@ -101,25 +101,25 @@ public class RepositoryMetricsBehaviorTests
 
         public MetricsRecorder()
         {
-            this.listener.InstrumentPublished = (instrument, listener) =>
+            this.listener.InstrumentPublished = (instrument, meterListener) =>
             {
                 if (string.Equals(instrument.Meter.Name, Metrics.MeterName, StringComparison.Ordinal))
                 {
-                    listener.EnableMeasurementEvents(instrument);
+                    meterListener.EnableMeasurementEvents(instrument);
                 }
             };
 
-            this.listener.SetMeasurementEventCallback<int>((instrument, measurement, tags, state) =>
+            this.listener.SetMeasurementEventCallback<int>((instrument, measurement, _, _) =>
             {
                 this.counters.GetOrAdd(instrument.Name, _ => []).Add(measurement);
             });
 
-            this.listener.SetMeasurementEventCallback<long>((instrument, measurement, tags, state) =>
+            this.listener.SetMeasurementEventCallback<long>((instrument, measurement, _, _) =>
             {
                 this.counters.GetOrAdd(instrument.Name, _ => []).Add(measurement);
             });
 
-            this.listener.SetMeasurementEventCallback<double>((instrument, measurement, tags, state) =>
+            this.listener.SetMeasurementEventCallback<double>((instrument, measurement, _, _) =>
             {
                 this.histograms.GetOrAdd(instrument.Name, _ => []).Add(measurement);
             });

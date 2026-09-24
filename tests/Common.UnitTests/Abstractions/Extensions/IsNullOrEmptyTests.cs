@@ -11,7 +11,7 @@ public class IsNullOrEmptyTests
     [Fact]
     public void IsNullOrEmpty_Enumerable_ReturnsExpectedResult()
     {
-        IEnumerable<int> nullSource = null;
+        var nullSource = GetNull<IEnumerable<int>>();
         var emptySource = Enumerable.Empty<int>();
         var populatedSource = Enumerable.Repeat(1, 1);
 
@@ -23,7 +23,7 @@ public class IsNullOrEmptyTests
     [Fact]
     public void IsNullOrEmpty_Collection_ReturnsExpectedResult()
     {
-        ICollection<int> nullSource = null;
+        var nullSource = GetNull<ICollection<int>>();
         ICollection<int> emptySource = [];
         ICollection<int> populatedSource = [1];
 
@@ -35,7 +35,7 @@ public class IsNullOrEmptyTests
     [Fact]
     public void IsNullOrEmpty_Stream_ReturnsExpectedResult()
     {
-        Stream nullSource = null;
+        var nullSource = GetNull<Stream>();
         using var emptySource = new MemoryStream();
         using var populatedSource = new MemoryStream([1]);
 
@@ -50,4 +50,6 @@ public class IsNullOrEmptyTests
         Guid.Empty.IsEmpty().ShouldBeTrue();
         Guid.NewGuid().IsEmpty().ShouldBeFalse();
     }
+
+    private static T GetNull<T>() => default;
 }

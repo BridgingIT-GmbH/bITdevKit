@@ -385,24 +385,11 @@ public sealed class BlobStoreClientBehaviorTests
             MaxConcurrentUploads = 1,
             MaxQueuedUploads = 0
         };
-        var attempts = 0;
-        var activeDuringAttempts = new List<int>();
+        var retryTracker = new RetryUploadTracker(coordinator);
         var admission = new UploadConcurrencyBlobStoreClientBehavior(
             new ScriptedBlobStoreClient
             {
-                Upload = upload =>
-                {
-                    attempts++;
-                    activeDuringAttempts.Add(
-                        coordinator.GetSnapshots().Single().ActiveUploads);
-                    return attempts == 1
-                        ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient"))
-                        : Result<BlobInfo>.Success(new BlobInfo
-                        {
-                            Key = upload.Key,
-                            Length = upload.Content.Length
-                        });
-                }
+                Upload = retryTracker.Upload
             },
             coordinator,
             admissionOptions,
@@ -433,8 +420,8 @@ public sealed class BlobStoreClientBehaviorTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        attempts.ShouldBe(2);
-        activeDuringAttempts.ShouldBe([1, 1]);
+    retryTracker.Attempts.ShouldBe(2);
+    retryTracker.ActiveUploads.ShouldBe([1, 1]);
         activeDuringBackoff.ShouldBe(0);
         coordinator.GetSnapshots().Single().ActiveUploads.ShouldBe(0);
         recorder.CounterSum("blobstorage_retries").ShouldBe(1);
@@ -617,10 +604,10 @@ public sealed class BlobStoreClientBehaviorTests
         await cancellationTokenSource.CancelAsync();
 
         // Act
-        var action = () => sut.ExistsAsync(new BlobKey("reports", "slow"), cancellationTokenSource.Token);
+        var operation = sut.ExistsAsync(new BlobKey("reports", "slow"), cancellationTokenSource.Token);
 
         // Assert
-        await action.ShouldThrowAsync<OperationCanceledException>();
+        await Should.ThrowAsync<OperationCanceledException>(operation);
     }
 
     [Fact]
@@ -775,19 +762,11 @@ public sealed class BlobStoreClientBehaviorTests
 
         public Func<BlobUpload, CancellationToken, Task<Result<BlobInfo>>> UploadHandlerAsync { get; init; }
 
-        public Func<BlobKey, Result<BlobDownload>> Download { get; init; }
-
-        public Func<BlobKey, Result<BlobInfo>> GetProperties { get; init; }
-
-        public Func<BlobPropertiesUpdate, Result<BlobInfo>> UpdateProperties { get; init; }
-
         public Func<BlobKey, Result<bool>> Exists { get; init; }
 
         public Func<BlobKey, CancellationToken, Task<Result<bool>>> ExistsHandlerAsync { get; init; }
 
         public Func<BlobQuery, Result<BlobPage>> List { get; init; }
-
-        public Func<BlobKey, Result> Delete { get; init; }
 
         public Task<Result<BlobInfo>> UploadAsync(BlobUpload upload, CancellationToken cancellationToken = default) =>
             this.UploadHandlerAsync is not null
@@ -795,13 +774,13 @@ public sealed class BlobStoreClientBehaviorTests
                 : Task.FromResult(this.Upload?.Invoke(upload) ?? Result<BlobInfo>.Success(new BlobInfo { Key = upload.Key }));
 
         public Task<Result<BlobDownload>> DownloadAsync(BlobKey key, CancellationToken cancellationToken = default) =>
-            Task.FromResult(this.Download?.Invoke(key) ?? Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key)));
+            Task.FromResult(Result<BlobDownload>.Failure(new BlobStoreNotFoundError(key)));
 
         public Task<Result<BlobInfo>> GetPropertiesAsync(BlobKey key, CancellationToken cancellationToken = default) =>
-            Task.FromResult(this.GetProperties?.Invoke(key) ?? Result<BlobInfo>.Success(new BlobInfo { Key = key }));
+            Task.FromResult(Result<BlobInfo>.Success(new BlobInfo { Key = key }));
 
         public Task<Result<BlobInfo>> UpdatePropertiesAsync(BlobPropertiesUpdate update, CancellationToken cancellationToken = default) =>
-            Task.FromResult(this.UpdateProperties?.Invoke(update) ?? Result<BlobInfo>.Success(new BlobInfo { Key = update.Key }));
+            Task.FromResult(Result<BlobInfo>.Success(new BlobInfo { Key = update.Key }));
 
         public Task<Result<bool>> ExistsAsync(BlobKey key, CancellationToken cancellationToken = default) =>
             this.ExistsHandlerAsync is not null
@@ -815,7 +794,28 @@ public sealed class BlobStoreClientBehaviorTests
             BlobKey key,
             BlobDeleteOptions options = null,
             CancellationToken cancellationToken = default) =>
-            Task.FromResult(this.Delete?.Invoke(key) ?? Result.Success());
+            Task.FromResult(Result.Success());
+    }
+
+    private sealed class RetryUploadTracker(BlobUploadAdmissionCoordinator coordinator)
+    {
+        public int Attempts { get; private set; }
+
+        public List<int> ActiveUploads { get; } = [];
+
+        public Result<BlobInfo> Upload(BlobUpload upload)
+        {
+            this.Attempts++;
+            this.ActiveUploads.Add(coordinator.GetSnapshots().Single().ActiveUploads);
+
+            return this.Attempts == 1
+                ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient"))
+                : Result<BlobInfo>.Success(new BlobInfo
+                {
+                    Key = upload.Key,
+                    Length = upload.Content.Length
+                });
+        }
     }
 
     private sealed class NonSeekableReadStream(byte[] content) : MemoryStream(content)
@@ -932,12 +932,12 @@ public sealed class BlobStoreClientBehaviorTests
 
         public RecordingMetrics()
         {
-            this.listener.InstrumentPublished = (instrument, listener) =>
+            this.listener.InstrumentPublished = (instrument, meterListener) =>
             {
                 if (string.Equals(instrument.Meter.Name, Metrics.MeterName, StringComparison.Ordinal) &&
                     instrument.Name.StartsWith("blobstorage_", StringComparison.Ordinal))
                 {
-                    listener.EnableMeasurementEvents(instrument);
+                    meterListener.EnableMeasurementEvents(instrument);
                 }
             };
 

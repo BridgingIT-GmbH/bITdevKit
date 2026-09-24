@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using System.Net;
 using System.Net.Http.Json;
-using System.Text;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
@@ -105,7 +104,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "docs/guide.txt"),
-            Content = new MemoryStream(Encoding.UTF8.GetBytes("hello blob")),
+            Content = new MemoryStream("hello blob"u8.ToArray()),
             ContentType = ContentType.TXT
         });
 
@@ -205,9 +204,9 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         app.UseRouting();
         new StoragePermalinkDashboardEndpoints(dashboardOptions).Map(app);
         await app.StartAsync();
-        using var client = app.GetTestClient();
+        using var dashboardClient = app.GetTestClient();
 
-        var response = await client.PostAsync(
+        var response = await dashboardClient.PostAsync(
             "/_bdk/dashboard/storage/permalinks/actions/link",
             new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -236,8 +235,8 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         app.UseRouting();
         new StoragePermalinkDashboardEndpoints(dashboardOptions).Map(app);
         await app.StartAsync();
-        await using var scope = app.Services.CreateAsyncScope();
-        var blobs = scope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>().CreateClient("reports");
+        await using var applicationScope = app.Services.CreateAsyncScope();
+        var blobs = applicationScope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>().CreateClient("reports");
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "docs/report.pdf"),
@@ -245,10 +244,10 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
             ContentType = ContentType.PDF
         });
         var permalink = await blobs.GetPermalinkAsync(new BlobKey("reports", "docs/report.pdf"));
-        using var client = app.GetTestClient();
-        client.DefaultRequestHeaders.Referrer = new Uri("http://localhost/_bdk/dashboard/storage/permalinks?kind=Blob&registration=reports");
+        using var dashboardClient = app.GetTestClient();
+        dashboardClient.DefaultRequestHeaders.Referrer = new Uri("http://localhost/_bdk/dashboard/storage/permalinks?kind=Blob&registration=reports");
 
-        var response = await client.PostAsync(
+        var response = await dashboardClient.PostAsync(
             "/_bdk/dashboard/storage/permalinks/actions/expiration",
             new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -268,7 +267,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "exists.txt"),
-            Content = new MemoryStream(Encoding.UTF8.GetBytes("exists")),
+            Content = new MemoryStream("exists"u8.ToArray()),
             ContentType = ContentType.TXT
         });
 
@@ -292,7 +291,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "meta/file.txt"),
-            Content = new MemoryStream(Encoding.UTF8.GetBytes("meta")),
+            Content = new MemoryStream("meta"u8.ToArray()),
             ContentType = ContentType.TXT,
             Properties = new PropertyBag
             {
@@ -319,7 +318,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         var upload = await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "meta/update.txt"),
-            Content = new MemoryStream(Encoding.UTF8.GetBytes("content")),
+            Content = new MemoryStream("content"u8.ToArray()),
             ContentType = ContentType.TXT
         });
 

@@ -24,18 +24,23 @@ public class BlobUploadAdmissionCoordinatorTests
     public async Task AcquireAsync_WhenPermitReleased_AdmitsOldestWaiterFirst()
     {
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
-        var firstWaiter = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
-        var secondWaiter = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
+        Task<BlobUploadAdmissionLease> firstWaiter;
+        Task<BlobUploadAdmissionLease> secondWaiter;
+        await using (var active = await sut.AcquireAsync("reports", Options, CancellationToken.None))
+        {
+            active.IsAcquired.ShouldBeTrue();
+            firstWaiter = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
+            secondWaiter = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
 
-        sut.GetSnapshots().Single().QueuedUploads.ShouldBe(2);
-        await active.DisposeAsync();
+            sut.GetSnapshots().Single().QueuedUploads.ShouldBe(2);
+        }
 
-        await using var first = await firstWaiter;
-        first.IsAcquired.ShouldBeTrue();
-        secondWaiter.IsCompleted.ShouldBeFalse();
+        await using (var first = await firstWaiter)
+        {
+            first.IsAcquired.ShouldBeTrue();
+            secondWaiter.IsCompleted.ShouldBeFalse();
+        }
 
-        await first.DisposeAsync();
         await using var second = await secondWaiter;
         second.IsAcquired.ShouldBeTrue();
     }
@@ -50,15 +55,20 @@ public class BlobUploadAdmissionCoordinatorTests
             QueueWaitTimeout = TimeSpan.FromMinutes(1)
         };
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var active = await sut.AcquireAsync("reports", options, CancellationToken.None);
-        var queued = sut.AcquireAsync("reports", options, CancellationToken.None).AsTask();
+        Task<BlobUploadAdmissionLease> queued;
+        await using (var active = await sut.AcquireAsync("reports", options, CancellationToken.None))
+        {
+            active.IsAcquired.ShouldBeTrue();
+            queued = sut.AcquireAsync("reports", options, CancellationToken.None).AsTask();
 
-        await using var rejected = await sut.AcquireAsync("reports", options, CancellationToken.None);
+            await using var rejected = await sut.AcquireAsync("reports", options, CancellationToken.None);
 
-        rejected.IsAcquired.ShouldBeFalse();
-        rejected.Error.ShouldBeOfType<BlobStoreUploadOverloadedError>();
-        await active.DisposeAsync();
-        await (await queued).DisposeAsync();
+            rejected.IsAcquired.ShouldBeFalse();
+            rejected.Error.ShouldBeOfType<BlobStoreUploadOverloadedError>();
+        }
+
+        await using var admitted = await queued;
+        admitted.IsAcquired.ShouldBeTrue();
     }
 
     [Fact]
@@ -98,12 +108,12 @@ public class BlobUploadAdmissionCoordinatorTests
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
 
-        var action = async () => await sut.AcquireAsync(
+        var acquire = sut.AcquireAsync(
             "reports",
             Options,
-            cancellation.Token);
+            cancellation.Token).AsTask();
 
-        await action.ShouldThrowAsync<OperationCanceledException>();
+        await Should.ThrowAsync<OperationCanceledException>(acquire);
         sut.GetSnapshots().ShouldBeEmpty();
     }
 
@@ -111,17 +121,21 @@ public class BlobUploadAdmissionCoordinatorTests
     public async Task AcquireAsync_NormalizesCaseAndKeepsDifferentStoresIndependent()
     {
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var first = await sut.AcquireAsync(" Reports ", Options, CancellationToken.None);
-        var sameStore = sut.AcquireAsync("REPORTS", Options, CancellationToken.None).AsTask();
-        await using var otherStore = await sut.AcquireAsync("archive", Options, CancellationToken.None);
+        Task<BlobUploadAdmissionLease> sameStore;
+        await using (var first = await sut.AcquireAsync(" Reports ", Options, CancellationToken.None))
+        {
+            first.IsAcquired.ShouldBeTrue();
+            sameStore = sut.AcquireAsync("REPORTS", Options, CancellationToken.None).AsTask();
+            await using var otherStore = await sut.AcquireAsync("archive", Options, CancellationToken.None);
 
-        otherStore.IsAcquired.ShouldBeTrue();
-        sameStore.IsCompleted.ShouldBeFalse();
-        sut.GetSnapshots().Select(snapshot => snapshot.StoreName)
-            .ShouldBe(["archive", "reports"]);
+            otherStore.IsAcquired.ShouldBeTrue();
+            sameStore.IsCompleted.ShouldBeFalse();
+            sut.GetSnapshots().Select(snapshot => snapshot.StoreName)
+                .ShouldBe(["archive", "reports"]);
+        }
 
-        await first.DisposeAsync();
-        await (await sameStore).DisposeAsync();
+        await using var admitted = await sameStore;
+        admitted.IsAcquired.ShouldBeTrue();
     }
 
     [Fact]
@@ -172,12 +186,20 @@ public class BlobUploadAdmissionCoordinatorTests
         using var sut = new BlobUploadAdmissionCoordinator(
             metricsService: new MetricsService(meterFactory));
 
-        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
-        var queued = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
+        Task<BlobUploadAdmissionLease> queued;
+        await using (var active = await sut.AcquireAsync("reports", Options, CancellationToken.None))
+        {
+            active.IsAcquired.ShouldBeTrue();
+            queued = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
 
-        sut.GetSnapshots().Single().QueuedUploads.ShouldBe(1);
-        await active.DisposeAsync();
-        await (await queued).DisposeAsync();
+            sut.GetSnapshots().Single().QueuedUploads.ShouldBe(1);
+        }
+
+        await using (var admitted = await queued)
+        {
+            admitted.IsAcquired.ShouldBeTrue();
+        }
+
         var snapshot = sut.GetSnapshots().Single();
         snapshot.ActiveUploads.ShouldBe(0);
         snapshot.QueuedUploads.ShouldBe(0);

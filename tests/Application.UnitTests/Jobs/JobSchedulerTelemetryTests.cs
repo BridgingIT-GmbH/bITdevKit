@@ -79,7 +79,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         using var activities = new ActivityCollector(TelemetrySourceName);
         using var measurements = new MeterCollector(TelemetryMeterName);
 
-        var result = await ingress.AcceptAsync("crm.customers", new AcceptedPayload("customer-42"), new JobAcceptedEventOptions
+        var result = await ingress.AcceptAsync("crm.customers", new AcceptedPayload(), new JobAcceptedEventOptions
         {
             CorrelationId = "evt-corr",
             SourceId = "customer-42",
@@ -123,7 +123,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
             && Equals(operation, "enable-job")).ShouldBeTrue();
     }
 
-    private sealed record AcceptedPayload(string CustomerId);
+    private sealed record AcceptedPayload;
 
     private sealed class TelemetryJob : JobBase
     {
@@ -143,8 +143,8 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
             this.listener = new ActivityListener
             {
                 ShouldListenTo = source => source.Name == sourceName,
-                SampleUsingParentId = static (ref ActivityCreationOptions<string> _) => ActivitySamplingResult.AllDataAndRecorded,
-                Sample = static (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
+                SampleUsingParentId = static (ref _) => ActivitySamplingResult.AllDataAndRecorded,
+                Sample = static (ref _) => ActivitySamplingResult.AllDataAndRecorded,
                 ActivityStopped = activity => this.Items.Add(activity),
             };
 
@@ -166,15 +166,15 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         public MeterCollector(string meterName)
         {
             this.listener = new MeterListener();
-            this.listener.InstrumentPublished = (instrument, listener) =>
+            this.listener.InstrumentPublished = (instrument, meterListener) =>
             {
                 if (instrument.Meter.Name == meterName)
                 {
-                    listener.EnableMeasurementEvents(instrument);
+                    meterListener.EnableMeasurementEvents(instrument);
                 }
             };
-            this.listener.SetMeasurementEventCallback<long>((instrument, value, tags, _) => this.Items.Add(new MeasurementRecord(instrument.Name, value, ToDictionary(tags))));
-            this.listener.SetMeasurementEventCallback<double>((instrument, value, tags, _) => this.Items.Add(new MeasurementRecord(instrument.Name, value, ToDictionary(tags))));
+            this.listener.SetMeasurementEventCallback<long>((instrument, _, tags, _) => this.Items.Add(new MeasurementRecord(instrument.Name, ToDictionary(tags))));
+            this.listener.SetMeasurementEventCallback<double>((instrument, _, tags, _) => this.Items.Add(new MeasurementRecord(instrument.Name, ToDictionary(tags))));
             this.listener.Start();
         }
 
@@ -197,5 +197,5 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
         }
     }
 
-    private sealed record MeasurementRecord(string Name, object Value, IReadOnlyDictionary<string, object> Tags);
+    private sealed record MeasurementRecord(string Name, IReadOnlyDictionary<string, object> Tags);
 }

@@ -7,8 +7,8 @@ public class EnvironmentExtensionsTests : IDisposable
 {
     private readonly IHostEnvironment env;
     private readonly Dictionary<string, string> originalVariables;
-    private const string AZURE_WEBSITES_ENV = "WEBSITE_SITE_NAME";
-    private const string AZURE_FUNCTIONS_ENV = "AZURE_FUNCTIONS_ENVIRONMENT";
+    private const string AzureWebsitesEnv = "WEBSITE_SITE_NAME";
+    private const string AzureFunctionsEnv = "AZURE_FUNCTIONS_ENVIRONMENT";
 
     public EnvironmentExtensionsTests()
     {
@@ -16,8 +16,8 @@ public class EnvironmentExtensionsTests : IDisposable
         {
             ["DOTNET_RUNNING_IN_CONTAINER"] = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"),
             ["KUBERNETES_SERVICE_HOST"] = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST"),
-            [AZURE_WEBSITES_ENV] = Environment.GetEnvironmentVariable(AZURE_WEBSITES_ENV),
-            [AZURE_FUNCTIONS_ENV] = Environment.GetEnvironmentVariable(AZURE_FUNCTIONS_ENV),
+            [AzureWebsitesEnv] = Environment.GetEnvironmentVariable(AzureWebsitesEnv),
+            [AzureFunctionsEnv] = Environment.GetEnvironmentVariable(AzureFunctionsEnv),
         };
         this.env = Substitute.For<IHostEnvironment>();
         this.ResetEnvironmentVariables();
@@ -36,8 +36,8 @@ public class EnvironmentExtensionsTests : IDisposable
     {
         Environment.SetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER", null);
         Environment.SetEnvironmentVariable("KUBERNETES_SERVICE_HOST", null);
-        Environment.SetEnvironmentVariable(AZURE_WEBSITES_ENV, null);
-        Environment.SetEnvironmentVariable(AZURE_FUNCTIONS_ENV, null);
+        Environment.SetEnvironmentVariable(AzureWebsitesEnv, null);
+        Environment.SetEnvironmentVariable(AzureFunctionsEnv, null);
     }
 
     [Fact]
@@ -69,7 +69,7 @@ public class EnvironmentExtensionsTests : IDisposable
     [Fact]
     public void IsAzure_WhenWebsiteEnvVar_ReturnsTrue()
     {
-        Environment.SetEnvironmentVariable(AZURE_WEBSITES_ENV, "test");
+        Environment.SetEnvironmentVariable(AzureWebsitesEnv, "test");
         this.env.IsAzure().ShouldBeTrue();
     }
 
@@ -82,7 +82,7 @@ public class EnvironmentExtensionsTests : IDisposable
     [Fact]
     public void IsAzureFunctions_WhenFunctionsEnvVar_ReturnsTrue()
     {
-        Environment.SetEnvironmentVariable(AZURE_FUNCTIONS_ENV, "test");
+        Environment.SetEnvironmentVariable(AzureFunctionsEnv, "test");
         this.env.IsAzureFunctions().ShouldBeTrue();
     }
 
@@ -95,7 +95,7 @@ public class EnvironmentExtensionsTests : IDisposable
     [Fact]
     public void IsCloud_WhenAzure_ReturnsTrue()
     {
-        Environment.SetEnvironmentVariable(AZURE_WEBSITES_ENV, "test");
+        Environment.SetEnvironmentVariable(AzureWebsitesEnv, "test");
         this.env.IsCloud().ShouldBeTrue();
     }
 
@@ -144,7 +144,7 @@ public class EnvironmentExtensionsTests : IDisposable
     public void IsLocalDevelopment_WhenDevAndCloud_ReturnsFalse()
     {
         this.env.EnvironmentName.Returns("Development");
-        Environment.SetEnvironmentVariable(AZURE_WEBSITES_ENV, "test");
+        Environment.SetEnvironmentVariable(AzureWebsitesEnv, "test");
         this.env.IsLocalDevelopment().ShouldBeFalse();
     }
 }

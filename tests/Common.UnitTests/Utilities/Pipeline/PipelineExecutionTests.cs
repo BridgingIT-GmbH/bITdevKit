@@ -390,12 +390,10 @@ public class PipelineExecutionTests
     {
         using var source = new ActivitySource("trace-pipeline");
         var startedActivities = new List<string>();
-        using var listener = new ActivityListener
-        {
-            ShouldListenTo = activitySource => activitySource.Name == "trace-pipeline",
-            Sample = static (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllDataAndRecorded,
-            ActivityStarted = activity => startedActivities.Add(activity.OperationName)
-        };
+        using var listener = new ActivityListener();
+        listener.ShouldListenTo = activitySource => activitySource.Name == "trace-pipeline";
+        listener.Sample = static (ref _) => ActivitySamplingResult.AllDataAndRecorded;
+        listener.ActivityStarted = activity => startedActivities.Add(activity.OperationName);
 
         ActivitySource.AddActivityListener(listener);
 

@@ -13,9 +13,9 @@ public class DistinctIfTests
     {
         var source = new[]
         {
-            new Item("first", 1),
-            new Item("second", 1),
-            new Item("third", 2)
+            new Item(1),
+            new Item(1),
+            new Item(2)
         };
 
         var result = source.DistinctIf(item => item.Group).ToArray();
@@ -26,13 +26,15 @@ public class DistinctIfTests
     [Fact]
     public void DistinctIf_NullKeySelector_ReturnsOriginalSequence()
     {
-        IEnumerable<Item> source = [new Item("first", 1)];
-        Func<Item, object> selector = null;
+        var source = new[] { new Item(1) }.AsEnumerable();
+        var selector = GetNull<Func<Item, object>>();
 
         var result = source.DistinctIf(selector);
 
         result.ShouldBeSameAs(source);
     }
 
-    private sealed record Item(string Name, int Group);
+    private static T GetNull<T>() => default;
+
+    private sealed record Item(int Group);
 }

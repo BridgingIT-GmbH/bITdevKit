@@ -85,7 +85,7 @@ public sealed class CliFoundationTests
         // Assert
         first.Path.ShouldBe(second.Path);
         first.Hash.ShouldBe(second.Hash);
-        first.Hash.Length.ShouldBe(16);
+        first.Hash.ShouldNotBeNull().Length.ShouldBe(16);
     }
 
     [Fact]
@@ -1457,7 +1457,7 @@ public sealed class CliFoundationTests
                 return Task.FromResult(symbol);
             }
 
-            var entry = index.Symbols.FirstOrDefault(symbol => string.Equals(symbol.Uid, uid, StringComparison.OrdinalIgnoreCase));
+            var entry = index.Symbols.FirstOrDefault(candidate => string.Equals(candidate.Uid, uid, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(entry is null
                 ? null
                 : new McpApiReferenceSymbol

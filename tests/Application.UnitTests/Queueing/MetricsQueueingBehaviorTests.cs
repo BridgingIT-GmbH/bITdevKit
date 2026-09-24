@@ -12,7 +12,7 @@ public class MetricsQueueingBehaviorTests
         using var recorder = new MetricsRecorder();
         var sut = new MetricsQueueEnqueuerBehavior(new MetricsService(meterFactory));
 
-        await sut.Enqueue(new TestQueueMessage("hello"), CancellationToken.None, () => Task.CompletedTask);
+        await sut.Enqueue(new TestQueueMessage(), CancellationToken.None, () => Task.CompletedTask);
 
         recorder.CounterSum("queueing_enqueue").ShouldBe(1);
         recorder.CounterSum("queueing_enqueue_testqueuemessage").ShouldBe(1);
@@ -30,7 +30,7 @@ public class MetricsQueueingBehaviorTests
         var sut = new MetricsQueueHandlerBehavior(new MetricsService(meterFactory));
 
         await Should.ThrowAsync<InvalidOperationException>(() => sut.Handle(
-            new TestQueueMessage("hello"),
+            new TestQueueMessage(),
             CancellationToken.None,
             new object(),
             () => throw new InvalidOperationException("boom")));
@@ -45,8 +45,5 @@ public class MetricsQueueingBehaviorTests
         recorder.HistogramCount("queueing_handle_testqueuemessage_duration").ShouldBe(1);
     }
 
-    private sealed class TestQueueMessage(string value) : QueueMessageBase
-    {
-        public string Value { get; } = value;
-    }
+    private sealed class TestQueueMessage : QueueMessageBase;
 }

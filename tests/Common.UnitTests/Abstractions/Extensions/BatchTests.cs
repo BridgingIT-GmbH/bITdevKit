@@ -25,7 +25,7 @@ public class BatchTests
     [Fact]
     public void Batch_NullSource_ReturnsEmptySequence()
     {
-        IEnumerable<int> source = null;
+        var source = GetNull<IEnumerable<int>>();
 
         source.Batch(2).ShouldBeEmpty();
     }
@@ -38,4 +38,6 @@ public class BatchTests
         Should.Throw<ArgumentException>(() => Array.Empty<int>().Batch(batchSize))
             .ParamName.ShouldBe(nameof(batchSize));
     }
+
+    private static T GetNull<T>() => default;
 }

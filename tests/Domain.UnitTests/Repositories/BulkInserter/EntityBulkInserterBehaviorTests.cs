@@ -140,6 +140,7 @@ public class EntityBulkInserterBehaviorTests
 
         provider.Messages.ShouldNotContain(message => message.Contains("sensitive-value", StringComparison.Ordinal));
         terminal.InvocationCount.ShouldBe(1);
+        terminal.Entities.ShouldHaveSingleItem().Secret.ShouldBe("sensitive-value");
     }
 
     [Fact]
@@ -179,12 +180,10 @@ public class EntityBulkInserterBehaviorTests
     public async Task Tracing_RecordsSuccessfulOperationStatus()
     {
         Activity stopped = null;
-        using var listener = new ActivityListener
-        {
-            ShouldListenTo = source => source.Name == "BridgingIT.DevKit.EntityBulkInserter",
-            Sample = static (ref ActivityCreationOptions<ActivityContext> _) => ActivitySamplingResult.AllData,
-            ActivityStopped = activity => stopped = activity,
-        };
+        using var listener = new ActivityListener();
+        listener.ShouldListenTo = source => source.Name == "BridgingIT.DevKit.EntityBulkInserter";
+        listener.Sample = static (ref _) => ActivitySamplingResult.AllData;
+        listener.ActivityStopped = activity => stopped = activity;
         ActivitySource.AddActivityListener(listener);
         var sut = new EntityBulkInserterTracingBehavior<AggregateEntity>(new CapturingBulkInserter());
 
@@ -222,7 +221,7 @@ public class EntityBulkInserterBehaviorTests
         public Guid ConcurrencyVersion { get; set; }
     }
 
-    private sealed class TestMeterFactory : IMeterFactory, IDisposable
+    private sealed class TestMeterFactory : IMeterFactory
     {
         private readonly List<Meter> meters = [];
 

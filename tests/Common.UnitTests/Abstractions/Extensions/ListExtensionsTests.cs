@@ -32,11 +32,13 @@ public class ListExtensionsTests
     [Fact]
     public void AddOrUpdate_NullSourceOrItem_DoesNotThrow()
     {
-        IList<string> nullSource = null;
+        var nullSource = GetNull<IList<string>>();
         IList<string> source = ["first"];
 
         Should.NotThrow(() => nullSource.AddOrUpdate("first"));
-        Should.NotThrow(() => source.AddOrUpdate(null));
+        Should.NotThrow(() => source.AddOrUpdate(GetNull<string>()));
         source.ShouldBe(["first"]);
     }
+
+    private static T GetNull<T>() => default;
 }

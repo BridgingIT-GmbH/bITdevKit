@@ -30,11 +30,11 @@ public class SafeRemoveTests
     [Fact]
     public void SafeRemove_NullCollectionOrItem_ReturnsFalse()
     {
-        ICollection<string> nullSource = null;
+        var nullSource = GetNull<ICollection<string>>();
         ICollection<string> source = ["first"];
 
         nullSource.SafeRemove("first").ShouldBeFalse();
-        source.SafeRemove(null).ShouldBeFalse();
+        source.SafeRemove(GetNull<string>()).ShouldBeFalse();
     }
 
     [Fact]
@@ -51,8 +51,10 @@ public class SafeRemoveTests
     [Fact]
     public void SafeRemove_NullDictionary_ReturnsNull()
     {
-        IDictionary<string, int> source = null;
+        var source = GetNull<IDictionary<string, int>>();
 
         source.SafeRemove("first").ShouldBeNull();
     }
+
+    private static T GetNull<T>() => default;
 }

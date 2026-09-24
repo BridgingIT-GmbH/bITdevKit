@@ -48,6 +48,7 @@ public class MetricsMessageBehaviorsTests
         using var meterFactory = new TestMeterFactory();
         using var recorder = new MetricsRecorder();
         var sut = new MetricsMessageHandlerBehavior(NullLoggerFactory.Instance, new MetricsService(meterFactory));
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
         var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
 
         var task = sut.Handle(
@@ -56,12 +57,13 @@ public class MetricsMessageBehaviorsTests
             new object(),
             async () =>
             {
-                recorder.CounterSum("messaging_handle_current").ShouldBe(1);
-                recorder.CounterSum("messaging_handle_testmessage_current").ShouldBe(1);
+                entered.SetResult();
                 await release.Task;
             });
 
-        await Task.Yield();
+        await entered.Task;
+        recorder.CounterSum("messaging_handle_current").ShouldBe(1);
+        recorder.CounterSum("messaging_handle_testmessage_current").ShouldBe(1);
         release.SetResult();
         await task;
 

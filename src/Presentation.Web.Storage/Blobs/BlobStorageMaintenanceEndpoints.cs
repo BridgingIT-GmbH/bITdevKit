@@ -262,7 +262,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
         return result.IsSuccess
             ? Results.Ok(new BlobStorageBlobPageModel
             {
-                Items = result.Value.Items.Select(MapInfo).ToArray(),
+                Items = [.. result.Value.Items.Select(MapInfo)],
                 ContinuationToken = result.Value.ContinuationToken,
                 HasMore = result.Value.HasMore
             })

@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
-using BenchmarkDotNet.Running;
 using System.Text.Json.Serialization;
+using BenchmarkDotNet.Running;
 
 [UnitTest("Common")]
 public class SystemTextJsonSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)

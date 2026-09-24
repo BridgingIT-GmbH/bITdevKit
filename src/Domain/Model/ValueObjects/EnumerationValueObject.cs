@@ -118,7 +118,7 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
     /// <returns>The result of the operation.</returns>
     public static TEnumeration Create(TKey key)
     {
-        return ByKey.ContainsKey(key) ? ByKey[key] : default;
+        return ByKey.ContainsKey(key) ? ByKey[key] : null;
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public abstract class EnumerationValueObject<TEnumeration, TKey> : ValueObject
     /// <returns>The result of the operation.</returns>
     public static TEnumeration Create(string name)
     {
-        return ByName.ContainsKey(name) ? ByName[name] : default;
+        return ByName.ContainsKey(name) ? ByName[name] : null;
     }
 
     /// <summary>
@@ -314,7 +314,7 @@ public abstract class EnumerationValueObject<TEnumeration> : ValueObject
     /// <returns>The result of the operation.</returns>
     public static TEnumeration FromKey(string key)
     {
-        return Enumerations.ContainsKey(key) ? Enumerations[key] : default;
+        return Enumerations.ContainsKey(key) ? Enumerations[key] : null;
     }
 
     /// <inheritdoc/>

@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Collections.Concurrent;
+using System.Security.Claims;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
-using System.Security.Claims;
 
 /// <summary>
 /// Pipeline behavior that enforces one or more authorization policies

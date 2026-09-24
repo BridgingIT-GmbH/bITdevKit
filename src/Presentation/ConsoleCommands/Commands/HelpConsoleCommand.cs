@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 /// <summary>
 /// Lists available console commands and writes detailed help for a selected command or group.

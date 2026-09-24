@@ -121,10 +121,10 @@ public class EnumerationConverter<TEnumeration, TId, TValue> : IValueConverter<T
     {
         if (!this.TryConvert(value, this.Culture ?? context.Culture, out TId convertedValue))
         {
-            return default;
+            return null;
         }
 
-        return BridgingIT.DevKit.Common.Enumeration<TId, TValue>.GetAll<TEnumeration>()
+        return Enumeration<TId, TValue>.GetAll<TEnumeration>()
             .FirstOrDefault(e => this.AreEqual(e.Id, convertedValue));
     }
 
@@ -132,10 +132,10 @@ public class EnumerationConverter<TEnumeration, TId, TValue> : IValueConverter<T
     {
         if (!this.TryConvert(value, this.Culture ?? context.Culture, out TValue convertedValue))
         {
-            return default;
+            return null;
         }
 
-        return BridgingIT.DevKit.Common.Enumeration<TId, TValue>.GetAll<TEnumeration>()
+        return Enumeration<TId, TValue>.GetAll<TEnumeration>()
             .FirstOrDefault(e => this.AreEqual(e.Value, convertedValue));
     }
 

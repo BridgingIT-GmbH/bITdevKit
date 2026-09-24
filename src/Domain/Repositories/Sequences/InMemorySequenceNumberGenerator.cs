@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// In-memory implementation of sequence number generator for testing purposes.

@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
-using BridgingIT.DevKit.Application.DataPorter;
-using ClosedXML.Excel;
 using System.Text.Json;
 using System.Xml.Linq;
+using BridgingIT.DevKit.Application.DataPorter;
+using ClosedXML.Excel;
 
 [UnitTest("Common")]
 public class DataPorterServiceExportTests

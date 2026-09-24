@@ -1,12 +1,12 @@
+@using System.Text.Json
+@using BridgingIT.DevKit.Application.Jobs
+@using BridgingIT.DevKit.Common
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages
-@using BridgingIT.DevKit.Application.Jobs
-@using BridgingIT.DevKit.Common
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Logging
 @using RazorSlices
-@using System.Text.Json
 @using JobsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints
 @inherits RazorSlice
 
@@ -267,10 +267,10 @@ else
 @functions {
     private async Task<DashboardJobsViewModel> CreateModelAsync()
     {
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var query = this.HttpContext.RequestServices.GetService<IJobSchedulerQueryService>();
-        var logger = this.HttpContext.RequestServices.GetService<ILogger<Data>>();
-        var ct = this.HttpContext.RequestAborted;
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var query = HttpContext.RequestServices.GetService<IJobSchedulerQueryService>();
+        var logger = HttpContext.RequestServices.GetService<ILogger<Data>>();
+        var ct = HttpContext.RequestAborted;
 
         var model = new DashboardJobsViewModel
         {
@@ -499,7 +499,7 @@ else
         return JsonSerializer.Serialize(payload);
     }
 
-    private static Microsoft.AspNetCore.Html.IHtmlContent RenderJobStateBadge(JobSchedulerJobModel job)
+    private static IHtmlContent RenderJobStateBadge(JobSchedulerJobModel job)
     {
         string label, css;
         if (!job.EffectiveEnabled) { label = "Disabled"; css = "text-bg-secondary"; }
@@ -508,10 +508,10 @@ else
         else if (job.RunningOccurrenceCount > 0) { label = "Running"; css = "text-bg-info"; }
         else { label = "Active"; css = "text-bg-success"; }
 
-        return new Microsoft.AspNetCore.Html.HtmlString($"<span class=\"badge {css}\">{label}</span>");
+        return new HtmlString($"<span class=\"badge {css}\">{label}</span>");
     }
 
-    private static Microsoft.AspNetCore.Html.IHtmlContent RenderOccurrenceStatusBadge(JobOccurrenceStatus status)
+    private static IHtmlContent RenderOccurrenceStatusBadge(JobOccurrenceStatus status)
     {
         var css = status switch
         {
@@ -527,6 +527,6 @@ else
             JobOccurrenceStatus.RetryScheduled => "text-bg-warning",
             _ => "text-bg-secondary"
         };
-        return new Microsoft.AspNetCore.Html.HtmlString($"<span class=\"badge {css}\">{status}</span>");
+        return new HtmlString($"<span class=\"badge {css}\">{status}</span>");
     }
 }

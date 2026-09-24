@@ -44,7 +44,7 @@ public class ForEachTests
 
         // Assert
         result.ShouldBe(items);
-        action.DidNotReceiveWithAnyArgs().Invoke(default);
+        action.DidNotReceiveWithAnyArgs().Invoke(null);
     }
 
     [Fact]
@@ -107,7 +107,7 @@ public class ForEachTests
 
         // Assert
         result.ShouldBe(items);
-        await action.DidNotReceiveWithAnyArgs().Invoke(default);
+        await action.DidNotReceiveWithAnyArgs().Invoke(null);
     }
 
     [Fact]

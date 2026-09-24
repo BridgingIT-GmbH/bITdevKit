@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Jobs;
 
-using BridgingIT.DevKit.Application.Jobs;
 using System.Reflection;
+using BridgingIT.DevKit.Application.Jobs;
 
 public class CronosJobCronEngineTests
 {

@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Collections.Generic;
+using System.Globalization;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 using Spectre.Console;
-using System.Collections.Generic;
-using System.Globalization;
 
 /// <summary>
 /// Represents job scheduler console command base.

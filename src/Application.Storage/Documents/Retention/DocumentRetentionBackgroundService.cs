@@ -3,10 +3,10 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using BridgingIT.DevKit.Common;
 
 /// <summary>Runs monitored, bounded provider-native physical cleanup for expired documents.</summary>
 /// <param name="scopeFactory">The root scope factory used to resolve each keyed client in a fresh owned scope.</param>

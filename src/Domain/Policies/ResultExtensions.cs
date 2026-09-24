@@ -23,7 +23,7 @@ public static class ResultExtensions
     {
         if (source == null)
         {
-            return default;
+            return null;
         }
 
         var type = source.GetType();
@@ -51,6 +51,6 @@ public static class ResultExtensions
                 }
         }
 
-        return default;
+        return null;
     }
 }

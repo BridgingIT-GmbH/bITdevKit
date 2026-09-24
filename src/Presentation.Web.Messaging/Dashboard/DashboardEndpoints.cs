@@ -89,7 +89,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                     return Results.StatusCode(StatusCodes.Status503ServiceUnavailable);
                 }
 
-                var message = new AliveMessage("dashboard");
+                var message = new AliveMessage();
                 await broker.Publish(message, cancellationToken);
 
                 return Results.Ok(new

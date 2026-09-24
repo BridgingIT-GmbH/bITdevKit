@@ -5,7 +5,6 @@ using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Presentation.Web.Orchestrations;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;

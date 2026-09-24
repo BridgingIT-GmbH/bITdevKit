@@ -14,7 +14,6 @@ using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.Storage;
 using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -52,28 +51,27 @@ public class BlobStorageEndpointsApplication : WebApplicationFactory<BlobStorage
         return app;
     }
 
-    public IBlobStoreClient CreateClient(string name)
-    {
-        var factory = this.Services.GetRequiredService<IBlobStoreClientFactory>();
-        return factory.CreateClient(name);
-    }
-
 }
 
 public class BlobStorageEndpointsTests : IAsyncDisposable
 {
     private readonly BlobStorageEndpointsApplication factory;
     private readonly HttpClient client;
+    private readonly IServiceScope scope;
+    private readonly IBlobStoreClientFactory blobStoreClientFactory;
 
     public BlobStorageEndpointsTests()
     {
         this.factory = new BlobStorageEndpointsApplication();
         this.client = this.factory.CreateClient();
+        this.scope = this.factory.Services.CreateScope();
+        this.blobStoreClientFactory = this.scope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>();
     }
 
     public async ValueTask DisposeAsync()
     {
         this.client.Dispose();
+        this.scope.Dispose();
         await this.factory.DisposeAsync();
     }
 
@@ -103,7 +101,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task DownloadContent_ShouldStreamBlobBytes()
     {
-        var blobs = this.factory.CreateClient("reports");
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "docs/guide.txt"),
@@ -161,7 +159,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task DownloadPermalink_WithStoredContentType_UsesBlobMimeTypeInsteadOfFileExtension()
     {
-        var blobs = this.factory.CreateClient("reports");
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
         var upload = await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "docs/report.bin"),
@@ -238,7 +236,8 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         app.UseRouting();
         new StoragePermalinkDashboardEndpoints(dashboardOptions).Map(app);
         await app.StartAsync();
-        var blobs = app.Services.GetRequiredService<IBlobStoreClientFactory>().CreateClient("reports");
+        await using var scope = app.Services.CreateAsyncScope();
+        var blobs = scope.ServiceProvider.GetRequiredService<IBlobStoreClientFactory>().CreateClient("reports");
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "docs/report.pdf"),
@@ -265,7 +264,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task Exists_ShouldReturnTrueAndFalseWithoutDownloadingContent()
     {
-        var blobs = this.factory.CreateClient("reports");
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "exists.txt"),
@@ -289,7 +288,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task GetProperties_ShouldReturnBlobMetadata()
     {
-        var blobs = this.factory.CreateClient("reports");
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "meta/file.txt"),
@@ -316,7 +315,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task UpdateProperties_ShouldReplaceMetadataWithoutContentUpload()
     {
-        var blobs = this.factory.CreateClient("reports");
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
         var upload = await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "meta/update.txt"),
@@ -352,7 +351,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task ListBlobs_ShouldReturnMatchingPrefixOnly()
     {
-        var blobs = this.factory.CreateClient("reports");
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
         await blobs.UploadAsync(CreateUpload("docs/alpha.txt", "alpha"));
         await blobs.UploadAsync(CreateUpload("docs/beta.txt", "beta"));
         await blobs.UploadAsync(CreateUpload("other/gamma.txt", "gamma"));
@@ -368,7 +367,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
     [Fact]
     public async Task DeleteBlob_ShouldRemoveBlob()
     {
-        var blobs = this.factory.CreateClient("reports");
+        var blobs = this.blobStoreClientFactory.CreateClient("reports");
         await blobs.UploadAsync(CreateUpload("delete/me.txt", "delete"));
 
         var deleteResponse = await this.client.DeleteAsync("/_bdk/api/storage/blobs/reports/blobs?container=reports&name=delete/me.txt");

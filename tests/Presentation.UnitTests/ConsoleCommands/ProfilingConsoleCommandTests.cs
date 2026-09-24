@@ -229,7 +229,7 @@ public sealed class ProfilingConsoleCommandTests
         // Assert
         var expected = JsonSerializer.Serialize(
             evaluation,
-            BridgingIT.DevKit.Common.DefaultJsonSerializerOptions.Create()
+            Common.DefaultJsonSerializerOptions.Create()
         );
         writer.ToString().TrimEnd().ShouldBe(expected);
         await queries.Received(1).EvaluateAsync(
@@ -344,7 +344,7 @@ public sealed class ProfilingConsoleCommandTests
                 Arg.Any<CancellationToken>()
             );
             await archives.DidNotReceiveWithAnyArgs()
-                .ExportSessionAsync(default, default, default);
+                .ExportSessionAsync(null, null, CancellationToken.None);
         }
         finally
         {
@@ -643,7 +643,7 @@ public sealed class ProfilingConsoleCommandTests
 
         public int Height => 40;
 
-        public void SetEncoding(System.Text.Encoding encoding)
+        public void SetEncoding(Encoding encoding)
         {
         }
     }

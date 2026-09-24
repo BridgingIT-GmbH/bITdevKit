@@ -186,7 +186,7 @@ public sealed class BroadcastingConsoleCommandTests
 
         public int Height => 32;
 
-        public void SetEncoding(System.Text.Encoding encoding)
+        public void SetEncoding(Encoding encoding)
         {
         }
     }

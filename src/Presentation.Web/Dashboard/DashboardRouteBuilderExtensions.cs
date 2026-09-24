@@ -37,7 +37,7 @@ public static class DashboardRouteBuilderExtensions
             .WithName(endpointName)
             .WithSummary(title)
             .WithDescription(description ?? $"Shows the {title} dashboard page.")
-            .Produces<string>((int)HttpStatusCode.OK);
+            .Produces<string>();
     }
 
     /// <summary>
@@ -56,6 +56,6 @@ public static class DashboardRouteBuilderExtensions
             .WithName(endpointName)
             .WithSummary(title)
             .WithDescription(description ?? $"Shows the {title} dashboard page.")
-            .Produces<string>((int)HttpStatusCode.OK);
+            .Produces<string>();
     }
 }

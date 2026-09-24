@@ -6,8 +6,8 @@ using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Cli;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.Jobs;
@@ -311,7 +311,7 @@ public sealed class McpFeatureHandlerTests
         // Assert
         response.Available.ShouldBeFalse();
         response.Code.ShouldBe("confirmation_required");
-        await broker.DidNotReceiveWithAnyArgs().PurgeMessagesAsync(default, default, default, default);
+        await broker.DidNotReceiveWithAnyArgs().PurgeMessagesAsync(null, null, null, CancellationToken.None);
     }
 
     [Fact]
@@ -327,7 +327,7 @@ public sealed class McpFeatureHandlerTests
         // Assert
         response.Available.ShouldBeFalse();
         response.Code.ShouldBe("confirmation_required");
-        await broker.DidNotReceiveWithAnyArgs().PurgeMessagesAsync(default, default, default, default);
+        await broker.DidNotReceiveWithAnyArgs().PurgeMessagesAsync(null, null, null, CancellationToken.None);
     }
 
     [Fact]
@@ -345,7 +345,7 @@ public sealed class McpFeatureHandlerTests
         // Assert
         response.Available.ShouldBeFalse();
         response.Code.ShouldBe("confirmation_required");
-        await maintenance.DidNotReceiveWithAnyArgs().PurgeOccurrencesAsync(default, default);
+        await maintenance.DidNotReceiveWithAnyArgs().PurgeOccurrencesAsync(null, CancellationToken.None);
     }
 
     [Fact]
@@ -363,7 +363,7 @@ public sealed class McpFeatureHandlerTests
         // Assert
         response.Available.ShouldBeFalse();
         response.Code.ShouldBe("confirmation_required");
-        await administration.DidNotReceiveWithAnyArgs().PurgeAsync(default, default);
+        await administration.DidNotReceiveWithAnyArgs().PurgeAsync(null, CancellationToken.None);
     }
 
     [Fact]
@@ -529,7 +529,7 @@ public sealed class McpFeatureHandlerTests
         // Assert
         response.Available.ShouldBeFalse();
         response.Code.ShouldBe(McpErrorCode.OperationFailed);
-        await diagnostics.DidNotReceiveWithAnyArgs().GetSnapshotAsync(default);
+        await diagnostics.DidNotReceiveWithAnyArgs().GetSnapshotAsync(CancellationToken.None);
     }
 
     [Theory]

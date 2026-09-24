@@ -241,7 +241,7 @@ public class
         object id,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return RepositoryActionResult.NotFound;
         }

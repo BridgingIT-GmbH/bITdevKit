@@ -143,7 +143,7 @@ public static class ReflectionHelper
     {
         if (instance is null || propertyName.IsNullOrEmpty())
         {
-            return default;
+            return null;
         }
 
         // or use https://github.com/ekonbenefits/dynamitey/wiki/UsageReallyLateBinding DLR dynamic InvokeSetAll(object target, ...) =CASESENSITIVE
@@ -158,7 +158,7 @@ public static class ReflectionHelper
             }
         }
 
-        return default;
+        return null;
     }
 
     /// <summary>

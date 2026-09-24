@@ -26,7 +26,7 @@ public class JsonConfigurationTests
 
         result.WriteIndented.ShouldBeFalse();
         result.PropertyNamingPolicy.ShouldBe(JsonNamingPolicy.CamelCase);
-        result.DefaultIgnoreCondition.ShouldBe(System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingNull);
+        result.DefaultIgnoreCondition.ShouldBe(JsonIgnoreCondition.WhenWritingNull);
     }
 
     [Fact]
@@ -36,7 +36,7 @@ public class JsonConfigurationTests
         {
             WriteIndented = false,
             PropertyNamingPolicy = JsonNamingPolicy.SnakeCaseLower,
-            DefaultIgnoreCondition = System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault
         };
         serializerOptions.Converters.Add(new JsonStringEnumConverter());
 
@@ -53,7 +53,7 @@ public class JsonConfigurationTests
         result.ShouldNotBeSameAs(serializerOptions);
         result.WriteIndented.ShouldBeFalse();
         result.PropertyNamingPolicy.ShouldBe(JsonNamingPolicy.SnakeCaseLower);
-        result.DefaultIgnoreCondition.ShouldBe(System.Text.Json.Serialization.JsonIgnoreCondition.WhenWritingDefault);
+        result.DefaultIgnoreCondition.ShouldBe(JsonIgnoreCondition.WhenWritingDefault);
         result.Converters.ShouldContain(converter => converter is JsonStringEnumConverter);
     }
 }

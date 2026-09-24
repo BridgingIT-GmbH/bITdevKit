@@ -126,7 +126,7 @@ public class GuidValidationTests
         var validator = new TestValidator();
         validator.RuleFor(x => x.GuidString)
             .MustBeDefaultOrEmptyGuid();
-        var model = new TestModel { GuidString = default(Guid).ToString() };
+        var model = new TestModel { GuidString = Guid.Empty.ToString() };
 
         // Act
         var result = validator.TestValidate(model);

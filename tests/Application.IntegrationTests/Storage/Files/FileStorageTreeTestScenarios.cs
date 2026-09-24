@@ -19,7 +19,7 @@ public static class FileStorageTreeTestScenarios
         await provider.WriteTextFileAsync("root/dir3/file4.txt", "File 4 content");
 
         var renderer = new TextFileStorageTreeRenderer();
-        var result = await provider.RenderDirectoryAsync(renderer, null, skipFiles: false, progress: null, cancellationToken: CancellationToken.None);
+        var result = await provider.RenderDirectoryAsync(renderer, skipFiles: false, progress: null, cancellationToken: CancellationToken.None);
 
         result.ShouldBeSuccess($"RenderDirectoryAsync failed: {string.Join(", ", result.Messages)}");
         result.Messages.ShouldContain("Rendered storage provider structure starting at ''");
@@ -67,7 +67,7 @@ public static class FileStorageTreeTestScenarios
         await provider.CreateDirectoryAsync("root/dir3");
 
         var renderer = new TextFileStorageTreeRenderer();
-        var result = await provider.RenderDirectoryAsync(renderer, null, skipFiles: false, progress: null, cancellationToken: CancellationToken.None);
+        var result = await provider.RenderDirectoryAsync(renderer, skipFiles: false, progress: null, cancellationToken: CancellationToken.None);
 
         result.ShouldBeSuccess($"RenderDirectoryAsync failed: {string.Join(", ", result.Messages)}");
         result.Messages.ShouldContain("Rendered storage provider structure starting at ''");
@@ -90,7 +90,7 @@ public static class FileStorageTreeTestScenarios
         await provider.WriteTextFileAsync("root/dir3/file4.txt", "File 4 content");
 
         var renderer = new TextFileStorageTreeRenderer();
-        var result = await provider.RenderDirectoryAsync(renderer, null, skipFiles: true, progress: null, cancellationToken: CancellationToken.None);
+        var result = await provider.RenderDirectoryAsync(renderer, skipFiles: true, progress: null, cancellationToken: CancellationToken.None);
 
         result.ShouldBeSuccess($"RenderDirectoryAsync failed: {string.Join(", ", result.Messages)}");
         result.Messages.ShouldContain("Rendered storage provider structure starting at ''");
@@ -142,7 +142,7 @@ public static class FileStorageTreeTestScenarios
         await provider.WriteTextFileAsync("root/dir1/file2.txt", "File 2 content");
 
         var renderer = new HtmlFileStorageTreeRenderer();
-        var result = await provider.RenderDirectoryAsync(renderer, null, skipFiles: false, progress: null, cancellationToken: CancellationToken.None);
+        var result = await provider.RenderDirectoryAsync(renderer, skipFiles: false, progress: null, cancellationToken: CancellationToken.None);
 
         result.ShouldBeSuccess($"RenderDirectoryAsync failed: {string.Join(", ", result.Messages)}");
         result.Messages.ShouldContain("Rendered storage provider structure starting at ''");

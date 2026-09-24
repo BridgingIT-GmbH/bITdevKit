@@ -1048,7 +1048,7 @@ public readonly partial struct Result<T> : IResult<T>
     public bool TryGetError<TError>(out TError error)
         where TError : class, IResultError
     {
-        error = default;
+        error = null;
         var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
         if (foundError is null)
         {

@@ -113,7 +113,7 @@ public class CsvSerializerTests
         var result = this.serializer.Deserialize<PersonStub>(null);
 
         // Assert
-        result.ShouldBe(default);
+        result.ShouldBe(null);
     }
 
     [Fact]

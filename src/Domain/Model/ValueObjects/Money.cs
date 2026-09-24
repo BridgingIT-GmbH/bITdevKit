@@ -225,7 +225,7 @@ public class Money : DecimalValueObject
         }
         catch (CultureNotFoundException)
         {
-            return default;
+            return null;
         }
 
         return region;

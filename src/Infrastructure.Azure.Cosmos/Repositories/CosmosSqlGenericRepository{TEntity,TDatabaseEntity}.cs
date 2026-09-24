@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System.Linq.Expressions;
+using BridgingIT.DevKit.Domain;
 using Common;
 using Domain.Model;
 using Domain.Repositories;
-using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -247,9 +247,9 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
-            return default;
+            return null;
         }
 
         return this.Options.Mapper.Map<TEntity>(await this.Provider
@@ -304,7 +304,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
     /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return false;
         }
@@ -359,7 +359,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
     {
         if (entity is null)
         {
-            return (default, RepositoryActionResult.None);
+            return (null, RepositoryActionResult.None);
         }
 
         var isNew = this.Options.IdGenerator.IsNew(entity.Id) ||
@@ -386,7 +386,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         object id,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return RepositoryActionResult.None;
         }
@@ -410,7 +410,7 @@ public class CosmosSqlGenericRepository<TEntity, TDatabaseEntity> : IGenericRepo
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        if (entity?.Id == default)
+        if (entity?.Id == null)
         {
             return RepositoryActionResult.None;
         }

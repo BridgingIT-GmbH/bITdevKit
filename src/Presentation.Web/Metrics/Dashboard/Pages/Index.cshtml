@@ -8,7 +8,7 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.MetricsContent);
 }
 
@@ -29,7 +29,7 @@
 </div>
 
 <div id="dashboard-metrics-content">
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.Pages.Content>())
+    @(await RenderPartialAsync<Content>())
 </div>
 
 <script>

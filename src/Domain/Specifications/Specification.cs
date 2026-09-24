@@ -62,7 +62,7 @@ public class Specification<T> : ISpecification<T>
             return DynamicExpressionParser.ParseLambda<T, bool>(null, false, this.dynamicExpression, this.dynamicExpressionValues);
         }
 
-        return default;
+        return null;
     }
 
     /// <summary>

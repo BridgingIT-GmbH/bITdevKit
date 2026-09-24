@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using System;
 using System.Data;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 
 /// <summary>
 /// A pipeline behavior that manages database transactions for handlers and executes

@@ -1,18 +1,18 @@
-@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
 @inherits RazorLayoutSlice<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var dashboardTitle = string.IsNullOrWhiteSpace(Model.ProductName) ? dashboardOptions.Title : Model.ProductName;
     var pageTitle = string.IsNullOrWhiteSpace(Model.Title) ? dashboardTitle : Model.Title;
-    var detachedView = string.Equals(this.HttpContext.Request.Query["dashboardView"].ToString(), "window", StringComparison.OrdinalIgnoreCase);
+    var detachedView = string.Equals(HttpContext.Request.Query["dashboardView"].ToString(), "window", StringComparison.OrdinalIgnoreCase);
     var hideSideBar = Model.HideSideBar || detachedView;
-    var isAuthenticated = this.HttpContext.User?.Identity?.IsAuthenticated == true;
+    var isAuthenticated = HttpContext.User?.Identity?.IsAuthenticated == true;
     var signOutPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.SignOut);
-    var dashboardHomePath = DashboardPath.Combine(this.HttpContext.Request.PathBase, dashboardOptions.GroupPath);
-    var currentDashboardUrl = $"{this.HttpContext.Request.PathBase}{this.HttpContext.Request.Path}{this.HttpContext.Request.QueryString}";
+    var dashboardHomePath = DashboardPath.Combine(HttpContext.Request.PathBase, dashboardOptions.GroupPath);
+    var currentDashboardUrl = $"{HttpContext.Request.PathBase}{HttpContext.Request.Path}{HttpContext.Request.QueryString}";
 }
 
 <!DOCTYPE html>
@@ -1766,7 +1766,7 @@
             @if (!hideSideBar)
             {
                 var pageSidebarItems = new List<DashboardSidebarItem>();
-                foreach (var page in this.HttpContext.GetDashboardPages().Where(page => page.ShowInSidebar))
+                foreach (var page in HttpContext.GetDashboardPages().Where(page => page.ShowInSidebar))
                 {
                     pageSidebarItems.Add(new DashboardSidebarItem(page.Title, page.Icon, page.Url)
                     {
@@ -1775,18 +1775,18 @@
                         Order = page.Order,
                         Tooltip = string.IsNullOrWhiteSpace(page.Tooltip) ? page.Description : page.Tooltip,
                         HasBadge = page.Badge is not null,
-                        BadgeCount = page.Badge is null ? null : await page.Badge(this.HttpContext)
+                        BadgeCount = page.Badge is null ? null : await page.Badge(HttpContext)
                     });
                 }
-                var customSidebarItems = this.HttpContext.RequestServices
+                var customSidebarItems = HttpContext.RequestServices
                     .GetServices<IDashboardNavigationProvider>()
-                    .SelectMany(provider => provider.GetItems(this.HttpContext))
+                    .SelectMany(provider => provider.GetItems(HttpContext))
                     .Where(item => item is not null);
                 var sidebarItems = pageSidebarItems
                     .Concat(customSidebarItems)
                     .ToArray();
 
-                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardSideBar, DashboardSidebarItem[]>(
+                @(await RenderPartialAsync<_DashboardSideBar, DashboardSidebarItem[]>(
                     sidebarItems))
                 @await RenderSectionAsync("nav-menu")
                 <button class="btn sidebar-toggle d-none d-md-flex" type="button" aria-label="Toggle sidebar">

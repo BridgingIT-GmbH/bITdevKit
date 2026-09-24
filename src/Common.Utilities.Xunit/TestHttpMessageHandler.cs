@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Common;
 
 using System;
-using System.Threading.Tasks;
 using System.Net.Http;
+using System.Threading.Tasks;
 
 /// <summary>
 /// A test utility class for unit testing HTTP-based services.

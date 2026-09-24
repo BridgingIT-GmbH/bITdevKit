@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
-using System.Diagnostics;
-using System.Linq;
 
 /// <summary>
 /// Represents restart console command.

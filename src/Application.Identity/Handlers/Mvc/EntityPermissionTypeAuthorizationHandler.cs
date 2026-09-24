@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Application.Identity;
 
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain.Model;
 using Common;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Logging;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Represents entity permission type authorization handler.

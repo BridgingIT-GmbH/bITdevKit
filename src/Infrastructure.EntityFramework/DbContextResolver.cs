@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Collections.Concurrent;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Collections.Concurrent;
 
 /// <summary>
 /// Resolves Entity Framework <see cref="DbContext"/> instances at runtime

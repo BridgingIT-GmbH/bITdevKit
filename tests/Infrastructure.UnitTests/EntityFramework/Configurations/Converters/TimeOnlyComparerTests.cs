@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework;
 
+using System;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Shouldly;
-using System;
 using Xunit;
 
 public class TimeOnlyComparerTests

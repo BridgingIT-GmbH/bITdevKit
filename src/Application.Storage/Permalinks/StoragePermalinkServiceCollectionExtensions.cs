@@ -38,7 +38,7 @@ public static partial class ServiceCollectionExtensions
         services.TryAddSingleton<IStoragePermalinkRegistry>(sp => sp.GetRequiredService<StoragePermalinkRegistry>());
         services.TryAddSingleton<IStoragePermalinkMaintenanceService>(sp => sp.GetRequiredService<StoragePermalinkRegistry>());
         services.TryAddScoped<StoragePermalinkChangeHandler>();
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<Microsoft.Extensions.Hosting.IHostedService, StoragePermalinkDispatchService>());
+        services.TryAddEnumerable(ServiceDescriptor.Singleton<Hosting.IHostedService, StoragePermalinkDispatchService>());
 
         return new StoragePermalinkBuilderContext(services);
     }

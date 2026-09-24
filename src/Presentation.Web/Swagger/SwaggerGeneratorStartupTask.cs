@@ -5,18 +5,18 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using NSwag;
 using NSwag.Generation.AspNetCore;
-using System;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Represents swagger generator startup task.

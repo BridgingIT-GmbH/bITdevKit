@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using System.Linq.Expressions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Linq.Expressions;
 
 /// <summary>
 /// Represents generic repository domain event decorator.
@@ -101,7 +101,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         var entity = await this.Inner
             .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken)
             .AnyContext();
-        if (entity is null || entity.Id == default)
+        if (entity is null || entity.Id == null)
         {
             return RepositoryActionResult.None;
         }
@@ -384,7 +384,7 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
         EnsureArg.IsNotNull(entity, nameof(entity));
 
         DomainEventBase @event;
-        if (entity.Id == default || !await this.Inner.ExistsAsync(entity.Id, cancellationToken).AnyContext())
+        if (entity.Id == null || !await this.Inner.ExistsAsync(entity.Id, cancellationToken).AnyContext())
         {
             @event = new EntityCreatedDomainEvent<TEntity>(entity);
         }

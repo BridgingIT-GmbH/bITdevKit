@@ -107,7 +107,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
             return (null, RepositoryActionResult.None);
         }
 
-        var isNew = entity.Id == default;
+        var isNew = entity.Id == null;
         var existingEntity = isNew
             ? null
             : await this.FindOneAsync(entity.Id, null, cancellationToken)
@@ -148,7 +148,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
         object id,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return RepositoryActionResult.None;
         }
@@ -178,7 +178,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        if (entity is null || entity.Id == default)
+        if (entity is null || entity.Id == null)
         {
             return RepositoryActionResult.None;
         }

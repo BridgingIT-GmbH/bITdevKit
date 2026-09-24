@@ -10,7 +10,6 @@ using System.Net.Http.Json;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -159,7 +158,7 @@ public class AspNetMetricsEndpointsDisabledApplication : WebApplicationFactory<A
         MetricsServiceCollectionExtensions
             .AddMetrics(appBuilder.Services, options => options
                 .Enabled(false)
-                .AddEndpoints(true));
+                .AddEndpoints());
 
         var app = appBuilder.Build();
         app.UseRouting();

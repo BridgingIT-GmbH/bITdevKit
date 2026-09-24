@@ -4,10 +4,10 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 global using BridgingIT.DevKit.Common;
-global using IJob = Quartz.IJob;
-global using IJobExecutionContext = Quartz.IJobExecutionContext;
 global using Microsoft.Extensions.DependencyInjection;
 global using Microsoft.Extensions.Logging;
 global using Microsoft.Extensions.Logging.Abstractions;
 global using Quartz;
 global using Quartz.Spi;
+global using IJob = Quartz.IJob;
+global using IJobExecutionContext = Quartz.IJobExecutionContext;

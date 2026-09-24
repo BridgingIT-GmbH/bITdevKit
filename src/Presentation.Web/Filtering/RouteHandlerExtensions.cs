@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Text.Json.Nodes;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.OpenApi;
-using System.Text.Json.Nodes;
 
 /// <summary>
 /// Represents route handler extensions.

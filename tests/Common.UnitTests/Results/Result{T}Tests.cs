@@ -128,7 +128,7 @@ public class ResultValueTests
 
         genericSuccess.ShouldBeSuccess();
         genericSuccess.ShouldContainMessage(message);
-        genericSuccess.Value.ShouldBe(default);
+        genericSuccess.Value.ShouldBe(null);
 
         genericFailureWithValue.ShouldBeFailure();
         genericFailureWithValue.ShouldContainMessage(message);

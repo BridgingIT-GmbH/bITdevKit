@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using FluentValidation;
-using FluentValidation.Results;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using FluentValidation;
+using FluentValidation.Results;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// A behavior that validates entities before insert, update, or delete operations using FluentValidation.

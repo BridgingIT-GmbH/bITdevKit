@@ -11,8 +11,8 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Tasks;
-using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
+using BridgingIT.DevKit.Presentation;
 using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>

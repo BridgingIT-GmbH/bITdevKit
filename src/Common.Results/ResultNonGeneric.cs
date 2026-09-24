@@ -248,7 +248,7 @@ public readonly partial struct Result : IResult
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
@@ -327,7 +327,7 @@ public readonly partial struct Result : IResult
         catch (Exception ex)
         {
             return Result<TNew>.Failure()
-                .WithError(Result.Settings.ExceptionErrorFactory(ex))
+                .WithError(Settings.ExceptionErrorFactory(ex))
                 .WithMessage(ex.Message);
         }
     }
@@ -642,7 +642,7 @@ public readonly partial struct Result : IResult
     public bool TryGetError<TError>(out TError error)
         where TError : class, IResultError
     {
-        error = default;
+        error = null;
         var foundError = this.errors.AsEnumerable().FirstOrDefault(e => e is TError);
         if (foundError is null)
         {
@@ -1254,11 +1254,11 @@ public readonly partial struct Result : IResult
     /// <example>
     /// <code>
     /// // Combine multiple validation results
-    /// var result = new[] 
-    /// { 
-    ///     ValidateName(user), 
-    ///     ValidateEmail(user), 
-    ///     ValidateAge(user) 
+    /// var result = new[]
+    /// {
+    ///     ValidateName(user),
+    ///     ValidateEmail(user),
+    ///     ValidateAge(user)
     /// }.Flatten();
     /// // Result is successful only if all validations pass
     /// </code>
@@ -1318,11 +1318,11 @@ public readonly partial struct Result : IResult
     /// <example>
     /// <code>
     /// // Combine multiple async validation results
-    /// var result = await new[] 
-    /// { 
-    ///     ValidateNameAsync(user), 
-    ///     ValidateEmailAsync(user), 
-    ///     ValidateAgeAsync(user) 
+    /// var result = await new[]
+    /// {
+    ///     ValidateNameAsync(user),
+    ///     ValidateEmailAsync(user),
+    ///     ValidateAgeAsync(user)
     /// }.FlattenAsync(cancellationToken);
     /// // Result is successful only if all validations pass
     /// </code>

@@ -475,7 +475,7 @@ public sealed class SystemProfilingRuntimeSnapshotSource : IProfilingRuntimeSnap
             TotalAvailableMemoryBytes = garbageCollection.TotalAvailableMemoryBytes,
             HighMemoryLoadThresholdBytes = garbageCollection.HighMemoryLoadThresholdBytes,
             TotalCommittedBytes = garbageCollection.TotalCommittedBytes,
-            TotalAllocatedBytes = TryGet(() => (long?)GC.GetTotalAllocatedBytes(false)),
+            TotalAllocatedBytes = TryGet(() => (long?)GC.GetTotalAllocatedBytes()),
             Gen0CollectionCount = TryGet(() => (long?)GC.CollectionCount(0)),
             Gen1CollectionCount = TryGet(() => (long?)GC.CollectionCount(1)),
             Gen2CollectionCount = TryGet(() => (long?)GC.CollectionCount(2)),

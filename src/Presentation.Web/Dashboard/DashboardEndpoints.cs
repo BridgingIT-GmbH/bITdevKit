@@ -40,13 +40,13 @@ public class DashboardEndpoints(
             .WithName("_bdk.Dashboard.Index")
             .WithSummary("Dashboard Index")
             .WithDescription("Shows the dashboard index page.")
-            .Produces<string>((int)HttpStatusCode.OK);
+            .Produces<string>();
 
         group.MapGet(options.EndpointPaths.IndexContent, this.HandleIndexContent)
             .WithName("_bdk.Dashboard.IndexContent")
             .WithSummary("Dashboard Index Content")
             .WithDescription("Shows the dashboard index card content fragment.")
-            .Produces<string>((int)HttpStatusCode.OK);
+            .Produces<string>();
 
         group.MapGet(options.EndpointPaths.AccessDenied, this.HandleAccessDenied)
             .WithName("_bdk.Dashboard.AccessDenied")

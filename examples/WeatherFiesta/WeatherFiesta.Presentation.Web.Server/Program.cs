@@ -3,13 +3,13 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
+using System.Text.Json;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
-using System.Text.Json;
 
 // ===============================================================================================
 // Create the app host
@@ -69,7 +69,7 @@ builder.Services.AddQueueing(builder.Configuration, o => o
     .AddEndpoints();
 
 builder.Services.AddOrchestrations(o => o
-        .Enabled(true)
+        .Enabled()
         .StartupDelay("00:00:30"))
     // .WithOrchestration<TodoItemLifecycleOrchestration>()
     .WithBehavior<MetricsOrchestrationBehavior>()
@@ -113,7 +113,7 @@ builder.Services.AddFileStorage(factory => factory
         .AddEndpoints(options => options.RequireAuthorization())
         .AddConsoleCommands();
 
-builder.Services.AddDocumentStorage(o => o.Enabled(true))
+builder.Services.AddDocumentStorage(o => o.Enabled())
     .WithBehavior<LoggingDocumentStoreClientBehavior<OpenMeteoWeatherArchiveDocument>>()
     .WithMetricsBehavior<OpenMeteoWeatherArchiveDocument>()
     .WithEntityFrameworkClient<OpenMeteoWeatherArchiveDocument, CoreDbContext>(
@@ -124,7 +124,7 @@ builder.Services.AddDocumentStorage(o => o.Enabled(true))
     .WithPermalinks<OpenMeteoWeatherArchiveDocument>()
     .AddConsoleCommands();
 
-builder.Services.AddBlobStorage(o => o.Enabled(true))
+builder.Services.AddBlobStorage(o => o.Enabled())
     .WithLoggingBehavior()
     .WithMetricsBehavior()
     .WithEntityFrameworkClient<CoreDbContext>(o =>

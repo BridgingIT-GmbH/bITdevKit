@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard;
 
-using Spectre.Console;
 using System.IO;
 using System.Text;
+using Spectre.Console;
 
 /// <summary>
 /// Spectre.Console output adapter that writes ANSI text to SignalR.

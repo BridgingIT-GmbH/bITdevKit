@@ -188,8 +188,8 @@ public class StartupTasksService : IHostedService
     private void FailFast(string message, Exception exception)
     {
         this.logger.LogCritical(exception, "{FailFastMessage}", message);
-        System.Console.Error.WriteLine(message);
-        System.Environment.FailFast(message, exception);
+        Console.Error.WriteLine(message);
+        Environment.FailFast(message, exception);
     }
 
     private async Task ExecuteDefinitionAsync(

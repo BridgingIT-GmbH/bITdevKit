@@ -168,8 +168,8 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
                 {
                     ["name"] = Assembly.GetEntryAssembly().GetName().Name,
                     ["environment"] = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT"),
-                    ["version"] = Common.Version.Parse(Assembly.GetEntryAssembly()).ToString(VersionFormat.WithPrerelease),
-                    ["versionFull"] = Common.Version.Parse(Assembly.GetEntryAssembly()).ToString(),
+                    ["version"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(VersionFormat.WithPrerelease),
+                    ["versionFull"] = Version.Parse(Assembly.GetEntryAssembly()).ToString(),
                     ["buildDate"] = Assembly.GetEntryAssembly().GetBuildDate().ToString("o"),
                     ["processName"] = !this.options.HideSensitiveInformation ? (process.ProcessName.Equals("dotnet", StringComparison.InvariantCultureIgnoreCase) ? $"{process.ProcessName} (kestrel)" : process.ProcessName) : string.Empty,
                     ["process64Bits"] = !this.options.HideSensitiveInformation ? Environment.Is64BitProcess.ToString() : string.Empty,

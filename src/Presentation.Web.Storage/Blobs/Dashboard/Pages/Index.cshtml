@@ -3,7 +3,7 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = BlobStorageDashboardRoutes.BuildBlobsContentPath(dashboardOptions);
     var actionBase = BlobStorageDashboardRoutes.BuildBlobsActionBase(dashboardOptions);
 }
@@ -25,7 +25,7 @@
 </div>
 
 <div id="dashboard-blobs-shell">
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Blobs.Dashboard.Pages.Content>())
+    @(await RenderPartialAsync<Content>())
 </div>
 
 <div class="modal fade" id="blobs-upload-modal" tabindex="-1" aria-hidden="true">

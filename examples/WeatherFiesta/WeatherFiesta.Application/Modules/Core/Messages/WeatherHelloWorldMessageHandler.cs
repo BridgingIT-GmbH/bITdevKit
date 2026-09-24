@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
 using BridgingIT.DevKit.Application.Messaging;
-using Constants = DevKit.Application.Messaging.Constants;
 using Microsoft.Extensions.Logging;
+using Constants = DevKit.Application.Messaging.Constants;
 
 /// <summary>
 /// Handles <see cref="WeatherHelloWorldMessage" /> broker messages.

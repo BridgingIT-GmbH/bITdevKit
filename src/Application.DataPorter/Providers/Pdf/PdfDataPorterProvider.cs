@@ -141,7 +141,7 @@ public sealed class PdfDataPorterProvider(
         // Render to stream
         var renderer = new PdfDocumentRenderer { Document = document };
         renderer.RenderDocument();
-        renderer.PdfDocument.Save(writeStream, false);
+        renderer.PdfDocument.Save(writeStream);
 
         return new ExportResult
         {
@@ -259,7 +259,7 @@ public sealed class PdfDataPorterProvider(
         // Render to stream
         var renderer = new PdfDocumentRenderer { Document = document };
         renderer.RenderDocument();
-        renderer.PdfDocument.Save(writeStream, false);
+        renderer.PdfDocument.Save(writeStream);
 
         return new ExportResult
         {

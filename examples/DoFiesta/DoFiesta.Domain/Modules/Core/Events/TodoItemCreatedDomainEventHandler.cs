@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;
 
+using System.Threading;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
 
 public class TodoItemCreatedDomainEventHandler(ILoggerFactory loggerFactory)
         : DomainEventHandlerBase<EntityCreatedDomainEvent<TodoItem>>(loggerFactory)

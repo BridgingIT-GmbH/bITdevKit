@@ -47,7 +47,7 @@ public class CircuitBreakerQueryBehavior<TRequest, TResponse>(ILoggerFactory log
         if (!instance.Options.BackoffExponential)
         {
             retryPolicy = Policy.Handle<Exception>()
-                .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != default
+                .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != TimeSpan.Zero
                         ? instance.Options.Backoff.Milliseconds
                         : 0),
                     (ex, wait) =>
@@ -65,7 +65,7 @@ public class CircuitBreakerQueryBehavior<TRequest, TResponse>(ILoggerFactory log
         else
         {
             retryPolicy = Policy.Handle<Exception>()
-                .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != default
+                .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != TimeSpan.Zero
                         ? instance.Options.Backoff.Milliseconds
                         : 0 * Math.Pow(2, attempt)),
                     (ex, wait) =>

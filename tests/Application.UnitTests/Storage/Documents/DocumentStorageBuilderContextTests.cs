@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
+using System.Security.Cryptography;
 using Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Time.Testing;
-using System.Security.Cryptography;
 
 [UnitTest("Application")]
 public class DocumentStorageBuilderContextTests
@@ -112,7 +112,7 @@ public class DocumentStorageBuilderContextTests
         var services = new ServiceCollection();
         services.AddLogging();
 
-        services.AddDocumentStorage(o => o.Enabled(true))
+        services.AddDocumentStorage(o => o.Enabled())
             .WithBehavior<LoggingDocumentStoreClientBehavior<DocumentStorageBuilderPersonStub>>()
             .WithProvider<DocumentStorageBuilderPersonStub>(_ => provider);
 

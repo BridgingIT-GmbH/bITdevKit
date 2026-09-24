@@ -268,7 +268,7 @@ public static class JsRuntimeExtensions
             // do nothing, jsruntime not available
         }
 
-        return default;
+        return null;
     }
 
     /// <summary>
@@ -386,7 +386,7 @@ public static class JsRuntimeExtensions
             // do nothing, jsruntime not available
         }
 
-        return default;
+        return 0;
     }
 
     /// <summary>
@@ -410,7 +410,7 @@ public static class JsRuntimeExtensions
             // do nothing, jsruntime not available
         }
 
-        return default;
+        return null;
     }
 
     /// <summary>

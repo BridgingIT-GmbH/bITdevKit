@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Microsoft.Extensions.DependencyInjection;
-using Spectre.Console;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using Microsoft.Extensions.DependencyInjection;
+using Spectre.Console;
 
 /// <summary>
 /// Executes registered console commands from terminal and web frontends.

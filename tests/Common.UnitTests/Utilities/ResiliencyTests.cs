@@ -158,7 +158,7 @@ public class ResiliencyTests
         await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, true), cts.Token); // First failure
         await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, true), cts.Token); // Second failure (opens circuit)
         await Task.Delay(TimeSpan.FromSeconds(1.1)); // Wait for reset
-        await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct, false), cts.Token); // Should succeed
+        await circuitBreaker.ExecuteAsync(ct => this.SimulateWorkAsync(ct), cts.Token); // Should succeed
 
         // Assert
         this.progressUpdates.Count.ShouldBeGreaterThanOrEqualTo(3); // At least three updates (failures and state changes)
@@ -235,7 +235,7 @@ public class ResiliencyTests
         var cts = new CancellationTokenSource();
 
         // Act
-        await Assert.ThrowsAsync<TimeoutException>(() => timeoutHandler.ExecuteAsync(ct => this.SimulateWorkAsync(ct, false), cts.Token)); // Increased delay to 200ms
+        await Assert.ThrowsAsync<TimeoutException>(() => timeoutHandler.ExecuteAsync(ct => this.SimulateWorkAsync(ct), cts.Token)); // Increased delay to 200ms
 
         // Assert
         this.progressUpdates.Count.ShouldBeGreaterThanOrEqualTo(1); // At least one update during timeout
@@ -324,7 +324,7 @@ public class ResiliencyTests
         var response = await requester.SendAsync<TestRequest, string>(new TestRequest(), cancellationToken: cts.Token);
 
         // Assert
-        response.ShouldBe(default(string)); // Returns default on error
+        response.ShouldBe(null); // Returns default on error
         //logger.Received(1).LogError(Arg.Any<Exception>(), Arg.Any<string>());
     }
 

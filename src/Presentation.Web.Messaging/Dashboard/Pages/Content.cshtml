@@ -2,7 +2,7 @@
 @inherits RazorSlice
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var realtimeDataPath = MessagingDashboardEndpoints.BuildMessagingRealtimeDataPath(dashboardOptions);
 }
 
@@ -92,7 +92,7 @@
 
 <div id="messaging-dashboard-root" data-realtime-url="@realtimeDataPath">
     <div id="dashboard-messaging-content">
-        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.Pages.Data>())
+        @(await RenderPartialAsync<Data>())
     </div>
 
     <section class="messaging-graph-zone">

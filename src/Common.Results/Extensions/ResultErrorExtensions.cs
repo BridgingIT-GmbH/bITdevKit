@@ -36,7 +36,7 @@ public static class ResultErrorExtensions
     {
         if (errors?.Any() != true)
         {
-            return default;
+            return null;
         }
 
         return errors.FirstOrDefault(e => e is TError) as TError;

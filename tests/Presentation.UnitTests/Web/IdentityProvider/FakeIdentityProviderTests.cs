@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 using System.Web;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -38,7 +37,7 @@ public class FakeIdentityProviderApplication : WebApplicationFactory<FakeIdentit
 
         appBuilder.Services.AddFakeIdentityProvider(options =>
         {
-            options.Enabled(true)
+            options.Enabled()
                 .WithIssuer(config.Issuer)
                 .WithUsers([
                     config.DefaultUser,
@@ -93,7 +92,7 @@ public class FakeIdentityProviderSsoDisabledApplication : WebApplicationFactory<
 
         appBuilder.Services.AddFakeIdentityProvider(options =>
         {
-            options.Enabled(true)
+            options.Enabled()
                 .WithIssuer(config.Issuer)
                 .WithUsers([
                     config.DefaultUser,

@@ -1,3 +1,4 @@
+@using System.Globalization
 @using BridgingIT.DevKit.Presentation.Web
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
@@ -5,12 +6,11 @@
 @using BridgingIT.DevKit.Presentation.Web.Health.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
-@using System.Globalization
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = BridgingIT.DevKit.Presentation.Web.Health.Dashboard.DashboardEndpoints.BuildHealthContentPath(dashboardOptions);
 }
 

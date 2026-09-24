@@ -7,10 +7,10 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
 using System.Text;
 using Application.Storage;
-using Infrastructure.Azure;
-using Microsoft.Extensions.DependencyInjection;
 using global::Azure;
 using global::Azure.Storage.Blobs;
+using Infrastructure.Azure;
+using Microsoft.Extensions.DependencyInjection;
 
 [IntegrationTest("Infrastructure")]
 public sealed class AzureBlobStoreProviderTests

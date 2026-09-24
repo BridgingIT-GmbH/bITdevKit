@@ -109,7 +109,7 @@ public class DomainPoliciesTests
         result.Messages.Count.ShouldBe(1);
         result.Messages.ShouldContain("Always satisfied policy applied");
         result.PolicyResults.GetValue<EnabledPolicy, int>().ShouldBe(1);
-        result.PolicyResults.GetValue<DisabledPolicy, int>().ShouldBe(default);
+        result.PolicyResults.GetValue<DisabledPolicy, int>().ShouldBe(0);
     }
 
     [Fact]

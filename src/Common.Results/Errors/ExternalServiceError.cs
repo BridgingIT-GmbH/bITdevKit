@@ -18,7 +18,7 @@ public class ExternalServiceError(string message = null, string serviceName = nu
     public Exception InnerException { get; } = innerException;
 
     /// <summary>Initializes an external-service error with the default message and no service details.</summary>
-    public ExternalServiceError() : this(null, null, null)
+    public ExternalServiceError() : this(null)
     {
     }
 

@@ -49,7 +49,7 @@ public class RetryCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFact
         {
             retryPolicy = Policy.Handle<Exception>()
                 .WaitAndRetryAsync(instance.Options.Attempts,
-                    attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != default
+                    attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != TimeSpan.Zero
                         ? instance.Options.Backoff.Milliseconds
                         : 0),
                     (ex, wait) =>
@@ -66,7 +66,7 @@ public class RetryCommandBehavior<TRequest, TResponse>(ILoggerFactory loggerFact
         {
             retryPolicy = Policy.Handle<Exception>()
                 .WaitAndRetryAsync(instance.Options.Attempts,
-                    attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != default
+                    attempt => TimeSpan.FromMilliseconds(instance.Options.Backoff != TimeSpan.Zero
                         ? instance.Options.Backoff.Milliseconds
                         : 0 * Math.Pow(2, attempt)),
                     (ex, wait) =>

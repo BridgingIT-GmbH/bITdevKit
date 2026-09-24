@@ -1,9 +1,9 @@
+@using System.Globalization
+@using System.Text.Json
 @using BridgingIT.DevKit.Presentation.Web
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Diagnostics.HealthChecks
 @using RazorSlices
-@using System.Globalization
-@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -135,7 +135,7 @@
 @functions {
     private async Task<DashboardHealthViewModel> CreateModelAsync()
     {
-        var healthCheckService = this.HttpContext.RequestServices.GetService<HealthCheckService>();
+        var healthCheckService = HttpContext.RequestServices.GetService<HealthCheckService>();
         var result = new DashboardHealthViewModel
         {
             CapturedAtUtc = DateTimeOffset.UtcNow,
@@ -149,7 +149,7 @@
 
         try
         {
-            var report = await healthCheckService.CheckHealthAsync(this.HttpContext.RequestAborted);
+            var report = await healthCheckService.CheckHealthAsync(HttpContext.RequestAborted);
             result.Status = report.Status;
             result.TotalDuration = report.TotalDuration;
             result.Entries.AddRange(report.Entries.Select(entry => new DashboardHealthEntryViewModel
@@ -163,7 +163,7 @@
                 Data = entry.Value.Data.ToDictionary(item => item.Key, item => FormatDataValue(item.Value))
             }));
         }
-        catch (OperationCanceledException) when (this.HttpContext.RequestAborted.IsCancellationRequested)
+        catch (OperationCanceledException) when (HttpContext.RequestAborted.IsCancellationRequested)
         {
             throw;
         }
@@ -279,7 +279,7 @@
 
         public HealthStatus Status { get; set; }
 
-        public string StatusText => this.IsHealthCheckServiceRegistered ? this.Status.ToString() : "Unavailable";
+        public string StatusText => IsHealthCheckServiceRegistered ? Status.ToString() : "Unavailable";
 
         public TimeSpan TotalDuration { get; set; }
 
@@ -287,7 +287,7 @@
 
         public List<string> Errors { get; } = [];
 
-        public int UnhealthyCount => this.Entries.Count(entry => entry.Status == HealthStatus.Unhealthy);
+        public int UnhealthyCount => Entries.Count(entry => entry.Status == HealthStatus.Unhealthy);
     }
 
     private sealed class DashboardHealthEntryViewModel

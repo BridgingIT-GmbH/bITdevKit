@@ -87,7 +87,7 @@ public static class ActivityHelper
 
         if (source is null)
         {
-            await operation(default, cancellationToken);
+            await operation(null, cancellationToken);
         }
         else
         {
@@ -197,7 +197,7 @@ public static class ActivityHelper
     {
         if (source is null)
         {
-            return await operation(default, cancellationToken);
+            return await operation(null, cancellationToken);
         }
 
         using var activity = source.StartActivity(operationName, kind);

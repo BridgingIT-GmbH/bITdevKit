@@ -35,7 +35,7 @@ public class
                 return (T)(object)stream;
             }
 
-            return (T)this.serializer.Deserialize(stream, typeof(T), default);
+            return (T)this.serializer.Deserialize(stream, typeof(T), CancellationToken.None);
         }
     }
 
@@ -43,7 +43,7 @@ public class
     public override Stream ToStream<T>(T input)
     {
         var stream = new MemoryStream();
-        this.serializer.Serialize(stream, input, input.GetType(), default);
+        this.serializer.Serialize(stream, input, input.GetType(), CancellationToken.None);
         stream.Position = 0;
 
         return stream;

@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
 using System.Diagnostics;
+using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 

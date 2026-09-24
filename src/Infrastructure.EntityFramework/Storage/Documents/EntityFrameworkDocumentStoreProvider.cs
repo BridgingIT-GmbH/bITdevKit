@@ -3,9 +3,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
+using System.Text.Json;
 using Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text.Json;
 
 /// <summary>Persists serialized documents with one dependency-injection-owned Entity Framework scope per operation.</summary>
 /// <typeparam name="TContext">The document DbContext type.</typeparam>

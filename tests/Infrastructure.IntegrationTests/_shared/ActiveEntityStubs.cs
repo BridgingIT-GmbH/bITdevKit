@@ -5,6 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
+using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
+using System.Threading;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
@@ -13,9 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Diagnostics;
-using System.Threading;
 
 // model inspiration: https://guides.rubyonrails.org/active_record_querying.html
 // - Customer *-- Order: One-to-many (Customer has many Orders).

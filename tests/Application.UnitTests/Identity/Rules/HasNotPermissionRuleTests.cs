@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Identity;
 
-using Xunit;
-using BridgingIT.DevKit.Common;
-using NSubstitute;
-using Shouldly;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Identity;
+using BridgingIT.DevKit.Common;
+using NSubstitute;
+using Shouldly;
+using Xunit;
 
 public class HasNotPermissionRuleTests
 {

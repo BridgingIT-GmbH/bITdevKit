@@ -1,6 +1,6 @@
+@using BridgingIT.DevKit.Domain.Repositories
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
-@using BridgingIT.DevKit.Domain.Repositories
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
 @using Microsoft.Extensions.DependencyInjection
 @inherits DashboardPageSlice
@@ -8,7 +8,7 @@
 @{
     var cities = await GetCitiesAsync();
     var selectedCityId = GetSelectedCityId(cities);
-    var contentPath = this.Dashboard.Url("core-overview", "content");
+    var contentPath = Dashboard.Url("core-overview", "content");
 }
 
 <div class="d-flex justify-content-between align-items-center py-2 mb-2 border-bottom">
@@ -93,19 +93,19 @@
 
     private async Task<List<AdminCityModel>> GetCitiesAsync()
     {
-        var databaseReadyService = this.HttpContext.RequestServices.GetService<IDatabaseReadyService>();
+        var databaseReadyService = HttpContext.RequestServices.GetService<IDatabaseReadyService>();
         if (databaseReadyService?.IsReady(nameof(CoreDbContext)) == false)
         {
             return [];
         }
 
-        var requester = this.HttpContext.RequestServices.GetService<IRequester>();
+        var requester = HttpContext.RequestServices.GetService<IRequester>();
         if (requester is null)
         {
             return [];
         }
 
-        var result = await requester.SendAsync(new AdminCitiesQuery(), cancellationToken: this.HttpContext.RequestAborted);
+        var result = await requester.SendAsync(new AdminCitiesQuery(), cancellationToken: HttpContext.RequestAborted);
         return result.IsSuccess
             ? result.Value
                 .OrderByDescending(city => city.SubscriptionCount)
@@ -121,7 +121,7 @@
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        if (this.HttpContext.Request.Query.TryGetValue("cityId", out var selectedCityId) &&
+        if (HttpContext.Request.Query.TryGetValue("cityId", out var selectedCityId) &&
             cityIds.Contains(selectedCityId.ToString()))
         {
             return selectedCityId.ToString();

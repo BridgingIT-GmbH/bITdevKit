@@ -5,10 +5,10 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var signOutPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.SignOut);
-    var dashboardBasePath = DashboardPath.Combine(this.HttpContext.Request.PathBase, dashboardOptions.GroupPath);
-    var requestedReturnUrl = this.HttpContext.Request.Query["ReturnUrl"].ToString();
+    var dashboardBasePath = DashboardPath.Combine(HttpContext.Request.PathBase, dashboardOptions.GroupPath);
+    var requestedReturnUrl = HttpContext.Request.Query["ReturnUrl"].ToString();
     var retryReturnUrl = !string.IsNullOrWhiteSpace(requestedReturnUrl) &&
         requestedReturnUrl.StartsWith(dashboardBasePath, StringComparison.OrdinalIgnoreCase)
             ? requestedReturnUrl

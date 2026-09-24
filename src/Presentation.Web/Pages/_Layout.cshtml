@@ -340,7 +340,7 @@
         <div class="row">
             @if (!Model.HideSideBar)
             {
-                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._SideBar, SidebarItem[]>(
+                @(await RenderPartialAsync<_SideBar, SidebarItem[]>(
                     new[] // TODO: inject from DI https://github.com/DamianEdwards/RazorSlices/issues/53
                     {
                         new SidebarItem("Dashboard", "house", "/_bdk/api/dashboard"),

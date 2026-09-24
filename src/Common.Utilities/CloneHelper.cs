@@ -41,15 +41,15 @@ public static class CloneHelper
     public static T Clone<T>(T source)
         where T : class
     {
-        if (EqualityComparer<T>.Default.Equals(source, default))
+        if (EqualityComparer<T>.Default.Equals(source, null))
         {
-            return default;
+            return null;
         }
 
         var bytes = Serializer.SerializeToBytes(source);
         if (bytes.IsNullOrEmpty())
         {
-            return default;
+            return null;
         }
 
         return Serializer.Deserialize<T>(bytes);
@@ -65,13 +65,13 @@ public static class CloneHelper
     public static object Clone<T>(T source, Type type)
         where T : class
     {
-        if (EqualityComparer<T>.Default.Equals(source, default))
+        if (EqualityComparer<T>.Default.Equals(source, null))
         {
-            return default;
+            return null;
         }
 
         var bytes = Serializer.SerializeToBytes(source);
 
-        return bytes.IsNullOrEmpty() ? default : Serializer.Deserialize(bytes, type);
+        return bytes.IsNullOrEmpty() ? null : Serializer.Deserialize(bytes, type);
     }
 }

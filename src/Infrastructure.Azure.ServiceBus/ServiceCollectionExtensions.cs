@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using Application.Messaging;
-using Common;
 using BridgingIT.DevKit.Application.Queueing;
+using Common;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;

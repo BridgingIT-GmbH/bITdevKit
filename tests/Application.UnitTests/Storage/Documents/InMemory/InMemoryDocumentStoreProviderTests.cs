@@ -18,11 +18,11 @@ public class InMemoryDocumentStoreProviderTests
     {
         // Arrange
         var documentKey = new DocumentKey("people", "001");
-        var entity = new UnitTests.PersonStub { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 };
+        var entity = new PersonStub { Nationality = "USA", FirstName = "John", LastName = "Doe", Age = 18 };
         await this.sut.UpsertResultAsync(documentKey, entity);
 
         // Act
-        var result = await this.sut.GetResultAsync<UnitTests.PersonStub>(documentKey);
+        var result = await this.sut.GetResultAsync<PersonStub>(documentKey);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -41,8 +41,8 @@ public class InMemoryDocumentStoreProviderTests
             .Build();
 
         // Act
-        var firstPage = await this.sut.FindPageResultAsync<UnitTests.PersonStub>(query);
-        var secondPage = await this.sut.FindPageResultAsync<UnitTests.PersonStub>(
+        var firstPage = await this.sut.FindPageResultAsync<PersonStub>(query);
+        var secondPage = await this.sut.FindPageResultAsync<PersonStub>(
             DocumentQueries.Query()
                 .ForKey("people", "00")
                 .WithRowKeyPrefix()
@@ -71,7 +71,7 @@ public class InMemoryDocumentStoreProviderTests
             .Build();
 
         // Act
-        var result = await this.sut.ListPageResultAsync<UnitTests.PersonStub>(query);
+        var result = await this.sut.ListPageResultAsync<PersonStub>(query);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -89,7 +89,7 @@ public class InMemoryDocumentStoreProviderTests
             .Build();
 
         // Act
-        var result = await this.sut.CountResultAsync<UnitTests.PersonStub>(query);
+        var result = await this.sut.CountResultAsync<PersonStub>(query);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -101,11 +101,11 @@ public class InMemoryDocumentStoreProviderTests
     {
         // Arrange
         var documentKey = new DocumentKey("people", "501");
-        await this.sut.UpsertResultAsync(documentKey, new UnitTests.PersonStub { FirstName = "Mary" });
+        await this.sut.UpsertResultAsync(documentKey, new PersonStub { FirstName = "Mary" });
 
         // Act
-        var deleteResult = await this.sut.DeleteResultAsync<UnitTests.PersonStub>(documentKey);
-        var existsResult = await this.sut.ExistsResultAsync<UnitTests.PersonStub>(documentKey);
+        var deleteResult = await this.sut.DeleteResultAsync<PersonStub>(documentKey);
+        var existsResult = await this.sut.ExistsResultAsync<PersonStub>(documentKey);
 
         // Assert
         deleteResult.IsSuccess.ShouldBeTrue();
@@ -120,7 +120,7 @@ public class InMemoryDocumentStoreProviderTests
         var documentKey = new DocumentKey("people", "missing");
 
         // Act
-        var result = await this.sut.GetResultAsync<UnitTests.PersonStub>(documentKey);
+        var result = await this.sut.GetResultAsync<PersonStub>(documentKey);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -133,7 +133,7 @@ public class InMemoryDocumentStoreProviderTests
         var documentKey = new DocumentKey("people", "701");
 
         // Act
-        var result = await this.sut.UpsertResultAsync<UnitTests.PersonStub>(documentKey, null);
+        var result = await this.sut.UpsertResultAsync<PersonStub>(documentKey, null);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -146,7 +146,7 @@ public class InMemoryDocumentStoreProviderTests
         var documentKey = new DocumentKey("people", string.Empty);
 
         // Act
-        var result = await this.sut.UpsertResultAsync(documentKey, new UnitTests.PersonStub { FirstName = "Invalid" });
+        var result = await this.sut.UpsertResultAsync(documentKey, new PersonStub { FirstName = "Invalid" });
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -156,16 +156,16 @@ public class InMemoryDocumentStoreProviderTests
     public async Task UpsertResultAsync_WithEntities_StopsOnInvalidEntity()
     {
         // Arrange
-        var entities = new List<(DocumentKey DocumentKey, UnitTests.PersonStub Entity)>
+        var entities = new List<(DocumentKey DocumentKey, PersonStub Entity)>
         {
-            (new DocumentKey("people", "801"), new UnitTests.PersonStub { FirstName = "Valid" }),
+            (new DocumentKey("people", "801"), new PersonStub { FirstName = "Valid" }),
             (new DocumentKey("people", "802"), null)
         };
 
         // Act
         var result = await this.sut.UpsertResultAsync(entities);
-        var firstExists = await this.sut.ExistsResultAsync<UnitTests.PersonStub>(new DocumentKey("people", "801"));
-        var secondExists = await this.sut.ExistsResultAsync<UnitTests.PersonStub>(new DocumentKey("people", "802"));
+        var firstExists = await this.sut.ExistsResultAsync<PersonStub>(new DocumentKey("people", "801"));
+        var secondExists = await this.sut.ExistsResultAsync<PersonStub>(new DocumentKey("people", "802"));
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -178,16 +178,16 @@ public class InMemoryDocumentStoreProviderTests
     {
         // Arrange
         var documentKey = new DocumentKey("people", "901");
-        var entity = new UnitTests.PersonStub { FirstName = "Original", LastName = "Value" };
+        var entity = new PersonStub { FirstName = "Original", LastName = "Value" };
         await this.sut.UpsertResultAsync(documentKey, entity);
         entity.FirstName = "Changed after save";
 
         // Act
-        var firstLoad = await this.sut.GetResultAsync<UnitTests.PersonStub>(documentKey);
+        var firstLoad = await this.sut.GetResultAsync<PersonStub>(documentKey);
         firstLoad.IsSuccess.ShouldBeTrue();
         firstLoad.Value.FirstName.ShouldBe("Original");
         firstLoad.Value.FirstName = "Changed after load";
-        var secondLoad = await this.sut.GetResultAsync<UnitTests.PersonStub>(documentKey);
+        var secondLoad = await this.sut.GetResultAsync<PersonStub>(documentKey);
 
         // Assert
         secondLoad.IsSuccess.ShouldBeTrue();
@@ -199,7 +199,7 @@ public class InMemoryDocumentStoreProviderTests
     {
         // Arrange
         await this.UpsertPeopleAsync("people", ["a001", "a002", "b001"]);
-        var firstPage = await this.sut.ListPageResultAsync<UnitTests.PersonStub>(
+        var firstPage = await this.sut.ListPageResultAsync<PersonStub>(
             DocumentQueries.Query()
                 .ForKey("people", "a")
                 .WithRowKeyPrefix()
@@ -207,7 +207,7 @@ public class InMemoryDocumentStoreProviderTests
                 .Build());
 
         // Act
-        var result = await this.sut.ListPageResultAsync<UnitTests.PersonStub>(
+        var result = await this.sut.ListPageResultAsync<PersonStub>(
             DocumentQueries.Query()
                 .ForKey("people", "b")
                 .WithRowKeyPrefix()
@@ -232,7 +232,7 @@ public class InMemoryDocumentStoreProviderTests
             .Build();
 
         // Act
-        var result = await this.sut.FindPageResultAsync<UnitTests.PersonStub>(query);
+        var result = await this.sut.FindPageResultAsync<PersonStub>(query);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -246,7 +246,7 @@ public class InMemoryDocumentStoreProviderTests
         {
             await this.sut.UpsertResultAsync(
                 new DocumentKey(partitionKey, rowKey),
-                new UnitTests.PersonStub
+                new PersonStub
                 {
                     Nationality = "USA",
                     FirstName = "First" + rowKey,

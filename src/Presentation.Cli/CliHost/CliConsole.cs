@@ -9,13 +9,13 @@ using Spectre.Console;
 /// <param name="settings">The output settings.</param>
 public sealed class CliConsole(CliOutputSettings settings)
 {
-    private readonly IAnsiConsole console = Spectre.Console.AnsiConsole.Create(new AnsiConsoleSettings
+    private readonly IAnsiConsole console = AnsiConsole.Create(new AnsiConsoleSettings
     {
         Ansi = settings.NoColor ? AnsiSupport.No : AnsiSupport.Detect,
         ColorSystem = settings.NoColor ? ColorSystemSupport.NoColors : ColorSystemSupport.Detect
     });
 
-    private readonly IAnsiConsole silentConsole = Spectre.Console.AnsiConsole.Create(new AnsiConsoleSettings
+    private readonly IAnsiConsole silentConsole = AnsiConsole.Create(new AnsiConsoleSettings
     {
         Ansi = AnsiSupport.No,
         ColorSystem = ColorSystemSupport.NoColors,

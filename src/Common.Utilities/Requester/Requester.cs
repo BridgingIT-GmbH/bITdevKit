@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Data;
 using System.Reflection;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Defines a request that can be dispatched to a handler.

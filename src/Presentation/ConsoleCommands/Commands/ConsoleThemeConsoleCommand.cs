@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System.Collections.Generic;
+using Spectre.Console;
 
 /// <summary>
 /// Lists or changes the native console theme used by the prompt and console log sink.

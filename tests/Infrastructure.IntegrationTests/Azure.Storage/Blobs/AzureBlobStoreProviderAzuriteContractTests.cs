@@ -7,8 +7,8 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
 using Application.Storage;
 using Application.UnitTests.Storage;
-using Infrastructure.Azure;
 using global::Azure.Storage.Blobs;
+using Infrastructure.Azure;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))]

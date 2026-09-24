@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Sequences;
 
+using System;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
 [IntegrationTest("Infrastructure")]

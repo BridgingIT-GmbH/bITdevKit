@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Reflection;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using System.Reflection;
 
 /// <summary>
 /// Marks deprecated API operations and adds migration guidance to the OpenAPI documentation.

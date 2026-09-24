@@ -17,7 +17,7 @@ public abstract class Enumeration(int id, string value) : Enumeration<int, strin
     /// <summary>
     /// Creates an enumeration with default identifier and value data for deserialization frameworks.
     /// </summary>
-    protected Enumeration() : this(default, default) // for json deserialization
+    protected Enumeration() : this(0, null) // for json deserialization
     {
     }
 

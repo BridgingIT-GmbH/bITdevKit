@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
-using System.Linq.Expressions;
 
 /// <summary>
 /// Represents generic repository domain mediator event publisher decorator.
@@ -143,7 +143,7 @@ public class RepositoryDomainEventMediatorPublisherBehavior<TEntity> : IGenericR
     {
         var entity = await this.Inner
             .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
-        if (entity is null || entity.Id == default)
+        if (entity is null || entity.Id == null)
         {
             return RepositoryActionResult.None;
         }

@@ -5,17 +5,17 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.ActiveEntity;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.IntegrationTests;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Linq.Expressions;
-using System.Threading.Tasks;
 using Xunit;
 using Xunit.Abstractions;
 
@@ -60,12 +60,12 @@ public class ActiveEntityInMemoryTests(ITestOutputHelper output, TestEnvironment
         cfg.For<Supplier, Guid>()
             .UseInMemoryProvider()
             .AddLoggingBehavior()
-            .AddAuditStateBehavior(o => o.EnableSoftDelete(true));
+            .AddAuditStateBehavior(o => o.EnableSoftDelete());
 
         cfg.For<Review, Guid>()
             .UseInMemoryProvider()
             .AddLoggingBehavior()
-            .AddAuditStateBehavior(o => o.EnableSoftDelete(true));
+            .AddAuditStateBehavior(o => o.EnableSoftDelete());
     });
 
     // Register the global service provider for ActiveEntity configurator

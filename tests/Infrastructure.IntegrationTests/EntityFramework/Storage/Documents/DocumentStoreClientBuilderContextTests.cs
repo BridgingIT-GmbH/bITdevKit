@@ -8,9 +8,9 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 using Application.Storage;
 using Infrastructure.EntityFramework.Storage;
 using Microsoft.Data.Sqlite;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.EntityFrameworkCore;
 
 [IntegrationTest("Infrastructure")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture

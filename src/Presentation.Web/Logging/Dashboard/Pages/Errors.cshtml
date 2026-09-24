@@ -1,17 +1,17 @@
+@using System.Globalization
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
-@using System.Globalization
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildErrorsContentPath(dashboardOptions);
     var purgePath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPurgePath(dashboardOptions);
-    var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
+    var filter = LogEntriesDashboard.CreateFilter(HttpContext);
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">

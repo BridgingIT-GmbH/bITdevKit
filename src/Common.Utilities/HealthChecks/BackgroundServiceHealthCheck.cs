@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Reflection;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
 
 /// <summary>
 /// Reports health for a hosted service by inspecting its registered instance and, for <see cref="BackgroundService" />, its execution task.

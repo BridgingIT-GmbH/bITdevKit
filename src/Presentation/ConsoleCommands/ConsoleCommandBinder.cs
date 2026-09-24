@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Reflection;
+using Spectre.Console;
 
 /// <summary>Command binding utility (reflection + caching).</summary>
 public static class ConsoleCommandBinder
@@ -287,7 +287,7 @@ public static class ConsoleCommandBinder
 
     private record OptionMeta
     {
-        public string Name { get; init; } = default!;
+        public string Name { get; init; } = null!;
 
         public string Alias { get; init; }
 
@@ -297,7 +297,7 @@ public static class ConsoleCommandBinder
 
         public object Default { get; init; }
 
-        public PropertyInfo Property { get; init; } = default!;
+        public PropertyInfo Property { get; init; } = null!;
     }
 
     private record ArgumentMeta
@@ -308,6 +308,6 @@ public static class ConsoleCommandBinder
 
         public bool Required { get; init; }
 
-        public PropertyInfo Property { get; init; } = default!;
+        public PropertyInfo Property { get; init; } = null!;
     }
 }

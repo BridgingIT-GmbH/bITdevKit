@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Configuration options for sequence number generation.

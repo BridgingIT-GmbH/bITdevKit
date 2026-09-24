@@ -385,17 +385,17 @@ public class ResultPagedTests
     public void NavigationFlags_ShouldBeCorrect_ForDifferentPages()
     {
         // First page
-        var firstPage = ResultPaged<PersonStub>.Success(this.values, 30, 1, 10);
+        var firstPage = ResultPaged<PersonStub>.Success(this.values, 30);
         firstPage.HasPreviousPage.ShouldBeFalse();
         firstPage.HasNextPage.ShouldBeTrue();
 
         // Middle page
-        var middlePage = ResultPaged<PersonStub>.Success(this.values, 30, 2, 10);
+        var middlePage = ResultPaged<PersonStub>.Success(this.values, 30, 2);
         middlePage.HasPreviousPage.ShouldBeTrue();
         middlePage.HasNextPage.ShouldBeTrue();
 
         // Last page
-        var lastPage = ResultPaged<PersonStub>.Success(this.values, 30, 3, 10);
+        var lastPage = ResultPaged<PersonStub>.Success(this.values, 30, 3);
         lastPage.HasPreviousPage.ShouldBeTrue();
         lastPage.HasNextPage.ShouldBeFalse();
     }
@@ -404,15 +404,15 @@ public class ResultPagedTests
     public void TotalPages_ShouldCalculateCorrectly_WithDifferentSizes()
     {
         // Exact division
-        var result1 = ResultPaged<PersonStub>.Success(this.values, 100, 1, 10);
+        var result1 = ResultPaged<PersonStub>.Success(this.values, 100);
         result1.TotalPages.ShouldBe(10);
 
         // With remainder
-        var result2 = ResultPaged<PersonStub>.Success(this.values, 95, 1, 10);
+        var result2 = ResultPaged<PersonStub>.Success(this.values, 95);
         result2.TotalPages.ShouldBe(10);
 
         // Single page
-        var result3 = ResultPaged<PersonStub>.Success(this.values, 5, 1, 10);
+        var result3 = ResultPaged<PersonStub>.Success(this.values, 5);
         result3.TotalPages.ShouldBe(1);
     }
 

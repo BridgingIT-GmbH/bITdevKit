@@ -6,11 +6,11 @@
 namespace BridgingIT.DevKit.Domain;
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
-using System.Linq;
 
 /// <summary>
 /// Abstract base class for entities implementing the Active Entity pattern, embedding CRUD and query operations.

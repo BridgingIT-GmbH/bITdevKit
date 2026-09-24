@@ -60,7 +60,7 @@ public static class Factory<T>
         }
         catch (MissingMethodException)
         {
-            return default;
+            return null;
         }
     }
 
@@ -79,7 +79,7 @@ public static class Factory<T>
         }
         catch (MissingMethodException)
         {
-            return default;
+            return null;
         }
     }
 
@@ -162,7 +162,7 @@ public static class Factory
         }
         catch (MissingMethodException)
         {
-            return default;
+            return null;
         }
     }
 
@@ -207,7 +207,7 @@ public static class Factory
         }
         catch (MissingMethodException)
         {
-            return default;
+            return null;
         }
     }
 
@@ -245,7 +245,7 @@ public static class Factory
         }
         catch (MissingMethodException)
         {
-            return default;
+            return null;
         }
     }
 

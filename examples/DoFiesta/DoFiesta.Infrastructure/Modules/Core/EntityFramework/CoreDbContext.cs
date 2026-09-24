@@ -8,8 +8,8 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Orchestrations;
 using DevKit.Infrastructure.EntityFramework;
 using DevKit.Infrastructure.EntityFramework.Messaging;
-using DevKit.Infrastructure.Notifications;
 using DevKit.Infrastructure.EntityFramework.Queueing;
+using DevKit.Infrastructure.Notifications;
 using Domain.Model;
 using Microsoft.EntityFrameworkCore;
 

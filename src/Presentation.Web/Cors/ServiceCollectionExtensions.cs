@@ -5,10 +5,10 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.Extensions.Configuration;
 using System;
 using System.Diagnostics.CodeAnalysis;
 using BridgingIT.DevKit.Presentation.Web;
+using Microsoft.Extensions.Configuration;
 
 /// <summary>
 /// Extension methods for configuring CORS services.

@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System.Collections.Generic;
+using Spectre.Console;
 
 /// <summary>
 /// Defines a console command with metadata and execution logic.

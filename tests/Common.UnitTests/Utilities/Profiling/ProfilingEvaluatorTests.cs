@@ -326,8 +326,8 @@ public class ProfilingEvaluatorTests
     public async Task EvaluateAsync_DisabledUnavailableAndInvalidKey_ReturnTypedFailures()
     {
         // Arrange
-        var disabled = new ProfilingEvaluator(new ProfilingOptions(), null);
-        var unavailable = new ProfilingEvaluator(new ProfilingOptions { Enabled = true }, null);
+        var disabled = new ProfilingEvaluator(new ProfilingOptions());
+        var unavailable = new ProfilingEvaluator(new ProfilingOptions { Enabled = true });
         var evaluator = CreateEvaluator(BuildData(new()));
 
         // Act

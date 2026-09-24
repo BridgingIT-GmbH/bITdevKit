@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// Fallback requester that logs a warning when no requester is registered.

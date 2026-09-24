@@ -142,7 +142,7 @@ public sealed class WebLogStreamHub(
         return string.IsNullOrWhiteSpace(value) ? null : value.Trim();
     }
 
-    private static Microsoft.Extensions.Logging.LogLevel? ParseLevel(string value)
+    private static LogLevel? ParseLevel(string value)
     {
         if (string.IsNullOrWhiteSpace(value))
         {
@@ -156,15 +156,15 @@ public sealed class WebLogStreamHub(
 
         if (string.Equals(value, "Verbose", StringComparison.OrdinalIgnoreCase))
         {
-            return Microsoft.Extensions.Logging.LogLevel.Trace;
+            return LogLevel.Trace;
         }
 
         if (string.Equals(value, "Fatal", StringComparison.OrdinalIgnoreCase))
         {
-            return Microsoft.Extensions.Logging.LogLevel.Critical;
+            return LogLevel.Critical;
         }
 
-        return Enum.TryParse<Microsoft.Extensions.Logging.LogLevel>(value, true, out var parsed)
+        return Enum.TryParse<LogLevel>(value, true, out var parsed)
             ? parsed
             : LogEntriesDashboard.DefaultLevel;
     }

@@ -5,13 +5,13 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using DocumentDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints;
-using DocumentDashboardPageProvider = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardPageProvider;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using DocumentDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardEndpoints;
+using DocumentDashboardPageProvider = BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard.DashboardPageProvider;
 
 public sealed class DocumentStorageDashboardTests
 {

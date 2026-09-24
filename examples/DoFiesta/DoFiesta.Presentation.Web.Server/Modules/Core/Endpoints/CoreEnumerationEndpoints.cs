@@ -25,7 +25,7 @@ public class CoreEnumerationEndpoints : EndpointsBase
         // GET all Enumerations
         group.MapGet("", EnumerationsFindAll)
             .WithName("Core.Enumerations.GetAll")
-            .Produces<EnumerationModel>(StatusCodes.Status200OK)
+            .Produces<EnumerationModel>()
             .Produces(StatusCodes.Status404NotFound)
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)

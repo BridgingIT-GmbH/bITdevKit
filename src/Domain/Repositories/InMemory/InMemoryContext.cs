@@ -78,7 +78,7 @@ public class InMemoryContext<TEntity>
     {
         if (id is null)
         {
-            entity = default;
+            entity = null;
 
             return false;
         }
@@ -96,7 +96,7 @@ public class InMemoryContext<TEntity>
     {
         if (id is null)
         {
-            entity = default;
+            entity = null;
 
             return false;
         }

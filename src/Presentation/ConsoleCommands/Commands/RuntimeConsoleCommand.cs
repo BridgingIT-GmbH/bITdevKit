@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Diagnostics;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
-using System.Diagnostics;
 
 /// <summary>
 /// Represents runtime console command.

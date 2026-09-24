@@ -2,7 +2,7 @@
 @inherits RazorSlice
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var realtimeDataPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsRealtimeDataPath(dashboardOptions);
     var historyDataPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsHistoryDataPath(dashboardOptions);
 }
@@ -97,7 +97,7 @@
 
 <div id="orchestrations-dashboard-root" data-realtime-url="@realtimeDataPath" data-history-url="@historyDataPath">
     <div id="dashboard-orchestrations-content">
-        @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.Data>())
+        @(await RenderPartialAsync<Data>())
     </div>
 
     <section class="orchestrations-graph-zone">

@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
+using System.Linq.Expressions;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Linq.Expressions;
 
 /// <summary>
 ///     <para>Decorates an <see cref="IGenericRepository{TEntity}" />.</para>
@@ -111,7 +111,7 @@ public class RepositoryDomainEventPublisherBehavior<TEntity> : IGenericRepositor
     {
         var entity = await this.Inner
             .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
-        if (entity is null || entity.Id == default)
+        if (entity is null || entity.Id == null)
         {
             return RepositoryActionResult.None;
         }

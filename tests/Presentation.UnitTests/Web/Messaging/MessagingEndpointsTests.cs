@@ -11,7 +11,6 @@ using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Presentation.Web.Messaging;
 using BridgingIT.DevKit.Presentation.Web.Messaging.Models;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

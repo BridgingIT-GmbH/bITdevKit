@@ -22,7 +22,7 @@ public class BlobStorageRuntimeShellTests
         var services = new ServiceCollection();
 
         // Act
-        services.AddBlobStorage(options => options.Enabled(true));
+        services.AddBlobStorage(options => options.Enabled());
         using var serviceProvider = services.BuildServiceProvider();
 
         // Assert

@@ -677,7 +677,7 @@ public static class FilterModelBuilder
 
             return new IncludeBuilder<TEntity, TNextProperty>(this.parentBuilder, fullPath, true);
         }
- 
+
         /// <summary>
         /// Returns to the main filter builder to continue building the filter model.
         /// </summary>
@@ -828,203 +828,165 @@ public static class IncludeBuilderExtensions
             true);
     }
 
-    /// <summary>
-    /// Builds and returns the final <see cref="FilterModel"/> instance.
-    /// </summary>
+    /// <param name="source">The source include builder.</param>
     /// <typeparam name="TEntity">The root entity type.</typeparam>
     /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <returns>A <see cref="FilterModel"/> containing the built filter criteria.</returns>
-    public static FilterModel Build<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source)
+    extension<TEntity, TProperty>(FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source)
     {
-        return source.parentBuilder.Build();
-    }
+        /// <summary>
+        /// Builds and returns the final <see cref="FilterModel"/> instance.
+        /// </summary>
+        /// <returns>A <see cref="FilterModel"/> containing the built filter criteria.</returns>
+        public FilterModel Build()
+        {
+            return source.parentBuilder.Build();
+        }
 
-    /// <summary>
-    /// Adds an ordering criterion to the filter model.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="orderBy">An expression selecting the property to order by.</param>
-    /// <param name="direction">The direction of the ordering.</param>
-    /// <param name="condition">Optional condition to control whether this ordering is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> AddOrdering<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        Expression<Func<TEntity, object>> orderBy,
-        OrderDirection direction,
-        bool? condition = null)
-    {
-        return source.parentBuilder.AddOrdering(orderBy, direction, condition);
-    }
+        /// <summary>
+        /// Adds an ordering criterion to the filter model.
+        /// </summary>
+        /// <param name="orderBy">An expression selecting the property to order by.</param>
+        /// <param name="direction">The direction of the ordering.</param>
+        /// <param name="condition">Optional condition to control whether this ordering is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> AddOrdering(
+            Expression<Func<TEntity, object>> orderBy,
+            OrderDirection direction,
+            bool? condition = null)
+        {
+            return source.parentBuilder.AddOrdering(orderBy, direction, condition);
+        }
 
-    /// <summary>
-    /// Adds a filter criteria to the filter model.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="propertySelector">An expression selecting the property to filter on.</param>
-    /// <param name="filterOperator">The operator to use for filtering.</param>
-    /// <param name="value">The value to compare against.</param>
-    /// <param name="condition">Optional condition to control whether this filter is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> AddFilter<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        Expression<Func<TEntity, object>> propertySelector,
-        FilterOperator filterOperator,
-        object value,
-        bool? condition = null)
-    {
-        return source.parentBuilder.AddFilter(propertySelector, filterOperator, value, condition);
-    }
+        /// <summary>
+        /// Adds a filter criteria to the filter model.
+        /// </summary>
+        /// <param name="propertySelector">An expression selecting the property to filter on.</param>
+        /// <param name="filterOperator">The operator to use for filtering.</param>
+        /// <param name="value">The value to compare against.</param>
+        /// <param name="condition">Optional condition to control whether this filter is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> AddFilter(
+            Expression<Func<TEntity, object>> propertySelector,
+            FilterOperator filterOperator,
+            object value,
+            bool? condition = null)
+        {
+            return source.parentBuilder.AddFilter(propertySelector, filterOperator, value, condition);
+        }
 
-    /// <summary>
-    /// Adds a collection filter to the filter model.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <typeparam name="TCollection">The type of the collection items.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="collectionSelector">An expression selecting the collection property.</param>
-    /// <param name="filterOperator">The operator to use for filtering the collection.</param>
-    /// <param name="configure">A configuration action to specify filters for the collection items.</param>
-    /// <param name="condition">Optional condition to control whether this filter is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> AddFilter<TEntity, TProperty, TCollection>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        Expression<Func<TEntity, IEnumerable<TCollection>>> collectionSelector,
-        FilterOperator filterOperator,
-        Action<FilterModelBuilder.Builder<TCollection>> configure,
-        bool? condition = null)
-    {
-        return source.parentBuilder.AddFilter(collectionSelector, filterOperator, configure, condition);
-    }
+        /// <summary>
+        /// Adds a collection filter to the filter model.
+        /// </summary>
+        /// <typeparam name="TCollection">The type of the collection items.</typeparam>
+        /// <param name="collectionSelector">An expression selecting the collection property.</param>
+        /// <param name="filterOperator">The operator to use for filtering the collection.</param>
+        /// <param name="configure">A configuration action to specify filters for the collection items.</param>
+        /// <param name="condition">Optional condition to control whether this filter is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> AddFilter<TCollection>(
+            Expression<Func<TEntity, IEnumerable<TCollection>>> collectionSelector,
+            FilterOperator filterOperator,
+            Action<FilterModelBuilder.Builder<TCollection>> configure,
+            bool? condition = null)
+        {
+            return source.parentBuilder.AddFilter(collectionSelector, filterOperator, configure, condition);
+        }
 
-    /// <summary>
-    /// Adds an include criterion to the filter model.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="includeSelector">An expression selecting the property to include.</param>
-    /// <param name="condition">Optional condition to control whether this include is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> AddInclude<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        Expression<Func<TEntity, object>> includeSelector,
-        bool? condition = null)
-    {
-        return source.parentBuilder.AddInclude(includeSelector, condition);
-    }
+        /// <summary>
+        /// Adds an include criterion to the filter model.
+        /// </summary>
+        /// <param name="includeSelector">An expression selecting the property to include.</param>
+        /// <param name="condition">Optional condition to control whether this include is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> AddInclude(
+            Expression<Func<TEntity, object>> includeSelector,
+            bool? condition = null)
+        {
+            return source.parentBuilder.AddInclude(includeSelector, condition);
+        }
 
-    /// <summary>
-    /// Adds an include criterion to the filter model using a string path.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="path">The navigation property path to include in the query.</param>
-    /// <param name="condition">Optional condition to control whether this include is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> AddInclude<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        string path,
-        bool? condition = null)
-    {
-        return source.parentBuilder.AddInclude(path, condition);
-    }
+        /// <summary>
+        /// Adds an include criterion to the filter model using a string path.
+        /// </summary>
+        /// <param name="path">The navigation property path to include in the query.</param>
+        /// <param name="condition">Optional condition to control whether this include is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> AddInclude(
+            string path,
+            bool? condition = null)
+        {
+            return source.parentBuilder.AddInclude(path, condition);
+        }
 
-    /// <summary>
-    /// Adds an include criterion with support for ThenInclude chaining.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the current navigation property.</typeparam>
-    /// <typeparam name="TNextProperty">The type of the next navigation property to include.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="includeSelector">An expression selecting the property to include.</param>
-    /// <param name="condition">Optional condition to control whether this include is applied.</param>
-    /// <returns>An <see cref="FilterModelBuilder.IncludeBuilder{TEntity, TNextProperty}"/> for chaining ThenInclude calls.</returns>
-    public static FilterModelBuilder.IncludeBuilder<TEntity, TNextProperty> AddInclude<TEntity, TProperty, TNextProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        Expression<Func<TEntity, TNextProperty>> includeSelector,
-        bool? condition = null)
-    {
-        return source.parentBuilder.AddInclude(includeSelector, condition);
-    }
+        /// <summary>
+        /// Adds an include criterion with support for ThenInclude chaining.
+        /// </summary>
+        /// <typeparam name="TNextProperty">The type of the next navigation property to include.</typeparam>
+        /// <param name="includeSelector">An expression selecting the property to include.</param>
+        /// <param name="condition">Optional condition to control whether this include is applied.</param>
+        /// <returns>An <see cref="FilterModelBuilder.IncludeBuilder{TEntity, TNextProperty}"/> for chaining ThenInclude calls.</returns>
+        public FilterModelBuilder.IncludeBuilder<TEntity, TNextProperty> AddInclude<TNextProperty>(
+            Expression<Func<TEntity, TNextProperty>> includeSelector,
+            bool? condition = null)
+        {
+            return source.parentBuilder.AddInclude(includeSelector, condition);
+        }
 
-    /// <summary>
-    /// Sets the paging options for the filter model.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="page">The page number to retrieve.</param>
-    /// <param name="pageSize">The number of items per page.</param>
-    /// <param name="condition">Optional condition to control whether paging is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> SetPaging<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        int page,
-        int pageSize,
-        bool? condition = null)
-    {
-        return source.parentBuilder.SetPaging(page, pageSize, condition);
-    }
+        /// <summary>
+        /// Sets the paging options for the filter model.
+        /// </summary>
+        /// <param name="page">The page number to retrieve.</param>
+        /// <param name="pageSize">The number of items per page.</param>
+        /// <param name="condition">Optional condition to control whether paging is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> SetPaging(
+            int page,
+            int pageSize,
+            bool? condition = null)
+        {
+            return source.parentBuilder.SetPaging(page, pageSize, condition);
+        }
 
-    /// <summary>
-    /// Sets the paging options for the filter model using a standard page size.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="page">The page number to retrieve.</param>
-    /// <param name="standardPageSize">The standard page size to use.</param>
-    /// <param name="condition">Optional condition to control whether paging is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> SetPaging<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        int page,
-        PageSize standardPageSize,
-        bool? condition = null)
-    {
-        return source.parentBuilder.SetPaging(page, standardPageSize, condition);
-    }
+        /// <summary>
+        /// Sets the paging options for the filter model using a standard page size.
+        /// </summary>
+        /// <param name="page">The page number to retrieve.</param>
+        /// <param name="standardPageSize">The standard page size to use.</param>
+        /// <param name="condition">Optional condition to control whether paging is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> SetPaging(
+            int page,
+            PageSize standardPageSize,
+            bool? condition = null)
+        {
+            return source.parentBuilder.SetPaging(page, standardPageSize, condition);
+        }
 
-    /// <summary>
-    /// Configures the query to disable entity tracking.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="value">A value indicating whether entity tracking should be disabled.</param>
-    /// <param name="condition">Optional condition to control whether no-tracking is applied.</param>
-    /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
-    public static FilterModelBuilder.Builder<TEntity> SetNoTracking<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        bool value = true,
-        bool? condition = null)
-    {
-        return source.parentBuilder.SetNoTracking(value, condition);
-    }
+        /// <summary>
+        /// Configures the query to disable entity tracking.
+        /// </summary>
+        /// <param name="value">A value indicating whether entity tracking should be disabled.</param>
+        /// <param name="condition">Optional condition to control whether no-tracking is applied.</param>
+        /// <returns>The parent <see cref="FilterModelBuilder.Builder{TEntity}"/> instance for method chaining.</returns>
+        public FilterModelBuilder.Builder<TEntity> SetNoTracking(
+            bool value = true,
+            bool? condition = null)
+        {
+            return source.parentBuilder.SetNoTracking(value, condition);
+        }
 
-    /// <summary>
-    /// Adds a custom filter to the filter model.
-    /// </summary>
-    /// <typeparam name="TEntity">The root entity type.</typeparam>
-    /// <typeparam name="TProperty">The type of the navigation property.</typeparam>
-    /// <param name="source">The source include builder.</param>
-    /// <param name="customType">The type of the custom filter to add.</param>
-    /// <param name="condition">Optional condition to control whether the custom filter is applied.</param>
-    /// <returns>A <see cref="FilterModelBuilder.Builder{TEntity}.CustomFilterBuilder"/> for adding parameters.</returns>
-    public static FilterModelBuilder.Builder<TEntity>.CustomFilterBuilder AddCustomFilter<TEntity, TProperty>(
-        this FilterModelBuilder.IncludeBuilder<TEntity, TProperty> source,
-        FilterCustomType customType,
-        bool? condition = null)
-    {
-        return source.parentBuilder.AddCustomFilter(customType, condition);
+        /// <summary>
+        /// Adds a custom filter to the filter model.
+        /// </summary>
+        /// <param name="customType">The type of the custom filter to add.</param>
+        /// <param name="condition">Optional condition to control whether the custom filter is applied.</param>
+        /// <returns>A <see cref="FilterModelBuilder.Builder{TEntity}.CustomFilterBuilder"/> for adding parameters.</returns>
+        public FilterModelBuilder.Builder<TEntity>.CustomFilterBuilder AddCustomFilter(
+            FilterCustomType customType,
+            bool? condition = null)
+        {
+            return source.parentBuilder.AddCustomFilter(customType, condition);
+        }
     }
 
     private static MemberExpression GetMemberExpression<TSource, TResult>(Expression<Func<TSource, TResult>> selector)

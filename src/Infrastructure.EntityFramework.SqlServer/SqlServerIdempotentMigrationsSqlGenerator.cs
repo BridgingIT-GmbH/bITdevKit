@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
+using System.Linq;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Update;
-using System;
-using System.Linq;
 
 /// <summary>
 ///     A custom SQL Server <see cref="MigrationsSqlGenerator"/> that emits

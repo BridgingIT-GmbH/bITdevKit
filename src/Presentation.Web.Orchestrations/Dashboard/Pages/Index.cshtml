@@ -1,16 +1,16 @@
-@using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
 @using BridgingIT.DevKit.Application.Orchestrations
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
+@using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = OrchestrationsDashboardEndpoints.BuildOrchestrationsContentPath(dashboardOptions);
     var actionBase = OrchestrationsDashboardEndpoints.BuildOrchestrationsActionBase(dashboardOptions);
     var purgePath = $"{actionBase}/purge";
     var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(dashboardOptions);
-    var aliveEnabled = this.HttpContext.RequestServices.GetService<OrchestrationAliveOptions>()?.Enabled == true;
+    var aliveEnabled = HttpContext.RequestServices.GetService<OrchestrationAliveOptions>()?.Enabled == true;
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
@@ -85,7 +85,7 @@
 </div>
 
 <div id="dashboard-orchestrations-shell">
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.Pages.Content>())
+    @(await RenderPartialAsync<Content>())
 </div>
 
 <div class="modal fade" id="orchestration-instance-context-modal" tabindex="-1" aria-labelledby="orchestration-instance-context-title" aria-hidden="true">

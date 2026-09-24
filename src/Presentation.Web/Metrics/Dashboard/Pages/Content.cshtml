@@ -1,11 +1,8 @@
 @using BridgingIT.DevKit.Presentation.Web
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
-@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard.Pages
-@using BridgingIT.DevKit.Common
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Logging
-@using RazorSlices
 @inherits RazorSlice
 
 @{
@@ -324,11 +321,12 @@
 @functions {
     private DashboardMetricsViewModel CreateModel()
     {
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var bdkSnapshotService = this.HttpContext.RequestServices.GetService<IMetricsSnapshotService>();
-        var dotNetSnapshotService = this.HttpContext.RequestServices.GetService<IDotNetMetricsSnapshotService>();
-        var aspNetSnapshotService = this.HttpContext.RequestServices.GetService<IAspNetMetricsSnapshotService>();
-        var logger = this.HttpContext.RequestServices.GetService<ILogger<DashboardMetricsViewModel>>();
+      // ReSharper disable once PossibleNullReferenceException
+      var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var bdkSnapshotService = HttpContext.RequestServices.GetService<IMetricsSnapshotService>();
+        var dotNetSnapshotService = HttpContext.RequestServices.GetService<IDotNetMetricsSnapshotService>();
+        var aspNetSnapshotService = HttpContext.RequestServices.GetService<IAspNetMetricsSnapshotService>();
+        var logger = HttpContext.RequestServices.GetService<ILogger<DashboardMetricsViewModel>>();
         var result = new DashboardMetricsViewModel
         {
             CapturedAtUtc = DateTimeOffset.UtcNow,

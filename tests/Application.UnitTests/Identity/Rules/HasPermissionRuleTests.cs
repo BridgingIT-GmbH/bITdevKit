@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Identity;
 
-using Xunit;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using NSubstitute;
-using Shouldly;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Identity;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Model;
+using NSubstitute;
+using Shouldly;
+using Xunit;
 
 // Test entity for IEntity implementation
 public class TestEntity : Entity<Guid>

@@ -334,7 +334,7 @@ public class DataPorterServiceRoundtripTests
         var lines = ReadTextContent(exportStream)
             .Split(["\r\n", "\n"], StringSplitOptions.RemoveEmptyEntries);
         var content = string.Join("\r\n", [lines[0], lines[1], lines[3], lines[2]]) + "\r\n";
-        await using var importStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+        await using var importStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
         // Act
         var results = new List<Result<PersonEntity>>();
@@ -557,7 +557,7 @@ public class DataPorterServiceRoundtripTests
         lines.RemoveAt(lastFirstRootIndex);
         lines.Insert(secondRootStartIndex + 1, movedLine);
         var content = string.Join("\r\n", lines) + "\r\n";
-        await using var importStream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(content));
+        await using var importStream = new MemoryStream(Encoding.UTF8.GetBytes(content));
 
         // Act
         var results = new List<Result<PersonEntity>>();
@@ -1203,7 +1203,7 @@ public class PersonStatus(int id, string value) : Enumeration(id, value)
     public static readonly PersonStatus Active = new(2, "Active");
     public static readonly PersonStatus Inactive = new(3, "Inactive");
 
-    private PersonStatus() : this(default, default)
+    private PersonStatus() : this(0, null)
     {
     }
 }

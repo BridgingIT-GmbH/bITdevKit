@@ -25,7 +25,7 @@ public class EntityBulkInserterTracingBehavior<TEntity>(IEntityBulkInserter<TEnt
     {
         var items = EntityBulkInserterBehaviorUtilities.Materialize(entities);
         var operationId = Guid.NewGuid().ToString("N");
-        using var activity = ActivitySource.StartActivity("EntityBulkInserter.Insert", ActivityKind.Internal);
+        using var activity = ActivitySource.StartActivity("EntityBulkInserter.Insert");
         activity?.SetTag("bulk_inserter.operation_id", operationId);
         activity?.SetTag("bulk_inserter.entity_type", typeof(TEntity).Name);
         activity?.SetTag("bulk_inserter.entity_count", items.Count);

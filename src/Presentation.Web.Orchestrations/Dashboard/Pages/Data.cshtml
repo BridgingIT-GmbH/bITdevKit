@@ -1,8 +1,8 @@
+@using System.Text.Json
 @using BridgingIT.DevKit.Application.Orchestrations
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using Microsoft.Extensions.Logging
 @using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
-@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -212,10 +212,10 @@ else
 @functions {
     private async Task<DashboardOrchestrationsViewModel> CreateModelAsync()
     {
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var query = this.HttpContext.RequestServices.GetService<IOrchestrationQueryService>();
-        var logger = this.HttpContext.RequestServices.GetService<ILogger<Data>>();
-        var cancellationToken = this.HttpContext.RequestAborted;
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var query = HttpContext.RequestServices.GetService<IOrchestrationQueryService>();
+        var logger = HttpContext.RequestServices.GetService<ILogger<Data>>();
+        var cancellationToken = HttpContext.RequestAborted;
         var model = new DashboardOrchestrationsViewModel
         {
             ActionBase = OrchestrationsDashboardEndpoints.BuildOrchestrationsActionBase(dashboardOptions)
@@ -394,7 +394,7 @@ else
     }
 
     private string GetQuery(string key) =>
-        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+        HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
 
     private int GetTake() =>
         int.TryParse(GetQuery("take"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var take)

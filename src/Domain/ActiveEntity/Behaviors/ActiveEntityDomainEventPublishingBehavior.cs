@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain;
 
+using System.Threading;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Threading;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Behavior that publishes domain events for an Active Entity using an <see cref="IDomainEventPublisher"/>.

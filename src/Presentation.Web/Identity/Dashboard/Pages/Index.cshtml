@@ -1,11 +1,11 @@
+@using System.Security.Claims
+@using BridgingIT.DevKit.Common
 @using BridgingIT.DevKit.Presentation.Web
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Identity.Dashboard.Pages
-@using BridgingIT.DevKit.Common
-@using Microsoft.Extensions.DependencyInjection
-@using System.Security.Claims
 @using Microsoft.AspNetCore.Authentication
+@using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
@@ -231,14 +231,14 @@
 
     private async Task<DashboardIdentityViewModel> CreateModelAsync()
     {
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var fakeIdentityProviderOptions = this.HttpContext.RequestServices.GetService<FakeIdentityProviderEndpointsOptions>();
-        var currentUserAccessor = this.HttpContext.RequestServices.GetService<ICurrentUserAccessor>();
-        var fakeIdentityProvider = this.HttpContext.RequestServices.GetService<IFakeIdentityProvider>();
-        var tokenService = this.HttpContext.RequestServices.GetService<ITokenService>();
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var fakeIdentityProviderOptions = HttpContext.RequestServices.GetService<FakeIdentityProviderEndpointsOptions>();
+        var currentUserAccessor = HttpContext.RequestServices.GetService<ICurrentUserAccessor>();
+        var fakeIdentityProvider = HttpContext.RequestServices.GetService<IFakeIdentityProvider>();
+        var tokenService = HttpContext.RequestServices.GetService<ITokenService>();
         var principal = currentUserAccessor?.IsAuthenticated == true
             ? currentUserAccessor.Principal
-            : this.HttpContext.User ?? currentUserAccessor?.Principal;
+            : HttpContext.User ?? currentUserAccessor?.Principal;
         // var client = GetClientCredentialsClient(fakeIdentityProviderOptions);
         var identityPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.Identity);
 
@@ -267,12 +267,12 @@
             CapturedAtUtc = DateTimeOffset.UtcNow
         };
 
-        if (this.HttpContext.Request.Query.TryGetValue("identity_message", out var message))
+        if (HttpContext.Request.Query.TryGetValue("identity_message", out var message))
         {
             result.Messages.AddRange(message.Where(value => !string.IsNullOrWhiteSpace(value)));
         }
 
-        if (this.HttpContext.Request.Query.TryGetValue("identity_error", out var error))
+        if (HttpContext.Request.Query.TryGetValue("identity_error", out var error))
         {
             result.Errors.AddRange(error.Where(value => !string.IsNullOrWhiteSpace(value)));
         }
@@ -351,8 +351,8 @@
         foreach (var scheme in GetTokenAuthenticationSchemes(dashboardOptions))
         {
             var authenticateResult = string.IsNullOrWhiteSpace(scheme)
-                ? await this.HttpContext.AuthenticateAsync()
-                : await this.HttpContext.AuthenticateAsync(scheme);
+                ? await HttpContext.AuthenticateAsync()
+                : await HttpContext.AuthenticateAsync(scheme);
 
             if (!authenticateResult.Succeeded || authenticateResult.Properties is null)
             {
@@ -415,7 +415,7 @@
 
     private string BuildLocalReturnUrl(string path)
     {
-        var pathBase = this.HttpContext.Request.PathBase.Value?.TrimEnd('/') ?? string.Empty;
+        var pathBase = HttpContext.Request.PathBase.Value?.TrimEnd('/') ?? string.Empty;
         return $"{pathBase}/{path.Trim('/')}";
     }
 
@@ -427,7 +427,7 @@
         }
 
         var issuer = options.Issuer.EmptyToNull()
-            ?? $"{this.HttpContext.Request.Scheme}://{this.HttpContext.Request.Host}";
+            ?? $"{HttpContext.Request.Scheme}://{HttpContext.Request.Host}";
 
         return $"{issuer.TrimEnd('/')}/{options.GroupPath.Trim('/')}/{options.EndpointPaths.Token.Trim('/')}";
     }

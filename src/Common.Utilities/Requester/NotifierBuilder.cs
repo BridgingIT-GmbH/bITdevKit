@@ -4,13 +4,13 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 namespace BridgingIT.DevKit.Common;
 
+using System.Collections.Concurrent;
+using System.Linq;
+using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
-using System.Reflection;
-using System.Linq;
 
 /// <summary>
 /// Configures and builds the Notifier service for dependency injection registration.

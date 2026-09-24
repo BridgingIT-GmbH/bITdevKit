@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using System;
 
 /// <summary>
 /// Provides an Entity Framework Core <see cref="ValueConverter{TModel,TProvider}"/> implementation

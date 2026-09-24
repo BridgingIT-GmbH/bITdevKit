@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 /// <summary>
 /// SQLite implementation using sqlite_sequence table with thread-safe operations.

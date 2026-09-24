@@ -1,10 +1,10 @@
+@using System.Globalization
+@using System.Text.Json
 @using BridgingIT.DevKit.Application.Utilities
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
-@using System.Globalization
-@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -87,14 +87,14 @@
 @functions {
     private async Task<LogEntryQueryResponse> QueryAsync()
     {
-        var service = this.HttpContext.RequestServices.GetService<ILogEntryService>();
+        var service = HttpContext.RequestServices.GetService<ILogEntryService>();
         if (service is null)
         {
             return new LogEntryQueryResponse();
         }
 
-        var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
-        return await service.QueryAsync(LogEntriesDashboard.CreateRequest(filter), this.HttpContext.RequestAborted);
+        var filter = LogEntriesDashboard.CreateFilter(HttpContext);
+        return await service.QueryAsync(LogEntriesDashboard.CreateRequest(filter), HttpContext.RequestAborted);
     }
 
     private Microsoft.AspNetCore.Html.IHtmlContent RenderCorrelationLink(string correlationId)
@@ -104,7 +104,7 @@
             return new Microsoft.AspNetCore.Html.HtmlString("-");
         }
 
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
         var href = LogEntriesDashboard.BuildCorrelationHref(dashboardOptions, correlationId);
         return new Microsoft.AspNetCore.Html.HtmlString($"<a class=\"btn btn-link btn-sm p-0 text-decoration-none\" href=\"{System.Net.WebUtility.HtmlEncode(href)}\" title=\"Open related logs\">{System.Net.WebUtility.HtmlEncode(LogEntriesDashboard.ShortId(correlationId))}</a>");
     }
@@ -122,7 +122,7 @@
             return RenderDetail("Correlation", correlationId);
         }
 
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
         var href = LogEntriesDashboard.BuildCorrelationHref(dashboardOptions, correlationId);
         return new Microsoft.AspNetCore.Html.HtmlString(
             $"<dt>{System.Net.WebUtility.HtmlEncode("Correlation")}</dt><dd><a class=\"btn btn-link btn-sm p-0 text-decoration-none\" href=\"{System.Net.WebUtility.HtmlEncode(href)}\" title=\"Open related logs\">{System.Net.WebUtility.HtmlEncode(correlationId)}</a></dd>");

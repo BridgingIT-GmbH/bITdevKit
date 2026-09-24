@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Collections;
+using System.Globalization;
+using System.Reflection;
 using BridgingIT.DevKit.Application.Identity;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Collections;
-using System.Globalization;
-using System.Reflection;
 
 /// <summary>
 /// Provides entity permission functionality using Entity Framework Core as the storage mechanism.
@@ -263,7 +263,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             .FirstOrDefaultAsync(p =>
                 p.UserId == userId &&
                 p.EntityType == entityType &&
-                p.EntityId == (entityId != null ? entityId.ToString() : default) &&
+                p.EntityId == (entityId != null ? entityId.ToString() : null) &&
                 p.Permission == permission, cancellationToken: cancellationToken).AnyContext();
 
         if (existingPermission != null)
@@ -303,7 +303,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             .FirstOrDefaultAsync(p =>
                 p.UserId == userId &&
                 p.EntityType == entityType &&
-                p.EntityId == (entityId != null ? entityId.ToString() : default) &&
+                p.EntityId == (entityId != null ? entityId.ToString() : null) &&
                 p.Permission == permission, cancellationToken: cancellationToken).AnyContext();
 
         if (entityPermission != null)
@@ -350,7 +350,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             .FirstOrDefaultAsync(p =>
                 p.RoleName == roleName &&
                 p.EntityType == entityType &&
-                p.EntityId == (entityId != null ? entityId.ToString() : default) &&
+                p.EntityId == (entityId != null ? entityId.ToString() : null) &&
                 p.Permission == permission, cancellationToken: cancellationToken).AnyContext();
 
         if (existingPermission != null)
@@ -390,7 +390,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             .FirstOrDefaultAsync(p =>
                 p.RoleName == roleName &&
                 p.EntityType == entityType &&
-                p.EntityId == (entityId != null ? entityId.ToString() : default) &&
+                p.EntityId == (entityId != null ? entityId.ToString() : null) &&
                 p.Permission == permission, cancellationToken: cancellationToken).AnyContext();
 
         if (entityPermission != null)
@@ -651,7 +651,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
             }
 
             var parentId = parentIdProperty.GetValue(entity);
-            if (parentId?.Equals(default) != false)
+            if (parentId?.Equals(null) != false)
             {
                 break;
             }

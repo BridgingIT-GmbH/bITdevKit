@@ -3,7 +3,7 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = StorageDashboardEndpoints.BuildFilesContentPath(dashboardOptions);
     var actionBase = StorageDashboardEndpoints.BuildFilesActionBase(dashboardOptions);
 }
@@ -18,7 +18,7 @@
 </div>
 
 <div id="dashboard-storage-shell">
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard.Pages.Content>())
+    @(await RenderPartialAsync<Content>())
 </div>
 
 <div class="modal fade" id="storage-create-folder-modal" tabindex="-1" aria-hidden="true">

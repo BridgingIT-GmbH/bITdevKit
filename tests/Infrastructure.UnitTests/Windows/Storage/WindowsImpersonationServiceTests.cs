@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.Windows.Storage;
 
-using NSubstitute;
-using Shouldly;
 using System;
 using System.Runtime.InteropServices;
-using System.Threading.Tasks;
-using Xunit;
-using BridgingIT.DevKit.Infrastructure.Windows;
 using System.Security.Principal;
+using System.Threading.Tasks;
+using BridgingIT.DevKit.Infrastructure.Windows;
+using NSubstitute;
+using Shouldly;
+using Xunit;
 
 public class WindowsImpersonationServiceTests
 {

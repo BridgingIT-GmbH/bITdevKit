@@ -1,8 +1,8 @@
 ﻿namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Threading;
 using BridgingIT.DevKit.Application.Storage;
 using Microsoft.EntityFrameworkCore;
-using System.Threading;
 
 /// <summary>
 /// Implements IFileEventStore using EF Core, storing FileEvent instances as FileEventEntity in a DbContext.

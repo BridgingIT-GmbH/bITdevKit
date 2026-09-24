@@ -18,7 +18,7 @@ public class InvalidInputError(string message = null, string fieldName = null, o
     public object ProvidedValue { get; } = providedValue;
 
     /// <summary>Initializes an invalid-input error with the default message and no field details.</summary>
-    public InvalidInputError() : this(null, null, null)
+    public InvalidInputError() : this(null)
     {
     }
 

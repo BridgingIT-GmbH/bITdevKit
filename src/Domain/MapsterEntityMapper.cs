@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.Mapping;
 
 using System.Linq.Expressions;
-using Domain.Repositories;
 using BridgingIT.DevKit.Domain;
+using Domain.Repositories;
 using IMapper = MapsterMapper.IMapper;
 
 /// <summary>
@@ -90,7 +90,7 @@ public class MapsterEntityMapper : IEntityMapper
     {
         if (expression is null)
         {
-            return default;
+            return null;
         }
 
         throw new NotSupportedException();
@@ -108,7 +108,7 @@ public class MapsterEntityMapper : IEntityMapper
     {
         if (specification is null)
         {
-            return default;
+            return null;
         }
 
         throw new NotSupportedException();

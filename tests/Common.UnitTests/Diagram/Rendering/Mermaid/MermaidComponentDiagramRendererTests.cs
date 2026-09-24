@@ -6,7 +6,7 @@ public class MermaidComponentDiagramRendererTests
     [Fact]
     public void Render_ComponentDiagram_ShouldRenderDeterministicText()
     {
-        var document = new ComponentDiagramBuilder(DiagramDirection.LeftToRight)
+        var document = new ComponentDiagramBuilder()
             .AddComponent("Api", "Orders API", stereotype: "service")
             .AddComponent("Db", "Orders DB", DiagramNodeKind.Database)
             .AddDependency("Api", "Db", "reads")

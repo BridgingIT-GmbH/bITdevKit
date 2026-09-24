@@ -65,7 +65,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = Result<TEntity>.Success(default);
+                var result = Result<TEntity>.Success(null);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
@@ -144,7 +144,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = Result<TEntity>.Success(default);
+                var result = Result<TEntity>.Success(null);
                 var specification = new Specification<TEntity>(expression);
 
                 // before behaviors
@@ -226,7 +226,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = Result<TEntity>.Success(default);
+                var result = Result<TEntity>.Success(null);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
@@ -307,7 +307,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = Result<TEntity>.Success(default);
+                var result = Result<TEntity>.Success(null);
 
                 // before behaviors
                 foreach (var behavior in ctx.Behaviors)
@@ -392,7 +392,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
             context,
             async ctx =>
             {
-                var result = Result<TEntity>.Success(default);
+                var result = Result<TEntity>.Success(null);
 
                 var specifications = SpecificationBuilder.Build(filter, additionalSpecifications).ToArray();
                 var options = FindOptionsBuilder.Build<TEntity>(filter);

@@ -66,7 +66,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     {
         if (id.IsNullOrEmpty())
         {
-            return default;
+            return null;
         }
 
         await this.InitializeAsync(this.options, cancellationToken);
@@ -126,10 +126,10 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
         }
         catch (CosmosException ex) when (ex.StatusCode == HttpStatusCode.NotFound)
         {
-            return default;
+            return null;
         }
 
-        return default;
+        return null;
     }
 
     /// <inheritdoc />

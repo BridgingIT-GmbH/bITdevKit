@@ -5,9 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
-using BridgingIT.DevKit.Common;
-
 using System.ComponentModel;
+using BridgingIT.DevKit.Common;
 
 [UnitTest("Common")]
 public class EnumExtensionsTests

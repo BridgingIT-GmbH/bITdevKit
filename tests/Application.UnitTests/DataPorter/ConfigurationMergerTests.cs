@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
-using BridgingIT.DevKit.Application.DataPorter;
 using System.IO.Compression;
+using BridgingIT.DevKit.Application.DataPorter;
 
 [UnitTest("Common")]
 public class ConfigurationMergerTests

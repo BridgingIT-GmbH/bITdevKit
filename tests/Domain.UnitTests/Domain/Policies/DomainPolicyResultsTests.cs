@@ -35,7 +35,7 @@ public class DomainPolicyResultsTests
         var result = results.GetValue<ConditionalEnabledPolicy, int>();
 
         // Assert
-        result.ShouldBe(default);
+        result.ShouldBe(0);
     }
 
     [Fact]
@@ -49,7 +49,7 @@ public class DomainPolicyResultsTests
         var result = results.GetValue<ConditionalEnabledPolicy, int>();
 
         // Assert
-        result.ShouldBe(default);
+        result.ShouldBe(0);
     }
 
     [Fact]
@@ -95,6 +95,6 @@ public class DomainPolicyResultsTests
         var result = results.GetValue<int>(policyType);
 
         // Assert
-        result.ShouldBe(default);
+        result.ShouldBe(0);
     }
 }

@@ -309,7 +309,7 @@ public partial class SubscriptionStatus : Enumeration
 public partial class SubscriptionBillingCycle : Enumeration
 {
     /// <summary>No recurring billing.</summary>
-    public static readonly SubscriptionBillingCycle Never = new(0, nameof(Never), false, "No recurring billing", false);
+    public static readonly SubscriptionBillingCycle Never = new(0, nameof(Never), false, "No recurring billing");
 
     /// <summary>Monthly billing cycle.</summary>
     public static readonly SubscriptionBillingCycle Monthly = new(1, nameof(Monthly), true, "Monthly billing cycle", true);

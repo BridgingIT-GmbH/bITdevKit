@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests;
 
+using System.Net.Http;
 using DotNet.Testcontainers.Builders;
 using DotNet.Testcontainers.Configurations;
 using DotNet.Testcontainers.Containers;
@@ -13,7 +14,6 @@ using Microsoft.Azure.Cosmos;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Net.Http;
 using Testcontainers.Azurite;
 using Testcontainers.CosmosDb;
 using Testcontainers.MsSql;

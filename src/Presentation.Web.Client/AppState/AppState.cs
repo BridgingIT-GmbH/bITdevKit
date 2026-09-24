@@ -121,7 +121,7 @@ public abstract class AppState<TState> : IAppState, IDisposable
         if (current == null)
         {
             //this.logger.LogWarning("Current state is null for {StateId}", this.StateId);
-            return default;
+            return null;
         }
 
         if (!this.options.Enabled)

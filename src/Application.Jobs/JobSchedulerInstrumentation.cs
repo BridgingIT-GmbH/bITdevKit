@@ -25,28 +25,28 @@ internal static class JobSchedulerInstrumentation
 
     public static Activity StartSweepActivity(string schedulerInstanceId)
     {
-        var activity = ActivitySource.StartActivity("jobs.sweep", ActivityKind.Internal);
+        var activity = ActivitySource.StartActivity("jobs.sweep");
         activity?.SetTag(SchedulerInstanceIdTag, schedulerInstanceId);
         return activity;
     }
 
     public static Activity StartMaterializationActivity(string schedulerInstanceId)
     {
-        var activity = ActivitySource.StartActivity("jobs.trigger.materialize", ActivityKind.Internal);
+        var activity = ActivitySource.StartActivity("jobs.trigger.materialize");
         activity?.SetTag(SchedulerInstanceIdTag, schedulerInstanceId);
         return activity;
     }
 
     public static Activity StartExecutionActivity(string schedulerInstanceId, JobOccurrence occurrence, JobTriggerDefinition trigger, Guid executionId, string correlationId)
     {
-        var activity = ActivitySource.StartActivity("jobs.execution", ActivityKind.Internal);
+        var activity = ActivitySource.StartActivity("jobs.execution");
         SetCommonOccurrenceTags(activity, schedulerInstanceId, occurrence, trigger, executionId, correlationId);
         return activity;
     }
 
     public static Activity StartLeaseActivity(string activityName, string schedulerInstanceId, Guid occurrenceId, string leaseOwner = null)
     {
-        var activity = ActivitySource.StartActivity(activityName, ActivityKind.Internal);
+        var activity = ActivitySource.StartActivity(activityName);
         activity?.SetTag(SchedulerInstanceIdTag, schedulerInstanceId);
         activity?.SetTag(OccurrenceIdTag, occurrenceId.ToString("D"));
         if (!string.IsNullOrWhiteSpace(leaseOwner))
@@ -59,14 +59,14 @@ internal static class JobSchedulerInstrumentation
 
     public static Activity StartRetrySchedulingActivity(string schedulerInstanceId, JobOccurrence occurrence, JobTriggerDefinition trigger, Guid executionId, string correlationId)
     {
-        var activity = ActivitySource.StartActivity("jobs.retry.schedule", ActivityKind.Internal);
+        var activity = ActivitySource.StartActivity("jobs.retry.schedule");
         SetCommonOccurrenceTags(activity, schedulerInstanceId, occurrence, trigger, executionId, correlationId);
         return activity;
     }
 
     public static Activity StartEventAcceptanceActivity(string source, string correlationId)
     {
-        var activity = ActivitySource.StartActivity("jobs.event.accept", ActivityKind.Internal);
+        var activity = ActivitySource.StartActivity("jobs.event.accept");
         activity?.SetTag(EventSourceTag, source);
         if (!string.IsNullOrWhiteSpace(correlationId))
         {
@@ -78,7 +78,7 @@ internal static class JobSchedulerInstrumentation
 
     public static Activity StartManagementActivity(string operation, string jobName = null, string triggerName = null, Guid? occurrenceId = null)
     {
-        var activity = ActivitySource.StartActivity("jobs.management", ActivityKind.Internal);
+        var activity = ActivitySource.StartActivity("jobs.management");
         activity?.SetTag(OperationTag, operation);
         if (!string.IsNullOrWhiteSpace(jobName))
         {

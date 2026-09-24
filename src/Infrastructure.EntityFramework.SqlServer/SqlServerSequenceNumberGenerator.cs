@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
+using System.Data;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Data;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 /// <summary>
 /// SQL Server implementation of sequence number generator with thread-safe operations.
@@ -130,7 +130,7 @@ public class SqlServerSequenceNumberGenerator<TContext>(
 
             var info = await context.Database
                 .SqlQueryRaw<SequenceInfo>(
-                    $@"SELECT 
+                    $@"SELECT
                         s.name AS Name,
                         sc.name AS [Schema],
                         CAST(s.current_value AS BIGINT) AS CurrentValue,

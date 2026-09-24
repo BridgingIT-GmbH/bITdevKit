@@ -4,12 +4,12 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 namespace BridgingIT.DevKit.Domain;
 
+using System.Linq;
+using System.Text;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Text;
-using System.Linq;
-using System.Text;
 
 #pragma warning disable RS1035 // Do not use APIs banned for analyzers
 #pragma warning disable RS1036 // Specify analyzer banned API enforcement setting

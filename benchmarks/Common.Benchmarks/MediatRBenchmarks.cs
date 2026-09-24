@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Common.Benchmarks;
 
 using BenchmarkDotNet.Attributes;
-using Microsoft.Extensions.DependencyInjection;
 using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 
 [MemoryDiagnoser]
 public class MediatRBenchmarks

@@ -1482,7 +1482,6 @@ public class RepositoryChangeHistoryBehavior<TEntity, TContext> : IGenericReposi
             strategy,
             source,
             ChangeHistoryValuePolicy.Include,
-            ChangeHistoryOperation.Update,
             isRestoreable: false,
             captureStatus: status,
             captureMessage: message);

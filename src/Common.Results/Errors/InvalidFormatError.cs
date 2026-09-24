@@ -15,7 +15,7 @@ public class InvalidFormatError(string message = null, object receivedData = nul
     public object ReceivedData { get; } = receivedData;
 
     /// <summary>Initializes an invalid-format error with the default message and no received data.</summary>
-    public InvalidFormatError() : this(null, null)
+    public InvalidFormatError() : this(null)
     {
     }
 

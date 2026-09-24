@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Repositories;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// In-memory implementation of IEntityProvider for testing purposes.

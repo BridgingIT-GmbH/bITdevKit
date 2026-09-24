@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
-using Application.Storage;
 using System.Reflection;
+using Application.Storage;
 
 [UnitTest("Application")]
 public class BlobStorageModelTests

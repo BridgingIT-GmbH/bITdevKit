@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using BridgingIT.DevKit.Common;
 using System.Collections.Generic;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Represents the result of executing an ordered operation in a change transaction.

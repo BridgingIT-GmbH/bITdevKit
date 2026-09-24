@@ -5,16 +5,16 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.Windows.Storage;
 
-using NSubstitute;
-using Shouldly;
 using System;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
-using Xunit;
 using BridgingIT.DevKit.Infrastructure.Windows;
 using BridgingIT.DevKit.Infrastructure.Windows.Storage;
+using NSubstitute;
+using Shouldly;
+using Xunit;
 
 public class NetworkFileStorageProviderTests : IDisposable
 {
@@ -336,7 +336,7 @@ public class NetworkFileStorageProviderTests : IDisposable
             var testFile = "integration-test.txt";
             var expectedContent = "Full integration test content";
 
-            // Write file 
+            // Write file
             using var stream = new MemoryStream();
             using var writer = new StreamWriter(stream);
             await writer.WriteAsync(expectedContent);
@@ -359,7 +359,7 @@ public class NetworkFileStorageProviderTests : IDisposable
         }
         catch (Exception ex)
         {
-            // Skip if real impersonation fails 
+            // Skip if real impersonation fails
             Skip.If(true, $"Real impersonation failed: {ex.Message}");
         }
     }

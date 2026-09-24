@@ -77,9 +77,9 @@ public class LinqFluentExtensionsTests
         // Arrange
         var values = new List<TestValue>
         {
-            new(1, true),
+            new(1),
             new(2, false),
-            new(3, true)
+            new(3)
         };
 
         // Act
@@ -94,7 +94,7 @@ public class LinqFluentExtensionsTests
     public void FindValue_WithNoMatchingPredicate_ReturnsNull()
     {
         // Arrange
-        var values = new List<TestValue> { new(1, true) };
+        var values = new List<TestValue> { new(1) };
 
         // Act
         var result = values.FindValue(v => v.Id == 99);
@@ -120,7 +120,7 @@ public class LinqFluentExtensionsTests
     public void FindValue_WithNullPredicate_ReturnsNull()
     {
         // Arrange
-        var values = new List<TestValue> { new(1, true) };
+        var values = new List<TestValue> { new(1) };
 
         // Act
         var result = values.FindValue(null);
@@ -137,7 +137,7 @@ public class LinqFluentExtensionsTests
     public void WhenNotNull_WithNotNullReferenceType_ExecutesActionAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var actionExecuted = false;
 
         // Act
@@ -428,7 +428,7 @@ public class LinqFluentExtensionsTests
     public void When_WithTruePredicateSideEffect_ExecutesActionAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
         var actionExecuted = false;
 
         // Act
@@ -443,7 +443,7 @@ public class LinqFluentExtensionsTests
     public void When_WithFalsePredicateSideEffect_DoesNotExecuteActionAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
         var actionExecuted = false;
 
         // Act
@@ -516,7 +516,7 @@ public class LinqFluentExtensionsTests
     public void Unless_WithTruePredicateSideEffect_DoesNotExecuteActionAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
         var actionExecuted = false;
 
         // Act
@@ -531,7 +531,7 @@ public class LinqFluentExtensionsTests
     public void Unless_WithFalsePredicateSideEffect_ExecutesActionAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
         var actionExecuted = false;
 
         // Act
@@ -565,7 +565,7 @@ public class LinqFluentExtensionsTests
     public void When_WithTruePredicateTransform_ReturnsTransformedValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { Value = 100, IsActive = true };
+        var entity = new TestEntity() { Value = 100, IsActive = true };
 
         // Act
         var result = entity.When(e => e.IsActive, e => new TestEntity(e.Id, e.Name.ToUpper()));
@@ -581,7 +581,7 @@ public class LinqFluentExtensionsTests
     public void When_WithFalsePredicateTransform_ReturnsOriginalValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
 
         // Act
         var result = entity.When(e => e.IsActive, e => new TestEntity(e.Id, "TRANSFORMED"));
@@ -621,7 +621,7 @@ public class LinqFluentExtensionsTests
     public void Unless_WithFalsePredicateTransform_ReturnsTransformedValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
 
         // Act
         var result = entity.Unless(e => e.IsActive, e => new TestEntity(e.Id, "UNLESS_TRANSFORM"));
@@ -635,7 +635,7 @@ public class LinqFluentExtensionsTests
     public void Unless_WithTruePredicateTransform_ReturnsOriginalValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
 
         // Act
         var result = entity.Unless(e => e.IsActive, e => new TestEntity(e.Id, "TRANSFORMED"));
@@ -666,7 +666,7 @@ public class LinqFluentExtensionsTests
     public void When_WithThenElse_ThenPredicateTrue_ReturnsThenResult()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
 
         // Act
         var result = entity.When(
@@ -682,7 +682,7 @@ public class LinqFluentExtensionsTests
     public void When_WithThenElse_PredicateFalse_ReturnsElseResult()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
 
         // Act
         var result = entity.When(
@@ -714,7 +714,7 @@ public class LinqFluentExtensionsTests
     public void When_WithThenElse_NullPredicate_ReturnsDefault()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = entity.When(
@@ -778,7 +778,7 @@ public class LinqFluentExtensionsTests
     public void Unless_WithThenElse_PredicateFalse_ReturnsThenResult()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
 
         // Act
         var result = entity.Unless(
@@ -794,7 +794,7 @@ public class LinqFluentExtensionsTests
     public void Unless_WithThenElse_PredicateTrue_ReturnsElseResult()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
 
         // Act
         var result = entity.Unless(
@@ -925,7 +925,7 @@ public class LinqFluentExtensionsTests
     public void Do_WithReferenceType_ExecutesActionAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var capturedId = 0;
 
         // Act
@@ -998,7 +998,7 @@ public class LinqFluentExtensionsTests
     public void Do_MultipleChained_ExecutesAllActions()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var firstExecuted = false;
         var secondExecuted = false;
 
@@ -1032,7 +1032,7 @@ public class LinqFluentExtensionsTests
     public void Throw_WithNotNullValue_DoesNotThrowAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = entity.Throw(() => new InvalidOperationException("Entity not found"));
@@ -1082,7 +1082,7 @@ public class LinqFluentExtensionsTests
     public void ThrowWhen_WithTrueCondition_ThrowsException()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
 
         // Act & Assert
         Should.Throw<InvalidOperationException>(() =>
@@ -1093,7 +1093,7 @@ public class LinqFluentExtensionsTests
     public void ThrowWhen_WithFalseCondition_DoesNotThrowAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
 
         // Act
         var result = entity.ThrowWhen(e => !e.IsActive, e => new InvalidOperationException("Inactive"));
@@ -1147,7 +1147,7 @@ public class LinqFluentExtensionsTests
     public void Match_WithNotNullValue_ExecutesSomeFunction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = entity.Match(
@@ -1177,7 +1177,7 @@ public class LinqFluentExtensionsTests
     public void Match_WithNullSomeFunction_ReturnsDefaultWhenValueExists()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = entity.Match(
@@ -1241,7 +1241,7 @@ public class LinqFluentExtensionsTests
     public void OrElse_WithNotNullValue_ReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = entity.OrElse(() => new TestEntity(999, "Fallback"));
@@ -1434,9 +1434,9 @@ public class LinqFluentExtensionsTests
         // Arrange
         var values = new List<TestValue>
         {
-            new(1, true),
+            new(1),
             new(2, false),
-            new(3, true)
+            new(3)
         };
 
         // Act
@@ -1455,7 +1455,7 @@ public class LinqFluentExtensionsTests
     public async Task FindValueAsync_WithoutCancellationTokenParam_ReturnsFirstMatch()
     {
         // Arrange
-        var values = new List<TestValue> { new(1, true), new(2, false) };
+        var values = new List<TestValue> { new(1), new(2, false) };
 
         // Act
         var result = await values.FindValueAsync(async v =>
@@ -1473,7 +1473,7 @@ public class LinqFluentExtensionsTests
     public async Task FindValueAsync_WithNoMatch_ReturnsNull()
     {
         // Arrange
-        var values = new List<TestValue> { new(1, true) };
+        var values = new List<TestValue> { new(1) };
 
         // Act
         var result = await values.FindValueAsync(async (v, ct) => await Task.FromResult(false), CancellationToken.None);
@@ -1490,7 +1490,7 @@ public class LinqFluentExtensionsTests
     public async Task WhenNotNullAsync_WithNotNullReferenceType_ExecutesAsyncAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var actionExecuted = false;
 
         // Act
@@ -1509,7 +1509,7 @@ public class LinqFluentExtensionsTests
     public async Task WhenNotNullAsync_WithoutCancellationTokenParam_ExecutesAsyncAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var actionExecuted = false;
 
         // Act
@@ -1566,7 +1566,7 @@ public class LinqFluentExtensionsTests
     public async Task WhenNullAsync_WithNotNull_DoesNotExecuteAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var actionExecuted = false;
 
         // Act
@@ -1802,7 +1802,7 @@ public class LinqFluentExtensionsTests
     public async Task WhenAsync_WithTruePredicate_ExecutesAsyncAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
         var actionExecuted = false;
 
         // Act
@@ -1823,7 +1823,7 @@ public class LinqFluentExtensionsTests
     public async Task WhenAsync_WithFalsePredicate_DoesNotExecuteAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
         var actionExecuted = false;
 
         // Act
@@ -1844,7 +1844,7 @@ public class LinqFluentExtensionsTests
     public async Task WhenAsync_OnTask_WithTruePredicate_ExecutesAsyncAction()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test") { IsActive = true });
+        var task = Task.FromResult(new TestEntity() { IsActive = true });
         var actionExecuted = false;
 
         // Act
@@ -1865,7 +1865,7 @@ public class LinqFluentExtensionsTests
     public async Task UnlessAsync_WithFalsePredicate_ExecutesAsyncAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
         var actionExecuted = false;
 
         // Act
@@ -1886,7 +1886,7 @@ public class LinqFluentExtensionsTests
     public async Task UnlessAsync_WithTruePredicate_DoesNotExecuteAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
         var actionExecuted = false;
 
         // Act
@@ -1907,7 +1907,7 @@ public class LinqFluentExtensionsTests
     public async Task UnlessAsync_OnTask_WithFalsePredicate_ExecutesAsyncAction()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test") { IsActive = false });
+        var task = Task.FromResult(new TestEntity() { IsActive = false });
         var actionExecuted = false;
 
         // Act
@@ -2050,7 +2050,7 @@ public class LinqFluentExtensionsTests
     public async Task DoAsync_WithReferenceType_ExecutesAsyncActionAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var capturedId = 0;
 
         // Act
@@ -2069,7 +2069,7 @@ public class LinqFluentExtensionsTests
     public async Task DoAsync_WithoutCancellationTokenParam_ExecutesAsyncAction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
         var actionExecuted = false;
 
         // Act
@@ -2107,7 +2107,7 @@ public class LinqFluentExtensionsTests
     public async Task DoAsync_WithNullAction_DoesNotThrowAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = await entity.DoAsync((Func<TestEntity, CancellationToken, Task>)null);
@@ -2148,7 +2148,7 @@ public class LinqFluentExtensionsTests
     public async Task ThrowAsync_WithNotNullValue_DoesNotThrowAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = await entity.ThrowAsync(async ct => new InvalidOperationException("Entity not found"));
@@ -2161,7 +2161,7 @@ public class LinqFluentExtensionsTests
     public async Task ThrowWhenAsync_WithTrueCondition_ThrowsException()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = false };
+        var entity = new TestEntity() { IsActive = false };
 
         // Act & Assert
         await Should.ThrowAsync<InvalidOperationException>(async () =>
@@ -2174,7 +2174,7 @@ public class LinqFluentExtensionsTests
     public async Task ThrowWhenAsync_WithFalseCondition_DoesNotThrowAndReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test") { IsActive = true };
+        var entity = new TestEntity() { IsActive = true };
 
         // Act
         var result = await entity.ThrowWhenAsync(
@@ -2189,7 +2189,7 @@ public class LinqFluentExtensionsTests
     public async Task ThrowWhenAsync_OnTask_WithTrueCondition_ThrowsException()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test") { IsActive = false });
+        var task = Task.FromResult(new TestEntity() { IsActive = false });
 
         // Act & Assert
         await Should.ThrowAsync<InvalidOperationException>(async () =>
@@ -2206,7 +2206,7 @@ public class LinqFluentExtensionsTests
     public async Task MatchAsync_WithNotNullValue_ExecutesSomeFunction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = await entity.MatchAsync(
@@ -2229,7 +2229,7 @@ public class LinqFluentExtensionsTests
     public async Task MatchAsync_WithoutCancellationTokenParam_ExecutesSomeFunction()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = await entity.MatchAsync(
@@ -2267,7 +2267,7 @@ public class LinqFluentExtensionsTests
     public async Task MatchAsync_OnTask_WithNotNull_ExecutesSomeFunction()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test"));
+        var task = Task.FromResult(new TestEntity());
 
         // Act
         var result = await task.MatchAsync(
@@ -2331,7 +2331,7 @@ public class LinqFluentExtensionsTests
     public async Task OrElseAsync_WithNotNullValue_ReturnsValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = await entity.OrElseAsync(async ct =>
@@ -2420,7 +2420,7 @@ public class LinqFluentExtensionsTests
     public async Task OrElseAsync_OnTask_WithNotNull_ReturnsValue()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test"));
+        var task = Task.FromResult(new TestEntity());
 
         // Act
         var result = await task.OrElseAsync(async ct =>
@@ -2478,7 +2478,7 @@ public class LinqFluentExtensionsTests
     public async Task SelectAsync_OnTask_WithSyncSelector_ReturnsTransformedValue()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test"));
+        var task = Task.FromResult(new TestEntity());
 
         // Act
         var result = await task.Select(e => e.Name);
@@ -2491,7 +2491,7 @@ public class LinqFluentExtensionsTests
     public async Task SelectAsync_WithAsyncSelector_ReturnsTransformedValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = await entity.SelectAsync(async (e, ct) =>
@@ -2510,7 +2510,7 @@ public class LinqFluentExtensionsTests
     public async Task SelectAsync_WithoutCancellationTokenParam_ReturnsTransformedValue()
     {
         // Arrange
-        var entity = new TestEntity(1, "Test");
+        var entity = new TestEntity();
 
         // Act
         var result = await entity.SelectAsync(async e =>
@@ -2527,7 +2527,7 @@ public class LinqFluentExtensionsTests
     public async Task SelectAsync_OnTask_WithAsyncSelector_ReturnsTransformedValue()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test"));
+        var task = Task.FromResult(new TestEntity());
 
         // Act
         var result = await task.SelectAsync(async (e, ct) =>
@@ -2544,7 +2544,7 @@ public class LinqFluentExtensionsTests
     public async Task SelectAsync_OnTask_WithoutCancellationTokenParam_ReturnsTransformedValue()
     {
         // Arrange
-        var task = Task.FromResult(new TestEntity(1, "Test"));
+        var task = Task.FromResult(new TestEntity());
 
         // Act
         var result = await task.SelectAsync(async e =>

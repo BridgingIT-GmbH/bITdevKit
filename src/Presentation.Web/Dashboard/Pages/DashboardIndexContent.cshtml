@@ -2,7 +2,7 @@
 @inherits RazorSlice
 
 @{
-    var cards = await this.HttpContext.GetDashboardPageCardsAsync();
+    var cards = await HttpContext.GetDashboardPageCardsAsync();
     var groups = cards
         .OrderBy(card => card.GroupOrder)
         .ThenBy(card => card.Group, StringComparer.OrdinalIgnoreCase)

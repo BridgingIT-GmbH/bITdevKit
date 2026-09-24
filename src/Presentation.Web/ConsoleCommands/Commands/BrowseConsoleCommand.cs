@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
 
 /// <summary>
 /// Represents browse console command.

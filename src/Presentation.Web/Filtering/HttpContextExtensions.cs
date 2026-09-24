@@ -41,14 +41,14 @@ public static class HttpContextExtensions
 
         try
         {
-            return string.IsNullOrEmpty(query) ? default : Serializer.Deserialize<FilterModel>(query);
+            return string.IsNullOrEmpty(query) ? null : Serializer.Deserialize<FilterModel>(query);
         }
         catch (JsonException ex)
         {
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync($"Invalid JSON format for filter model: {ex.Message}");
 
-            return default;
+            return null;
         }
     }
 
@@ -90,7 +90,7 @@ public static class HttpContextExtensions
 
             if (string.IsNullOrEmpty(body))
             {
-                return default;
+                return null;
             }
 
             return Serializer.Deserialize<FilterModel>(body);
@@ -100,7 +100,7 @@ public static class HttpContextExtensions
             context.Response.StatusCode = 400;
             await context.Response.WriteAsync($"Invalid JSON format for filter model: {ex.Message}");
 
-            return default;
+            return null;
         }
     }
 }

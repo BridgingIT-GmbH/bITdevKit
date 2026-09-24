@@ -51,7 +51,7 @@ public sealed class JobTestHarness : IDisposable
     public async Task<IResult> ExecuteAsync(CancellationToken cancellationToken = default)
     {
         var job = (IJob)this.provider.GetRequiredService(this.jobType);
-        return await job.ExecuteAsync(this.Context, cancellationToken == default ? this.Context.CancellationToken : cancellationToken).ConfigureAwait(false);
+        return await job.ExecuteAsync(this.Context, cancellationToken == CancellationToken.None ? this.Context.CancellationToken : cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -66,7 +66,7 @@ public sealed class JobTestHarness : IDisposable
         }
 
         var job = this.provider.GetRequiredService<TJob>();
-        return await ((IJob)job).ExecuteAsync(this.Context, cancellationToken == default ? this.Context.CancellationToken : cancellationToken).ConfigureAwait(false);
+        return await ((IJob)job).ExecuteAsync(this.Context, cancellationToken == CancellationToken.None ? this.Context.CancellationToken : cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -85,9 +85,9 @@ public sealed class JobTestHarnessBuilder
     private Type jobType;
     private string jobName = "test-job";
     private string triggerName = "manual";
-    private Guid occurrenceId = Guid.NewGuid();
-    private Guid executionId = Guid.NewGuid();
-    private int attemptNumber = 1;
+    private readonly Guid occurrenceId = Guid.NewGuid();
+    private readonly Guid executionId = Guid.NewGuid();
+    private readonly int attemptNumber = 1;
     private string correlationId = Guid.NewGuid().ToString("N");
     private string idempotencyKey = Guid.NewGuid().ToString("N");
     private DateTimeOffset? scheduledUtc;

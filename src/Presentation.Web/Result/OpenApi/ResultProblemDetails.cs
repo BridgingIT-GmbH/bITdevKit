@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Mvc;
 
 /// <summary>
 /// Represents a ProblemDetails response containing a serialized Result object
@@ -38,7 +38,7 @@ public class ResultProblemData
     public ResultProblemResult Result { get; set; } = new ResultProblemResult();
 
     /// <summary>
-    /// Additional other (non result) error information 
+    /// Additional other (non result) error information
     /// </summary>
     //public string Errors { get; set; } = string.Empty;
     public IEnumerable<ProblemError> Errors { get; set; } = [];

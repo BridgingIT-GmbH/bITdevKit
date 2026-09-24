@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -14,6 +12,8 @@ using System.Globalization;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 
 /// <summary>
 /// Fluent builder for applying complex changes to entities.
@@ -696,7 +696,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </example>
     public EntityChangeBuilder<TEntity> Ensure(Func<TEntity, bool> predicate, string errorMessage)
     {
-        this.orderedOperations.Add(new EnsureOperationOrdered(predicate, errorMessage, null));
+        this.orderedOperations.Add(new EnsureOperationOrdered(predicate, errorMessage));
         return this;
     }
 
@@ -788,7 +788,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// </example>
     public EntityChangeBuilder<TEntity> Check(Func<TEntity, bool> predicate, string errorMessage)
     {
-        this.orderedOperations.Add(new CheckOperationOrdered(predicate, errorMessage, null));
+        this.orderedOperations.Add(new CheckOperationOrdered(predicate, errorMessage));
         return this;
     }
 

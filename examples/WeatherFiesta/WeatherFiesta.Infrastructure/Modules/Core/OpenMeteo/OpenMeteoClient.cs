@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure.OpenMeteo;
 
-using BridgingIT.DevKit.Common;
 using System.Globalization;
 using System.Text.Json;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Configuration options for the Open-Meteo API client.

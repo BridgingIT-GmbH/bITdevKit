@@ -99,7 +99,7 @@ public class IdentityEntityPermissionEvaluationEndpoints(IdentityEntityPermissio
             ]);
 
         return TypedResults.Ok(
-            new EntityPermissionModel(entityType, entityId, permission, default, result));
+            new EntityPermissionModel(entityType, entityId, permission, null, result));
     }
 
     private async Task<Results<Ok<IEnumerable<EntityPermissionModel>>, BadRequest, ProblemHttpResult>> GetEffectivePermissions(

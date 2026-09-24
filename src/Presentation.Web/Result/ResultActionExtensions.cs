@@ -117,8 +117,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Ok(result, result.IsSuccess ? result.Value : default)
-            : new DefaultActionResultMapper().Ok(result, result.IsSuccess ? result.Value : default);
+            ? actionResultMapper.Ok(result, result.IsSuccess ? result.Value : null)
+            : new DefaultActionResultMapper().Ok(result, result.IsSuccess ? result.Value : null);
     }
 
     /// <summary>
@@ -136,7 +136,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.IsSuccess ? result.Value.Select(e => mapper.Map<TSource, TModel>(e)) : default;
+        var models = result.IsSuccess ? result.Value.Select(e => mapper.Map<TSource, TModel>(e)) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Ok(result, models)
@@ -227,8 +227,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Created(result, result.IsSuccess ? result.Value : default, routeName, routeValues)
-            : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
+            ? actionResultMapper.Created(result, result.IsSuccess ? result.Value : null, routeName, routeValues)
+            : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : null, routeName, routeValues);
     }
 
     /// <summary>
@@ -322,8 +322,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Created(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues)
-            : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
+            ? actionResultMapper.Created(result, result.IsSuccess ? result.Value : null, actionName, controllerName, routeValues)
+            : new DefaultActionResultMapper().Created(result, result.IsSuccess ? result.Value : null, actionName, controllerName, routeValues);
     }
 
     /// <summary>
@@ -421,8 +421,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Updated(result, result.IsSuccess ? result.Value : default, routeName, routeValues)
-            : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
+            ? actionResultMapper.Updated(result, result.IsSuccess ? result.Value : null, routeName, routeValues)
+            : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : null, routeName, routeValues);
     }
 
     /// <summary>
@@ -516,8 +516,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Updated(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues)
-            : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
+            ? actionResultMapper.Updated(result, result.IsSuccess ? result.Value : null, actionName, controllerName, routeValues)
+            : new DefaultActionResultMapper().Updated(result, result.IsSuccess ? result.Value : null, actionName, controllerName, routeValues);
     }
 
     /// <summary>
@@ -615,8 +615,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Accepted(result, result.IsSuccess ? result.Value : default, routeName, routeValues)
-            : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : default, routeName, routeValues);
+            ? actionResultMapper.Accepted(result, result.IsSuccess ? result.Value : null, routeName, routeValues)
+            : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : null, routeName, routeValues);
     }
 
     /// <summary>
@@ -710,8 +710,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Accepted(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues)
-            : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : default, actionName, controllerName, routeValues);
+            ? actionResultMapper.Accepted(result, result.IsSuccess ? result.Value : null, actionName, controllerName, routeValues)
+            : new DefaultActionResultMapper().Accepted(result, result.IsSuccess ? result.Value : null, actionName, controllerName, routeValues);
     }
 
     /// <summary>
@@ -854,8 +854,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : default, statusCode)
-            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
+            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : null, statusCode)
+            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : null, statusCode);
     }
 
     /// <summary>
@@ -918,8 +918,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : default, statusCode)
-            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
+            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : null, statusCode)
+            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : null, statusCode);
     }
 
     /// <summary>
@@ -939,7 +939,7 @@ public static class ResultActionExtensions
         IActionResultMapper actionResultMapper = null)
         where TModel : class, new()
     {
-        var models = result.IsSuccess ? result.Value.Select(e => mapper.Map<TSource, TModel>(e)) : default;
+        var models = result.IsSuccess ? result.Value.Select(e => mapper.Map<TSource, TModel>(e)) : null;
 
         return actionResultMapper is not null
             ? actionResultMapper.Object(result, models, statusCode)
@@ -961,8 +961,8 @@ public static class ResultActionExtensions
         where TModel : class, new()
     {
         return actionResultMapper is not null
-            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : default, statusCode)
-            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : default, statusCode);
+            ? actionResultMapper.Object(result, result.IsSuccess ? result.Value : null, statusCode)
+            : new DefaultActionResultMapper().Object(result, result.IsSuccess ? result.Value : null, statusCode);
     }
 
     /// <summary>

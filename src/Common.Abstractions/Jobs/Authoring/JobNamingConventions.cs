@@ -32,7 +32,7 @@ public static class JobNamingConventions
             return string.Empty;
         }
 
-        var builder = new System.Text.StringBuilder(value.Length + 8);
+        var builder = new StringBuilder(value.Length + 8);
         for (var i = 0; i < value.Length; i++)
         {
             var character = value[i];

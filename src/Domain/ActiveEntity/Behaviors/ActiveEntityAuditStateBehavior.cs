@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
 using System;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Repositories;
 
 /// <summary>
 /// Implements auditing and soft delete behavior for entities using AuditState, inheriting from ActiveEntityBehaviorBase.

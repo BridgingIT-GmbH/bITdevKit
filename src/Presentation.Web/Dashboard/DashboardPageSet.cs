@@ -73,7 +73,7 @@ public abstract class DashboardPageSet(DashboardEndpointsOptions options)
                     .WithName(action.Name ?? this.BuildEndpointName(page, action.Key))
                     .WithSummary(action.Summary ?? $"{page.Title} {action.Key}")
                     .WithDescription(action.Description ?? $"Runs the {action.Key} dashboard action for {page.Title}.")
-                    .Produces<string>((int)HttpStatusCode.OK);
+                    .Produces<string>();
             }
         }
     }

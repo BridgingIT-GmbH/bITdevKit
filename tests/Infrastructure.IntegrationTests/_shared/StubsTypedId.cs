@@ -1,8 +1,8 @@
 ﻿namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
 using System.Linq.Expressions;
-using Domain.Model;
 using BridgingIT.DevKit.Domain;
+using Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

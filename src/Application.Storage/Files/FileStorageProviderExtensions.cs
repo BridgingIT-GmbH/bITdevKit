@@ -807,7 +807,7 @@ public static class FileStorageProviderExtensions
                 var metadataResult = await provider.GetFileMetadataAsync(sourcePath, cancellationToken);
                 if (metadataResult.IsSuccess)
                 {
-                    ReportProgress(progress, sourcePath, metadataResult.Value.Length, 1, 1);
+                    ReportProgress(progress, sourcePath, metadataResult.Value.Length, 1);
                 }
 
                 return Result.Success()

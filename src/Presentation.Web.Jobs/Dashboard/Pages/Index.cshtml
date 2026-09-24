@@ -1,10 +1,10 @@
+@using BridgingIT.DevKit.Application.Jobs
 @using BridgingIT.DevKit.Presentation.Web
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
-@using BridgingIT.DevKit.Application.Jobs
 @using Microsoft.Extensions.DependencyInjection
 @using RazorSlices
 @using JobsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints
@@ -12,13 +12,13 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-  var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new
+  var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new
 DashboardEndpointsOptions();
   var contentPath = JobsDashboardEndpoints.BuildJobsDataContentPath(dashboardOptions);
   var actionBase = JobsDashboardEndpoints.BuildJobsActionBase(dashboardOptions);
   var purgePath = $"{actionBase}/purge";
   var logEntriesPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(dashboardOptions);
-  var aliveEnabled = this.HttpContext.RequestServices.GetService<JobAliveOptions>()?.Enabled == true;
+  var aliveEnabled = HttpContext.RequestServices.GetService<JobAliveOptions>()?.Enabled == true;
 }
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
@@ -51,7 +51,7 @@ DashboardEndpointsOptions();
   </div>
 
   <div id="dashboard-jobs-shell">
-    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.Pages.Content>())
+    @(await RenderPartialAsync<Content>())
   </div>
 
   <div class="modal fade" id="jobs-occurrence-context-modal" tabindex="-1" aria-labelledby="jobs-occurrence-context-title"

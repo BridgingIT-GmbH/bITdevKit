@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Collections.Generic;
+using System.Linq;
 using Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Linq;
-using System.Collections.Generic;
 
 /// <summary>
 ///     Middleware to add the current user's ID to the response headers.

@@ -270,7 +270,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return null;
         }
@@ -341,7 +341,7 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// </example>
     public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return false;
         }

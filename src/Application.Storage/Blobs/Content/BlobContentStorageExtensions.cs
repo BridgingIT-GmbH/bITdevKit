@@ -306,7 +306,7 @@ public static class BlobContentStorageExtensions
         }
     }
 
-    private static Result ValidateEncoding(System.Text.Encoding encoding)
+    private static Result ValidateEncoding(Encoding encoding)
     {
         return encoding is null
             ? Result.Failure(new BlobStoreValidationError("Text encoding cannot be null."))

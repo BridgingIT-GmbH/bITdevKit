@@ -3,11 +3,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
+using System.Linq.Expressions;
+using System.Text.Json;
 using Application.Storage;
 using Common;
 using Microsoft.Azure.Cosmos;
-using System.Linq.Expressions;
-using System.Text.Json;
 
 /// <summary>Persists provider-neutral serialized document envelopes with ETags, paging, and native TTL in Cosmos DB.</summary>
 /// <param name="provider">The initialized Cosmos SQL provider used for item and continuation-page operations.</param>

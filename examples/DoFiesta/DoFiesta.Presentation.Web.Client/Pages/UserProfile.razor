@@ -1,9 +1,9 @@
 ﻿@page "/user-profile"
-@using System.Security.Claims
-@using Microsoft.AspNetCore.Authorization
-@using System.Text.Json
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.IdentityModel.Tokens.Jwt
+@using System.Security.Claims
+@using System.Text.Json
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject IAccessTokenProvider TokenProvider
 @inject IJSRuntime JSRuntime
@@ -177,7 +177,7 @@
         {
             accessToken = token.Value;
 
-            var handler = new System.IdentityModel.Tokens.Jwt.JwtSecurityTokenHandler();
+            var handler = new JwtSecurityTokenHandler();
             var jwt = handler.ReadJwtToken(accessToken);
 
             accessTokenClaims = jwt.Claims;
@@ -195,7 +195,7 @@
 
             if (!string.IsNullOrEmpty(tokenStorage))
             {
-                var tokenInfo = JsonSerializer.Deserialize<System.Text.Json.JsonElement>(tokenStorage);
+                var tokenInfo = JsonSerializer.Deserialize<JsonElement>(tokenStorage);
                 accessToken = accessToken.EmptyToNull() ?? tokenInfo.GetProperty("access_token").GetString() ?? string.Empty;
                 idToken = tokenInfo.GetProperty("id_token").GetString() ?? string.Empty;
                 refreshToken = tokenInfo.GetProperty("refresh_token").GetString() ?? string.Empty;

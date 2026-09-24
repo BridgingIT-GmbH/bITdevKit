@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
@@ -16,7 +17,6 @@ using BridgingIT.DevKit.Common;
 using global::Azure;
 using global::Azure.Storage.Files.Shares;
 using global::Azure.Storage.Files.Shares.Models;
-using System.Security.Cryptography;
 
 /// <summary>
 /// File storage provider that uses Azure Files via the REST API.

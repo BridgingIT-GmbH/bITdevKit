@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using BridgingIT.DevKit.Application.JobScheduling;
-using Spectre.Console;
 using System;
 using System.Collections.Generic;
+using BridgingIT.DevKit.Application.JobScheduling;
+using Spectre.Console;
 
 /// <summary>
 /// Represents job trigger console command.
@@ -93,7 +93,7 @@ public class JobTriggerConsoleCommand : JobGroupConsoleCommandBase
                 jobGroup,
                 jobData,
                 checkInterval: 500,
-                timeout: System.TimeSpan.FromMilliseconds(this.Timeout));
+                timeout: TimeSpan.FromMilliseconds(this.Timeout));
 
             var statusIcon = result.LastRun?.Status == "Completed" ? "[green]✓[/]" : "[red]✗[/]";
             console.MarkupLine($"{statusIcon} Job completed with status: [bold]{result.LastRun?.Status}[/]");

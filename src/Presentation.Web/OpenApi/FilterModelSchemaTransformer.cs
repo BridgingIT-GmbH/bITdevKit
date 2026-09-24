@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Text.Json.Nodes;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using System.Text.Json.Nodes;
 
 /// <summary>
 /// Completes incomplete FilterModel-related schemas in the OpenAPI document.

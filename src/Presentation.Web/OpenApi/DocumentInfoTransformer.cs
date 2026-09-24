@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Reflection;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using System.Reflection;
 
 /// <summary>
 /// Customizes the OpenAPI document information including title, version, and description.

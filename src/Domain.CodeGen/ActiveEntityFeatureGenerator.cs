@@ -4,13 +4,13 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 namespace BridgingIT.DevKit.Domain;
 
-using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 #pragma warning disable RS1035 // Do not use APIs banned for analyzers
 #pragma warning disable RS1036 // Specify analyzer banned API enforcement setting
@@ -146,7 +146,7 @@ namespace {ns}
             var firstParamType = method.Parameters[0].Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 
             // Forward XML docs
-            var xmlDocs = method.GetDocumentationCommentXml(expandIncludes: true, cancellationToken: default);
+            var xmlDocs = method.GetDocumentationCommentXml(expandIncludes: true, cancellationToken: CancellationToken.None);
             if (!string.IsNullOrWhiteSpace(xmlDocs))
             {
                 var indentedDocs = string.Join("\n        ",

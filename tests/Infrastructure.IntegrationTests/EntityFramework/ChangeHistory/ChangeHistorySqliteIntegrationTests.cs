@@ -197,7 +197,7 @@ public class ChangeHistorySqliteIntegrationTests
     {
         await using var database = await CreateDatabaseAsync(options => options
             .Track<Customer>()
-                .CaptureUpdateSet(ChangeHistoryCaptureMode.BestEffort, maxAffectedRows: 1));
+                .CaptureUpdateSet(maxAffectedRows: 1));
         database.Context.Customers.AddRange(
             new Customer { Id = Guid.NewGuid(), Name = "one", UniqueCode = "B1" },
             new Customer { Id = Guid.NewGuid(), Name = "two", UniqueCode = "B2" });

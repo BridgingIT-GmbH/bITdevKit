@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
 using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Linq;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Provides live snapshots of curated .NET runtime metrics.
@@ -76,7 +76,7 @@ public class DotNetMetricsSnapshotService : IDotNetMetricsSnapshotService
             ManagedMemoryMb = ToMegabytes(GC.GetTotalMemory(false)),
             HeapSizeMb = ToMegabytes(gcInfo.HeapSizeBytes),
             FragmentedMemoryMb = ToMegabytes(gcInfo.FragmentedBytes),
-            TotalAllocatedMb = ToMegabytes(GC.GetTotalAllocatedBytes(false)),
+            TotalAllocatedMb = ToMegabytes(GC.GetTotalAllocatedBytes()),
             Gen0Collections = GC.CollectionCount(0),
             Gen1Collections = GC.CollectionCount(1),
             Gen2Collections = GC.CollectionCount(2),

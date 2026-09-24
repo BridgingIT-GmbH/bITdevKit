@@ -346,7 +346,7 @@ public static class ModuleExtensions
     {
         if (configuration is null || services is null)
         {
-            return default;
+            return null;
         }
 
         return services.Configure<TOptions>(configuration, module, validateOnStart);
@@ -377,7 +377,7 @@ public static class ModuleExtensions
     {
         if (configuration is null || services is null)
         {
-            return default;
+            return null;
         }
 
         return services.Configure(configuration, module, validationOptions, validateOnStart);
@@ -408,7 +408,7 @@ public static class ModuleExtensions
     {
         if (configuration is null || services is null)
         {
-            return default;
+            return null;
         }
 
         if (EnvironmentExtensions.IsBuildTimeOpenApiGeneration())

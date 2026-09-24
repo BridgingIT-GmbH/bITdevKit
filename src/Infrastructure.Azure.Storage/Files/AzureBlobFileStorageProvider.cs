@@ -9,13 +9,13 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using global::Azure.Storage.Blobs;
 using global::Azure.Storage.Blobs.Models;
-using System.Security.Cryptography;
 
 /// <summary>
 /// File storage provider that uses Azure Blob Storage.

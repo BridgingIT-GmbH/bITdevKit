@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Application.Notifications;
 
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// Stores notification emails in memory for development and test scenarios.

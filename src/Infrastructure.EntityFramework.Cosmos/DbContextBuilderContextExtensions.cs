@@ -29,11 +29,11 @@ public static class DbContextBuilderContextExtensions
     /// </remarks>
     public static CosmosDbContextBuilderContext<TContext> WithHealthChecks<TContext>(
         this CosmosDbContextBuilderContext<TContext> context,
-        string healthQuery = default,
-        string name = default,
-        HealthStatus? failureStatus = default,
+        string healthQuery = null,
+        string name = null,
+        HealthStatus? failureStatus = null,
         IEnumerable<string> tags = null,
-        TimeSpan? timeout = default)
+        TimeSpan? timeout = null)
         where TContext : DbContext
     {
         //context.Services.AddHealthChecks()

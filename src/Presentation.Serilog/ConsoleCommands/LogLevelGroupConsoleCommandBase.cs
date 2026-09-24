@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Microsoft.Extensions.Hosting;
-using Spectre.Console;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Spectre.Console;
 
 /// <summary>
 /// Base class for console commands that manipulate Serilog log levels.

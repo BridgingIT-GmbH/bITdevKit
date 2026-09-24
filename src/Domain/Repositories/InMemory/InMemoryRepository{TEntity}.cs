@@ -192,9 +192,9 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
-            return default;
+            return null;
         }
 
         this.@lock.EnterReadLock();
@@ -326,7 +326,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return Task.FromResult(false);
         }
@@ -392,7 +392,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     {
         if (entity is null)
         {
-            return (default, RepositoryActionResult.None);
+            return (null, RepositoryActionResult.None);
         }
 
         bool isNew;
@@ -452,7 +452,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return Task.FromResult(RepositoryActionResult.None);
         }
@@ -481,7 +481,7 @@ public class InMemoryRepository<TEntity> : IGenericRepository<TEntity>
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
-        if (entity?.Id == default)
+        if (entity?.Id == null)
         {
             return RepositoryActionResult.None;
         }

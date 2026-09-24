@@ -4,15 +4,15 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Common;
-using FluentValidation;
-using FluentValidation.Results;
 using System;
 using System.Collections.Concurrent;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using FluentValidation;
+using FluentValidation.Results;
 
 /// <summary>
 /// A behavior that validates entities before insert, update, or delete operations using DataAnnotations attributes.

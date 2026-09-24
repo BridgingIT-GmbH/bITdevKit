@@ -1,7 +1,7 @@
+@using System.Text.Json
 @using BridgingIT.DevKit.Application.Queueing
 @using Microsoft.Extensions.Logging
 @using QueueingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints
-@using System.Text.Json
 @inherits RazorSlice
 
 @{
@@ -205,10 +205,10 @@ else
 @functions {
     private async Task<DashboardQueueingViewModel> CreateModelAsync()
     {
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var service = this.HttpContext.RequestServices.GetService<IQueueBrokerService>();
-        var logger = this.HttpContext.RequestServices.GetService<ILogger<Data>>();
-        var cancellationToken = this.HttpContext.RequestAborted;
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var service = HttpContext.RequestServices.GetService<IQueueBrokerService>();
+        var logger = HttpContext.RequestServices.GetService<ILogger<Data>>();
+        var cancellationToken = HttpContext.RequestAborted;
         var model = new DashboardQueueingViewModel
         {
             ActionBase = QueueingDashboardEndpoints.BuildQueueingActionBase(dashboardOptions)
@@ -304,7 +304,7 @@ else
     }
 
     private string GetQuery(string key) =>
-        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+        HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
 
     private int GetTake() =>
         int.TryParse(GetQuery("take"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var take)

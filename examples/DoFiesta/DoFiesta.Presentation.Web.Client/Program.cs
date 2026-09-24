@@ -4,6 +4,7 @@
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
 #pragma warning disable SA1200 // Using directives should be placed correctly
+using System.Net.Http.Headers;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
@@ -14,7 +15,6 @@ using Microsoft.Kiota.Http.HttpClientLibrary;
 using MudBlazor;
 using MudBlazor.Services;
 using Polly;
-using System.Net.Http.Headers;
 using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 #pragma warning restore SA1200 // Using directives should be placed correctly

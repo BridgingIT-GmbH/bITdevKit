@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain.Model;
 
+using System.Linq;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 using Shouldly;
-using System.Linq;
 using Xunit;
 
 public class EntityChangeExtensionsTests

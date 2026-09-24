@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.OpenApi;
-using Microsoft.OpenApi;
-using System; // for StringComparison
+using Microsoft.OpenApi; // for StringComparison
 
 /// <summary>
 /// Configures Bearer token security requirements for the OpenAPI document.

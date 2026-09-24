@@ -8,7 +8,7 @@
 @inherits DashboardPageSlice
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = McpDashboardEndpoints.BuildMcpContentPath(dashboardOptions);
 }
 

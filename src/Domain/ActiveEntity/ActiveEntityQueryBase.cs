@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Domain.Repositories;
 
 /// <summary>
 /// Provides a fluent DSL for building queries against an ActiveEntity entity.
@@ -164,7 +164,7 @@ public abstract class ActiveEntityQueryBase<TEntity, TId>
     /// </example>
     public ActiveEntityQueryBase<TEntity, TId> OrderBy(Expression<Func<TEntity, object>> keySelector)
     {
-        var order = new OrderOption<TEntity>(keySelector, OrderDirection.Ascending);
+        var order = new OrderOption<TEntity>(keySelector);
         this.options.Orders ??= [];
         this.options.Orders.Add(order);
         this.options.Order ??= order;

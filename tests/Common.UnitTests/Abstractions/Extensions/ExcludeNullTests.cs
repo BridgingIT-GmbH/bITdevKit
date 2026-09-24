@@ -7,10 +7,10 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
-using Bogus;
-using Shouldly;
 using System.Collections.Concurrent;
 using System.Collections.ObjectModel;
+using Bogus;
+using Shouldly;
 using Xunit;
 
 public class ExcludeNullTests

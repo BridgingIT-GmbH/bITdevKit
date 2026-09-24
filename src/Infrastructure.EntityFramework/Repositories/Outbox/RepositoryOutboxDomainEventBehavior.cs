@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
 using BridgingIT.DevKit.Common;
-using Domain.Outbox;
 using BridgingIT.DevKit.Domain;
+using Domain.Outbox;
 
 /// <summary>
 /// Backwards-compatible alias for <see cref="RepositoryOutboxDomainEventBehavior{TEntity,TContext}" />.
@@ -117,7 +117,7 @@ public partial class RepositoryOutboxDomainEventBehavior<TEntity, TContext> : IG
     {
         var existingEntity = await this.Inner
             .FindOneAsync(id, new FindOptions<TEntity> { NoTracking = true }, cancellationToken).AnyContext();
-        if (existingEntity is null || existingEntity.Id == default)
+        if (existingEntity is null || existingEntity.Id == null)
         {
             return RepositoryActionResult.None;
         }

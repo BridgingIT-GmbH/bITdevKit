@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
+using System.Text.Json.Serialization;
 using Common;
 using DevKit.Domain.Model;
-using System.Text.Json.Serialization;
 
 public class EmailAddress : ValueObject
 {

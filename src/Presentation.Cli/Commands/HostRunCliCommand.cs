@@ -63,7 +63,7 @@ public sealed class HostRunCliCommand() : CliGroupedConsoleCommandBase("host", "
 
         if (response.Available)
         {
-            System.Console.Out.Write(response.Output);
+            Console.Out.Write(response.Output);
             if (!response.Succeeded && string.IsNullOrWhiteSpace(response.Output))
             {
                 cliConsole.Error(response.Summary, response.Code, response.ExitCode);

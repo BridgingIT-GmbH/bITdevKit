@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.JobScheduling;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.JobScheduling;
 

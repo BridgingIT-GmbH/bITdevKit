@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Storage;
 
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 
 /// <summary>
 /// Defines the contract for processing FileEvent instances in the FileMonitoring system.

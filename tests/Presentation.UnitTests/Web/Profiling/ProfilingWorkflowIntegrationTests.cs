@@ -77,8 +77,8 @@ public sealed class ProfilingWorkflowIntegrationTests
         {
             document.RootElement.ValueKind.ShouldBe(JsonValueKind.Array);
             document.RootElement.GetArrayLength().ShouldBe(stoppedData.Snapshots.Count);
-            exported.Value.ShouldNotContain("signals", Case.Insensitive);
-            exported.Value.ShouldNotContain("kpis", Case.Insensitive);
+            exported.Value.ShouldNotContain("signals");
+            exported.Value.ShouldNotContain("kpis");
         }
 
         cleared.IsSuccess.ShouldBeTrue();

@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
+using System.Collections.Generic;
+using Bogus;
 using Microsoft.Extensions.Configuration;
 using Shouldly;
 using Xunit;
-using Bogus;
-using System.Collections.Generic;
 
 public class ConfigurationExtensionsTests
 {

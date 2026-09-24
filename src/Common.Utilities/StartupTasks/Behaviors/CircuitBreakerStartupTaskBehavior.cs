@@ -38,7 +38,7 @@ public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : S
             if (!options.BackoffExponential)
             {
                 retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(options.Backoff != default
+                    .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
                             ? options.Backoff.Milliseconds
                             : 0),
                         (ex, wait) =>
@@ -56,7 +56,7 @@ public class CircuitBreakerStartupTaskBehavior(ILoggerFactory loggerFactory) : S
             else
             {
                 retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(options.Backoff != default
+                    .WaitAndRetryForeverAsync(attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
                             ? options.Backoff.Milliseconds
                             : 0 * Math.Pow(2, attempt)),
                         (ex, wait) =>

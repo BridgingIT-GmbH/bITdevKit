@@ -8,8 +8,8 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 using System.Text;
 using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 using BridgingIT.DevKit.Domain.Repositories;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
@@ -39,7 +39,7 @@ public class CityEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Cities.Suggestions")
             .WithDescription("Searches for city suggestions using the Open-Meteo geocoding API.")
-            .Produces<List<CitySuggestionModel>>(StatusCodes.Status200OK)
+            .Produces<List<CitySuggestionModel>>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -68,7 +68,7 @@ public class CityEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Cities.List")
             .WithDescription("Lists all city subscriptions for the current user with weather data.")
-            .Produces<List<UserCityModel>>(StatusCodes.Status200OK)
+            .Produces<List<UserCityModel>>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -129,7 +129,7 @@ public class CityEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Cities.Weather")
             .WithDescription("Gets current weather and forecasts for a subscribed city, optionally filtered by an ISO date range.")
-            .Produces<CityWeatherResponse>(StatusCodes.Status200OK)
+            .Produces<CityWeatherResponse>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);

@@ -3,10 +3,12 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-using BridgingIT.DevKit.Application.Utilities;
-using BridgingIT.DevKit.Application.Notifications;
-using BridgingIT.DevKit.Common;
+using System.Text.Json;
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Application.Notifications;
+using BridgingIT.DevKit.Application.Utilities;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Layout;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;
@@ -14,15 +16,13 @@ using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Components;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Core;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Presentation.Web;
-using BridgingIT.DevKit.Domain;
 using Hellang.Middleware.ProblemDetails;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using MudBlazor.Services;
 using Scalar.AspNetCore;
-using System.Text.Json;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Diagnostics.HealthChecks;
 
 // ===============================================================================================
 // Create the webhost
@@ -108,12 +108,12 @@ builder.Services.AddMapping().WithMapster();
 // Register the purge queue as a singleton
 builder.Services.AddScoped<ILogEntryService, LogEntryService<CoreDbContext>>();
 builder.Services.AddSingleton<LogEntryMaintenanceQueue>();
-if (!BridgingIT.DevKit.Common.EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
+if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
 {
     builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
 }
 
-builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || BridgingIT.DevKit.Common.EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
+builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
 
 // logging services and endpoints
 
@@ -153,7 +153,7 @@ builder.Services.AddFakeIdentityProvider(o => o // configures the internal oauth
 //     .RequireAuthorization(false));
 builder.Services.AddEndpoints<SystemEndpoints>();
 builder.Services.AddDashboard(o => o
-    .Enabled(true)
+    .Enabled()
     .Authorize(a => a
         .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
         .RequireRole(Role.Administrators))

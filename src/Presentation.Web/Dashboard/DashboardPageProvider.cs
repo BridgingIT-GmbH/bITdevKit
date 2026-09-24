@@ -6,9 +6,9 @@
 namespace BridgingIT.DevKit.Presentation.Web.Dashboard;
 
 using System.Globalization;
+using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
-using BridgingIT.DevKit.Presentation.Web;
 
 /// <summary>
 /// Provides the core dashboard shell page descriptor.

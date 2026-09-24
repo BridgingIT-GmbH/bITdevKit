@@ -94,9 +94,9 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
-            return default;
+            return null;
         }
 
         var result = this.Options.Context.Entities.SafeNull()
@@ -108,13 +108,13 @@ public class InMemoryRepository<TEntity, TDatabaseEntity> : InMemoryRepository<T
             return await Task.FromResult(this.Options.Mapper.Map<TEntity>(result)).AnyContext();
         }
 
-        return default;
+        return null;
     }
 
     /// <inheritdoc/>
     public override async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return false;
         }

@@ -1,6 +1,6 @@
+@using BridgingIT.DevKit.Domain.Repositories
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
-@using BridgingIT.DevKit.Domain.Repositories
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
 @using Microsoft.Extensions.DependencyInjection
 @inherits DashboardContentSlice
@@ -102,21 +102,21 @@
     {
         var result = new CityManagementModel();
 
-        var databaseReadyService = this.HttpContext.RequestServices.GetService<IDatabaseReadyService>();
+        var databaseReadyService = HttpContext.RequestServices.GetService<IDatabaseReadyService>();
         if (databaseReadyService?.IsReady(nameof(CoreDbContext)) == false)
         {
             result.Errors.Add("The database is still starting.");
             return result;
         }
 
-        var requester = this.HttpContext.RequestServices.GetService<IRequester>();
+        var requester = HttpContext.RequestServices.GetService<IRequester>();
         if (requester is null)
         {
             result.Errors.Add("The requester service is not registered.");
             return result;
         }
 
-        var citiesResult = await requester.SendAsync(new AdminCitiesQuery(), cancellationToken: this.HttpContext.RequestAborted);
+        var citiesResult = await requester.SendAsync(new AdminCitiesQuery(), cancellationToken: HttpContext.RequestAborted);
         if (citiesResult.IsFailure)
         {
             result.Errors.AddRange(citiesResult.Errors.Select(error => error.Message));
@@ -158,18 +158,18 @@
 
         public List<string> Errors { get; } = [];
 
-        public int CountryCount => this.Cities
+        public int CountryCount => Cities
             .Select(city => city.CountryCode ?? city.Country)
             .Where(value => !string.IsNullOrWhiteSpace(value))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Count();
 
-        public int TimeZoneCount => this.Cities
+        public int TimeZoneCount => Cities
             .Select(city => city.TimeZone)
             .Where(value => !string.IsNullOrWhiteSpace(value))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Count();
 
-        public int ExternalIdCount => this.Cities.Count(city => city.ExternalId.HasValue);
+        public int ExternalIdCount => Cities.Count(city => city.ExternalId.HasValue);
     }
 }

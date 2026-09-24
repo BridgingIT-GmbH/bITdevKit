@@ -3513,7 +3513,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             return true;
         }
 
-        value = default;
+        value = 0;
         return false;
     }
 

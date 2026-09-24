@@ -106,7 +106,7 @@ public partial class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id != default && this.options.SoftDeleteEnabled)
+        if (id != null && this.options.SoftDeleteEnabled)
         {
             var entity = await this.FindOneAsync(id, new FindOptions<TEntity> { NoTracking = false }, cancellationToken).AnyContext();
             return await this.DeleteAsync(entity, cancellationToken);
@@ -312,7 +312,7 @@ public partial class RepositoryAuditStateBehavior<TEntity> : IGenericRepository<
         if (entity != null && this.options.SoftDeleteEnabled)
         {
             var notDeletedSpecification = new Specification<TEntity>(e => !e.AuditState.Deleted.HasValue || !e.AuditState.Deleted.Value);
-            return notDeletedSpecification.IsSatisfiedBy(entity) ? entity : default;
+            return notDeletedSpecification.IsSatisfiedBy(entity) ? entity : null;
         }
 
         return entity;

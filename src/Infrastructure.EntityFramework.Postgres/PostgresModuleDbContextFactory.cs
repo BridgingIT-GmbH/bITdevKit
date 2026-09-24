@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
+using System.IO;
+using System.Linq;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Design;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.IO;
-using System.Linq;
 
 /// <summary>
 /// A generic factory for creating instances of a specified <see cref="DbContext"/> during design-time operations,

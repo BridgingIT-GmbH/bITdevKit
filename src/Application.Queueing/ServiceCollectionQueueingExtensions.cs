@@ -261,7 +261,7 @@ public static class ServiceCollectionQueueingExtensions
         }
 
         var created = factory(services);
-        Microsoft.Extensions.DependencyInjection.Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton(services, created);
+        Extensions.ServiceCollectionDescriptorExtensions.TryAddSingleton(services, created);
 
         return created;
     }

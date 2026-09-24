@@ -1,5 +1,5 @@
-@using BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages
 @using RazorSlices
 @inherits RazorSlice<SigninViewModel>
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
@@ -12,7 +12,7 @@
     var workspaceClass = showUserCards && showManualLogin ? "identity-workspace" : "identity-workspace identity-workspace-single";
 }
 
-@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.IdentityProvider.Pages._SigninStyles>())
+@(await RenderPartialAsync<_SigninStyles>())
 
 <section class="identity-signin">
     <header class="identity-page-header">

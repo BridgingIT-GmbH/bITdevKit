@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using BridgingIT.DevKit.Application.JobScheduling;
-using Spectre.Console;
 using System;
 using System.Collections.Generic;
+using BridgingIT.DevKit.Application.JobScheduling;
+using Spectre.Console;
 
 /// <summary>
 /// Represents job group console command base.

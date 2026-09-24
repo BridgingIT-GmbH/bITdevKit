@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Storage.Documents.Dashboard;
 
-using System.Net;
 using System.Globalization;
+using System.Net;
 using System.Text;
 using System.Text.Json;
 using BridgingIT.DevKit.Application.Storage;
@@ -214,7 +214,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
             : MapFailure(result);
     }
 
-    private static HttpResult MapFailure(BridgingIT.DevKit.Common.IResult result)
+    private static HttpResult MapFailure(Common.IResult result)
     {
         var error = result.Errors?.FirstOrDefault();
         var message = result.Messages?.LastOrDefault()

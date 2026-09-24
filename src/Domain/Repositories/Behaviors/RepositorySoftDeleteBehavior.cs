@@ -100,7 +100,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(IGenericRepository<TEntity> Ã
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return RepositoryActionResult.None;
         }
@@ -294,7 +294,7 @@ public class RepositorySoftDeleteBehavior<TEntity>(IGenericRepository<TEntity> Ã
     {
         var entity = await this.Inner.FindOneAsync(id, options, cancellationToken).AnyContext();
 
-        return entity is not null && this.Specification.IsSatisfiedBy(entity) ? entity : default;
+        return entity is not null && this.Specification.IsSatisfiedBy(entity) ? entity : null;
     }
 
     /// <summary>

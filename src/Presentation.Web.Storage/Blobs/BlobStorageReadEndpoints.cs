@@ -25,11 +25,9 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// </code>
 /// </example>
 public sealed class BlobStorageReadEndpoints(
-    IBlobStoreClientFactory factory,
     BlobStorageReadEndpointsOptions options = null) : EndpointsBase
 {
     private const string RouteNamePrefix = "_bdk.Storage.Blobs.Read";
-    private readonly IBlobStoreClientFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
     private readonly BlobStorageReadEndpointsOptions options = options ?? new BlobStorageReadEndpointsOptions();
 
     /// <summary>
@@ -51,8 +49,8 @@ public sealed class BlobStorageReadEndpoints(
         var group = this.MapGroup(app, this.options)
             .DisableAntiforgery();
 
-        group.MapGet("{storeName}/content", (string storeName, [FromQuery] string container, [FromQuery] string name, CancellationToken cancellationToken) =>
-                this.DownloadAsync(storeName, container, name, cancellationToken))
+        group.MapGet("{storeName}/content", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.DownloadAsync(factory, storeName, container, name, cancellationToken))
             .Produces((int)HttpStatusCode.OK)
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -65,12 +63,13 @@ public sealed class BlobStorageReadEndpoints(
     }
 
     private async Task<HttpResult> DownloadAsync(
+        IBlobStoreClientFactory factory,
         string storeName,
         string container,
         string name,
         CancellationToken cancellationToken)
     {
-        if (!this.TryCreateClient(storeName, out var client, out var failure))
+        if (!TryCreateClient(factory, storeName, out var client, out var failure))
         {
             return failure;
         }
@@ -100,11 +99,11 @@ public sealed class BlobStorageReadEndpoints(
             fileDownloadName: Path.GetFileName(name));
     }
 
-    private bool TryCreateClient(string storeName, out IBlobStoreClient client, out HttpResult failure)
+    private static bool TryCreateClient(IBlobStoreClientFactory factory, string storeName, out IBlobStoreClient client, out HttpResult failure)
     {
         try
         {
-            client = this.factory.CreateClient(storeName);
+            client = factory.CreateClient(storeName);
             failure = null;
 
             return true;

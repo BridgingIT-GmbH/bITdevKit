@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using DotNet.Testcontainers.Containers;
 using Application.Storage;
+using DotNet.Testcontainers.Containers;
 using Infrastructure.EntityFramework.Storage;
 
 [IntegrationTest("Infrastructure")]

@@ -7,11 +7,11 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var contentPath = BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints.BuildBroadcastingContentPath(dashboardOptions);
     var publishPath = BridgingIT.DevKit.Presentation.Web.Broadcasting.Dashboard.DashboardEndpoints.BuildBroadcastingPublishPath(dashboardOptions);
-    var broadcastingOptions = this.HttpContext.RequestServices.GetService<BridgingIT.DevKit.Common.BroadcastingOptions>();
-    var probeEnabled = this.HttpContext.RequestServices.GetService<BridgingIT.DevKit.Common.IBroadcastService>() is not null
+    var broadcastingOptions = HttpContext.RequestServices.GetService<BridgingIT.DevKit.Common.BroadcastingOptions>();
+    var probeEnabled = HttpContext.RequestServices.GetService<BridgingIT.DevKit.Common.IBroadcastService>() is not null
         && broadcastingOptions?.Enabled != false;
 }
 

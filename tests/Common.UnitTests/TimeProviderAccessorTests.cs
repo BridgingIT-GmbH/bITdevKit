@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests;
 
+using System;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Time.Testing;
 using Shouldly;
-using System;
-using System.Threading.Tasks;
 using Xunit;
 
 /// <summary>

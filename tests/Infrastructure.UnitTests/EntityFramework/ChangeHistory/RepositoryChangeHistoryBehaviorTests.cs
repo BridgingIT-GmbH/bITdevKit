@@ -354,7 +354,7 @@ public class RepositoryChangeHistoryBehaviorTests
         var inner = new InMemoryRepository([entity1, entity2]);
         var options = new ChangeHistoryOptions();
         options.Track<ChangeHistoryStubEntity>()
-            .CaptureUpdateSet(ChangeHistoryCaptureMode.BestEffort, maxAffectedRows: 1);
+            .CaptureUpdateSet(maxAffectedRows: 1);
         var sut = new RepositoryChangeHistoryBehavior<ChangeHistoryStubEntity, ChangeHistoryStubDbContext>(
             NullLoggerFactory.Instance,
             context,

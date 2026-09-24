@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Threading;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Threading;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Behavior that stores domain events in an EF Core outbox for an ActiveRecord entity.

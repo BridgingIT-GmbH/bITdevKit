@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web;
 
+using System.Text;
 using Bogus;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Primitives;
 using NSubstitute;
 using Shouldly;
-using System.Text;
 using Xunit;
 
 public class HttpContextExtensionsTests

@@ -71,7 +71,7 @@ public partial class SubscriptionStatus : Enumeration
 [DebuggerDisplay("Id={Id}, Value={Value}")]
 public partial class SubscriptionBillingCycle : Enumeration
 {
-    public static readonly SubscriptionBillingCycle Never = new(0, nameof(Never), false, "One-time payment", false);
+    public static readonly SubscriptionBillingCycle Never = new(0, nameof(Never), false, "One-time payment");
     public static readonly SubscriptionBillingCycle Monthly = new(1, nameof(Monthly), true, "Monthly billing cycle", true);
     public static readonly SubscriptionBillingCycle Yearly = new(2, nameof(Yearly), true, "Annual billing cycle", true);
 

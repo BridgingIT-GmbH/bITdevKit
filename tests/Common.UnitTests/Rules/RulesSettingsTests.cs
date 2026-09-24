@@ -95,7 +95,7 @@ public class RulesSettingsTests(RulesFixture fixture) : IClassFixture<RulesFixtu
     public void Setup_MultipleConfigurations_ShouldMaintainLastSetValues()
     {
         // Act
-        Rule.Setup(b => b.ThrowOnRuleFailure(true));
+        Rule.Setup(b => b.ThrowOnRuleFailure());
         Rule.Setup(b => b.ThrowOnRuleFailure(false));
 
         // Assert

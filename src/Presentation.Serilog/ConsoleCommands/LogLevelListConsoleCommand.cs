@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 /// <summary>
 /// Console command that lists all available Serilog log levels and highlights the current one.

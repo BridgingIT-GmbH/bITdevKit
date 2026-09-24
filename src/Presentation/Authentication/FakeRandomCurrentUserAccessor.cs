@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Common;
 using System.Security.Claims;
+using Common;
 
 /// <summary>
 /// Represents fake random current user accessor.

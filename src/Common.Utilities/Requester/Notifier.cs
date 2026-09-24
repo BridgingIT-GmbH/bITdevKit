@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Collections.Concurrent;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Collections.Concurrent;
 
 /// <summary>
 /// Defines a notification that can be dispatched to multiple handlers.

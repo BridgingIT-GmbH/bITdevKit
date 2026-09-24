@@ -8,8 +8,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Common;
 using Configuration;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Provides service-collection extensions for registering named blob-store clients.

@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Sequences;
 
-using BridgingIT.DevKit.Domain.Repositories;
-using Shouldly;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Domain.Repositories;
+using Shouldly;
 using Xunit;
 
 [IntegrationTest("Infrastructure")]

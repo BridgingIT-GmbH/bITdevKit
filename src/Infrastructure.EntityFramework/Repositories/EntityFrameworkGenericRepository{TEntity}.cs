@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain;
+using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>
@@ -259,7 +259,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
     /// </example>
     public virtual async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return RepositoryActionResult.None;
         }
@@ -305,7 +305,7 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        if (entity is null || entity.Id == default)
+        if (entity is null || entity.Id == null)
         {
             return RepositoryActionResult.NotFound;
         }

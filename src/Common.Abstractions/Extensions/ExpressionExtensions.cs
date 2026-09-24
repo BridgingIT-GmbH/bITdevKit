@@ -14,35 +14,36 @@ using System.Reflection;
 /// </summary>
 public static class ExpressionExtensions
 {
-    /// <summary>
-    ///     Expands the specified expression.
-    /// </summary>
-    /// <typeparam name="T">The type of the delegate.</typeparam>
     /// <param name="expression">The expression to expand.</param>
-    public static Expression<T> Expand<T>(this Expression<T> expression)
+    /// <typeparam name="T">The type of the delegate.</typeparam>
+    extension<T>(Expression<T> expression)
     {
-        // source: http://www.albahari.com/nutshell/predicatebuilder.aspx & http://www.albahari.com/nutshell/linqkit.aspx
-        return (Expression<T>)new ExpressionExpander().Visit(expression);
-    }
-
-    /// <summary>Gets the referenced member name from a direct member-access expression, including a converted member access.</summary>
-    /// <typeparam name="T">The expression delegate type.</typeparam>
-    /// <param name="source">The expression whose body should be inspected.</param>
-    /// <returns>The referenced member name, or <see langword="null"/> for a null expression.</returns>
-    /// <exception cref="NotSupportedException">Thrown when the expression body is not a supported member access.</exception>
-    public static string GetMemberName<T>(this Expression<T> source)
-    {
-        if (source is not null)
+        /// <summary>
+        ///     Expands the specified expression.
+        /// </summary>
+        public Expression<T> Expand()
         {
-            return source.Body switch
-            {
-                MemberExpression m => m.Member.Name,
-                UnaryExpression u when u.Operand is MemberExpression m => m.Member.Name,
-                _ => throw new NotSupportedException(source.NodeType.ToString())
-            };
+            // source: http://www.albahari.com/nutshell/predicatebuilder.aspx & http://www.albahari.com/nutshell/linqkit.aspx
+            return (Expression<T>)new ExpressionExpander().Visit(expression);
         }
 
-        return null;
+        /// <summary>Gets the referenced member name from a direct member-access expression, including a converted member access.</summary>
+        /// <returns>The referenced member name, or <see langword="null"/> for a null expression.</returns>
+        /// <exception cref="NotSupportedException">Thrown when the expression body is not a supported member access.</exception>
+        public string GetMemberName()
+        {
+            if (expression is not null)
+            {
+                return expression.Body switch
+                {
+                    MemberExpression m => m.Member.Name,
+                    UnaryExpression u when u.Operand is MemberExpression m => m.Member.Name,
+                    _ => throw new NotSupportedException(expression.NodeType.ToString())
+                };
+            }
+
+            return null;
+        }
     }
 
     /// <summary>Renders a Boolean lambda body without its parameter declaration or parameter qualification.</summary>

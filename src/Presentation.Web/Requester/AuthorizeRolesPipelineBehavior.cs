@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
 using System.Collections.Concurrent;
 using System.Security.Claims;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Pipeline behavior that enforces role-based authorization for a specific handler,

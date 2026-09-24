@@ -114,7 +114,7 @@ public class UploadConcurrencyBlobStoreClientBehaviorTests
                 MaxConcurrentUploads = 1,
                 MaxQueuedUploads = 0
             },
-            default);
+            CancellationToken.None);
         var sut = new UploadConcurrencyBlobStoreClientBehavior(
             inner,
             coordinator,

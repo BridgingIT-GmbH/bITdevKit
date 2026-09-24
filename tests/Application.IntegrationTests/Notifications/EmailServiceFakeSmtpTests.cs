@@ -41,7 +41,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
         // Use fluent builder to set up services
         services.AddNotificationService<EmailMessage>(null, b => b
             .WithEntityFrameworkStorageProvider<StubDbContext>()
-            .WithOutbox<StubDbContext>(o => o.Enabled(true))
+            .WithOutbox<StubDbContext>(o => o.Enabled())
             .WithFakeSmtpClient(new FakeSmtpClientOptions { LogMessageBodyLength = 256 })
             .WithSmtpSettings(s =>
             {
@@ -91,7 +91,7 @@ public class EmailServiceFakeSmtpTests : IAsyncLifetime
                     Id = Guid.NewGuid(),
                     FileName = "test.txt",
                     ContentType = "text/plain",
-                    Content = System.Text.Encoding.UTF8.GetBytes("Test content"),
+                    Content = Encoding.UTF8.GetBytes("Test content"),
                     IsEmbedded = false
                 }
             ]

@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Application.Storage;
 
 using System.Collections.Concurrent;
-using BridgingIT.DevKit.Common;
 using System.Threading.RateLimiting;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Coordinates bounded upload admission across client instances in one process.
@@ -140,7 +140,7 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
         this.ConfigureStore(normalizedStoreName, options);
         var state = this.stores[normalizedStoreName];
 
-        var immediateLease = state.Limiter.AttemptAcquire(1);
+        var immediateLease = state.Limiter.AttemptAcquire();
         if (immediateLease.IsAcquired)
         {
             state.IncrementActive();

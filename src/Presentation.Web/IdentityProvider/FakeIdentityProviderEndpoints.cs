@@ -50,7 +50,7 @@ public class FakeIdentityProviderEndpoints(
             .WithName("_bdk.IdentityProvider.Index")
             .WithSummary("Identity Provider Dashboard")
             .WithDescription("Shows the dashboard index page.")
-            .Produces<string>((int)HttpStatusCode.OK)
+            .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest).ExcludeFromDescription();
 
         group.MapGet(paths.WellKnownConfiguration, this.GetConfiguration)
@@ -69,7 +69,7 @@ public class FakeIdentityProviderEndpoints(
             .WithName("_bdk.IdentityProvider.Authorize")
             .WithSummary("Authorization")
             .WithDescription("Shows the signin page for user selection.")
-            .Produces<string>((int)HttpStatusCode.OK)
+            .Produces<string>()
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest);
 
         group.MapGet(paths.AuthorizeCallback, this.HandleAuthorizeCallBack)

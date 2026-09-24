@@ -77,7 +77,7 @@ public class ObjectMapper : IMapper
     {
         if (source is null)
         {
-            return default;
+            return null;
         }
 
         var key = (typeof(TSource), typeof(TTarget));

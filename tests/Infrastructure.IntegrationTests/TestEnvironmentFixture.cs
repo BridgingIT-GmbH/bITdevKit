@@ -17,8 +17,8 @@ using Microsoft.Extensions.Logging;
 using Testcontainers.Azurite;
 using Testcontainers.CosmosDb;
 using Testcontainers.MsSql;
-using Testcontainers.RabbitMq;
 using Testcontainers.PostgreSql;
+using Testcontainers.RabbitMq;
 using CosmosClientOptions = Microsoft.Azure.Cosmos.CosmosClientOptions;
 
 public class TestEnvironmentFixture : IAsyncLifetime

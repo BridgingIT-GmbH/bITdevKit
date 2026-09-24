@@ -127,7 +127,7 @@ public class SubscriptionPlans(string id, StubSubscriptionPlanDetails value)
     public static readonly SubscriptionPlans Premium =
         new("Premium", new StubSubscriptionPlanDetails("Premium Plan", 19.99m, 1000, 10));
 
-    private SubscriptionPlans() : this(default, default) // for json deserialization
+    private SubscriptionPlans() : this(null, null) // for json deserialization
     {
     }
 

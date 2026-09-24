@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Examples.EventSourcingDemo.Application.Persons;
 
 using System.Diagnostics;
+using BridgingIT.DevKit.Domain;
 using Common;
 using DevKit.Domain.EventSourcing.Store;
 using DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Domain;
 using Domain.Model;
 using Domain.Repositories;
 using MediatR;

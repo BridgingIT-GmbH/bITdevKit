@@ -30,7 +30,7 @@ public class UserEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Users.Profile")
             .WithDescription("Gets the current user's profile.")
-            .Produces<UserProfileModel>(StatusCodes.Status200OK)
+            .Produces<UserProfileModel>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -45,7 +45,7 @@ public class UserEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Users.UpdateProfile")
             .WithDescription("Updates the current user's profile.")
-            .Produces<UserProfileModel>(StatusCodes.Status200OK)
+            .Produces<UserProfileModel>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -59,7 +59,7 @@ public class UserEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Users.Preferences")
             .WithDescription("Gets the current user's unit preferences.")
-            .Produces<UnitPreferencesModel>(StatusCodes.Status200OK)
+            .Produces<UnitPreferencesModel>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -74,7 +74,7 @@ public class UserEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Users.UpdatePreferences")
             .WithDescription("Updates the current user's unit preferences.")
-            .Produces<UnitPreferencesModel>(StatusCodes.Status200OK)
+            .Produces<UnitPreferencesModel>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);

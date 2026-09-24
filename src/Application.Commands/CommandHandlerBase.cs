@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Commands;
 
+using System.Diagnostics;
 using FluentValidation;
 using Microsoft.Extensions.Logging.Abstractions;
-using System.Diagnostics;
 
 /// <summary>
 /// Represents command handler base.

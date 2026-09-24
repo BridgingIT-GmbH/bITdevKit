@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System;
+using Spectre.Console;
 
 /// <summary>
 /// Represents job interrupt console command.

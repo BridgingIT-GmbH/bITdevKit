@@ -18,7 +18,7 @@ public static class ProfilingDurationParser
     /// <example><code>ProfilingDurationParser.TryParse("1.5s", out var duration);</code></example>
     public static bool TryParse(string value, out TimeSpan duration)
     {
-        duration = default;
+        duration = TimeSpan.Zero;
         if (string.IsNullOrWhiteSpace(value))
         {
             return false;
@@ -63,13 +63,13 @@ public static class ProfilingDurationParser
                 "s" => TimeSpan.FromSeconds(amount),
                 "m" => TimeSpan.FromMinutes(amount),
                 "h" => TimeSpan.FromHours(amount),
-                _ => default,
+                _ => TimeSpan.Zero,
             };
             return true;
         }
         catch (OverflowException)
         {
-            duration = default;
+            duration = TimeSpan.Zero;
             return false;
         }
     }

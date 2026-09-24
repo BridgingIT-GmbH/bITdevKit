@@ -5,11 +5,11 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Diagnostics.CodeAnalysis;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
-using System.Diagnostics.CodeAnalysis;
 
 /// <summary>
 /// Extension methods for configuring CORS middleware.

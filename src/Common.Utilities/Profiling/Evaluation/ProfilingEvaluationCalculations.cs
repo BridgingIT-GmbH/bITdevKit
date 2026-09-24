@@ -50,8 +50,7 @@ public sealed partial class ProfilingEvaluator
         var cpuSecondHalf = WeightedAverage(
             intervals,
             x => x.CpuPercent,
-            temporalMidpoint,
-            double.PositiveInfinity
+            temporalMidpoint
         );
         var allocationFirstHalf = WeightedAverage(
             intervals,
@@ -62,8 +61,7 @@ public sealed partial class ProfilingEvaluator
         var allocationSecondHalf = WeightedAverage(
             intervals,
             x => x.AllocationRateBytesPerSecond,
-            temporalMidpoint,
-            double.PositiveInfinity
+            temporalMidpoint
         );
 
         if (mode is ProfilingEvaluationMode.TwoSnapshots && ordered.Length == 2)

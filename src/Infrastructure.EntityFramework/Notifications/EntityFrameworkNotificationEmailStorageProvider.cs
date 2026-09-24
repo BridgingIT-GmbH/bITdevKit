@@ -5,17 +5,17 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Notifications;
 
-using BridgingIT.DevKit.Application.Notifications;
-using BridgingIT.DevKit.Common;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Notifications;
+using BridgingIT.DevKit.Common;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Persists notification emails in an Entity Framework backed outbox store.

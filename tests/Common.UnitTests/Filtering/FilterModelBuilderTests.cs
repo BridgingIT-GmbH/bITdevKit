@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Filtering;
 
-using Bogus;
-using Xunit;
 using System;
+using Bogus;
 using Shouldly;
+using Xunit;
 
 public class FilterModelBuilderTests
 {

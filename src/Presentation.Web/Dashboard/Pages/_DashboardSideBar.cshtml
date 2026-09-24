@@ -10,7 +10,7 @@
                 .ThenBy(item => item.Group, StringComparer.OrdinalIgnoreCase)
                 .GroupBy(item => item.Group ?? "Dashboard")
                 .ToArray();
-            var requestPath = this.HttpContext.Request.Path.Value?.TrimEnd('/') ?? string.Empty;
+            var requestPath = HttpContext.Request.Path.Value?.TrimEnd('/') ?? string.Empty;
             var activeItem = Model
                 .Where(item => IsPathMatch(requestPath, item.Url))
                 .OrderByDescending(item => item.Url.Split('?')[0].TrimEnd('/').Length)

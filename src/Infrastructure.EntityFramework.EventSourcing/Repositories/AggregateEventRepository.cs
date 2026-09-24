@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.EventSourcing;
 
+using BridgingIT.DevKit.Domain;
 using Common;
 using Domain.EventSourcing.Model;
 using Domain.EventSourcing.Registration;
 using Domain.Repositories;
-using BridgingIT.DevKit.Domain;
 using Infrastructure.EventSourcing;
 using Models;
 using Repositories;

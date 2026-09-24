@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Common;
 
+using System.Threading;
 using FluentValidation;
 using FluentValidation.Internal;
 using Microsoft.Extensions.Logging;
-using System.Threading;
 
 /// <summary>Provides validation, logging, throwing, and value-processing operations for <see cref="Result{T}"/>.</summary>
 public static class ResultTExtensions

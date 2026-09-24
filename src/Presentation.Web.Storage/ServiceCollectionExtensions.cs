@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.Storage;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation;
 using BridgingIT.DevKit.Presentation.Web.Storage;
 using Microsoft.Extensions.DependencyInjection.Extensions;

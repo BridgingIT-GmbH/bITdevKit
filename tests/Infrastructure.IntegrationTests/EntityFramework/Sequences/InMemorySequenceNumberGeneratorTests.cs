@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Sequences;
 
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
-using System.Threading.Tasks;
 using Xunit;
 
 [IntegrationTest("Infrastructure")]

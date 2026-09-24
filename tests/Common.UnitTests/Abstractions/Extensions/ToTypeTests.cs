@@ -17,7 +17,7 @@ public class ToTypeTests
         // Act
         var result = value.ToType<int>();
 
-        result.ShouldBe(default);
+        result.ShouldBe(0);
     }
 
     [Fact]

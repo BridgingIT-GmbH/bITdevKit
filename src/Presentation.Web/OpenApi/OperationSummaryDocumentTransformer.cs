@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using System.Text.RegularExpressions;
 
 /// <summary>
 /// Enhances operation documentation with automatically generated summaries and descriptions.

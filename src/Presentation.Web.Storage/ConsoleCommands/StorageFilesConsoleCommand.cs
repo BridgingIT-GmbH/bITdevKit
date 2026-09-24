@@ -276,7 +276,7 @@ public sealed class StorageFilesConsoleCommand() : StorageConsoleCommandBase("fi
             return;
         }
 
-        var contentType = ContentTypeExtensions.FromFileName(this.Path, ContentType.TXT);
+        var contentType = ContentTypeExtensions.FromFileName(this.Path);
         if (contentType.IsBinary())
         {
             console.MarkupLine("[yellow]File content appears to be binary by extension. Use --output to write it to a local file.[/]");

@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Repositories;
 
 using System.Linq.Expressions;
-using Domain.Repositories;
 using BridgingIT.DevKit.Domain;
+using Domain.Repositories;
 using Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;

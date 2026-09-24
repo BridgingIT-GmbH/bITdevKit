@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System.Threading.Tasks;
+using Spectre.Console;
 
 /// <summary>
 /// Console command that changes the active Serilog log level at runtime.

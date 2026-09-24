@@ -1,11 +1,11 @@
 namespace BridgingIT.DevKit.Presentation.UnitTests.Web.Modules;
 
+using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using BridgingIT.DevKit.Presentation.Web;
 
 [UnitTest("Presentation")]
 public class ModuleEnvironmentTests

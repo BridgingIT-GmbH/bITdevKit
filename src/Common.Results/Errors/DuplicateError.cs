@@ -18,7 +18,7 @@ public class DuplicateError(string message = null, string propertyName = null, o
     public object AttemptedValue { get; } = attemptedValue;
 
     /// <summary>Initializes a duplicate-value error with the default message and no property details.</summary>
-    public DuplicateError() : this(null, null, null)
+    public DuplicateError() : this(null)
     {
     }
 

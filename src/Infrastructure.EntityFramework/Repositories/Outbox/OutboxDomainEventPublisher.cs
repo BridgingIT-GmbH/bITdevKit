@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System.Threading;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Outbox;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System.Threading;
-using System.Threading.Tasks;
 
 public partial class ActiveEntityDomainEventOutboxPublishingBehavior<TEntity, TId, TContext> where TEntity : ActiveEntity<TEntity, TId>
     where TContext : DbContext, IOutboxDomainEventContext

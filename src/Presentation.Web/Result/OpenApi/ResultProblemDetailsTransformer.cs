@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Collections.Concurrent;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
-using System.Collections.Concurrent;
 
 /// <summary>
 /// An OpenAPI schema transformer that configures Result problem detail schemas.

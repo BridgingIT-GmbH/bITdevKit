@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Collections.Generic;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
-using System.Collections.Generic;
 
 /// <summary>
 /// Represents requester info console command.

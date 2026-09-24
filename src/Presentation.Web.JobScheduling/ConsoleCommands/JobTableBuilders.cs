@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Collections.Generic;
 using BridgingIT.DevKit.Application.JobScheduling;
 using Spectre.Console;
-using System.Collections.Generic;
 
 /// <summary>
 /// Represents job table builders.

@@ -5,7 +5,7 @@
 @inherits RazorSlice
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+    var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var realtimeDataPath = JobsDashboardEndpoints.BuildJobsRealtimeDataPath(dashboardOptions);
     var historyDataPath = JobsDashboardEndpoints.BuildJobsHistoryDataPath(dashboardOptions);
 }

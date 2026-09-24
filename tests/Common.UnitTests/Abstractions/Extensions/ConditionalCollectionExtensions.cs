@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
-using Shouldly;
 using System;
 using System.Collections.Generic;
+using Shouldly;
 using Xunit;
 
 [UnitTest("Common")]

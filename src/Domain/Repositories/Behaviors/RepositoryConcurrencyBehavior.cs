@@ -65,7 +65,7 @@ public class RepositoryConcurrencyBehavior<TEntity>(IGenericRepository<TEntity> 
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<RepositoryActionResult> DeleteAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return RepositoryActionResult.None;
         }

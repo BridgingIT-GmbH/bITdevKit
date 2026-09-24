@@ -8,8 +8,8 @@
 
 @{
     var vm = await CreateModelAsync();
-    var permalinkAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/download";
-    var permalinkCopyAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(this.HttpContext.RequestServices.GetRequiredService<BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions>()) + "/link";
+    var permalinkAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>()) + "/download";
+    var permalinkCopyAction = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes.Actions(HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>()) + "/link";
 }
 
 <style>
@@ -301,10 +301,10 @@
 
     private async Task<DashboardBlobsViewModel> CreateModelAsync()
     {
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var factory = this.HttpContext.RequestServices.GetService<IBlobStoreClientFactory>();
-        var logger = this.HttpContext.RequestServices.GetService<ILogger<Content>>();
-        var cancellationToken = this.HttpContext.RequestAborted;
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var factory = HttpContext.RequestServices.GetService<IBlobStoreClientFactory>();
+        var logger = HttpContext.RequestServices.GetService<ILogger<Content>>();
+        var cancellationToken = HttpContext.RequestAborted;
         var model = new DashboardBlobsViewModel
         {
             ActionBase = BlobStorageDashboardRoutes.BuildBlobsActionBase(dashboardOptions),
@@ -312,7 +312,7 @@
             Container = GetQuery("container") ?? string.Empty,
             Prefix = NormalizePrefix(GetQuery("prefix")),
             Take = ResolveTake(GetQuery("take")),
-            AllowFullScan = !this.HttpContext.Request.Query.ContainsKey("allowFullScan") || GetBooleanQuery("allowFullScan"),
+            AllowFullScan = !HttpContext.Request.Query.ContainsKey("allowFullScan") || GetBooleanQuery("allowFullScan"),
             ContinuationToken = GetQuery("continuationToken")
         };
 
@@ -389,10 +389,10 @@
     }
 
     private string GetQuery(string key) =>
-        this.HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
+        HttpContext.Request.Query.TryGetValue(key, out var value) ? value.ToString() : null;
 
     private bool GetBooleanQuery(string key) =>
-        this.HttpContext.Request.Query.TryGetValue(key, out var value) &&
+        HttpContext.Request.Query.TryGetValue(key, out var value) &&
         string.Equals(value.ToString(), "true", StringComparison.OrdinalIgnoreCase);
 
     private static IReadOnlyList<BlobStorageClientInfoModel> GetStores(IBlobStoreClientFactory factory) =>
@@ -499,7 +499,7 @@
         return query.Count == 0 ? basePath : $"{basePath}?{string.Join("&", query)}";
     }
 
-    private static string GetFailureMessage(BridgingIT.DevKit.Common.IResult result, string fallback) =>
+    private static string GetFailureMessage(IResult result, string fallback) =>
         result.Messages?.LastOrDefault()
         ?? result.Errors?.FirstOrDefault()?.Message
         ?? fallback;

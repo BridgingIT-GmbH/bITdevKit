@@ -30,7 +30,7 @@ public class WeatherEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Weather.Alerts")
             .WithDescription("Gets weather alerts for all subscribed cities.")
-            .Produces<List<CityAlertsModel>>(StatusCodes.Status200OK)
+            .Produces<List<CityAlertsModel>>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -46,7 +46,7 @@ public class WeatherEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Weather.Sun")
             .WithDescription("Gets sunrise/sunset data for a subscribed city, optionally filtered by an ISO date range.")
-            .Produces<CitySunResponse>(StatusCodes.Status200OK)
+            .Produces<CitySunResponse>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -61,7 +61,7 @@ public class WeatherEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Weather.Compare")
             .WithDescription("Compares current weather across multiple subscribed cities.")
-            .Produces<CityCompareResponse>(StatusCodes.Status200OK)
+            .Produces<CityCompareResponse>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -75,7 +75,7 @@ public class WeatherEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Weather.Export")
             .WithDescription("Exports current weather for all subscribed cities as CSV.")
-            .Produces<CityExportResponse>(StatusCodes.Status200OK)
+            .Produces<CityExportResponse>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);
@@ -90,7 +90,7 @@ public class WeatherEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Weather.Recommendations")
             .WithDescription("Gets weather recommendations for a subscribed city.")
-            .Produces<CityRecommendationsResponse>(StatusCodes.Status200OK)
+            .Produces<CityRecommendationsResponse>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);

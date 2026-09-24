@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Infrastructure.LiteDb.Repositories;
 
 using System.Linq.Expressions;
+using BridgingIT.DevKit.Domain;
 using Common;
 using Domain.Model;
 using Domain.Repositories;
-using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
@@ -201,7 +201,7 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return null;
         }
@@ -256,7 +256,7 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
     /// <returns>A task that represents the asynchronous operation.</returns>
     public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return false;
         }

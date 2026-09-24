@@ -123,8 +123,7 @@ public class JobTriggerEvaluator(
             fromUtc,
             nowUtc,
             trigger.TimeZone,
-            runtimeState.LastMaterializedScheduledUtc is null,
-            true);
+            runtimeState.LastMaterializedScheduledUtc is null);
 
         if (!occurrencesResult.IsSuccess)
         {
@@ -181,8 +180,7 @@ public class JobTriggerEvaluator(
             fromUtc,
             nowUtc,
             trigger.TimeZone,
-            runtimeState.LastMaterializedScheduledUtc is null,
-            true);
+            runtimeState.LastMaterializedScheduledUtc is null);
 
         if (!occurrencesResult.IsSuccess)
         {

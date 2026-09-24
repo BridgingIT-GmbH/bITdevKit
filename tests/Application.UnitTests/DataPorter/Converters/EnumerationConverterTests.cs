@@ -147,7 +147,7 @@ public class TestStatusEnumeration(int id, string value) : Enumeration(id, value
     public static readonly TestStatusEnumeration Active = new(2, "Active");
     public static readonly TestStatusEnumeration Inactive = new(3, "Inactive");
 
-    private TestStatusEnumeration() : this(default, default)
+    private TestStatusEnumeration() : this(0, null)
     {
     }
 }
@@ -158,7 +158,7 @@ public class ColorEnumeration(int id, Color value) : Enumeration<Color>(id, valu
     public static readonly ColorEnumeration Green = new(2, Color.Green);
     public static readonly ColorEnumeration Blue = new(3, Color.Blue);
 
-    private ColorEnumeration() : this(default, default)
+    private ColorEnumeration() : this(0, default)
     {
     }
 }
@@ -169,7 +169,7 @@ public class SubscriptionPlanEnumeration(string id, decimal value) : Enumeration
     public static readonly SubscriptionPlanEnumeration Basic = new("Basic", 9.99m);
     public static readonly SubscriptionPlanEnumeration Premium = new("Premium", 19.99m);
 
-    private SubscriptionPlanEnumeration() : this(default, default)
+    private SubscriptionPlanEnumeration() : this(null, 0)
     {
     }
 }

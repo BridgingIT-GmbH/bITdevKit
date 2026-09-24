@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Diagnostics;
 using BridgingIT.DevKit.Common;
 using Spectre.Console;
-using System.Diagnostics;
 
 /// <summary>
 /// Represents memory console command.

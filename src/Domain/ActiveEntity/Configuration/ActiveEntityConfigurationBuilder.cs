@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using BridgingIT.DevKit.Domain.Model;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Provides a fluent API for configuring multiple Active Entity entities.

@@ -3,8 +3,8 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System.Reflection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
-using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Registers app-side MCP handlers.

@@ -204,7 +204,7 @@ public static class ServiceCollectionExtensions
             return sectionConfiguration.Get<TOptions>();
         }
 
-        return default; //configuration.Get<TOptions>(module);
+        return null; //configuration.Get<TOptions>(module);
     }
 
     /// <summary>

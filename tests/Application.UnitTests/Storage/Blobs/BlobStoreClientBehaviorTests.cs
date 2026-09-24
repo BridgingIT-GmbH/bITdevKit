@@ -10,8 +10,8 @@ using System.Diagnostics.Metrics;
 using System.Text;
 using Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Time.Testing;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Time.Testing;
 
 [UnitTest("Application")]
 public sealed class BlobStoreClientBehaviorTests
@@ -289,7 +289,7 @@ public sealed class BlobStoreClientBehaviorTests
         await using var active = await coordinator.AcquireAsync(
             "reports",
             admissionOptions,
-            default);
+            CancellationToken.None);
         var innerAttempts = 0;
         var admission = new UploadConcurrencyBlobStoreClientBehavior(
             new ScriptedBlobStoreClient
@@ -344,7 +344,7 @@ public sealed class BlobStoreClientBehaviorTests
         await using var active = await coordinator.AcquireAsync(
             "reports",
             admissionOptions,
-            default);
+            CancellationToken.None);
         var admission = new UploadConcurrencyBlobStoreClientBehavior(
             new ScriptedBlobStoreClient(),
             coordinator,

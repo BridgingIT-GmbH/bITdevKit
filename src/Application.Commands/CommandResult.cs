@@ -84,12 +84,13 @@ public static class CommandResult
 
     /// <summary>
     /// Creates a <see cref="CommandResponse{Result}"/> object indicating a successful operation.
-    /// <return>
+    /// </summary>
+    /// <returns>
     /// A <see cref="CommandResponse{Result}"/> object with the result set to success.
-    /// </return>
+    /// </returns>
     public static CommandResponse<Result> Success()
     {
-        return new CommandResponse<Result> { Result = Common.Result.Success() };
+        return new CommandResponse<Result> { Result = Result.Success() };
     }
 
     /// <summary>
@@ -99,7 +100,7 @@ public static class CommandResult
     /// <returns>A command response indicating success, containing the provided message.</returns>
     public static CommandResponse<Result> Success(string message)
     {
-        return new CommandResponse<Result> { Result = Common.Result.Success(message) };
+        return new CommandResponse<Result> { Result = Result.Success(message) };
     }
 
     /// <summary>
@@ -109,7 +110,7 @@ public static class CommandResult
     /// <returns>A CommandResponse object containing a Result with the success messages.</returns>
     public static CommandResponse<Result> Success(IEnumerable<string> messages)
     {
-        return new CommandResponse<Result> { Result = Common.Result.Success(messages) };
+        return new CommandResponse<Result> { Result = Result.Success(messages) };
     }
 
     /// <summary>
@@ -163,7 +164,7 @@ public static class CommandResult
     /// <returns>A CommandResponse containing a failure result.</returns>
     public static CommandResponse<Result> Failure()
     {
-        return new CommandResponse<Result> { Result = Common.Result.Failure() };
+        return new CommandResponse<Result> { Result = Result.Failure() };
     }
 
     /// <summary>
@@ -172,9 +173,9 @@ public static class CommandResult
     /// <param name="message">The failure message to be conveyed.</param>
     /// <param name="error">An optional object implementing <see cref="IResultError"/> which provides additional error information.</param>
     /// <returns>A <see cref="CommandResponse{Result}"/> object encapsulating the failure result.</returns>
-    public static CommandResponse<Result> Failure(string message, IResultError error = default)
+    public static CommandResponse<Result> Failure(string message, IResultError error = null)
     {
-        return new CommandResponse<Result> { Result = Common.Result.Failure(message, error) };
+        return new CommandResponse<Result> { Result = Result.Failure(message, error) };
     }
 
     /// <summary>
@@ -185,9 +186,9 @@ public static class CommandResult
     /// <returns>A CommandResponse object containing a failure result with the provided messages and errors.</returns>
     public static CommandResponse<Result> Failure(
         IEnumerable<string> messages,
-        IEnumerable<IResultError> errors = default)
+        IEnumerable<IResultError> errors = null)
     {
-        return new CommandResponse<Result> { Result = Common.Result.Failure(messages, errors) };
+        return new CommandResponse<Result> { Result = Result.Failure(messages, errors) };
     }
 
     /// <summary>
@@ -198,7 +199,7 @@ public static class CommandResult
     public static CommandResponse<Result> Failure<TError>(string message = null)
         where TError : IResultError, new()
     {
-        return new CommandResponse<Result> { Result = Common.Result.Failure<TError>(message) };
+        return new CommandResponse<Result> { Result = Result.Failure<TError>(message) };
     }
 
     /// <summary>
@@ -210,7 +211,7 @@ public static class CommandResult
     public static CommandResponse<Result> Failure<TError>(IEnumerable<string> messages)
         where TError : IResultError, new()
     {
-        return new CommandResponse<Result> { Result = Common.Result.Failure<TError>(messages) };
+        return new CommandResponse<Result> { Result = Result.Failure<TError>(messages) };
     }
 
     /// <summary>
@@ -235,7 +236,7 @@ public static class CommandResult
     public static CommandResponse<Result<TValue>> Failure<TValue>(
         TValue value,
         string message,
-        IResultError error = default)
+        IResultError error = null)
     {
         return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(value, message, error) };
     }
@@ -248,7 +249,7 @@ public static class CommandResult
     /// <param name="messages">The collection of failure messages.</param>
     /// <param name="errors">The collection of errors associated with the failure result.</param>
     /// <returns>A <see cref="CommandResponse{TResult}"/> containing the failure result, messages, and errors.</returns>
-    public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value, IEnumerable<string> messages, IEnumerable<IResultError> errors = default)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(TValue value, IEnumerable<string> messages, IEnumerable<IResultError> errors = null)
     {
         return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(value, messages, errors) };
     }
@@ -260,7 +261,7 @@ public static class CommandResult
     /// <param name="message">An optional failure message to include in the response.</param>
     /// <param name="error">An optional error object implementing <see cref="IResultError"/>.</param>
     /// <returns>A <see cref="CommandResponse{Result{TValue}}"/> indicating a failure.</returns>
-    public static CommandResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = default)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = null)
     {
         return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(message, error) };
     }

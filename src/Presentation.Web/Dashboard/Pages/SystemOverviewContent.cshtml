@@ -259,10 +259,10 @@
 @functions {
     private DashboardSystemViewModel CreateModel()
     {
-        var dotNetSnapshotService = this.HttpContext.RequestServices.GetService<IDotNetMetricsSnapshotService>();
-        var aspNetSnapshotService = this.HttpContext.RequestServices.GetService<IAspNetMetricsSnapshotService>();
-        var environment = this.HttpContext.RequestServices.GetService<IHostEnvironment>();
-        var logger = this.HttpContext.RequestServices.GetService<ILogger<DashboardSystemViewModel>>();
+        var dotNetSnapshotService = HttpContext.RequestServices.GetService<IDotNetMetricsSnapshotService>();
+        var aspNetSnapshotService = HttpContext.RequestServices.GetService<IAspNetMetricsSnapshotService>();
+        var environment = HttpContext.RequestServices.GetService<IHostEnvironment>();
+        var logger = HttpContext.RequestServices.GetService<ILogger<DashboardSystemViewModel>>();
         var result = new DashboardSystemViewModel { CapturedAtUtc = DateTimeOffset.UtcNow };
 
         if (dotNetSnapshotService is null)
@@ -405,7 +405,7 @@
 
     private static IReadOnlyList<DashboardEnvironmentVariableModel> CreateEnvironmentVariables()
     {
-        return global::System.Environment.GetEnvironmentVariables()
+        return Environment.GetEnvironmentVariables()
             .Cast<System.Collections.DictionaryEntry>()
             .Select(entry => new DashboardEnvironmentVariableModel(
                 entry.Key?.ToString() ?? string.Empty,

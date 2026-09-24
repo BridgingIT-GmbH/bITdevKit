@@ -6,8 +6,8 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions;
 
 using System.Reflection;
-using Xunit;
 using Shouldly;
+using Xunit;
 
 public class VersionTests
 {

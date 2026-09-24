@@ -394,7 +394,7 @@ public class ResultPagedCollectionTests
     {
         // Arrange
         var values = new List<int> { 1, 2, 3 };
-        var result = ResultPaged<int>.Success(values, 100, 2, 10);
+        var result = ResultPaged<int>.Success(values, 100, 2);
         var pageInfo = string.Empty;
 
         // Act

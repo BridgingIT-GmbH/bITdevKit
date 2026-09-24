@@ -42,7 +42,7 @@ public sealed class GuidFormatConverter : IValueConverter<Guid>
         var stringValue = value?.ToString();
         if (string.IsNullOrWhiteSpace(stringValue))
         {
-            return default;
+            return Guid.Empty;
         }
 
         if (!string.IsNullOrWhiteSpace(this.Format) && Guid.TryParseExact(stringValue, this.Format, out var exactResult))
@@ -50,13 +50,13 @@ public sealed class GuidFormatConverter : IValueConverter<Guid>
             return exactResult;
         }
 
-        return Guid.TryParse(stringValue, out var result) ? result : default;
+        return Guid.TryParse(stringValue, out var result) ? result : Guid.Empty;
     }
 
     /// <inheritdoc/>
     object IValueConverter.ConvertToExport(object value, ValueConversionContext context)
     {
-        return this.ConvertToExport(value is Guid guidValue ? guidValue : default, context);
+        return this.ConvertToExport(value is Guid guidValue ? guidValue : Guid.Empty, context);
     }
 
     /// <inheritdoc/>

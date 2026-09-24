@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Domain.Model;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Collections.Generic;
+using BridgingIT.DevKit.Domain.Model;
+using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Defines operations for i active entity configurator.

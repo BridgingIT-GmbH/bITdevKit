@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests;
 
+using System.Linq.Expressions;
 using Application.Messaging;
 using Domain;
 using Domain.Model;
@@ -15,7 +16,6 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using Microsoft.Extensions.Logging;
-using System.Linq.Expressions;
 
 public class PersonStub : AggregateRoot<Guid>
 {

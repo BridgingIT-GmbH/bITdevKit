@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System.Collections.Generic;
 using System.Linq;
+using Spectre.Console;
 
 /// <summary>
 /// Represents history search console command.

@@ -3,10 +3,10 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using global::Azure;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using global::Azure;
 
 /// <summary>Persists chunked serialized documents in deterministic, provider-managed Azure Tables.</summary>
 /// <remarks>

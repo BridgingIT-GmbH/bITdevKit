@@ -278,7 +278,7 @@ public class TestExportProvider : IDataExportProvider
         }
 
         var dataList = data.ToList();
-        var bytes = System.Text.Encoding.UTF8.GetBytes("test export data");
+        var bytes = Encoding.UTF8.GetBytes("test export data");
         outputStream.Write(bytes, 0, bytes.Length);
 
         return Task.FromResult(new ExportResult
@@ -303,7 +303,7 @@ public class TestExportProvider : IDataExportProvider
         }
 
         var dataList = await data.ToListAsync(cancellationToken);
-        var bytes = System.Text.Encoding.UTF8.GetBytes("test export data");
+        var bytes = Encoding.UTF8.GetBytes("test export data");
         await outputStream.WriteAsync(bytes, cancellationToken);
 
         return new ExportResult
@@ -321,7 +321,7 @@ public class TestExportProvider : IDataExportProvider
         CancellationToken cancellationToken = default)
     {
         var totalRows = dataSets.Sum(ds => ds.Data.Count());
-        var bytes = System.Text.Encoding.UTF8.GetBytes("test multi export data");
+        var bytes = Encoding.UTF8.GetBytes("test multi export data");
         outputStream.Write(bytes, 0, bytes.Length);
 
         return Task.FromResult(new ExportResult
@@ -345,7 +345,7 @@ public class TestExportProvider : IDataExportProvider
             totalRows += (await data.ToListAsync(cancellationToken)).Count;
         }
 
-        var bytes = System.Text.Encoding.UTF8.GetBytes("test multi export data");
+        var bytes = Encoding.UTF8.GetBytes("test multi export data");
         await outputStream.WriteAsync(bytes, cancellationToken);
 
         return new ExportResult

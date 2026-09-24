@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http.Json;
 
 /// <summary>
 /// Provides a uniform configuration for ASP.NET Core <see cref="JsonOptions"/> by

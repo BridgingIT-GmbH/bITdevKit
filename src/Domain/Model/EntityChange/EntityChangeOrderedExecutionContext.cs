@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.Model;
 
-using BridgingIT.DevKit.Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using BridgingIT.DevKit.Domain;
 
 /// <summary>
 /// Context for ordered operation execution, tracking changes and queued events.

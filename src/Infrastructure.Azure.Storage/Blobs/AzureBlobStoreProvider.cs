@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using global::Azure;
 using System.Globalization;
 using System.Text.RegularExpressions;
+using global::Azure;
 
 /// <summary>
 /// Implements the provider-neutral blob-store contract using Azure Blob Storage.

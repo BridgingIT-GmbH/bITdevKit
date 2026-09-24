@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System;
 using System.Collections.Concurrent;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// Thread-safe implementation of <see cref="IDatabaseReadyService"/> for tracking readiness and fault state

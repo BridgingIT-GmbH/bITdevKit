@@ -6,12 +6,12 @@
 namespace BridgingIT.DevKit.Domain.EventSourcing.Outbox;
 
 using AggregatePublish;
+using BridgingIT.DevKit.Domain;
 using Common;
 using Common.Options;
 using Domain.Outbox;
 using Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using BridgingIT.DevKit.Domain;
 
 /// <summary>
 /// Represents outbox worker service.

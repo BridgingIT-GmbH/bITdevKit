@@ -1,11 +1,11 @@
-@using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
-@using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
+@using System.Text.Json
 @using BridgingIT.DevKit.Domain
 @using BridgingIT.DevKit.Domain.Repositories
+@using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core
+@using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model
 @using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure
 @using Microsoft.Extensions.DependencyInjection
-@using System.Text.Json
 @inherits DashboardContentSlice
 
 @{
@@ -240,21 +240,21 @@
             CapturedAtUtc = DateTimeOffset.UtcNow
         };
 
-        var databaseReadyService = this.HttpContext.RequestServices.GetService<IDatabaseReadyService>();
+        var databaseReadyService = HttpContext.RequestServices.GetService<IDatabaseReadyService>();
         if (databaseReadyService?.IsReady(nameof(CoreDbContext)) == false)
         {
             result.Errors.Add("The database is still starting.");
             return result;
         }
 
-        var requester = this.HttpContext.RequestServices.GetService<IRequester>();
+        var requester = HttpContext.RequestServices.GetService<IRequester>();
         if (requester is null)
         {
             result.Errors.Add("The requester service is not registered.");
             return result;
         }
 
-        var citiesResult = await requester.SendAsync(new AdminCitiesQuery(), cancellationToken: this.HttpContext.RequestAborted);
+        var citiesResult = await requester.SendAsync(new AdminCitiesQuery(), cancellationToken: HttpContext.RequestAborted);
         if (citiesResult.IsFailure)
         {
             result.Errors.AddRange(citiesResult.Errors.Select(error => error.Message));
@@ -270,7 +270,7 @@
 
         if (!string.IsNullOrWhiteSpace(result.SelectedCityId))
         {
-            var weatherResult = await requester.SendAsync(new AdminCityWeatherQuery(result.SelectedCityId), cancellationToken: this.HttpContext.RequestAborted);
+            var weatherResult = await requester.SendAsync(new AdminCityWeatherQuery(result.SelectedCityId), cancellationToken: HttpContext.RequestAborted);
             if (weatherResult.IsSuccess)
             {
                 result.CurrentWeather = weatherResult.Value;
@@ -302,7 +302,7 @@
         var forecastsResult = await WeatherForecast.FindAllAsync(
             new Specification<WeatherForecast>(forecast => forecast.CityId == cityId),
             options,
-            this.HttpContext.RequestAborted);
+            HttpContext.RequestAborted);
 
         if (forecastsResult.IsFailure)
         {
@@ -335,7 +335,7 @@
                 report.CityId == cityId &&
                 reportTypes.Contains(report.ReportType)),
             null,
-            this.HttpContext.RequestAborted);
+            HttpContext.RequestAborted);
 
         if (reportsResult.IsFailure)
         {
@@ -441,7 +441,7 @@
             .Where(id => !string.IsNullOrWhiteSpace(id))
             .ToHashSet(StringComparer.OrdinalIgnoreCase);
 
-        if (this.HttpContext.Request.Query.TryGetValue("cityId", out var selectedCityId) &&
+        if (HttpContext.Request.Query.TryGetValue("cityId", out var selectedCityId) &&
             cityIds.Contains(selectedCityId.ToString()))
         {
             return selectedCityId.ToString();
@@ -558,15 +558,15 @@
 
         public string SelectedCityWeatherJson { get; set; }
 
-        public int TotalSubscriptions => this.Cities.Sum(city => city.SubscriptionCount);
+        public int TotalSubscriptions => Cities.Sum(city => city.SubscriptionCount);
 
-        public int CountryCount => this.Cities
+        public int CountryCount => Cities
             .Select(city => city.CountryCode ?? city.Country)
             .Where(value => !string.IsNullOrWhiteSpace(value))
             .Distinct(StringComparer.OrdinalIgnoreCase)
             .Count();
 
-        public AdminCityModel MostSubscribedCity => this.Cities
+        public AdminCityModel MostSubscribedCity => Cities
             .OrderByDescending(city => city.SubscriptionCount)
             .ThenBy(city => city.Name, StringComparer.OrdinalIgnoreCase)
             .FirstOrDefault();

@@ -11,7 +11,6 @@ using System.Text;
 using BridgingIT.DevKit.Application.Storage;
 using BridgingIT.DevKit.Presentation.Web.Storage.Models;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
@@ -42,7 +41,7 @@ public class FileStorageEndpointsApplication : WebApplicationFactory<FileStorage
                 options.UseOnDemandOnly = true;
                 options.UseProcessor<FileLoggerProcessor>();
             });
-        }, ServiceLifetime.Scoped);
+        });
         appBuilder.Services.AddSingleton<InMemoryFileEventStore>();
         appBuilder.Services.AddScoped<IFileEventStore>(sp => sp.GetRequiredService<InMemoryFileEventStore>());
 

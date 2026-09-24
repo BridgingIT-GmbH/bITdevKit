@@ -7,10 +7,10 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modul
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using BridgingIT.DevKit.Presentation;
 using Microsoft.Extensions.DependencyInjection;
 using Spectre.Console;
-using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 
 /// <summary>
 /// Console command to delete a city by name (with confirmation).

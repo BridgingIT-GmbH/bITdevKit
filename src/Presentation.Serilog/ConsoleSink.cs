@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Linq.Expressions;
+using System.Reflection;
 using Serilog.Core;
 using Serilog.Events;
 using Serilog.Formatting.Display;
 using Serilog.Sinks.SystemConsole.Themes;
-using System.Linq.Expressions;
-using System.Reflection;
 using SerilogConsoleTheme = Serilog.Sinks.SystemConsole.Themes.ConsoleTheme;
 using SerilogConsoleThemeStyle = Serilog.Sinks.SystemConsole.Themes.ConsoleThemeStyle;
 

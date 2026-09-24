@@ -34,7 +34,7 @@ public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSched
             {
                 retryPolicy = Policy.Handle<Exception>()
                     .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
                             ? options.Backoff.Milliseconds
                             : 0),
                         (ex, wait) =>
@@ -54,7 +54,7 @@ public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSched
             {
                 retryPolicy = Policy.Handle<Exception>()
                     .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != default
+                        attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
                             ? options.Backoff.Milliseconds
                             : 0 * Math.Pow(2, attempt)),
                         (ex, wait) =>

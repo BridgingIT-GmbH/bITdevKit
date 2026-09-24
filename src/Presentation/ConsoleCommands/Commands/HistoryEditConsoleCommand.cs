@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using Spectre.Console;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
+using Spectre.Console;
 
 /// <summary>
 /// Opens the persisted console command history file in a local editor and reloads it after saving.

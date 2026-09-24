@@ -10,7 +10,6 @@ using System.Net.Http.Json;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Presentation.Web.Notifications;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

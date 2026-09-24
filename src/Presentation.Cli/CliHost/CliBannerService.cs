@@ -43,10 +43,10 @@ public static class CliBannerService
         {
             Ansi = settings.NoColor ? AnsiSupport.No : AnsiSupport.Detect,
             ColorSystem = settings.NoColor ? ColorSystemSupport.NoColors : ColorSystemSupport.Detect,
-            Out = new TextWriterAnsiConsoleOutput(System.Console.Error, 120, 32)
+            Out = new TextWriterAnsiConsoleOutput(Console.Error, 120, 32)
         });
 
-        if (settings.NonInteractive || settings.NoColor || System.Console.IsErrorRedirected)
+        if (settings.NonInteractive || settings.NoColor || Console.IsErrorRedirected)
         {
             console.Write(CreatePanel(CreateBanner(version, BannerLines[0].Length)));
             console.WriteLine();
@@ -93,9 +93,9 @@ public static class CliBannerService
             !settings.IsJson &&
             !settings.IsCi &&
             !settings.NonInteractive &&
-            !System.Console.IsInputRedirected &&
-            !System.Console.IsOutputRedirected &&
-            !System.Console.IsErrorRedirected;
+            !Console.IsInputRedirected &&
+            !Console.IsOutputRedirected &&
+            !Console.IsErrorRedirected;
     }
 
     private static Panel CreatePanel(IRenderable content)
@@ -201,7 +201,7 @@ public sealed class TextWriterAnsiConsoleOutput(TextWriter writer, int width, in
     public int Height { get; } = height;
 
     /// <inheritdoc />
-    public void SetEncoding(System.Text.Encoding encoding)
+    public void SetEncoding(Encoding encoding)
     {
     }
 }

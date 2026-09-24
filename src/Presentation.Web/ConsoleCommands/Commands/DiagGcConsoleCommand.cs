@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Runtime;
+using System.Runtime.InteropServices;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Runtime;
-using System.Runtime.InteropServices;
 
 /// <summary>
 /// Represents diag gc console command.

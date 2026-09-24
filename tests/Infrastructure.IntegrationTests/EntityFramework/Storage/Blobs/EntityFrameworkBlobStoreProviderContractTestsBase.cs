@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
+using System.Text;
 using Application.Storage;
 using Application.UnitTests.Storage;
 using Infrastructure.EntityFramework.Storage;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using System.Text;
 
 public abstract class EntityFrameworkBlobStoreProviderContractTestsBase(ITestOutputHelper output, TestEnvironmentFixture fixture)
     : BlobStoreProviderContractTests

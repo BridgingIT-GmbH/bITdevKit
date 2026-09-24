@@ -62,7 +62,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
 
         this.Logger.LogInformation(
             "[{LogKey}] broker initialized (name={QueueBroker})",
-            Application.Queueing.Constants.LogKey,
+            Constants.LogKey,
             this.GetType().Name);
     }
 
@@ -145,7 +145,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
 
         this.Logger.LogDebug(
             "[{LogKey}] queue storage message produced (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
-            Application.Queueing.Constants.LogKey,
+            Constants.LogKey,
             messageTypeName,
             message.MessageId,
             queueName);
@@ -173,7 +173,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
         {
             this.Logger.LogWarning(
                 "[{LogKey}] queue storage poller already exists for queue (queue={QueueName})",
-                Application.Queueing.Constants.LogKey,
+                Constants.LogKey,
                 queueName);
             return;
         }
@@ -191,7 +191,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
 
         this.Logger.LogInformation(
             "[{LogKey}] queue storage poller started (queue={QueueName}, type={QueueMessageType})",
-            Application.Queueing.Constants.LogKey,
+            Constants.LogKey,
             queueName,
             messageTypeName);
     }
@@ -241,7 +241,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
 
         this.Logger.LogInformation(
             "[{LogKey}] queue storage poller stopped (queue={QueueName})",
-            Application.Queueing.Constants.LogKey,
+            Constants.LogKey,
             queueName);
     }
 
@@ -289,7 +289,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
                 this.Logger.LogError(
                     ex,
                     "[{LogKey}] queue storage polling error (queue={QueueName}): {ErrorMessage}",
-                    Application.Queueing.Constants.LogKey,
+                    Constants.LogKey,
                     queueName,
                     ex.Message);
 
@@ -330,7 +330,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
             this.Logger.LogError(
                 ex,
                 "[{LogKey}] queue storage message could not be deserialized (queue={QueueName}, type={QueueMessageType})",
-                Application.Queueing.Constants.LogKey,
+                Constants.LogKey,
                 queueName,
                 messageTypeName);
 
@@ -342,7 +342,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
         {
             this.Logger.LogError(
                 "[{LogKey}] queue storage message deserialized to null (queue={QueueName}, type={QueueMessageType})",
-                Application.Queueing.Constants.LogKey,
+                Constants.LogKey,
                 queueName,
                 messageTypeName);
 
@@ -355,7 +355,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
         {
             this.Logger.LogWarning(
                 "[{LogKey}] queue storage message expired (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
-                Application.Queueing.Constants.LogKey,
+                Constants.LogKey,
                 messageTypeName,
                 message.MessageId,
                 queueName);
@@ -370,7 +370,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
         {
             this.Logger.LogDebug(
                 "[{LogKey}] queue storage message paused, making visible again (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
-                Application.Queueing.Constants.LogKey,
+                Constants.LogKey,
                 messageTypeName,
                 message.MessageId,
                 queueName);
@@ -381,7 +381,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
 
         this.Logger.LogDebug(
             "[{LogKey}] queue storage message consumed (name={QueueMessageType}, id={MessageId}, queue={QueueName})",
-            Application.Queueing.Constants.LogKey,
+            Constants.LogKey,
             messageTypeName,
             message.MessageId,
             queueName);
@@ -409,7 +409,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
                 {
                     this.Logger.LogError(
                         "[{LogKey}] queue storage message dead-lettered after max attempts (name={QueueMessageType}, id={MessageId}, queue={QueueName}, attempts={AttemptCount})",
-                        Application.Queueing.Constants.LogKey,
+                        Constants.LogKey,
                         messageTypeName,
                         message.MessageId,
                         queueName,
@@ -422,7 +422,7 @@ public class AzureQueueStorageQueueBroker : QueueBrokerBase, IAsyncDisposable
                 {
                     this.Logger.LogWarning(
                         "[{LogKey}] queue storage message failed, retrying (name={QueueMessageType}, id={MessageId}, queue={QueueName}, attempt={AttemptCount})",
-                        Application.Queueing.Constants.LogKey,
+                        Constants.LogKey,
                         messageTypeName,
                         message.MessageId,
                         queueName,

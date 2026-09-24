@@ -5,13 +5,13 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
+using System;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
-using System;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 /// <summary>
 /// PostgreSQL implementation of sequence number generator with thread-safe operations.
@@ -119,7 +119,7 @@ public class PostgresSequenceNumberGenerator<TContext>(
             var schemaName = schema ?? "public";
             var info = await context.Database
                 .SqlQueryRaw<SequenceInfo>(
-                    $@"SELECT 
+                    $@"SELECT
                         sequencename AS ""Name"",
                         schemaname AS ""Schema"",
                         CAST(last_value AS BIGINT) AS ""CurrentValue"",

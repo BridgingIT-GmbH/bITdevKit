@@ -10,8 +10,8 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Text.Json;
-using Microsoft.EntityFrameworkCore;
 using BridgingIT.DevKit.Application.Notifications;
+using Microsoft.EntityFrameworkCore;
 
 /// <summary>
 /// Represents a persisted notification email row managed by the Entity Framework outbox.

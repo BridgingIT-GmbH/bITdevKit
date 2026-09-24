@@ -1,3 +1,4 @@
+@using System.Text.Encodings.Web
 @using BridgingIT.DevKit.Application.Utilities
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
@@ -5,7 +6,6 @@
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Logging
 @using RazorSlices
-@using System.Text.Encodings.Web
 @inherits RazorSlice
 
 @{
@@ -175,20 +175,20 @@ else
 
     private async Task<ErrorsContentModel> CreateModelAsync()
     {
-        var service = this.HttpContext.RequestServices.GetService<ILogEntryService>();
+        var service = HttpContext.RequestServices.GetService<ILogEntryService>();
         var result = new ErrorsContentModel { IsServiceRegistered = service is not null };
         if (service is null)
         {
             return result;
         }
 
-        var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
+        var filter = LogEntriesDashboard.CreateFilter(HttpContext);
         var request = LogEntriesDashboard.CreateRequest(filter);
         request.Level = LogLevel.Error;
 
         try
         {
-            var response = await service.QueryAsync(request, this.HttpContext.RequestAborted);
+            var response = await service.QueryAsync(request, HttpContext.RequestAborted);
             result.ContinuationToken = response.ContinuationToken;
             result.Items.AddRange(await CreateErrorItemsAsync(service, filter, response.Items));
             result.RelatedLookupCount = result.Items.Select(item => item.Related.CacheKey).Where(key => key is not null).Distinct(StringComparer.Ordinal).Count();
@@ -200,7 +200,7 @@ else
 
         try
         {
-            result.Statistics = await service.GetStatisticsAsync(filter.StartTime, filter.EndTime, null, this.HttpContext.RequestAborted);
+            result.Statistics = await service.GetStatisticsAsync(filter.StartTime, filter.EndTime, null, HttpContext.RequestAborted);
         }
         catch
         {
@@ -255,7 +255,7 @@ else
             SpanId = descriptor.FilterName == "spanId" ? descriptor.Value : null
         };
 
-        var response = await service.QueryAsync(request, this.HttpContext.RequestAborted);
+        var response = await service.QueryAsync(request, HttpContext.RequestAborted);
         var items = response.Items
             .Where(log => log.Id != currentId)
             .ToArray();
@@ -337,9 +337,9 @@ else
 
     private sealed record RelatedLogDescriptor(string Label, string FilterName, string Value)
     {
-        public string CacheKey => string.IsNullOrWhiteSpace(this.FilterName) || string.IsNullOrWhiteSpace(this.Value)
+        public string CacheKey => string.IsNullOrWhiteSpace(FilterName) || string.IsNullOrWhiteSpace(Value)
             ? null
-            : $"{this.FilterName}:{this.Value}";
+            : $"{FilterName}:{Value}";
     }
 
     private sealed record RelatedLogModel(string CacheKey, IReadOnlyList<LogEntryModel> Items);

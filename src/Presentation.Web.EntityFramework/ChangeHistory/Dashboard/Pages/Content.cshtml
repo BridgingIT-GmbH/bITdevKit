@@ -230,14 +230,14 @@
 @functions {
     private async Task<DashboardChangeHistoryViewModel> CreateModelAsync()
     {
-        var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var registrations = this.HttpContext.RequestServices.GetServices<ChangeHistoryDashboardDescriptor>()
+        var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+        var registrations = HttpContext.RequestServices.GetServices<ChangeHistoryDashboardDescriptor>()
             .Where(descriptor => descriptor.IsValid)
             .OrderBy(descriptor => descriptor.EntityTypeName, StringComparer.OrdinalIgnoreCase)
             .ThenBy(descriptor => descriptor.ContextTypeName, StringComparer.OrdinalIgnoreCase)
             .ToArray();
 
-        var query = ChangeHistoryDashboardQueryState.FromRequest(this.HttpContext);
+        var query = ChangeHistoryDashboardQueryState.FromRequest(HttpContext);
         var selected = registrations.FirstOrDefault(descriptor => descriptor.Key == query.RegistrationKey) ?? registrations.FirstOrDefault();
         if (selected is not null && string.IsNullOrWhiteSpace(query.RegistrationKey))
         {
@@ -259,7 +259,7 @@
         }
 
         var findAllQuery = query.ToFindAllQuery(selected);
-        var changeSets = await ChangeHistoryDashboardInvoker.FindAllChangeSetsAsync(this.HttpContext.RequestServices, selected, findAllQuery, this.HttpContext.RequestAborted);
+        var changeSets = await ChangeHistoryDashboardInvoker.FindAllChangeSetsAsync(HttpContext.RequestServices, selected, findAllQuery, HttpContext.RequestAborted);
         if (changeSets.IsSuccess)
         {
             model.ChangeSets = changeSets.Value;
@@ -269,7 +269,7 @@
             model.Errors.Add(changeSets.Errors.FirstOrDefault()?.Message ?? "ChangeHistory change sets could not be loaded.");
         }
 
-        var rows = await ChangeHistoryDashboardInvoker.FindAllAsync(this.HttpContext.RequestServices, selected, findAllQuery, this.HttpContext.RequestAborted);
+        var rows = await ChangeHistoryDashboardInvoker.FindAllAsync(HttpContext.RequestServices, selected, findAllQuery, HttpContext.RequestAborted);
         if (rows.IsSuccess)
         {
             model.Rows = rows.Value;
@@ -282,7 +282,7 @@
         if (query.ChangeSetId.HasValue)
         {
             var selectedChangeSet = await ChangeHistoryDashboardInvoker.FindOneChangeSetAsync(
-                this.HttpContext.RequestServices,
+                HttpContext.RequestServices,
                 selected,
                 new ChangeHistoryFindOneChangeSetQuery
                 {
@@ -291,7 +291,7 @@
                     EntityId = query.EntityId,
                     IncludeValues = selected.Options.IncludeValues
                 },
-                this.HttpContext.RequestAborted);
+                HttpContext.RequestAborted);
 
             if (selectedChangeSet.IsSuccess)
             {
@@ -314,7 +314,7 @@
             return new HtmlString("<div class=\"text-muted p-3\">No change sets found.</div>");
         }
 
-        var writer = new System.Text.StringBuilder();
+        var writer = new StringBuilder();
         writer.Append("<div class=\"accordion\" id=\"change-history-change-set-list\">");
         foreach (var changeSet in changeSets)
         {
@@ -335,7 +335,7 @@
         var canRestore = rows.Any(row => row.IsRestoreable);
         var collapseId = $"chs-{changeSet.ChangeSetId:N}";
         var title = $"{changeSet.EntityType} / {changeSet.EntityId}";
-        var writer = new System.Text.StringBuilder();
+        var writer = new StringBuilder();
         writer.Append("<div class=\"accordion-item\">");
         writer.Append("<h2 class=\"accordion-header\">");
         writer.Append(CultureInfo.InvariantCulture, $"<button class=\"accordion-button collapsed\" type=\"button\" data-bs-toggle=\"collapse\" data-bs-target=\"#{collapseId}\">");
@@ -375,7 +375,7 @@
             return "<div class=\"text-muted p-3\">No rows found.</div>";
         }
 
-        var writer = new System.Text.StringBuilder();
+        var writer = new StringBuilder();
         writer.Append("<div class=\"table-responsive\"><table class=\"table table-sm align-middle mb-0 change-history-sticky-head\"><thead><tr>");
         writer.Append("<th>Changed</th><th>Entity</th><th>Property</th><th>Old</th><th>New</th><th>Operation</th><th>Capture</th><th>User</th><th>Status</th>");
         writer.Append("</tr></thead><tbody>");
@@ -409,7 +409,7 @@
 
     private IHtmlContent RenderHiddenFilters(ChangeHistoryDashboardQueryState query)
     {
-        var writer = new System.Text.StringBuilder();
+        var writer = new StringBuilder();
         AppendHidden(writer, "registration", query.RegistrationKey);
         AppendHidden(writer, "entityId", query.EntityId);
         AppendHidden(writer, "propertyName", query.PropertyName);
@@ -431,7 +431,7 @@
         return new HtmlString(writer.ToString());
     }
 
-    private static void AppendHidden(System.Text.StringBuilder writer, string name, string value)
+    private static void AppendHidden(StringBuilder writer, string name, string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {
@@ -460,7 +460,7 @@
 
     private static string RenderRowDetails(ChangeHistoryRecord row)
     {
-        var writer = new System.Text.StringBuilder();
+        var writer = new StringBuilder();
         writer.Append("<details class=\"mt-1\"><summary class=\"small text-muted\">Details</summary><div class=\"change-history-row-details small text-muted mt-1\">");
         AppendDetail(writer, "Capture message", row.CaptureMessage);
         AppendDetail(writer, "Restore plan", row.RestorePlanName);
@@ -479,7 +479,7 @@
         return writer.ToString();
     }
 
-    private static void AppendDetail(System.Text.StringBuilder writer, string label, string value)
+    private static void AppendDetail(StringBuilder writer, string label, string value)
     {
         if (!string.IsNullOrWhiteSpace(value))
         {

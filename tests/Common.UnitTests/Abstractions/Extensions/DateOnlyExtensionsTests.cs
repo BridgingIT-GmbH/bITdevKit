@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 public class DateOnlyExtensionsTests
 {
-    private readonly Faker faker = new();
+    // private readonly Faker faker = new();
 
     [Fact]
     public void StartOfDay_GivenDateOnly_ReturnsSameDate()
@@ -195,8 +195,17 @@ public class DateOnlyExtensionsTests
         var future = today.AddDays(5);
 
         // Act & Assert
-        future.IsInRelativeRange(DateUnit.Day, 10, DateTimeDirection.Future, true).ShouldBeTrue();
-        future.IsInRelativeRange(DateUnit.Day, 3, DateTimeDirection.Future, true).ShouldBeFalse();
+        future.IsInRelativeRange(DateUnit.Day, 10, DateTimeDirection.Future).ShouldBeTrue();
+        future.IsInRelativeRange(DateUnit.Day, 3, DateTimeDirection.Future).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsInRelativeRange_WithExplicitReference_ReturnsExpectedResult()
+    {
+        var reference = new DateOnly(2026, 1, 10);
+
+        reference.AddDays(-3).IsInRelativeRange(reference, DateUnit.Day, 5, DateTimeDirection.Past).ShouldBeTrue();
+        reference.AddDays(3).IsInRelativeRange(reference, DateUnit.Day, 5, DateTimeDirection.Past).ShouldBeFalse();
     }
 
     [Theory]
@@ -273,6 +282,22 @@ public class DateOnlyExtensionsTests
         result.ShouldBe(TimeSpan.FromDays(5));
     }
 
+    [Fact]
+    public void DaysUntil_WithExplicitReference_ReturnsDayDifference()
+    {
+        var reference = new DateOnly(2026, 1, 1);
+
+        reference.AddDays(5).DaysUntil(reference).ShouldBe(5);
+    }
+
+    [Fact]
+    public void DaysUntil_WithoutReference_ReturnsWholeDayDifferenceFromToday()
+    {
+        var source = DateOnly.FromDateTime(DateTime.Now).AddDays(2);
+
+        source.DaysUntil().ShouldBe(2);
+    }
+
     [Theory]
     [InlineData(DateUnit.Day)]
     [InlineData(DateUnit.Week)]
@@ -333,6 +358,15 @@ public class DateOnlyExtensionsTests
     }
 
     [Fact]
+    public void AtStartOfDay_AndToDateTimeOffset_UseExpectedOffsets()
+    {
+        var source = new DateOnly(2026, 1, 1);
+
+        source.AtStartOfDay(TimeSpan.FromHours(2)).ShouldBe(new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.FromHours(2)));
+        source.ToDateTimeOffset().ShouldBe(new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero));
+    }
+
+    [Fact]
     public void AtTime_UsesProvidedTimeAndOffset()
     {
         var source = new DateOnly(2026, 1, 1);
@@ -347,6 +381,16 @@ public class DateOnlyExtensionsTests
     public void ToIsoDateString_ReturnsDeterministicString()
     {
         new DateOnly(2026, 6, 29).ToIsoDateString().ShouldBe("2026-06-29");
+    }
+
+    [Fact]
+    public void FloorAndCeilingTo_ReturnExpectedCalendarBoundaries()
+    {
+        var source = new DateOnly(2026, 1, 7);
+
+        source.FloorTo(DateUnit.Week).ShouldBe(new DateOnly(2026, 1, 5));
+        source.CeilingTo(DateUnit.Month).ShouldBe(new DateOnly(2026, 2, 1));
+        new DateOnly(2026, 1, 1).CeilingTo(DateUnit.Month).ShouldBe(new DateOnly(2026, 1, 1));
     }
 
     [Fact]
@@ -501,7 +545,7 @@ public class DateOnlyExtensionsTests
             .SetDefault(new BusinessCalendar())
             .RegisterCountry("NL", new BusinessCalendar(nonWorkingDays: [DayOfWeek.Monday]))
             .Register(CultureInfo.GetCultureInfo("fr-BE"), new BusinessCalendar(nonWorkingDays: [DayOfWeek.Tuesday])));
-        using var provider = services.BuildServiceProvider();
+        await using var provider = services.BuildServiceProvider();
         var loggerFactory = new RecordingLoggerFactory();
         var sut = new BusinessCalendarStartupDiagnosticsService(provider.GetServices<BusinessCalendarOptions>(), loggerFactory);
 
@@ -513,6 +557,7 @@ public class DateOnlyExtensionsTests
         entry.Message.ShouldContain("business calendars registered");
         entry.Message.ShouldContain("NL=");
         entry.Message.ShouldContain("fr-BE|BE|fr=");
+        // ReSharper disable once AssignNullToNotNullAttribute
         entry.Message.ShouldContain(typeof(BusinessCalendar).FullName);
     }
 

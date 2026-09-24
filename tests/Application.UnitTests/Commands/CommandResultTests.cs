@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Commands;
 
+using Bogus;
 using BridgingIT.DevKit.Application.Commands;
 using BridgingIT.DevKit.Common;
-using Bogus;
 using Shouldly;
 using Xunit;
 
@@ -37,7 +37,7 @@ public class CommandResultTests
         response.ShouldNotBeNull();
         response.Result.ShouldBeOfType<Result<int>>();
         response.Result.IsSuccess.ShouldBeTrue();
-        response.Result.Value.ShouldBe(default);
+        response.Result.Value.ShouldBe(0);
     }
 
     [Fact]

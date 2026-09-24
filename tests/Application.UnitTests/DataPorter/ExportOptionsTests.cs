@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
+using System.IO.Compression;
 using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Common;
-using System.IO.Compression;
 
 [UnitTest("Common")]
 public class ExportOptionsTests

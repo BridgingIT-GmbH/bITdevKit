@@ -6,9 +6,9 @@
 namespace BridgingIT.DevKit.Common;
 
 using System;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Reflection;
 
 /// <summary>
 ///     Converts Newtonsoft JSON enum values using their <see cref="System.Runtime.Serialization.EnumMemberAttribute.Value"/> values.

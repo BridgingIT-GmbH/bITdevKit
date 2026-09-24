@@ -5,6 +5,7 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Text;
 using BridgingIT.DevKit.Presentation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -12,7 +13,6 @@ using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting;
 using Spectre.Console;
-using System.Text;
 
 /// <summary>
 /// Provides an interactive command-based console that runs inside a locally hosted Kestrel <see cref="WebApplication"/>.

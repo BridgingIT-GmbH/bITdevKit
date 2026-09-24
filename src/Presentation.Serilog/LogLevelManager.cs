@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
+using System.Collections.Generic;
 using Serilog.Core;
 using Serilog.Events;
-using System.Collections.Generic;
 
 /// <summary>
 /// Manages the dynamic Serilog logging level at runtime.

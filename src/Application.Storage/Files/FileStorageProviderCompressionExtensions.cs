@@ -356,7 +356,7 @@ public static class FileStorageProviderCompressionExtensions
                 fileStream.Position = 0;
                 writer.Write(fileName, fileStream, options.EntryDateTime);
 
-                ReportProgress(progress, inputPath, fileInfoResult.Value.Length, 1, 1);
+                ReportProgress(progress, inputPath, fileInfoResult.Value.Length, 1);
             }
 
             zipStream.Position = 0;

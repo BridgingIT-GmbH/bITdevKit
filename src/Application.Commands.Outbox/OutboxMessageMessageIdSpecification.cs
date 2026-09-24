@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Application.Commands.Outbox;
 
-using Domain.Outbox;
 using BridgingIT.DevKit.Domain;
+using Domain.Outbox;
 
 /// <summary>
 /// Represents outbox message message id specification.

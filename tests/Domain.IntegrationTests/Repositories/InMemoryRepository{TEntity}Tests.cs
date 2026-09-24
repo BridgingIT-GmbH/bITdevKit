@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
+using System.Linq.Expressions;
+using Bogus;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
-using Bogus;
 using Shouldly;
-using System.Linq.Expressions;
 
 [IntegrationTest("Domain")]
 public class InMemoryRepositoryTests

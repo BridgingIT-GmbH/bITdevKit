@@ -5,11 +5,11 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
-using System;
 
 /// <summary>
 /// Provides extension methods for IEntityConfigurator to configure in-memory providers.

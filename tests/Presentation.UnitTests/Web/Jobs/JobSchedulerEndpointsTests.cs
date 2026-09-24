@@ -11,7 +11,6 @@ using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Jobs;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

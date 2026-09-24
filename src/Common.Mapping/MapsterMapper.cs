@@ -60,7 +60,7 @@ public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
     public TTarget Map<TSource, TTarget>(TSource source)
         where TTarget : class
     {
-        return source is null ? default : source.Adapt<TTarget>(this.config);
+        return source is null ? null : source.Adapt<TTarget>(this.config);
     }
 
     /// <inheritdoc/>

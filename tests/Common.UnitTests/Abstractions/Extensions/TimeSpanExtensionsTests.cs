@@ -74,6 +74,7 @@ public class TimeSpanExtensionsTests
         TimeSpan? timeSpan = null;
 
         // Act
+        // ReSharper disable once ExpressionIsAlwaysNull
         var result = timeSpan.ToCancellationTokenSource();
 
         // Assert
@@ -88,6 +89,7 @@ public class TimeSpanExtensionsTests
         var defaultTimeout = TimeSpan.Zero;
 
         // Act
+        // ReSharper disable once ExpressionIsAlwaysNull
         var result = timeSpan.ToCancellationTokenSource(defaultTimeout);
 
         // Assert
@@ -239,6 +241,34 @@ public class TimeSpanExtensionsTests
 
         // Assert
         result.TotalDays.ShouldBe(value * 7);
+    }
+
+    [Fact]
+    public void IntegerBuilders_ReturnExpectedTimeSpans()
+    {
+        const int value = 2;
+
+        value.Ticks().ShouldBe(TimeSpan.FromTicks(value));
+        value.Milliseconds().ShouldBe(TimeSpan.FromMilliseconds(value));
+        value.Seconds().ShouldBe(TimeSpan.FromSeconds(value));
+        value.Minutes().ShouldBe(TimeSpan.FromMinutes(value));
+        value.Hours().ShouldBe(TimeSpan.FromHours(value));
+        value.Days().ShouldBe(TimeSpan.FromDays(value));
+        value.Weeks().ShouldBe(TimeSpan.FromDays(value * 7));
+    }
+
+    [Fact]
+    public void ShortBuilders_ReturnExpectedTimeSpans()
+    {
+        const short value = 2;
+
+        value.Ticks().ShouldBe(TimeSpan.FromTicks(value));
+        value.Milliseconds().ShouldBe(TimeSpan.FromMilliseconds(value));
+        value.Seconds().ShouldBe(TimeSpan.FromSeconds(value));
+        value.Minutes().ShouldBe(TimeSpan.FromMinutes(value));
+        value.Hours().ShouldBe(TimeSpan.FromHours(value));
+        value.Days().ShouldBe(TimeSpan.FromDays(value));
+        value.Weeks().ShouldBe(TimeSpan.FromDays(value * 7));
     }
 
     [Fact]

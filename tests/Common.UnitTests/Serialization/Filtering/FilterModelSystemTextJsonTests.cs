@@ -7,9 +7,9 @@ namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 using System.Runtime.Serialization;
 using System.Text.Json;
-using Xunit;
-using Shouldly;
 using BridgingIT.DevKit.Common;
+using Shouldly;
+using Xunit;
 
 public class FilterModelSystemTextJsonTests
 {
@@ -450,7 +450,7 @@ public class EnumConverterTests
 
         // Act
         var result = this.serializer.Deserialize<TestEnum>(
-            new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json)));
+            new MemoryStream(Encoding.UTF8.GetBytes(json)));
 
         // Assert
         result.ShouldBe(expectedEnum);
@@ -464,7 +464,7 @@ public class EnumConverterTests
 
         // Act & Assert
         Should.Throw<JsonException>(() =>
-            this.serializer.Deserialize<TestEnum>(new MemoryStream(System.Text.Encoding.UTF8.GetBytes(json)))
+            this.serializer.Deserialize<TestEnum>(new MemoryStream(Encoding.UTF8.GetBytes(json)))
         );
     }
 

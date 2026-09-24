@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using BridgingIT.DevKit.Common;
-using Spectre.Console;
 using System.Collections.Generic;
 using System.Globalization;
+using BridgingIT.DevKit.Common;
+using Spectre.Console;
 
 /// <summary>
 /// Represents orchestration console command base.

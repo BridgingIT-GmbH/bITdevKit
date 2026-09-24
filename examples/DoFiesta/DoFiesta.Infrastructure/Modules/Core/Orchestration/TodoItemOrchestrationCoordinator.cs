@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.Orchestrations;
+using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 using Microsoft.EntityFrameworkCore;

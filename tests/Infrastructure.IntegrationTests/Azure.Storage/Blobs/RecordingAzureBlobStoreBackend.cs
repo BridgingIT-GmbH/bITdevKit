@@ -6,9 +6,9 @@
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.Azure.Storage;
 
 using Application.Storage;
-using Infrastructure.Azure;
 using global::Azure;
 using global::Azure.Storage.Blobs.Models;
+using Infrastructure.Azure;
 
 internal sealed class RecordingAzureBlobStoreBackend : AzureBlobStoreProvider
 {

@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
 using System.Linq.Expressions;
+using Bogus;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.Mapping;
-using Bogus;
 using Shouldly;
 
 [IntegrationTest("Domain")]

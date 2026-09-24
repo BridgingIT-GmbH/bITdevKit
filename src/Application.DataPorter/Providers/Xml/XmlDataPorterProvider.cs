@@ -8,13 +8,13 @@ namespace BridgingIT.DevKit.Application.DataPorter;
 using System.Collections;
 using System.Globalization;
 using System.Reflection;
-using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Xml.Linq;
 using System.Xml.Serialization;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging.Abstractions;
 
 /// <summary>
 /// XML data porter provider using System.Xml.

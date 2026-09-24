@@ -227,7 +227,7 @@ public static class Shortener
 
     private static string CreateCamelCaseInitials(string value)
     {
-        var initials = new System.Text.StringBuilder(value.Length);
+        var initials = new StringBuilder(value.Length);
         var previousWasWordCharacter = false;
 
         for (var index = 0; index < value.Length; index++)

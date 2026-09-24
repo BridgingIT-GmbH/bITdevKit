@@ -5,9 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
+using System.Diagnostics;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
-using System.Diagnostics;
 
 /// <summary>
 /// Extensions for wiring a middleware that collects request latency for status metrics.
@@ -32,17 +32,17 @@ public static class ConsoleCommandInteractiveMiddlewareExtensions
             var sw = Stopwatch.StartNew();
             try
             {
-                System.Threading.Interlocked.Increment(ref stats.TotalRequests);
+                Interlocked.Increment(ref stats.TotalRequests);
                 await next();
                 if (ctx.Response.StatusCode >= 500)
                 {
-                    System.Threading.Interlocked.Increment(ref stats.TotalFailures);
+                    Interlocked.Increment(ref stats.TotalFailures);
                 }
             }
             finally
             {
                 sw.Stop();
-                System.Threading.Interlocked.Add(ref stats.TotalLatencyMs, sw.ElapsedMilliseconds);
+                Interlocked.Add(ref stats.TotalLatencyMs, sw.ElapsedMilliseconds);
             }
         });
 

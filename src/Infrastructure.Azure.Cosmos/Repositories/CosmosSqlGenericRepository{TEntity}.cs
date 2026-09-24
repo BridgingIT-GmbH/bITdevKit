@@ -6,10 +6,10 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System.Linq.Expressions;
+using BridgingIT.DevKit.Domain;
 using Common;
 using Domain.Model;
 using Domain.Repositories;
-using BridgingIT.DevKit.Domain;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 
@@ -277,9 +277,9 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
         IFindOptions<TEntity> options = null,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
-            return default;
+            return null;
         }
 
         return await this.Provider.ReadItemAsync(id.ToString(), cancellationToken: cancellationToken).AnyContext();
@@ -338,7 +338,7 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     /// </example>
     public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return false;
         }
@@ -416,7 +416,7 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     {
         if (entity is null)
         {
-            return (default, RepositoryActionResult.None);
+            return (null, RepositoryActionResult.None);
         }
 
         var isNew = this.Options.IdGenerator.IsNew(entity.Id) || !await this.ExistsAsync(entity.Id, cancellationToken).AnyContext();
@@ -445,7 +445,7 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
         object id,
         CancellationToken cancellationToken = default)
     {
-        if (id == default)
+        if (id == null)
         {
             return RepositoryActionResult.None;
         }
@@ -472,7 +472,7 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
         TEntity entity,
         CancellationToken cancellationToken = default)
     {
-        if (entity?.Id == default)
+        if (entity?.Id == null)
         {
             return RepositoryActionResult.None;
         }

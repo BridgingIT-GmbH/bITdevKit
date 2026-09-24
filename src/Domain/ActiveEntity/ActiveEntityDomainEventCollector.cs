@@ -5,12 +5,12 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Collects and publishes domain events from ActiveEntity entities and their object graphs.

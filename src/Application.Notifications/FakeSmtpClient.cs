@@ -5,13 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.Notifications;
 
-using BridgingIT.DevKit.Common;
-using MailKit;
-using MailKit.Net.Proxy;
-using MailKit.Net.Smtp;
-using MailKit.Security;
-using Microsoft.Extensions.Logging;
-using MimeKit;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -24,6 +17,13 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using MailKit;
+using MailKit.Net.Proxy;
+using MailKit.Net.Smtp;
+using MailKit.Security;
+using Microsoft.Extensions.Logging;
+using MimeKit;
 
 /// <summary>
 /// A fake implementation of <see cref="ISmtpClient"/> that logs actions

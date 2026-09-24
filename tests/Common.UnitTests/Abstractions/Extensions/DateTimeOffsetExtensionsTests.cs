@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
 public class DateTimeOffsetExtensionsTests
 {
-    private readonly Faker faker = new();
+    // private readonly Faker faker = new();
 
     [Theory]
     [InlineData(2, "2024-03-15 14:30:45")]  // UTC+2
@@ -261,6 +261,30 @@ public class DateTimeOffsetExtensionsTests
         var source = new DateTimeOffset(2026, 6, 29, 13, 45, 30, TimeSpan.FromHours(2));
 
         source.ToFileSafeTimestamp().ShouldBe("20260629T114530Z");
+    }
+
+    [Theory]
+    [InlineData(2026, 3, 29, 1, 30, 1, 2026, 3, 29, 0, 30)]
+    [InlineData(2026, 3, 29, 3, 30, 2, 2026, 3, 29, 1, 30)]
+    [InlineData(2026, 10, 25, 2, 30, 2, 2026, 10, 25, 0, 30)]
+    [InlineData(2026, 10, 25, 2, 30, 1, 2026, 10, 25, 1, 30)]
+    public void UtcComponentConversions_DstTransitionOffsets_ReturnUtcComponents(
+        int year,
+        int month,
+        int day,
+        int hour,
+        int minute,
+        int offsetHours,
+        int expectedYear,
+        int expectedMonth,
+        int expectedDay,
+        int expectedHour,
+        int expectedMinute)
+    {
+        var source = new DateTimeOffset(year, month, day, hour, minute, 0, TimeSpan.FromHours(offsetHours));
+
+        source.ToUtcDateOnly().ShouldBe(new DateOnly(expectedYear, expectedMonth, expectedDay));
+        source.ToUtcTimeOnly().ShouldBe(new TimeOnly(expectedHour, expectedMinute));
     }
 
 }

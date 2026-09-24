@@ -394,7 +394,7 @@ public sealed class ProfilingDashboardEndpointsTests
         response.StatusCode.ShouldBe(HttpStatusCode.OK);
         body.ShouldContain("sess0001");
         body.ShouldNotContain(TestInternalId.ToString("D"));
-        body.ShouldNotContain("sessionId", Case.Insensitive);
+        body.ShouldNotContain("sessionId");
     }
 
     [Fact]

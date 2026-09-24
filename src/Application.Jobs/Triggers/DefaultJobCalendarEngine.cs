@@ -30,7 +30,7 @@ public class DefaultJobCalendarEngine : IJobCalendarEngine
     {
         ArgumentNullException.ThrowIfNull(timeZone);
 
-        var occurrencesResult = this.GetOccurrencesUtc(definition, fromUtc, fromUtc.AddYears(5), timeZone, false, true);
+        var occurrencesResult = this.GetOccurrencesUtc(definition, fromUtc, fromUtc.AddYears(5), timeZone);
         if (!occurrencesResult.IsSuccess)
         {
             return Result<DateTimeOffset?>.Failure(default(DateTimeOffset?)).WithErrors(occurrencesResult.Errors);

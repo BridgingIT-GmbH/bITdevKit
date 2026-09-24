@@ -160,7 +160,7 @@ public static class QueryResult
     /// <param name="message">The failure message.</param>
     /// <param name="error">The error information associated with the failure, if any.</param>
     /// <returns>A query response containing the failure result.</returns>
-    public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value, string message, IResultError error = default)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(TValue value, string message, IResultError error = null)
     {
         return new QueryResponse<Result<TValue>> { Result = Result<TValue>.Failure(value, message, error) };
     }
@@ -197,7 +197,7 @@ public static class QueryResult
     /// <param name="message">The failure message to include in the response.</param>
     /// <param name="error">An optional error object associated with the failure.</param>
     /// <returns>A query response containing the failed result with the specified message and error.</returns>
-    public static QueryResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = default)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = null)
     {
         return new QueryResponse<Result<TValue>> { Result = Result<TValue>.Failure(message, error) };
     }
@@ -209,7 +209,7 @@ public static class QueryResult
     /// <param name="messages">A collection of messages describing the failure.</param>
     /// <param name="errors">A collection of errors associated with the failure.</param>
     /// <returns>A query response containing the failure result and associated metadata.</returns>
-    public static QueryResponse<Result<TValue>> Failure<TValue>(IEnumerable<string> messages, IEnumerable<IResultError> errors = default)
+    public static QueryResponse<Result<TValue>> Failure<TValue>(IEnumerable<string> messages, IEnumerable<IResultError> errors = null)
     {
         return new QueryResponse<Result<TValue>> { Result = Result<TValue>.Failure(messages, errors) };
     }

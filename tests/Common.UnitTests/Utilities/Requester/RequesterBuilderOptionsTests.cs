@@ -176,7 +176,7 @@ public class RequesterBuilderOptionsTests
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddRequester()
-            .WithChaosOptions(0.5, true);
+            .WithChaosOptions(0.5);
         var serviceProvider = services.BuildServiceProvider();
 
         // Act

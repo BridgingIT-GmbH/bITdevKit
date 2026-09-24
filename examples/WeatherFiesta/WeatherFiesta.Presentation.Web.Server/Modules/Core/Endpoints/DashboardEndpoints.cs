@@ -30,7 +30,7 @@ public class DashboardEndpoints : EndpointsBase
                     .MapHttpOk())
             .WithName("Core.Dashboard.Get")
             .WithDescription("Gets the full weather dashboard with cities, highlights, alerts, and recommendations.")
-            .Produces<DashboardModel>(StatusCodes.Status200OK)
+            .Produces<DashboardModel>()
             .Produces(StatusCodes.Status401Unauthorized)
             .ProducesResultProblem(StatusCodes.Status400BadRequest)
             .ProducesResultProblem(StatusCodes.Status500InternalServerError);

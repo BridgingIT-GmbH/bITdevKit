@@ -1,9 +1,9 @@
 ﻿namespace BridgingIT.DevKit.Common.Utilities;
 
-using BridgingIT.DevKit.Common.Resiliancy;
-using Microsoft.Extensions.Logging;
 using System.Reflection;
 using System.Threading;
+using BridgingIT.DevKit.Common.Resiliancy;
+using Microsoft.Extensions.Logging;
 
 /// <summary>
 /// Defines a non-generic base interface for all notifications.

@@ -304,7 +304,7 @@ else
 
     private McpDashboardViewModel CreateModel()
     {
-        var services = this.HttpContext.RequestServices;
+        var services = HttpContext.RequestServices;
         var endpoint = services.GetService<LocalIpcEndpointState>()?.GetOrCreate("mcp");
         var options = services.GetService<HostDescriptorOptions>();
         var environment = services.GetService<IWebHostEnvironment>();

@@ -74,18 +74,18 @@
 @functions {
     private async Task<LogEntriesContentModel> CreateModelAsync()
     {
-        var service = this.HttpContext.RequestServices.GetService<ILogEntryService>();
+        var service = HttpContext.RequestServices.GetService<ILogEntryService>();
         var result = new LogEntriesContentModel { IsServiceRegistered = service is not null };
         if (service is null)
         {
             return result;
         }
 
-        var filter = LogEntriesDashboard.CreateFilter(this.HttpContext);
+        var filter = LogEntriesDashboard.CreateFilter(HttpContext);
 
         try
         {
-            result.Response = await service.QueryAsync(LogEntriesDashboard.CreateRequest(filter), this.HttpContext.RequestAborted);
+            result.Response = await service.QueryAsync(LogEntriesDashboard.CreateRequest(filter), HttpContext.RequestAborted);
         }
         catch (Exception ex)
         {
@@ -94,7 +94,7 @@
 
         try
         {
-            result.Statistics = await service.GetStatisticsAsync(filter.StartTime, filter.EndTime, null, this.HttpContext.RequestAborted);
+            result.Statistics = await service.GetStatisticsAsync(filter.StartTime, filter.EndTime, null, HttpContext.RequestAborted);
         }
         catch
         {

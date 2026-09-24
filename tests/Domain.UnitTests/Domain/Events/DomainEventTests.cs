@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.UnitTests.Domain;
 
+using System.Text.Json;
 using BridgingIT.DevKit.Common.Converters;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System.Text.Json;
 
 [UnitTest("Domain")]
 public class DomainEventTests

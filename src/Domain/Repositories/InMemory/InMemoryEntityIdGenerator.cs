@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Domain.Repositories;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
 using System;
 using System.Reflection;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Model;
 
 /// <summary>
 /// Represents in memory entity id generator.

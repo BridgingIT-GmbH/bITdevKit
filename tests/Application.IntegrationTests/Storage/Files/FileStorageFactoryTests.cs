@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Application.IntegrationTests.Storage;
 
+using System.Text;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.Storage;
-using BridgingIT.DevKit.Infrastructure.Windows.Storage;
 using BridgingIT.DevKit.Infrastructure.Azure;
+using BridgingIT.DevKit.Infrastructure.Windows.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
-using System.Threading.Tasks;
-using System.Text;
 
 [IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture

@@ -65,18 +65,18 @@ public sealed class DecimalFormatConverter : IValueConverter<decimal>
         var stringValue = value?.ToString();
         if (string.IsNullOrWhiteSpace(stringValue))
         {
-            return default;
+            return 0;
         }
 
         return decimal.TryParse(stringValue, this.NumberStyles, culture, out var result)
             ? result
-            : default;
+            : 0;
     }
 
     /// <inheritdoc/>
     object IValueConverter.ConvertToExport(object value, ValueConversionContext context)
     {
-        return this.ConvertToExport(value is decimal decimalValue ? decimalValue : default, context);
+        return this.ConvertToExport(value is decimal decimalValue ? decimalValue : 0, context);
     }
 
     /// <inheritdoc/>

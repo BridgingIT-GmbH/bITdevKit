@@ -5,8 +5,8 @@
 @inherits RazorSlice
 
 @{
-    var diagnostics = this.HttpContext.RequestServices.GetService<IBroadcastingDiagnostics>();
-    var metrics = this.HttpContext.RequestServices.GetService<IMetricsSnapshotService>();
+    var diagnostics = HttpContext.RequestServices.GetService<IBroadcastingDiagnostics>();
+    var metrics = HttpContext.RequestServices.GetService<IMetricsSnapshotService>();
     BroadcastingDiagnosticSnapshot snapshot = null;
     string loadError = null;
     double? publishedCount = null;
@@ -16,9 +16,9 @@
     {
         try
         {
-            snapshot = await diagnostics.GetAsync(this.HttpContext.RequestAborted);
+            snapshot = await diagnostics.GetAsync(HttpContext.RequestAborted);
         }
-        catch (OperationCanceledException) when (this.HttpContext.RequestAborted.IsCancellationRequested)
+        catch (OperationCanceledException) when (HttpContext.RequestAborted.IsCancellationRequested)
         {
             throw;
         }

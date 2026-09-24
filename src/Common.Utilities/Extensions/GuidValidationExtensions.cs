@@ -39,7 +39,7 @@ public static class GuidValidationExtensions
         this IRuleBuilder<T, string> ruleBuilder)
     {
         return ruleBuilder.Must(guid =>
-                BeValidGuid(guid) && guid != Guid.Empty.ToString() && guid != default(Guid).ToString())
+                BeValidGuid(guid) && guid != Guid.Empty.ToString() && guid != Guid.Empty.ToString())
             .WithMessage("The GUID must not be default or empty");
     }
 
@@ -61,7 +61,7 @@ public static class GuidValidationExtensions
     {
         return ruleBuilder.Must(guid => string.IsNullOrEmpty(guid) ||
                 guid == Guid.Empty.ToString() ||
-                guid == default(Guid).ToString())
+                guid == Guid.Empty.ToString())
             .WithMessage("The GUID must be default, empty, or null");
     }
 

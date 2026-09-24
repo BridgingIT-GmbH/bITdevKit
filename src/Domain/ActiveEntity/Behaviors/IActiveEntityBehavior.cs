@@ -5,14 +5,14 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Domain.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Model;
+using BridgingIT.DevKit.Domain.Repositories;
 
 /// <summary>
 /// Defines the contract for behaviors in the Active Entities, providing hooks for operations like CRUD and queries.

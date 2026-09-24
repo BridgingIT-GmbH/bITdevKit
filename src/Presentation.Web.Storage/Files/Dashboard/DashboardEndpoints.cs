@@ -89,7 +89,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                     return Result.Failure().WithError(new ValidationError("File name is required."));
                 }
 
-                await using var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(GetFormText(form, "content") ?? string.Empty));
+                await using var stream = new MemoryStream(Encoding.UTF8.GetBytes(GetFormText(form, "content") ?? string.Empty));
                 return await provider.WriteFileAsync(path, stream, cancellationToken: cancellationToken);
             }))
             .WithName("_bdk.Dashboard.Storage.Files.CreateTextFile")

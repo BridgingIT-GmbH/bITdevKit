@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Application.DataPorter;
+using BridgingIT.DevKit.Common;
 using Configuration;
 using Extensions;
 

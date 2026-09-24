@@ -29,14 +29,12 @@ using HttpResult = Microsoft.AspNetCore.Http.IResult;
 /// </example>
 public sealed class BlobStorageMaintenanceEndpoints(
     ILoggerFactory loggerFactory,
-    IBlobStoreClientFactory factory,
     BlobStorageMaintenanceEndpointsOptions options = null) : EndpointsBase
 {
     private const string RouteNamePrefix = "_bdk.Storage.Blobs.Maintenance";
     private readonly ILogger<BlobStorageMaintenanceEndpoints> logger =
         loggerFactory?.CreateLogger<BlobStorageMaintenanceEndpoints>() ??
         NullLogger<BlobStorageMaintenanceEndpoints>.Instance;
-    private readonly IBlobStoreClientFactory factory = factory ?? throw new ArgumentNullException(nameof(factory));
     private readonly BlobStorageMaintenanceEndpointsOptions options = options ?? new BlobStorageMaintenanceEndpointsOptions();
 
     /// <summary>
@@ -58,23 +56,23 @@ public sealed class BlobStorageMaintenanceEndpoints(
         var group = this.MapGroup(app, this.options)
             .DisableAntiforgery();
 
-        group.MapGet("clients", (CancellationToken cancellationToken) =>
-                this.ListClientsAsync(cancellationToken))
+        group.MapGet("clients", ([FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            ListClientsAsync(factory, cancellationToken))
             .Produces<List<BlobStorageClientInfoModel>>()
             .WithName($"{RouteNamePrefix}.ListClients")
             .WithSummary("List registered blob storage clients")
             .WithDescription("Retrieves the registered Blob Storage clients and provider-neutral capabilities.");
 
-        group.MapGet("{storeName}/provider", (string storeName, CancellationToken cancellationToken) =>
-                this.GetClientInfoAsync(storeName, cancellationToken))
+        group.MapGet("{storeName}/provider", (string storeName, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            GetClientInfoAsync(factory, storeName, cancellationToken))
             .Produces<BlobStorageClientInfoModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .WithName($"{RouteNamePrefix}.GetClientInfo")
             .WithSummary("Get blob storage client information")
             .WithDescription("Retrieves provider-neutral information about one configured Blob Storage client.");
 
-        group.MapGet("{storeName}/blobs/exists", (string storeName, [FromQuery] string container, [FromQuery] string name, CancellationToken cancellationToken) =>
-                this.ExistsAsync(storeName, container, name, cancellationToken))
+        group.MapGet("{storeName}/blobs/exists", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.ExistsAsync(factory, storeName, container, name, cancellationToken))
             .Produces<BlobStorageExistsResponseModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -83,8 +81,8 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("Check whether a blob exists")
             .WithDescription("Checks exact-key blob existence without downloading blob content.");
 
-        group.MapGet("{storeName}/blobs/properties", (string storeName, [FromQuery] string container, [FromQuery] string name, CancellationToken cancellationToken) =>
-                this.GetPropertiesAsync(storeName, container, name, cancellationToken))
+        group.MapGet("{storeName}/blobs/properties", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.GetPropertiesAsync(factory, storeName, container, name, cancellationToken))
             .Produces<BlobStorageBlobInfoModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -93,8 +91,8 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("Get blob properties")
             .WithDescription("Retrieves blob metadata without downloading blob content.");
 
-        group.MapPatch("{storeName}/blobs/properties", (string storeName, BlobStorageUpdatePropertiesRequestModel request, CancellationToken cancellationToken) =>
-                this.UpdatePropertiesAsync(storeName, request, cancellationToken))
+        group.MapPatch("{storeName}/blobs/properties", (string storeName, BlobStorageUpdatePropertiesRequestModel request, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.UpdatePropertiesAsync(factory, storeName, request, cancellationToken))
             .Accepts<BlobStorageUpdatePropertiesRequestModel>("application/json")
             .Produces<BlobStorageBlobInfoModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
@@ -106,8 +104,8 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("Update blob properties")
             .WithDescription("Updates blob metadata without downloading or rewriting blob content.");
 
-        group.MapGet("{storeName}/blobs", (string storeName, [FromQuery] string container, [FromQuery] string prefix, [FromQuery] int? take, [FromQuery] string continuationToken, [FromQuery] bool? allowFullScan, CancellationToken cancellationToken) =>
-                this.ListPageAsync(storeName, container, prefix, take, continuationToken, allowFullScan, cancellationToken))
+        group.MapGet("{storeName}/blobs", (string storeName, [FromQuery] string container, [FromQuery] string prefix, [FromQuery] int? take, [FromQuery] string continuationToken, [FromQuery] bool? allowFullScan, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.ListPageAsync(factory, storeName, container, prefix, take, continuationToken, allowFullScan, cancellationToken))
             .Produces<BlobStorageBlobPageModel>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -116,8 +114,8 @@ public sealed class BlobStorageMaintenanceEndpoints(
             .WithSummary("List blobs")
             .WithDescription("Lists one page of blob metadata without returning content streams.");
 
-        group.MapDelete("{storeName}/blobs", (string storeName, [FromQuery] string container, [FromQuery] string name, CancellationToken cancellationToken) =>
-                this.DeleteAsync(storeName, container, name, cancellationToken))
+        group.MapDelete("{storeName}/blobs", (string storeName, [FromQuery] string container, [FromQuery] string name, [FromServices] IBlobStoreClientFactory factory, CancellationToken cancellationToken) =>
+            this.DeleteAsync(factory, storeName, container, name, cancellationToken))
             .Produces<string>()
             .Produces<string>((int)HttpStatusCode.NotFound)
             .Produces<ProblemDetails>((int)HttpStatusCode.BadRequest)
@@ -131,21 +129,21 @@ public sealed class BlobStorageMaintenanceEndpoints(
         this.IsRegistered = true;
     }
 
-    private Task<List<BlobStorageClientInfoModel>> ListClientsAsync(CancellationToken cancellationToken)
+    private static Task<List<BlobStorageClientInfoModel>> ListClientsAsync(IBlobStoreClientFactory factory, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        return Task.FromResult(this.factory.GetRegistrations()
+        return Task.FromResult(factory.GetRegistrations()
             .Select(MapRegistration)
             .OrderBy(model => model.Name, StringComparer.OrdinalIgnoreCase)
             .ToList());
     }
 
-    private Task<HttpResult> GetClientInfoAsync(string storeName, CancellationToken cancellationToken)
+    private static Task<HttpResult> GetClientInfoAsync(IBlobStoreClientFactory factory, string storeName, CancellationToken cancellationToken)
     {
         cancellationToken.ThrowIfCancellationRequested();
 
-        var registration = this.factory.GetRegistrations()
+        var registration = factory.GetRegistrations()
             .FirstOrDefault(item => string.Equals(item.Name, storeName, StringComparison.OrdinalIgnoreCase));
 
         return Task.FromResult(registration is null
@@ -154,12 +152,13 @@ public sealed class BlobStorageMaintenanceEndpoints(
     }
 
     private async Task<HttpResult> ExistsAsync(
+        IBlobStoreClientFactory factory,
         string storeName,
         string container,
         string name,
         CancellationToken cancellationToken)
     {
-        if (!this.TryCreateClient(storeName, out var client, out var failure))
+        if (!TryCreateClient(factory, storeName, out var client, out var failure))
         {
             return failure;
         }
@@ -182,12 +181,13 @@ public sealed class BlobStorageMaintenanceEndpoints(
     }
 
     private async Task<HttpResult> GetPropertiesAsync(
+        IBlobStoreClientFactory factory,
         string storeName,
         string container,
         string name,
         CancellationToken cancellationToken)
     {
-        if (!this.TryCreateClient(storeName, out var client, out var failure))
+        if (!TryCreateClient(factory, storeName, out var client, out var failure))
         {
             return failure;
         }
@@ -200,11 +200,12 @@ public sealed class BlobStorageMaintenanceEndpoints(
     }
 
     private async Task<HttpResult> UpdatePropertiesAsync(
+        IBlobStoreClientFactory factory,
         string storeName,
         BlobStorageUpdatePropertiesRequestModel request,
         CancellationToken cancellationToken)
     {
-        if (!this.TryCreateClient(storeName, out var client, out var failure))
+        if (!TryCreateClient(factory, storeName, out var client, out var failure))
         {
             return failure;
         }
@@ -233,6 +234,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
     }
 
     private async Task<HttpResult> ListPageAsync(
+        IBlobStoreClientFactory factory,
         string storeName,
         string container,
         string prefix,
@@ -241,7 +243,7 @@ public sealed class BlobStorageMaintenanceEndpoints(
         bool? allowFullScan,
         CancellationToken cancellationToken)
     {
-        if (!this.TryCreateClient(storeName, out var client, out var failure))
+        if (!TryCreateClient(factory, storeName, out var client, out var failure))
         {
             return failure;
         }
@@ -268,12 +270,13 @@ public sealed class BlobStorageMaintenanceEndpoints(
     }
 
     private async Task<HttpResult> DeleteAsync(
+        IBlobStoreClientFactory factory,
         string storeName,
         string container,
         string name,
         CancellationToken cancellationToken)
     {
-        if (!this.TryCreateClient(storeName, out var client, out var failure))
+        if (!TryCreateClient(factory, storeName, out var client, out var failure))
         {
             return failure;
         }
@@ -289,11 +292,11 @@ public sealed class BlobStorageMaintenanceEndpoints(
             : MapFailure(result, $"{container}/{name}");
     }
 
-    private bool TryCreateClient(string storeName, out IBlobStoreClient client, out HttpResult failure)
+    private static bool TryCreateClient(IBlobStoreClientFactory factory, string storeName, out IBlobStoreClient client, out HttpResult failure)
     {
         try
         {
-            client = this.factory.CreateClient(storeName);
+            client = factory.CreateClient(storeName);
             failure = null;
 
             return true;

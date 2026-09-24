@@ -58,7 +58,7 @@ public class DateTimeExtensionsTests
         var date = new DateTime(2022, 1, 1);
 
         // Act
-        var startOfWeek = date.StartOfWeek(DayOfWeek.Monday);
+        var startOfWeek = date.StartOfWeek();
 
         // Assert
         startOfWeek.ShouldBe(new DateTime(2021, 12, 27));
@@ -173,13 +173,12 @@ public class DateTimeExtensionsTests
     {
         // Arrange
         var date = new DateTimeOffset(2022, 1, 1, 0, 0, 0, TimeSpan.FromHours(2));
-        const DayOfWeek dayOfWeek = DayOfWeek.Monday;
 
         // Act
-        var startOfWeek = date.StartOfWeek(dayOfWeek);
+        var startOfWeek = date.StartOfWeek(DayOfWeek.Tuesday);
 
         // Assert
-        startOfWeek.ShouldBe(new DateTimeOffset(2021, 12, 27, 0, 0, 0, TimeSpan.FromHours(2)));
+        startOfWeek.ShouldBe(new DateTimeOffset(2021, 12, 28, 0, 0, 0, TimeSpan.FromHours(2)));
     }
 
     [Fact]
@@ -963,11 +962,44 @@ public class DateTimeExtensionsTests
     }
 
     [Fact]
+    public void AssumeUtc_UtcDateTime_ReturnsSameDateTime()
+    {
+        var source = new DateTime(2026, 1, 1, 12, 34, 56, DateTimeKind.Utc).AddTicks(789);
+
+        var result = source.AssumeUtc();
+
+        result.ShouldBe(source);
+        result.Kind.ShouldBe(DateTimeKind.Utc);
+    }
+
+    [Fact]
+    public void AssumeUtc_UnspecifiedDateTime_PreservesValueAndSetsUtcKind()
+    {
+        var source = new DateTime(2026, 1, 1, 12, 34, 56, DateTimeKind.Unspecified).AddTicks(789);
+
+        var result = source.AssumeUtc();
+
+        result.Ticks.ShouldBe(source.Ticks);
+        result.Kind.ShouldBe(DateTimeKind.Utc);
+    }
+
+    [Fact]
     public void AssumeUtc_LocalDateTime_ThrowsArgumentException()
     {
         var source = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Local);
 
         Should.Throw<ArgumentException>(() => source.AssumeUtc());
+    }
+
+    [Fact]
+    public void EnsureUtc_UtcDateTime_ReturnsSameDateTime()
+    {
+        var source = new DateTime(2026, 1, 1, 12, 34, 56, DateTimeKind.Utc).AddTicks(789);
+
+        var result = source.EnsureUtc();
+
+        result.ShouldBe(source);
+        result.Kind.ShouldBe(DateTimeKind.Utc);
     }
 
     [Fact]
@@ -979,6 +1011,40 @@ public class DateTimeExtensionsTests
 
         result.Kind.ShouldBe(DateTimeKind.Utc);
         result.ShouldBe(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void EnsureUtc_LocalDateTime_ThrowsArgumentException()
+    {
+        var source = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Local);
+
+        Should.Throw<ArgumentException>(() => source.EnsureUtc());
+    }
+
+    [Theory]
+    [InlineData(DateTimeKind.Utc, true)]
+    [InlineData(DateTimeKind.Local, false)]
+    [InlineData(DateTimeKind.Unspecified, false)]
+    public void IsUtc_DateTimeKind_ReturnsExpectedResult(DateTimeKind kind, bool expected)
+    {
+        var source = new DateTime(2026, 1, 1, 0, 0, 0, kind);
+
+        var result = source.IsUtc();
+
+        result.ShouldBe(expected);
+    }
+
+    [Theory]
+    [InlineData(DateTimeKind.Utc, false)]
+    [InlineData(DateTimeKind.Local, false)]
+    [InlineData(DateTimeKind.Unspecified, true)]
+    public void IsUnspecified_DateTimeKind_ReturnsExpectedResult(DateTimeKind kind, bool expected)
+    {
+        var source = new DateTime(2026, 1, 1, 0, 0, 0, kind);
+
+        var result = source.IsUnspecified();
+
+        result.ShouldBe(expected);
     }
 
     [Fact]
@@ -1130,6 +1196,153 @@ public class DateTimeExtensionsTests
         source.RoundToNearest(TimeSpan.FromMinutes(15)).ShouldBe(new TimeOnly(10, 15));
     }
 
+    [Fact]
+    public void ParseDateOrEpoch_WithAmbiguousDatePolicy_ReturnsExpectedUtcDateTime()
+    {
+        var result = "03/04/2026".ParseDateOrEpoch(AmbiguousDatePolicy.PreferMonthDayYear);
+
+        result.ShouldBe(new DateTime(2026, 3, 4, 0, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void ParseDateOrEpochOrThrow_WithAmbiguousDatePolicy_ReturnsExpectedUtcDateTime()
+    {
+        var result = "03/04/2026".ParseDateOrEpochOrThrow(AmbiguousDatePolicy.PreferMonthDayYear);
+
+        result.ShouldBe(new DateTime(2026, 3, 4, 0, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void IsInRange_AtExclusiveBoundary_ReturnsFalse()
+    {
+        var source = new DateTime(2026, 1, 1);
+
+        source.IsInRange(source, source.AddDays(1), inclusive: false).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsInRelativeRange_WithExplicitReference_ReturnsExpectedResult()
+    {
+        var reference = new DateTime(2026, 1, 10, 0, 0, 0, DateTimeKind.Utc);
+
+        reference.AddDays(-3).IsInRelativeRange(reference, DateUnit.Day, 5, DateTimeDirection.Past).ShouldBeTrue();
+        reference.AddDays(3).IsInRelativeRange(reference, DateUnit.Day, 5, DateTimeDirection.Past).ShouldBeFalse();
+    }
+
+    [Fact]
+    public void IsInRelativeRange_WithTimeProvider_ReturnsExpectedResult()
+    {
+        var timeProvider = new TestTimeProvider(new DateTimeOffset(2026, 1, 10, 0, 0, 0, TimeSpan.Zero));
+        var source = new DateTime(2026, 1, 13, 0, 0, 0, DateTimeKind.Utc);
+
+        source.IsInRelativeRange(timeProvider, DateUnit.Day, 5, DateTimeDirection.Future).ShouldBeTrue();
+    }
+
+    [Fact]
+    public void DaysUntil_WithReference_ReturnsWholeDayDifference()
+    {
+        var reference = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+        var source = reference.AddDays(3).AddHours(23);
+
+        source.DaysUntil(reference).ShouldBe(3);
+    }
+
+    [Fact]
+    public void DaysUntil_WithoutReference_ReturnsWholeDayDifferenceFromCurrentUtcTime()
+    {
+        var source = DateTime.UtcNow.AddDays(2).AddHours(1);
+
+        source.DaysUntil().ShouldBe(2);
+    }
+
+    [Fact]
+    public void DaysUntil_WithTimeProvider_ReturnsWholeDayDifference()
+    {
+        var timeProvider = new TestTimeProvider(new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero));
+        var source = new DateTime(2026, 1, 3, 23, 0, 0, DateTimeKind.Utc);
+
+        source.DaysUntil(timeProvider).ShouldBe(2);
+    }
+
+    [Fact]
+    public void FromUnixTimeSecondsToUtcDateTime_ReturnsExpectedUtcDateTime()
+    {
+        1767225600L.FromUnixTimeSecondsToUtcDateTime().ShouldBe(new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void FromUnixTimeMillisecondsToUtcDateTime_ReturnsExpectedUtcDateTime()
+    {
+        1767225600123L.FromUnixTimeMillisecondsToUtcDateTime().ShouldBe(new DateTime(2026, 1, 1, 0, 0, 0, 123, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void FromUnixTimeSecondsToDateTimeOffset_ReturnsExpectedUtcOffset()
+    {
+        1767225600L.FromUnixTimeSecondsToDateTimeOffset().ShouldBe(new DateTimeOffset(2026, 1, 1, 0, 0, 0, TimeSpan.Zero));
+    }
+
+    [Fact]
+    public void FromUnixTimeMillisecondsToDateTimeOffset_ReturnsExpectedUtcOffset()
+    {
+        1767225600123L.FromUnixTimeMillisecondsToDateTimeOffset().ShouldBe(new DateTimeOffset(2026, 1, 1, 0, 0, 0, 123, TimeSpan.Zero));
+    }
+
+    [Fact]
+    public void ToDateOnly_ReturnsDateComponent()
+    {
+        new DateTime(2026, 1, 2, 3, 4, 5).ToDateOnly().ShouldBe(new DateOnly(2026, 1, 2));
+    }
+
+    [Fact]
+    public void ToTimeOnly_ReturnsTimeComponent()
+    {
+        new DateTime(2026, 1, 2, 3, 4, 5, 678).ToTimeOnly().ShouldBe(new TimeOnly(3, 4, 5, 678));
+    }
+
+    [Fact]
+    public void FloorTo_DateAndTimeUnits_ReturnsContainingBoundary()
+    {
+        var source = new DateTime(2026, 1, 7, 12, 34, 56, 789, DateTimeKind.Utc);
+
+        source.FloorTo(DateUnit.Week).ShouldBe(new DateTime(2026, 1, 5, 0, 0, 0, DateTimeKind.Utc));
+        source.FloorTo(TimeUnit.Hour).ShouldBe(new DateTime(2026, 1, 7, 12, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void CeilingTo_DateAndTimeUnits_ReturnsNextBoundaryWhenUnaligned()
+    {
+        var source = new DateTime(2026, 1, 7, 12, 34, 56, DateTimeKind.Utc);
+
+        source.CeilingTo(DateUnit.Month).ShouldBe(new DateTime(2026, 2, 1, 0, 0, 0, DateTimeKind.Utc));
+        source.CeilingTo(TimeUnit.Hour).ShouldBe(new DateTime(2026, 1, 7, 13, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void CeilingTo_AlignedValue_ReturnsSource()
+    {
+        var source = new DateTime(2026, 1, 1, 12, 0, 0, DateTimeKind.Utc);
+
+        source.CeilingTo(TimeUnit.Hour).ShouldBe(source);
+    }
+
+    [Fact]
+    public void ToUtcDateTime_WithTimeZone_ReturnsExpectedUtcDateTime()
+    {
+        var timeZone = TimeZoneInfo.CreateCustomTimeZone("Test", TimeSpan.FromHours(2), "Test", "Test");
+        var source = new DateTime(2026, 1, 1, 12, 0, 0);
+
+        source.ToUtcDateTime(timeZone).ShouldBe(new DateTime(2026, 1, 1, 10, 0, 0, DateTimeKind.Utc));
+    }
+
+    [Fact]
+    public void ToIsoUtcString_ReturnsRoundTripUtcString()
+    {
+        var source = new DateTime(2026, 1, 1, 12, 34, 56, 789, DateTimeKind.Utc).AddTicks(1234);
+
+        source.ToIsoUtcString().ShouldBe("2026-01-01T12:34:56.7891234Z");
+    }
+
     private static TimeZoneInfo FindBerlinTimeZone()
     {
         try
@@ -1139,6 +1352,14 @@ public class DateTimeExtensionsTests
         catch (TimeZoneNotFoundException)
         {
             return TimeZoneInfo.FindSystemTimeZoneById("W. Europe Standard Time");
+        }
+    }
+
+    private sealed class TestTimeProvider(DateTimeOffset utcNow) : TimeProvider
+    {
+        public override DateTimeOffset GetUtcNow()
+        {
+            return utcNow;
         }
     }
 }

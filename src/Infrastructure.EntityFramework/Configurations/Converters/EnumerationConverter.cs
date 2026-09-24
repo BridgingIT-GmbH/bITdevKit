@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using System;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 /// <summary>
 /// Entity Framework Core value converter for simple <see cref="IEnumeration"/> implementations

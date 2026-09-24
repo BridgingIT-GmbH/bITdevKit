@@ -923,7 +923,7 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
     {
         if (results is null || results.Length == 0)
         {
-            return ResultPaged<T>.Success([], 0, 0, 0);
+            return Success([], 0, 0, 0);
         }
 
         var isSuccess = true;

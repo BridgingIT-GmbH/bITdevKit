@@ -29,7 +29,7 @@ public static partial class DbContextExtensions
 
         if (id is null)
         {
-            return default;
+            return null;
         }
 
         options ??= new FindOptions<TEntity>();
@@ -86,7 +86,7 @@ public static partial class DbContextExtensions
 
         if (id is null)
         {
-            return default;
+            return null;
         }
 
         options ??= new FindOptions<TEntity>();

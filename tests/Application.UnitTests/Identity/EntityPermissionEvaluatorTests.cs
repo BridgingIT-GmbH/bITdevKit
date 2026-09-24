@@ -5,16 +5,16 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Identity;
 
-using Xunit;
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Application.Identity;
-using NSubstitute;
-using Shouldly;
-using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Application.Identity;
+using BridgingIT.DevKit.Common;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
+using Shouldly;
+using Xunit;
 
 public class EntityPermissionEvaluatorTests
 {

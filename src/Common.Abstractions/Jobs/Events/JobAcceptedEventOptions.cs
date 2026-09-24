@@ -12,7 +12,7 @@ using BridgingIT.DevKit.Common;
 /// </summary>
 public sealed record JobAcceptedEventOptions
 {
-    private PropertyBag properties = new();
+    private readonly PropertyBag properties = new();
 
     /// <summary>
     /// Gets or sets the source-system identifier when available.

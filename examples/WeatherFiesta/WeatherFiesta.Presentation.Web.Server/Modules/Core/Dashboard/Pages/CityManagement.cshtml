@@ -2,8 +2,8 @@
 @inherits DashboardPageSlice
 
 @{
-    var pagePath = this.Dashboard.Url("city-management");
-    var contentPath = this.Dashboard.Url("city-management", "content");
+    var pagePath = Dashboard.Url("city-management");
+    var contentPath = Dashboard.Url("city-management", "content");
     var suggestionsPath = DashboardPath.Combine(pagePath, "suggestions");
     var addPath = DashboardPath.Combine(pagePath, "add");
 }

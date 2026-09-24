@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using FluentValidation;
 using System;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using FluentValidation;
 
 /// <summary>
 ///     Provides reflection-driven FluentValidation rule construction helpers.

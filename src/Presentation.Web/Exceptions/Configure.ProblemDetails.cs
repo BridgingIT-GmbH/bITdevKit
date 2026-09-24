@@ -5,13 +5,13 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
+using System.Security;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
-using System.Security;
 using ProblemDetailsOptions = Hellang.Middleware.ProblemDetails.ProblemDetailsOptions;
 
 //public static class ServiceCollectionExtensions

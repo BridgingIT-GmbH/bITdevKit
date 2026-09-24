@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 
-using Domain.Repositories;
 using BridgingIT.DevKit.Domain;
+using Domain.Repositories;
 using Infrastructure.EntityFramework.Repositories;
 using Microsoft.EntityFrameworkCore;
 

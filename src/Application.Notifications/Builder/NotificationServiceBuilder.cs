@@ -5,10 +5,10 @@
 
 namespace BridgingIT.DevKit.Application.Notifications;
 
+using System;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using System;
 
 /// <summary>
 /// Provides fluent registration helpers for the notification service infrastructure.

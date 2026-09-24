@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Domain;
 
-using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain.Model;
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Model;
 
 /// <summary>
 /// Options class to hold all before/after callback functions

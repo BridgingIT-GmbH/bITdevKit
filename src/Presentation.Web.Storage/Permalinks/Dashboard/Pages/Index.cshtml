@@ -1,19 +1,19 @@
-@using Routes = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes
-@using PublicRoutes = BridgingIT.DevKit.Presentation.Web.Storage.StoragePermalinkRoutes
 @using BridgingIT.DevKit.Common
+@using PublicRoutes = BridgingIT.DevKit.Presentation.Web.Storage.StoragePermalinkRoutes
+@using Routes = BridgingIT.DevKit.Presentation.Web.Storage.Permalinks.Dashboard.StoragePermalinkDashboardRoutes
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{
-    var dashboardOptions = this.HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
-    var query = this.HttpContext.Request.Query;
+    var dashboardOptions = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var query = HttpContext.Request.Query;
     var kind = Enum.TryParse<StorageResourceKind>(query["kind"], true, out var parsedKind) ? parsedKind : (StorageResourceKind?)null;
     var status = Enum.TryParse<StoragePermalinkStatus>(query["status"], true, out var parsedStatus) ? parsedStatus : (StoragePermalinkStatus?)null;
     var pageSize = int.TryParse(query["pageSize"], out var parsedSize) && parsedSize is >= 25 and <= 500 ? parsedSize : 25;
-    var result = await this.HttpContext.RequestServices.GetRequiredService<IStoragePermalinkMaintenanceService>().ListPageAsync(new()
+    var result = await HttpContext.RequestServices.GetRequiredService<IStoragePermalinkMaintenanceService>().ListPageAsync(new()
     {
         Kind = kind, Status = status, RegistrationName = query["registration"], LocationContains = query["location"], Take = pageSize, ContinuationToken = query["continuationToken"]
-    }, this.HttpContext.RequestAborted);
+    }, HttpContext.RequestAborted);
     var entries = result.IsSuccess ? result.Value.Items : [];
     var actions = Routes.Actions(dashboardOptions);
 }

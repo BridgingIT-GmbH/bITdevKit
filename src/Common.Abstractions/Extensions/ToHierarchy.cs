@@ -43,7 +43,7 @@ public static partial class Extensions
 
         var lookup = source.ToLookup(parentIdSelector, t => t);
 
-        return CreateHierarchy(lookup, idSelector, default(TKey?));
+        return CreateHierarchy(lookup, idSelector, null);
     }
 
     /// <summary>
@@ -80,7 +80,7 @@ public static partial class Extensions
         Func<T, TKey?, TResult> resultSelector)
         where TKey : struct
     {
-        return FlattenHierarchy(root, idSelector, resultSelector, default);
+        return FlattenHierarchy(root, idSelector, resultSelector, null);
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ public static partial class Extensions
             return [];
         }
 
-        return roots.SelectMany(root => FlattenHierarchy(root, idSelector, resultSelector, default));
+        return roots.SelectMany(root => FlattenHierarchy(root, idSelector, resultSelector, null));
     }
 
     private static IEnumerable<TResult> FlattenHierarchy<T, TKey, TResult>(

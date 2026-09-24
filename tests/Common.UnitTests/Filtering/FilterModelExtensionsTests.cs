@@ -5,8 +5,8 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Filtering;
 
-using Xunit;
 using Shouldly;
+using Xunit;
 
 public class FilterModelExtensionsTests
 {

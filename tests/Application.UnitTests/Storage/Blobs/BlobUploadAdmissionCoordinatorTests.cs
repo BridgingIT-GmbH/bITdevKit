@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
 using System.Diagnostics.Metrics;
+using BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.Time.Testing;
 
 [UnitTest("Application.Storage")]
@@ -22,9 +23,9 @@ public class BlobUploadAdmissionCoordinatorTests
     public async Task AcquireAsync_WhenPermitReleased_AdmitsOldestWaiterFirst()
     {
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var active = await sut.AcquireAsync("reports", Options, default);
-        var firstWaiter = sut.AcquireAsync("reports", Options, default).AsTask();
-        var secondWaiter = sut.AcquireAsync("reports", Options, default).AsTask();
+        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
+        var firstWaiter = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
+        var secondWaiter = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
 
         sut.GetSnapshots().Single().QueuedUploads.ShouldBe(2);
         await active.DisposeAsync();
@@ -48,10 +49,10 @@ public class BlobUploadAdmissionCoordinatorTests
             QueueWaitTimeout = TimeSpan.FromMinutes(1)
         };
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var active = await sut.AcquireAsync("reports", options, default);
-        var queued = sut.AcquireAsync("reports", options, default).AsTask();
+        await using var active = await sut.AcquireAsync("reports", options, CancellationToken.None);
+        var queued = sut.AcquireAsync("reports", options, CancellationToken.None).AsTask();
 
-        await using var rejected = await sut.AcquireAsync("reports", options, default);
+        await using var rejected = await sut.AcquireAsync("reports", options, CancellationToken.None);
 
         rejected.IsAcquired.ShouldBeFalse();
         rejected.Error.ShouldBeOfType<BlobStoreUploadOverloadedError>();
@@ -64,8 +65,8 @@ public class BlobUploadAdmissionCoordinatorTests
     {
         var time = new FakeTimeProvider();
         using var sut = new BlobUploadAdmissionCoordinator(time);
-        await using var active = await sut.AcquireAsync("reports", Options, default);
-        var queued = sut.AcquireAsync("reports", Options, default).AsTask();
+        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
+        var queued = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
 
         time.Advance(Options.QueueWaitTimeout);
         await using var result = await queued;
@@ -79,7 +80,7 @@ public class BlobUploadAdmissionCoordinatorTests
     public async Task AcquireAsync_WhenCallerCancels_ThrowsAndRemovesWaiter()
     {
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var active = await sut.AcquireAsync("reports", Options, default);
+        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
         using var cancellation = new CancellationTokenSource();
         var queued = sut.AcquireAsync("reports", Options, cancellation.Token).AsTask();
 
@@ -109,9 +110,9 @@ public class BlobUploadAdmissionCoordinatorTests
     public async Task AcquireAsync_NormalizesCaseAndKeepsDifferentStoresIndependent()
     {
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var first = await sut.AcquireAsync(" Reports ", Options, default);
-        var sameStore = sut.AcquireAsync("REPORTS", Options, default).AsTask();
-        await using var otherStore = await sut.AcquireAsync("archive", Options, default);
+        await using var first = await sut.AcquireAsync(" Reports ", Options, CancellationToken.None);
+        var sameStore = sut.AcquireAsync("REPORTS", Options, CancellationToken.None).AsTask();
+        await using var otherStore = await sut.AcquireAsync("archive", Options, CancellationToken.None);
 
         otherStore.IsAcquired.ShouldBeTrue();
         sameStore.IsCompleted.ShouldBeFalse();
@@ -126,21 +127,21 @@ public class BlobUploadAdmissionCoordinatorTests
     public async Task Dispose_WhenAcquisitionIsQueued_CompletesWaiterAndRejectsNewCalls()
     {
         var sut = new BlobUploadAdmissionCoordinator();
-        await using var active = await sut.AcquireAsync("reports", Options, default);
-        var queued = sut.AcquireAsync("reports", Options, default).AsTask();
+        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
+        var queued = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
 
         sut.Dispose();
 
         await Should.ThrowAsync<ObjectDisposedException>(queued);
         await Should.ThrowAsync<ObjectDisposedException>(async () =>
-            await sut.AcquireAsync("reports", Options, default));
+            await sut.AcquireAsync("reports", Options, CancellationToken.None));
     }
 
     [Fact]
     public async Task AcquireAsync_WhenStoreLimitsDiffer_ThrowsInvalidOperationException()
     {
         using var sut = new BlobUploadAdmissionCoordinator();
-        await using var active = await sut.AcquireAsync("reports", Options, default);
+        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
         var different = new UploadConcurrencyBlobStoreClientBehaviorOptions
         {
             MaxConcurrentUploads = 2,
@@ -149,7 +150,7 @@ public class BlobUploadAdmissionCoordinatorTests
         };
 
         await Should.ThrowAsync<InvalidOperationException>(async () =>
-            await sut.AcquireAsync("reports", different, default));
+            await sut.AcquireAsync("reports", different, CancellationToken.None));
     }
 
     [Fact]
@@ -170,8 +171,8 @@ public class BlobUploadAdmissionCoordinatorTests
         using var sut = new BlobUploadAdmissionCoordinator(
             metricsService: new MetricsService(meterFactory));
 
-        await using var active = await sut.AcquireAsync("reports", Options, default);
-        var queued = sut.AcquireAsync("reports", Options, default).AsTask();
+        await using var active = await sut.AcquireAsync("reports", Options, CancellationToken.None);
+        var queued = sut.AcquireAsync("reports", Options, CancellationToken.None).AsTask();
 
         sut.GetSnapshots().Single().QueuedUploads.ShouldBe(1);
         await active.DisposeAsync();

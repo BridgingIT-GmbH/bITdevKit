@@ -5,15 +5,15 @@
 
 namespace BridgingIT.DevKit.Application.Notifications;
 
+using System;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Common.Utilities;
 using MailKit.Net.Smtp;
 using Microsoft.Extensions.Logging;
 using MimeKit;
-using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 
 /// <summary>
 /// Sends <see cref="EmailMessage" /> instances through SMTP and coordinates optional outbox persistence.

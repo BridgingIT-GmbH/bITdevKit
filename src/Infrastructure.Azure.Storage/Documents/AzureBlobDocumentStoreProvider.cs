@@ -3,11 +3,11 @@
 
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
-using global::Azure;
-using global::Azure.Storage.Blobs.Models;
 using System.Globalization;
 using System.Text;
 using System.Text.Json;
+using global::Azure;
+using global::Azure.Storage.Blobs.Models;
 
 /// <summary>Persists serialized documents in deterministic, provider-managed Azure Blob containers.</summary>
 /// <remarks>

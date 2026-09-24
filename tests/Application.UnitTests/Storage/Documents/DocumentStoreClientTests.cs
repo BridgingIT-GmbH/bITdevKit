@@ -25,7 +25,7 @@ public sealed class DocumentStoreClientTests
         var sut = new DocumentStoreClient<DocumentClientPersonStub>(provider, options: new() { MaxDocumentSize = 8 });
         var result = await sut.UpsertAsync(new("p", "r"), new() { FirstName = "too large" });
         result.Errors.ShouldContain(x => x is DocumentStoreSizeLimitError);
-        await provider.DidNotReceiveWithAnyArgs().UpsertAsync(default, default, default);
+        await provider.DidNotReceiveWithAnyArgs().UpsertAsync(default, null, CancellationToken.None);
     }
 }
 

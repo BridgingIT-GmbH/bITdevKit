@@ -50,7 +50,7 @@ public class ActivityDiagramBuilder
     /// <returns>The current builder.</returns>
     public ActivityDiagramBuilder AddAction(string id, string label = null)
     {
-        this.innerBuilder.AddNode(id, label, DiagramNodeKind.Normal);
+        this.innerBuilder.AddNode(id, label);
         return this;
     }
 

@@ -280,7 +280,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
         }
     }
 
-    private static HttpResult MapFailure(BridgingIT.DevKit.Common.IResult result)
+    private static HttpResult MapFailure(Common.IResult result)
     {
         var error = result.Errors?.FirstOrDefault();
         var message = result.Messages?.LastOrDefault()

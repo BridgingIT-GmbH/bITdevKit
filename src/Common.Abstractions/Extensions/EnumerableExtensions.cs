@@ -12,114 +12,107 @@ using System.Runtime.CompilerServices;
 /// </summary>
 public static class EnumerableExtensions
 {
-    /// <summary>
-    ///     Adds the item to the collection.
-    /// </summary>
-    /// <typeparam name="T">the source.</typeparam>
     /// <param name="source">the source collection.</param>
-    /// <param name="item">The item to add.</param>
-    public static IEnumerable<T> Add<T>(this IEnumerable<T> source, T item)
-    {
-        return source.Insert(item, -1);
-    }
-
-    /// <summary>
-    ///     Adds the items to the collection.
-    /// </summary>
     /// <typeparam name="T">the source.</typeparam>
-    /// <param name="source">the source collection.</param>
-    /// <param name="items">The items to add.</param>
-    public static IEnumerable<T> Add<T>(this IEnumerable<T> source, IEnumerable<T> items)
+    extension<T>(IEnumerable<T> source)
     {
-        return source.InsertRange(items, -1);
-    }
-
-    /// <summary>
-    ///     Inserts the item in the collection.
-    /// </summary>
-    /// <typeparam name="T">the source.</typeparam>
-    /// <param name="source">the source collection.</param>
-    /// <param name="item">The item to insert.</param>
-    /// <param name="index">the index at which the item should inserted.</param>
-    public static IEnumerable<T> Insert<T>(this IEnumerable<T> source, T item, int index = 0)
-    {
-        if (item is null)
+        /// <summary>
+        ///     Adds the item to the collection.
+        /// </summary>
+        /// <param name="item">The item to add.</param>
+        public IEnumerable<T> Add(T item)
         {
-            return source;
+            return source.Insert(item, -1);
         }
 
-        if (source is null)
+        /// <summary>
+        ///     Adds the items to the collection.
+        /// </summary>
+        /// <param name="items">The items to add.</param>
+        public IEnumerable<T> Add(IEnumerable<T> items)
         {
-            return new List<T> { item };
+            return source.InsertRange(items, -1);
         }
 
-        var result = new List<T>(source);
-        if (index >= 0)
+        /// <summary>
+        ///     Inserts the item in the collection.
+        /// </summary>
+        /// <param name="item">The item to insert.</param>
+        /// <param name="index">the index at which the item should inserted.</param>
+        public IEnumerable<T> Insert(T item, int index = 0)
         {
-            result.Insert(index, item);
-        }
-        else
-        {
-            result.Add(item);
-        }
+            if (item is null)
+            {
+                return source;
+            }
 
-        return result;
-    }
+            if (source is null)
+            {
+                return new List<T> { item };
+            }
 
-    /// <summary>
-    ///     Inserts the items in the collection.
-    /// </summary>
-    /// <typeparam name="T">the source.</typeparam>
-    /// <param name="source">the source collection.</param>
-    /// <param name="items">The items to insert.</param>
-    /// <param name="index">the index at which the item should inserted.</param>
-    public static IEnumerable<T> InsertRange<T>(this IEnumerable<T> source, IEnumerable<T> items, int index = 0)
-    {
-        if (items is null)
-        {
-            return source;
-        }
+            var result = new List<T>(source);
+            if (index >= 0)
+            {
+                result.Insert(index, item);
+            }
+            else
+            {
+                result.Add(item);
+            }
 
-        if (source is null)
-        {
-            return new List<T>(items);
+            return result;
         }
 
-        var result = new List<T>(source);
-        if (index >= 0)
+        /// <summary>
+        ///     Inserts the items in the collection.
+        /// </summary>
+        /// <param name="items">The items to insert.</param>
+        /// <param name="index">the index at which the item should inserted.</param>
+        public IEnumerable<T> InsertRange(IEnumerable<T> items, int index = 0)
         {
-            result.InsertRange(index, items);
+            if (items is null)
+            {
+                return source;
+            }
+
+            if (source is null)
+            {
+                return new List<T>(items);
+            }
+
+            var result = new List<T>(source);
+            if (index >= 0)
+            {
+                result.InsertRange(index, items);
+            }
+            else
+            {
+                result.AddRange(items);
+            }
+
+            return result;
         }
-        else
+
+        /// <summary>
+        ///    Converts the enumerable to an asynchronous enumerable.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns>An asynchronous enumerable representing the source enumerable.</returns>
+        public async IAsyncEnumerable<T> ToAsyncEnumerable([EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
-            result.AddRange(items);
-        }
+            if (source is null)
+            {
+                yield break;
+            }
 
-        return result;
-    }
+            foreach (var item in source)
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                await Task.Yield();
 
-    /// <summary>
-    ///    Converts the enumerable to an asynchronous enumerable.
-    /// </summary>
-    /// <param name="source">The source enumerable.</param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <typeparam name="T">The type of the elements in the enumerable.</typeparam>
-    /// <returns>An asynchronous enumerable representing the source enumerable.</returns>
-    public static async IAsyncEnumerable<T> ToAsyncEnumerable<T>(
-        this IEnumerable<T> source,
-        [EnumeratorCancellation] CancellationToken cancellationToken = default)
-    {
-        if (source is null)
-        {
-            yield break;
-        }
-
-        foreach (var item in source)
-        {
-            cancellationToken.ThrowIfCancellationRequested();
-            await Task.Yield();
-
-            yield return item;
+                yield return item;
+            }
         }
     }
 }

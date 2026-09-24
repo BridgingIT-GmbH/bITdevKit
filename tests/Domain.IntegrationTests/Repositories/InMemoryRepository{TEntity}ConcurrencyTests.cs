@@ -31,7 +31,7 @@ public class InMemoryRepositoryConcurrencyTests
         // Arrange
         var sut = new InMemoryRepository<StubEntityString>(o => o
             .Context(new InMemoryContext<StubEntityString>(this.entities))
-            .EnableOptimisticConcurrency(true));
+            .EnableOptimisticConcurrency());
 
         var entity = this.entities.First();
         var originalVersion = entity.ConcurrencyVersion;
@@ -52,7 +52,7 @@ public class InMemoryRepositoryConcurrencyTests
         // Arrange
         var sut = new InMemoryRepository<StubEntityString>(o => o
             .Context(new InMemoryContext<StubEntityString>(this.entities))
-            .EnableOptimisticConcurrency(true));
+            .EnableOptimisticConcurrency());
 
         var entity = this.entities.First().Clone();
         var originalVersion = entity.ConcurrencyVersion;
@@ -76,7 +76,7 @@ public class InMemoryRepositoryConcurrencyTests
         // Arrange
         var sut = new InMemoryRepository<StubEntityString>(o => o
             .Context(new InMemoryContext<StubEntityString>())
-            .EnableOptimisticConcurrency(true));
+            .EnableOptimisticConcurrency());
 
         var newEntity = new StubEntityString
         {
@@ -124,7 +124,7 @@ public class InMemoryRepositoryConcurrencyTests
         // Arrange
         var sut = new InMemoryRepository<StubEntityString>(o => o
             .Context(new InMemoryContext<StubEntityString>(this.entities))
-            .EnableOptimisticConcurrency(true));
+            .EnableOptimisticConcurrency());
 
         var entity = this.entities.First();
         var originalVersion = entity.ConcurrencyVersion;
@@ -171,7 +171,7 @@ public class InMemoryRepositoryConcurrencyTests
         // Arrange
         var sut = new InMemoryRepository<StubEntityString>(o => o
             .Context(new InMemoryContext<StubEntityString>(this.entities))
-            .EnableOptimisticConcurrency(true));
+            .EnableOptimisticConcurrency());
 
         var entity = this.entities.First();
         entity.ConcurrencyVersion = Guid.Empty;

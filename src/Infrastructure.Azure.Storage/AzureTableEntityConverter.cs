@@ -19,7 +19,7 @@ public static class AzureTableEntityConverter
     /// Executes the set default json serializer options operation.
     /// </summary>
     /// <param name="jsonSerializerOptions">The json serializer options used by the operation.</param>
-    public static void SetDefaultJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions = default)
+    public static void SetDefaultJsonSerializerOptions(JsonSerializerOptions jsonSerializerOptions = null)
     {
         defaultJsonSerializerOptions = jsonSerializerOptions ?? DefaultJsonSerializerOptions.Create();
     }
@@ -38,8 +38,8 @@ public static class AzureTableEntityConverter
         this T entity,
         string partitionKey,
         string rowKey,
-        JsonSerializerOptions jsonSerializerOptions = default,
-        PropertyConverters<T> propertyConverters = default)
+        JsonSerializerOptions jsonSerializerOptions = null,
+        PropertyConverters<T> propertyConverters = null)
         where T : class, new()
     {
         return CreateTableEntity(entity,
@@ -62,8 +62,8 @@ public static class AzureTableEntityConverter
     /// <returns>The result of the operation.</returns>
     public static T FromTableEntity<T>(
         this TableEntity tableEntity,
-        JsonSerializerOptions jsonSerializerOptions = default,
-        PropertyConverters<T> propertyConverters = default)
+        JsonSerializerOptions jsonSerializerOptions = null,
+        PropertyConverters<T> propertyConverters = null)
         where T : class, new()
     {
         var entity = new T();

@@ -17,7 +17,7 @@ public class ResultExtensionsTests
         var result = source.GetValue();
 
         // Assert
-        result.ShouldBe(default);
+        result.ShouldBe(null);
     }
 
     [Fact]
@@ -56,6 +56,6 @@ public class ResultExtensionsTests
         var result = source.GetValue();
 
         // Assert
-        result.ShouldBe(default);
+        result.ShouldBe(null);
     }
 }

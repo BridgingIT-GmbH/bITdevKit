@@ -5,11 +5,11 @@
 
 namespace BridgingIT.DevKit.Presentation;
 
-using BridgingIT.DevKit.Common;
-using Spectre.Console;
 using System.Diagnostics;
 using System.Runtime;
 using System.Runtime.InteropServices;
+using BridgingIT.DevKit.Common;
+using Spectre.Console;
 
 /// <summary>
 /// Represents info console command.

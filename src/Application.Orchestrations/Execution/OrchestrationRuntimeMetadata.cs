@@ -55,7 +55,7 @@ internal static class OrchestrationRuntimeMetadata
             return 0;
         }
 
-        return context.Properties.Get<int>(BuildStateVisitKey(effectiveStateName), 0);
+        return context.Properties.Get<int>(BuildStateVisitKey(effectiveStateName));
     }
 
     /// <summary>

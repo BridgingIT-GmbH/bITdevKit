@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Common;
+using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;

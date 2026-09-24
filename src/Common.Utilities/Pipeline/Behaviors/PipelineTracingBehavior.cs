@@ -43,7 +43,6 @@ public class PipelineTracingBehavior(IEnumerable<ActivitySource> activitySources
 
                 return await next();
             },
-            ActivityKind.Internal,
             tags: new Dictionary<string, string>
             {
                 ["pipeline.name"] = context.Pipeline.Name,
@@ -79,7 +78,6 @@ public class PipelineTracingBehavior(IEnumerable<ActivitySource> activitySources
         return await activitySource.StartActvity(
             $"PIPELINE STEP {step.Name}",
             async (_, ct) => await next(),
-            ActivityKind.Internal,
             tags: new Dictionary<string, string>
             {
                 ["pipeline.name"] = context.Pipeline.Name,

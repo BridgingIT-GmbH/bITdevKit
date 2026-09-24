@@ -5,8 +5,8 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using Microsoft.AspNetCore.Http.Json;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http.Json;
 
 /// <summary>
 /// Extension methods for <see cref="IServiceCollection"/> to apply JSON serializer

@@ -1138,7 +1138,7 @@ public sealed class CliFoundationTests
         Directory.CreateDirectory(symbolRoot);
 
         const string uid = "BridgingIT.DevKit.Common.Result.Bind(System.Action)";
-        File.WriteAllText(
+        await File.WriteAllTextAsync(
             Path.Combine(apiRoot, "agent-index.json"),
             JsonSerializer.Serialize(new
             {
@@ -1162,7 +1162,7 @@ public sealed class CliFoundationTests
                     }
                 }
             }));
-        File.WriteAllText(
+        await File.WriteAllTextAsync(
             Path.Combine(symbolRoot, "result-page.json"),
             JsonSerializer.Serialize(new
             {

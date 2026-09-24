@@ -68,7 +68,7 @@ public class RepositoryMetricsBehaviorTests
             return this.Create(options.Name, options.Version, options.Tags);
         }
 
-        public Meter Create(string name, string version = null, IEnumerable<KeyValuePair<string, object>> tags = null)
+        private Meter Create(string name, string version = null, IEnumerable<KeyValuePair<string, object>> tags = null)
         {
             var meter = new Meter(name, version, tags);
             lock (this.meters)

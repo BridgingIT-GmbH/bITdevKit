@@ -95,7 +95,7 @@ public class BlobUploadAdmissionCoordinatorTests
         using var cancellation = new CancellationTokenSource();
         var queued = sut.AcquireAsync("reports", Options, cancellation.Token).AsTask();
 
-        cancellation.Cancel();
+        await cancellation.CancelAsync();
 
         await Should.ThrowAsync<OperationCanceledException>(queued);
         sut.GetSnapshots().Single().QueuedUploads.ShouldBe(0);
@@ -106,7 +106,7 @@ public class BlobUploadAdmissionCoordinatorTests
     {
         using var sut = new BlobUploadAdmissionCoordinator();
         using var cancellation = new CancellationTokenSource();
-        cancellation.Cancel();
+        await cancellation.CancelAsync();
 
         var acquire = sut.AcquireAsync(
             "reports",

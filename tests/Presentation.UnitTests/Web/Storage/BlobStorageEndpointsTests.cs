@@ -104,7 +104,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "docs/guide.txt"),
-            Content = new MemoryStream("hello blob"u8.ToArray()),
+            Content = new MemoryStream([.. "hello blob"u8]),
             ContentType = ContentType.TXT
         });
 
@@ -267,7 +267,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "exists.txt"),
-            Content = new MemoryStream("exists"u8.ToArray()),
+            Content = new MemoryStream([.. "exists"u8]),
             ContentType = ContentType.TXT
         });
 
@@ -291,7 +291,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "meta/file.txt"),
-            Content = new MemoryStream("meta"u8.ToArray()),
+            Content = new MemoryStream([.. "meta"u8]),
             ContentType = ContentType.TXT,
             Properties = new PropertyBag
             {
@@ -318,7 +318,7 @@ public class BlobStorageEndpointsTests : IAsyncDisposable
         var upload = await blobs.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "meta/update.txt"),
-            Content = new MemoryStream("content"u8.ToArray()),
+            Content = new MemoryStream([.. "content"u8]),
             ContentType = ContentType.TXT
         });
 

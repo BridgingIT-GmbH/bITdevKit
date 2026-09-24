@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
 using System.Collections.Concurrent;
 using System.Diagnostics.Metrics;
-using System.Text;
 using Application.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -34,7 +33,7 @@ public sealed class BlobStoreClientBehaviorTests
             .WithBehavior((inner, _, name) => new RecordingBlobStoreClientBehavior("inner", name, events, inner))
             .WithClient("reports", _ => reportsProvider)
             .WithClient("media", _ => mediaProvider);
-        using var serviceProvider = services.BuildServiceProvider();
+        await using var serviceProvider = services.BuildServiceProvider();
         var factory = serviceProvider.GetRequiredService<IBlobStoreClientFactory>();
 
         // Act
@@ -75,7 +74,7 @@ public sealed class BlobStoreClientBehaviorTests
         await sut.UploadAsync(new BlobUpload
         {
             Key = new BlobKey("reports", "secret/blob/name.txt"),
-            Content = new MemoryStream(Encoding.UTF8.GetBytes("super-secret-content")),
+            Content = new MemoryStream([.. "super-secret-content"u8]),
             Properties = new PropertyBag
             {
                 ["tenant"] = "tenant-42",
@@ -487,11 +486,11 @@ public sealed class BlobStoreClientBehaviorTests
         var attempts = 0;
         var inner = new ScriptedBlobStoreClient
         {
-            UploadHandlerAsync = async (upload, _) =>
+            UploadHandlerAsync = async (upload, cancellationToken) =>
             {
                 attempts++;
                 positions.Add(upload.Content.Position);
-                await upload.Content.CopyToAsync(Stream.Null);
+                await upload.Content.CopyToAsync(Stream.Null, cancellationToken);
                 return attempts == 1
                     ? Result<BlobInfo>.Failure(new BlobStoreProviderError("transient"))
                     : Result<BlobInfo>.Success(new BlobInfo { Key = upload.Key, Length = 3 });
@@ -711,33 +710,22 @@ public sealed class BlobStoreClientBehaviorTests
         return provider;
     }
 
-    private sealed class RecordingBlobStoreClientBehavior : BlobStoreClientBehaviorBase
+    private sealed class RecordingBlobStoreClientBehavior(
+        string behaviorName,
+        string storeName,
+        List<string> events,
+        IBlobStoreClient inner)
+        : BlobStoreClientBehaviorBase(inner, storeName)
     {
-        private readonly string behaviorName;
-        private readonly string storeName;
-        private readonly List<string> events;
-
-        public RecordingBlobStoreClientBehavior(
-            string behaviorName,
-            string storeName,
-            List<string> events,
-            IBlobStoreClient inner)
-            : base(inner, storeName)
-        {
-            this.behaviorName = behaviorName;
-            this.storeName = storeName;
-            this.events = events;
-        }
-
         protected override async Task<Result<T>> ExecuteAsync<T>(
             string operation,
             BlobStoreOperationContext context,
             Func<CancellationToken, Task<Result<T>>> next,
             CancellationToken cancellationToken)
         {
-            this.events.Add($"{this.storeName}:{this.behaviorName}:before:{operation}");
+            events.Add($"{this.StoreName}:{behaviorName}:before:{operation}");
             var result = await next(cancellationToken);
-            this.events.Add($"{this.storeName}:{this.behaviorName}:after:{operation}");
+            events.Add($"{this.StoreName}:{behaviorName}:after:{operation}");
 
             return result;
         }
@@ -748,9 +736,9 @@ public sealed class BlobStoreClientBehaviorTests
             Func<CancellationToken, Task<Result>> next,
             CancellationToken cancellationToken)
         {
-            this.events.Add($"{this.storeName}:{this.behaviorName}:before:{operation}");
+            events.Add($"{this.StoreName}:{behaviorName}:before:{operation}");
             var result = await next(cancellationToken);
-            this.events.Add($"{this.storeName}:{this.behaviorName}:after:{operation}");
+            events.Add($"{this.StoreName}:{behaviorName}:after:{operation}");
 
             return result;
         }
@@ -954,9 +942,9 @@ public sealed class BlobStoreClientBehaviorTests
             this.listener.Start();
         }
 
-        public IReadOnlyCollection<string> AllTagKeys => this.tagKeys.ToArray();
+        public IReadOnlyCollection<string> AllTagKeys => [.. this.tagKeys];
 
-        public IReadOnlyCollection<string> AllTagValues => this.tagValues.ToArray();
+        public IReadOnlyCollection<string> AllTagValues => [.. this.tagValues];
 
         public long CounterSum(string series) =>
             this.counters.TryGetValue(series, out var values) ? values.Sum() : 0;

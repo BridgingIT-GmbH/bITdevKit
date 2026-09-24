@@ -241,7 +241,7 @@ public class MetricsServiceTests
     public void AddMetrics_WhenEnabled_RegistersSingletonMetricsService()
     {
         var services = new ServiceCollection();
-        MetricsServiceCollectionExtensions.AddMetrics(services, options => options.Enabled());
+        services.AddMetrics(options => options.Enabled());
         using var provider = services.BuildServiceProvider();
 
         var first = provider.GetRequiredService<IMetricsService>();
@@ -255,7 +255,7 @@ public class MetricsServiceTests
     public void AddMetrics_WhenDisabled_DoesNotRegisterMetricsService()
     {
         var services = new ServiceCollection();
-        MetricsServiceCollectionExtensions.AddMetrics(services, options => options.Enabled(false));
+        services.AddMetrics(options => options.Enabled(false));
         using var provider = services.BuildServiceProvider();
 
         provider.GetService<IMetricsService>().ShouldBeNull();

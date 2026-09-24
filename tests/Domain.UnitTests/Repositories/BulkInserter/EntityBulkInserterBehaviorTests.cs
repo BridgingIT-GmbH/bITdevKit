@@ -49,7 +49,7 @@ public class EntityBulkInserterBehaviorTests
         var terminal = new CapturingBulkInserter();
         var sut = new EntityBulkInserterCancellationBehavior<AggregateEntity>(terminal);
         using var source = new CancellationTokenSource();
-        source.Cancel();
+        await source.CancelAsync();
         var enumerated = false;
 
         IEnumerable<AggregateEntity> Entities()
@@ -205,14 +205,14 @@ public class EntityBulkInserterBehaviorTests
             CancellationToken cancellationToken = default)
         {
             this.InvocationCount++;
-            this.Entities = entities.ToArray();
+            this.Entities = [.. entities];
             return Task.FromResult(Result<long>.Success(this.Entities.Count));
         }
     }
 
     private sealed class AggregateEntity : Entity<Guid>, IAggregateRoot, IAuditable, IConcurrency
     {
-        public string Secret { get; set; }
+        public string Secret { get; init; }
 
         public DomainEvents DomainEvents { get; } = new();
 
@@ -227,7 +227,7 @@ public class EntityBulkInserterBehaviorTests
 
         public Meter Create(MeterOptions options) => this.Create(options.Name, options.Version, options.Tags);
 
-        public Meter Create(string name, string version = null, IEnumerable<KeyValuePair<string, object>> tags = null)
+        private Meter Create(string name, string version = null, IEnumerable<KeyValuePair<string, object>> tags = null)
         {
             var meter = new Meter(name, version, tags);
             this.meters.Add(meter);

@@ -344,8 +344,6 @@ public static class TimeSpanExtensions
                     out var dateTime))
             {
                 result = dateTime.TimeOfDay;
-
-                return result;
             }
 
             return result;

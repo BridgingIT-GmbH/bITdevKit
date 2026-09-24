@@ -1101,6 +1101,17 @@ public class DateTimeExtensionsTests
     }
 
     [Fact]
+    public void ToDateTimeOffset_InvalidTime_CanMoveBackward()
+    {
+        var timeZone = FindBerlinTimeZone();
+        var invalid = new DateTime(2026, 3, 29, 2, 30, 0);
+
+        var result = invalid.ToDateTimeOffset(timeZone, InvalidTimePolicy.MoveBackward);
+
+        result.ShouldBe(new DateTimeOffset(2026, 3, 29, 1, 59, 0, TimeSpan.FromHours(1)));
+    }
+
+    [Fact]
     public void ToDateTimeOffset_AmbiguousTime_ThrowsByDefault()
     {
         var timeZone = FindBerlinTimeZone();

@@ -125,6 +125,7 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
 
     private sealed record AcceptedPayload;
 
+    // ReSharper disable once ClassNeverInstantiated.Local -- instantiated by the job scheduler.
     private sealed class TelemetryJob : JobBase
     {
         public override Task<Result> ExecuteAsync(IJobExecutionContext<Unit> context, CancellationToken cancellationToken = default)

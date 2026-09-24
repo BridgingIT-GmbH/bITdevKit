@@ -7,6 +7,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 [UnitTest("Presentation")]
+[Collection(ProcessWideStateTestCollection.Name)]
 public sealed class CliFoundationTests
 {
     [Fact]

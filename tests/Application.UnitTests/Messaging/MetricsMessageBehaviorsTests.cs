@@ -3,6 +3,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Messaging;
 using BridgingIT.DevKit.Application.Messaging;
 using Microsoft.Extensions.Logging.Abstractions;
 
+[Collection(ProcessWideStateTestCollection.Name)]
 public class MetricsMessageBehaviorsTests
 {
     [Fact]

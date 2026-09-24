@@ -14,6 +14,7 @@ using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.Extensions.Logging;
 
 [UnitTest("Domain")]
+[Collection(ProcessWideStateTestCollection.Name)]
 public class EntityBulkInserterBehaviorTests
 {
     [Theory]

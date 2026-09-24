@@ -3,6 +3,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.JobScheduling;
 using BridgingIT.DevKit.Application.JobScheduling;
 using Quartz;
 
+[Collection(ProcessWideStateTestCollection.Name)]
 public class MetricsJobSchedulingBehaviorTests
 {
     [Fact]

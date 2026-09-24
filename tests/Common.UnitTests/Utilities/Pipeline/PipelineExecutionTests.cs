@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
 [UnitTest("Common")]
+[Collection(ProcessWideStateTestCollection.Name)]
 public class PipelineExecutionTests
 {
     [Fact]

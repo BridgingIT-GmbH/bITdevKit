@@ -3,6 +3,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.DependencyInjection;
 
+[Collection(ProcessWideStateTestCollection.Name)]
 public class MetricsServiceTests
 {
     [Fact]

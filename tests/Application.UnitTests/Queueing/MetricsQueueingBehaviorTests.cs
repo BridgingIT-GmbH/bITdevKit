@@ -2,6 +2,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Queueing;
 
 using BridgingIT.DevKit.Application.Queueing;
 
+[Collection(ProcessWideStateTestCollection.Name)]
 public class MetricsQueueingBehaviorTests
 {
     [Fact]

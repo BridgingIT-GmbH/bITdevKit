@@ -14,6 +14,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Time.Testing;
 
 [UnitTest("Application")]
+[Collection(ProcessWideStateTestCollection.Name)]
 public sealed class BlobStoreClientBehaviorTests
 {
     [Fact]

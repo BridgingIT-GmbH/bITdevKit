@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Profiling;
 
 using Microsoft.Extensions.Time.Testing;
 
-[Collection(nameof(ProfilingCustomMetricListenerCollectionDefinition))]
+[Collection(ProcessWideStateTestCollection.Name)]
 public class ProfilingCustomMetricListenerTests
 {
     private static readonly DateTimeOffset StartUtc = new(2026, 8, 7, 11, 0, 0, TimeSpan.Zero);
@@ -266,9 +266,3 @@ public class ProfilingCustomMetricListenerTests
         ) => throw new NotSupportedException();
     }
 }
-
-[CollectionDefinition(
-    nameof(ProfilingCustomMetricListenerCollectionDefinition),
-    DisableParallelization = true
-)]
-public class ProfilingCustomMetricListenerCollectionDefinition;

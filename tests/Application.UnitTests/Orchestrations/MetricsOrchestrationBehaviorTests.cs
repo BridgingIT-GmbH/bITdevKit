@@ -3,6 +3,7 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 using BridgingIT.DevKit.Application.Orchestrations;
 using Microsoft.Extensions.DependencyInjection;
 
+[Collection(ProcessWideStateTestCollection.Name)]
 public class MetricsOrchestrationBehaviorTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
     [Fact]

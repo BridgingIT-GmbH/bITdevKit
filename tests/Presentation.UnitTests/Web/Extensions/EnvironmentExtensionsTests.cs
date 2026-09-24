@@ -2,17 +2,34 @@
 
 using Microsoft.Extensions.Hosting;
 
-public class EnvironmentExtensionsTests
+[Collection(ProcessWideStateTestCollection.Name)]
+public class EnvironmentExtensionsTests : IDisposable
 {
     private readonly IHostEnvironment env;
+    private readonly Dictionary<string, string> originalVariables;
     private const string AZURE_WEBSITES_ENV = "WEBSITE_SITE_NAME";
     private const string AZURE_FUNCTIONS_ENV = "AZURE_FUNCTIONS_ENVIRONMENT";
 
     public EnvironmentExtensionsTests()
     {
+        this.originalVariables = new Dictionary<string, string>
+        {
+            ["DOTNET_RUNNING_IN_CONTAINER"] = Environment.GetEnvironmentVariable("DOTNET_RUNNING_IN_CONTAINER"),
+            ["KUBERNETES_SERVICE_HOST"] = Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST"),
+            [AZURE_WEBSITES_ENV] = Environment.GetEnvironmentVariable(AZURE_WEBSITES_ENV),
+            [AZURE_FUNCTIONS_ENV] = Environment.GetEnvironmentVariable(AZURE_FUNCTIONS_ENV),
+        };
         this.env = Substitute.For<IHostEnvironment>();
         this.ResetEnvironmentVariables();
         this.env.EnvironmentName.Returns("Development");
+    }
+
+    public void Dispose()
+    {
+        foreach (var variable in this.originalVariables)
+        {
+            Environment.SetEnvironmentVariable(variable.Key, variable.Value);
+        }
     }
 
     private void ResetEnvironmentVariables()

@@ -6,6 +6,7 @@ using BridgingIT.DevKit.Common;
 using DevKit.Domain.Repositories;
 
 [UnitTest("Domain")]
+[Collection(ProcessWideStateTestCollection.Name)]
 public class RepositoryMetricsBehaviorTests
 {
     [Fact]

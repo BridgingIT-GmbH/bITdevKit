@@ -10,6 +10,7 @@ using BridgingIT.DevKit.Application.Storage;
 using Microsoft.Extensions.Time.Testing;
 
 [UnitTest("Application.Storage")]
+[Collection(ProcessWideStateTestCollection.Name)]
 public class BlobUploadAdmissionCoordinatorTests
 {
     private static readonly UploadConcurrencyBlobStoreClientBehaviorOptions Options = new()

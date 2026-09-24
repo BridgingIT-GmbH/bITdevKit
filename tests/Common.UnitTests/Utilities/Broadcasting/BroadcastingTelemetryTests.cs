@@ -7,6 +7,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Broadcasting;
 
 using BridgingIT.DevKit.Common.UnitTests.Utilities;
 
+[Collection(ProcessWideStateTestCollection.Name)]
 public class BroadcastingTelemetryTests
 {
     [Fact]

@@ -11,6 +11,7 @@ using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 
+[Collection(ProcessWideStateTestCollection.Name)]
 public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobSchedulerTestBase(output)
 {
     private const string TelemetrySourceName = "BridgingIT.DevKit.Application.Jobs";

@@ -3,20 +3,21 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.Notifications.Tests;
+namespace BridgingIT.DevKit.Application.IntegrationTests.Notifications;
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using BridgingIT.DevKit.Application.IntegrationTests;
+using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Common;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Shouldly;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
 using Xunit;
 
 [IntegrationTest("Application")]

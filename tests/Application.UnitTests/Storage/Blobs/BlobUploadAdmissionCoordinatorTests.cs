@@ -3,7 +3,7 @@
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
 
-namespace BridgingIT.DevKit.Application.Storage;
+namespace BridgingIT.DevKit.Application.UnitTests.Storage;
 
 using System.Diagnostics.Metrics;
 using Microsoft.Extensions.Time.Testing;

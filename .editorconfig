@@ -264,6 +264,8 @@ resharper_comment_typo_highlighting = none
 resharper_suggest_var_or_type_built_in_types_highlighting = hint
 resharper_suggest_var_or_type_elsewhere_highlighting = hint
 resharper_suggest_var_or_type_simple_types_highlighting = hint
+resharper_inconsistent_naming_highlighting = none
+resharper_local_variable_hides_member_highlighting = none
 
 [*.proto]
 indent_style = tab

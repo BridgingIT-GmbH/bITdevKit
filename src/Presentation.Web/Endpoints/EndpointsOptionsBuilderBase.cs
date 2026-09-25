@@ -14,7 +14,7 @@ using BridgingIT.DevKit.Common;
 /// <typeparam name="TBuilder">The concrete builder type returned from fluent methods.</typeparam>
 /// <remarks>
 ///     Concrete endpoint option builders inherit this type to expose shared group configuration without duplicating
-///     methods. Each method mutates the underlying <see cref="OptionsBuilder{T}.Target" /> instance and returns the
+///     methods. Each method mutates the underlying <see cref="OptionsBuilder{TOptions}.Target" /> instance and returns the
 ///     concrete builder so module-specific builder methods can be chained with the shared methods.
 ///
 ///     Example:

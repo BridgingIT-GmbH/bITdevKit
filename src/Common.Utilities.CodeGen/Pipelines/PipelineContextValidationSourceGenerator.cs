@@ -14,7 +14,7 @@ using Microsoft.CodeAnalysis.CSharp.Syntax;
 #pragma warning disable RS1038
 
 /// <summary>
-/// Generates nested FluentValidation validators for pipeline contexts using validation attributes or <see cref="ValidateAttribute"/>.
+/// Generates nested FluentValidation validators for pipeline contexts using validation attributes or <c>ValidateAttribute</c>.
 /// </summary>
 [Generator]
 public sealed class PipelineContextValidationSourceGenerator : IIncrementalGenerator

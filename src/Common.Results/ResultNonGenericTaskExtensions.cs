@@ -41,7 +41,7 @@ public static partial class ResultNonGenericTaskExtensions
     /// <typeparam name="TException">The type of exception to throw.</typeparam>
     /// <param name="resultTask">The Result task to check.</param>
     /// <returns>The current Result if it indicates success.</returns>
-    /// <exception cref="TException">Thrown if the Result indicates a failure.</exception>
+    /// <exception cref="Exception">Throws an exception of type <typeparamref name="TException"/> if the Result indicates a failure.</exception>
     /// <example>
     /// <code>
     /// await GetSystemStatusAsync()

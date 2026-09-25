@@ -42,6 +42,7 @@ public static class MediatorServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The <see cref="IServiceCollection" /> to add the MediatR services to.</param>
     /// <param name="types">A collection of types containing MediatR handlers.</param>
+    /// <param name="lifetime">The lifetime used to register MediatR services.</param>
     /// <returns>The modified <see cref="IServiceCollection" />.</returns>
     public static IServiceCollection AddMediatR(
         this IServiceCollection services,
@@ -56,6 +57,7 @@ public static class MediatorServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection to add the services to.</param>
     /// <param name="assemblies">The assemblies to scan for MediatR handlers, requests, and other related classes.</param>
+    /// <param name="lifetime">The lifetime used to register MediatR services.</param>
     /// <returns>The updated service collection.</returns>
     public static IServiceCollection AddMediatR(
         this IServiceCollection services,
@@ -72,7 +74,9 @@ public static class MediatorServiceCollectionExtensions
     /// <summary>
     ///     Adds MediatR services to the specified IServiceCollection.
     /// </summary>
+    /// <typeparam name="T">A type whose containing assembly is scanned for handlers.</typeparam>
     /// <param name="services">The IServiceCollection to add MediatR services to.</param>
+    /// <param name="lifetime">The lifetime used to register MediatR services.</param>
     /// <returns>The original IServiceCollection with MediatR services added.</returns>
     public static IServiceCollection AddMediatR<T>(
         this IServiceCollection services,

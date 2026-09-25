@@ -120,12 +120,14 @@ public interface ICosmosSqlProvider<TItem>
     /// <param name="cancellationToken">Optional cancellation token.</param>
     /// <returns>A task representing the asynchronous operation, containing a collection of items that match the specified criteria.</returns>
     /// <example>
+    /// <code>
     /// var items = await cosmosSqlProvider.ReadItemsAsync(
-    /// expressions: new List<Expression<Func<MyItem, bool>>> { x => x.IsActive },
-    /// skip: 0,
-    /// take: 10,
-    /// orderExpression: x => x.CreatedDate,
-    /// orderDescending: true);
+    ///     expressions: new List&lt;Expression&lt;Func&lt;MyItem, bool&gt;&gt;&gt; { x => x.IsActive },
+    ///     skip: 0,
+    ///     take: 10,
+    ///     orderExpression: x => x.CreatedDate,
+    ///     orderDescending: true);
+    /// </code>
     /// </example>
     Task<IEnumerable<TItem>> ReadItemsAsync(
         IEnumerable<Expression<Func<TItem, bool>>> expressions = null,

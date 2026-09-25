@@ -269,7 +269,7 @@ public class PredicateBuilder<T>
     public PredicateBuilder<T> Else() => this;
 
     /// <summary>
-    /// Builds and compiles the predicate as a <see cref="Func{T, bool}"/>.
+    /// Builds and compiles the predicate as a <see cref="Func{T, TResult}"/> delegate that returns a Boolean value.
     /// </summary>
     /// <returns>The compiled predicate.</returns>
     /// <example>
@@ -281,7 +281,7 @@ public class PredicateBuilder<T>
     public Func<T, bool> Build() => this.current.Compile();
 
     /// <summary>
-    /// Builds the predicate as an <see cref="Expression{Func{T, bool}}"/>.
+    /// Builds the predicate as an <see cref="Expression{TDelegate}"/> whose delegate returns a Boolean value.
     /// </summary>
     /// <returns>The predicate expression.</returns>
     /// <example>

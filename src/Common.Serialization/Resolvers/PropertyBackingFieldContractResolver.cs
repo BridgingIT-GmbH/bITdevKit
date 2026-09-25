@@ -20,6 +20,7 @@ public class PropertyBackingFieldContractResolver : DefaultContractResolver
     ///     Properly deserialize readonly private backing fields used for immutable Collections.
     ///     Otherwise the deserializer will ignore the collection and it will be empty.
     ///     <code>
+    /// <![CDATA[
     /// public class System
     /// {
     ///     private readonly IList<User>
@@ -34,6 +35,7 @@ public class PropertyBackingFieldContractResolver : DefaultContractResolver
     ///                     this.users.Add(user);
     ///                     }
     ///                     }
+    /// ]]>
     /// </code>
     /// </summary>
     /// <param name="member"></param>

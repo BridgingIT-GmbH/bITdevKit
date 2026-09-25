@@ -23,13 +23,9 @@ public class DateRangeRule(DateTime value, DateTime start, DateTime end, bool in
     public override string Message => $"Date must be {(inclusive ? "between" : "strictly between")} {start} and {end}";
 
     /// <summary>
-    /// Executes a specified rule logic.
+    /// Checks whether the date falls within the configured range.
     /// </summary>
-    /// <param name="rule">The rule to be executed.</param>
-    /// <param name="context">The context in which the rule is executed.</param>
-    /// <returns>
-    /// A boolean indicating whether the rule execution was successful.
-    /// </returns>
+    /// <returns>A successful result when the date is in range according to the configured boundary mode; otherwise, a failure result.</returns>
     public override Result Execute() =>
         Result.SuccessIf(value.IsInRange(start, end, inclusive));
 }

@@ -15,17 +15,14 @@ public class IsNotNullRule<T>(T value, string message = null) : RuleBase
     private readonly string message = message ?? "Value must not be null";
 
     /// <summary>
-    /// Sends a message to the console and logs the message.
+    /// Gets the message returned when the rule is not satisfied.
     /// </summary>
-    /// <param name="message">The message to be sent and logged.</param>
     public override string Message => this.message;
 
     /// <summary>
-    /// Executes a business rule encapsulated within an Action delegate.
-    /// Ensures that the provided rule is invoked with the given context.
+    /// Checks whether the configured value is not null.
     /// </summary>
-    /// <param name="rule">The business rule to be executed as an Action delegate.</param>
-    /// <param name="context">The context or parameters required by the rule to operate.</param>
+    /// <returns>A successful result when the value is not null; otherwise, a failure result.</returns>
     public override Result Execute() =>
         Result.SuccessIf(value is not null);
 }

@@ -117,9 +117,9 @@ public interface IChainBuilder<THandler, TContext>
 }
 
 /// <summary>
-/// Represents a runtime context-based factory.
+/// Stores the ordered handler types for a chain definition.
 /// </summary>
-/// <typeparam name="TService">The created service type.</typeparam>
+/// <typeparam name="THandler">The handler contract implemented by each chain entry.</typeparam>
 /// <typeparam name="TContext">The runtime context type.</typeparam>
 
 internal sealed class ChainDefinition<THandler, TContext>

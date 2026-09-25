@@ -48,7 +48,7 @@ public class ExceptionHandlerRegistration
 {
     /// <summary>
     ///     Gets or sets the exception handler type.
-    ///     Must implement <see cref="IExceptionHandler" />.
+    ///     Must implement <see cref="Microsoft.AspNetCore.Diagnostics.IExceptionHandler" />.
     /// </summary>
     public Type HandlerType { get; set; }
 

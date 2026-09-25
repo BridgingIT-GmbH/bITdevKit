@@ -21,6 +21,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entity">The entity to check permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -31,6 +32,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entity">The entity to check permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -40,6 +42,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entityId">The entity id to get permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -50,6 +53,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entityId">The entity id to get permissions for.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -58,6 +62,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="currentUserAccessor">The accessor for the current user</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string permission, bool bypassCache = false, CancellationToken cancellationToken = default); // wildcard permission
 
     /// <summary>
@@ -67,6 +72,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="permission">The permission to check.</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(string userId, string[] roles, string permission, bool bypassCache = false, CancellationToken cancellationToken = default); // wildcard permission
 
     /// <summary>
@@ -76,6 +82,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entity">The entity to check permissions for.</param>
     /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -86,6 +93,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entity">The entity to check permissions for.</param>
     /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(string userId, string[] roles, TEntity entity, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -95,6 +103,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entityId">The entity id to get permissions for.</param>
     /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -105,6 +114,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="entityId">The entity id to get permissions for.</param>
     /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(string userId, string[] roles, object entityId, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -113,6 +123,7 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="currentUserAccessor">The accessor for the current user</param>
     /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -122,12 +133,15 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="permissions">The permissions to check (returns true if any permission is granted).</param>
     /// <param name="bypassCache">Whether to bypass the cache.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<bool> HasPermissionAsync(string userId, string[] roles, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets the permissions for the user on the entity type.
     /// </summary>
     /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entity">The entity to get permissions for.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -136,12 +150,15 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="entity">The entity to get permissions for.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, TEntity entity, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets the permissions for the user on the entity type.
     /// </summary>
     /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="entityId">The entity identifier to get permissions for.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, object entityId, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -150,12 +167,14 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
     /// <param name="entityId">The entity id to get permissions for.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, object entityId, CancellationToken cancellationToken = default);
 
     /// <summary>
     /// Gets the permissions for the user on the entity type.
     /// </summary>
     /// <param name="currentUserAccessor">The accessor for the current user</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, CancellationToken cancellationToken = default); // wildcard permission
 
     /// <summary>
@@ -163,5 +182,6 @@ public interface IEntityPermissionEvaluator<TEntity> where TEntity : class, IEnt
     /// </summary>
     /// <param name="userId">The ID of the user.</param>
     /// <param name="roles">The roles the user belongs to.</param>
+    /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(string userId, string[] roles, CancellationToken cancellationToken = default); // wildcard permission
 }

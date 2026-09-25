@@ -47,8 +47,7 @@ public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : I
 }
 
 /// <summary>
-///     Provides functionalities to map objects of type <typeparamref name="TSource" /> to objects of type
-///     <typeparamref name="TTarget" />.
+///     Maps objects by using delegates registered for source and target type pairs.
 /// </summary>
 /// <remarks>
 ///     Implements the <see cref="IMapper" /> interface and allows for configuration of custom mapping logic.

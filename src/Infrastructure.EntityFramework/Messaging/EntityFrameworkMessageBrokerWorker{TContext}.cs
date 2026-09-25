@@ -31,6 +31,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
     /// <param name="serviceProvider">The service provider used to create scoped database contexts.</param>
     /// <param name="broker">The broker used to process stored broker rows.</param>
     /// <param name="options">The broker runtime options.</param>
+    /// <param name="controlState">The optional shared state used to pause message types.</param>
     public EntityFrameworkMessageBrokerWorker(
         ILoggerFactory loggerFactory,
         IServiceProvider serviceProvider,
@@ -55,6 +56,7 @@ public class EntityFrameworkMessageBrokerWorker<TContext>
     /// <param name="context">The database context used for broker persistence.</param>
     /// <param name="broker">The broker used to process stored broker rows.</param>
     /// <param name="options">The broker runtime options.</param>
+    /// <param name="controlState">The optional shared state used to pause message types.</param>
     public EntityFrameworkMessageBrokerWorker(
         ILoggerFactory loggerFactory,
         TContext context,

@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Application.Storage;
 
 /// <summary>
 /// Represents progress information for file operations, tracking bytes and file counts.
-/// Used with IProgress<T> to report progress in IFileStorageProvider methods.
+/// Used with <see cref="IProgress{T}"/> to report progress in <see cref="IFileStorageProvider"/> methods.
 /// </summary>
 public readonly struct FileProgress
 {

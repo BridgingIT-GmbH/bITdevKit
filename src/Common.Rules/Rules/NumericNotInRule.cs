@@ -9,7 +9,7 @@ namespace BridgingIT.DevKit.Common;
 /// Represents a validation rule that checks if a given numeric value is not
 /// contained within a specified set of disallowed values.
 /// </summary>
-/// <typeparam name="T">The type of the value being validated, which must implement IComparable<T
+/// <typeparam name="T">The comparable numeric value type.</typeparam>
 public class NumericNotInRule<T>(T value, IEnumerable<T> disallowedValues, string message = null)
     : RuleBase
     where T : IComparable<T>

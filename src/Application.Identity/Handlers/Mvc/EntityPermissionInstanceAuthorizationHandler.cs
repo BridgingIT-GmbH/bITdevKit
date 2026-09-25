@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 /// <typeparam name="TEntity">The type of the entity being authorized.</typeparam>
 /// <remarks>
-/// Initializes a new instance of the <see cref="EntityPermissionInstanceAuthorizationHandler{TEntity, TId}"/> class.
+/// Initializes a new instance of the <see cref="EntityPermissionInstanceAuthorizationHandler{TEntity}"/> class.
 /// </remarks>
 /// <param name="loggerFactory">Factory for creating loggers.</param>
 /// <param name="userAccessor">Accessor for current user information.</param>

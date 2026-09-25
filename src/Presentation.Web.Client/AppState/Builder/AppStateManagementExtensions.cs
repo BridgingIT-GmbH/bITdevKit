@@ -6,6 +6,7 @@ using BridgingIT.DevKit.Presentation.Web.Client;
 /// Provides extension methods for IServiceCollection to configure the ManagedState system.
 /// </summary>
 /// <example>
+/// <code><![CDATA[
 /// services.AddAppState()
 ///     .WithDebugging(debug =>
 ///     {
@@ -20,6 +21,7 @@ using BridgingIT.DevKit.Presentation.Web.Client;
 ///         .AsLocalStorageScoped()
 ///         .WithDebounceDelay(TimeSpan.FromMilliseconds(500)).Done();
 ///     .AddCustomStateStoreProvider<CustomStorageStateStoreProvider>();
+/// ]]></code>
 /// </example>
 public static class AppStateManagementExtensions
 {

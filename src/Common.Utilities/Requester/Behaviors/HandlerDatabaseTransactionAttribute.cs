@@ -7,15 +7,15 @@ namespace BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Specifies that handlers within the attributed class should execute within a database transaction using the provided
-/// DbContext type. Allows configuration of transaction isolation level and automatic rollback behavior on failure.
+/// context type. Allows configuration of transaction isolation level and automatic rollback behavior on failure.
 /// </summary>
 /// <remarks>Apply this attribute to a handler class to ensure its operations are executed within a transactional
-/// scope using the specified DbContext type. This can help maintain data integrity and consistency, especially in
+/// scope using the specified context type. This can help maintain data integrity and consistency, especially in
 /// workflows where multiple operations must succeed or fail as a unit. The attribute does not support inheritance or
 /// multiple applications on the same class.</remarks>
-/// <typeparam name="TDBcontext">The type of DbContext to use for managing the transaction. Must derive from <see cref="DbContext"/>.</typeparam>
+/// <typeparam name="TDBcontext">The context type recorded by the attribute for transaction resolution.</typeparam>
 /// <param name="isolationLevel">The isolation level to apply to the database transaction. Determines how the transaction interacts with other
-/// concurrent operations. Defaults to <see cref="IsolationLevel.ReadCommitted"/>.</param>
+/// concurrent operations. Defaults to <see cref="DatabaseTransactionIsolationLevel.ReadCommitted"/>.</param>
 /// <param name="rollbackOnFailure">Indicates whether the transaction should be automatically rolled back if an operation fails. When <see
 /// langword="true"/>, changes made during the transaction are reverted on failure. Defaults to <see langword="true"/>.</param>
 [AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]

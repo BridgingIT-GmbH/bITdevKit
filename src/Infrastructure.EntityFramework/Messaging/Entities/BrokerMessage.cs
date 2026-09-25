@@ -32,7 +32,7 @@ public class BrokerMessage
     public Guid Id { get; set; }
 
     /// <summary>
-    /// Gets or sets the logical message identifier copied from <see cref="Messaging.IMessage.MessageId"/>.
+    /// Gets or sets the logical message identifier copied from <see cref="IMessage.MessageId"/>.
     /// </summary>
     [Required]
     [MaxLength(256)]

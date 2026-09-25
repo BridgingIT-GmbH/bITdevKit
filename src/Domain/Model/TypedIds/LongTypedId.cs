@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Domain.Model;
 /// <summary>
 /// Represents long typed id.
 /// </summary>
-/// <typeparam name="LongTypedId">The long typed id type.</typeparam>
 /// <param name="value">The value used by the operation.</param>
 public abstract class LongTypedId(long value) : IEquatable<LongTypedId>, IComparable<LongTypedId>
 {

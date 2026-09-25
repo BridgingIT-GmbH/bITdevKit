@@ -21,11 +21,9 @@ public class StringLengthRule(string value, int minLength, int maxLength, string
     public override string Message => this.message;
 
     /// <summary>
-    /// Executes the provided rule and returns a boolean indicating success or failure.
+    /// Checks whether the string length is within the configured inclusive bounds.
     /// </summary>
-    /// <param name="rule">The rule to be executed.</param>
-    /// <param name="context">The context in which the rule should be executed.</param>
-    /// <return>A boolean indicating whether the rule executed successfully or not.</return>
+    /// <returns>A successful result when the string length is within bounds; otherwise, a failure result.</returns>
     public override Result Execute() =>
         Result.SuccessIf(value?.Length >= minLength && value?.Length <= maxLength);
 }

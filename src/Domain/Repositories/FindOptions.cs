@@ -151,8 +151,8 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     /// <param name="order">The order option to add.</param>
     /// <returns>The current instance for chaining.</returns>
     /// <example>
-    /// var options = new FindOptions<Customer>()
-    ///     .AddOrder(new OrderOption<Customer>(c => c.LastName, OrderDirection.Ascending));
+    /// var options = new FindOptions&lt;Customer&gt;()
+    ///     .AddOrder(new OrderOption&lt;Customer&gt;(c => c.LastName, OrderDirection.Ascending));
     /// </example>
     public FindOptions<TEntity> AddOrder(OrderOption<TEntity> order)
     {
@@ -167,8 +167,8 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     /// <param name="include">The include option to add.</param>
     /// <returns>The current instance for chaining.</returns>
     /// <example>
-    /// var options = new FindOptions<Customer>()
-    ///     .AddInclude(new IncludeOption<Customer>(c => c.Orders));
+    /// var options = new FindOptions&lt;Customer&gt;()
+    ///     .AddInclude(new IncludeOption&lt;Customer&gt;(c => c.Orders));
     /// </example>
     public FindOptions<TEntity> AddInclude(IncludeOption<TEntity> include)
     {
@@ -184,8 +184,8 @@ public class FindOptions<TEntity> : IFindOptions<TEntity>
     /// <param name="includable">The includable option to add.</param>
     /// <returns>The current instance for chaining.</returns>
     /// <example>
-    /// var options = new FindOptions<Customer>()
-    ///     .AddInclude(new IncludeOption<Customer, ICollection<Order>>(c => c.Orders)
+    /// var options = new FindOptions&lt;Customer&gt;()
+    ///     .AddInclude(new IncludeOption&lt;Customer, ICollection&lt;Order&gt;&gt;(c => c.Orders)
     ///         .ThenInclude(o => o.OrderItems)
     ///         .ThenInclude(i => i.Product));
     /// </example>

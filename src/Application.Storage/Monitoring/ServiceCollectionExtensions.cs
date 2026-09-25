@@ -20,9 +20,11 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The IServiceCollection to add services to.</param>
     /// <param name="configure">An action to configure the FileMonitoringBuilder.</param>
+    /// <param name="lifetime">The lifetime used for the monitoring service and default event store.</param>
     /// <returns>A FileMonitoringBuilderContext for further configuration chaining.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// services.AddFileMonitoring(monitoring =>
     /// {
     ///     monitoring
@@ -46,6 +48,7 @@ public static class ServiceCollectionExtensions
     /// })
     /// .WithEntityFrameworkStore<MyAppDbContext>(); // Extension from EF infra project
     ///
+    /// ]]>
     /// </code>
     /// </example>
     public static FileMonitoringBuilderContext AddFileMonitoring(

@@ -22,9 +22,11 @@ public interface ISimpleNotification;
 /// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var notifier = new SimpleNotifier(progress: new Progress<SimpleNotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}")));
 /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
 /// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, CancellationToken.None);
+/// ]]>
 /// </code>
 /// </example>
 public class SimpleNotifier(
@@ -46,8 +48,10 @@ public class SimpleNotifier(
     /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var notifier = new SimpleNotifier();
     /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message), order: 1);
+    /// ]]>
     /// </code>
     /// </example>
     public void Subscribe<TNotification>(Func<TNotification, CancellationToken, ValueTask> handler, int order = 0)
@@ -65,8 +69,10 @@ public class SimpleNotifier(
     /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var notifier = new SimpleNotifier();
     /// notifier.Subscribe<MyEvent>(new MyEventHandler(), order: 1);
+    /// ]]>
     /// </code>
     /// </example>
     public void Subscribe<TNotification>(ISimpleNotificationHandler<TNotification> handler, int order = 0)
@@ -120,8 +126,10 @@ public class SimpleNotifier(
     /// <param name="order">The order in which the handler should be executed (lower values execute first). Defaults to 0.</param>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var notifier = new SimpleNotifier();
     /// notifier.Subscribe<MyEventHandler>(order: 1);
+    /// ]]>
     /// </code>
     /// </example>
     public void Subscribe<THandler>(int order = 0) where THandler : new()
@@ -137,10 +145,12 @@ public class SimpleNotifier(
     /// <param name="handler">The handler to remove.</param>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var notifier = new SimpleNotifier();
     /// Func<MyEvent, CancellationToken, Task> handler = async (e, ct) => Console.WriteLine(e.Message);
     /// notifier.Subscribe<MyEvent>(handler);
     /// notifier.Unsubscribe<MyEvent>(handler);
+    /// ]]>
     /// </code>
     /// </example>
     public void Unsubscribe<TNotification>(Func<TNotification, CancellationToken, ValueTask> handler)
@@ -157,10 +167,12 @@ public class SimpleNotifier(
     /// <param name="handler">The handler to remove.</param>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var notifier = new SimpleNotifier();
     /// var handler = new MyEventHandler();
     /// notifier.Subscribe<MyEvent>(handler);
     /// notifier.Unsubscribe<MyEvent>(handler);
+    /// ]]>
     /// </code>
     /// </example>
     public void Unsubscribe<TNotification>(ISimpleNotificationHandler<TNotification> handler)
@@ -198,12 +210,14 @@ public class SimpleNotifier(
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<SimpleNotifierProgress>(p => Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
     /// var notifier = new SimpleNotifier();
     /// notifier.Subscribe<MyEvent>(async (e, ct) => Console.WriteLine(e.Message));
     /// await notifier.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
+    /// ]]>
     /// </code>
     /// </example>
     public async Task PublishAsync<TNotification>(TNotification notification, IProgress<SimpleNotifierProgress> progress = null, CancellationToken cancellationToken = default)

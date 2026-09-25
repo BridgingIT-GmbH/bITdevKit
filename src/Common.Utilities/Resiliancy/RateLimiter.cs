@@ -30,8 +30,10 @@ public class RateLimiter
     /// <exception cref="ArgumentOutOfRangeException">Thrown if maxOperations is less than 1 or window is negative.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var rateLimiter = new RateLimiter(5, TimeSpan.FromSeconds(10), progress: new Progress<RateLimiterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Operations: {p.CurrentOperations}/{p.MaxOperations}, Window: {p.Window.TotalSeconds}s")));
     /// await rateLimiter.ExecuteAsync(async ct => await SomeOperation(ct), CancellationToken.None);
+    /// ]]>
     /// </code>
     /// </example>
     public RateLimiter(
@@ -65,6 +67,7 @@ public class RateLimiter
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<RateLimiterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Operations: {p.CurrentOperations}/{p.MaxOperations}, Window: {p.Window.TotalSeconds}s"));
     /// var rateLimiter = new RateLimiter(5, TimeSpan.FromSeconds(10));
@@ -73,6 +76,7 @@ public class RateLimiter
     ///     await Task.Delay(100, ct); // Simulate work
     ///     Console.WriteLine("Operation executed");
     /// }, cts.Token, progress);
+    /// ]]>
     /// </code>
     /// </example>
     public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<RateLimiterProgress> progress = null)
@@ -117,6 +121,7 @@ public class RateLimiter
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<RateLimiterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Operations: {p.CurrentOperations}/{p.MaxOperations}, Window: {p.Window.TotalSeconds}s"));
     /// var rateLimiter = new RateLimiter(5, TimeSpan.FromSeconds(10));
@@ -126,6 +131,7 @@ public class RateLimiter
     ///     return 42;
     /// }, cts.Token, progress);
     /// Console.WriteLine($"Result: {result}");
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<RateLimiterProgress> progress = null)

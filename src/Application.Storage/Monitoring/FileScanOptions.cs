@@ -95,6 +95,7 @@ public class FileScanOptions
     /// <param name="filePathFilter">A regex or glob pattern to filter files by path.</param>
     /// <param name="skipChecksum">Whether to skip checksum calculation.</param>
     /// <param name="maxFilesToScan">The maximum number of files to scan, or null for no limit.</param>
+    /// <param name="thrownIfDirectoryNotExists">Whether scanning throws when the target directory does not exist.</param>
     public FileScanOptions(
         bool waitForProcessing = false,
         TimeSpan? timeout = null,

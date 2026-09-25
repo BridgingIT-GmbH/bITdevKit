@@ -24,8 +24,10 @@ public class TimeoutHandler
     /// <exception cref="ArgumentOutOfRangeException">Thrown if timeout is negative.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var timeoutHandler = new TimeoutHandler(TimeSpan.FromSeconds(5), progress: new Progress<TimeoutHandlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingTime.TotalSeconds}s")));
     /// await timeoutHandler.ExecuteAsync(async ct => await Task.Delay(3000, ct), CancellationToken.None);
+    /// ]]>
     /// </code>
     /// </example>
     public TimeoutHandler(
@@ -54,6 +56,7 @@ public class TimeoutHandler
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<TimeoutHandlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingTime.TotalSeconds}s"));
     /// var timeoutHandler = new TimeoutHandler(TimeSpan.FromSeconds(2));
@@ -62,6 +65,7 @@ public class TimeoutHandler
     ///     await Task.Delay(3000, ct); // This will timeout
     ///     Console.WriteLine("Operation completed");
     /// }, cts.Token, progress);
+    /// ]]>
     /// </code>
     /// </example>
     public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<TimeoutHandlerProgress> progress = null)
@@ -126,6 +130,7 @@ public class TimeoutHandler
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<TimeoutHandlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingTime.TotalSeconds}s"));
     /// var timeoutHandler = new TimeoutHandler(TimeSpan.FromSeconds(2));
@@ -134,6 +139,7 @@ public class TimeoutHandler
     ///     await Task.Delay(3000, ct); // This will timeout
     ///     return 42;
     /// }, cts.Token, progress);
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<TimeoutHandlerProgress> progress = null)

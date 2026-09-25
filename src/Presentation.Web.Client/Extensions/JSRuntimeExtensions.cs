@@ -239,9 +239,6 @@ public static class JsRuntimeExtensions
     /// <param name="source">The IJSRuntime instance</param>
     /// <param name="code">JavaScript code to evaluate</param>
     /// <returns>The evaluated result</returns>
-    /// <example>
-    /// await jsRuntime.EvalAsync<string[]>("Object.keys(sessionStorage).filter(k => k.startsWith('oidc.user:'))")
-    /// </example>
     public static ValueTask<T> EvalAsync<T>(this IJSRuntime source, string code)
     {
         return source.InvokeAsync<T>("eval", code);

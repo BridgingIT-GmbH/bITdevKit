@@ -52,22 +52,22 @@ public static class QueryResult
     }
 
     /// <summary>
-    /// Creates a <see cref="QueryResponse{Result{TValue}}"/> from a given <see cref="Result{TValue}"/>.
+    /// Creates a <c>QueryResponse&lt;Result&lt;TValue&gt;&gt;</c> from the specified result.
     /// </summary>
     /// <typeparam name="TValue">The type of the value contained in the result.</typeparam>
-    /// <param name="result">The result to wrap in a <see cref="QueryResponse{Result{TValue}}"/>.</param>
-    /// <returns>A <see cref="QueryResponse{Result{TValue}}"/> containing the given result.</returns>
+    /// <param name="result">The result to wrap in the query response.</param>
+    /// <returns>A <c>QueryResponse&lt;Result&lt;TValue&gt;&gt;</c> containing the given result.</returns>
     public static QueryResponse<Result<TValue>> For<TValue>(Result<TValue> result)
     {
         return new QueryResponse<Result<TValue>> { Result = result };
     }
 
     /// <summary>
-    /// Creates a <see cref="QueryResponse{Result{TValue}}"/> from a given <see cref="Result{TValue}"/>.
+    /// Creates a query response from the specified paged result.
     /// </summary>
     /// <typeparam name="TValue">The type of the value contained in the result.</typeparam>
-    /// <param name="result">The result to wrap in a <see cref="QueryResponse{Result{TValue}}"/>.</param>
-    /// <returns>A <see cref="QueryResponse{Result{TValue}}"/> containing the given result.</returns>
+    /// <param name="result">The paged result to wrap in the query response.</param>
+    /// <returns>A <c>QueryResponse&lt;ResultPaged&lt;TValue&gt;&gt;</c> containing the given paged result.</returns>
     public static QueryResponse<ResultPaged<TValue>> For<TValue>(ResultPaged<TValue> result)
     {
         return new QueryResponse<ResultPaged<TValue>> { Result = result };
@@ -222,7 +222,7 @@ public static class QueryResult
     /// <param name="value">The value to be associated with the result.</param>
     /// <param name="message">An optional message describing the failure.</param>
     /// <param name="error">An optional error instance providing additional failure details.</param>
-    /// <returns>A <see cref="QueryResponse{Result{TValue}}"/> indicating failure with the provided value, message, and error.</returns>
+    /// <returns>A <c>QueryResponse&lt;Result&lt;TValue&gt;&gt;</c> containing the failed result.</returns>
     public static QueryResponse<Result<TValue>> Failure<TValue, TError>(TValue value = default, string message = null, IResultError error = null)
         where TError : IResultError, new()
     {

@@ -21,9 +21,11 @@ public static class FileMonitoringBuilderExtensions
     /// </summary>
     /// <typeparam name="TContext">The DbContext type implementing IFileMonitoringContext.</typeparam>
     /// <param name="context">The FileMonitoringBuilderContext returned from AddFileMonitoring.</param>
+    /// <param name="lifetime">The lifetime used to register the Entity Framework file event store.</param>
     /// <returns>The FileMonitoringBuilderContext for further configuration chaining.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// services.AddFileMonitoring(monitoring =>
     /// {
     ///     monitoring
@@ -35,6 +37,7 @@ public static class FileMonitoringBuilderExtensions
     ///         });
     /// })
     /// .WithEntityFrameworkStore<MyAppDbContext>(); // Use EF Core store
+    /// ]]>
     /// </code>
     /// </example>
     /// <exception cref="ArgumentNullException">Thrown if the context is null.</exception>

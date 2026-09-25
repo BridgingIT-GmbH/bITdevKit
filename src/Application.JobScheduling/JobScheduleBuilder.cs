@@ -32,7 +32,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// <example>
     /// // Schedule a job to run every minute
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0 * * * * ?")
     ///         .RegisterScoped();
     /// </example>
@@ -48,11 +48,12 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// Assigns a unique name to the job for identification.
     /// </summary>
     /// <param name="name">The name of the job (optional; defaults to the job type name if null).</param>
+    /// <param name="group">The scheduler group used to qualify the job name. A <see langword="null"/> value selects the default group.</param>
     /// <returns>The current JobScheduleBuilder instance for fluent chaining.</returns>
     /// <example>
     /// // Name a job explicitly
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0/10 * * * * ?")
     ///         .Named("echoTask")
     ///         .RegisterScoped();
@@ -74,7 +75,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// <example>
     /// // Add metadata to a job
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0 * * * * ?")
     ///         .WithData("message", "Hello World")
     ///         .RegisterScoped();
@@ -97,9 +98,9 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// <example>
     /// // Add multiple metadata entries
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0 * * * * ?")
-    ///         .WithData(new Dictionary<string, string> { { "key1", "value1" }, { "key2", "value2" } })
+    ///         .WithData(new Dictionary&lt;string, string&gt; { { "key1", "value1" }, { "key2", "value2" } })
     ///         .RegisterScoped();
     /// </example>
     public JobScheduleBuilder<TJob> WithData(Dictionary<string, string> data)
@@ -123,7 +124,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// <example>
     /// // Disable a job in production
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0 * * * * ?")
     ///         .Enabled(builder.Environment.IsDevelopment())
     ///         .RegisterScoped();
@@ -141,7 +142,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// <example>
     /// // Register a scoped job (shorthand)
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0 * * * * ?")
     ///         .Register();
     /// </example>
@@ -157,7 +158,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// <example>
     /// // Explicitly register a scoped job
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0/5 * * * * ?")
     ///         .Named("quickEcho")
     ///         .WithData("message", "Fast")
@@ -182,7 +183,7 @@ public class JobScheduleBuilder<TJob>(IServiceCollection services) where TJob : 
     /// <example>
     /// // Register a singleton job for persistent state
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<MonitorJob>()
+    ///     .WithJob&lt;MonitorJob&gt;()
     ///         .Cron("0 0 * * * ?") // Hourly
     ///         .Named("hourlyMonitor")
     ///         .RegisterSingleton();

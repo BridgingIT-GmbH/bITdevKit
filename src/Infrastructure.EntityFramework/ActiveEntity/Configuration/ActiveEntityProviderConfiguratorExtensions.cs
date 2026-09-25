@@ -18,6 +18,8 @@ public static class ActiveEntityProviderConfiguratorExtensions
     /// <summary>
     /// Configures the Entity Framework provider for the entity using default options, inferring entity and ID types from the configurator.
     /// </summary>
+    /// <typeparam name="TEntity">The entity type inferred from the configurator.</typeparam>
+    /// <typeparam name="TId">The entity identifier type inferred from the configurator.</typeparam>
     /// <typeparam name="TContext">The DbContext type.</typeparam>
     /// <param name="configurator">The entity configurator.</param>
     /// <returns>The configurator instance for fluent chaining.</returns>
@@ -44,6 +46,8 @@ public static class ActiveEntityProviderConfiguratorExtensions
     /// <summary>
     /// Configures the Entity Framework provider for the entity with custom options, inferring entity and ID types from the configurator.
     /// </summary>
+    /// <typeparam name="TEntity">The entity type inferred from the configurator.</typeparam>
+    /// <typeparam name="TId">The entity identifier type inferred from the configurator.</typeparam>
     /// <typeparam name="TContext">The DbContext type.</typeparam>
     /// <param name="configurator">The entity configurator.</param>
     /// <param name="optionsBuilder">The builder for Entity Framework provider options.</param>

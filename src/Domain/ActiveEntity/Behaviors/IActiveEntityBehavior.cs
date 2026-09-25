@@ -236,11 +236,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindOneAsync(object id, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding {typeof(T).Name} with ID {id}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindOneAsync(object id, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -256,11 +258,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindOneAsync(object id, IFindOptions<T> options, T entity, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {typeof(T).Name} with ID {id}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindOneAsync(object id, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default);
@@ -274,11 +278,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindOneAsync(ISpecification<T> specification, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -294,11 +300,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindOneAsync(ISpecification<T> specification, IFindOptions<T> options, T entity, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default);
@@ -312,11 +320,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindOneAsync(IEnumerable<ISpecification<T>> specifications, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding {typeof(T).Name} with specifications");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindOneAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -332,11 +342,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindOneAsync(IEnumerable<ISpecification<T>> specifications, IFindOptions<T> options, T entity, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {typeof(T).Name} with specifications: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindOneAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default);
@@ -350,11 +362,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindOneAsync(FilterModel filter, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding {typeof(T).Name} with filter");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindOneAsync(FilterModel filter, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -370,11 +384,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindOneAsync(FilterModel filter, IFindOptions<T> options, T entity, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {typeof(T).Name} with filter: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindOneAsync(FilterModel filter, IFindOptions<TEntity> options, TEntity entity, bool success, CancellationToken cancellationToken = default);
@@ -387,11 +403,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllAsync(IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding all {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -406,11 +424,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllAsync(IFindOptions<T> options, IEnumerable<T> entities, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {entities.Count()} {typeof(T).Name}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllAsync(IFindOptions<TEntity> options, IEnumerable<TEntity> entities, bool success, CancellationToken cancellationToken = default);
@@ -424,11 +444,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAsync(ISpecification<T> specification, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -444,11 +466,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAsync(ISpecification<T> specification, IFindOptions<T> options, IEnumerable<T> entities, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {entities.Count()} {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, IEnumerable<TEntity> entities, bool success, CancellationToken cancellationToken = default);
@@ -461,11 +485,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllPagedAsync(IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding paged {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllPagedAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -480,11 +506,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllPagedAsync(IFindOptions<T> options, ResultPaged<T> result, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found paged {typeof(T).Name}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllPagedAsync(IFindOptions<TEntity> options, ResultPaged<TEntity> result, bool success, CancellationToken cancellationToken = default);
@@ -499,11 +527,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeProjectAllAsync<TProjection>(Expression<Func<T, TProjection>> projection, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Projecting all {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeProjectAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -520,11 +550,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterProjectAllAsync<TProjection>(Expression<Func<T, TProjection>> projection, IFindOptions<T> options, IEnumerable<TProjection> entities, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Projected {entities.Count()} {typeof(T).Name}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterProjectAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, IEnumerable<TProjection> entities, bool success, CancellationToken cancellationToken = default);
@@ -540,11 +572,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeProjectAllAsync<TProjection>(ISpecification<T> specification, Expression<Func<T, TProjection>> projection, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Projecting all {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -562,11 +596,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterProjectAllAsync<TProjection>(ISpecification<T> specification, Expression<Func<T, TProjection>> projection, IFindOptions<T> options, IEnumerable<TProjection> entities, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Projected {entities.Count()} {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, IEnumerable<TProjection> entities, bool success, CancellationToken cancellationToken = default);
@@ -581,11 +617,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeProjectAllPagedAsync<TProjection>(Expression<Func<T, TProjection>> projection, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Projecting paged {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -602,11 +640,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterProjectAllPagedAsync<TProjection>(Expression<Func<T, TProjection>> projection, IFindOptions<T> options, ResultPaged<TProjection> result, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Projected paged {typeof(T).Name}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options, ResultPaged<TProjection> result, bool success, CancellationToken cancellationToken = default);
@@ -618,11 +658,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeExistsAsync(IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Checking existence of {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeExistsAsync(CancellationToken cancellationToken = default);
@@ -636,11 +678,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterExistsAsync(IFindOptions<T> options, bool exists, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Existence check for {typeof(T).Name}: {(exists ? "found" : "not found")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterExistsAsync(bool exists, bool success, CancellationToken cancellationToken = default);
@@ -689,11 +733,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeExistsAsync(ISpecification<T> specification, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Checking existence of {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeExistsAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
@@ -708,11 +754,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterExistsAsync(ISpecification<T> specification, bool exists, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Existence check for {typeof(T).Name} with specification {specification}: {(exists ? "found" : "not found")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterExistsAsync(ISpecification<TEntity> specification, bool exists, bool success, CancellationToken cancellationToken = default);
@@ -725,11 +773,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeExistsAsync(IEnumerable<ISpecification<T>> specifications, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Checking existence of {typeof(T).Name} with specifications");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeExistsAsync(IEnumerable<ISpecification<TEntity>> specifications, CancellationToken cancellationToken = default);
@@ -744,11 +794,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterExistsAsync(IEnumerable<ISpecification<T>> specifications, bool exists, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Existence check for {typeof(T).Name} with specifications: {(exists ? "found" : "not found")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterExistsAsync(IEnumerable<ISpecification<TEntity>> specifications, bool exists, bool success, CancellationToken cancellationToken = default);
@@ -796,11 +848,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeCountAsync(IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Counting {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeCountAsync(CancellationToken cancellationToken = default);
@@ -814,11 +868,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterCountAsync(IFindOptions<T> options, long count, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Counted {count} {typeof(T).Name}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterCountAsync(long count, bool success, CancellationToken cancellationToken = default);
@@ -831,11 +887,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeCountAsync(ISpecification<T> specification, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Counting {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeCountAsync(ISpecification<TEntity> specification, CancellationToken cancellationToken = default);
@@ -850,11 +908,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterCountAsync(ISpecification<T> specification, long count, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Counted {count} {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterCountAsync(ISpecification<TEntity> specification, long count, bool success, CancellationToken cancellationToken = default);
@@ -867,11 +927,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsAsync(IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding all IDs for {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -886,11 +948,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsAsync(IFindOptions<T> options, IEnumerable<TId> ids, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsAsync<TId>(IFindOptions<TEntity> options, IEnumerable<TId> ids, bool success, CancellationToken cancellationToken = default);
@@ -904,11 +968,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsAsync(ISpecification<T> specification, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding all IDs for {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -924,11 +990,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsAsync(ISpecification<T> specification, IFindOptions<T> options, IEnumerable<TId> ids, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsAsync<TId>(ISpecification<TEntity> specification, IFindOptions<TEntity> options, IEnumerable<TId> ids, bool success, CancellationToken cancellationToken = default);
@@ -942,11 +1010,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsAsync(ISpecification<T> specification, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding all IDs for {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -962,11 +1032,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsAsync(ISpecification<T> specification, IFindOptions<T> options, IEnumerable<TId> ids, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsAsync<TId>(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, IEnumerable<TId> ids, bool success, CancellationToken cancellationToken = default);
@@ -980,11 +1052,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsAsync(ISpecification<T> specification, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding all IDs for {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsAsync(FilterModel filter, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -1000,11 +1074,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsAsync(ISpecification<T> specification, IFindOptions<T> options, IEnumerable<TId> ids, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsAsync<TId>(FilterModel filter, IFindOptions<TEntity> options, IEnumerable<TId> ids, bool success, CancellationToken cancellationToken = default);
@@ -1017,11 +1093,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsPagedAsync(IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding paged IDs for {typeof(T).Name}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsPagedAsync(IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -1036,11 +1114,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsPagedAsync(IFindOptions<T> options, ResultPaged<TId> result, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found paged IDs for {typeof(T).Name}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsPagedAsync<TId>(IFindOptions<TEntity> options, ResultPaged<TId> result, bool success, CancellationToken cancellationToken = default);
@@ -1054,11 +1134,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsPagedAsync(ISpecification<T> specification, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding paged IDs for {typeof(T).Name} with specification {specification}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -1074,11 +1156,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsPagedAsync(ISpecification<T> specification, IFindOptions<T> options, ResultPaged<TId> result, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found paged IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsPagedAsync<TId>(ISpecification<TEntity> specification, IFindOptions<TEntity> options, ResultPaged<TId> result, bool success, CancellationToken cancellationToken = default);
@@ -1092,11 +1176,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsPagedAsync(IEnumerable<ISpecification<T>> specifications, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding paged IDs for {typeof(T).Name} with specifications");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -1112,11 +1198,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsPagedAsync(IEnumerable<ISpecification<T>> specifications, IFindOptions<T> options, ResultPaged<TId> result, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found paged IDs for {typeof(T).Name} with specifications: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsPagedAsync<TId>(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options, ResultPaged<TId> result, bool success, CancellationToken cancellationToken = default);
@@ -1130,11 +1218,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task BeforeFindAllIdsPagedAsync(IEnumerable<ISpecification<T>> specifications, IFindOptions<T> options, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Finding paged IDs for {typeof(T).Name} with specifications");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> BeforeFindAllIdsPagedAsync(FilterModel filter, IFindOptions<TEntity> options, CancellationToken cancellationToken = default);
@@ -1150,11 +1240,13 @@ public interface IActiveEntityBehavior<TEntity>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// public override async Task AfterFindAllIdsPagedAsync(IEnumerable<ISpecification<T>> specifications, IFindOptions<T> options, ResultPaged<TId> result, bool success, CancellationToken ct)
     /// {
     ///     Console.WriteLine($"Found paged IDs for {typeof(T).Name} with specifications: {(success ? "success" : "failed")}");
     ///     await Task.CompletedTask;
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result> AfterFindAllIdsPagedAsync<TId>(FilterModel filter, IFindOptions<TEntity> options, ResultPaged<TId> result, bool success, CancellationToken cancellationToken = default);

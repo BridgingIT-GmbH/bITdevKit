@@ -277,11 +277,6 @@ public interface IDecoratorBuilder<TService>
         where TDecorator : class, TService;
 }
 
-/// <summary>
-/// Represents an interception builder for a service contract.
-/// </summary>
-/// <typeparam name="TService">The service contract.</typeparam>
-
 internal enum CompositionRegistrationMode
 {
     ReplaceExisting,

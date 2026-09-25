@@ -71,10 +71,9 @@ public interface IStrategyBuilder<TStrategy>
 }
 
 /// <summary>
-/// Represents a composite registration builder.
+/// Stores keyed strategy mappings and the optional default key.
 /// </summary>
-/// <typeparam name="TService">The service contract.</typeparam>
-/// <typeparam name="TComposite">The composite implementation.</typeparam>
+/// <typeparam name="TStrategy">The strategy contract.</typeparam>
 
 internal sealed class StrategyDefinition<TStrategy>
     where TStrategy : class

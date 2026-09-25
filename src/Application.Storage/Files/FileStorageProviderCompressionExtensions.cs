@@ -445,6 +445,7 @@ public static class FileStorageProviderCompressionExtensions
     /// <param name="provider">The file storage provider to use for reading the compressed file and writing the uncompressed files.</param>
     /// <param name="path">The path of the compressed file to uncompress (e.g., "input.zip").</param>
     /// <param name="outputPath">The directory path where the uncompressed files will be written (e.g., "uncompressed").</param>
+    /// <param name="searchPattern">The optional pattern used to select archive entries for extraction.</param>
     /// <param name="password">An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</param>
     /// <param name="progress">An optional progress reporter for tracking the uncompression process.</param>
     /// <param name="options">Optional configuration settings for uncompression. If null, default settings are used.</param>
@@ -627,12 +628,13 @@ public static class FileStorageProviderCompressionExtensions
     /// </summary>
     /// <param name="provider">The file storage provider to use for reading the compressed file.</param>
     /// <param name="path">The path of the compressed file to uncompress (e.g., "input.zip").</param>
+    /// <param name="searchPattern">The optional pattern used to select archive entries for extraction.</param>
     /// <param name="password">An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</param>
     /// <param name="progress">An optional progress reporter for tracking the uncompression process.</param>
     /// <param name="options">Optional configuration settings for uncompression. If null, default settings are used.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>
-    /// A <see cref="Result{IReadOnlyDictionary{string, MemoryStream}}"/> containing the dictionary on success, or an error on failure.<br/>
+    /// A <see cref="Result{T}"/> containing the dictionary on success, or an error on failure.<br/>
     /// The dictionary maps archive entry paths (including names) to their decompressed <see cref="MemoryStream"/>s.
     /// </returns>
     /// <remarks>
@@ -806,7 +808,7 @@ public static class FileStorageProviderCompressionExtensions
     /// <param name="progress">An optional progress reporter for tracking the listing process.</param>
     /// <param name="options">Optional configuration settings for archive handling. If null, default settings are used.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A <see cref="Result{IEnumerable{string}}"/> containing the list of file names on success, or an error on failure.</returns>
+    /// <returns>A <see cref="Result{T}"/> containing the list of file names on success, or an error on failure.</returns>
     /// <remarks>
     /// This method uses SharpCompress to read archive entries compatible with popular tools (e.g., 7-Zip, WinZip).
     /// Supported formats: Zip, Tar, GZip. Returns all file names at once without pagination.

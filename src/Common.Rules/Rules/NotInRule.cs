@@ -17,9 +17,8 @@ public class NotInRule<T>(T value, IEnumerable<T> disallowedValues)
     public override string Message => $"Value must not be one of: {string.Join(", ", disallowedValues)}";
 
     /// <summary>
-    /// Executes a specified rule and returns the result.
+    /// Checks whether the value is absent from the configured set of disallowed values.
     /// </summary>
-    /// <param name="rule">The rule to be executed.</param>
-    /// <return>Returns true if the rule executes successfully; otherwise, false.</return>
+    /// <returns>A successful result when the disallowed values do not contain the value; otherwise, a failure result.</returns>
     public override Result Execute() => Result.SuccessIf(!disallowedValues.Contains(value));
 }

@@ -119,7 +119,6 @@ public class SubscriptionMap : ISubscriptionMap
     /// <summary>
     ///     Removes this instance.
     /// </summary>
-    /// <typeparam name="THandler">The type of the handler.</typeparam>
     public void Remove(Type message, Type handler)
     {
         EnsureArg.IsNotNull(message, nameof(message));
@@ -133,7 +132,6 @@ public class SubscriptionMap : ISubscriptionMap
     /// <summary>
     ///     Removes this instance.
     /// </summary>
-    /// <typeparam name="THandler">The type of the handler.</typeparam>
     public void Remove(string messageName, Type handler)
     {
         EnsureArg.IsNotNullOrEmpty(messageName, nameof(messageName));

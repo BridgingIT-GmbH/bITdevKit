@@ -591,10 +591,10 @@ public static class FileStorageProviderExtensions
     /// <param name="fileAction">An optional action to execute on each file found (e.g., reading or processing the file).</param>
     /// <param name="progress">An optional progress reporter for tracking files and bytes processed.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>A Result containing a List<FileMetadata> of all files found, or an error if the operation fails.</returns>
+    /// <returns>A result containing a <see cref="List{T}"/> of all file metadata found, or an error if the operation fails.</returns>
     /// <remarks>
     /// This method recursively traverses directories, collects file metadata, and supports an optional action on each file.
-    /// Progress is reported based on the number of files processed and their sizes using the provided IProgress<FileProgress>.
+    /// Progress is reported based on the number of files processed and their sizes using the provided <see cref="IProgress{T}"/>.
     /// </remarks>
     public static async Task<Result<List<FileMetadata>>> TraverseFilesAsync(this IFileStorageProvider provider, string path, Func<string, Stream, CancellationToken, Task> fileAction = null, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {

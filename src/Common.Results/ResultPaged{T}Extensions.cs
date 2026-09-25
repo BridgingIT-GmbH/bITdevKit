@@ -310,6 +310,7 @@ public static class ResultPagedExtensions
     /// <summary>
     /// Filters items in a paged collection using a predicate while maintaining pagination metadata.
     /// </summary>
+    /// <param name="result">The paged result whose successful values are filtered.</param>
     /// <param name="predicate">The filtering function that returns true for items to keep</param>
     /// <returns>A new ResultPaged containing only the filtered items</returns>
     /// <example>
@@ -360,6 +361,7 @@ public static class ResultPagedExtensions
     /// <summary>
     /// Asynchronously filters items in a paged collection while maintaining pagination metadata.
     /// </summary>
+    /// <param name="result">The paged result whose successful values are filtered.</param>
     /// <param name="predicate">The async filtering function that returns true for items to keep</param>
     /// <param name="cancellationToken">Token to cancel the operation</param>
     /// <returns>A Task containing the filtered ResultPaged</returns>
@@ -425,7 +427,7 @@ public static class ResultPagedExtensions
     /// </summary>
     /// <example>
     /// var result = pagedUsers.Ensure(
-    ///     users => users.Count() <= maxPageSize,
+    ///     users => users.Count() &lt;= maxPageSize,
     ///     new ValidationError($"Page size cannot exceed {maxPageSize}")
     /// );
     /// </example>
@@ -1116,8 +1118,8 @@ public static class ResultPagedExtensions
     /// <example>
     /// var adultUsers = pagedUsers.Choose(users =>
     ///     users.Any(u => u.Age >= 18)
-    ///         ? new ResultChooseOption<IEnumerable<User>>(users.Where(u => u.Age >= 18))
-    ///         : ResultChooseOption<IEnumerable<User>>.None()
+    ///         ? new ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;(users.Where(u => u.Age >= 18))
+    ///         : ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;.None()
     /// );
     /// </example>
     public static ResultPaged<TNew> Choose<T, TNew>(
@@ -1169,8 +1171,8 @@ public static class ResultPagedExtensions
     ///         var activeStatuses = await GetActiveStatusesAsync(users, ct);
     ///         var activeUsers = users.Where(u => activeStatuses[u.Id]);
     ///         return activeUsers.Any()
-    ///             ? new ResultChooseOption<IEnumerable<User>>(activeUsers)
-    ///             : ResultChooseOption<IEnumerable<User>>.None();
+    ///             ? new ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;(activeUsers)
+    ///             : ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;.None();
     ///     },
     ///     cancellationToken
     /// );

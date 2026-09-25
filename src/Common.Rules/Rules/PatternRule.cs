@@ -21,11 +21,9 @@ public class PatternRule(string value, string pattern, string message = null) : 
     public override string Message => this.message;
 
     /// <summary>
-    /// Executes a specified rule based on the given parameters.
+    /// Checks whether the value is nonempty and matches the configured regular expression.
     /// </summary>
-    /// <param name="rule">The rule to be executed.</param>
-    /// <param name="parameters">Parameters required for the rule execution.</param>
-    /// <returns>The result of the rule execution.</returns>
+    /// <returns>A successful result when the value matches the pattern; otherwise, a failure result.</returns>
     public override Result Execute() =>
         Result.SuccessIf(!string.IsNullOrEmpty(value) &&
             System.Text.RegularExpressions.Regex.IsMatch(value, pattern));

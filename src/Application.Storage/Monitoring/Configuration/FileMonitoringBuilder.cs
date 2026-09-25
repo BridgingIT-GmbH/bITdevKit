@@ -51,6 +51,7 @@ public class FileMonitoringBuilder
     /// <param name="name">The unique name of the location (e.g., "Docs").</param>
     /// <param name="path">The local file system path to monitor (e.g., "C:\\Docs").</param>
     /// <param name="configure">An action to configure the LocationOptions (e.g., file pattern, processors).</param>
+    /// <param name="ensureRoot">Whether the local provider creates the root directory when it does not exist.</param>
     /// <returns>The current FileMonitoringBuilder instance for chaining.</returns>
     public FileMonitoringBuilder UseLocal(string name, string path, Action<LocationOptions> configure = null, bool ensureRoot = true)
     {

@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// services.AddRequester()
 ///     .AddHandlers(new[] { "^System\\..*" })
 ///     .WithBehavior<ValidationBehavior<,>>();
@@ -37,6 +38,7 @@ using Microsoft.Extensions.Logging;
 ///         }
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 /// <remarks>

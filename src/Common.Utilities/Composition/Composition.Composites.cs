@@ -75,9 +75,10 @@ public interface ICompositeChildrenBuilder<TService>
 }
 
 /// <summary>
-/// Represents a chain handler.
+/// Configures the child implementations and registration mode for a composite service.
 /// </summary>
-/// <typeparam name="TContext">The chain context.</typeparam>
+/// <typeparam name="TService">The service contract implemented by the composite and its children.</typeparam>
+/// <typeparam name="TComposite">The composite implementation.</typeparam>
 
 internal sealed class CompositeBuilder<TService, TComposite>(CompositionBuilder root)
     : ICompositeBuilder<TService, TComposite>, ICompositeChildrenBuilder<TService>

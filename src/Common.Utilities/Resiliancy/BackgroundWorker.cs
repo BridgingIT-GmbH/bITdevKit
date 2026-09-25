@@ -9,12 +9,13 @@ using Microsoft.Extensions.Logging;
 /// <remarks>
 /// Initializes a new instance of the BackgroundWorker class with the specified work.
 /// </remarks>
-/// <param name="work">The asynchronous work to execute in the background, accepting a CancellationToken and IProgress<int> for progress reporting.</param>
+/// <param name="work">The asynchronous work to execute in the background, accepting a <see cref="CancellationToken"/> and an <see cref="IProgress{T}"/> of <see cref="int"/> for progress reporting.</param>
 /// <param name="handleErrors">If true, catches and logs exceptions from the work; otherwise, throws them. Defaults to false.</param>
 /// <param name="logger">An optional logger to log errors if handleErrors is true. Defaults to null.</param>
 /// <param name="progress">An optional progress reporter for background operations. Defaults to null.</param>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var worker = new BackgroundWorker(async (ct, progress) =>
 /// {
 ///     for (int i = 0; i <= 100; i += 10)
@@ -25,6 +26,7 @@ using Microsoft.Extensions.Logging;
 /// }, progress: new Progress<BackgroundWorkerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Percentage: {p.ProgressPercentage}%")));
 /// worker.ProgressChanged += (s, e) => Console.WriteLine($"Legacy Progress: {e.ProgressPercentage}%");
 /// await worker.StartAsync(CancellationToken.None);
+/// ]]>
 /// </code>
 /// </example>
 public class BackgroundWorker(
@@ -71,6 +73,7 @@ public class BackgroundWorker(
     /// <exception cref="InvalidOperationException">Thrown if the background work is already running.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<BackgroundWorkerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Percentage: {p.ProgressPercentage}%"));
     /// var worker = new BackgroundWorker(async (ct, p) =>
@@ -84,6 +87,7 @@ public class BackgroundWorker(
     /// worker.ProgressChanged += (s, e) => Console.WriteLine($"Legacy Progress: {e.ProgressPercentage}%");
     /// await worker.StartAsync(cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
+    /// ]]>
     /// </code>
     /// </example>
     public async Task StartAsync(CancellationToken cancellationToken = default, IProgress<BackgroundWorkerProgress> progress = null)
@@ -158,7 +162,7 @@ public class ProgressChangedEventArgs(int progressPercentage) : EventArgs
 /// <remarks>
 /// Initializes a new instance of the BackgroundWorkerBuilder with the specified work.
 /// </remarks>
-/// <param name="work">The asynchronous work to execute in the background, accepting a CancellationToken and IProgress<int> for progress reporting.</param>
+/// <param name="work">The asynchronous work to execute in the background, accepting a <see cref="CancellationToken"/> and an <see cref="IProgress{T}"/> of <see cref="int"/> for progress reporting.</param>
 public class BackgroundWorkerBuilder(Func<CancellationToken, IProgress<int>, Task> work)
 {
     private bool handleErrors;

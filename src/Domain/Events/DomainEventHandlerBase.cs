@@ -114,7 +114,6 @@ public abstract partial class DomainEventHandlerBase<TEvent> : IDomainEventHandl
     /// <summary>
     /// Represents typed logger.
     /// </summary>
-    /// <typeparam name="TEvent">The event type.</typeparam>
     public static partial class TypedLogger
     {
         /// <summary>

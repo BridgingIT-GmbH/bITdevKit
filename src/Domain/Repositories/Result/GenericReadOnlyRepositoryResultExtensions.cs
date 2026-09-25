@@ -204,6 +204,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
     /// <summary>
     /// Asynchronously finds a single entity by its identifier and returns a result object.
+    /// </summary>
     /// <param name="source">The repository source from which to find the entity.</param>
     /// <param name="id">The identifier of the entity to be found.</param>
     /// <param name="options">Optional find options to customize the query.</param>
@@ -251,6 +252,7 @@ public static class GenericReadOnlyRepositoryResultExtensions
 
     /// <summary>
     /// Asynchronously finds and returns a single entity that matches the given specification.
+    /// </summary>
     /// <param name="source">The repository from which the entity is to be fetched.</param>
     /// <param name="specification">The specification that defines the criteria for selecting the entity.</param>
     /// <param name="options">Optional settings for the entity retrieval process.</param>

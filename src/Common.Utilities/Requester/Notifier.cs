@@ -79,6 +79,7 @@ public abstract class NotificationBase : INotification
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class EmailSentNotificationHandler : NotificationHandlerBase<EmailSentNotification>
 /// {
 ///     protected override async Task<Result> HandleAsync(EmailSentNotification notification, PublishOptions options, CancellationToken cancellationToken)
@@ -87,6 +88,7 @@ public abstract class NotificationBase : INotification
 ///         return Result.Success();
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public interface INotificationHandler<in TNotification>
@@ -113,6 +115,7 @@ public interface INotificationHandler<in TNotification>
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class EmailSentNotificationHandler : NotificationHandlerBase<EmailSentNotification>
 /// {
 ///     protected override async Task<Result> HandleAsync(EmailSentNotification notification, PublishOptions options, CancellationToken cancellationToken)
@@ -121,6 +124,7 @@ public interface INotificationHandler<in TNotification>
 ///         return Result.Success();
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public abstract class NotificationHandlerBase<TNotification> : INotificationHandler<TNotification>
@@ -159,6 +163,7 @@ public abstract class NotificationHandlerBase<TNotification> : INotificationHand
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var options = new PublishOptions
 /// {
 ///     ExecutionMode = ExecutionMode.Concurrent,
@@ -166,6 +171,7 @@ public abstract class NotificationHandlerBase<TNotification> : INotificationHand
 ///     Progress = new Progress<ProgressReport>(report => Console.WriteLine($"Progress: {report.Messages[0]} ({report.PercentageComplete}%)"))
 /// };
 /// await notifier.PublishAsync(new EmailSentNotification(), options);
+/// ]]>
 /// </code>
 /// </example>
 public class PublishOptions
@@ -226,6 +232,7 @@ public enum ExecutionMode
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class SampleNotificationHandlerProvider : INotificationHandlerProvider
 /// {
 ///     public IReadOnlyList<INotificationHandler<TNotification>> GetHandlers<TNotification>(IServiceProvider serviceProvider)
@@ -234,6 +241,7 @@ public enum ExecutionMode
 ///         return serviceProvider.GetServices<INotificationHandler<TNotification>>().ToList();
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public interface INotificationHandlerProvider
@@ -259,8 +267,10 @@ public interface INotificationHandlerProvider
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var provider = new NotificationHandlerProvider(handlerCache);
 /// var handlers = provider.GetHandlers<EmailSentNotification>(serviceProvider);
+/// ]]>
 /// </code>
 /// </example>
 /// <remarks>
@@ -328,6 +338,7 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class SampleBehaviorsProvider : INotificationBehaviorsProvider
 /// {
 ///     public IReadOnlyList<IPipelineBehavior<TNotification, Result>> GetBehaviors<TNotification>(IServiceProvider serviceProvider)
@@ -336,6 +347,7 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
 ///         return new List<IPipelineBehavior<TNotification, Result>> { serviceProvider.GetService<ValidationBehavior<TNotification, Result>>() };
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public interface INotificationBehaviorsProvider
@@ -361,8 +373,10 @@ public interface INotificationBehaviorsProvider
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var provider = new NotificationBehaviorsProvider(pipelineBehaviorTypes);
 /// var behaviors = provider.GetBehaviors<EmailSentNotification>(serviceProvider);
+/// ]]>
 /// </code>
 /// </example>
 /// <remarks>
@@ -435,10 +449,12 @@ public class NotificationBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorT
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var notifier = serviceProvider.GetRequiredService<INotifier>();
 /// var notification = new EmailSentNotification();
 /// var result = await notifier.PublishAsync(notification);
 /// var info = notifier.GetRegistrationInformation();
+/// ]]>
 /// </code>
 /// </example>
 public interface INotifier
@@ -487,11 +503,13 @@ public interface INotifier
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var notifier = serviceProvider.GetRequiredService<INotifier>();
 /// var notification = new EmailSentNotification();
 /// var options = new PublishOptions { ExecutionMode = ExecutionMode.Concurrent };
 /// var result = await notifier.PublishAsync(notification, options);
 /// var info = notifier.GetRegistrationInformation();
+/// ]]>
 /// </code>
 /// </example>
 /// <remarks>

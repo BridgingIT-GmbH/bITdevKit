@@ -56,6 +56,7 @@ public static class ResultNonGenericExtensions
     ///     Maps a successful Result to a Result{T} using the provided mapping function.
     /// </summary>
     /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="result">The result whose success or failure state is propagated.</param>
     /// <param name="value">The value.</param>
     /// <returns>A new Result containing the mapped value or the original errors.</returns>
     /// <example>
@@ -90,6 +91,7 @@ public static class ResultNonGenericExtensions
     ///     Maps a successful Result to a Result{T} using the provided mapping function.
     /// </summary>
     /// <typeparam name="T">The type to map to.</typeparam>
+    /// <param name="result">The result whose success or failure state is propagated.</param>
     /// <param name="mapper">The function to map the value.</param>
     /// <returns>A new Result containing the mapped value or the original errors.</returns>
     /// <example>
@@ -1541,6 +1543,7 @@ public static class ResultNonGenericExtensions
     /// <returns>The transformed result if predicate is true and result is successful; otherwise, the original result.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var result = Result.Success()
     ///     .When(() => CurrentTime.Hour >= 9 && CurrentTime.Hour < 17, r => r
     ///         .Tap(() => LogBusinessHoursAccess())
@@ -1548,6 +1551,7 @@ public static class ResultNonGenericExtensions
     ///     .When(() => IsWeekend(), r => r
     ///         .Ensure(() => HasWeekendPermission(), new Error("Weekend access not allowed"))
     ///     );
+    /// ]]>
     /// </code>
     /// </example>
     public static Result When(

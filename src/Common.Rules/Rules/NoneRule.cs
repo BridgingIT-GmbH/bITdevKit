@@ -21,11 +21,9 @@ public class NoneRule<T>(IEnumerable<T> collection, Func<T, IRule> ruleFactory)
         "Some elements in the collection satisfy the condition when none should";
 
     /// <summary>
-    /// Executes a specified rule.
+    /// Determines whether none of the collection elements satisfy their generated rules.
     /// </summary>
-    /// <param name="ruleName">The name of the rule to execute.</param>
-    /// <param name="context">The context in which the rule is to be executed.</param>
-    /// <returns>The result of the rule execution.</returns>
+    /// <returns>A successful result when the collection is empty or no generated rule is satisfied; otherwise, a failure result.</returns>
     public override Result Execute()
     {
         if (collection?.Any() != true)

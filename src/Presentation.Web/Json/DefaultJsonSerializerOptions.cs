@@ -11,8 +11,7 @@ using Microsoft.AspNetCore.Http.Json;
 /// <summary>
 /// Provides a uniform configuration for ASP.NET Core <see cref="JsonOptions"/> by
 /// copying settings from the canonical <c>Common.DefaultJsonSerializerOptions.Create()</c>.
-/// Use together with <see cref="ServiceCollectionExtensions.ConfigureJson"/> to apply
-/// these settings application-wide.
+/// Use it during service registration to apply these settings application-wide.
 /// </summary>
 public static class DefaultJsonSerializerOptions
 {

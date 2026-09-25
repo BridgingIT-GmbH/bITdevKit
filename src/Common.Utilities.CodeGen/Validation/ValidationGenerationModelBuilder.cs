@@ -48,6 +48,7 @@ public static class ValidationGenerationModelBuilder
     /// </summary>
     /// <param name="context">The source-production context used to report diagnostics.</param>
     /// <param name="classSymbol">The request type being analyzed.</param>
+    /// <param name="diagnostics">The diagnostic descriptors used when invalid validation metadata is encountered.</param>
     /// <param name="rules">The collected validation rules when successful.</param>
     /// <returns><see langword="true"/> when validation metadata was collected successfully; otherwise <see langword="false"/>.</returns>
     public static bool TryCreate(

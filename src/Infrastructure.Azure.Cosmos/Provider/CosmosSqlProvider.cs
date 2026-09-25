@@ -708,7 +708,8 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
     }
 
     /// <summary>
-    /// Initializes
+    /// Initializes the configured Cosmos container and applies its throughput settings.
+    /// </summary>
     private async Task InitializeContainerAsync(CosmosSqlProviderOptions<TItem> options, CancellationToken cancellationToken)
     {
         this.containerName = options.Container.EmptyToNull() ?? typeof(TItem).Name.Pluralize();
@@ -756,7 +757,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
 
     /// <summary>
     /// Validates the ID property of an item, ensuring it has a mandatory value.
-    /// </
+    /// </summary>
     private bool ValidateItemId(TItem item) // cosmos v3 needs an id for inserts/updates
     {
         if (this.idProperty?.PropertyType == typeof(string) &&

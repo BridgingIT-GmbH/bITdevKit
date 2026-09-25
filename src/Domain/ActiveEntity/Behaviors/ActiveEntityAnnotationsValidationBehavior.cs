@@ -25,7 +25,6 @@ using FluentValidation.Results;
 /// Supported attributes include [Required], [StringLength], [MaxLength], [MinLength], [Range], [RegularExpression], [EmailAddress], [Phone], [Url], and [Compare].
 /// </remarks>
 /// <param name="options">Configuration options specifying when validation applies.</param>
-/// <exception cref="ArgumentNullException">Thrown when <paramref name="serviceProvider"/> is null.</exception>
 public class ActiveEntityAnnotationsValidationBehavior<TEntity, TId>(object options)
     : ActiveEntityBehaviorBase<TEntity>
     where TEntity : class, IEntity

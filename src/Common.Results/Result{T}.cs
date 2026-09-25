@@ -735,7 +735,7 @@ public readonly partial struct Result<T> : IResult<T>
     /// <param name="predicate">Function to evaluate the value for failure.</param>
     /// <param name="value">The value to evaluate and include in the Result.</param>
     /// <param name="error">Optional error to include if predicate returns true.</param>
-    /// <returns>A failure Result if predicate returns true; otherwise, a successful Result.</param>
+    /// <returns>A failure Result if predicate returns true; otherwise, a successful Result.</returns>
     /// <example>
     /// <code>
     /// var user = new User { LastLoginDate = DateTime.Now.AddDays(-31) };

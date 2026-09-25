@@ -21,6 +21,7 @@ public class EntityPermissionAuthorizationRequirement : IAuthorizationRequiremen
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
     /// </summary>
+    /// <param name="entityType">The entity type to which the permission applies.</param>
     /// <param name="permission">The permission value that is required for authorization.</param>
     public EntityPermissionAuthorizationRequirement(Type entityType, string permission)
     {
@@ -31,6 +32,7 @@ public class EntityPermissionAuthorizationRequirement : IAuthorizationRequiremen
     /// <summary>
     /// Initializes a new instance of the <see cref="EntityPermissionRequirement"/> class.
     /// </summary>
+    /// <param name="entityType">The entity type to which the permissions apply.</param>
     /// <param name="permissions">The permission value that is required for authorization.</param>
     public EntityPermissionAuthorizationRequirement(Type entityType, string[] permissions)
     {

@@ -167,7 +167,6 @@ public static class RepositoryExtensions
     ///     Asynchronously determines whether any entities match the given expression.
     /// </summary>
     /// <param name="source">The source repository.</param>
-    /// <param name="expression">The expression used to filter entities.</param>
     /// <param name="cancellationToken">Token to monitor for cancellation requests.</param>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <returns>A task representing the asynchronous operation, containing a boolean indicating if any entities match the expression.</returns>
@@ -224,7 +223,9 @@ public static class RepositoryExtensions
     ///     Asynchronously projects all entities of type <typeparamref name="TEntity" /> to a specified projection type based
     ///     on the given specification, projection expression, options, and cancellation token.
     /// </summary>
+    /// <typeparam name="TEntity">The type of entity stored by the repository.</typeparam>
     /// <typeparam name="TProjection">The type to which the entities will be projected.</typeparam>
+    /// <param name="source">The source repository.</param>
     /// <param name="expression">The expression used to filter entities.</param>
     /// <param name="projection">The expression defining the projection of entities.</param>
     /// <param name="options">Optional criteria for filtering and sorting results.</param>

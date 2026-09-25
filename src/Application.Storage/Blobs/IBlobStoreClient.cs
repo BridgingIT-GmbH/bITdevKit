@@ -99,6 +99,7 @@ public interface IBlobStoreClient
     /// Deletes a blob by exact key.
     /// </summary>
     /// <param name="key">The exact blob key.</param>
+    /// <param name="options">Optional conditional delete settings.</param>
     /// <param name="cancellationToken">The token used to cancel the operation.</param>
     /// <returns>A result indicating whether the delete completed successfully.</returns>
     /// <example>

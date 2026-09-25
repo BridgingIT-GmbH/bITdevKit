@@ -128,6 +128,7 @@ public abstract class Entity<TId> : IEntity<TId>
 ///     and provides a mechanism to handle proxies.
 /// </summary>
 /// <typeparam name="TId">The type of the unique identifier for the entity.</typeparam>
+/// <typeparam name="TIdType">The primitive value type wrapped by the entity identifier.</typeparam>
 [DebuggerDisplay("Type={GetType().Name}, Id={Id}")]
 public abstract class Entity<TId, TIdType> : Entity<TId>, IEntity
     where TId : EntityId<TIdType>

@@ -46,7 +46,7 @@ public class MapsterMapper<TSource, TDestination>(TypeAdapterConfig config = nul
 }
 
 /// <summary>
-///     Maps an object of type <typeparamref name="TSource" /> to <typeparamref name="TDestination" /> by using mapster.
+///     Maps objects by using the configured Mapster type-adapter configuration.
 /// </summary>
 public class MapsterMapper(TypeAdapterConfig config = null) : IMapper
 {

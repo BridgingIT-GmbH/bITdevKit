@@ -19,12 +19,12 @@ using Microsoft.EntityFrameworkCore.Query;
 /// <remarks>
 /// This class is internal to the EF Core active entity provider/repository and should not be used directly
 /// by consumers. Instead, use the <c>UpdateAsync</c> methods on the provider,
-/// which accept an <see cref="Action{IEntityUpdateSet{TEntity}}"/> to configure updates.
+/// which accept an <see cref="Action{T}"/> delegate over <see cref="IEntityUpdateSet{TEntity}"/> to configure updates.
 /// </remarks>
 /// <example>
 /// Example usage through the active entity/repository provider:
 /// <code>
-/// var result = await provider|repository.UpdateAsync(
+/// var result = await repository.UpdateAsync(
 ///     new Specification&lt;User&gt;(u => u.LastLogin &lt; DateTime.UtcNow.AddYears(-1)),
 ///     set => set
 ///         .Set(u => u.IsActive, false)                 // constant

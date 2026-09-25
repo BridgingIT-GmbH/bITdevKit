@@ -18,6 +18,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// Behavior that stores domain events in an EF Core outbox for an ActiveRecord entity.
 /// </summary>
 /// <typeparam name="TEntity">The entity type, inheriting from ActiveRecord.</typeparam>
+/// <typeparam name="TId">The entity identifier type.</typeparam>
 /// <typeparam name="TContext">The DbContext type, implementing IOutboxDomainEventContext.</typeparam>
 public partial class ActiveEntityDomainEventOutboxPublishingBehavior<TEntity, TId, TContext> : ActiveEntityBehaviorBase<TEntity>
     where TEntity : ActiveEntity<TEntity, TId>
@@ -31,7 +32,7 @@ public partial class ActiveEntityDomainEventOutboxPublishingBehavior<TEntity, TI
     private readonly ActiveEntityDomainEventCollector collector;
 
     /// <summary>
-    /// Initializes a new instance of the <see cref="ActiveEntityDomainEventOutboxPublishingBehavior{TEntity, TContext}"/> class.
+    /// Initializes a new instance of the <see cref="ActiveEntityDomainEventOutboxPublishingBehavior{TEntity, TId, TContext}"/> class.
     /// </summary>
     /// <param name="context">The DbContext instance to use for database operations.</param>
     /// <param name="loggerFactory">Optional logger factory for logging.</param>

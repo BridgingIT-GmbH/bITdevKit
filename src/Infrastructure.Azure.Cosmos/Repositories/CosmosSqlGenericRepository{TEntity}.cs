@@ -35,9 +35,10 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     /// <summary>
     /// A generic repository for interacting with data stored in Cosmos DB SQL API.
     /// </summary>
-    /// <typeparam name="TEntity">The type of entity this repository manages.</typeparam>
     /// <example>
-    /// var myRepository = new CosmosSqlGenericRepository<MyEntity>(options);
+    /// <code>
+    /// var repository = new CosmosSqlGenericRepository&lt;Customer&gt;(options);
+    /// </code>
     /// </example>
     public CosmosSqlGenericRepository(CosmosSqlGenericRepositoryOptions<TEntity> options)
     {
@@ -51,9 +52,14 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     }
 
     /// <summary>
-    /// A generic repository implementation for Cosmos SQL. </summary> <typeparam name="TEntity">The type of the entity.</typeparam> <example>
-    /// var repository = new CosmosSqlGenericRepository<MyEntity>(options); </example>
-    /// /
+    /// Creates a Cosmos SQL repository from options configured through a builder delegate.
+    /// </summary>
+    /// <param name="optionsBuilder">The delegate that configures the repository options.</param>
+    /// <example>
+    /// <code>
+    /// var repository = new CosmosSqlGenericRepository&lt;Customer&gt;(options => options.Provider(provider));
+    /// </code>
+    /// </example>
     public CosmosSqlGenericRepository(
         Builder<CosmosSqlGenericRepositoryOptionsBuilder<TEntity>, CosmosSqlGenericRepositoryOptions<TEntity>>
             optionsBuilder)
@@ -78,7 +84,9 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     /// <example>
     /// Usage:
     /// <code>
+    /// <![CDATA[
     /// private readonly ILogger<CosmosSqlGenericRepository<MyEntity>> logger;
+    /// ]]>
     /// </code>
     /// </example>
     protected ILogger<CosmosSqlGenericRepository<TEntity>> Logger { get; }
@@ -90,9 +98,11 @@ public class CosmosSqlGenericRepository<TEntity> : IGenericRepository<TEntity>
     /// <example>
     /// Sample usage:
     /// <code>
+    /// <![CDATA[
     /// var provider = new CosmosSqlProvider<TEntity>(...);
     /// var repository = new CosmosSqlGenericRepository<TEntity>(loggerFactory, provider);
     /// var entities = await repository.FindAllAsync();
+    /// ]]>
     /// </code>
     /// </example>
     protected ICosmosSqlProvider<TEntity> Provider { get; }

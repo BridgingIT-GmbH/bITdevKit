@@ -20,10 +20,8 @@ public class InRule<T>(T value, IEnumerable<T> allowedValues)
     public override string Message => $"Value must be one of: {string.Join(", ", allowedValues)}";
 
     /// <summary>
-    /// Executes the specified rule with provided parameters.
+    /// Checks whether the value is in the configured set of allowed values.
     /// </summary>
-    /// <param name="ruleName">The name of the rule to execute.</param>
-    /// <param name="parameters">An array of objects representing the parameters for the rule.</param>
-    /// <return>Returns the result of rule execution.</return>
+    /// <returns>A successful result when the allowed values contain the value; otherwise, a failure result.</returns>
     public override Result Execute() => Result.SuccessIf(allowedValues.Contains(value));
 }

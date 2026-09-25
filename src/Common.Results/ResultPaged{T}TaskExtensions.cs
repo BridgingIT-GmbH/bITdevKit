@@ -10,7 +10,7 @@ using FluentValidation.Internal;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-///     Extension methods for Task<ResultPaged<T>> to enable proper chaining.
+///     Extension methods for asynchronous <see cref="ResultPaged{T}"/> instances to enable chaining.
 /// </summary>
 public static partial class ResultPagedFunctionTaskExtensions
 {
@@ -47,11 +47,13 @@ public static partial class ResultPagedFunctionTaskExtensions
     /// <typeparam name="TException">The type of exception to throw.</typeparam>
     /// <param name="resultTask">The ResultPaged task to check.</param>
     /// <returns>The current ResultPaged if it indicates success.</returns>
-    /// <exception cref="TException">Thrown if the ResultPaged indicates a failure.</exception>
+    /// <exception cref="Exception">Throws an exception of type <typeparamref name="TException"/> if the ResultPaged indicates a failure.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// await GetPagedUsersAsync(pageNumber, pageSize)
     ///     .ThrowIfFailed<InvalidOperationException>();
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<T>> ThrowIfFailed<T, TException>(this Task<ResultPaged<T>> resultTask)
@@ -83,6 +85,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     /// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// // Process users with individual error handling
     /// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
     ///     .Collect(user =>
@@ -105,6 +108,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     ///                 .WithError(new Error($"Processing failed: {ex.Message}"));
     ///         }
     ///     });
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TOutput>> Collect<T, TOutput>(
@@ -141,6 +145,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     /// <returns>A new ResultPaged containing successful results or aggregated errors.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// // Process users with external service integration
     /// var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
     ///     .CollectAsync(async (user, ct) =>
@@ -173,6 +178,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     ///         }
     ///     },
     ///     cancellationToken);
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TOutput>> CollectAsync<T, TOutput>(
@@ -831,6 +837,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     /// <returns>The original ResultPaged if predicate is met; otherwise, a failure.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// // Ensure all users in the page are active
     /// var activeUsers = await GetPagedUsersAsync(pageNumber, pageSize)
     ///     .Filter(
@@ -844,6 +851,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     ///         users => users.Count() <= maxPageSize,
     ///         new ValidationError($"Page size exceeds maximum of {maxPageSize}")
     ///     );
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<T>> Filter<T>(
@@ -2036,7 +2044,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Executes different functions based on the result's success state from a Task<ResultPaged{T}>.
+    /// Executes different functions based on the success state of an asynchronous paged result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
@@ -2075,7 +2083,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Returns different values based on the result's success state from a Task<ResultPaged{T}>.
+    /// Returns different values based on the success state of an asynchronous paged result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
@@ -2110,7 +2118,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Asynchronously executes different functions based on the result's success state from a Task<ResultPaged{T}>.
+    /// Asynchronously executes different functions based on the success state of a paged result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
@@ -2156,7 +2164,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Executes different actions based on the ResultPaged's success state from a Task<ResultPaged{T}>.
+    /// Executes different actions based on the success state of an asynchronous paged result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>
@@ -2208,7 +2216,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Asynchronously executes different actions based on the ResultPaged's success state from a Task<ResultPaged{T}>.
+    /// Asynchronously executes different actions based on the success state of a paged result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>
@@ -2262,7 +2270,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Asynchronously executes a success function with a synchronous failure handler from a Task<ResultPaged{T}>.
+    /// Executes an asynchronous success function or a synchronous failure handler for a paged result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>
@@ -2316,7 +2324,7 @@ public static partial class ResultPagedFunctionTaskExtensions
     }
 
     /// <summary>
-    /// Executes a synchronous success function with an async failure handler from a Task<ResultPaged{T}>.
+    /// Executes a synchronous success function or an asynchronous failure handler for a paged result.
     /// </summary>
     /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="resultTask">The Task containing the ResultPaged to handle.</param>

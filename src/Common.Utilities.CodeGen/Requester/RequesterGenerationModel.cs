@@ -179,7 +179,7 @@ public sealed class RequesterGenerationModel(
     public bool HasValidation => this.ValidateMethod is not null || this.PropertyValidationRules.Length > 0;
 
     /// <summary>
-    /// Gets a value indicating whether the resolved response type is <see cref="Unit"/>.
+    /// Gets a value indicating whether the resolved response type is <c>BridgingIT.DevKit.Common.Unit</c>.
     /// </summary>
     public bool IsUnitResponse =>
         this.ResponseType.Name == "Unit" &&

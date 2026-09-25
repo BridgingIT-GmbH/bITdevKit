@@ -35,6 +35,7 @@ public class EntityFrameworkOrchestrationStorageProvider<TContext> :
     /// <param name="serviceProvider">The root service provider.</param>
     /// <param name="options">The provider options.</param>
     /// <param name="clock">The orchestration clock.</param>
+    /// <param name="loggerFactory">The optional logger factory.</param>
     public EntityFrameworkOrchestrationStorageProvider(
         IServiceProvider serviceProvider,
         EntityFrameworkOrchestrationOptions options,

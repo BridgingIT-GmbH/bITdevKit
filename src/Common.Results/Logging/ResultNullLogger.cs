@@ -30,7 +30,7 @@ public class ResultNullLogger : IResultLogger
     /// </summary>
     /// <typeparam name="TContext">The type of the context for logging.</typeparam>
     /// <param name="content">The content to log.</param>
-    /// <param name="result">The result associated with the log entry.</param.
+    /// <param name="result">The result associated with the log entry.</param>
     /// <param name="logLevel">The level of the log entry.</param>
     public void Log<TContext>(string content, Result result, LogLevel logLevel) { }
 }

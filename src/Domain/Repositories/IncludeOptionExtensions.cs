@@ -21,8 +21,8 @@ public static class IncludeOptionExtensions
     /// <param name="navigationPropertyPath">An expression representing the navigation property to be included.</param>
     /// <returns>An IIncludableOption that can be used to further chain ThenInclude calls.</returns>
     /// <example>
-    /// var options = new FindOptions<Customer>()
-    ///     .AddInclude(new IncludeOption<Customer, Address>(c => c.BillingAddress)
+    /// var options = new FindOptions&lt;Customer&gt;()
+    ///     .AddInclude(new IncludeOption&lt;Customer, Address&gt;(c => c.BillingAddress)
     ///         .ThenInclude(a => a.City)
     ///         .ThenInclude(c => c.Country));
     /// </example>
@@ -56,8 +56,8 @@ public static class IncludeOptionExtensions
     /// <param name="navigationPropertyPath">An expression representing the navigation property to be included.</param>
     /// <returns>An IIncludableOption that can be used to further chain ThenInclude calls.</returns>
     /// <example>
-    /// var options = new FindOptions<Customer>()
-    ///     .AddInclude(new IncludeOption<Customer, ICollection<Order>>(c => c.Orders)
+    /// var options = new FindOptions&lt;Customer&gt;()
+    ///     .AddInclude(new IncludeOption&lt;Customer, ICollection&lt;Order&gt;&gt;(c => c.Orders)
     ///         .ThenInclude(o => o.OrderItems)
     ///         .ThenInclude(i => i.Product));
     /// </example>

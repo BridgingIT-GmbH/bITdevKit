@@ -38,10 +38,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the inserted entity.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var customer = new Customer { FirstName = "John", LastName = "Doe" };
     /// var result = await customer.InsertAsync(context);
     /// if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.Value.Id}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result<TEntity>> InsertAsync(ActiveEntityContext<TEntity, TId> context, CancellationToken cancellationToken = default)
@@ -114,12 +116,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a collection of Results, each containing the inserted entity or errors.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var customers = new[] { new Customer { FirstName = "John" }, new Customer { FirstName = "Jane" } };
     /// var results = await Customer.InsertAsync(context, customers);
     /// foreach (var result in results) {
     ///     if (result.IsSuccess) { Console.WriteLine($"Inserted: {result.Value.FirstName}"); }
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<IEnumerable<Result<TEntity>>> InsertAsync(
@@ -173,9 +177,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>Result containing inserted entity.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(provider, behaviors);
     /// var customer = new Customer { FirstName = "John" };
     /// var result = await Customer.InsertAsync(context, customer);
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<TEntity>> InsertAsync(ActiveEntityContext<TEntity, TId> context, TEntity entity, CancellationToken cancellationToken = default)
@@ -214,11 +220,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the updated entity.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var customer = await Customer.FindOneAsync(customerId);
     /// customer.Value.FirstName = "Jane";
     /// var result = await customer.Value.UpdateAsync(context);
     /// if (result.IsSuccess) { Console.WriteLine("Customer updated"); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result<TEntity>> UpdateAsync(ActiveEntityContext<TEntity, TId> context, CancellationToken cancellationToken = default)
@@ -337,6 +345,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a collection of Results, each containing the updated entity or errors.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var customers = await Customer.FindAllAsync();
     /// foreach (var customer in customers.Value) { customer.FirstName += " Updated"; }
@@ -344,6 +353,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// foreach (var result in results) {
     ///     if (result.IsSuccess) { Console.WriteLine($"Updated: {result.Value.FirstName}"); }
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<IEnumerable<Result<TEntity>>> UpdateAsync(
@@ -510,12 +520,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the number of affected rows.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<User, Guid>(...);
     /// var result = await User.UpdateSetAsync(context,
-    ///     new Specification&lt;User&gt;(u => u.IsDeleted),
+    ///     new Specification<User>(u => u.IsDeleted),
     ///     set => set.Set(u => u.Status, "Archived"));
     /// if (result.IsSuccess) { Console.WriteLine($"Updated {result.Value} users"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> UpdateSetAsync(
@@ -573,14 +585,16 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the number of affected rows.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<User, Guid>(...);
     /// var specs = new[] {
-    ///     new Specification&lt;User&gt;(u => u.IsDeleted),
-    ///     new Specification&lt;User&gt;(u => !u.IsActive)
+    ///     new Specification<User>(u => u.IsDeleted),
+    ///     new Specification<User>(u => !u.IsActive)
     /// };
     /// var result = await User.UpdateSetAsync(context, specs, set => set.Set(u => u.Status, "Archived"));
     /// if (result.IsSuccess) { Console.WriteLine($"Archived {result.Value} users"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> UpdateSetAsync(
@@ -817,12 +831,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a collection of Results, each containing the entity and the action performed (Inserted/Updated) or errors.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var customers = new[] { new Customer { Id = existingId, FirstName = "John" }, new Customer { FirstName = "Jane" } };
     /// var results = await Customer.UpsertAsync(context, customers);
     /// foreach (var result in results) {
     ///     if (result.IsSuccess) { Console.WriteLine($"Action: {result.Value.action} for {result.Value.entity.FirstName}"); }
     /// }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<IEnumerable<Result<(TEntity entity, RepositoryActionResult action)>>> UpsertAsync(
@@ -870,10 +886,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result indicating success or failure.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var customer = await Customer.FindOneAsync(customerId);
     /// var result = await customer.Value.DeleteAsync(context);
     /// if (result.IsSuccess) { Console.WriteLine("Customer deleted"); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result> DeleteAsync(ActiveEntityContext<TEntity, TId> context, CancellationToken cancellationToken = default)
@@ -937,9 +955,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the action performed (Deleted/None/NotFound).</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.DeleteAsync(context, customerId);
     /// if (result.IsSuccess && result.Value == RepositoryActionResult.Deleted) { Console.WriteLine("Customer deleted"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result> DeleteAsync(
@@ -1022,12 +1042,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a collection of Results indicating success or failure for each deletion.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var customers = await Customer.FindAllAsync(c => c.IsDeleted);
     /// var results = await Customer.DeleteAsync(context, customers.Value);
     /// var deletedCount = results.Count(r => r.IsSuccess);
     /// Console.WriteLine($"Deleted {deletedCount} customers");
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<IEnumerable<Result>> DeleteAsync(
@@ -1082,11 +1104,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a collection of Results containing the action performed (Deleted/None/NotFound) for each ID.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var ids = new[] { customerId1, customerId2 };
     /// var results = await Customer.DeleteAsync(context, ids);
     /// var deletedCount = results.Count(r => r.IsSuccess && r.Value == RepositoryActionResult.Deleted);
     /// Console.WriteLine($"Deleted {deletedCount} customers");
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<IEnumerable<Result>> DeleteAsync(
@@ -1237,9 +1261,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the number of deleted rows.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<User, Guid>(...);
-    /// var result = await User.DeleteSetAsync(context, new Specification&lt;User&gt;(u => u.IsDeleted));
+    /// var result = await User.DeleteSetAsync(context, new Specification<User>(u => u.IsDeleted));
     /// if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> DeleteSetAsync(
@@ -1292,13 +1318,15 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the number of deleted rows.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<User, Guid>(...);
     /// var specs = new[] {
-    ///     new Specification&lt;User&gt;(u => u.IsDeleted),
-    ///     new Specification&lt;User&gt;(u => u.LastLogin &lt; DateTime.UtcNow.AddYears(-5))
+    ///     new Specification<User>(u => u.IsDeleted),
+    ///     new Specification<User>(u => u.LastLogin < DateTime.UtcNow.AddYears(-5))
     /// };
     /// var result = await User.DeleteSetAsync(context, specs);
     /// if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> DeleteSetAsync(
@@ -1351,9 +1379,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the number of deleted rows.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
-    /// var result = await User.DeleteSetAsync(context, u => u.LastLogin &lt; DateTime.UtcNow.AddYears(-5));
+    /// var result = await User.DeleteSetAsync(context, u => u.LastLogin < DateTime.UtcNow.AddYears(-5));
     /// if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<long>> DeleteSetAsync(
@@ -1383,12 +1413,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Write 
     /// <returns>A task with a Result containing the number of deleted rows.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
-    /// var filter = FilterModelBuilder.For&lt;User&gt;()
+    /// var filter = FilterModelBuilder.For<User>()
     ///     .AddFilter(u => u.IsDeleted, FilterOperator.Equal, true)
     ///     .Build();
     /// var result = await User.DeleteSetAsync(context, filter);
     /// if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<long>> DeleteSetAsync(

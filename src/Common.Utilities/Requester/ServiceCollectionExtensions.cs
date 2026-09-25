@@ -26,7 +26,7 @@ public static class ServiceCollectionExtensions
     /// To use the Requester system, you must:
     /// 1. Call <see cref="AddRequester"/> to register the core services.
     /// 2. Use <see cref="RequesterBuilder.AddHandlers"/> to scan for and register request handlers.
-    /// 3. Optionally, use <see cref="RequesterBuilder.WithBehavior{TBehavior}"/> to add pipeline behaviors.
+    /// 3. Optionally, use <see cref="RequesterBuilder.WithBehavior(Type)"/> to add pipeline behaviors.
     /// 4. Build the service provider to resolve the <see cref="IRequester"/> service for dispatching requests.
     /// </para>
     /// <para>
@@ -40,6 +40,7 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is null.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// // Basic usage with default configuration
     /// var services = new ServiceCollection();
     /// services.AddLogging(); // Required for IRequester logging
@@ -59,6 +60,7 @@ public static class ServiceCollectionExtensions
     /// var provider = services.BuildServiceProvider();
     /// var requester = provider.GetRequiredService<IRequester>();
     /// var result = await requester.SendAsync(new MyRequest());
+    /// ]]>
     /// </code>
     /// </example>
     /// <seealso cref="RequesterBuilder"/>
@@ -82,7 +84,7 @@ public static class ServiceCollectionExtensions
     /// To use the Notifier system, you must:
     /// 1. Call <see cref="AddNotifier"/> to register the core services.
     /// 2. Use <see cref="NotifierBuilder.AddHandlers"/> to scan for and register notification handlers.
-    /// 3. Optionally, use <see cref="NotifierBuilder.WithBehavior{TBehavior}"/> to add pipeline behaviors.
+    /// 3. Optionally, use <see cref="NotifierBuilder.WithBehavior(Type)"/> to add pipeline behaviors.
     /// 4. Build the service provider to resolve the <see cref="INotifier"/> service for dispatching notifications.
     /// </para>
     /// <para>
@@ -95,6 +97,7 @@ public static class ServiceCollectionExtensions
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="services"/> is null.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// // Basic usage with default configuration
     /// var services = new ServiceCollection();
     /// services.AddLogging(); // Required for INotifier logging
@@ -114,6 +117,7 @@ public static class ServiceCollectionExtensions
     /// var provider = services.BuildServiceProvider();
     /// var notifier = provider.GetRequiredService<INotifier>();
     /// var result = await notifier.PublishAsync(new EmailSentNotification());
+    /// ]]>
     /// </code>
     /// </example>
     /// <seealso cref="NotifierBuilder"/>

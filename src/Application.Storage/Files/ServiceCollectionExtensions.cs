@@ -21,6 +21,7 @@ public static partial class ServiceCollectionExtensions
     /// <param name="configure">Optional action to configure initial providers at registration time.</param>
     /// <returns>The file storage builder context for chaining additional feature configuration.</returns>
     /// <example>
+    /// <code><![CDATA[
     /// **Usage Scenarios:**
     /// - **Testing**: Register an in-memory provider with Transient lifetime for isolated unit/integration tests:
     ///   ```csharp
@@ -88,6 +89,7 @@ public static partial class ServiceCollectionExtensions
     ///   })
     ///   .AddEndpoints(options => options.RequireAuthorization());
     ///   ```
+    /// ]]></code>
     /// </example>
     public static FileStorageBuilderContext AddFileStorage(this IServiceCollection services, Action<FileStorageProviderFactory> configure = null)
     {

@@ -512,7 +512,7 @@ public class RequesterTests
     }
 
     /// <summary>
-    /// Tests that SendAsync handles a command returning Result<Unit> correctly with retry behavior.
+    /// Tests that SendAsync handles a retried command whose result value is <see cref="Unit"/>.
     /// </summary>
     [Fact]
     public async Task SendAsync_WithUnitResultAndRetry_SucceedsAfterRetries()

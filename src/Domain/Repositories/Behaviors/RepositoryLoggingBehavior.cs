@@ -575,7 +575,6 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
     /// <summary>
     /// Represents typed logger.
     /// </summary>
-    /// <typeparam name="TEntity">The entity type.</typeparam>
     public static partial class TypedLogger
     {
         /// <summary>

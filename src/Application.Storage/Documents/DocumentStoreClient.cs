@@ -22,6 +22,8 @@ public class DocumentStoreClient<T> : IDocumentStoreClient<T>, IDocumentStorePro
     /// <param name="serializer">The logical document serializer.</param>
     /// <param name="options">Document safety options.</param>
     /// <param name="timeProvider">The operation clock.</param>
+    /// <param name="transforms">The ordered payload transforms applied during serialization and deserialization.</param>
+    /// <param name="clientName">The normalized client name used to identify this registration.</param>
     /// <example><code>var client = new DocumentStoreClient&lt;Person&gt;(provider);</code></example>
     public DocumentStoreClient(
         IDocumentStoreProvider provider,

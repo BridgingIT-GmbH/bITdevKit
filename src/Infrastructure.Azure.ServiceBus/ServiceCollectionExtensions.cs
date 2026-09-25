@@ -79,6 +79,7 @@ public static partial class ServiceCollectionExtensions
     /// <returns>The queueing builder context.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// services.AddQueueing(builder.Configuration)
     ///     .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
     ///     .WithServiceBusBroker(o => o
@@ -86,6 +87,7 @@ public static partial class ServiceCollectionExtensions
     ///         .QueueNamePrefix("bit")
     ///         .AutoCreateQueue(true)
     ///         .MaxConcurrentCalls(8));
+    /// ]]>
     /// </code>
     /// </example>
     public static QueueingBuilderContext WithServiceBusBroker(
@@ -122,9 +124,11 @@ public static partial class ServiceCollectionExtensions
     /// <returns>The queueing builder context.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// services.AddQueueing(builder.Configuration)
     ///     .WithSubscription<OrderQueuedMessage, OrderQueuedHandler>()
     ///     .WithServiceBusBroker();
+    /// ]]>
     /// </code>
     /// </example>
     public static QueueingBuilderContext WithServiceBusBroker(

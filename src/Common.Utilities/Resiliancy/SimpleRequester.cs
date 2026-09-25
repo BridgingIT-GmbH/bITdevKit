@@ -16,10 +16,12 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var requester = new SimpleRequester(progress: new Progress<SimpleRequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}")));
 /// requester.RegisterHandler(new MyRequestHandler());
 /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, CancellationToken.None);
 /// Console.WriteLine(response.Result);
+/// ]]>
 /// </code>
 /// </example>
 public class SimpleRequester(
@@ -75,8 +77,10 @@ public class SimpleRequester(
     /// <exception cref="InvalidOperationException">Thrown if a handler for the request type is already registered.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var requester = new SimpleRequester();
     /// requester.RegisterHandler<MyRequest, MyResponse>(async (req, ct) => new MyResponse { Result = req.Data });
+    /// ]]>
     /// </code>
     /// </example>
     public void RegisterHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, ValueTask<TResponse>> handlerFunc)
@@ -90,7 +94,7 @@ public class SimpleRequester(
     /// Registers a handler for a specific request type.
     /// </summary>
     /// <param name="handler">The handler to register.</param>
-    /// <exception cref="InvalidOperationException">Thrown if a handler for the request type is already registered or the handler does not implement ISimpleRequestHandler<TRequest, TResponse>.</exception>
+    /// <exception cref="InvalidOperationException">Thrown if a handler for the request type is already registered or the handler does not implement <see cref="ISimpleRequestHandler{TRequest,TResponse}"/>.</exception>
     /// <example>
     /// <code>
     /// var requester = new SimpleRequester();
@@ -126,6 +130,7 @@ public class SimpleRequester(
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<SimpleRequesterProgress>(p => Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}"));
     /// var requester = new SimpleRequester();
@@ -133,6 +138,7 @@ public class SimpleRequester(
     /// var response = await requester.SendAsync(new MyRequest { Data = "Test" }, cts.Token, progress);
     /// Console.WriteLine(response.Result);
     /// cts.Cancel(); // Cancel the operation if needed
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, IProgress<SimpleRequesterProgress> progress = null, CancellationToken cancellationToken = default)

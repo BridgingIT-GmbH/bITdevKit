@@ -188,6 +188,7 @@ public static class CustomerQueryExtensions
     /// <summary>
     /// Finds the customers by title
     /// </summary>
+    /// <param name="_">The active entity receiver used to expose the custom query as an extension method.</param>
     /// <param name="title">the title</param>
     public static Task<Result<IEnumerable<Customer>>> FindAllByTitleCustomAsync( // triggers the source generator and adds a static query forwarder (auto) in Customer
         this ActiveEntity<Customer, CustomerId> _, string title)

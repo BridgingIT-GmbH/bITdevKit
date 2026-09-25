@@ -23,6 +23,7 @@ public class LogLevelGetConsoleCommand : LogLevelGroupConsoleCommandBase
     /// </summary>
     /// <param name="console">The Spectre console used for output.</param>
     /// <param name="services">Service provider (unused here but available for extensibility).</param>
+    /// <param name="cancellationToken">The token supplied by the command executor. This command does not observe it.</param>
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
         await this.ExecuteWithLogLevelManagerAsync(console, async manager =>

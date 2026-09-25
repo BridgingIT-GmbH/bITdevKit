@@ -16,9 +16,11 @@ using Microsoft.Extensions.Logging;
 /// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => await Task.Delay(100, ct), progress: new Progress<ThrottlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingInterval.TotalSeconds}s")));
 /// await throttler.ThrottleAsync(CancellationToken.None); // Executes immediately
 /// await throttler.ThrottleAsync(CancellationToken.None); // Skips if within 1 second
+/// ]]>
 /// </code>
 /// </example>
 public class Throttler(
@@ -45,9 +47,11 @@ public class Throttler(
     /// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async () => await Task.Delay(100), progress: new Progress<ThrottlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingInterval.TotalSeconds}s")));
     /// await throttler.ThrottleAsync(CancellationToken.None); // Executes immediately
     /// await throttler.ThrottleAsync(CancellationToken.None); // Skips if within 1 second
+    /// ]]>
     /// </code>
     /// </example>
     public Throttler(
@@ -69,6 +73,7 @@ public class Throttler(
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<ThrottlerProgress>(p => Console.WriteLine($"Progress: {p.Status}, Remaining: {p.RemainingInterval.TotalSeconds}s"));
     /// var throttler = new Throttler(TimeSpan.FromSeconds(1), async ct => Console.WriteLine("Action executed"));
@@ -77,6 +82,7 @@ public class Throttler(
     /// await Task.Delay(1100);
     /// await throttler.ThrottleAsync(cts.Token, progress); // Executes after 1.1 seconds
     /// cts.Cancel(); // Cancel the operation if needed
+    /// ]]>
     /// </code>
     /// </example>
     public async Task ThrottleAsync(CancellationToken cancellationToken = default, IProgress<ThrottlerProgress> progress = null)

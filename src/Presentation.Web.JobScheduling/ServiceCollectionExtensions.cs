@@ -44,6 +44,7 @@ public static class ServiceCollectionExtensions
     /// Adds job scheduling endpoints to the service collection with an optional condition.
     /// </summary>
     /// <param name="context">The JobSchedulingBuilderContext instance.</param>
+    /// <param name="options">The endpoint options to register. When <see langword="null"/>, the endpoints use their default options.</param>
     /// <param name="enabled">A condition to determine if the endpoints should be registered (default: true).</param>
     /// <returns>The updated JobSchedulingBuilderContext for further configuration.</returns>
     public static JobSchedulingBuilderContext AddEndpoints(

@@ -22,11 +22,9 @@ public class EnumValuesRule<TEnum>(TEnum value, IEnumerable<TEnum> allowedValues
         $"Value must be one of: {string.Join(", ", allowedValues)}";
 
     /// <summary>
-    /// Executes the specified rule.
+    /// Checks whether the value is one of the configured enumeration values.
     /// </summary>
-    /// <param name="rule">The rule to be executed.</param>
-    /// <param name="context">The context in which the rule is executed.</param>
-    /// <returns>The result of the rule execution.</returns>
+    /// <returns>A successful result when the allowed values contain the value; otherwise, a failure result.</returns>
     public override Result Execute() =>
         Result.SuccessIf(allowedValues.Contains(value));
 }

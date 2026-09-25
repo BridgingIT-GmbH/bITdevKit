@@ -10,7 +10,7 @@ using FluentValidation.Internal;
 using Microsoft.Extensions.Logging;
 
 /// <summary>
-///     Extension methods for Task<Result<T>> to enable proper chaining.
+///     Extension methods for asynchronous <see cref="Result{TValue}"/> instances to enable chaining.
 /// </summary>
 public static partial class ResultTTaskExtensions
 {
@@ -47,7 +47,7 @@ public static partial class ResultTTaskExtensions
     /// <typeparam name="TException">The type of exception to throw.</typeparam>
     /// <param name="resultTask">The Result task to check.</param>
     /// <returns>The current Result if it indicates success.</returns>
-    /// <exception cref="TException">Thrown if the Result indicates a failure.</exception>
+    /// <exception cref="Exception">Throws an exception of type <typeparamref name="TException"/> if the Result indicates a failure.</exception>
     /// <example>
     /// <code>
     /// await GetUserAsync(userId)
@@ -470,6 +470,7 @@ public static partial class ResultTTaskExtensions
         }
     }
 
+    /// <summary>
     /// Binds an asynchronous operation that returns a <see cref="Result{TInner}"/> to
     /// a parent <see cref="Result{T}"/>, merging both contexts. If either fails, the
     /// failure is propagated automatically.
@@ -477,7 +478,7 @@ public static partial class ResultTTaskExtensions
     /// <typeparam name="T">Outer context type.</typeparam>
     /// <typeparam name="TInner">Inner success value type.</typeparam>
     /// <param name="result">The outer <see cref="Result{T}"/>.</param>
-    /// <param name="func">
+    /// <param name="binder">
     /// An async function returning <see cref="Result{TInner}"/> from <typeparamref name="T"/>.
     /// </param>
     /// <param name="merge">

@@ -46,10 +46,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.ProjectAllAsync(context, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -130,10 +132,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.ProjectAllAsync(context, c => c.LastName == "Doe", c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -196,9 +200,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.ProjectAllAsync(spec, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -222,11 +228,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.ProjectAllAsync(context, spec, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -288,9 +296,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.ProjectAllAsync(specs, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -314,11 +324,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.ProjectAllAsync(context, specs, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -380,11 +392,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.LastName, FilterOperator.Equal, "Doe")
     ///     .Build();
     /// var result = await Customer.ProjectAllAsync(filter, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -408,6 +422,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -415,6 +430,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     ///     .Build();
     /// var result = await Customer.ProjectAllAsync(context, filter, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(
@@ -478,9 +494,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -502,11 +520,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(context, c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -562,9 +582,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(c => c.LastName == "Doe", c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -588,11 +610,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(context, c => c.LastName == "Doe", c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -655,10 +679,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(spec, c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -682,12 +708,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(context, spec, c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -749,10 +777,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(specs, c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -776,12 +806,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.ProjectAllPagedAsync(context, specs, c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -843,12 +875,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.LastName, FilterOperator.Equal, "Doe")
     ///     .SetPaging(1, 10)
     ///     .Build();
     /// var result = await Customer.ProjectAllPagedAsync(filter, c => c.FirstName);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(
@@ -872,6 +906,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -880,6 +915,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
     ///     .Build();
     /// var result = await Customer.ProjectAllPagedAsync(context, filter, c => c.FirstName);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(

@@ -46,6 +46,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <summary>
     /// Initializes a new instance of the InMemoryProvider class using a builder.
     /// </summary>
+    /// <param name="loggerFactory">The logger factory used by the provider.</param>
     /// <param name="optionsBuilder">The builder for configuration options.</param>
     public ActiveEntityInMemoryProvider(ILoggerFactory loggerFactory, Builder<ActiveEntityInMemoryProviderOptionsBuilder<TEntity>, ActiveEntityInMemoryProviderOptions<TEntity>> optionsBuilder)
         : this(loggerFactory, optionsBuilder(new ActiveEntityInMemoryProviderOptionsBuilder<TEntity>()).Build()) { }
@@ -54,14 +55,17 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// Inserts an entity into the in-memory store.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
+    /// <param name="callbacks">Optional callbacks invoked around the insert and delegated upsert operations.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the inserted entity.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var customer = new Customer { FirstName = "John" };
     /// var result = await provider.InsertAsync(customer);
     /// if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.Value.Id}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<TEntity>> InsertAsync(
@@ -85,15 +89,18 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// Updates an existing entity in the in-memory store.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
+    /// <param name="callbacks">Optional callbacks invoked around the update and delegated upsert operations.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the updated entity.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var customer = await provider.FindOneAsync(customerId);
     /// customer.Value.FirstName = "Jane";
     /// var result = await provider.UpdateAsync(customer.Value);
     /// if (result.IsSuccess) { Console.WriteLine("Customer updated"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<TEntity>> UpdateAsync(
@@ -206,14 +213,17 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// Upserts an entity in the in-memory store (inserts if new, updates if exists).
     /// </summary>
     /// <param name="entity">The entity to upsert.</param>
+    /// <param name="callbacks">Optional callbacks invoked before and after the applicable upsert, insert, or update stages.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the entity and the action performed.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var customer = new Customer { Id = Guid.NewGuid(), FirstName = "John" };
     /// var result = await provider.UpsertAsync(customer);
     /// Console.WriteLine($"Action: {result.Value.action}"); // Inserted or Updated
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<(TEntity entity, RepositoryActionResult action)>> UpsertAsync(
@@ -321,14 +331,17 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// Deletes an entity from the in-memory store.
     /// </summary>
     /// <param name="entity">The entity to delete.</param>
+    /// <param name="callbacks">Optional callbacks invoked before and after deletion.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result indicating success or failure.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var customer = await provider.FindOneAsync(customerId);
     /// var result = await provider.DeleteAsync(customer.Value);
     /// if (result.IsSuccess) { Console.WriteLine("Customer deleted"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result> DeleteAsync(
@@ -501,9 +514,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var result = await provider.FindOneAsync(customerId);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result<TEntity>> FindOneAsync(object id, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -535,10 +550,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.FindOneAsync(spec);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<TEntity>> FindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -557,10 +574,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindOneAsync(specs);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<TEntity>> FindOneAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -578,10 +597,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var options = new FindOptions<Customer> { Take = 10 };
     /// var result = await provider.FindAllAsync(options);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TEntity>>> FindAllAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -598,10 +619,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.FindAllAsync(spec);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TEntity>>> FindAllAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -618,10 +641,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindAllAsync(specs);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result<IEnumerable<TEntity>>> FindAllAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -654,10 +679,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await provider.FindAllPagedAsync(options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TEntity>> FindAllPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -678,10 +705,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.FindAllPagedAsync(spec);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TEntity>> FindAllPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -702,10 +731,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindAllPagedAsync(specs);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TEntity>> FindAllPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -727,9 +758,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var result = await provider.ProjectAllAsync(c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -752,10 +785,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.ProjectAllAsync(spec, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -778,10 +813,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.ProjectAllAsync(specs, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -803,10 +840,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await provider.ProjectAllPagedAsync(c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -831,10 +870,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.ProjectAllPagedAsync(spec, c => c.FirstName);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -859,10 +900,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.ProjectAllPagedAsync(specs, c => c.FirstName);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -884,9 +927,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing a boolean indicating if entities exist.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var result = await provider.ExistsAsync();
     /// if (result.IsSuccess && result.Value) { Console.WriteLine("Entities exist"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<bool>> ExistsAsync(object id, CancellationToken cancellationToken = default)
@@ -901,9 +946,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing a boolean indicating if entities exist.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var result = await provider.ExistsAsync();
     /// if (result.IsSuccess && result.Value) { Console.WriteLine("Entities exist"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<bool>> ExistsAsync(CancellationToken cancellationToken = default)
@@ -922,10 +969,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing a boolean indicating if entities exist.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.ExistsAsync(spec);
     /// if (result.IsSuccess && result.Value) { Console.WriteLine("Matching entities exist"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<bool>> ExistsAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -944,10 +993,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing a boolean indicating if entities exist.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.ExistsAsync(specs);
     /// if (result.IsSuccess && result.Value) { Console.WriteLine("Matching entities exist"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<bool>> ExistsAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -964,9 +1015,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var result = await provider.CountAsync();
     /// if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result<long>> CountAsync(CancellationToken cancellationToken = default)
@@ -994,10 +1047,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.CountAsync(spec);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<long>> CountAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1014,10 +1069,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.CountAsync(specs);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result<long>> CountAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1049,9 +1106,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var result = await provider.FindAllIdsAsync();
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TId>>> FindAllIdsAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1071,10 +1130,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.FindAllIdsAsync(spec);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TId>>> FindAllIdsAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1094,10 +1155,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindAllIdsAsync(specs);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<Result<IEnumerable<TId>>> FindAllIdsAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1116,10 +1179,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await provider.FindAllIdsPagedAsync(options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TId>> FindAllIdsPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1141,10 +1206,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.FindAllIdsPagedAsync(spec);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TId>> FindAllIdsPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1166,10 +1233,12 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindAllIdsPagedAsync(specs);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<ResultPaged<TId>> FindAllIdsPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default)
@@ -1189,9 +1258,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result containing the transaction object.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var result = await provider.BeginTransactionAsync();
     /// if (result.IsSuccess) { var transaction = result.Value; /* Use transaction */ }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result<IDatabaseTransaction>> BeginTransactionAsync(CancellationToken cancellationToken = default)
@@ -1206,9 +1277,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result indicating success or failure.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var transactionResult = await provider.BeginTransactionAsync();
     /// if (transactionResult.IsSuccess) { await provider.CommitAsync(); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result> CommitTransactionAsync(CancellationToken cancellationToken = default)
@@ -1224,9 +1297,11 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     /// <returns>A task with a Result indicating success or failure.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var provider = new InMemoryProvider<Customer, Guid>(loggerFactory, new InMemoryContext<Customer>());
     /// var transactionResult = await provider.BeginTransactionAsync();
     /// if (transactionResult.IsSuccess) { await provider.RollbackAsync(); }
+    /// ]]>
     /// </code>
     /// </example>
     public Task<Result> RollbackAsync(CancellationToken cancellationToken = default)

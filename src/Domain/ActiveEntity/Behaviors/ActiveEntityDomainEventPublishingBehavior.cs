@@ -15,6 +15,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// Behavior that publishes domain events for an Active Entity using an <see cref="IDomainEventPublisher"/>.
 /// </summary>
 /// <typeparam name="TEntity">The entity type, inheriting from ActiveEntity.</typeparam>
+/// <typeparam name="TId">The type of the entity identifier.</typeparam>
 /// <param name="notifier">The notifier to use.</param>
 /// <param name="collector">The domain event collector for traversing and publishing events.</param>
 /// <param name="loggerFactory">Optional logger factory for logging.</param>

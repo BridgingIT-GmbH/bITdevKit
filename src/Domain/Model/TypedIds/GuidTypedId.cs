@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Domain.Model;
 /// <summary>
 /// Represents guid typed id.
 /// </summary>
-/// <typeparam name="GuidTypedId">The guid typed id type.</typeparam>
 /// <param name="value">The value used by the operation.</param>
 public abstract class GuidTypedId(Guid value) : IEquatable<GuidTypedId>, IComparable<GuidTypedId>
 {

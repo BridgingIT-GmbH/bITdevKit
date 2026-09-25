@@ -87,6 +87,7 @@ public class EntityPermissionOptions
     /// <typeparam name="TEntity">The entity type.</typeparam>
     /// <param name="parentIdExpression">The expression to get the parent ID. The property type must match the entity ID type,
     /// but can be nullable.</param>
+    /// <param name="permissions">The permissions configured for the entity type.</param>
     /// <returns>The options instance for chaining.</returns>
     public EntityPermissionOptions AddHierarchicalEntity<TEntity>(
         Expression<Func<TEntity, object>> parentIdExpression, params Permission[] permissions)

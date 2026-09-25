@@ -37,10 +37,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.CountAsync(context);
     /// if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> CountAsync(
@@ -109,10 +111,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.CountAsync(context, c => c.LastName == "Doe");
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> CountAsync(
@@ -167,9 +171,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.CountAsync(spec);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<long>> CountAsync(
@@ -190,11 +196,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.CountAsync(context, spec);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> CountAsync(
@@ -248,9 +256,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.CountAsync(specs);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<long>> CountAsync(
@@ -271,11 +281,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.CountAsync(context, specs);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> CountAsync(
@@ -329,11 +341,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.LastName, FilterOperator.Equal, "Doe")
     ///     .Build();
     /// var result = await Customer.CountAsync(filter);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<long>> CountAsync(
@@ -354,6 +368,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -361,6 +376,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
     ///     .Build();
     /// var result = await Customer.CountAsync(context, filter);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<long>> CountAsync(

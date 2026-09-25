@@ -44,10 +44,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.FindOneAsync(context, customerId);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<TEntity>> FindOneAsync(
@@ -123,10 +125,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.FindOneAsync(context, c => c.Email == "john.doe@example.com");
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<TEntity>> FindOneAsync(
@@ -181,9 +185,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.Email == "john.doe@example.com");
     /// var result = await Customer.FindOneAsync(spec);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<TEntity>> FindOneAsync(
@@ -204,11 +210,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.Email == "john.doe@example.com");
     /// var result = await Customer.FindOneAsync(context, spec);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<TEntity>> FindOneAsync(
@@ -262,9 +270,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.FindOneAsync(specs);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<TEntity>> FindOneAsync(
@@ -285,11 +295,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.FindOneAsync(context, specs);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<TEntity>> FindOneAsync(
@@ -343,11 +355,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.Email, FilterOperator.Equal, "john.doe@example.com")
     ///     .Build();
     /// var result = await Customer.FindOneAsync(filter);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<TEntity>> FindOneAsync(
@@ -368,6 +382,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -375,6 +390,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     ///     .Build();
     /// var result = await Customer.FindOneAsync(context, filter);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<TEntity>> FindOneAsync(
@@ -430,9 +446,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Take = 10 };
     /// var result = await Customer.FindAllAsync(options);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -451,11 +469,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var options = new FindOptions<Customer> { Take = 10 };
     /// var result = await Customer.FindAllAsync(context, options);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -525,10 +545,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.FindAllAsync(context, c => c.LastName == "Doe");
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -583,9 +605,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.FindAllAsync(spec);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -606,11 +630,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.FindAllAsync(context, spec);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -664,9 +690,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.FindAllAsync(specs);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -687,11 +715,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.FindAllAsync(context, specs);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -745,11 +775,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.LastName, FilterOperator.Equal, "Doe")
     ///     .Build();
     /// var result = await Customer.FindAllAsync(filter);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -770,6 +802,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -777,6 +810,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     ///     .Build();
     /// var result = await Customer.FindAllAsync(context, filter);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TEntity>>> FindAllAsync(
@@ -833,9 +867,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllPagedAsync(c => c.LastName == "Doe", options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -856,11 +892,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllPagedAsync(context, c => c.LastName == "Doe", options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -913,10 +951,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllPagedAsync(spec, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -937,12 +977,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllPagedAsync(context, spec, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -994,10 +1036,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllPagedAsync(specs, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -1018,12 +1062,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllPagedAsync(context, specs, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -1075,12 +1121,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.LastName, FilterOperator.Equal, "Doe")
     ///     .SetPaging(1, 10)
     ///     .Build();
     /// var result = await Customer.FindAllPagedAsync(filter);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -1101,6 +1149,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -1109,6 +1158,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     ///     .Build();
     /// var result = await Customer.FindAllPagedAsync(context, filter);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TEntity>> FindAllPagedAsync(
@@ -1182,10 +1232,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.FindAllIdsAsync(context);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1255,10 +1307,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.FindAllIdsAsync(context, c => c.LastName == "Doe");
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1313,9 +1367,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.FindAllIdsAsync(spec);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1336,11 +1392,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await Customer.FindAllIdsAsync(context, spec);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1394,9 +1452,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.FindAllIdsAsync(specs);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1417,11 +1477,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await Customer.FindAllIdsAsync(context, specs);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1475,11 +1537,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.LastName, FilterOperator.Equal, "Doe")
     ///     .Build();
     /// var result = await Customer.FindAllIdsAsync(filter);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1500,6 +1564,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -1507,6 +1572,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     ///     .Build();
     /// var result = await Customer.FindAllIdsAsync(context, filter);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<IEnumerable<TId>>> FindAllIdsAsync(
@@ -1562,9 +1628,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1583,11 +1651,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(context, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1633,9 +1703,11 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(c => c.LastName == "Doe", options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1656,11 +1728,13 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(context, c => c.LastName == "Doe", options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1713,10 +1787,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(spec, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1737,12 +1813,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(context, spec, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1794,10 +1872,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(specs, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1818,12 +1898,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await Customer.FindAllIdsPagedAsync(context, specs, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1875,12 +1957,14 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var filter = FilterModelBuilder.For<Customer>()
     ///     .AddFilter(c => c.LastName, FilterOperator.Equal, "Doe")
     ///     .SetPaging(1, 10)
     ///     .Build();
     /// var result = await Customer.FindAllIdsPagedAsync(filter);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static async Task<ResultPaged<TId>> FindAllIdsPagedAsync(
@@ -1901,6 +1985,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var filter = FilterModelBuilder.For<Customer>()
@@ -1909,6 +1994,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
     ///     .Build();
     /// var result = await Customer.FindAllIdsPagedAsync(context, filter);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<ResultPaged<TId>> FindAllIdsPagedAsync(

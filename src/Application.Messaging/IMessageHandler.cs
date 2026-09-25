@@ -16,5 +16,6 @@ public interface IMessageHandler<TMessage>
     ///     Handles the specified message.
     /// </summary>
     /// <param name="message">The event.</param>
+    /// <param name="cancellationToken">The token that cancels message handling.</param>
     Task Handle(TMessage message, CancellationToken cancellationToken);
 }

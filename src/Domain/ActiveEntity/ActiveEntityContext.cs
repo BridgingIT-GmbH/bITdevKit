@@ -18,7 +18,7 @@ using System.Collections.Generic;
 /// Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 /// <see cref="ObjectDisposedException"/> if the underlying scope (and its services) are disposed.
 /// Always use it immediately within the creating method (e.g., inside <see cref="ActiveEntityContextScope.UseAsync{TEntity, TId, TResult}"/>
-/// or <see cref="WithTransactionAsync{TEntity, TId}"/>).
+/// or a <c>WithTransactionAsync</c> operation).
 /// </para>
 ///
 /// <para>

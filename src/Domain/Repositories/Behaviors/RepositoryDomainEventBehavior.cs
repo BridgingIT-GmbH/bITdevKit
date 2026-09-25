@@ -438,7 +438,6 @@ public partial class RepositoryDomainEventBehavior<TEntity> : IGenericRepository
     /// <summary>
     /// Represents typed logger.
     /// </summary>
-    /// <typeparam name="TEntity">The entity type.</typeparam>
     public static partial class TypedLogger
     {
         /// <summary>

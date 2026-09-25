@@ -24,11 +24,9 @@ public class FullTextSearchRule(
     public override string Message => "Text does not match search criteria";
 
     /// <summary>
-    /// Executes a specific rule provided as a parameter.
+    /// Checks whether the text contains every whitespace-delimited search term.
     /// </summary>
-    /// <param name="rule">The rule to be executed.</param>
-    /// <param name="context">The context in which the rule is executed.</param>
-    /// <returns>True if the rule is executed successfully, otherwise false.</returns>
+    /// <returns>A successful result when no search terms are supplied or every term is found; otherwise, a failure result.</returns>
     public override Result Execute()
     {
         if (string.IsNullOrWhiteSpace(searchTerms))

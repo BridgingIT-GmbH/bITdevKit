@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Domain.Model;
 /// <summary>
 /// Represents int typed id.
 /// </summary>
-/// <typeparam name="IntTypedId">The int typed id type.</typeparam>
 /// <param name="value">The value used by the operation.</param>
 public abstract class IntTypedId(int value) : IEquatable<IntTypedId>, IComparable<IntTypedId>
 {

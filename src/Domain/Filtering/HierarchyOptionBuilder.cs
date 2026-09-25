@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Domain.Repositories;
 
 /// <summary>
-/// A builder class for creating a list of <see cref="IncludeOption{TEntity}"/> instances from a collection of include paths.
+/// Builds hierarchy options from navigation-property paths.
 /// </summary>
 public static class HierarchyOptionBuilder
 {
@@ -15,7 +15,8 @@ public static class HierarchyOptionBuilder
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="hierarchy">A collection of string paths representing the properties to include.</param>
-    /// <returns>A list of IncludeOption<TEntity> based on the provided include paths. If the includes collection is null or empty, an empty list is returned.</returns>
+    /// <param name="maxDepth">The maximum hierarchy depth to load.</param>
+    /// <returns>A hierarchy option for the path, or <see langword="null"/> when the path is empty.</returns>
     public static HierarchyOption<TEntity> Build<TEntity>(string hierarchy, int maxDepth)
         where TEntity : class, IEntity
     {

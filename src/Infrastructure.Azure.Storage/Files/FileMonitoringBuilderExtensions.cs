@@ -17,6 +17,7 @@ public static class FileMonitoringBuilderExtensions
     /// <returns>The FileMonitoringBuilder instance for chaining.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// services.AddFileMonitoring(monitoring =>
     /// {
     ///     monitoring.UseAzureBlobs("AzureDocs", "connection-string", "docs-container", options =>
@@ -25,6 +26,7 @@ public static class FileMonitoringBuilderExtensions
     ///         options.UseProcessor<FileLoggerProcessor>();
     ///     });
     /// });
+    /// ]]>
     /// </code>
     /// </example>
     public static FileMonitoringBuilder UseAzureBlobs(
@@ -59,6 +61,7 @@ public static class FileMonitoringBuilderExtensions
     /// <returns>The FileMonitoringBuilder instance for chaining.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// services.AddFileMonitoring(monitoring =>
     /// {
     ///     monitoring.UseAzureFiles("AzureFilesDocs", "connection-string", "docs-share", options =>
@@ -67,6 +70,7 @@ public static class FileMonitoringBuilderExtensions
     ///         options.UseProcessor<FileLoggerProcessor>();
     ///     });
     /// });
+    /// ]]>
     /// </code>
     /// </example>
     public static FileMonitoringBuilder UseAzureFiles(

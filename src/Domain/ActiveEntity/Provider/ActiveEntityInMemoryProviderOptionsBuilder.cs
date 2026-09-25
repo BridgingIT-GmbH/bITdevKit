@@ -68,7 +68,6 @@ public class ActiveEntityInMemoryProviderOptionsBuilder<TEntity>
     /// <summary>
     /// Executes the version generator operation.
     /// </summary>
-    /// <typeparam name="Guid">The guid type.</typeparam>
     /// <param name="generator">The generator used by the operation.</param>
     /// <returns>The result of the operation.</returns>
     public ActiveEntityInMemoryProviderOptionsBuilder<TEntity> VersionGenerator(Func<Guid> generator)

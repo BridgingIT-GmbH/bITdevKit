@@ -29,10 +29,12 @@ public class CircuitBreaker
     /// <exception cref="ArgumentOutOfRangeException">Thrown if failureThreshold is less than 1 or resetTimeout is negative.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<CircuitBreakerProgress>(p => Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30), progress: progress);
     /// await circuitBreaker.ExecuteAsync(async ct => await SomeOperation(ct), cts.Token);
+    /// ]]>
     /// </code>
     /// </example>
     public CircuitBreaker(
@@ -92,6 +94,7 @@ public class CircuitBreaker
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<CircuitBreakerProgress>(p => Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
@@ -102,6 +105,7 @@ public class CircuitBreaker
     ///     Console.WriteLine("Success");
     /// }, cts.Token, progress);
     /// cts.Cancel(); // Cancel the operation if needed
+    /// ]]>
     /// </code>
     /// </example>
     public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<CircuitBreakerProgress> progress = null)
@@ -133,6 +137,7 @@ public class CircuitBreaker
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<CircuitBreakerProgress>(p => Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
     /// var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
@@ -143,6 +148,7 @@ public class CircuitBreaker
     ///     return 42;
     /// }, cts.Token, progress);
     /// Console.WriteLine($"Result: {result}");
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<CircuitBreakerProgress> progress = null)

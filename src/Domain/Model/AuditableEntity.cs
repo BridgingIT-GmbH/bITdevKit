@@ -24,6 +24,7 @@ public abstract class AuditableEntity<TId> : Entity<TId>, IAuditable
 ///     Represents an abstract base class for entities that support auditing.
 /// </summary>
 /// <typeparam name="TId">The type of the entity's identifier.</typeparam>
+/// <typeparam name="TIdType">The primitive value type wrapped by the entity identifier.</typeparam>
 //[Obsolete("Just use AuditableEntity<TId> from now on")]
 [DebuggerDisplay("Type={GetType().Name}, Id={Id}")]
 public abstract class AuditableEntity<TId, TIdType> : AuditableEntity<TId>

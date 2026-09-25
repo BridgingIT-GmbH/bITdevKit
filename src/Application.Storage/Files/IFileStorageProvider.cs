@@ -146,7 +146,7 @@ public interface IFileStorageProvider
     /// <param name="recursive">Whether to include subdirectories (inferred from path hierarchy).</param>
     /// <param name="continuationToken">Token for pagination; null for first page, returned token for subsequent pages.</param>
     /// <param name="cancellationToken">Cancellation token to abort the operation.</param>
-    /// <returns>A Result containing (IEnumerable<string> Files, string NextContinuationToken) on success or failure with typed errors (e.g., AccessDeniedError, FileSystemError).</returns>
+    /// <returns>A result containing the matching file paths and the next continuation token on success, or typed storage errors on failure.</returns>
     Task<Result<(IEnumerable<string> Files, string NextContinuationToken)>> ListFilesAsync(
         string path, string searchPattern = null, bool recursive = false, string continuationToken = null, CancellationToken cancellationToken = default);
 

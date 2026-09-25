@@ -205,6 +205,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Transa
     /// </returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var result = await Customer.WithTransactionAsync(async ctx =>
     /// {
     ///     var customer = new Customer { FirstName = "Jane", LastName = "Smith" };
@@ -213,6 +214,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Transa
     ///     return Result.Success(insertResult.Value);
     /// });
     /// if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.Value.Id}"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<T>> WithTransactionAsync<T>(

@@ -41,10 +41,12 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
     /// <returns>A task with a Result containing a boolean indicating if entities exist.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// using var scope = serviceProvider.CreateScope();
     /// var context = new ActiveEntityContext<Customer, Guid>(...);
     /// var result = await Customer.ExistsAsync(context, 1);
     /// if (result.IsSuccess && result.Value) { Console.WriteLine("Entities exist"); }
+    /// ]]>
     /// </code>
     /// </example>
     public static Task<Result<bool>> ExistsAsync(

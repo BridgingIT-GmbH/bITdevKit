@@ -83,6 +83,7 @@ public static partial class ApplicationBuilderExtensions
     /// </summary>
     /// <param name="app">The running web application.</param>
     /// <param name="console">The Spectre console abstraction.</param>
+    /// <param name="executor">The executor that dispatches each command read from standard input.</param>
     private static async Task RunLoopAsync(WebApplication app, IAnsiConsole console, ConsoleCommandExecutor executor)
     {
         PrintBanner(console);

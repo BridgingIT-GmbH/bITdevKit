@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Represents a rule for validating whether a specific text input adheres to predefined criteria.
-/// </
+/// </summary>
 public class TextInRule(
     string value,
     IEnumerable<string> allowedValues,

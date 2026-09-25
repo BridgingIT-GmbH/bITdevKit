@@ -41,6 +41,7 @@ public class EntityFrameworkJobStoreProvider<TContext> :
     /// </summary>
     /// <param name="serviceProvider">The root service provider.</param>
     /// <param name="options">The provider options.</param>
+    /// <param name="timeProvider">The optional time source; defaults to <see cref="TimeProvider.System"/>.</param>
     /// <param name="loggerFactory">The optional logger factory.</param>
     public EntityFrameworkJobStoreProvider(
         IServiceProvider serviceProvider,

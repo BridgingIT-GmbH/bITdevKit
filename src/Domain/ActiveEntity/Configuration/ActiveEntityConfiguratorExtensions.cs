@@ -117,18 +117,18 @@ public static class ActiveEntityConfiguratorExtensions
     /// <code>
     /// services.AddActiveEntity(cfg =>
     /// {
-    ///     cfg.For&lt;Customer, CustomerId>()
-    ///         .UseEntityFrameworkProvider(b => b.Context&lt;ActiveEntityDbContext>())
+    ///     cfg.For&lt;Customer, CustomerId&gt;()
+    ///         .UseEntityFrameworkProvider(b => b.Context&lt;ActiveEntityDbContext&gt;())
     ///         .AddValidationBehavior()
-    ///         .AddValidatorBehavior&lt;Customer, CustomerId, BasicCustomerValidator>(o => o.OnInsert()) // Validate required fields on insert
-    ///         .AddValidatorBehavior&lt;Customer, CustomerId, BusinessCustomerValidator>(o => o.OnUpdate()) // Business rules on update
-    ///         .AddValidatorBehavior&lt;Customer, CustomerId, DeleteCustomerValidator>(o => o.OnDelete()); // Deletion rules
+    ///         .AddValidatorBehavior&lt;Customer, CustomerId, BasicCustomerValidator&gt;(o => o.OnInsert()) // Validate required fields on insert
+    ///         .AddValidatorBehavior&lt;Customer, CustomerId, BusinessCustomerValidator&gt;(o => o.OnUpdate()) // Business rules on update
+    ///         .AddValidatorBehavior&lt;Customer, CustomerId, DeleteCustomerValidator&gt;(o => o.OnDelete()); // Deletion rules
     /// });
     /// </code>
     /// <para>
     /// Example validator for insert:
     /// <code>
-    /// public class BasicCustomerValidator : AbstractValidator&lt;Customer>
+    /// public class BasicCustomerValidator : AbstractValidator&lt;Customer&gt;
     /// {
     ///     public BasicCustomerValidator()
     ///     {
@@ -142,7 +142,7 @@ public static class ActiveEntityConfiguratorExtensions
     /// <para>
     /// Example validator for update:
     /// <code>
-    /// public class BusinessCustomerValidator : AbstractValidator&lt;Customer>
+    /// public class BusinessCustomerValidator : AbstractValidator&lt;Customer&gt;
     /// {
     ///     public BusinessCustomerValidator()
     ///     {
@@ -154,7 +154,7 @@ public static class ActiveEntityConfiguratorExtensions
     /// <para>
     /// Example validator with async rule for delete:
     /// <code>
-    /// public class DeleteCustomerValidator : AbstractValidator&lt;Customer>
+    /// public class DeleteCustomerValidator : AbstractValidator&lt;Customer&gt;
     /// {
     ///     public DeleteCustomerValidator()
     ///     {
@@ -167,6 +167,7 @@ public static class ActiveEntityConfiguratorExtensions
     /// }
     /// </code>
     /// </para>
+    /// </example>
     public static ActiveEntityConfigurator<TEntity, TId> AddValidatorBehavior<TEntity, TId, TValidator>(
         this ActiveEntityConfigurator<TEntity, TId> configurator,
         Action<ActiveEntityValidatorBehaviorOptions> configureOptions = null)
@@ -201,17 +202,17 @@ public static class ActiveEntityConfiguratorExtensions
     /// <code>
     /// services.AddActiveEntity(cfg =>
     /// {
-    ///     cfg.For&lt;Customer, CustomerId>()
-    ///         .UseEntityFrameworkProvider(b => b.Context&lt;ActiveEntityDbContext>())
+    ///     cfg.For&lt;Customer, CustomerId&gt;()
+    ///         .UseEntityFrameworkProvider(b => b.Context&lt;ActiveEntityDbContext&gt;())
     ///         .AddValidationBehavior()
-    ///         .AddValidatorBehavior&lt;Customer, CustomerId, BusinessCustomerValidator>(o => o.OnUpdate())
+    ///         .AddValidatorBehavior&lt;Customer, CustomerId, BusinessCustomerValidator&gt;(o => o.OnUpdate())
     ///         .AddAnnotationsValidator(o => o.OnInsert()); // Annotations validator for insert
     /// });
     /// </code>
     /// <para>
     /// Example entity with DataAnnotations:
     /// <code>
-    /// public class Customer : ActiveEntity&lt;Customer, CustomerId>
+    /// public class Customer : ActiveEntity&lt;Customer, CustomerId&gt;
     /// {
     ///     [Required]
     ///     [StringLength(50)]
@@ -232,6 +233,7 @@ public static class ActiveEntityConfiguratorExtensions
     /// }
     /// </code>
     /// </para>
+    /// </example>
     public static ActiveEntityConfigurator<TEntity, TId> AddAnnotationsValidator<TEntity, TId>(
         this ActiveEntityConfigurator<TEntity, TId> configurator,
         Action<ActiveEntityValidatorBehaviorOptions> configureOptions = null)

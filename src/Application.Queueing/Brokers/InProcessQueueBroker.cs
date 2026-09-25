@@ -3,7 +3,7 @@ namespace BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 
 /// <summary>
-/// Provides an in-memory queue broker using <see cref="Channel{T}"/>.
+/// Provides an in-memory queue broker using <see cref="System.Threading.Channels.Channel{T}"/>.
 /// </summary>
 /// <remarks>
 /// The broker is process-bound and best suited for tests, local work distribution, and lightweight workloads.
@@ -21,6 +21,8 @@ public class InProcessQueueBroker : QueueBrokerBase, IDisposable
     /// Initializes a new in-process queue broker instance.
     /// </summary>
     /// <param name="options">The broker runtime options.</param>
+    /// <param name="controlState">The shared pause and resume state, or <see langword="null"/> to create a new state.</param>
+    /// <param name="runtime">The shared runtime metrics, or <see langword="null"/> to create runtime state from <paramref name="options"/>.</param>
     public InProcessQueueBroker(
         InProcessQueueBrokerOptions options,
         QueueBrokerControlState controlState = null,

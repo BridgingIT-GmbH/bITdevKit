@@ -13,6 +13,7 @@ public class SubscriptionDetails
     /// <summary>
     ///     Initializes a new instance of the <see cref="SubscriptionDetails" /> class.
     /// </summary>
+    /// <param name="messageType">Type of the message.</param>
     /// <param name="handlerType">Type of the handler.</param>
     private SubscriptionDetails(Type messageType, Type handlerType)
     {

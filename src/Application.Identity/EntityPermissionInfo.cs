@@ -23,9 +23,6 @@ public class EntityPermissionInfo : IEquatable<EntityPermissionInfo>
     /// </summary>
     public string Source { get; set; }
 
-    /// <summary>
-    /// Gets or sets the ID of the source (e.g., role id, parent entity id).
-    /// </summary>
     //public object SourceId { get; set; }
 
     /// <summary>

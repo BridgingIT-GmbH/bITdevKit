@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// Fallback publisher that logs a warning when no publisher is registered.
 /// </summary>
 /// <remarks>
-/// Initializes a new instance of the <see cref="NoOpDomainEventPublisher"/> class.
+/// Initializes a new instance of the <see cref="NoOpNotifier"/> class.
 /// </remarks>
 /// <param name="loggerFactory">Optional logger factory for logging.</param>
 public class NoOpNotifier(ILoggerFactory loggerFactory = null) : INotifier
@@ -34,6 +34,7 @@ public class NoOpNotifier(ILoggerFactory loggerFactory = null) : INotifier
     /// Logs a warning and completes without publishing the event.
     /// </summary>
     /// <param name="notification">The notification to publish.</param>
+    /// <param name="options">The publication options, which this fallback notifier ignores.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A completed task.</returns>
     Task<IResult> INotifier.PublishAsync<TNotification>(TNotification notification, PublishOptions options, CancellationToken cancellationToken)
@@ -47,6 +48,7 @@ public class NoOpNotifier(ILoggerFactory loggerFactory = null) : INotifier
     /// Logs a warning and completes without publishing the event.
     /// </summary>
     /// <param name="notification">The notification to publish.</param>
+    /// <param name="options">The publication options, which this fallback notifier ignores.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A completed task.</returns>
     public Task<IResult> PublishDynamicAsync(INotification notification, PublishOptions options = null, CancellationToken cancellationToken = default)

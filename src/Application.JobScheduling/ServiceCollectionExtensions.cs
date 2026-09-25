@@ -86,7 +86,7 @@ public static class ServiceCollectionExtensions
     ///     new JobSchedulingOptions { StartupDelay = TimeSpan.FromSeconds(5) },
     ///     null,
     ///     builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0 * * * * ?")
     ///         .Named("echo")
     ///         .WithData("message", "Hello")
@@ -183,13 +183,14 @@ public static class ServiceCollectionExtensions
     /// <param name="context">The JobSchedulingBuilderContext from AddJobScheduling.</param>
     /// <param name="cronExpression">Cron expression defining the schedule (see https://www.freeformatter.com/cron-expression-generator-quartz.html).</param>
     /// <param name="name">Optional unique name for the job (defaults to type name if null).</param>
+    /// <param name="group">The scheduler group used to qualify the job name.</param>
     /// <param name="data">Optional dictionary of key-value pairs to pass to the job.</param>
     /// <param name="enabled">Whether the job is enabled (default: true).</param>
     /// <returns>The JobSchedulingBuilderContext for chaining additional configurations.</returns>
     /// <example>
     /// // Add a job running every minute
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>("0 * * * * ?", "minuteEcho", new Dictionary<string, string> { { "msg", "Tick" } });
+    ///     .WithJob&lt;EchoJob&gt;("0 * * * * ?", "minuteEcho", new Dictionary&lt;string, string&gt; { { "msg", "Tick" } });
     /// </example>
     public static JobSchedulingBuilderContext WithJob<TJob>(
         this JobSchedulingBuilderContext context,
@@ -210,13 +211,14 @@ public static class ServiceCollectionExtensions
     /// <param name="context">The JobSchedulingBuilderContext from AddJobScheduling.</param>
     /// <param name="cronExpression">Cron expression defining the schedule (see https://www.freeformatter.com/cron-expression-generator-quartz.html).</param>
     /// <param name="name">Optional unique name for the job (defaults to type name if null).</param>
+    /// <param name="group">The scheduler group used to qualify the job name.</param>
     /// <param name="data">Optional dictionary of key-value pairs to pass to the job.</param>
     /// <param name="enabled">Whether the job is enabled (default: true).</param>
     /// <returns>The JobSchedulingBuilderContext for chaining additional configurations.</returns>
     /// <example>
     /// // Add a scoped job running every 5 seconds
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithScopedJob<MyJob>("0/5 * * * * ?", "quickJob", new Dictionary<string, string> { { "key", "value" } });
+    ///     .WithScopedJob&lt;MyJob&gt;("0/5 * * * * ?", "quickJob", new Dictionary&lt;string, string&gt; { { "key", "value" } });
     /// </example>
     public static JobSchedulingBuilderContext WithScopedJob<TJob>(
         this JobSchedulingBuilderContext context,
@@ -245,7 +247,7 @@ public static class ServiceCollectionExtensions
     /// <example>
     /// // Fluent job configuration
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron("0/10 * * * * ?") // Every 10 seconds
     ///         .Named("echo")
     ///         .WithData("message", "Hello")
@@ -265,12 +267,13 @@ public static class ServiceCollectionExtensions
     /// <param name="context">The JobSchedulingBuilderContext from AddJobScheduling.</param>
     /// <param name="cronExpression">Cron expression defining the schedule (see https://www.freeformatter.com/cron-expression-generator-quartz.html).</param>
     /// <param name="name">Optional unique name for the job (defaults to type name if null).</param>
+    /// <param name="group">The scheduler group used to qualify the job name.</param>
     /// <param name="data">Optional dictionary of key-value pairs to pass to the job.</param>
     /// <returns>The JobSchedulingBuilderContext for chaining additional configurations.</returns>
     /// <example>
     /// // Add a singleton job running every hour
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithSingletonJob<MonitorJob>("0 0 * * * ?", "hourlyMonitor");
+    ///     .WithSingletonJob&lt;MonitorJob&gt;("0 0 * * * ?", "hourlyMonitor");
     /// </example>
     public static JobSchedulingBuilderContext WithSingletonJob<TJob>(
         this JobSchedulingBuilderContext context,
@@ -296,8 +299,8 @@ public static class ServiceCollectionExtensions
     /// <example>
     /// // Add a logging behavior
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>("0 * * * * ?")
-    ///     .WithBehavior<LoggingBehavior>();
+    ///     .WithJob&lt;EchoJob&gt;("0 * * * * ?")
+    ///     .WithBehavior&lt;LoggingBehavior&gt;();
     /// </example>
     public static JobSchedulingBuilderContext WithBehavior<TBehavior>(
         this JobSchedulingBuilderContext context,
@@ -325,8 +328,8 @@ public static class ServiceCollectionExtensions
     /// <example>
     /// // Add a custom retry behavior via factory
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>("0 * * * * ?")
-    ///     .WithBehavior(sp => new RetryBehavior(sp.GetService<ILoggerFactory>()));
+    ///     .WithJob&lt;EchoJob&gt;("0 * * * * ?")
+    ///     .WithBehavior(sp => new RetryBehavior(sp.GetService&lt;ILoggerFactory&gt;()));
     /// </example>
     public static JobSchedulingBuilderContext WithBehavior(
         this JobSchedulingBuilderContext context,
@@ -350,7 +353,7 @@ public static class ServiceCollectionExtensions
     /// // Add a pre-instantiated behavior
     /// var retryBehavior = new RetryBehavior(loggerFactory);
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>("0 * * * * ?")
+    ///     .WithJob&lt;EchoJob&gt;("0 * * * * ?")
     ///     .WithBehavior(retryBehavior);
     /// </example>
     public static JobSchedulingBuilderContext WithBehavior(

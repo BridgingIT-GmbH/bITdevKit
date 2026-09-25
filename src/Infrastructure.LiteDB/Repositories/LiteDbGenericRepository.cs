@@ -61,6 +61,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
     ///     Inserts the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public virtual async Task<TEntity> InsertAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -87,6 +88,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
     ///     Updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public virtual async Task<TEntity> UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         var result = await this.UpsertAsync(entity, cancellationToken).AnyContext();
@@ -98,6 +100,7 @@ public class LiteDbGenericRepository<TEntity>(ILiteDbRepositoryOptions options)
     ///     Insert or updates the provided entity.
     /// </summary>
     /// <param name="entity">The entity to insert or update.</param>
+    /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public virtual async Task<(TEntity entity, RepositoryActionResult action)> UpsertAsync(
         TEntity entity,
         CancellationToken cancellationToken = default)

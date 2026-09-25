@@ -20,11 +20,9 @@ public class CollectionSizeRule<T>(IEnumerable<T> collection, int minSize, int m
         $"Collection size must be between {minSize} and {maxSize} items";
 
     /// <summary>
-    /// Executes a specified rule and returns the result.
+    /// Checks whether the collection count is within the configured inclusive bounds.
     /// </summary>
-    /// <param name="rule">The rule to be executed.</param>
-    /// <param name="context">The context in which the rule should be executed.</param>
-    /// <returns>The result of the executed rule.</returns>
+    /// <returns>A successful result when the count is between the minimum and maximum sizes; otherwise, a failure result.</returns>
     public override Result Execute()
     {
         var count = collection?.Count() ?? 0;

@@ -81,6 +81,9 @@ public static partial class ServiceCollectionExtensions
     /// <param name="providerFactory">The factory used to create the container-owned persistence provider.</param>
     /// <param name="lifetime">The optional service lifetime override for this client.</param>
     /// <param name="capabilities">The optional provider capabilities used by dashboard selection and query safety hints.</param>
+    /// <param name="documentStoreOptions">The optional validation and document size settings for this client.</param>
+    /// <param name="name">The named-client identity.</param>
+    /// <param name="isDefault">Whether this client is also available through unkeyed injection.</param>
     /// <returns>The current document-storage builder context.</returns>
     /// <example>
     /// <code>

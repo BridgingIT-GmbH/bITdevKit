@@ -26,7 +26,7 @@ public static class DevKitApplication
     /// Creates a DevKit-aware generic host application builder with explicit options.
     /// </summary>
     /// <param name="args">The command-line arguments.</param>
-    /// <param name="configure">The options configuration callback.</param>
+    /// <param name="configureOptions">The options configuration callback.</param>
     /// <returns>The DevKit application builder.</returns>
     public static DevKitApplicationBuilder CreateBuilder(
         string[] args,

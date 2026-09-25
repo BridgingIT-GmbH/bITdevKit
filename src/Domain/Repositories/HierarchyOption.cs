@@ -13,10 +13,10 @@ public class HierarchyOption<TEntity>
     where TEntity : class, IEntity
 {
     /// <summary>
-    ///     Initializes a new instance of the <see cref="IncludeOption{TEntity}" /> class.
-    ///     Represents an option for including child entities in the query.
+    ///     Initializes a hierarchy option from a navigation-property expression.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
+    /// <param name="expression">The navigation-property expression that identifies the hierarchy root.</param>
+    /// <param name="maxDepth">The maximum hierarchy depth to load.</param>
     public HierarchyOption(Expression<Func<TEntity, object>> expression, int maxDepth = 5)
     {
         EnsureArg.IsNotNull(expression, nameof(expression));
@@ -26,11 +26,10 @@ public class HierarchyOption<TEntity>
     }
 
     /// <summary>
-    ///     Initializes a new instance of the <see cref="IncludeOption{TEntity}" /> class.
-    ///     Represents an option for including child entities in the query.
+    ///     Initializes a hierarchy option from a navigation-property path.
     /// </summary>
-    /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="path">The navigation property path to hierarchy in the query.</param>
+    /// <param name="maxDepth">The maximum hierarchy depth to load.</param>
     public HierarchyOption(string path, int maxDepth = 5)
     {
         EnsureArg.IsNotNull(path, nameof(path));

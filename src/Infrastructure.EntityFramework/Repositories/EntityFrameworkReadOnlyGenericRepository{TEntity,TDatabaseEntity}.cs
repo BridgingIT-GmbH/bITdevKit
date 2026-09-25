@@ -58,7 +58,9 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// </remarks>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var repository = new EntityFrameworkReadOnlyGenericRepository<MyEntity, MyDbEntity>(loggerFactory, dbContext, mapper);
+    /// ]]>
     /// </code>
     /// </example>
     protected EntityFrameworkReadOnlyGenericRepository(
@@ -105,8 +107,10 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <param name="cancellationToken">An optional parameter that allows the operation to be canceled.</param>
     /// <returns>An enumerable collection of TEntity.</returns>
     /// <example>
-    /// var options = new FindOptions<TEntity>();
+    /// <code>
+    /// var options = new FindOptions&lt;TEntity&gt;();
     /// var entities = await repository.FindAllAsync(options, cancellationToken);
+    /// </code>
     /// </example>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
         IFindOptions<TEntity> options = null,
@@ -145,7 +149,9 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <example>
     /// Example usage:
     /// <code>
+    /// <![CDATA[
     /// var entities = await repository.FindAllAsync(new List<ISpecification<TEntity>> { specification }, options, cancellationToken);
+    /// ]]>
     /// </code>
     /// </example>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -333,7 +339,9 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <example>
     /// This example shows how to use the CountAsync method to count entities:
     /// <code>
+    /// <![CDATA[
     /// var count = await repository.CountAsync(new List<ISpecification<TEntity>> { spec1, spec2 }, cancellationToken);
+    /// ]]>
     /// </code>
     /// </example>
     public virtual async Task<long> CountAsync(
@@ -412,7 +420,9 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <example>
     /// To find an entity that matches certain criteria:
     /// <code>
+    /// <![CDATA[
     /// var entity = await repository.FindOneAsync(new List<ISpecification<MyEntity>> { spec1, spec2 }, options, cancellationToken);
+    /// ]]>
     /// </code>
     /// </example>
     public virtual async Task<TEntity> FindOneAsync(
@@ -440,8 +450,10 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
     /// <returns>A task that represents the asynchronous operation. The task result contains a boolean indicating whether the entity exists.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var repository = new EntityFrameworkReadOnlyGenericRepository<MyEntity, MyDbEntity>();
     /// bool exists = await repository.ExistsAsync(12345);
+    /// ]]>
     /// </code>
     /// </example>
     public virtual async Task<bool> ExistsAsync(object id, CancellationToken cancellationToken = default)

@@ -2274,6 +2274,7 @@ public static class ResultTExtensions
     /// Executes different functions based on the Result's success state.
     /// </summary>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="result">The Result to match.</param>
     /// <param name="onSuccess">Function to execute if the Result is successful, receiving the value.</param>
     /// <param name="onFailure">Function to execute if the Result failed, receiving the errors.</param>
@@ -2321,6 +2322,7 @@ public static class ResultTExtensions
     /// Returns different values based on the Result's success state.
     /// </summary>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="result">The Result to match.</param>
     /// <param name="success">Value to return if successful.</param>
     /// <param name="failure">Value to return if failed.</param>
@@ -2354,6 +2356,7 @@ public static class ResultTExtensions
     /// Asynchronously executes different functions based on the Result's success state.
     /// </summary>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="result">The Result to match.</param>
     /// <param name="onSuccess">Async function to execute if successful, receiving the value.</param>
     /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>
@@ -2397,6 +2400,7 @@ public static class ResultTExtensions
     /// Asynchronously executes a success function with a synchronous failure handler.
     /// </summary>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="result">The Result to match.</param>
     /// <param name="onSuccess">Async function to execute if successful, receiving the value.</param>
     /// <param name="onFailure">Synchronous function to execute if failed, receiving the errors.</param>
@@ -2436,6 +2440,7 @@ public static class ResultTExtensions
     /// Executes a synchronous success function with an async failure handler.
     /// </summary>
     /// <typeparam name="TResult">The type of the return value.</typeparam>
+    /// <typeparam name="T">The type of the result value.</typeparam>
     /// <param name="result">The Result to match.</param>
     /// <param name="onSuccess">Synchronous function to execute if successful, receiving the value.</param>
     /// <param name="onFailure">Async function to execute if failed, receiving the errors.</param>

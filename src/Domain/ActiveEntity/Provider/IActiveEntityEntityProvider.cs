@@ -27,6 +27,7 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// Inserts an entity into the underlying storage.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
+    /// <param name="callbacks">Optional callbacks invoked around the insert operation.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the inserted entity.</returns>
     /// <example>
@@ -45,6 +46,7 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// Updates an existing entity in the underlying storage.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
+    /// <param name="callbacks">Optional callbacks invoked around the update operation.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the updated entity.</returns>
     /// <example>
@@ -114,6 +116,7 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// Upserts an entity (inserts if new, updates if exists) in the underlying storage.
     /// </summary>
     /// <param name="entity">The entity to upsert.</param>
+    /// <param name="callbacks">Optional callbacks invoked around the upsert and applicable insert or update stages.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the entity and the action performed (Inserted/Updated).</returns>
     /// <example>
@@ -132,6 +135,7 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// Deletes an entity from the underlying storage.
     /// </summary>
     /// <param name="entity">The entity to delete.</param>
+    /// <param name="callbacks">Optional callbacks invoked around the delete operation.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result indicating success or failure.</returns>
     /// <example>
@@ -228,9 +232,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.Email == "john.doe@example.com");
     /// var result = await provider.FindOneAsync(spec);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<TEntity>> FindOneAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -244,9 +250,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the found entity or null.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindOneAsync(specs);
     /// if (result.IsSuccess && result.Value != null) { Console.WriteLine(result.Value.FirstName); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<TEntity>> FindOneAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -259,9 +267,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Take = 10 };
     /// var result = await provider.FindAllAsync(options);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TEntity>>> FindAllAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -275,9 +285,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.FindAllAsync(spec);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TEntity>>> FindAllAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -291,9 +303,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the collection of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindAllAsync(specs);
     /// if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TEntity>>> FindAllAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -306,9 +320,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await provider.FindAllPagedAsync(options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}, Page: {result.Value.Page}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TEntity>> FindAllPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -322,10 +338,12 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await provider.FindAllPagedAsync(spec, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TEntity>> FindAllPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -339,10 +357,12 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await provider.FindAllPagedAsync(specs, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TEntity>> FindAllPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -357,8 +377,10 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var result = await provider.ProjectAllAsync<Customer, string>(c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -374,9 +396,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.ProjectAllAsync(spec, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -392,9 +416,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the projected entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.ProjectAllAsync(specs, c => c.FirstName);
     /// if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TProjection>>> ProjectAllAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -409,9 +435,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await provider.ProjectAllPagedAsync<Customer, string>(c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -427,10 +455,12 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await provider.ProjectAllPagedAsync(spec, c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(ISpecification<TEntity> specification, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -446,10 +476,12 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged projected entities and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await provider.ProjectAllPagedAsync(specs, c => c.FirstName, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TProjection>> ProjectAllPagedAsync<TProjection>(IEnumerable<ISpecification<TEntity>> specifications, Expression<Func<TEntity, TProjection>> projection, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -490,9 +522,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing a boolean indicating if entities exist.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.ExistsAsync(spec);
     /// if (result.IsSuccess && result.Value) { Console.WriteLine("Matching entities exist"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<bool>> ExistsAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -506,9 +540,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing a boolean indicating if entities exist.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.ExistsAsync(specs);
     /// if (result.IsSuccess && result.Value) { Console.WriteLine("Matching entities exist"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<bool>> ExistsAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -535,9 +571,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.CountAsync(spec);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<long>> CountAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -551,9 +589,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the count of entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.CountAsync(specs);
     /// if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<long>> CountAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -581,9 +621,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var result = await provider.FindAllIdsAsync(spec);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TId>>> FindAllIdsAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -597,9 +639,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a Result containing the collection of entity IDs.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var result = await provider.FindAllIdsAsync(specs);
     /// if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }
+    /// ]]>
     /// </code>
     /// </example>
     Task<Result<IEnumerable<TId>>> FindAllIdsAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -612,9 +656,11 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var options = new FindOptions<Customer> { Skip = 10, Take = 5 };
     /// var result = await provider.FindAllIdsPagedAsync(options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TId>> FindAllIdsPagedAsync(IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -628,10 +674,12 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var spec = new Specification<Customer>(c => c.LastName == "Doe");
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await provider.FindAllIdsPagedAsync(spec, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TId>> FindAllIdsPagedAsync(ISpecification<TEntity> specification, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);
@@ -645,10 +693,12 @@ public interface IActiveEntityEntityProvider<TEntity, TId>
     /// <returns>A task with a ResultPaged containing the paged entity IDs and total count.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specs = new[] { new Specification<Customer>(c => c.LastName == "Doe") };
     /// var options = new FindOptions<Customer> { Take = 5 };
     /// var result = await provider.FindAllIdsPagedAsync(specs, options);
     /// if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }
+    /// ]]>
     /// </code>
     /// </example>
     Task<ResultPaged<TId>> FindAllIdsPagedAsync(IEnumerable<ISpecification<TEntity>> specifications, IFindOptions<TEntity> options = null, CancellationToken cancellationToken = default);

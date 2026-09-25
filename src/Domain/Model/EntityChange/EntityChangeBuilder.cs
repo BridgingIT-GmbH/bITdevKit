@@ -293,6 +293,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="item">The item to remove.</param>
     /// <param name="comparer">Optional equality comparer for item comparison.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -320,6 +321,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="result">Result containing the item to remove.</param>
     /// <param name="comparer">Optional equality comparer for item comparison.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// var addressResult = FindAddressById(addressId);
@@ -357,6 +359,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="itemFactory">Function that returns a Result containing the item to remove.</param>
     /// <param name="comparer">Optional equality comparer for item comparison.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -387,6 +390,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="id">The ID of the item to remove.</param>
     /// <param name="comparer">Optional equality comparer for ID comparison.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -419,6 +423,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="result">Result containing the ID of the item to remove.</param>
     /// <param name="comparer">Optional equality comparer for ID comparison.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// var idResult = GetAddressId();
@@ -460,6 +465,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="idFactory">Function that returns a Result containing the ID of the item to remove.</param>
     /// <param name="comparer">Optional equality comparer for ID comparison.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found. If null, uses default message.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -608,6 +614,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="id">The ID of the item to operate on.</param>
     /// <param name="action">Action to apply to the matching item.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -639,6 +646,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     /// <param name="id">The ID of the item to operate on.</param>
     /// <param name="action">Result-returning action to apply to the matching item.</param>
     /// <param name="errorMessage">Optional custom error message when item is not found.</param>
+    /// <param name="error">Optional structured error returned when the item is not found.</param>
     /// <example>
     /// <code>
     /// return this.Change()
@@ -1252,7 +1260,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     }
 
     /// <summary>
-    /// Execute operation for Result<TEntity>-returning functions in ordered execution.
+    /// Executes an ordered function that returns a <see cref="Result{TValue}"/> containing the entity.
     /// </summary>
     private class ResultEntityExecuteOperationOrdered(Func<TEntity, Result<TEntity>> func) : IOrderedOperation
     {
@@ -1270,7 +1278,7 @@ public class EntityChangeBuilder<TEntity>(TEntity entity)
     }
 
     /// <summary>
-    /// Execute operation for Result<TEntity> transformations in ordered execution.
+    /// Executes an ordered transformation from one entity <see cref="Result{TValue}"/> to another.
     /// </summary>
     private class ResultTransformOperationOrdered(Func<Result<TEntity>, Result<TEntity>> transformation) : IOrderedOperation
     {

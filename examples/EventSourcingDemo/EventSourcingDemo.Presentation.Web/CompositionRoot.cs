@@ -23,6 +23,7 @@ public static class CompositionRoot
     ///     Add application registrations
     /// </summary>
     /// <param name="services">The services</param>
+    /// <param name="configuration">The configuration containing the event store and application database connection strings.</param>
     /// <returns>Service Collection</returns>
     public static IServiceCollection AddModule(this IServiceCollection services, IConfiguration configuration)
     {

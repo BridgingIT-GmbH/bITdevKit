@@ -269,8 +269,10 @@ public class
     /// <param name="cancellationToken">Optional. The CancellationToken to observe while waiting for the task to complete.</param>
     /// <returns>A task representing the asynchronous delete operation. The task result contains the action result status.</returns>
     /// <example>
-    /// var repository = new EntityFrameworkGenericRepository<SomeEntity, SomeDatabaseEntity>(options);
+    /// <code>
+    /// var repository = new EntityFrameworkGenericRepository&lt;SomeEntity, SomeDatabaseEntity&gt;(options);
     /// var result = await repository.DeleteAsync(entityToDelete, cancellationToken);
+    /// </code>
     /// </example>
     public virtual async Task<RepositoryActionResult> DeleteAsync(
         TEntity entity,

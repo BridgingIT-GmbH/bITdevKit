@@ -18,7 +18,6 @@ public static class RequesterBuilderExtensions
         /// <summary>
         /// Configures the default database transaction options.
         /// </summary>
-        /// <param name="builder">The requester builder.</param>
         /// <param name="defaultContextName">
         /// The default DbContext name to use when the attribute doesn't specify one.
         /// Can omit the "DbContext" suffix (e.g., "Core" or "CoreDbContext").
@@ -45,7 +44,6 @@ public static class RequesterBuilderExtensions
         /// <summary>
         /// Configures the default database transaction options using a configuration action.
         /// </summary>
-        /// <param name="builder">The requester builder.</param>
         /// <param name="configureOptions">Action to configure the options.</param>
         /// <returns>The <see cref="RequesterBuilder"/> instance for fluent chaining.</returns>
         /// <example>

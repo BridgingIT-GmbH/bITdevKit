@@ -20,12 +20,9 @@ public class AnyRule<T>(IEnumerable<T> collection, Func<T, IRule> ruleFactory)
     public override string Message => "No element in the collection satisfies the condition";
 
     /// <summary>
-    /// Executes a specified rule and returns the result of the execution.
+    /// Determines whether at least one collection element satisfies its generated rule.
     /// </summary>
-    /// <typeparam name="TRule">The type of the rule to execute.</typeparam>
-    /// <typeparam name="TResult">The type of the result produced by the rule.</typeparam>
-    /// <param name="rule">The rule instance to execute.</param>
-    /// <returns>The result of executing the rule.</returns>
+    /// <returns>A successful result when any generated rule is satisfied; otherwise, a failure result. An empty or missing collection fails.</returns>
     public override Result Execute()
     {
         if (collection?.Any() != true)

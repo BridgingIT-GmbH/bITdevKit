@@ -114,9 +114,9 @@ public interface IAdapterFactory
 }
 
 /// <summary>
-/// Represents a keyed strategy resolver.
+/// Builds the target stage of an adapter registration for a source type.
 /// </summary>
-/// <typeparam name="TStrategy">The strategy contract.</typeparam>
+/// <typeparam name="TSource">The source type accepted by the adapter.</typeparam>
 
 internal sealed class AdapterSourceBuilder<TSource>(CompositionBuilder root, CompositionRegistrationState state) : IAdapterSourceBuilder<TSource>
     where TSource : class

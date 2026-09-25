@@ -20,11 +20,9 @@ public class ValidationRule<T>(T instance, IValidator<T> validator, string messa
     public override string Message => this.message;
 
     /// <summary>
-    /// Executes a specified rule.
+    /// Validates the configured instance with the configured FluentValidation validator.
     /// </summary>
-    /// <param name="ruleId">Identifier of the rule to be executed.</param>
-    /// <param name="parameters">Parameters required for the rule execution.</param>
-    /// <returns>A boolean indicating if the rule execution was successful.</returns>
+    /// <returns>A successful result when validation succeeds; otherwise, a failure result containing a <see cref="FluentValidationError"/>.</returns>
     public override Result Execute()
     {
         var validationResult = validator.Validate(instance);

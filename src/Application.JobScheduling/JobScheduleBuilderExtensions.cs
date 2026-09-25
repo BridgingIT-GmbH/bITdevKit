@@ -22,7 +22,7 @@ public static class JobScheduleBuilderExtensions
     /// <example>
     /// // Schedule a job to run on the 1st of every month at 11:59 PM
     /// services.AddJobScheduling(builder.Configuration)
-    ///     .WithJob<EchoJob>()
+    ///     .WithJob&lt;EchoJob&gt;()
     ///         .Cron(b => b
     ///             .DayOfMonth(1)
     ///             .AtTime(23, 59, 0)

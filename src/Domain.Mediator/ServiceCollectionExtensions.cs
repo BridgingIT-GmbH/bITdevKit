@@ -18,6 +18,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The IServiceCollection to add the services to.</param>
     /// <param name="lifetime">The ServiceLifetime of the domain event handlers. Defaults to Transient.</param>
+    /// <param name="skipHandlerRegistration">Whether to register only MediatR's required services and skip scanning domain event handlers.</param>
     /// <param name="assemblyExcludePatterns">Optional patterns for excluding assemblies from the scan.</param>
     /// <returns>The updated IServiceCollection.</returns>
     public static IServiceCollection AddDomainEvents(

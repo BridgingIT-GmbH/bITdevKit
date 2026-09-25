@@ -22,7 +22,9 @@ using BridgingIT.DevKit.Domain.Repositories;
 /// <param name="options">Configuration options for auditing and soft delete.</param>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var behavior = new ActiveEntityAuditStateBehavior<Customer>(new AuditStateBehaviorOptions { SoftDeleteEnabled = true, AuditUserIdentity = "system-user" });
+/// ]]>
 /// </code>
 /// </example>
 public class ActiveEntityAuditStateBehavior<TEntity>(ActiveEntityAuditStateBehaviorOptions options = null) : ActiveEntityBehaviorBase<TEntity>

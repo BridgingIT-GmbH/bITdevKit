@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Common;
 /// <summary>
 /// Represents a validation rule that checks whether a given value is less than or equal to a specified value.
 /// </summary>
-/// <typeparam name="T">The type of the values being compared. Must implement IComparable<T>.</typeparam>
+/// <typeparam name="T">The comparable value type.</typeparam>
 public class LessThanOrEqualRule<T>(T value, T other, string message = null)
     : RuleBase
     where T : IComparable<T>

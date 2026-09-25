@@ -20,6 +20,8 @@ public static partial class ServiceCollectionExtensions
     /// <param name="provider">An optional pre-built Azure Blob provider.</param>
     /// <param name="lifetime">The optional client lifetime override.</param>
     /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <param name="name">The name used to register and resolve the client.</param>
+    /// <param name="isDefault">A value indicating whether this registration is the default client for the document type.</param>
     /// <returns>The current document-storage builder context.</returns>
     /// <example>
     /// <code>
@@ -66,6 +68,8 @@ public static partial class ServiceCollectionExtensions
     /// <param name="serviceClient">The optional blob service client. When null, the client is resolved from services.</param>
     /// <param name="lifetime">The optional client lifetime override.</param>
     /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <param name="name">The name used to register and resolve the client.</param>
+    /// <param name="isDefault">A value indicating whether this registration is the default client for the document type.</param>
     /// <returns>The current document-storage builder context.</returns>
     /// <example>
     /// <code>
@@ -111,6 +115,8 @@ public static partial class ServiceCollectionExtensions
     /// <param name="provider">An optional pre-built Azure Table provider.</param>
     /// <param name="lifetime">The optional client lifetime override.</param>
     /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <param name="name">The name used to register and resolve the client.</param>
+    /// <param name="isDefault">A value indicating whether this registration is the default client for the document type.</param>
     /// <returns>The current document-storage builder context.</returns>
     /// <example>
     /// <code>
@@ -156,6 +162,8 @@ public static partial class ServiceCollectionExtensions
     /// <param name="serviceClient">The optional table service client. When null, the client is resolved from services.</param>
     /// <param name="lifetime">The optional client lifetime override.</param>
     /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <param name="name">The name used to register and resolve the client.</param>
+    /// <param name="isDefault">A value indicating whether this registration is the default client for the document type.</param>
     /// <returns>The current document-storage builder context.</returns>
     /// <example>
     /// <code>
@@ -254,6 +262,7 @@ public static partial class ServiceCollectionExtensions
     /// <param name="serviceClient">The optional blob service client. When null, the client is resolved from services.</param>
     /// <param name="lifetime">The client lifetime to register.</param>
     /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <param name="clientName">The name assigned to the registered document-store client.</param>
     /// <returns>The document-store builder for adding behaviors.</returns>
     /// <example>
     /// <code>
@@ -361,6 +370,7 @@ public static partial class ServiceCollectionExtensions
     /// <param name="serviceClient">The optional table service client. When null, the client is resolved from services.</param>
     /// <param name="lifetime">The client lifetime to register.</param>
     /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <param name="clientName">The name assigned to the registered document-store client.</param>
     /// <returns>The document-store builder for adding behaviors.</returns>
     /// <example>
     /// <code>

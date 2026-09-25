@@ -18,10 +18,6 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// <remarks>
 /// Initializes a new instance of the <see cref="TimeoutBlobStoreClientBehavior" /> class.
 /// </remarks>
-/// <param name="inner">The decorated blob-store client.</param>
-/// <param name="options">The timeout options.</param>
-/// <param name="storeName">The configured blob-store client name.</param>
-/// <param name="timeProvider">The time provider used to schedule deadlines.</param>
 /// <example>
 /// <code>
 /// var behavior = new TimeoutBlobStoreClientBehavior(inner, options, "reports");

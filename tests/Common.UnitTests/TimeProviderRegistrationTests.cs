@@ -14,7 +14,7 @@ using Shouldly;
 using Xunit;
 
 /// <summary>
-/// Tests for <see cref="ServiceCollectionExtensions.AddTimeProvider"/> overloads,
+/// Tests the <c>AddTimeProvider</c> service collection overloads,
 /// ensuring correct DI registration and ambient synchronization.
 /// </summary>
 public class TimeProviderRegistrationTests : IDisposable

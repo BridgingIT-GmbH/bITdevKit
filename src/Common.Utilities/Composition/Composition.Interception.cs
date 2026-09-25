@@ -242,9 +242,9 @@ public interface IInterceptionAuthorizer<TService>
 }
 
 /// <summary>
-/// Represents the first stage of adapter registration.
+/// Adds interception behavior factories to an interception builder.
 /// </summary>
-/// <typeparam name="TSource">The source type.</typeparam>
+/// <typeparam name="TService">The intercepted service contract.</typeparam>
 
 internal interface IInterceptionBuilderInternal<TService>
     where TService : class

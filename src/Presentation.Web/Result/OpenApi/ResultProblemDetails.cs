@@ -37,15 +37,11 @@ public class ResultProblemData
     /// </summary>
     public ResultProblemResult Result { get; set; } = new ResultProblemResult();
 
-    /// <summary>
-    /// Additional other (non result) error information
-    /// </summary>
+    // Additional other (non result) error information
     //public string Errors { get; set; } = string.Empty;
     public IEnumerable<ProblemError> Errors { get; set; } = [];
 
-    /// <summary>
-    /// Arbitrary extension properties for this data object.
-    /// </summary>
+    // Arbitrary extension properties for this data object.
     //public IDictionary<string, object> Extra { get; set; } = new Dictionary<string, object>();
 }
 

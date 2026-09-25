@@ -111,6 +111,7 @@ public static class DomainPolicies
     /// </summary>
     /// <typeparam name="TContext">The type of the context to which the policy is to be applied.</typeparam>
     /// <param name="context">The context to which the policy is to be applied.</param>
+    /// <param name="result">The aggregate policy result to update with this policy outcome.</param>
     /// <param name="policy">The domain policy to be applied.</param>
     /// <param name="cancellationToken">A token to monitor for cancellation requests.</param>
     /// <returns>

@@ -22,6 +22,7 @@ public static class BlobContinuationTokenSerializer
     /// Serializes a continuation token envelope to an opaque string.
     /// </summary>
     /// <param name="token">The continuation token envelope to serialize.</param>
+    /// <param name="protector">The optional protector used to sign or encrypt the token payload.</param>
     /// <returns>A result containing the opaque continuation token string.</returns>
     /// <example>
     /// <code>
@@ -50,6 +51,7 @@ public static class BlobContinuationTokenSerializer
     /// Deserializes an opaque continuation token.
     /// </summary>
     /// <param name="token">The opaque continuation token string to deserialize.</param>
+    /// <param name="protector">The optional protector used to verify or decrypt the token payload.</param>
     /// <returns>A result containing the continuation token envelope.</returns>
     /// <example>
     /// <code>

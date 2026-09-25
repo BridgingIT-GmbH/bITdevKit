@@ -19,6 +19,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="users">The predefined users.</param>
+    /// <param name="enabled">Whether fake authentication should be registered.</param>
     /// <returns>The service collection for chaining.</returns>
     /// <example>
     /// Basic setup with predefined users:
@@ -43,6 +44,7 @@ public static class ServiceCollectionExtensions
     /// </summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configure">Action to configure the fake authentication options.</param>
+    /// <param name="enabled">Whether fake authentication should be registered.</param>
     /// <returns>The service collection for chaining.</returns>
     /// <example>
     /// Basic setup with predefined users:

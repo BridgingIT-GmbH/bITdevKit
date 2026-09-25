@@ -10,7 +10,7 @@ using global::Azure.Core.Serialization;
 using Microsoft.Azure.Cosmos;
 
 /// <summary>
-///     Uses <see cref="Azure.Core.Serialization.JsonObjectSerializer" /> which leverages System.Text.Json
+///     Uses <see cref="JsonObjectSerializer" /> which leverages System.Text.Json.
 /// </summary>
 public class
     CosmosSystemTextJsonSerializer(

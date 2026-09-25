@@ -16,6 +16,7 @@ namespace BridgingIT.DevKit.Common;
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class ValidationBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
 ///     where TRequest : class
 ///     where TResponse : Result
@@ -26,6 +27,7 @@ namespace BridgingIT.DevKit.Common;
 ///         return await next();
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public interface IPipelineBehavior<TRequest, TResponse>
@@ -37,6 +39,7 @@ public interface IPipelineBehavior<TRequest, TResponse>
     /// </summary>
     /// <param name="request">The request or notification to process.</param>
     /// <param name="options">The options for request (<see cref="SendOptions"/>) or notification (<see cref="PublishOptions"/>) processing.</param>
+    /// <param name="handlerType">The concrete handler type selected for the current pipeline invocation.</param>
     /// <param name="next">The delegate to call the next behavior or handler in the pipeline.</param>
     /// <param name="cancellationToken">The cancellation token to cancel the operation.</param>
     /// <returns>A task representing the result of the operation, returning a <see cref="TResponse"/>.</returns>

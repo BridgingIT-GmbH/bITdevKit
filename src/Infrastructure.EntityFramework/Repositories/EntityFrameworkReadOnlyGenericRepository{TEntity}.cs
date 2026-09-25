@@ -119,9 +119,11 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// <returns>An enumerable of entities that match the provided specifications and options.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var specifications = new List<ISpecification<TEntity>> { specification1, specification2 };
     /// var options = new FindOptions<TEntity>();
     /// var result = await repository.FindAllAsync(specifications, options, CancellationToken.None);
+    /// ]]>
     /// </code>
     /// </example>
     public virtual async Task<IEnumerable<TEntity>> FindAllAsync(
@@ -306,8 +308,10 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// <param name="cancellationToken">Token to signal the asynchronous operation should be canceled.</param>
     /// <returns>A task representing the asynchronous operation, containing the single entity that matches the specifications, or null if no matching entity is found.</returns>
     /// <example>
-    /// var specifications = new List<ISpecification<TEntity>> { spec1, spec2 };
+    /// <code>
+    /// var specifications = new List&lt;ISpecification&lt;TEntity&gt;&gt; { spec1, spec2 };
     /// var entity = await repository.FindOneAsync(specifications);
+    /// </code>
     /// </example>
     public virtual async Task<TEntity> FindOneAsync(
         IEnumerable<ISpecification<TEntity>> specifications,
@@ -359,7 +363,9 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// <returns>A task that represents the asynchronous operation. The task result contains the count of matching entities.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var result = await repository.CountAsync(new List<ISpecification<TEntity>>());
+    /// ]]>
     /// </code>
     /// </example>
     public virtual async Task<long> CountAsync(CancellationToken cancellationToken = default)
@@ -391,7 +397,9 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity>
     /// <returns>The number of entities that satisfy the provided specifications.</returns>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var count = await repository.CountAsync(new List<ISpecification<TEntity>> { spec1, spec2 }, cancellationToken);
+    /// ]]>
     /// </code>
     /// </example>
     public virtual async Task<long> CountAsync(

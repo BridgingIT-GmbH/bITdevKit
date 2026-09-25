@@ -26,8 +26,10 @@ public class Bulkhead
     /// <exception cref="ArgumentOutOfRangeException">Thrown if maxConcurrency is less than 1.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var bulkhead = new Bulkhead(5, progress: new Progress<BulkheadProgress>(p => Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}")));
     /// await bulkhead.ExecuteAsync(async ct => await Task.Delay(100, ct), CancellationToken.None);
+    /// ]]>
     /// </code>
     /// </example>
     public Bulkhead(
@@ -56,6 +58,7 @@ public class Bulkhead
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<BulkheadProgress>(p => Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}"));
     /// var bulkhead = new Bulkhead(2);
@@ -64,6 +67,7 @@ public class Bulkhead
     ///     await Task.Delay(1000, ct); // Simulate work
     ///     Console.WriteLine("Operation completed");
     /// }, cts.Token, progress);
+    /// ]]>
     /// </code>
     /// </example>
     public async Task ExecuteAsync(Func<CancellationToken, Task> action, CancellationToken cancellationToken = default, IProgress<BulkheadProgress> progress = null)
@@ -118,6 +122,7 @@ public class Bulkhead
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
     /// <code>
+    /// <![CDATA[
     /// var cts = new CancellationTokenSource();
     /// var progress = new Progress<BulkheadProgress>(p => Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}"));
     /// var bulkhead = new Bulkhead(2);
@@ -127,6 +132,7 @@ public class Bulkhead
     ///     return 42;
     /// }, cts.Token, progress);
     /// Console.WriteLine($"Result: {result}");
+    /// ]]>
     /// </code>
     /// </example>
     public async Task<T> ExecuteAsync<T>(Func<CancellationToken, Task<T>> action, CancellationToken cancellationToken = default, IProgress<BulkheadProgress> progress = null)

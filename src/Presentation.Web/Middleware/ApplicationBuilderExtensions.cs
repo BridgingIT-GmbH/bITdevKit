@@ -21,7 +21,7 @@ public static class ApplicationBuilderExtensions
     ///     Register after routing so flow identifiers use the matched MVC or minimal API route pattern,
     ///     and before request logging or other middleware that consumes the identifiers. Repeated
     ///     registration and exception-handler pipeline re-execution reuse the identifiers already
-    ///     established for the current <see cref="HttpContext"/>.
+    ///     established for the current <see cref="Microsoft.AspNetCore.Http.HttpContext"/>.
     /// </remarks>
     /// <param name="app">The application builder.</param>
     /// <returns>The application builder for continued pipeline configuration.</returns>
@@ -43,12 +43,11 @@ public static class ApplicationBuilderExtensions
 
     /// <summary>
     ///     Adds middleware for request logging.
-    ///     <param name="app">The application builder.</param>
-    ///     <param name="messageTemplateStarted">
-    ///         The message template to use when logging the request start
-    ///         <param name="messageTemplateFinished">
-    ///             The message template to use when logging the request finish
-    ///             <returns></returns>
+    /// </summary>
+    /// <param name="app">The application builder.</param>
+    /// <param name="messageTemplateStarted">The message template to use when logging the request start.</param>
+    /// <param name="messageTemplateFinished">The message template to use when logging the request finish.</param>
+    /// <returns>The application builder for continued pipeline configuration.</returns>
     public static IApplicationBuilder UseRequestLogging(
         this IApplicationBuilder app,
         string messageTemplateStarted,
@@ -63,11 +62,12 @@ public static class ApplicationBuilderExtensions
 
     /// <summary>
     ///     Adds middleware for request logging.
-    ///     <param name="app">The application builder.</param>
-    ///     <param name="configureOptions">
-    ///         A <see cref="Action{T}" /> to configure the provided
-    ///         <see cref="RequestLoggingOptions" />.
-    ///     </param>
+    /// </summary>
+    /// <param name="app">The application builder.</param>
+    /// <param name="configureOptions">
+    ///     A callback that configures the provided <see cref="RequestLoggingOptions"/>.
+    /// </param>
+    /// <returns>The application builder for continued pipeline configuration.</returns>
     public static IApplicationBuilder UseRequestLogging(
         this IApplicationBuilder app,
         Action<RequestLoggingOptions> configureOptions = null)
@@ -98,7 +98,9 @@ public static class ApplicationBuilderExtensions
     /// <summary>
     ///    Adds middleware for providing the current user id to each HTTP request.
     /// </summary>
-    /// <param name="app"></param>
+    /// <param name="app">The application builder.</param>
+    /// <param name="enabled">A value indicating whether to add the current-user logging middleware.</param>
+    /// <returns>The application builder for continued pipeline configuration.</returns>
     public static IApplicationBuilder UseCurrentUserLogging(this IApplicationBuilder app, bool enabled = true)
     {
         EnsureArg.IsNotNull(app, nameof(app));

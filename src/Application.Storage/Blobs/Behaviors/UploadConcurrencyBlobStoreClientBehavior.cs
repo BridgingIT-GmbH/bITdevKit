@@ -18,11 +18,6 @@ namespace BridgingIT.DevKit.Application.Storage;
 /// <remarks>
 /// Initializes a new upload concurrency behavior.
 /// </remarks>
-/// <param name="inner">The decorated blob-store client.</param>
-/// <param name="coordinator">The shared process-local admission coordinator.</param>
-/// <param name="options">The validated upload-admission options.</param>
-/// <param name="loggerFactory">The optional logger factory.</param>
-/// <param name="storeName">The configured named store.</param>
 public sealed partial class UploadConcurrencyBlobStoreClientBehavior
     : BlobStoreClientBehaviorBase
 {

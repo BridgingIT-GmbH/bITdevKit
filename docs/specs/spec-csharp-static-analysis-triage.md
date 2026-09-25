@@ -1,5 +1,6 @@
 ---
 created: 2026-09-24
+updated: 2026-09-25
 status: draft
 ---
 
@@ -48,6 +49,36 @@ The custom naming rules below report zero findings and must remain at zero:
 * `private_static_readonly_rule`
 
 This baseline is a planning snapshot, not an allowlist or a fixed completion target. Every implementation batch must regenerate the report and record its own before-and-after counts.
+
+## Campaign Progress
+
+Last updated: **2026-09-25**
+
+The baseline tables in this specification remain the immutable starting point for the campaign. Progress is recorded separately so completed work does not erase the original inventory.
+
+| Measure | Baseline | Current | Status |
+| --- | ---: | ---: | --- |
+| Total findings | 9,050 | 7,414 | In progress |
+| `InvalidXmlDocComment` | 1,708 | 0 | Resolved |
+
+The `InvalidXmlDocComment` batch repaired malformed XML, generic code examples, parameter and type-parameter tags, and unresolved documentation references across the solution. A fresh full-solution InspectCode scan reported zero remaining findings for this rule. The full solution build completed with zero warnings and zero errors, and `git diff --check` passed.
+
+The documentation family is not yet complete. The next documentation findings to rebaseline and triage are:
+
+* `InheritdocInvalidUsage` (18 findings in the original baseline)
+* `Html.PathError` (14 findings in the original baseline)
+
+Current counts for these remaining rules must be taken from a fresh InspectCode report before the next batch begins.
+
+### Batch Progress Ledger
+
+This ledger tracks completed and active remediation batches. It complements the finding-level triage ledger by recording aggregate progress and validation evidence. Add one row for each independently validated batch; do not overwrite earlier rows when a rule is revisited.
+
+| Batch | Completed | Family | Rule or scope | Before | After | Change | Disposition | Status | Validation evidence |
+| --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
+| `DOC-001` | 2026-09-25 | Documentation | `InvalidXmlDocComment` | 1,708 | 0 | -1,708 | Fix | Resolved | Full-solution InspectCode: 0 rule findings and 7,414 total findings; solution build: 0 warnings, 0 errors; `git diff --check`: passed |
+
+For an active batch, `Completed` may be `-`, but `Before` must come from a fresh full-solution report. Mark a batch `Resolved` only after its focused validation, solution-level validation when required, and post-change InspectCode scan succeed.
 
 ## Goals
 
@@ -376,9 +407,9 @@ Review closure lifetime, cancellation-token use, synchronization, and modified c
 
 Review possible null dereferences, invalid operations, impossible expressions, constant conditions, unintended comparisons, and redundant assignments. Require tests for behavior-changing fixes.
 
-### Phase 5: triage documentation
+### Phase 5: triage documentation (in progress)
 
-Resolve invalid XML documentation, invalid `<inheritdoc/>`, and broken paths in coordination with the public API XML documentation policy. Do not rewrite meaningful documentation merely for consistency.
+`InvalidXmlDocComment` is resolved at 0 findings. Continue with `InheritdocInvalidUsage` and `Html.PathError` after establishing their current counts. Coordinate all documentation work with the public API XML documentation policy, and do not rewrite meaningful documentation merely for consistency.
 
 ### Phase 6: triage performance and allocation
 

@@ -271,8 +271,8 @@ public static class ResultResilientExtensions
     /// <example>
     /// <code>
     /// var policy = RetryPolicy.Create()
-    ///     .RetryOn<HttpRequestException>()
-    ///     .RetryOn<TimeoutException>()
+    ///     .RetryOn&lt;HttpRequestException&gt;()
+    ///     .RetryOn&lt;TimeoutException&gt;()
     ///     .RetryWhen(ex => ex.Message.Contains("retry"))
     ///     .WithMaxRetries(3)
     ///     .WithInitialDelay(TimeSpan.FromSeconds(1))
@@ -359,8 +359,8 @@ public static class ResultResilientExtensions
     /// <example>
     /// <code>
     /// var policy = RetryPolicy.Create()
-    ///     .RetryOn<HttpRequestException>()
-    ///     .RetryOn<TimeoutException>()
+    ///     .RetryOn&lt;HttpRequestException&gt;()
+    ///     .RetryOn&lt;TimeoutException&gt;()
     ///     .RetryWhen(ex => ex.Message.Contains("retry"))
     ///     .WithMaxRetries(3)
     ///     .WithInitialDelay(TimeSpan.FromSeconds(1))

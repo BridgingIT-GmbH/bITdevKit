@@ -67,6 +67,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// Inserts an entity into the database.
     /// </summary>
     /// <param name="entity">The entity to insert.</param>
+    /// <param name="callbacks">The optional callbacks invoked around the upsert and insert operations.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the inserted entity.</returns>
     /// <example>
@@ -92,6 +93,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// Updates an existing entity in the database.
     /// </summary>
     /// <param name="entity">The entity to update.</param>
+    /// <param name="callbacks">The optional callbacks invoked around the upsert and update operations.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the updated entity.</returns>
     /// <example>
@@ -198,6 +200,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// Upserts an entity in the database (inserts if new, updates if exists).
     /// </summary>
     /// <param name="entity">The entity to upsert.</param>
+    /// <param name="callbacks">The optional callbacks invoked before and after the upsert and selected persistence operation.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the entity and the action performed.</returns>
     /// <example>
@@ -296,6 +299,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// Deletes an entity from the database.
     /// </summary>
     /// <param name="entity">The entity to delete.</param>
+    /// <param name="callbacks">The optional callbacks invoked before and after deletion.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result indicating success or failure.</returns>
     /// <example>
@@ -347,6 +351,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     /// Deletes an entity by its ID from the database.
     /// </summary>
     /// <param name="id">The ID of the entity to delete.</param>
+    /// <param name="callbacks">The optional callbacks invoked before and after deletion.</param>
     /// <param name="cancellationToken">A token to cancel the asynchronous operation.</param>
     /// <returns>A task with a Result containing the action performed (Deleted/None/NotFound).</returns>
     /// <example>

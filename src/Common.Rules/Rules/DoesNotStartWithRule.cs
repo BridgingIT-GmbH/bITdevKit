@@ -17,11 +17,9 @@ public class DoesNotStartWithRule(string value, string prefix, StringComparison 
     public override string Message => $"Value must not start with '{prefix}'";
 
     /// <summary>
-    /// Executes a specified business rule and returns the result of the execution.
+    /// Checks whether the value does not start with the configured prefix.
     /// </summary>
-    /// <param name="rule">The business rule to execute.</param>
-    /// <param name="context">The context in which the rule is executed.</param>
-    /// <return>Returns the result of the rule execution.</return>
+    /// <returns>A successful result for null or empty values and values without the prefix; otherwise, a failure result.</returns>
     public override Result Execute() =>
         Result.SuccessIf(string.IsNullOrEmpty(value) ||
             !value.StartsWith(prefix, comparison));

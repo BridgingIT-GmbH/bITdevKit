@@ -16,8 +16,9 @@ using Microsoft.Extensions.Logging;
 /// <remarks>
 /// Initializes a new instance of the <see cref="WeatherIngestionJob"/> class.
 /// </remarks>
-/// <param name="weatherAgent">The weather agent for fetching weather data.</param>
+/// <param name="pipelineFactory">The factory used to create the weather ingestion pipeline.</param>
 /// <param name="logger">The logger.</param>
+/// <param name="moduleConfiguration">The module settings that define when city weather data becomes stale.</param>
 public class WeatherIngestionJob(
     IPipelineFactory pipelineFactory,
     ILogger<WeatherIngestionJob> logger,

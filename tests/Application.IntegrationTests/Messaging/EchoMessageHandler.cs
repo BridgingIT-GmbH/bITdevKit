@@ -23,6 +23,7 @@ public class EchoMessageHandler(ILoggerFactory loggerFactory) : MessageHandlerBa
     ///     Handles the specified message.
     /// </summary>
     /// <param name="message">The event.</param>
+    /// <param name="cancellationToken">The token that cancels the simulated handling delay.</param>
     public override async Task Handle(EchoMessage message, CancellationToken cancellationToken)
     {
         var loggerState = new Dictionary<string, object> { ["MessageId"] = message.MessageId };
@@ -57,6 +58,7 @@ public class AnotherEchoMessageHandler : IMessageHandler<EchoMessage> // TODO: o
     ///     Handles the specified message.
     /// </summary>
     /// <param name="message">The event.</param>
+    /// <param name="cancellationToken">The token that cancels the simulated handling delay.</param>
     public virtual async Task Handle(EchoMessage message, CancellationToken cancellationToken)
     {
         var loggerState = new Dictionary<string, object> { ["MessageId"] = message.MessageId };

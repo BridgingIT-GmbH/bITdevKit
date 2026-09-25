@@ -24,6 +24,8 @@ public class FakeAuthenticationOptionsBuilder
     /// <param name="email">User's email (used as unique identifier).</param>
     /// <param name="name">Display name.</param>
     /// <param name="roles">User's roles.</param>
+    /// <param name="password">The optional password accepted for the fake user.</param>
+    /// <param name="claims">Optional claim type and value pairs assigned to the user.</param>
     /// <param name="isDefault">Whether this is the default user.</param>
     /// <returns>The builder for chaining.</returns>
     /// <example>

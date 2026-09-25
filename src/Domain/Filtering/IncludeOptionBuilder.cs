@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Domain.Repositories;
 
 /// <summary>
-/// A builder class for creating a list of <see cref="IncludeOption{TEntity}"/> instances from a collection of include paths.
+/// Builds include options from navigation-property paths.
 /// </summary>
 public static class IncludeOptionBuilder
 {
@@ -15,7 +15,7 @@ public static class IncludeOptionBuilder
     /// </summary>
     /// <typeparam name="TEntity">The type of the entity.</typeparam>
     /// <param name="includes">A collection of string paths representing the properties to include.</param>
-    /// <returns>A list of IncludeOption<TEntity> based on the provided include paths. If the includes collection is null or empty, an empty list is returned.</returns>
+    /// <returns>A list of <see cref="IncludeOption{TEntity}"/> instances based on the paths, or an empty list when no paths are supplied.</returns>
     public static List<IncludeOption<TEntity>> Build<TEntity>(IEnumerable<string> includes)
         where TEntity : class, IEntity
     {

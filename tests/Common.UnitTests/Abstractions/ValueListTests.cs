@@ -182,7 +182,7 @@ public class ValueListTests
     }
 
     /// <summary>
-    /// To run the benchmarks: console project -> BenchmarkRunner.Run<ValueListPerfTests>();
+    /// Run the benchmarks from a console project with <c>BenchmarkRunner.Run&lt;ValueListPerfTests&gt;()</c>.
     /// </summary>
     [MemoryDiagnoser]
     [GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]

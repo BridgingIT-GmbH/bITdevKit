@@ -91,6 +91,7 @@ public interface IJobService
     /// </summary>
     /// <param name="jobNames">The collection of job names to trigger.</param>
     /// <param name="jobGroup">The common group all jobs belong to.</param>
+    /// <param name="data">Optional data merged into the execution data for every job.</param>
     /// <param name="jobDatas">Optional dictionary mapping each job name to its specific data. Jobs with no entry will receive null data.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>
     Task TriggerJobsAsync(IEnumerable<string> jobNames, string jobGroup = null, IDictionary<string, object> data = null, IDictionary<string, IDictionary<string, object>> jobDatas = null, CancellationToken cancellationToken = default);
@@ -113,8 +114,10 @@ public interface IJobService
     /// </summary>
     /// <param name="jobNames">The collection of job names to trigger.</param>
     /// <param name="jobGroup">The common group all jobs belong to.</param>
+    /// <param name="data">Optional data merged into the execution data for every job.</param>
     /// <param name="jobData">Optional dictionary mapping each job name to its specific data. Jobs with no entry will receive null data.</param>
     /// <param name="sequentially">Whether to run jobs sequentially (true) or concurrently (false). Default is false (concurrent).</param>
+    /// <param name="continueOnFailed">When running sequentially, indicates whether execution continues after a job reports a failed result.</param>
     /// <param name="checkInterval">The time interval in milliseconds between status checks. Default is 1000ms.</param>
     /// <param name="timeout">The maximum time to wait for all jobs to complete. Default is 10 minutes.</param>
     /// <param name="cancellationToken">Token to cancel the operation.</param>

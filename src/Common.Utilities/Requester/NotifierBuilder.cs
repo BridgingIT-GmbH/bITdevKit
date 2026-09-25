@@ -67,7 +67,7 @@ public class NotifierBuilder
     /// <returns>The <see cref="NotifierBuilder"/> instance for fluent chaining.</returns>
     /// <remarks>
     /// Discovers types implementing <see cref="INotificationHandler{TNotification}"/> where <c>TNotification</c> implements
-    /// <see cref="INotification"/> directly or indirectly (e.g., via <see cref="IDomainEvent"/>). Also registers nested validators
+    /// <see cref="INotification"/> directly or indirectly, including domain-event notification types. Also registers nested validators
     /// if they implement <see cref="IValidator{T}"/> for the notification type.
     /// </remarks>
     /// <example>

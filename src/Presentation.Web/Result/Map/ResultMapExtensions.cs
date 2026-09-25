@@ -49,7 +49,7 @@ public static class ResultMapExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
-    /// <returns>A <see cref="Results{Ok{T}, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
+    /// <returns>A typed HTTP result containing the value on success or the mapped failure response.</returns>
     public static Results<Ok<T>, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpOk<T>(
         this Result<T> result,
         ILogger logger = null)
@@ -64,7 +64,7 @@ public static class ResultMapExtensions
     /// <typeparam name="T">The type of the result value, constrained to reference types (class).</typeparam>
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
-    /// <returns>A <see cref="Results{Ok{T}, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
+    /// <returns>A typed HTTP result containing the value on success or the mapped failure response.</returns>
     public static Results<Ok<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpOkAll<T>(
         this Result<T> result,
         ILogger logger = null)
@@ -93,7 +93,7 @@ public static class ResultMapExtensions
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="uri">The URI of the newly created resource, used in the Created response.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
-    /// <returns>A <see cref="Results{Created{T}, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
+    /// <returns>A typed HTTP result containing the created value on success or the mapped failure response.</returns>
     public static Results<Created<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpCreated<T>(
         this Result<T> result,
         string uri,
@@ -110,7 +110,7 @@ public static class ResultMapExtensions
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="uriFactory">A function that generates the URI based on the result value.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
-    /// <returns>A <see cref="Results{Created{T}, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
+    /// <returns>A typed HTTP result containing the created value on success or the mapped failure response.</returns>
     public static Results<Created<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpCreated<T>(
         this Result<T> result,
         Func<T, string> uriFactory,
@@ -152,7 +152,7 @@ public static class ResultMapExtensions
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="location">The location URI where the status of the operation can be monitored.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
-    /// <returns>A <see cref="Results{Accepted{T}, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
+    /// <returns>A typed HTTP result containing the accepted value on success or the mapped failure response.</returns>
     public static Results<Accepted<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpAccepted<T>(
         this Result<T> result,
         string location,
@@ -170,7 +170,7 @@ public static class ResultMapExtensions
     /// <param name="result">The <see cref="Result{T}"/> to map.</param>
     /// <param name="locationFactory">A function that generates the location URI based on the result value.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
-    /// <returns>A <see cref="Results{Accepted{T}, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
+    /// <returns>A typed HTTP result containing the accepted value on success or the mapped failure response.</returns>
     public static Results<Accepted<T>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpAccepted<T>(
         this Result<T> result,
         Func<T, string> locationFactory,
@@ -186,7 +186,7 @@ public static class ResultMapExtensions
     /// <typeparam name="T">The type of items in the paged collection.</typeparam>
     /// <param name="result">The <see cref="ResultPaged{T}"/> to map.</param>
     /// <param name="logger">An optional logger for logging failure cases. If null, no logging occurs.</param>
-    /// <returns>A <see cref="Results{Ok{PagedResponse{T}}, UnauthorizedHttpResult, BadRequest, ProblemHttpResult}"/> representing the HTTP response.</returns>
+    /// <returns>A typed HTTP result containing the paged response on success or the mapped failure response.</returns>
     public static Results<Ok<PagedResponse<T>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult> MapHttpOkPaged<T>(
         this ResultPaged<T> result,
         ILogger logger = null)
@@ -342,4 +342,3 @@ public class PagedResponse<T>
     /// </summary>
     public bool HasNextPage { get; set; }
 }
-

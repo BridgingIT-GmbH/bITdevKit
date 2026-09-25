@@ -56,6 +56,7 @@ public static class FileStorageFactoryExtensions
     /// <param name="locationName">The logical name for the storage location.</param>
     /// <param name="connectionString">The Azure Blob storage connection string.</param>
     /// <param name="containerName">The name of the container.</param>
+    /// <param name="ensureContainer">A value indicating whether to create the container when it does not exist.</param>
     /// <returns>The builder for method chaining.</returns>
     public static FileStorageBuilder UseAzureBlob(
         this FileStorageBuilder builder,
@@ -77,6 +78,7 @@ public static class FileStorageFactoryExtensions
     /// <param name="locationName">The logical name for the storage location.</param>
     /// <param name="connectionString">The Azure Files connection string.</param>
     /// <param name="shareName">The name of the file share.</param>
+    /// <param name="ensureShare">A value indicating whether to create the file share when it does not exist.</param>
     /// <returns>The builder for method chaining.</returns>
     public static FileStorageBuilder UseAzureFiles(
         this FileStorageBuilder builder,

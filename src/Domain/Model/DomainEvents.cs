@@ -91,6 +91,7 @@ public class DomainEvents // TODO: create interface?
     ///     Dispatches all registered domain events asynchronously using the provided notifier.
     /// </summary>
     /// <param name="notifier">The mediator used to publish the events.</param>
+    /// <param name="cancellationToken">A token that cancels publication of the remaining events.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     public async Task PublishAsync(INotifier notifier, CancellationToken cancellationToken = default)
     {

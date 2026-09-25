@@ -11,8 +11,8 @@ using Microsoft.Data.SqlClient;
 /// Configures SQL Server-specific behavior for entity bulk insert operations.
 /// </summary>
 /// <remarks>
-/// <see cref="CommandTimeout"/> configures <see cref="SqlBulkCopy.BulkCopyTimeout"/>. Set
-/// <see cref="KeepGeneratedIdentityValues"/> to preserve store-generated identity values; do not add
+/// <see cref="EntityBulkInsertOptions.CommandTimeout"/> configures <see cref="SqlBulkCopy.BulkCopyTimeout"/>. Set
+/// <see cref="EntityBulkInsertOptions.KeepGeneratedIdentityValues"/> to preserve store-generated identity values; do not add
 /// <see cref="SqlBulkCopyOptions.KeepIdentity"/> or <see cref="SqlBulkCopyOptions.UseInternalTransaction"/>
 /// to <see cref="SqlBulkCopyOptions"/>, because the provider derives those flags from the neutral option and
 /// the active EF transaction.
@@ -34,7 +34,7 @@ public class SqlServerEntityBulkInsertOptions : EntityBulkInsertOptions
     /// </summary>
     /// <remarks>
     /// Do not configure <see cref="SqlBulkCopyOptions.KeepIdentity"/> or
-    /// <see cref="SqlBulkCopyOptions.UseInternalTransaction"/>. Use <see cref="KeepGeneratedIdentityValues"/>
+    /// <see cref="SqlBulkCopyOptions.UseInternalTransaction"/>. Use <see cref="EntityBulkInsertOptions.KeepGeneratedIdentityValues"/>
     /// and the active EF transaction instead.
     /// </remarks>
     /// <example>

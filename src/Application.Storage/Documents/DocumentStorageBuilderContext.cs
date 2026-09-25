@@ -64,6 +64,7 @@ public sealed class DocumentStorageBuilderContext(
     /// <summary>Registers a payload transform factory for one document type.</summary>
     /// <typeparam name="T">The document type.</typeparam>
     /// <param name="factory">The transform factory.</param>
+    /// <param name="identifier">The persisted transform identifier, or <see langword="null"/> to use the transform's own identifier.</param>
     /// <returns>The current builder.</returns>
     /// <example><code>builder.WithTransform&lt;Person&gt;(sp => new CompressionDocumentPayloadTransform());</code></example>
     public DocumentStorageBuilderContext WithTransform<T>(Func<IServiceProvider, IDocumentPayloadTransform> factory, string identifier = null)

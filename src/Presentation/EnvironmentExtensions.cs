@@ -54,24 +54,24 @@ public static class EnvironmentExtensions
 
     // ----------- IHostEnvironment extension overloads ---------------- //
 
-    /// <inheritdoc cref="IsDocker"/>
+    /// <inheritdoc cref="IsDocker()"/>
     public static bool IsDocker(this IHostEnvironment env) => IsDocker();
 
-    /// <inheritdoc cref="IsKubernetes"/>
+    /// <inheritdoc cref="IsKubernetes()"/>
     public static bool IsKubernetes(this IHostEnvironment env) =>
         !string.IsNullOrEmpty(Environment.GetEnvironmentVariable("KUBERNETES_SERVICE_HOST"));
 
-    /// <inheritdoc cref="IsAzure"/>
+    /// <inheritdoc cref="IsAzure()"/>
     public static bool IsAzure(this IHostEnvironment env) =>
         !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AzureWebsitesEnv));
 
-    /// <inheritdoc cref="IsAzureFunctions"/>
+    /// <inheritdoc cref="IsAzureFunctions()"/>
     public static bool IsAzureFunctions(this IHostEnvironment env) =>
         !string.IsNullOrEmpty(Environment.GetEnvironmentVariable(AzureFunctionsEnv));
 
     /// <summary>
     /// Determines if the host environment is local development.
-    /// True if <see cref="IHostEnvironment.IsDevelopment"/>, not cloud, not containerized,
+    /// True for the <c>Development</c> environment when the process is not cloud-hosted or containerized,
     /// or if the app is running under OpenAPI build-time doc generation.
     /// </summary>
     public static bool IsLocalDevelopment(this IHostEnvironment env) =>
@@ -80,17 +80,17 @@ public static class EnvironmentExtensions
 
     /// <summary>
     /// Determines if the environment represents a testing context.
-    /// Matches "Testing", "Test" or <see cref="IHostEnvironment.IsStaging"/>.
+    /// Matches <c>Testing</c>, <c>Test</c>, or <c>Staging</c>.
     /// </summary>
     public static bool IsTesting(this IHostEnvironment env) =>
         env?.IsEnvironment("Testing") == true
         || env?.IsEnvironment("Test") == true
         || env?.IsStaging() == true;
 
-    /// <inheritdoc cref="IsCloud"/>
+    /// <inheritdoc cref="IsCloud()"/>
     public static bool IsCloud(this IHostEnvironment env) => IsCloud();
 
-    /// <inheritdoc cref="IsContainerized"/>
+    /// <inheritdoc cref="IsContainerized()"/>
     public static bool IsContainerized(this IHostEnvironment env) =>
         env?.IsDocker() == true || env?.IsKubernetes() == true;
 

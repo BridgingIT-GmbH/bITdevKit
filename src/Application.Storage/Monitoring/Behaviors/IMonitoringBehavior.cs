@@ -18,6 +18,7 @@ public interface IMonitoringBehavior
     /// Allows behaviors to log or track the beginning of the scan process.
     /// </summary>
     /// <param name="context">The scan context containing details like LocationName and StartTime.</param>
+    /// <param name="cancellationToken">The token that signals cancellation of the scan notification.</param>
     void OnScanStarted(FileScanContext context, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -26,6 +27,7 @@ public interface IMonitoringBehavior
     /// </summary>
     /// <param name="context">The scan context containing the scan details.</param>
     /// <param name="fileEvent">The FileEvent representing the detected change.</param>
+    /// <param name="cancellationToken">The token that signals cancellation of the scan notification.</param>
     void OnFileDetected(FileScanContext context, FileEvent fileEvent, CancellationToken cancellationToken = default);
 
     /// <summary>
@@ -34,5 +36,6 @@ public interface IMonitoringBehavior
     /// </summary>
     /// <param name="context">The scan context containing the results and timing.</param>
     /// <param name="duration">The duration of the scan operation.</param>
+    /// <param name="cancellationToken">The token that signals cancellation of the scan notification.</param>
     void OnScanCompleted(FileScanContext context, TimeSpan duration, CancellationToken cancellationToken = default);
 }

@@ -49,10 +49,12 @@ public interface IRequest
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class CustomerCreateCommand : RequestBase<string>
 /// {
 ///     public string Name { get; set; }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public abstract class RequestBase<TValue> : IRequest<TValue>
@@ -89,6 +91,7 @@ public abstract class RequestBase<TValue> : IRequest<TValue>
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class CustomerCreateCommandHandler : RequestHandlerBase<CustomerCreateCommand, string>
 /// {
 ///     protected override async Task<Result<string>> HandleAsync(CustomerCreateCommand request, SendOptions options, CancellationToken cancellationToken)
@@ -97,6 +100,7 @@ public abstract class RequestBase<TValue> : IRequest<TValue>
 ///         return Result<string>.Success("Customer created");
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public interface IRequestHandler<in TRequest, TValue>
@@ -124,6 +128,7 @@ public interface IRequestHandler<in TRequest, TValue>
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class CustomerCreateCommandHandler : RequestHandlerBase<CustomerCreateCommand, string>
 /// {
 ///     protected override async Task<Result<string>> HandleAsync(CustomerCreateCommand request, SendOptions options, CancellationToken cancellationToken)
@@ -132,6 +137,7 @@ public interface IRequestHandler<in TRequest, TValue>
 ///         return Result<string>.Success("Customer created");
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public abstract class RequestHandlerBase<TRequest, TValue> : IRequestHandler<TRequest, TValue>
@@ -169,12 +175,14 @@ public abstract class RequestHandlerBase<TRequest, TValue> : IRequestHandler<TRe
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var options = new SendOptions
 /// {
 ///     Context = new RequestContext { Properties = { ["UserId"] = "user123", ["Locale"] = "en-US" } },
 ///     Progress = new Progress<ProgressReport>(report => Console.WriteLine($"Progress: {report.Messages[0]} ({report.PercentageComplete}%)"))
 /// };
 /// var result = await requester.SendAsync<SampleRequest, string>(new SampleRequest(), options);
+/// ]]>
 /// </code>
 /// </example>
 public class SendOptions
@@ -244,6 +252,7 @@ public class RequestContext
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class SampleRequestHandlerProvider : IRequestHandlerProvider
 /// {
 ///     public IRequestHandler<TRequest, TValue> GetHandler<TRequest, TValue>(IServiceProvider serviceProvider)
@@ -252,6 +261,7 @@ public class RequestContext
 ///         return serviceProvider.GetService<IRequestHandler<TRequest, TValue>>();
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public interface IRequestHandlerProvider
@@ -278,8 +288,10 @@ public interface IRequestHandlerProvider
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var provider = new RequestHandlerProvider(handlerCache);
 /// var handler = provider.GetHandler<SampleRequest, string>(serviceProvider);
+/// ]]>
 /// </code>
 /// </example>
 /// <remarks>
@@ -339,6 +351,7 @@ public class RequestHandlerProvider(IHandlerCache handlerCache) : IRequestHandle
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// public class SampleBehaviorsProvider : IRequestBehaviorsProvider
 /// {
 ///     public IReadOnlyList<IPipelineBehavior<TRequest, Result<TValue>>> GetBehaviors<TRequest, TValue>(IServiceProvider serviceProvider)
@@ -347,6 +360,7 @@ public class RequestHandlerProvider(IHandlerCache handlerCache) : IRequestHandle
 ///         return new List<IPipelineBehavior<TRequest, Result<TValue>>> { serviceProvider.GetService<ValidationBehavior<TRequest, Result<TValue>>>() };
 ///     }
 /// }
+/// ]]>
 /// </code>
 /// </example>
 public interface IRequestBehaviorsProvider
@@ -373,8 +387,10 @@ public interface IRequestBehaviorsProvider
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var provider = new RequestBehaviorsProvider(pipelineBehaviorTypes);
 /// var behaviors = provider.GetBehaviors<SampleRequest, string>(serviceProvider);
+/// ]]>
 /// </code>
 /// </example>
 /// <remarks>
@@ -442,10 +458,12 @@ public class RequestBehaviorsProvider(IReadOnlyList<Type> pipelineBehaviorTypes)
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var requester = serviceProvider.GetRequiredService<IRequester>();
 /// var request = new SampleRequest();
 /// var result = await requester.SendAsync<SampleRequest, string>(request);
 /// var info = requester.GetRegistrationInformation();
+/// ]]>
 /// </code>
 /// </example>
 public interface IRequester
@@ -534,11 +552,13 @@ public interface IRequester
 /// </remarks>
 /// <example>
 /// <code>
+/// <![CDATA[
 /// var requester = serviceProvider.GetRequiredService<IRequester>();
 /// var request = new SampleRequest();
 /// var options = new SendOptions { Context = new RequestContext { Properties = { ["UserId"] = "user123" } } };
 /// var result = await requester.SendAsync<SampleRequest, string>(request, options);
 /// var info = requester.GetRegistrationInformation();
+/// ]]>
 /// </code>
 /// </example>
 /// <remarks>

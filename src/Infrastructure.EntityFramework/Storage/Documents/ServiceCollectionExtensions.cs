@@ -24,6 +24,8 @@ public static partial class ServiceCollectionExtensions
     /// <param name="lifetime">The optional client lifetime override.</param>
     /// <param name="configure">An optional callback used to customize provider lease and retry options.</param>
     /// <param name="documentStoreOptions">The optional document-store query safety options.</param>
+    /// <param name="name">The name used to register and resolve the client.</param>
+    /// <param name="isDefault">A value indicating whether this registration is the default client for the document type.</param>
     /// <returns>The current document-storage builder context.</returns>
     /// <example>
     /// <code>

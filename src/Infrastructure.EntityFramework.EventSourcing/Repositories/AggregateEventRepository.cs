@@ -24,7 +24,6 @@ public class AggregateEventRepository(
     EntityFrameworkRepositoryOptions options) : EntityFrameworkGenericRepository<EventStoreAggregateEvent>(options),
     IAggregateEventRepository
 {
-    private readonly IEventStoreAggregateRegistration aggregateRegistration = aggregateRegistration;
     private readonly EventStoreDbContext context = options.DbContext as EventStoreDbContext;
 
     /// <summary>
@@ -110,7 +109,7 @@ public class AggregateEventRepository(
     public async Task<Guid[]> GetAggregateIdsAsync<TAggregate>(CancellationToken cancellationToken)
         where TAggregate : EventSourcingAggregateRoot
     {
-        var aggregateType = this.aggregateRegistration.GetImmutableName<TAggregate>();
+        var aggregateType = aggregateRegistration.GetImmutableName<TAggregate>();
         var spec = new Specification<EventStoreAggregateEvent>(ev => ev.AggregateType == aggregateType);
         var list = await this.FindAllAsync(spec, null, cancellationToken).AnyContext();
 

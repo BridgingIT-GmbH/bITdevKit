@@ -14,8 +14,6 @@ public class TodoItemLeadReminderActivity(
     IOrchestrationClock clock,
     ILoggerFactory loggerFactory) : IOrchestrationActivity<TodoItemLifecycleOrchestrationData>
 {
-    private readonly INotificationService<EmailMessage> notificationService = notificationService;
-    private readonly IOrchestrationClock clock = clock;
     private readonly ILogger<TodoItemLeadReminderActivity> logger = loggerFactory.CreateLogger<TodoItemLeadReminderActivity>();
 
     public async Task<OrchestrationOutcome> ExecuteAsync(
@@ -23,7 +21,7 @@ public class TodoItemLeadReminderActivity(
         CancellationToken cancellationToken = default)
     {
         var data = context.Data;
-        var now = this.clock.UtcNow.UtcDateTime;
+        var now = clock.UtcNow.UtcDateTime;
 
         if (string.IsNullOrWhiteSpace(data.Assignee))
         {
@@ -33,7 +31,7 @@ public class TodoItemLeadReminderActivity(
             return OrchestrationOutcome.Continue();
         }
 
-        var result = await this.notificationService.QueueAsync(
+        var result = await notificationService.QueueAsync(
             new EmailMessage
             {
                 Id = Guid.NewGuid(),

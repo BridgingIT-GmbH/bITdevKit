@@ -30,11 +30,6 @@ public class CustomWebApplicationFactory<TEntryPoint>(
     string environment = "Development") : WebApplicationFactory<TEntryPoint>
     where TEntryPoint : class
 {
-    private readonly string environment = environment;
-    private readonly bool fakeAuthenticationEnabled = fakeAuthenticationEnabled;
-    private readonly ITestOutputHelper output = output;
-    private readonly Action<IServiceCollection> services = services;
-
     /// <summary>
     /// Creates and configures the host for the web application.
     /// </summary>
@@ -42,7 +37,7 @@ public class CustomWebApplicationFactory<TEntryPoint>(
     /// <returns>The configured <see cref="IHost"/>.</returns>
     protected override IHost CreateHost(IHostBuilder builder)
     {
-        builder.UseEnvironment(this.environment);
+        builder.UseEnvironment(environment);
         builder.ConfigureAppConfiguration((ctx, cnf) =>
         {
             cnf.SetBasePath(Directory.GetCurrentDirectory())
@@ -50,24 +45,24 @@ public class CustomWebApplicationFactory<TEntryPoint>(
                 .AddEnvironmentVariables();
         });
         builder.ConfigureLogging(ctx => ctx // TODO: webapp logs are not visible in test log anymore (serilog?)
-            .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(this.output)));
+            .Services.AddSingleton<ILoggerProvider>(sp => new XunitLoggerProvider(output)));
 
         builder.UseSerilog(); // comes before Program.cs > ConfigureLogging
         var loggerConfiguration = new LoggerConfiguration().MinimumLevel.Information();
-        if (this.output is not null)
+        if (output is not null)
         {
-            loggerConfiguration.WriteTo.TestOutput(this.output, LogEventLevel.Information);
+            loggerConfiguration.WriteTo.TestOutput(output, LogEventLevel.Information);
         }
 
         Log.Logger = loggerConfiguration.CreateLogger().ForContext<CustomWebApplicationFactory<TEntryPoint>>();
 
-        builder.ConfigureServices(services =>
+        builder.ConfigureServices(services1 =>
         {
-            this.services?.Invoke(services);
+            services?.Invoke(services1);
 
-            if (this.fakeAuthenticationEnabled)
+            if (fakeAuthenticationEnabled)
             {
-                services.AddFakeAuthentication(FakeUsers.Starwars);
+                services1.AddFakeAuthentication(FakeUsers.Starwars);
             }
         });
 

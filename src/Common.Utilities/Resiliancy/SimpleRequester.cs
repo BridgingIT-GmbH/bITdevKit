@@ -33,7 +33,6 @@ public class SimpleRequester(
     private readonly Dictionary<Type, (ISimpleRequestHandler Handler, Type ResponseType)> handlers = [];
     private readonly ISimpleRequestPipelineBehavior[] pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToArray() ?? [];
     private readonly ReaderWriterLockSlim lockObject = new(); // Upgraded to RW lock for potential concurrency
-    private readonly IProgress<SimpleRequesterProgress> progress = progress;
 
     /// <summary>
     /// Registers a handler for a specific request type.
@@ -123,7 +122,7 @@ public class SimpleRequester(
     /// <typeparam name="TRequest">The type of request to send.</typeparam>
     /// <typeparam name="TResponse">The type of response expected from the handler.</typeparam>
     /// <param name="request">The request to send.</param>
-    /// <param name="progress">An optional progress reporter for request operations. Defaults to null.</param>
+    /// <param name="progress1">An optional progress reporter for request operations. Defaults to null.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation, returning the response from the handler.</returns>
     /// <exception cref="InvalidOperationException">Thrown if no handler is registered for the request type.</exception>
@@ -141,10 +140,10 @@ public class SimpleRequester(
     /// ]]>
     /// </code>
     /// </example>
-    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, IProgress<SimpleRequesterProgress> progress = null, CancellationToken cancellationToken = default)
+    public async Task<TResponse> SendAsync<TRequest, TResponse>(TRequest request, IProgress<SimpleRequesterProgress> progress1 = null, CancellationToken cancellationToken = default)
         where TRequest : ISimpleRequest<TResponse>
     {
-        progress ??= this.progress;
+        progress1 ??= progress;
         var requestType = typeof(TRequest);
         (ISimpleRequestHandler Handler, Type ResponseType) handlerInfo;
         this.lockObject.EnterReadLock();
@@ -160,7 +159,7 @@ public class SimpleRequester(
             this.lockObject.ExitReadLock();
         }
 
-        progress?.Report(new SimpleRequesterProgress(requestType.Name, $"Processing request of type {requestType.Name}"));
+        progress1?.Report(new SimpleRequesterProgress(requestType.Name, $"Processing request of type {requestType.Name}"));
         try
         {
             if (this.pipelineBehaviors.Length == 0)
@@ -248,12 +247,10 @@ public interface ISimpleRequestHandler<in TRequest, TResponse> : ISimpleRequestH
 public class SimpleRequestHandler<TRequest, TResponse>(Func<TRequest, CancellationToken, ValueTask<TResponse>> handlerFunc) : ISimpleRequestHandler<TRequest, TResponse>
     where TRequest : ISimpleRequest<TResponse>
 {
-    private readonly Func<TRequest, CancellationToken, ValueTask<TResponse>> handlerFunc = handlerFunc;
-
     /// <inheritdoc/>
     public ValueTask<TResponse> HandleAsync(TRequest request, CancellationToken cancellationToken = default)
     {
-        return this.handlerFunc(request, cancellationToken);
+        return handlerFunc(request, cancellationToken);
     }
 }
 

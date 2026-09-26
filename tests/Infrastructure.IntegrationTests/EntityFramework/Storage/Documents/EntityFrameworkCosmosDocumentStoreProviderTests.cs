@@ -14,7 +14,6 @@ using Infrastructure.EntityFramework.Storage;
 public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     [SkippableFact]
     public override async Task CountResultAsync_ReturnsDocumentCount()
@@ -124,7 +123,7 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        await using var dbContext = this.fixture.EnsureCosmosDbContext(this.output, forceNew: true);
+        await using var dbContext = this.fixture.EnsureCosmosDbContext(output, forceNew: true);
         await action(dbContext);
     }
 
@@ -132,7 +131,7 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        await using var dbContext = this.fixture.EnsureCosmosDbContext(this.output, forceNew: true);
+        await using var dbContext = this.fixture.EnsureCosmosDbContext(output, forceNew: true);
         return await action(dbContext);
     }
 
@@ -142,7 +141,7 @@ public class EntityFrameworkCosmosDocumentStoreProviderTests(ITestOutputHelper o
         DocumentStoreOptions documentStoreOptions = null)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureCosmosDbContext(this.output, forceNew: true)),
+            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureCosmosDbContext(output, forceNew: true)),
             documentStoreOptions);
     }
 }

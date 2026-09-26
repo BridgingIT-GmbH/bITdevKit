@@ -24,15 +24,13 @@ public class CoreSeederTask(
     IBusinessCalendarResolver businessCalendarResolver = null) : IStartupTask
 {
     private readonly ILogger<CoreSeederTask> logger = loggerFactory?.CreateLogger<CoreSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<CoreSeederTask>();
-    private readonly IDatabaseReadyService databaseReadyService = databaseReadyService;
-    private readonly IBusinessCalendarResolver businessCalendarResolver = businessCalendarResolver;
 
     /// <inheritdoc />
     public async Task ExecuteAsync(CancellationToken cancellationToken)
     {
         this.logger.LogInformation("[{LogKey}] seed cities, weather, profiles, and subscriptions (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
-        await this.databaseReadyService.WaitForReadyAsync(
+        await databaseReadyService.WaitForReadyAsync(
             timeout: TimeSpan.FromMinutes(2),
             cancellationToken: cancellationToken);
 
@@ -314,7 +312,7 @@ public class CoreSeederTask(
         var utcNow = DateTime.UtcNow;
         var localToday = GetLocalDate(utcNow, timeZoneId);
         var countryCode = GetCityCountryCode(cityName);
-        var calendar = this.businessCalendarResolver?.Resolve(countryCode) ?? BusinessCalendars.Resolve(countryCode);
+        var calendar = businessCalendarResolver?.Resolve(countryCode) ?? BusinessCalendars.Resolve(countryCode);
         var nextBusinessDay = calendar.NextBusinessDay(localToday);
         var reports = new[]
         {

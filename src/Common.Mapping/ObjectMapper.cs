@@ -16,8 +16,6 @@ namespace BridgingIT.DevKit.Common;
 /// <param name="action">The action.</param>
 public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : IMapper<TSource, TTarget>
 {
-    private readonly Action<TSource, TTarget> action = action;
-
     /// <summary>
     ///     Maps the specified source object into the destination object.
     /// </summary>
@@ -25,9 +23,9 @@ public class ObjectMapper<TSource, TTarget>(Action<TSource, TTarget> action) : I
     /// <param name="target">The target object to map to.</param>
     public void Map(TSource source, TTarget target)
     {
-        if (source is not null && target is not null && this.action is not null)
+        if (source is not null && target is not null && action is not null)
         {
-            this.action(source, target);
+            action(source, target);
         }
     }
 

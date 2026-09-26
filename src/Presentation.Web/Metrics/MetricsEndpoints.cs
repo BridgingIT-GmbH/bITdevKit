@@ -31,10 +31,6 @@ public class MetricsEndpoints(
     ILogger<MetricsEndpoints> logger = null) : EndpointsBase
 {
     private readonly MetricsEndpointsOptions options = options ?? new MetricsEndpointsOptions();
-    private readonly IMetricsSnapshotService bdkSnapshotService = bdkSnapshotService;
-    private readonly IDotNetMetricsSnapshotService dotNetSnapshotService = dotNetSnapshotService;
-    private readonly IAspNetMetricsSnapshotService aspNetSnapshotService = aspNetSnapshotService;
-    private readonly ILogger<MetricsEndpoints> logger = logger;
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -134,7 +130,7 @@ public class MetricsEndpoints(
     /// <returns>The snapshot response.</returns>
     public IResult GetBdkMetrics()
     {
-        if (this.bdkSnapshotService is null)
+        if (bdkSnapshotService is null)
         {
             return Results.Problem(new ProblemDetails
             {
@@ -146,11 +142,11 @@ public class MetricsEndpoints(
 
         try
         {
-            return Results.Ok(this.bdkSnapshotService.GetSnapshot());
+            return Results.Ok(bdkSnapshotService.GetSnapshot());
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "Failed to retrieve devkit metrics snapshot.");
+            logger?.LogError(ex, "Failed to retrieve devkit metrics snapshot.");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -166,7 +162,7 @@ public class MetricsEndpoints(
     /// <returns>The snapshot response.</returns>
     public IResult GetDotNetMetrics()
     {
-        if (this.dotNetSnapshotService is null)
+        if (dotNetSnapshotService is null)
         {
             return Results.Problem(new ProblemDetails
             {
@@ -178,11 +174,11 @@ public class MetricsEndpoints(
 
         try
         {
-            return Results.Ok(this.dotNetSnapshotService.GetSnapshot());
+            return Results.Ok(dotNetSnapshotService.GetSnapshot());
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "Failed to retrieve .NET metrics snapshot.");
+            logger?.LogError(ex, "Failed to retrieve .NET metrics snapshot.");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -198,7 +194,7 @@ public class MetricsEndpoints(
     /// <returns>The snapshot response.</returns>
     public IResult GetAspNetMetrics()
     {
-        if (this.aspNetSnapshotService is null)
+        if (aspNetSnapshotService is null)
         {
             return Results.Problem(new ProblemDetails
             {
@@ -210,11 +206,11 @@ public class MetricsEndpoints(
 
         try
         {
-            return Results.Ok(this.aspNetSnapshotService.GetSnapshot());
+            return Results.Ok(aspNetSnapshotService.GetSnapshot());
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "Failed to retrieve ASP.NET metrics snapshot.");
+            logger?.LogError(ex, "Failed to retrieve ASP.NET metrics snapshot.");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -230,7 +226,7 @@ public class MetricsEndpoints(
     /// <returns>The snapshot response.</returns>
     public IResult GetAspNetRouteMetrics()
     {
-        if (this.aspNetSnapshotService is null)
+        if (aspNetSnapshotService is null)
         {
             return Results.Problem(new ProblemDetails
             {
@@ -242,11 +238,11 @@ public class MetricsEndpoints(
 
         try
         {
-            return Results.Ok(this.aspNetSnapshotService.GetRouteSnapshot());
+            return Results.Ok(aspNetSnapshotService.GetRouteSnapshot());
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "Failed to retrieve ASP.NET route metrics snapshot.");
+            logger?.LogError(ex, "Failed to retrieve ASP.NET route metrics snapshot.");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -262,7 +258,7 @@ public class MetricsEndpoints(
     /// <returns>The overview response.</returns>
     public IResult GetOverview()
     {
-        if (this.bdkSnapshotService is null)
+        if (bdkSnapshotService is null)
         {
             return Results.Problem(new ProblemDetails
             {
@@ -274,7 +270,7 @@ public class MetricsEndpoints(
 
         try
         {
-            var snapshot = this.bdkSnapshotService.GetSnapshot();
+            var snapshot = bdkSnapshotService.GetSnapshot();
             var overview = new MetricsOverviewSnapshotModel
             {
                 CapturedAtUtc = snapshot.CapturedAtUtc,
@@ -312,7 +308,7 @@ public class MetricsEndpoints(
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "Failed to retrieve metrics overview snapshot.");
+            logger?.LogError(ex, "Failed to retrieve metrics overview snapshot.");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,

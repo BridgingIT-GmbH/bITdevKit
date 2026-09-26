@@ -38,7 +38,6 @@ public class SimpleNotifier(
     private readonly Dictionary<Type, (ISimpleNotificationHandler Handler, int Order)[]> subscribers = []; // Changed to array for fixed size after subscribe
     private readonly ISimpleNotificationPipelineBehavior[] pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToArray() ?? []; // To array for faster access
     private readonly ReaderWriterLockSlim lockObject = new();
-    private readonly IProgress<SimpleNotifierProgress> progress = progress;
 
     /// <summary>
     /// Subscribes a handler to events of the specified type with an optional execution order.
@@ -204,7 +203,7 @@ public class SimpleNotifier(
     /// </summary>
     /// <typeparam name="TNotification">The type of event to publish.</typeparam>
     /// <param name="notification">The notification to publish.</param>
-    /// <param name="progress">An optional progress reporter for notification operations. Defaults to null.</param>
+    /// <param name="progress1">An optional progress reporter for notification operations. Defaults to null.</param>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
@@ -220,10 +219,10 @@ public class SimpleNotifier(
     /// ]]>
     /// </code>
     /// </example>
-    public async Task PublishAsync<TNotification>(TNotification notification, IProgress<SimpleNotifierProgress> progress = null, CancellationToken cancellationToken = default)
+    public async Task PublishAsync<TNotification>(TNotification notification, IProgress<SimpleNotifierProgress> progress1 = null, CancellationToken cancellationToken = default)
         where TNotification : ISimpleNotification
     {
-        progress ??= this.progress; // Use instance-level progress if provided
+        progress1 ??= progress; // Use instance-level progress if provided
         (ISimpleNotificationHandler Handler, int Order)[] handlers;
         this.lockObject.EnterReadLock();
         try
@@ -254,7 +253,7 @@ public class SimpleNotifier(
                 {
                     await ((ISimpleNotificationHandler<TNotification>)handler).HandleAsync(notification, cancellationToken);
                     handlersProcessed++;
-                    progress?.Report(new SimpleNotifierProgress(handlersProcessed, handlers.Length, $"Processed {handlersProcessed} of {handlers.Length} handlers"));
+                    progress1?.Report(new SimpleNotifierProgress(handlersProcessed, handlers.Length, $"Processed {handlersProcessed} of {handlers.Length} handlers"));
                 }
                 catch (OperationCanceledException)
                 {
@@ -282,7 +281,7 @@ public class SimpleNotifier(
 
                     await next();
                     handlersProcessed++;
-                    progress?.Report(new SimpleNotifierProgress(handlersProcessed, handlers.Length, $"Processed {handlersProcessed} of {handlers.Length} handlers"));
+                    progress1?.Report(new SimpleNotifierProgress(handlersProcessed, handlers.Length, $"Processed {handlersProcessed} of {handlers.Length} handlers"));
                 }
                 catch (OperationCanceledException)
                 {

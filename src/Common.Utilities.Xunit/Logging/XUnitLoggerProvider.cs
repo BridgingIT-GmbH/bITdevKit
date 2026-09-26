@@ -14,13 +14,12 @@ using Xunit.Abstractions;
 /// <param name="output">The xUnit output sink used by created loggers.</param>
 public sealed class XunitLoggerProvider(ITestOutputHelper output) : ILoggerProvider
 {
-    private readonly ITestOutputHelper output = output;
     private readonly LoggerExternalScopeProvider scopeProvider = new();
 
     /// <inheritdoc/>
     public ILogger CreateLogger(string categoryName)
     {
-        return new XunitLogger(this.output, this.scopeProvider, categoryName);
+        return new XunitLogger(output, this.scopeProvider, categoryName);
     }
 
     /// <inheritdoc/>

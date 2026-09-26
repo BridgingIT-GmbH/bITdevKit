@@ -25,10 +25,6 @@ public class OpenWriteFileStream(
     Func<bool, Task> onFinalizeAsync = null) : Stream
 {
     private readonly Stream innerStream = innerStream ?? throw new ArgumentNullException(nameof(innerStream));
-    private readonly IProgress<FileProgress> progress = progress;
-    private readonly CancellationToken cancellationToken = cancellationToken;
-    private readonly Func<Task> onSuccessAsync = onSuccessAsync;
-    private readonly Func<bool, Task> onFinalizeAsync = onFinalizeAsync;
     private bool disposed;
     private bool faulted;
     private long bytesWritten;
@@ -265,7 +261,7 @@ public class OpenWriteFileStream(
                 }
                 else
                 {
-                    await this.innerStream.FlushAsync(this.cancellationToken);
+                    await this.innerStream.FlushAsync(cancellationToken);
                 }
             }
         }
@@ -296,9 +292,9 @@ public class OpenWriteFileStream(
         {
             try
             {
-                if (this.onSuccessAsync is not null)
+                if (onSuccessAsync is not null)
                 {
-                    await this.onSuccessAsync();
+                    await onSuccessAsync();
                 }
 
                 success = true;
@@ -311,9 +307,9 @@ public class OpenWriteFileStream(
 
         try
         {
-            if (this.onFinalizeAsync is not null)
+            if (onFinalizeAsync is not null)
             {
-                await this.onFinalizeAsync(success);
+                await onFinalizeAsync(success);
             }
         }
         catch (Exception ex) when (exception is null)
@@ -322,7 +318,7 @@ public class OpenWriteFileStream(
         }
         finally
         {
-            this.progress?.Report(new FileProgress
+            progress?.Report(new FileProgress
             {
                 BytesProcessed = this.bytesWritten,
                 FilesProcessed = success ? 1 : 0,
@@ -343,7 +339,7 @@ public class OpenWriteFileStream(
 
     private void ReportProgress()
     {
-        this.progress?.Report(new FileProgress
+        progress?.Report(new FileProgress
         {
             BytesProcessed = this.bytesWritten,
             FilesProcessed = 0,

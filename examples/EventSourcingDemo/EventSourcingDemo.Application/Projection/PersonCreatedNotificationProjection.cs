@@ -16,9 +16,6 @@ public sealed class PersonCreatedNotificationProjection(
     IPersonOverviewRepository personOverviewRepository,
     IEntityMapper mapper) : MediatR.INotificationHandler<PublishAggregateEvent<Person>> // <1>
 {
-    private readonly IPersonOverviewRepository personOverviewRepository = personOverviewRepository;
-    private readonly IEntityMapper mapper = mapper;
-
     async Task MediatR.INotificationHandler<PublishAggregateEvent<Person>>.Handle(
         PublishAggregateEvent<Person> notification,
         CancellationToken cancellationToken) // <3>
@@ -26,12 +23,12 @@ public sealed class PersonCreatedNotificationProjection(
         //Debug.WriteLine("Do projection of " + notification.Aggregate.Id);
         if (notification.AggregateEvent is not UserDeactivatedEvent) // <4>
         {
-            var pov = this.mapper.Map<PersonOverview>(notification.Aggregate);
-            await this.personOverviewRepository.UpsertAsync(pov, cancellationToken).AnyContext();
+            var pov = mapper.Map<PersonOverview>(notification.Aggregate);
+            await personOverviewRepository.UpsertAsync(pov, cancellationToken).AnyContext();
         }
         else
         {
-            await this.personOverviewRepository.DeleteAsync(notification.Aggregate.Id, cancellationToken).AnyContext();
+            await personOverviewRepository.DeleteAsync(notification.Aggregate.Id, cancellationToken).AnyContext();
         }
     }
 }

@@ -11,14 +11,12 @@ using Microsoft.Extensions.DependencyInjection;
 
 public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture = fixture;
-
     [Fact]
     public async Task GetMessagesAsync_ReturnsMappedBrokerMessages()
     {
         // Arrange
         await this.ResetContext();
-        using var arrangeContext = this.fixture.CreateContext();
+        using var arrangeContext = fixture.CreateContext();
         var message = new BrokerMessage
         {
             Id = Guid.NewGuid(),
@@ -58,7 +56,7 @@ public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture 
     {
         // Arrange
         await this.ResetContext();
-        using var arrangeContext = this.fixture.CreateContext();
+        using var arrangeContext = fixture.CreateContext();
         var message = new BrokerMessage
         {
             Id = Guid.NewGuid(),
@@ -96,7 +94,7 @@ public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture 
         await sut.RetryMessageHandlerAsync(message.Id, "FailedHandler");
 
         // Assert
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Pending);
         stored.HandlerStates.Single(handler => handler.HandlerType == "FailedHandler").Status.ShouldBe(BrokerMessageHandlerStatus.Pending);
@@ -112,7 +110,7 @@ public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture 
         await this.ResetContext();
         var createdDate = DateTimeOffset.UtcNow.AddMinutes(-10);
         var originalExpiration = createdDate.AddMinutes(5);
-        using var arrangeContext = this.fixture.CreateContext();
+        using var arrangeContext = fixture.CreateContext();
         var message = new BrokerMessage
         {
             Id = Guid.NewGuid(),
@@ -143,7 +141,7 @@ public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture 
         await sut.RetryMessageAsync(message.Id);
 
         // Assert
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Pending);
         stored.ProcessedDate.ShouldBeNull();
@@ -156,7 +154,7 @@ public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture 
     private IMessageBrokerService CreateSut()
     {
         var services = new ServiceCollection();
-        services.AddScoped(_ => this.fixture.CreateContext());
+        services.AddScoped(_ => fixture.CreateContext());
         services.AddSingleton<MessageBrokerControlState>();
         services.AddScoped<IMessageBrokerService, EntityFrameworkMessageBrokerStoreService<StubDbContext>>();
         var provider = services.BuildServiceProvider();
@@ -165,7 +163,7 @@ public class EntityFrameworkMessageBrokerStoreServiceTests(StubDbContextFixture 
 
     private async Task ResetContext()
     {
-        using var context = this.fixture.CreateContext();
+        using var context = fixture.CreateContext();
         context.BrokerMessages.RemoveRange(context.BrokerMessages.ToList());
         await context.SaveChangesAsync();
     }

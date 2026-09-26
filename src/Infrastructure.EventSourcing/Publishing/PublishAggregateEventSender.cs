@@ -27,15 +27,6 @@ public class PublishAggregateEventSender(
 {
     private readonly IMediator mediator = mediator;
 
-    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender =
-        aggregateEventMediatorRequestSender;
-
-    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender =
-        aggregateEventMediatorNotificationSender;
-
-    private readonly IAggregateEventOutboxSender aggregateEventOutboxSender = aggregateEventOutboxSender;
-    private readonly EventStorePublishingModes eventStorePublishingModes = eventStorePublishingModes;
-
     /// <summary>
     ///     Veröffentlicht das DomänenEvent <see cref="currentEvent" /> für das Aggregat <see cref="aggregate" /> unter Nutzung
     ///     von <see cref="aggregateEventOutboxSender" />.
@@ -46,9 +37,9 @@ public class PublishAggregateEventSender(
     public async Task WriteToOutboxAsync<TAggregate>(AggregateEvent currentEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        if ((this.eventStorePublishingModes & EventStorePublishingModes.AddToOutbox) != EventStorePublishingModes.None)
+        if ((eventStorePublishingModes & EventStorePublishingModes.AddToOutbox) != EventStorePublishingModes.None)
         {
-            await this.aggregateEventOutboxSender.WriteToOutboxAsync(currentEvent, aggregate).AnyContext();
+            await aggregateEventOutboxSender.WriteToOutboxAsync(currentEvent, aggregate).AnyContext();
         }
     }
 
@@ -61,10 +52,10 @@ public class PublishAggregateEventSender(
     public async Task SendProjectionEventAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        if ((this.eventStorePublishingModes & EventStorePublishingModes.SendProjectionRequestUsingMediator) !=
+        if ((eventStorePublishingModes & EventStorePublishingModes.SendProjectionRequestUsingMediator) !=
             EventStorePublishingModes.None)
         {
-            await this.aggregateEventMediatorRequestSender.SendProjectionEventAsync(savedEvent, aggregate).AnyContext();
+            await aggregateEventMediatorRequestSender.SendProjectionEventAsync(savedEvent, aggregate).AnyContext();
         }
     }
 
@@ -77,10 +68,10 @@ public class PublishAggregateEventSender(
     public async Task SendEventOccuredAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        if ((this.eventStorePublishingModes & EventStorePublishingModes.SendEventOccuredRequestUsingMediator) !=
+        if ((eventStorePublishingModes & EventStorePublishingModes.SendEventOccuredRequestUsingMediator) !=
             EventStorePublishingModes.None)
         {
-            await this.aggregateEventMediatorRequestSender.SendEventOccuredAsync(savedEvent, aggregate).AnyContext();
+            await aggregateEventMediatorRequestSender.SendEventOccuredAsync(savedEvent, aggregate).AnyContext();
         }
     }
 
@@ -93,10 +84,10 @@ public class PublishAggregateEventSender(
     public async Task PublishProjectionEventAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        if ((this.eventStorePublishingModes & EventStorePublishingModes.NotifyForProjectionUsingMediator) !=
+        if ((eventStorePublishingModes & EventStorePublishingModes.NotifyForProjectionUsingMediator) !=
             EventStorePublishingModes.None)
         {
-            await this.aggregateEventMediatorNotificationSender.PublishProjectionEventAsync(savedEvent, aggregate)
+            await aggregateEventMediatorNotificationSender.PublishProjectionEventAsync(savedEvent, aggregate)
                 .AnyContext();
         }
     }
@@ -111,10 +102,10 @@ public class PublishAggregateEventSender(
     public async Task PublishEventOccuredAsync<TAggregate>(IAggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        if ((this.eventStorePublishingModes & EventStorePublishingModes.NotifyEventOccuredUsingMediator) !=
+        if ((eventStorePublishingModes & EventStorePublishingModes.NotifyEventOccuredUsingMediator) !=
             EventStorePublishingModes.None)
         {
-            await this.aggregateEventMediatorNotificationSender.PublishEventOccuredAsync(savedEvent, aggregate)
+            await aggregateEventMediatorNotificationSender.PublishEventOccuredAsync(savedEvent, aggregate)
                 .AnyContext();
         }
     }

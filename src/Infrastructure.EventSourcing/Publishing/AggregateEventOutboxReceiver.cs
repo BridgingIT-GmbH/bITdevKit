@@ -33,20 +33,6 @@ public class AggregateEventOutboxReceiver(
     IEventTypeSelector eventTypeSelector,
     IAggregateTypeSelector aggregateTypeSelector) : IAggregateEventOutboxReceiver
 {
-    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration =
-        eventStoreAggregateEventRegistration;
-
-    private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration = eventStoreAggregateRegistration;
-
-    private readonly IAggregateEventMediatorRequestSender aggregateEventMediatorRequestSender =
-        aggregateEventMediatorRequestSender;
-
-    private readonly IAggregateEventMediatorNotificationSender aggregateEventMediatorNotificationSender =
-        aggregateEventMediatorNotificationSender;
-
-    private readonly IEventTypeSelector eventTypeSelector = eventTypeSelector;
-    private readonly IAggregateTypeSelector aggregateTypeSelector = aggregateTypeSelector;
-
     /// <summary>
     /// Executes the receive and publish operation.
     /// </summary>
@@ -62,15 +48,15 @@ public class AggregateEventOutboxReceiver(
         };
         var (aggregate, aggregateEvent) = this.Deserialize(message, settings);
 
-        var resultProjectionSend = await this.aggregateEventMediatorRequestSender
+        var resultProjectionSend = await aggregateEventMediatorRequestSender
             .SendProjectionEventAsync(aggregateEvent, aggregate)
             .AnyContext();
 
-        var resultEventOccured = await this.aggregateEventMediatorRequestSender
+        var resultEventOccured = await aggregateEventMediatorRequestSender
             .SendEventOccuredAsync(aggregateEvent, aggregate)
             .AnyContext();
 
-        var resultEventOccuredNotified = await this.aggregateEventMediatorNotificationSender
+        var resultEventOccuredNotified = await aggregateEventMediatorNotificationSender
             .PublishEventOccuredAsync(aggregateEvent, aggregate)
             .AnyContext();
 
@@ -101,11 +87,11 @@ public class AggregateEventOutboxReceiver(
         var methods = typeof(JsonConvert).GetMethods()
             .Where(p => p.IsGenericMethod && p.Name == "DeserializeObject" && CheckParameters(p))
             .ToArray();
-        var aggregateTypeName = this.eventStoreAggregateRegistration.GetTypeOnImmutableName(message.AggregateType);
+        var aggregateTypeName = eventStoreAggregateRegistration.GetTypeOnImmutableName(message.AggregateType);
         var aggregateEventTypeName =
-            this.eventStoreAggregateEventRegistration.GetTypeOnImmutableName(message.EventType);
-        var aggregateType = this.aggregateTypeSelector.Find(aggregateTypeName);
-        var aggregateEventType = this.eventTypeSelector.FindType(aggregateEventTypeName);
+            eventStoreAggregateEventRegistration.GetTypeOnImmutableName(message.EventType);
+        var aggregateType = aggregateTypeSelector.Find(aggregateTypeName);
+        var aggregateEventType = eventTypeSelector.FindType(aggregateEventTypeName);
         var method = methods.First();
         var genericAggregate = method.MakeGenericMethod(aggregateType);
         var aggregate = genericAggregate.Invoke(null, [message.Aggregate, settings]);

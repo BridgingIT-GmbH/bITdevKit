@@ -21,7 +21,6 @@ public class ModuleScopeCommandBehavior<TRequest, TResponse>(
     IEnumerable<ActivitySource> activitySources = null) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, MediatR.IRequest<TResponse>
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
     /// <inheritdoc/>
@@ -36,7 +35,7 @@ public class ModuleScopeCommandBehavior<TRequest, TResponse>(
         RequestHandlerDelegate<TResponse> next,
         CancellationToken cancellationToken)
     {
-        var module = this.moduleAccessors.Find(request.GetType());
+        var module = moduleAccessors.Find(request.GetType());
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
         using (this.Logger.BeginScope(new Dictionary<string, object>

@@ -11,7 +11,6 @@ public class EntityFrameworkInMemoryGenericRepositoryTypedIdTests(ITestOutputHel
     : EntityFrameworkGenericRepositoryTypedIdTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task DeleteAsync_ByEntity_EntityDeleted()
@@ -153,6 +152,6 @@ public class EntityFrameworkInMemoryGenericRepositoryTypedIdTests(ITestOutputHel
 
     protected override StubDbContext GetContext(string connectionString = null, bool forceNew = false)
     {
-        return this.fixture.EnsureInMemoryDbContext(this.output, forceNew);
+        return this.fixture.EnsureInMemoryDbContext(output, forceNew);
     }
 }

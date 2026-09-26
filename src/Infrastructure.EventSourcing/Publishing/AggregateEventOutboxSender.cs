@@ -26,13 +26,6 @@ public class AggregateEventOutboxSender(
     IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration,
     IEventStoreAggregateRegistration eventStoreAggregateRegistration) : IAggregateEventOutboxSender
 {
-    private readonly IOutboxMessageWriterRepository outboxMessageWriterRepository = outboxMessageWriterRepository;
-
-    private readonly IEventStoreAggregateEventRegistration eventStoreAggregateEventRegistration =
-        eventStoreAggregateEventRegistration;
-
-    private readonly IEventStoreAggregateRegistration eventStoreAggregateRegistration = eventStoreAggregateRegistration;
-
     /// <summary>
     /// Executes the write to outbox operation.
     /// </summary>
@@ -43,8 +36,8 @@ public class AggregateEventOutboxSender(
     public async Task WriteToOutboxAsync<TAggregate>(AggregateEvent savedEvent, TAggregate aggregate)
         where TAggregate : EventSourcingAggregateRoot
     {
-        var immutableEventTypeName = this.eventStoreAggregateEventRegistration.GetImmutableName(savedEvent);
-        var immutableAggregateTypeName = this.eventStoreAggregateRegistration.GetImmutableName<TAggregate>();
+        var immutableEventTypeName = eventStoreAggregateEventRegistration.GetImmutableName(savedEvent);
+        var immutableAggregateTypeName = eventStoreAggregateRegistration.GetImmutableName<TAggregate>();
         var msg = new OutboxMessage
         {
             MessageId = savedEvent.EventId,
@@ -57,6 +50,6 @@ public class AggregateEventOutboxSender(
             RetryAttempt = 0,
             TimeStamp = DateTime.Now
         };
-        await this.outboxMessageWriterRepository.InsertAsync(msg).AnyContext();
+        await outboxMessageWriterRepository.InsertAsync(msg).AnyContext();
     }
 }

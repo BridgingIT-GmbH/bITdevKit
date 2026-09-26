@@ -192,7 +192,6 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
     private const string CommandIdKey = "CommandRequestId";
     private const string CommandTypeKey = "CommandType";
 
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources = activitySources;
 
     /// <summary>
@@ -223,7 +222,7 @@ public abstract partial class CommandHandlerBase<TCommand, TResult>(
                 EnsureArg.IsNotNull(command, nameof(command));
 
                 // TODO: move the Activity Starting to the ModuleScopeCommandBehavior so the module can be added to the Activity (tracing)
-                var module = this.moduleAccessors.Find(command.GetType());
+                var module = moduleAccessors.Find(command.GetType());
                 var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
                 //return await this.activitySources.Find(moduleName)

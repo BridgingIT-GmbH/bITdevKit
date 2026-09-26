@@ -24,8 +24,6 @@ public class OutboxWorkerService(
     IAggregateEventOutboxReceiver receiver,
     ILoggerOptions loggerOptions) : IOutboxWorkerService
 {
-    private readonly IOutboxMessageWorkerRepository repository = repository;
-    private readonly IAggregateEventOutboxReceiver receiver = receiver;
     private readonly ILogger<OutboxWorkerService> logger = loggerOptions.CreateLogger<OutboxWorkerService>();
 
     /// <summary>
@@ -34,14 +32,14 @@ public class OutboxWorkerService(
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task DoWorkAsync()
     {
-        foreach (var message in await this.repository.FindAllAsync(
+        foreach (var message in await repository.FindAllAsync(
                          new Specification<OutboxMessage>(m => !m.IsProcessed),
                          new FindOptions<OutboxMessage>(0, 0, new OrderOption<OutboxMessage>(o => o.TimeStamp)))
                      .AnyContext())
         {
             try
             {
-                var result = await this.receiver.ReceiveAndPublishAsync(message).AnyContext();
+                var result = await receiver.ReceiveAndPublishAsync(message).AnyContext();
                 if (result.projectionSended && result.eventOccuredNotified && result.eventOccuredSended)
                 {
                     message.IsProcessed = true;
@@ -57,7 +55,7 @@ public class OutboxWorkerService(
                 message.RetryAttempt++;
             }
 
-            await this.repository.UpdateAsync(message).AnyContext();
+            await repository.UpdateAsync(message).AnyContext();
         }
     }
 }

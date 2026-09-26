@@ -19,10 +19,6 @@ public class XunitLogger(
     LoggerExternalScopeProvider scopeProvider,
     string categoryName) : ILogger
 {
-    private readonly string categoryName = categoryName;
-    private readonly ITestOutputHelper output = output;
-    private readonly LoggerExternalScopeProvider scopeProvider = scopeProvider;
-
     /// <inheritdoc/>
     public bool IsEnabled(LogLevel logLevel)
     {
@@ -32,7 +28,7 @@ public class XunitLogger(
     /// <inheritdoc/>
     public IDisposable BeginScope<TState>(TState state)
     {
-        return this.scopeProvider.Push(state);
+        return scopeProvider.Push(state);
     }
 
     /// <inheritdoc/>
@@ -45,7 +41,7 @@ public class XunitLogger(
     {
         var sb = new StringBuilder().Append(GetLogLevelString(logLevel))
             .Append(" [")
-            .Append(this.categoryName)
+            .Append(categoryName)
             .Append("] ")
             .Append(formatter(state, exception));
 
@@ -55,14 +51,14 @@ public class XunitLogger(
         }
 
         // Append scopes
-        this.scopeProvider.ForEachScope((scope, state) =>
+        scopeProvider.ForEachScope((scope, state) =>
             {
                 state.Append("\n => ");
                 state.Append(scope);
             },
             sb);
 
-        this.output?.WriteLine(sb.ToString());
+        output?.WriteLine(sb.ToString());
     }
 
 #pragma warning disable SA1204

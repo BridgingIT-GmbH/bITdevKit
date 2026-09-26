@@ -16,12 +16,9 @@ using Infrastructure.EventSourcing;
 /// <param name="aggregateType">The aggregate type used by the operation.</param>
 public class AggregateSnapshotSpecification(Guid aggregateId, string aggregateType) : Specification<EventStoreSnapshot>
 {
-    private readonly Guid aggregateId = aggregateId;
-    private readonly string aggregateType = aggregateType;
-
     /// <inheritdoc/>
     public override Expression<Func<EventStoreSnapshot, bool>> ToExpression()
     {
-        return s => s.Id == this.aggregateId && s.AggregateType == this.aggregateType;
+        return s => s.Id == aggregateId && s.AggregateType == aggregateType;
     }
 }

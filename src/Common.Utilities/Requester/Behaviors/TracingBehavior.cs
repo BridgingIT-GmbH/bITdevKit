@@ -24,8 +24,6 @@ public class TracingBehavior<TRequest, TResponse>(
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly ActivitySource activitySource = activitySource;
-
     /// <inheritdoc/>
     protected override bool CanProcess(TRequest request, Type handlerType)
     {
@@ -41,7 +39,7 @@ public class TracingBehavior<TRequest, TResponse>(
     {
         var requestType = typeof(TRequest).PrettyName();
 
-        return await this.activitySource.StartActvity($"REQUEST {requestType}",
+        return await activitySource.StartActvity($"REQUEST {requestType}",
             async (a, c) =>
             {
                 a?.AddEvent(new ActivityEvent($"processing (type={requestType}, id={handlerType})"));

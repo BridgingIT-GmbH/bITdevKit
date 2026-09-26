@@ -19,8 +19,6 @@ public class MessageStubHandler(ILoggerFactory loggerFactory, MessageState messa
     IRetryMessageHandler,
     ITimeoutMessageHandler
 {
-    private readonly MessageState messageState = messageState;
-
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
     TimeoutMessageHandlerOptions ITimeoutMessageHandler.Options => new() { Timeout = new TimeSpan(0, 0, 0, 10) };
@@ -31,8 +29,8 @@ public class MessageStubHandler(ILoggerFactory loggerFactory, MessageState messa
 
         using (this.Logger.BeginScope(loggerState))
         {
-            this.messageState.HandledMessageIds.Add(message.MessageId);
-            this.messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
+            messageState.HandledMessageIds.Add(message.MessageId);
+            messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
             this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ",
@@ -48,8 +46,6 @@ public class AnotherMessageStubHandler(ILoggerFactory loggerFactory, MessageStat
     IRetryMessageHandler,
     ITimeoutMessageHandler
 {
-    private readonly MessageState messageState = messageState;
-
     RetryMessageHandlerOptions IRetryMessageHandler.Options => new() { Attempts = 3, Backoff = new TimeSpan(0, 0, 0, 1) };
 
     TimeoutMessageHandlerOptions ITimeoutMessageHandler.Options => new() { Timeout = new TimeSpan(0, 0, 0, 10) };
@@ -60,8 +56,8 @@ public class AnotherMessageStubHandler(ILoggerFactory loggerFactory, MessageStat
 
         using (this.Logger.BeginScope(loggerState))
         {
-            this.messageState.HandledMessageIds.Add(message.MessageId);
-            this.messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
+            messageState.HandledMessageIds.Add(message.MessageId);
+            messageState.HandledMessageResults.Add($"{message.FirstName} {message.LastName}");
             await Task.Delay(100, cancellationToken);
             //throw new Exception("haha");
             this.Logger.LogInformation($"{{LogKey}} firstname={message.FirstName}, firstname={message.LastName} (name={{MessageName}}, id={{MessageId}}) ",

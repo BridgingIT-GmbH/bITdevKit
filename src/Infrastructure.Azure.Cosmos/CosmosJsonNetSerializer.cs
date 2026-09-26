@@ -20,8 +20,6 @@ public class
 {
     private static readonly Encoding DefaultEncoding = new UTF8Encoding(false, true);
 
-    private readonly JsonSerializerSettings serializerSettings = jsonSerializerSettings;
-
     /// <summary>
     ///     Convert a Stream to the passed in type.
     /// </summary>
@@ -74,6 +72,6 @@ public class
     /// </summary>
     private JsonSerializer GetSerializer()
     {
-        return JsonSerializer.Create(this.serializerSettings);
+        return JsonSerializer.Create(jsonSerializerSettings);
     }
 }

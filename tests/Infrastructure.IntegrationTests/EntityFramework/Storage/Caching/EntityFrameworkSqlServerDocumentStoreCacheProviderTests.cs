@@ -14,7 +14,6 @@ public class EntityFrameworkSqlServerDocumentStoreCacheProviderTests(ITestOutput
     : EntityFrameworkDocumentStoreCacheProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task GetAsync_WithInvalidKey_ShouldNotReturnValue()
@@ -126,11 +125,11 @@ public class EntityFrameworkSqlServerDocumentStoreCacheProviderTests(ITestOutput
 
     protected override DocumentStoreCacheProvider GetProvider()
     {
-        var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(this.output),
+        var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(output),
             new DocumentStoreClient<CacheDocument>(new
-                EntityFrameworkDocumentStoreProvider<StubDbContext>(DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqlServerDbContext(this.output, true)))));
+                EntityFrameworkDocumentStoreProvider<StubDbContext>(DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqlServerDbContext(output, true)))));
 
-        var provider = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(this.output),
+        var provider = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(output),
             new DocumentStoreCache(client),
             client);
 

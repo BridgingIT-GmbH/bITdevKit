@@ -58,8 +58,10 @@ The baseline tables in this specification remain the immutable starting point fo
 
 | Measure | Baseline | Current | Status |
 | --- | ---: | ---: | --- |
-| Total findings | 9,050 | 7,414 | In progress |
+| Total findings | 9,050 | 6,078 | In progress |
 | `InvalidXmlDocComment` | 1,708 | 0 | Resolved |
+| `InconsistentNaming` | 1,156 | 0 | Configured |
+| `LocalVariableHidesMember` | 172 | 0 | Configured |
 
 The `InvalidXmlDocComment` batch repaired malformed XML, generic code examples, parameter and type-parameter tags, and unresolved documentation references across the solution. A fresh full-solution InspectCode scan reported zero remaining findings for this rule. The full solution build completed with zero warnings and zero errors, and `git diff --check` passed.
 
@@ -77,6 +79,7 @@ This ledger tracks completed and active remediation batches. It complements the 
 | Batch | Completed | Family | Rule or scope | Before | After | Change | Disposition | Status | Validation evidence |
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
 | `DOC-001` | 2026-09-25 | Documentation | `InvalidXmlDocComment` | 1,708 | 0 | -1,708 | Fix | Resolved | Full-solution InspectCode: 0 rule findings and 7,414 total findings; solution build: 0 warnings, 0 errors; `git diff --check`: passed |
+| `CFG-001` | 2026-09-25 | Naming/spelling/style and API/design/encapsulation | `InconsistentNaming`; `LocalVariableHidesMember` | 1,328 | 0 | -1,328 | Configure/disable rule | Resolved | Single-threaded full-solution InspectCode: 0 findings for both rules and 6,078 total findings; `InvalidXmlDocComment`: 0 |
 
 For an active batch, `Completed` may be `-`, but `Before` must come from a fresh full-solution report. Mark a batch `Resolved` only after its focused validation, solution-level validation when required, and post-change InspectCode scan succeed.
 
@@ -349,6 +352,14 @@ Every triaged finding must receive exactly one disposition:
 | `Exclude generated code` | Remove generated or external code from analysis without modifying that code. |
 | `False positive/tool limitation` | Record evidence that the reported condition is not a source defect or cannot be modeled correctly by the analyzer. |
 | `Defer` | Retain a valid finding for later work with explicit reason, owner or decision point, and review date or trigger. |
+
+### Analyzer configuration candidates
+
+Repository-wide analyzer configuration is an acceptable remediation when a finding conflicts with a deliberate, consistently applied repository convention and changing source would reduce clarity or compatibility. A configuration batch may resolve multiple findings, but it must name each affected rule, document the retained convention, and verify that unrelated inspections remain enabled.
+
+Batch `CFG-001` disables the JetBrains `InconsistentNaming` inspection because the repository's naming policy is enforced by explicit `dotnet_naming_rule` entries and intentionally permits established acronyms and domain identifiers. JetBrains requires this setting at both all-file scope for Razor and CSHTML and C# scope for its C# naming model. The batch also disables `LocalVariableHidesMember` for all files because local names may intentionally match instance fields when `this.` keeps member access unambiguous. Related inspections such as `ParameterHidesMember`, `VariableHidesOuterVariable`, and `ParameterHidesPrimaryConstructorParameter` remain enabled pending separate review.
+
+The current SARIF report was produced by JetBrains InspectCode. Its 104 rule identifiers include no standard Roslyn analyzer identifiers such as `CA`, `IDE`, `CS`, `RCS`, or `SA`. This does not disable or replace compiler and Roslyn analysis: `dotnet build`, `dotnet format`, and the explicit `dotnet_naming_rule` entries remain separate validation sources.
 
 * **DSP-001**: `Suppress with rationale` must be local unless a broader suppression is independently justified.
 * **DSP-002**: `Configure/disable rule` must identify the exact rule, scope, before-and-after count, and policy reason.

@@ -35,7 +35,6 @@ public class Throttler(
     private bool isThrottled;
     private DateTime lastExecution;
     private readonly Lock lockObject = new();
-    private readonly IProgress<ThrottlerProgress> progress = progress;
 
     /// <summary>
     /// Initializes a new instance of the Throttler class with a simpler action that does not require a CancellationToken.
@@ -68,7 +67,7 @@ public class Throttler(
     /// Triggers the throttled action, executing it immediately if the interval has passed since the last execution, or skipping if within the interval.
     /// </summary>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
-    /// <param name="progress">An optional progress reporter for throttling operations. Defaults to null.</param>
+    /// <param name="progress1">An optional progress reporter for throttling operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <example>
@@ -85,9 +84,9 @@ public class Throttler(
     /// ]]>
     /// </code>
     /// </example>
-    public async Task ThrottleAsync(CancellationToken cancellationToken = default, IProgress<ThrottlerProgress> progress = null)
+    public async Task ThrottleAsync(CancellationToken cancellationToken = default, IProgress<ThrottlerProgress> progress1 = null)
     {
-        progress ??= this.progress; // Use instance-level progress if provided
+        progress1 ??= progress; // Use instance-level progress if provided
         var now = DateTime.UtcNow;
         bool shouldExecute;
         CancellationToken token;
@@ -109,7 +108,7 @@ public class Throttler(
 
         if (shouldExecute)
         {
-            progress?.Report(new ThrottlerProgress(TimeSpan.Zero, "Executing throttled action"));
+            progress1?.Report(new ThrottlerProgress(TimeSpan.Zero, "Executing throttled action"));
             using (var linkedCts = CancellationTokenSource.CreateLinkedTokenSource(token, cancellationToken))
             {
                 try
@@ -137,7 +136,7 @@ public class Throttler(
                 var remaining = interval - elapsed;
                 if (remaining > TimeSpan.Zero)
                 {
-                    progress?.Report(new ThrottlerProgress(remaining, $"Waiting remaining interval of {remaining.TotalSeconds} seconds"));
+                    progress1?.Report(new ThrottlerProgress(remaining, $"Waiting remaining interval of {remaining.TotalSeconds} seconds"));
                     await Task.Delay(remaining, linkedCts.Token);
                 }
             }
@@ -145,7 +144,7 @@ public class Throttler(
         else
         {
             var remaining = interval - (now - this.lastExecution);
-            progress?.Report(new ThrottlerProgress(remaining, $"Throttled, waiting {remaining.TotalSeconds} seconds"));
+            progress1?.Report(new ThrottlerProgress(remaining, $"Throttled, waiting {remaining.TotalSeconds} seconds"));
         }
     }
 

@@ -19,8 +19,6 @@ using MediatR;
 /// <param name="mediator">The mediator used by the operation.</param>
 public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregateEventMediatorRequestSender
 {
-    private readonly IMediator mediator = mediator;
-
     /// <summary>
     ///     Sendet das Event <see cref="savedEvent" /> über den Mediator als Request.
     /// </summary>
@@ -36,7 +34,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         if (genericPublishAggregateCommandConstructor is not null)
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
-            var commandResult = await this.mediator.Send(@event).AnyContext() as CommandResponse<bool>;
+            var commandResult = await mediator.Send(@event).AnyContext() as CommandResponse<bool>;
         }
         else
         {
@@ -60,7 +58,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
 
-            return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
+            return await mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
                 commandResult.Cancelled == false &&
                 commandResult.Result;
         }
@@ -85,7 +83,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         if (genericPublishAggregateCommandConstructor is not null)
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
-            var commandResult = await this.mediator.Send(@event).AnyContext() as CommandResponse<bool>;
+            var commandResult = await mediator.Send(@event).AnyContext() as CommandResponse<bool>;
         }
         else
         {
@@ -109,7 +107,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
 
-            return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
+            return await mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
                 commandResult.Cancelled == false &&
                 commandResult.Result;
         }

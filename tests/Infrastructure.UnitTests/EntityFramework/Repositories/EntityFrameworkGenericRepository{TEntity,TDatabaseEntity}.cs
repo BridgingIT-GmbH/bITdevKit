@@ -14,8 +14,6 @@ using MapsterMapper;
 [UnitTest("Infrastructure")]
 public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : IClassFixture<TestDbContextFixture>
 {
-    private readonly TestDbContextFixture fixture = fixture;
-
     [Fact]
     public async Task GenericRepositoryFindAllAsync()
     {
@@ -23,7 +21,7 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
         var mapper = CreateMapper();
         var options = Substitute.For<EntityFrameworkRepositoryOptions>();
         options.Mapper.Returns(mapper);
-        options.DbContext.Returns(this.fixture.Context);
+        options.DbContext.Returns(fixture.Context);
         var sut = new EntityFrameworkGenericRepository<PersonStub, PersonDtoStub>(options);
         var list = await sut.FindAllAsync()
             .AnyContext();
@@ -39,7 +37,7 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
-        var sut = new PersonStubRepository(o => o.DbContext(this.fixture.Context)
+        var sut = new PersonStubRepository(o => o.DbContext(fixture.Context)
             .Mapper(mapper));
         var list = await sut.FindAllAsync()
             .AnyContext();
@@ -55,7 +53,7 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
-        var sut = new PersonStubRepository(o => o.DbContext(this.fixture.Context)
+        var sut = new PersonStubRepository(o => o.DbContext(fixture.Context)
             .Mapper(mapper));
         var list = await sut.FindAllAsync(new FindOptions<PersonStub> { NoTracking = true })
             .AnyContext();
@@ -71,9 +69,9 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
-        var id = this.fixture.Context.Persons.First()
+        var id = fixture.Context.Persons.First()
             .Identifier;
-        var sut = new PersonStubRepository(o => o.DbContext(this.fixture.Context)
+        var sut = new PersonStubRepository(o => o.DbContext(fixture.Context)
             .Mapper(mapper));
         var found = await sut.FindOneAsync(id)
             .AnyContext();
@@ -85,9 +83,9 @@ public class EntityFrameworkRepositoryTests(TestDbContextFixture fixture) : ICla
     {
         using var scope = new TransactionScope();
         var mapper = CreateMapper();
-        this.fixture.Context.Persons.Count()
+        fixture.Context.Persons.Count()
             .ShouldBe(2);
-        var sut = new PersonStubRepository(o => o.DbContext(this.fixture.Context)
+        var sut = new PersonStubRepository(o => o.DbContext(fixture.Context)
             .Mapper(mapper));
         var found = await sut.FindAllLastNames()
             .AnyContext(); // uses dapper to query the db (QueryAsync)

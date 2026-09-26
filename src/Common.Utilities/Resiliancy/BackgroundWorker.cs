@@ -38,7 +38,6 @@ public class BackgroundWorker(
     private readonly Func<CancellationToken, IProgress<int>, Task> work = work ?? throw new ArgumentNullException(nameof(work));
     private CancellationTokenSource cts = new();
     private Task task;
-    private readonly IProgress<BackgroundWorkerProgress> progress = progress;
 
     /// <summary>
     /// Delegate type for the ProgressChanged event.
@@ -67,7 +66,7 @@ public class BackgroundWorker(
     /// Starts the background work.
     /// </summary>
     /// <param name="cancellationToken">A cancellation token to cancel the operation.</param>
-    /// <param name="progress">An optional progress reporter for background operations. Defaults to null.</param>
+    /// <param name="progress1">An optional progress reporter for background operations. Defaults to null.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
     /// <exception cref="OperationCanceledException">Thrown if the operation is canceled via the cancellation token.</exception>
     /// <exception cref="InvalidOperationException">Thrown if the background work is already running.</exception>
@@ -90,9 +89,9 @@ public class BackgroundWorker(
     /// ]]>
     /// </code>
     /// </example>
-    public async Task StartAsync(CancellationToken cancellationToken = default, IProgress<BackgroundWorkerProgress> progress = null)
+    public async Task StartAsync(CancellationToken cancellationToken = default, IProgress<BackgroundWorkerProgress> progress1 = null)
     {
-        progress ??= this.progress; // Use instance-level progress if provided
+        progress1 ??= progress; // Use instance-level progress if provided
         if (this.task?.IsCompleted == false)
         {
             throw new InvalidOperationException("Background work is already running.");
@@ -104,7 +103,7 @@ public class BackgroundWorker(
             var legacyProgress = new Progress<int>(value =>
             {
                 this.ProgressChanged?.Invoke(this, new ProgressChangedEventArgs(value));
-                progress?.Report(new BackgroundWorkerProgress(value, $"Progress updated to {value}%"));
+                progress1?.Report(new BackgroundWorkerProgress(value, $"Progress updated to {value}%"));
             });
             this.task = Task.Run(async () =>
             {

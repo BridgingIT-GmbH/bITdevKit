@@ -16,8 +16,6 @@ using Microsoft.Extensions.Logging.Abstractions;
 [UnitTest("Infrastructure")]
 public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture = fixture;
-
     [Fact]
     public async Task ProcessAsync_WithCompetingWorkers_OnlyOneLeaseIsAcquired()
     {
@@ -45,7 +43,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
 
         publishCount.ShouldBe(1);
 
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.OutboxDomainEvents.Single();
         stored.ProcessedDate.ShouldNotBeNull();
         stored.LockedBy.ShouldBeNull();
@@ -77,7 +75,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
         await started.Task.WaitAsync(TimeSpan.FromSeconds(5));
 
         DateTimeOffset? initialLockedUntil;
-        using (var inspectContext = this.fixture.CreateContext())
+        using (var inspectContext = fixture.CreateContext())
         {
             var stored = inspectContext.OutboxDomainEvents.Single();
             stored.LockedBy.ShouldNotBeNullOrWhiteSpace();
@@ -88,7 +86,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
 
         await Task.Delay(200);
 
-        using (var inspectContext = this.fixture.CreateContext())
+        using (var inspectContext = fixture.CreateContext())
         {
             var stored = inspectContext.OutboxDomainEvents.Single();
             stored.LockedUntil.ShouldNotBeNull();
@@ -98,7 +96,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
         continueProcessing.TrySetResult(true);
         await processingTask;
 
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var finalStored = assertContext.OutboxDomainEvents.Single();
         finalStored.ProcessedDate.ShouldNotBeNull();
         finalStored.LockedBy.ShouldBeNull();
@@ -126,7 +124,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
 
         await worker.ArchiveAsync(CancellationToken.None);
 
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.OutboxDomainEvents.Single();
         stored.IsArchived.ShouldBeTrue();
         stored.ArchivedDate.ShouldNotBeNull();
@@ -151,7 +149,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
         await worker.ProcessAsync(cancellationToken: CancellationToken.None);
         await worker.ArchiveAsync(CancellationToken.None);
 
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.OutboxDomainEvents.Single();
         stored.ProcessedDate.ShouldNotBeNull();
         stored.IsArchived.ShouldBeTrue();
@@ -172,7 +170,7 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
 
     private async Task SeedOutboxEventAsync(PersonDomainEventStub domainEvent, Action<OutboxDomainEvent> configure = null)
     {
-        await using var context = this.fixture.CreateContext();
+        await using var context = fixture.CreateContext();
         var outboxEvent = new OutboxDomainEvent
         {
             Id = Guid.NewGuid(),
@@ -192,16 +190,16 @@ public class OutboxDomainEventWorkerTests(StubDbContextFixture fixture) : IClass
         var services = new ServiceCollection();
         services.AddSingleton<ILoggerFactory>(NullLoggerFactory.Instance);
         services.AddSingleton(notifier);
-        services.AddScoped(_ => this.fixture.CreateContext());
+        services.AddScoped(_ => fixture.CreateContext());
 
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     }
 
     private async Task ResetContext()
     {
-        this.fixture.Context.ChangeTracker.Clear();
+        fixture.Context.ChangeTracker.Clear();
 
-        await using var context = this.fixture.CreateContext();
+        await using var context = fixture.CreateContext();
         context.OutboxDomainEvents.RemoveRange(context.OutboxDomainEvents.ToList());
         await context.SaveChangesAsync();
     }

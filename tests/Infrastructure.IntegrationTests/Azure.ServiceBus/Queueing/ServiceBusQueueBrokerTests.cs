@@ -13,12 +13,10 @@ using Microsoft.Extensions.DependencyInjection;
 [IntegrationTest("Infrastructure")]
 public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 {
-    private readonly TestEnvironmentFixture fixture = fixture;
-
     [SkippableFact]
     public async Task Broker_WhenSubscribed_CreatesQueueAndProcessesMessage()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         ServiceBusQueueTestMessageHandler.Reset();
 
@@ -29,7 +27,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)
@@ -55,7 +53,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
     [SkippableFact]
     public async Task Broker_WhenHandlerNotRegistered_MessageWaitsForHandler()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         var services = new ServiceCollection();
         services.AddLogging();
@@ -64,7 +62,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)
@@ -89,7 +87,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
     [SkippableFact]
     public async Task Broker_EnqueueBeforeSubscription_WaitsThenProcessesAfterSubscription()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         ServiceBusQueueBeforeSubMessageHandler.Reset();
 
@@ -100,7 +98,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)
@@ -135,7 +133,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
     [SkippableFact]
     public async Task Broker_PauseResume_TracksStateAndContinuesProcessing()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         ServiceBusQueuePauseMessageHandler.Reset();
 
@@ -146,7 +144,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)
@@ -193,7 +191,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
     [SkippableFact]
     public async Task Broker_WhenHandlerThrows_MessageIsRetriedThenDeadLettered()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         ServiceBusQueueFailMessageHandler.Reset();
 
@@ -204,7 +202,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)
@@ -241,7 +239,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
     [SkippableFact]
     public async Task Broker_GetMessagesAsync_ReturnsTrackedMessages()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         var services = new ServiceCollection();
         services.AddLogging();
@@ -250,7 +248,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)
@@ -277,7 +275,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
     [SkippableFact]
     public async Task Broker_PurgeMessagesAsync_RemovesTrackedMessages()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         var services = new ServiceCollection();
         services.AddLogging();
@@ -286,7 +284,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)
@@ -316,7 +314,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
     [SkippableFact]
     public async Task Broker_MultipleMessageTypes_OnlyCorrectHandlerTriggered()
     {
-        Skip.IfNot(await this.fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
+        Skip.IfNot(await fixture.WaitForServiceBusEmulatorReadyAsync(), "Service Bus emulator did not become ready within timeout");
 
         ServiceBusQueueTestMessageHandler.Reset();
         ServiceBusQueueOtherMessageHandler.Reset();
@@ -328,7 +326,7 @@ public class ServiceBusQueueBrokerTests(TestEnvironmentFixture fixture)
 
         var context = new QueueingBuilderContext(services);
         context.WithServiceBusBroker(o => o
-            .ConnectionString(this.fixture.ServiceBusEmulatorConnectionString)
+            .ConnectionString(fixture.ServiceBusEmulatorConnectionString)
             .QueueNamePrefix("test-")
             .AutoCreateQueue(false)
             .MaxConcurrentCalls(1)

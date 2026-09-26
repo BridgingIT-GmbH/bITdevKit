@@ -17,7 +17,6 @@ public class LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, Authen
 {
     private const string UserContextKey = "appstate_user_context_id";
     private const string UserIdKey = "appstate_user_id";
-    private readonly IJSRuntime jsRuntime = jsRuntime;
     private string inMemoryContextId = jsRuntime == null ? Guid.NewGuid().ToString() : null;
 
     /// <summary>
@@ -30,21 +29,21 @@ public class LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, Authen
     /// </remarks>
     public async Task<string> GetUserContextId()
     {
-        if (this.jsRuntime != null)
+        if (jsRuntime != null)
         {
             // Get the current user ID
             var currentUserId = await this.GetCurrentUserIdAsync();
 
             // Get the stored user context ID and associated user ID from localStorage
-            var storedContextId = await this.jsRuntime.InvokeAsync<string>("localStorage.getItem", UserContextKey);
-            var storedUserId = await this.jsRuntime.InvokeAsync<string>("localStorage.getItem", UserIdKey);
+            var storedContextId = await jsRuntime.InvokeAsync<string>("localStorage.getItem", UserContextKey);
+            var storedUserId = await jsRuntime.InvokeAsync<string>("localStorage.getItem", UserIdKey);
 
             // If there's no stored context ID, or the user has changed, generate a new context ID
             if (string.IsNullOrEmpty(storedContextId) || storedUserId != currentUserId)
             {
                 var newContextId = currentUserId ?? CreateShortHash();
-                await this.jsRuntime.InvokeVoidAsync("localStorage.setItem", UserContextKey, newContextId);
-                await this.jsRuntime.InvokeVoidAsync("localStorage.setItem", UserIdKey, currentUserId ?? string.Empty);
+                await jsRuntime.InvokeVoidAsync("localStorage.setItem", UserContextKey, newContextId);
+                await jsRuntime.InvokeVoidAsync("localStorage.setItem", UserIdKey, currentUserId ?? string.Empty);
                 return newContextId;
             }
 
@@ -61,10 +60,10 @@ public class LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, Authen
     /// <returns>A task representing the asynchronous clear operation.</returns>
     public async Task ClearAsync()
     {
-        if (this.jsRuntime != null)
+        if (jsRuntime != null)
         {
-            await this.jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserContextKey);
-            await this.jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserIdKey);
+            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserContextKey);
+            await jsRuntime.InvokeVoidAsync("localStorage.removeItem", UserIdKey);
         }
 
         this.inMemoryContextId = null;

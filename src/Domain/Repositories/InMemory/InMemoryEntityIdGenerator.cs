@@ -18,8 +18,6 @@ using BridgingIT.DevKit.Domain.Model;
 public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context) : IEntityIdGenerator<TEntity>
     where TEntity : class, IEntity
 {
-    private readonly InMemoryContext<TEntity> context = context;
-
     /// <summary>
     /// Determines whether is new.
     /// </summary>
@@ -58,11 +56,11 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
         // Handle primitive ID types
         if (idType == typeof(int))
         {
-            entity.Id = this.context.Entities.Count + 1;
+            entity.Id = context.Entities.Count + 1;
         }
         else if (idType == typeof(long))
         {
-            entity.Id = this.context.Entities.Count + 1;
+            entity.Id = context.Entities.Count + 1;
         }
         else if (idType == typeof(string))
         {
@@ -82,8 +80,8 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
             object underlyingValue = underlyingType switch
             {
                 Type t when t == typeof(Guid) => GuidGenerator.CreateSequential(),
-                Type t when t == typeof(int) => this.context.Entities.Count + 1,
-                Type t when t == typeof(long) => this.context.Entities.Count + 1,
+                Type t when t == typeof(int) => context.Entities.Count + 1,
+                Type t when t == typeof(long) => context.Entities.Count + 1,
                 Type t when t == typeof(string) => GuidGenerator.CreateSequential().ToString(),
                 _ => throw new NotSupportedException($"Underlying ID type {underlyingType.Name} not supported for typed ID {idType.Name}")
             };

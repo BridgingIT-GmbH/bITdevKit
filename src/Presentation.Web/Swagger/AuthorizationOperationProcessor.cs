@@ -16,8 +16,6 @@ using NSwag.Generation.Processors.Contexts;
 /// <param name="name">The name of the value.</param>
 public class AuthorizationOperationProcessor(string name) : IOperationProcessor
 {
-    private readonly string name = name;
-
     /// <summary>
     /// Executes the process operation.
     /// </summary>
@@ -25,7 +23,7 @@ public class AuthorizationOperationProcessor(string name) : IOperationProcessor
     /// <returns><see langword="true"/> when the condition is met; otherwise, <see langword="false"/>.</returns>
     public bool Process(OperationProcessorContext context)
     {
-        if (this.name is not null &&
+        if (name is not null &&
             context.MethodInfo.DeclaringType is not null &&
             (context.MethodInfo.DeclaringType.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any() ||
             context.MethodInfo.GetCustomAttributes(true).OfType<AuthorizeAttribute>().Any()))
@@ -35,7 +33,7 @@ public class AuthorizationOperationProcessor(string name) : IOperationProcessor
             context.OperationDescription.Operation.Responses.Add("403",
                 new OpenApiResponse { Description = "Forbidden" });
             context.OperationDescription.Operation.Security =
-                [new() { [this.name] = new List<string>() }];
+                [new() { [name] = new List<string>() }];
         }
 
         return true;

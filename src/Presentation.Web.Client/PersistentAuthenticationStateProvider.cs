@@ -31,12 +31,7 @@ public class PersistentAuthenticationStateProvider(
     ILogger<PersistentAuthenticationStateProvider> logger,
     IJSRuntime jsRuntime) : AuthenticationStateProvider
 {
-    private readonly HttpClient httpClient = httpClient;
-    private readonly NavigationManager navigationManager = navigationManager;
     private readonly IAccessTokenProvider tokenProvider = tokenProvider;
-    private readonly ILogger<PersistentAuthenticationStateProvider> logger = logger;
-    private readonly IJSRuntime jsRuntime = jsRuntime;
-    private readonly IConfiguration configuration = configuration;
     private static OpenIdConfiguration cachedConfiguration;
     private static readonly SemaphoreSlim Semaphore = new(1, 1);
 
@@ -52,7 +47,7 @@ public class PersistentAuthenticationStateProvider(
             var parameters = new Dictionary<string, string>
             {
                 ["grant_type"] = "refresh_token",
-                ["client_id"] = this.configuration["Authentication:ClientId"]
+                ["client_id"] = configuration["Authentication:ClientId"]
             };
 
             // Only add refresh token from storage if present
@@ -61,7 +56,7 @@ public class PersistentAuthenticationStateProvider(
                 parameters["refresh_token"] = refreshToken;
             }
 
-            var tokenResponse = await this.httpClient.PostAsync(config.TokenEndpoint, new FormUrlEncodedContent(parameters));
+            var tokenResponse = await httpClient.PostAsync(config.TokenEndpoint, new FormUrlEncodedContent(parameters));
             if (tokenResponse.IsSuccessStatusCode)
             {
                 var response = await tokenResponse.Content.ReadFromJsonAsync<TokenResponse>();
@@ -70,20 +65,20 @@ public class PersistentAuthenticationStateProvider(
                 var identity = new ClaimsIdentity(jwt.Claims, "jwt", JwtRegisteredClaimNames.Name, ClaimTypes.Role);
                 var user = new ClaimsPrincipal(identity);
 
-                this.logger.LogInformation("Token refresh successful");
+                logger.LogInformation("Token refresh successful");
 
                 return new AuthenticationState(user);
             }
             else
             {
-                this.logger.LogWarning("Token refresh failed with status: {StatusCode}", tokenResponse.StatusCode);
-                this.navigationManager.NavigateTo("authentication/login");
+                logger.LogWarning("Token refresh failed with status: {StatusCode}", tokenResponse.StatusCode);
+                navigationManager.NavigateTo("authentication/login");
             }
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "Token refresh failed");
-            this.navigationManager.NavigateTo("authentication/login");
+            logger.LogError(ex, "Token refresh failed");
+            navigationManager.NavigateTo("authentication/login");
         }
 
         return new AuthenticationState(
@@ -113,8 +108,8 @@ public class PersistentAuthenticationStateProvider(
                 return cachedConfiguration;
             }
 
-            var authority = this.configuration["Authentication:Authority"]?.TrimEnd('/');
-            cachedConfiguration = await this.httpClient.GetFromJsonAsync<OpenIdConfiguration>(
+            var authority = configuration["Authentication:Authority"]?.TrimEnd('/');
+            cachedConfiguration = await httpClient.GetFromJsonAsync<OpenIdConfiguration>(
                 $"{authority}/.well-known/openid-configuration");
 
             return cachedConfiguration;
@@ -129,36 +124,36 @@ public class PersistentAuthenticationStateProvider(
     {
         try
         {
-            this.logger.LogDebug("Getting stored refresh token");
+            logger.LogDebug("Getting stored refresh token");
 
             // Get and store the entries
-            var storageEntries = await this.jsRuntime.EvalAsync<string[]>(
+            var storageEntries = await jsRuntime.EvalAsync<string[]>(
                 "Object.keys(sessionStorage).filter(k => k.startsWith('oidc.user:'))");
             if (storageEntries.Length == 0)
             {
-                this.logger.LogDebug("No OIDC entries found in session storage");
+                logger.LogDebug("No OIDC entries found in session storage");
                 return null;
             }
 
-            var userData = await this.jsRuntime.InvokeAsync<string>("sessionStorage.getItem", storageEntries[0]);
+            var userData = await jsRuntime.InvokeAsync<string>("sessionStorage.getItem", storageEntries[0]);
             if (string.IsNullOrEmpty(userData))
             {
-                this.logger.LogDebug("No user data found in session storage");
+                logger.LogDebug("No user data found in session storage");
                 return null;
             }
 
             var userDataObj = JsonSerializer.Deserialize<JsonElement>(userData);
             if (userDataObj.TryGetProperty("refresh_token", out var refreshToken))
             {
-                this.logger.LogDebug("Found refresh token");
+                logger.LogDebug("Found refresh token");
                 return refreshToken.GetString();
             }
 
-            this.logger.LogDebug("No refresh token found in user data");
+            logger.LogDebug("No refresh token found in user data");
         }
         catch (Exception ex)
         {
-            this.logger.LogError(ex, "Error retrieving refresh token from session storage");
+            logger.LogError(ex, "Error retrieving refresh token from session storage");
         }
 
         return null;

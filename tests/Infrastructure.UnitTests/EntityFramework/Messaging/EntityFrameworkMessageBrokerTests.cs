@@ -11,8 +11,6 @@ using Microsoft.Extensions.DependencyInjection;
 
 public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture = fixture;
-
     [Fact]
     public async Task Publish_WithSubscriptions_PersistsMessageAndHandlerStates()
     {
@@ -28,7 +26,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         await sut.Publish(message, CancellationToken.None);
 
         // Assert
-        var stored = this.fixture.Context.BrokerMessages.Single();
+        var stored = fixture.Context.BrokerMessages.Single();
         stored.MessageId.ShouldBe(message.MessageId);
         stored.Status.ShouldBe(BrokerMessageStatus.Pending);
         stored.HandlerStates.Count.ShouldBe(2);
@@ -48,7 +46,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         await sut.Publish(message, CancellationToken.None);
 
         // Assert
-        var stored = this.fixture.Context.BrokerMessages.Single();
+        var stored = fixture.Context.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Succeeded);
         stored.ProcessedDate.ShouldNotBeNull();
         stored.HandlerStates.ShouldBeEmpty();
@@ -62,11 +60,11 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         ProcessingStubMessageHandler.Reset();
         var handlerFactory = new TestMessageHandlerFactory();
         var options = this.CreateOptions(handlerFactory);
-        var broker = new EntityFrameworkMessageBroker<StubDbContext>(this.fixture.Context, options);
+        var broker = new EntityFrameworkMessageBroker<StubDbContext>(fixture.Context, options);
         await broker.Subscribe<StubMessage, ProcessingStubMessageHandler>();
         var worker = new EntityFrameworkMessageBrokerWorker<StubDbContext>(
             Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance,
-            this.fixture.Context,
+            fixture.Context,
             broker,
             options);
         var message = new StubMessage { FirstName = "Joe", LastName = "Bloggs" };
@@ -77,7 +75,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
 
         // Assert
         ProcessingStubMessageHandler.Processed.ShouldBeTrue();
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Succeeded);
         stored.ProcessedDate.ShouldNotBeNull();
@@ -116,7 +114,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
 
         // Assert
         CoordinatedProcessingStubMessageHandler.ProcessCount.ShouldBe(1);
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Succeeded);
         stored.LockedBy.ShouldBeNull();
@@ -148,7 +146,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         await Task.Delay(200);
 
         // Assert during processing
-        using (var inspectContext = this.fixture.CreateContext())
+        using (var inspectContext = fixture.CreateContext())
         {
             var storedDuringProcessing = inspectContext.BrokerMessages.Single();
             storedDuringProcessing.LockedBy.ShouldNotBeNullOrWhiteSpace();
@@ -159,7 +157,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         CoordinatedLeaseRenewalStubMessageHandler.Release();
         await processingTask;
 
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Succeeded);
         stored.LockedBy.ShouldBeNull();
@@ -173,11 +171,11 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         await this.ResetContext();
         var options = this.CreateOptions(new TestMessageHandlerFactory());
         options.MaxDeliveryAttempts = 3;
-        var broker = new EntityFrameworkMessageBroker<StubDbContext>(this.fixture.Context, options);
+        var broker = new EntityFrameworkMessageBroker<StubDbContext>(fixture.Context, options);
         await broker.Subscribe<StubMessage, FailingStubMessageHandler>();
         var worker = new EntityFrameworkMessageBrokerWorker<StubDbContext>(
             Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance,
-            this.fixture.Context,
+            fixture.Context,
             broker,
             options);
         await broker.Publish(new StubMessage { FirstName = "Retry", LastName = "Pending" }, CancellationToken.None);
@@ -186,7 +184,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         await worker.ProcessAsync(CancellationToken.None);
 
         // Assert
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Pending);
         stored.ProcessedDate.ShouldBeNull();
@@ -203,12 +201,12 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         var options = this.CreateOptions(new TestMessageHandlerFactory());
         options.LeaseDuration = TimeSpan.FromMilliseconds(80);
         options.LeaseRenewalInterval = TimeSpan.FromMilliseconds(20);
-        var broker = new EntityFrameworkMessageBroker<StubDbContext>(this.fixture.Context, options);
+        var broker = new EntityFrameworkMessageBroker<StubDbContext>(fixture.Context, options);
         await broker.Subscribe<StubMessage, CoordinatedLeaseRenewalStubMessageHandler>();
         await broker.Publish(new StubMessage { FirstName = "Owned", LastName = "Context" }, CancellationToken.None);
         var worker = new EntityFrameworkMessageBrokerWorker<StubDbContext>(
             Microsoft.Extensions.Logging.Abstractions.NullLoggerFactory.Instance,
-            this.fixture.Context,
+            fixture.Context,
             broker,
             options);
 
@@ -218,7 +216,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         await Task.Delay(200);
 
         // Assert during processing
-        using (var inspectContext = this.fixture.CreateContext())
+        using (var inspectContext = fixture.CreateContext())
         {
             var storedDuringProcessing = inspectContext.BrokerMessages.Single();
             storedDuringProcessing.LockedBy.ShouldNotBeNullOrWhiteSpace();
@@ -229,7 +227,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
         CoordinatedLeaseRenewalStubMessageHandler.Release();
         await processingTask;
 
-        using var assertContext = this.fixture.CreateContext();
+        using var assertContext = fixture.CreateContext();
         var stored = assertContext.BrokerMessages.Single();
         stored.Status.ShouldBe(BrokerMessageStatus.Succeeded);
         stored.LockedBy.ShouldBeNull();
@@ -240,7 +238,7 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
     {
         var options = this.CreateOptions(Substitute.For<IMessageHandlerFactory>());
 
-        return new EntityFrameworkMessageBroker<StubDbContext>(this.fixture.Context, options);
+        return new EntityFrameworkMessageBroker<StubDbContext>(fixture.Context, options);
     }
 
     private EntityFrameworkMessageBrokerOptions CreateOptions(IMessageHandlerFactory handlerFactory)
@@ -259,16 +257,16 @@ public class EntityFrameworkMessageBrokerTests(StubDbContextFixture fixture) : I
     private ServiceProvider CreateProvider()
     {
         var services = new ServiceCollection();
-        services.AddScoped(_ => this.fixture.CreateContext());
+        services.AddScoped(_ => fixture.CreateContext());
 
         return services.BuildServiceProvider();
     }
 
     private async Task ResetContext()
     {
-        this.fixture.Context.ChangeTracker.Clear();
+        fixture.Context.ChangeTracker.Clear();
 
-        using var context = this.fixture.CreateContext();
+        using var context = fixture.CreateContext();
         context.BrokerMessages.RemoveRange(context.BrokerMessages.ToList());
         await context.SaveChangesAsync();
     }

@@ -27,8 +27,6 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
     EntityCommandMessagingBehaviorOptions options = null) : CommandBehaviorBase<TRequest, TResponse>(loggerFactory)
     where TRequest : class, MediatR.IRequest<TResponse>
 {
-    private readonly IMessageBroker messageBroker = messageBroker;
-
     private readonly EntityCommandMessagingBehaviorOptions options =
         options ?? new EntityCommandMessagingBehaviorOptions();
 
@@ -66,7 +64,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
     {
         var result = await next().AnyContext(); // continue pipeline
 
-        if (this.messageBroker is null)
+        if (messageBroker is null)
         {
             this.Logger.LogWarning("[{LogKey}] cannot send entity message, no messagebroker specified", Constants.LogKey);
 
@@ -106,7 +104,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
                 this.Logger.LogInformation("[{LogKey}] send entity created message (type={EntityType})",
                     Constants.LogKey,
                     instance.Entity.GetType().PrettyName());
-                await this.messageBroker?.Publish(message, cancellationToken);
+                await messageBroker?.Publish(message, cancellationToken);
             }
         }
     }
@@ -128,7 +126,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
                 this.Logger.LogInformation("[{LogKey}] send entity updated message (type={EntityType})",
                     Constants.LogKey,
                     instance?.Entity.GetType().PrettyName());
-                await this.messageBroker?.Publish(message, cancellationToken);
+                await messageBroker?.Publish(message, cancellationToken);
             }
         }
     }
@@ -150,7 +148,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
                 this.Logger.LogInformation("[{LogKey}] send entity deleted message (type={EntityType})",
                     Constants.LogKey,
                     instance.Entity.GetType().PrettyName());
-                await this.messageBroker?.Publish(message, cancellationToken);
+                await messageBroker?.Publish(message, cancellationToken);
             }
         }
     }

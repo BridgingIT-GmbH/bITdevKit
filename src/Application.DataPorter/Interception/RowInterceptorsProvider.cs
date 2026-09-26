@@ -12,19 +12,17 @@ using Microsoft.Extensions.DependencyInjection;
 /// </summary>
 public sealed class RowInterceptorsProvider(IServiceProvider serviceProvider) : IRowInterceptorsProvider
 {
-    private readonly IServiceProvider serviceProvider = serviceProvider;
-
     /// <inheritdoc/>
     public IReadOnlyList<IImportRowInterceptor<TTarget>> GetImportInterceptors<TTarget>()
         where TTarget : class
     {
-        return this.serviceProvider.GetServices<IImportRowInterceptor<TTarget>>().ToArray();
+        return serviceProvider.GetServices<IImportRowInterceptor<TTarget>>().ToArray();
     }
 
     /// <inheritdoc/>
     public IReadOnlyList<IExportRowInterceptor<TSource>> GetExportInterceptors<TSource>()
         where TSource : class
     {
-        return this.serviceProvider.GetServices<IExportRowInterceptor<TSource>>().ToArray();
+        return serviceProvider.GetServices<IExportRowInterceptor<TSource>>().ToArray();
     }
 }

@@ -19,8 +19,6 @@ using MediatR;
 /// <param name="mediator">The mediator used by the operation.</param>
 public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAggregateEventMediatorNotificationSender
 {
-    private readonly IMediator mediator = mediator;
-
     /// <summary>
     ///     Sendet das Event <see cref="savedEvent" /> über den Mediator als Notification
     /// </summary>
@@ -36,7 +34,7 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         if (genericPublishAggregateEventConstructor is not null)
         {
             var @event = genericPublishAggregateEventConstructor.Invoke([aggregate, savedEvent]);
-            await this.mediator.Publish(@event).AnyContext();
+            await mediator.Publish(@event).AnyContext();
         }
         else
         {
@@ -61,7 +59,7 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         if (genericPublishAggregateEventConstructor is not null)
         {
             var @event = genericPublishAggregateEventConstructor.Invoke([aggregate, savedEvent]);
-            await this.mediator.Publish(@event).AnyContext();
+            await mediator.Publish(@event).AnyContext();
         }
         else
         {
@@ -85,7 +83,7 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
 
-            return await this.mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
+            return await mediator.Send(@event).AnyContext() is CommandResponse<bool> commandResult &&
                 commandResult.Cancelled == false &&
                 commandResult.Result;
         }

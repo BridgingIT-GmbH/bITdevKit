@@ -21,8 +21,6 @@ public class ProjectionRequester<TAggregate>(
     ILoggerFactory logger) : IProjectionRequester<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
-    private readonly IEventStore<TAggregate> eventStore = eventStore;
-    private readonly IPublishAggregateEventSender publishAggregateEventSender = sender;
     private readonly ILogger logger = logger.CreateLogger<ProjectionRequester<TAggregate>>();
 
     /// <summary>
@@ -30,14 +28,14 @@ public class ProjectionRequester<TAggregate>(
     /// </summary>
     public async Task RequestProjectionAsync(CancellationToken cancellationToken)
     {
-        var ids = await this.eventStore.GetAggregateIdsAsync(cancellationToken).AnyContext();
+        var ids = await eventStore.GetAggregateIdsAsync(cancellationToken).AnyContext();
         foreach (var id in ids)
         {
             try
             {
-                var aggregate = await this.eventStore.GetAsync(id, cancellationToken).AnyContext();
-                await this.publishAggregateEventSender.PublishProjectionEventAsync(null, aggregate).AnyContext();
-                await this.publishAggregateEventSender.SendProjectionEventAsync(null, aggregate).AnyContext();
+                var aggregate = await eventStore.GetAsync(id, cancellationToken).AnyContext();
+                await sender.PublishProjectionEventAsync(null, aggregate).AnyContext();
+                await sender.SendProjectionEventAsync(null, aggregate).AnyContext();
             }
             catch (Exception ex)
             {
@@ -51,8 +49,8 @@ public class ProjectionRequester<TAggregate>(
     /// </summary>
     public async Task RequestProjectionAsync(Guid aggregateId, CancellationToken cancellationToken)
     {
-        var aggregate = await this.eventStore.GetAsync(aggregateId, cancellationToken).AnyContext();
-        await this.publishAggregateEventSender.PublishProjectionEventAsync(null, aggregate).AnyContext();
-        await this.publishAggregateEventSender.SendProjectionEventAsync(null, aggregate).AnyContext();
+        var aggregate = await eventStore.GetAsync(aggregateId, cancellationToken).AnyContext();
+        await sender.PublishProjectionEventAsync(null, aggregate).AnyContext();
+        await sender.SendProjectionEventAsync(null, aggregate).AnyContext();
     }
 }

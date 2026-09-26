@@ -16,7 +16,6 @@ namespace BridgingIT.DevKit.Application.DataPorter;
 public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true) : Stream
 {
     private readonly Stream innerStream = innerStream ?? throw new ArgumentNullException(nameof(innerStream));
-    private readonly bool leaveOpen = leaveOpen;
     private long bytesWritten;
     private bool disposed;
 
@@ -170,7 +169,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
             return;
         }
 
-        if (disposing && !this.leaveOpen)
+        if (disposing && !leaveOpen)
         {
             this.innerStream.Dispose();
         }
@@ -187,7 +186,7 @@ public sealed class WriteStreamWrapper(Stream innerStream, bool leaveOpen = true
             return;
         }
 
-        if (!this.leaveOpen)
+        if (!leaveOpen)
         {
             await this.innerStream.DisposeAsync();
         }

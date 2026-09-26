@@ -15,12 +15,10 @@ using Microsoft.Extensions.Diagnostics.HealthChecks;
 public class HealthCheckJob(ILoggerFactory loggerFactory, HealthCheckService healthCheckService)
     : JobBase(loggerFactory)
 {
-    private readonly HealthCheckService healthCheckService = healthCheckService;
-
     /// <inheritdoc/>
     public override async Task Process(IJobExecutionContext context, CancellationToken cancellationToken = default)
     {
-        var report = await this.healthCheckService.CheckHealthAsync(cancellationToken);
+        var report = await healthCheckService.CheckHealthAsync(cancellationToken);
         if (report is not null)
         {
             if (report.Status == HealthStatus.Healthy)

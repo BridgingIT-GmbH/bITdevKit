@@ -30,7 +30,6 @@ public sealed class DataPorterService(
     private readonly IEnumerable<IDataPorterProvider> providers = providers ?? [];
     private readonly IRowInterceptorsProvider rowInterceptorsProvider = rowInterceptorsProvider ?? NullRowInterceptorsProvider.Instance;
     private readonly ILogger<DataPorterService> logger = loggerFactory?.CreateLogger<DataPorterService>() ?? NullLogger<DataPorterService>.Instance;
-    private readonly ILoggerFactory loggerFactory = loggerFactory;
 
     /// <inheritdoc/>
     public async Task<Result<ExportResult>> ExportAsync<TSource>(
@@ -65,7 +64,7 @@ public sealed class DataPorterService(
         configuration.ProgressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
         configuration.RowInterceptionExecutor = new ExportRowInterceptionExecutor<TSource>(
             this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
-            this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
+            loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
         this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
         this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "sync");
@@ -167,7 +166,7 @@ public sealed class DataPorterService(
         configuration.ProgressTracker = options.Progress is null ? null : new ExportProgressTracker(options.Progress, options.Format);
         configuration.RowInterceptionExecutor = new ExportRowInterceptionExecutor<TSource>(
             this.rowInterceptorsProvider.GetExportInterceptors<TSource>(),
-            this.loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
+            loggerFactory?.CreateLogger(typeof(ExportRowInterceptionExecutor<TSource>).FullName ?? typeof(ExportRowInterceptionExecutor<TSource>).Name));
         var provider = providerResult.Value;
         this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, configuration.Compression, configuration);
         this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyExport, "export", typeof(TSource).Name, options.Format, provider.GetType().Name, "async");
@@ -743,7 +742,7 @@ public sealed class DataPorterService(
         configuration.ProgressTracker = options.Progress is null ? null : new ImportProgressTracker(options.Progress, options.Format);
         configuration.RowInterceptionExecutor = new ImportRowInterceptionExecutor<TTarget>(
             this.rowInterceptorsProvider.GetImportInterceptors<TTarget>(),
-            this.loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
+            loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
         var provider = providerResult.Value;
         this.logger.LogDebug("[{LogKey}] configuration merged (operation={Operation}, type={Type}, format={Format}, compression={Compression}, configuration={Configuration})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, configuration.Compression, configuration);
         this.logger.LogDebug("[{LogKey}] provider resolved (operation={Operation}, type={Type}, format={Format}, provider={Provider}, mode={Mode})", Constants.LogKeyImport, "import", typeof(TTarget).Name, options.Format, provider.GetType().Name, "aggregate");
@@ -860,7 +859,7 @@ public sealed class DataPorterService(
         configuration.ProgressTracker = options.Progress is null ? null : new ImportProgressTracker(options.Progress, options.Format);
         configuration.RowInterceptionExecutor = new ImportRowInterceptionExecutor<TTarget>(
             this.rowInterceptorsProvider.GetImportInterceptors<TTarget>(),
-            this.loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
+            loggerFactory?.CreateLogger(typeof(ImportRowInterceptionExecutor<TTarget>).FullName ?? typeof(ImportRowInterceptionExecutor<TTarget>).Name));
         var provider = providerResult.Value;
         var stopwatch = Stopwatch.StartNew();
         var resultCount = 0;
@@ -1078,7 +1077,7 @@ public sealed class DataPorterService(
             ?.MakeGenericMethod(itemType);
         var interceptors = getInterceptorsMethod?.Invoke(this.rowInterceptorsProvider, null);
         var executorType = typeof(ExportRowInterceptionExecutor<>).MakeGenericType(itemType);
-        var logger = this.loggerFactory?.CreateLogger(executorType.FullName ?? executorType.Name);
+        var logger = loggerFactory?.CreateLogger(executorType.FullName ?? executorType.Name);
 
         return Activator.CreateInstance(executorType, interceptors, logger);
     }

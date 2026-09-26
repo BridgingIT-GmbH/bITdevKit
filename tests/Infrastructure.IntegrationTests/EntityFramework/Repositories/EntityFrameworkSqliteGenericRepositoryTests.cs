@@ -10,7 +10,6 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 public class EntityFrameworkSqliteGenericRepositoryTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkGenericRepositoryTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task DeleteAsync_ByEntity_EntityDeleted()
@@ -194,6 +193,6 @@ public class EntityFrameworkSqliteGenericRepositoryTests(ITestOutputHelper outpu
 
     protected override StubDbContext GetContext(string connectionString = null, bool forceNew = false)
     {
-        return this.fixture.EnsureSqliteDbContext(this.output, forceNew);
+        return this.fixture.EnsureSqliteDbContext(output, forceNew);
     }
 }

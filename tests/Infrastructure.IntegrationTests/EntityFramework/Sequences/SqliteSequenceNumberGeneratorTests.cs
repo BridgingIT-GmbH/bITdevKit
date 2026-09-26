@@ -20,14 +20,13 @@ public class SqliteSequenceNumberGeneratorTests(ITestOutputHelper output, TestEn
     : SequenceNumberGeneratorTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     protected override ISequenceNumberGenerator CreateGenerator()
     {
         var services = new ServiceCollection();
-        services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(this.output)));
+        services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(output)));
 
-        var db = this.fixture.EnsureSqliteDbContext(this.output);
+        var db = this.fixture.EnsureSqliteDbContext(output);
         services.AddDbContext<StubDbContext>(options =>
         {
             options.UseSqlite(this.fixture.SqliteConnectionString);

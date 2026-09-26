@@ -10,8 +10,6 @@ using BridgingIT.DevKit.Examples.DoFiesta.Domain.Model;
 
 public class TodoItemLifecycleAssessmentActivity(IOrchestrationClock clock) : IOrchestrationActivity<TodoItemLifecycleOrchestrationData>
 {
-    private readonly IOrchestrationClock clock = clock;
-
     public Task<OrchestrationOutcome> ExecuteAsync(
         OrchestrationContext<TodoItemLifecycleOrchestrationData> context,
         CancellationToken cancellationToken = default)
@@ -32,7 +30,7 @@ public class TodoItemLifecycleAssessmentActivity(IOrchestrationClock clock) : IO
             return Task.FromResult(OrchestrationOutcome.Wait("Waiting for a due date or status change."));
         }
 
-        var now = this.clock.UtcNow.UtcDateTime;
+        var now = clock.UtcNow.UtcDateTime;
         var dueDateUtc = NormalizeUtc(data.DueDate.Value);
         data.DueDate = dueDateUtc;
 

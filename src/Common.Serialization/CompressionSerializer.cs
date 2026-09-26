@@ -12,8 +12,6 @@ using System.IO.Compression;
 /// </summary>
 public class CompressionSerializer(ISerializer inner) : ISerializer
 {
-    private readonly ISerializer inner = inner;
-
     /// <summary>
     ///     Serializes the specified value.
     /// </summary>
@@ -32,7 +30,7 @@ public class CompressionSerializer(ISerializer inner) : ISerializer
         }
 
         using var compress = new DeflateStream(output, CompressionMode.Compress, true);
-        this.inner.Serialize(value, compress);
+        inner.Serialize(value, compress);
     }
 
     /// <summary>
@@ -54,7 +52,7 @@ public class CompressionSerializer(ISerializer inner) : ISerializer
 
         using var decompress = new DeflateStream(input, CompressionMode.Decompress, true);
 
-        return this.inner.Deserialize(decompress, type);
+        return inner.Deserialize(decompress, type);
     }
 
     /// <summary>
@@ -75,6 +73,6 @@ public class CompressionSerializer(ISerializer inner) : ISerializer
 
         using var decompress = new DeflateStream(input, CompressionMode.Decompress, true);
 
-        return this.inner.Deserialize<T>(decompress);
+        return inner.Deserialize<T>(decompress);
     }
 }

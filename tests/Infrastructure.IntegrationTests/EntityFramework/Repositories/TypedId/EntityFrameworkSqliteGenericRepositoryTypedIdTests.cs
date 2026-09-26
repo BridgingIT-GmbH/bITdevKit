@@ -11,7 +11,6 @@ public class EntityFrameworkSqliteGenericRepositoryTypedIdTests(ITestOutputHelpe
     : EntityFrameworkGenericRepositoryTypedIdTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task DeleteAsync_ByEntity_EntityDeleted()
@@ -153,6 +152,6 @@ public class EntityFrameworkSqliteGenericRepositoryTypedIdTests(ITestOutputHelpe
 
     protected override StubDbContext GetContext(string connectionString = null, bool forceNew = false)
     {
-        return this.fixture.EnsureSqliteDbContext(this.output, forceNew);
+        return this.fixture.EnsureSqliteDbContext(output, forceNew);
     }
 }

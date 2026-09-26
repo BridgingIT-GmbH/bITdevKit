@@ -38,7 +38,6 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<SystemEndpoints> logger = null) : EndpointsBase
 {
     private readonly SystemEndpointsOptions options = options ?? new SystemEndpointsOptions();
-    private readonly ILogger<SystemEndpoints> logger = logger;
     private readonly Stopwatch uptimeStopwatch = Stopwatch.StartNew();
 
     /// <summary>
@@ -199,7 +198,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "Failed to retrieve system info.");
+            logger?.LogError(ex, "Failed to retrieve system info.");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -230,7 +229,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "Failed to retrieve system modules.");
+            logger?.LogError(ex, "Failed to retrieve system modules.");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -267,7 +266,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
         }
         catch (Exception ex)
         {
-            this.logger?.LogWarning(ex, "Failed to resolve host addresses for {HostName}.", hostName);
+            logger?.LogWarning(ex, "Failed to resolve host addresses for {HostName}.", hostName);
             return "N/A";
         }
     }

@@ -24,7 +24,6 @@ public class CoreDomainSeederTask(
     IEntityPermissionProvider entityPermissionProvider) : IStartupTask
 {
     private readonly ILogger<CoreDomainSeederTask> logger = loggerFactory?.CreateLogger<CoreDomainSeederTask>() ?? NullLoggerFactory.Instance.CreateLogger<CoreDomainSeederTask>();
-    private readonly IDatabaseReadyService databaseReadyService = databaseReadyService;
 
     /// <summary>
     /// Executes the startup task asynchronously to seed core domain data into the database.
@@ -35,7 +34,7 @@ public class CoreDomainSeederTask(
     {
         this.logger.LogInformation("[{LogKey}] seed core (task={StartupTaskType})", "IFR", this.GetType().PrettyName());
 
-        await this.databaseReadyService.WaitForReadyAsync(cancellationToken: cancellationToken); // Ensure the database is ready (migrated) before seeding data
+        await databaseReadyService.WaitForReadyAsync(cancellationToken: cancellationToken); // Ensure the database is ready (migrated) before seeding data
 
         // Seed entities into the repositories
         await this.SeedTodoItems(todoItemRepository, cancellationToken);

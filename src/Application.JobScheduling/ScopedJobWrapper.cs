@@ -14,8 +14,6 @@ namespace BridgingIT.DevKit.Application.JobScheduling;
 public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IModuleContextAccessor> moduleAccessors)
     : JobWrapper(null, innerJob, moduleAccessors)
 {
-    private readonly IServiceScope scope = scope;
-
     /// <inheritdoc/>
     public override async Task Execute(IJobExecutionContext context)
     {
@@ -24,7 +22,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
         context.Trigger.JobDataMap.TryGetString(Constants.CorrelationIdKey, out var triggerCorrelationId);
         var correlationId = triggerCorrelationId.EmptyToNull() ?? GuidGenerator.CreateSequential().ToString("N");
         var flowId = GuidGenerator.Create(this.GetType().ToString()).ToString("N");
-        var logger = this.scope.ServiceProvider.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
+        var logger = scope.ServiceProvider.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
         var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
         var jobTypeName = context.JobDetail.JobType.FullName;
 
@@ -38,7 +36,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
         {
             try
             {
-                var behaviors = this.scope.ServiceProvider.GetServices<IJobSchedulingBehavior>();
+                var behaviors = scope.ServiceProvider.GetServices<IJobSchedulingBehavior>();
                 logger?.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
 
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
@@ -59,7 +57,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
     /// <inheritdoc/>
     public override void Dispose()
     {
-        this.scope?.Dispose();
+        scope?.Dispose();
         base.Dispose();
     }
 

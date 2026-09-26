@@ -13,8 +13,6 @@ using Microsoft.Extensions.Logging;
 [UnitTest("Infrastructure")]
 public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture = fixture;
-
     [Fact]
     public async Task Publish_IsCalled_OutboxReceivedMessage()
     {
@@ -25,7 +23,7 @@ public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) :
         var cancellationTokenSource = new CancellationTokenSource();
         var cancellationToken = cancellationTokenSource.Token;
         var services = new ServiceCollection()
-            .AddScoped(sp => this.fixture.Context);
+            .AddScoped(sp => fixture.Context);
         var serviceProvider = services.BuildServiceProvider();
 
         var sut = new InProcessMessageBroker(o => o

@@ -30,10 +30,6 @@ public class TodoItemDeletedDomainEventHandler(
     ITodoItemOrchestrationCoordinator orchestrationCoordinator)
     : DomainEventHandlerBase<TodoItemDeletedDomainEvent>(loggerFactory)
 {
-    private readonly IMessageBroker broker = broker;
-    private readonly IQueueBroker queueBroker = queueBroker;
-    private readonly ITodoItemOrchestrationCoordinator orchestrationCoordinator = orchestrationCoordinator;
-
     /// <summary>
     /// Determines whether this handler can handle the given event.
     /// Returns <c>true</c> unconditionally in this template.
@@ -48,7 +44,7 @@ public class TodoItemDeletedDomainEventHandler(
     {
         this.Logger.LogInformation("DoFiesta - TodoItemDeletedDomainEvent handled in Application " + notification.Model?.Title);
 
-        await this.broker.Publish(
+        await broker.Publish(
             new TodoItemActivityMessage(
                 notification.Model?.Id?.ToString(),
                 notification.Model?.Title,
@@ -56,7 +52,7 @@ public class TodoItemDeletedDomainEventHandler(
                 notification.Model?.Status.ToString()),
             cancellationToken);
 
-        await this.queueBroker.Enqueue(
+        await queueBroker.Enqueue(
             new TodoItemEchoQueueMessage(
                 notification.Model?.Id?.ToString(),
                 notification.Model?.Title,
@@ -66,7 +62,7 @@ public class TodoItemDeletedDomainEventHandler(
 
         if (notification.Model is not null) // ensure orchestration is stopped for this todo item as it has been deleted and no longer needs lifecycle tracking or reminders
         {
-            await this.orchestrationCoordinator.HandleDeletedAsync(notification.Model, cancellationToken);
+            await orchestrationCoordinator.HandleDeletedAsync(notification.Model, cancellationToken);
         }
     }
 }

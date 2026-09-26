@@ -35,17 +35,14 @@ public static class ResultsExtensions
 
     private sealed class HeaderResult(IResult result, HeaderDictionary headers) : IResult
     {
-        private readonly IResult result = result;
-        private readonly HeaderDictionary headers = headers;
-
         public async Task ExecuteAsync(HttpContext httpContext)
         {
-            foreach (var header in this.headers)
+            foreach (var header in headers)
             {
                 httpContext.Response.Headers[header.Key] = header.Value;
             }
 
-            await this.result.ExecuteAsync(httpContext);
+            await result.ExecuteAsync(httpContext);
         }
     }
 }

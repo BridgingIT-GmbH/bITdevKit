@@ -960,15 +960,13 @@ public class EntityBulkInsertMappingBuilderTests
     private sealed class RequiredShadowValueProvider(string value)
         : IEntityBulkInsertShadowValueProvider<RequiredShadowEntity>
     {
-        private readonly string value = value;
-
         public bool TryGetValue(
             EntityBulkInsertShadowPropertyContext<RequiredShadowEntity> context,
-            out object value
+            out object value1
         )
         {
-            value = context.Property.Name == "TenantId" ? this.value : null;
-            return value is not null;
+            value1 = context.Property.Name == "TenantId" ? value : null;
+            return value1 is not null;
         }
     }
 

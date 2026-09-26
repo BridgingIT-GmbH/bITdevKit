@@ -20,13 +20,12 @@ public class SqlServerSequenceNumberGeneratorTests(ITestOutputHelper output, Tes
     : SequenceNumberGeneratorTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
     private readonly string connectionString = fixture.CreateSqlConnectionString($"Sequences_{Guid.NewGuid():N}");
 
     protected override ISequenceNumberGenerator CreateGenerator()
     {
         var services = new ServiceCollection();
-        services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(this.output)));
+        services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(output)));
 
         services.AddDbContext<StubDbContext>(options =>
         {

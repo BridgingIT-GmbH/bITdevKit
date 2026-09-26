@@ -28,11 +28,6 @@ public class EventStore<TAggregate>(
     IEventStoreOptions<TAggregate> eventStoreOptions) : IEventStore<TAggregate>
     where TAggregate : EventSourcingAggregateRoot
 {
-    private readonly IMediator mediator = mediator;
-    private readonly IEventStoreRepository eventStoreRepository = eventStoreRepository;
-    private readonly IPublishAggregateEventSender eventSender = eventSender;
-    private readonly IEventStoreOptions<TAggregate> eventStoreOptions = eventStoreOptions;
-
     /// <summary>
     /// Gets .
     /// </summary>
@@ -53,8 +48,8 @@ public class EventStore<TAggregate>(
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<TAggregate> GetAsync(Guid aggregateId, bool forceReplay, CancellationToken cancellationToken)
     {
-        var snapshot = this.eventStoreOptions.IsSnapshotEnabled
-            ? await this.eventStoreRepository.GetSnapshotAsync<TAggregate>(aggregateId, CancellationToken.None)
+        var snapshot = eventStoreOptions.IsSnapshotEnabled
+            ? await eventStoreRepository.GetSnapshotAsync<TAggregate>(aggregateId, CancellationToken.None)
                 .AnyContext()
             : null;
         if (snapshot is null || forceReplay)
@@ -78,9 +73,9 @@ public class EventStore<TAggregate>(
                     $"Aggregate {typeof(TAggregate)} with id {aggregateId} could not be created");
             }
 
-            if (this.eventStoreOptions.IsSnapshotEnabled)
+            if (eventStoreOptions.IsSnapshotEnabled)
             {
-                await this.eventStoreRepository.SaveSnapshotAsync(aggregate, cancellationToken).AnyContext();
+                await eventStoreRepository.SaveSnapshotAsync(aggregate, cancellationToken).AnyContext();
             }
 
             return aggregate;
@@ -96,7 +91,7 @@ public class EventStore<TAggregate>(
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IEnumerable<Guid>> GetAggregateIdsAsync(CancellationToken cancellationToken)
     {
-        return await this.eventStoreRepository.GetAggregateIdsAsync<TAggregate>(cancellationToken).AnyContext();
+        return await eventStoreRepository.GetAggregateIdsAsync<TAggregate>(cancellationToken).AnyContext();
     }
 
     /// <summary>
@@ -126,7 +121,7 @@ public class EventStore<TAggregate>(
     {
         EnsureArg.IsNotNull(aggregate, nameof(aggregate));
 
-        var maxVersion = await this.eventStoreRepository.GetMaxVersionAsync<TAggregate>(aggregate.Id, cancellationToken)
+        var maxVersion = await eventStoreRepository.GetMaxVersionAsync<TAggregate>(aggregate.Id, cancellationToken)
             .AnyContext();
 
         var fn = new Func<Task>(async () =>
@@ -147,12 +142,12 @@ public class EventStore<TAggregate>(
 
                 @event.AggregateVersion += diff;
 
-                await this.eventStoreRepository.AddAsync<TAggregate>(@event, cancellationToken).AnyContext();
+                await eventStoreRepository.AddAsync<TAggregate>(@event, cancellationToken).AnyContext();
                 (aggregate as IAggregateRootCommitting)?.EventHasBeenAddedToEventStore(@event);
-                await this.eventSender.WriteToOutboxAsync(@event as AggregateEvent, aggregate).AnyContext();
+                await eventSender.WriteToOutboxAsync(@event as AggregateEvent, aggregate).AnyContext();
                 try
                 {
-                    await (aggregate as IAggregateRootCommitting).EventHasBeenCommittedAsync(this.mediator, @event)
+                    await (aggregate as IAggregateRootCommitting).EventHasBeenCommittedAsync(mediator, @event)
                         .AnyContext();
                 }
                 catch (Exception ex)
@@ -164,26 +159,26 @@ public class EventStore<TAggregate>(
 
                 if (sendProjectionRequestForEveryEvent)
                 {
-                    await this.eventSender.SendProjectionEventAsync(@event, aggregate).AnyContext();
+                    await eventSender.SendProjectionEventAsync(@event, aggregate).AnyContext();
                 }
 
-                await this.eventSender.SendEventOccuredAsync(@event, aggregate).AnyContext();
+                await eventSender.SendEventOccuredAsync(@event, aggregate).AnyContext();
 
-                await this.eventSender.PublishProjectionEventAsync(@event, aggregate).AnyContext();
-                await this.eventSender.PublishEventOccuredAsync(@event, aggregate).AnyContext();
+                await eventSender.PublishProjectionEventAsync(@event, aggregate).AnyContext();
+                await eventSender.PublishEventOccuredAsync(@event, aggregate).AnyContext();
             }
 
-            if (this.eventStoreOptions.IsSnapshotEnabled)
+            if (eventStoreOptions.IsSnapshotEnabled)
             {
-                await this.eventStoreRepository.SaveSnapshotAsync(aggregate, cancellationToken).AnyContext();
+                await eventStoreRepository.SaveSnapshotAsync(aggregate, cancellationToken).AnyContext();
             }
         });
 
-        await this.eventStoreRepository.ExecuteScopedAsync(fn).AnyContext();
+        await eventStoreRepository.ExecuteScopedAsync(fn).AnyContext();
 
         if (!sendProjectionRequestForEveryEvent)
         {
-            await this.eventSender.SendProjectionEventAsync(null, aggregate).AnyContext();
+            await eventSender.SendProjectionEventAsync(null, aggregate).AnyContext();
         }
     }
 
@@ -195,7 +190,7 @@ public class EventStore<TAggregate>(
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<IAggregateEvent[]> GetEventsAsync(Guid aggregateId, CancellationToken cancellationToken)
     {
-        return await this.eventStoreRepository.GetEventsAsync<TAggregate>(aggregateId, CancellationToken.None)
+        return await eventStoreRepository.GetEventsAsync<TAggregate>(aggregateId, CancellationToken.None)
             .AnyContext();
     }
 

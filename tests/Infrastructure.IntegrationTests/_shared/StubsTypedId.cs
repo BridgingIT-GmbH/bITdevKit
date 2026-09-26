@@ -118,11 +118,9 @@ public class PostStatus(int id, string value, string code, string description) :
 
 public class BlogEmailSpecification(string email) : Specification<Blog>
 {
-    private readonly string email = email;
-
     public override Expression<Func<Blog, bool>> ToExpression()
     {
-        return t => t.Email.Value == this.email;
+        return t => t.Email.Value == email;
     }
 }
 

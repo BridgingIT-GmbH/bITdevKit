@@ -75,11 +75,9 @@ public static class ModuleName
     [AttributeUsage(AttributeTargets.Assembly)]
     public class Attribute(string value) : System.Attribute
     {
-        private readonly string value = value;
-
         /// <summary>
         ///     Gets the module name with surrounding quotation marks removed.
         /// </summary>
-        public string Value => this.value.Trim('"');
+        public string Value => value.Trim('"');
     }
 }

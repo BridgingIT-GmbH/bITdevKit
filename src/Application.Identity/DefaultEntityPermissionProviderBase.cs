@@ -43,8 +43,6 @@ public abstract class DefaultEntityPermissionProviderBase<TEntity> : IDefaultEnt
     /// <param name="permissions">The set of permissions to configure.</param>
     protected class DefaultPermissionConfiguration(HashSet<string> permissions)
     {
-        private readonly HashSet<string> permissions = permissions;
-
         /// <summary>
         /// Adds a permission to the default set.
         /// </summary>
@@ -52,20 +50,20 @@ public abstract class DefaultEntityPermissionProviderBase<TEntity> : IDefaultEnt
         /// <returns>The configuration object for method chaining.</returns>
         public DefaultPermissionConfiguration AddPermission(string permission)
         {
-            this.permissions.Add(permission);
+            permissions.Add(permission);
             return this;
         }
 
         /// <summary>
         /// Adds multiple permissions to the default set.
         /// </summary>
-        /// <param name="permissions">The permissions to add.</param>
+        /// <param name="permissions1">The permissions to add.</param>
         /// <returns>The configuration object for method chaining.</returns>
-        public DefaultPermissionConfiguration AddPermissions(params string[] permissions)
+        public DefaultPermissionConfiguration AddPermissions(params string[] permissions1)
         {
-            foreach (var permission in permissions)
+            foreach (var permission in permissions1)
             {
-                this.permissions.Add(permission);
+                permissions.Add(permission);
             }
 
             return this;

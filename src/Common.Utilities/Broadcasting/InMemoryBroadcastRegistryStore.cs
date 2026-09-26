@@ -28,8 +28,6 @@ public sealed class InMemoryBroadcastRegistryStore(
     private readonly Dictionary<string, BroadcastNodeRegistration> registrations = new(
         StringComparer.OrdinalIgnoreCase
     );
-    private readonly BroadcastingOptions options = options;
-    private readonly TimeProvider timeProvider = timeProvider;
 
     /// <inheritdoc />
     public BroadcastRegistryCapabilities Capabilities { get; } = new(false, false);
@@ -133,11 +131,11 @@ public sealed class InMemoryBroadcastRegistryStore(
                 return Task.CompletedTask;
             }
 
-            var now = this.timeProvider.GetUtcNow();
+            var now = timeProvider.GetUtcNow();
             var failures = succeeded ? 0 : registration.ConsecutiveFailureCount + 1;
             this.registrations[nodeIdentity] = registration with
             {
-                IsActive = succeeded || failures < this.options.UnreachableFailureThreshold,
+                IsActive = succeeded || failures < options.UnreachableFailureThreshold,
                 LastSuccessUtc = succeeded ? now : registration.LastSuccessUtc,
                 LastFailureUtc = succeeded ? null : now,
                 LastFailure =
@@ -167,7 +165,7 @@ public sealed class InMemoryBroadcastRegistryStore(
                 {
                     IsActive = true,
                     LeaseExpiresUtc = leaseExpiresUtc,
-                    LeaseRenewedUtc = this.timeProvider.GetUtcNow(),
+                    LeaseRenewedUtc = timeProvider.GetUtcNow(),
                 };
             }
         }

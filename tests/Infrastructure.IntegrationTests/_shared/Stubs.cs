@@ -158,11 +158,9 @@ public class LocationStub : Entity<Guid>
 
 public class PersonByEmailSpecification(string email) : Specification<PersonStub>
 {
-    private readonly string email = email;
-
     public override Expression<Func<PersonStub, bool>> ToExpression()
     {
-        return t => t.Email.Value == this.email;
+        return t => t.Email.Value == email;
     }
 }
 

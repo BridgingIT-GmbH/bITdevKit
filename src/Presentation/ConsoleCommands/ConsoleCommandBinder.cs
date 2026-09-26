@@ -264,10 +264,9 @@ public static class ConsoleCommandBinder
             else if (t.StartsWith('-') && t.Length > 1 && !t.StartsWith("--"))
             {
                 var alias = t[1..];
-                string val = null;
                 if (i + 1 < tokens.Length && !tokens[i + 1].StartsWith("-"))
                 {
-                    val = tokens[i + 1];
+                    var val = tokens[i + 1];
                     dict[alias] = new ParsedOption(val, [i, i + 1]);
                     i++;
                 }

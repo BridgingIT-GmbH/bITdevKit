@@ -26,7 +26,6 @@ public class ModuleScopeBehavior<TRequest, TResponse>(
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
     private readonly IEnumerable<ActivitySource> activitySources = activitySources;
     private const string ModuleNameLogKey = "ModuleName";
 
@@ -49,7 +48,7 @@ public class ModuleScopeBehavior<TRequest, TResponse>(
         Func<Task<TResponse>> next,
         CancellationToken cancellationToken)
     {
-        var module = this.moduleAccessors?.Find(request.GetType());
+        var module = moduleAccessors?.Find(request.GetType());
         var moduleName = module?.Name ?? "UnknownModule";
 
         using (this.Logger.BeginScope(new Dictionary<string, object>

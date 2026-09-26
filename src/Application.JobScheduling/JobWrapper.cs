@@ -20,7 +20,6 @@ public class JobWrapper(
     private const string FlowKey = "FlowId";
     private const string JobIdKey = "JobId";
     private const string JobTypeKey = "JobType";
-    private readonly IServiceProvider serviceProvider = serviceProvider;
 
     /// <summary>
     /// Gets or sets the inner job.
@@ -41,7 +40,7 @@ public class JobWrapper(
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        var logger = this.serviceProvider?.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
+        var logger = serviceProvider?.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
         context.Trigger.JobDataMap.TryGetString(Constants.CorrelationIdKey, out var triggerCorrelationId);
         var correlationId = triggerCorrelationId.EmptyToNull() ?? GuidGenerator.CreateSequential().ToString("N");
         var flowId = GuidGenerator.Create(this.GetType().ToString()).ToString("N");
@@ -58,7 +57,7 @@ public class JobWrapper(
         {
             try
             {
-                var behaviors = this.serviceProvider?.GetServices<IJobSchedulingBehavior>();
+                var behaviors = serviceProvider?.GetServices<IJobSchedulingBehavior>();
                 logger?.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
                 // Activity.Current?.AddEvent(new($"behaviours: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute"));
 

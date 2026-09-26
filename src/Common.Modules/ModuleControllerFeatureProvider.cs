@@ -17,8 +17,6 @@ using Serilog;
 public class ModuleControllerFeatureProvider(IEnumerable<IModuleContextAccessor> moduleAccessors)
     : ControllerFeatureProvider
 {
-    private readonly IEnumerable<IModuleContextAccessor> moduleAccessors = moduleAccessors;
-
     /// <inheritdoc/>
     protected override bool IsController(TypeInfo typeInfo)
     {
@@ -53,7 +51,7 @@ public class ModuleControllerFeatureProvider(IEnumerable<IModuleContextAccessor>
             typeInfo.Name);
         Console.WriteLine($"{ModuleConstants.LogKey} controller provider CHECK (controller={typeInfo.Name})");
 
-        var module = this.moduleAccessors.Find(typeInfo);
+        var module = moduleAccessors.Find(typeInfo);
 #pragma warning disable RCS1146 // Use conditional access.
         if (module is not null && !module.Enabled)
         {

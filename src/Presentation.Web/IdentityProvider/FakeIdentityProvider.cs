@@ -84,11 +84,7 @@ public class FakeIdentityProvider(
     IAuthorizationCodeService authorizationCodeService,
     IPasswordValidator passwordValidator) : IFakeIdentityProvider
 {
-    private readonly ILogger<FakeIdentityProvider> logger = logger;
     private readonly FakeIdentityProviderEndpointsOptions options = options ?? new FakeIdentityProviderEndpointsOptions();
-    private readonly ITokenService tokenService = tokenService;
-    private readonly IAuthorizationCodeService authorizationCodeService = authorizationCodeService;
-    private readonly IPasswordValidator passwordValidator = passwordValidator;
 
     /// <summary>
     /// Executes the generate authorization code operation.
@@ -102,7 +98,7 @@ public class FakeIdentityProvider(
         var user = this.options.Users?.FirstOrDefault(u => u.Email.Equals(email, StringComparison.OrdinalIgnoreCase))
             ?? throw new OAuth2Exception("invalid_grant", "Invalid credentials");
 
-        if (!this.passwordValidator.ValidatePassword(user, password))
+        if (!passwordValidator.ValidatePassword(user, password))
         {
             throw new OAuth2Exception("invalid_grant", "Invalid credentials");
         }
@@ -112,7 +108,7 @@ public class FakeIdentityProvider(
             throw new OAuth2Exception("invalid_grant", "User is disabled");
         }
 
-        return this.authorizationCodeService.GenerateCode(user, request);
+        return authorizationCodeService.GenerateCode(user, request);
     }
 
     /// <summary>
@@ -133,7 +129,7 @@ public class FakeIdentityProvider(
             throw new OAuth2Exception("invalid_grant", "User is disabled");
         }
 
-        return this.authorizationCodeService.GenerateCode(user, request);
+        return authorizationCodeService.GenerateCode(user, request);
     }
 
     /// <summary>
@@ -163,8 +159,8 @@ public class FakeIdentityProvider(
             throw new OAuth2Exception("invalid_grant", "Invalid authorization code (code)");
         }
 
-        this.logger.LogDebug("Validation authentication code {AuthCode}", code);
-        var data = this.authorizationCodeService.ValidateCode(code);
+        logger.LogDebug("Validation authentication code {AuthCode}", code);
+        var data = authorizationCodeService.ValidateCode(code);
         if (data == null)
         {
             throw new OAuth2Exception("invalid_grant", "Invalid authorization code (data)");
@@ -204,7 +200,7 @@ public class FakeIdentityProvider(
         }
 
         var user = (this.options.Users?.FirstOrDefault(u => u.Email.Equals(username, StringComparison.OrdinalIgnoreCase))) ?? throw new OAuth2Exception("invalid_grant", "Invalid credentials");
-        if (string.IsNullOrEmpty(user.Password) || !this.passwordValidator.ValidatePassword(user, password))
+        if (string.IsNullOrEmpty(user.Password) || !passwordValidator.ValidatePassword(user, password))
         {
             throw new OAuth2Exception("invalid_grant", "Invalid credentials");
         }
@@ -240,7 +236,7 @@ public class FakeIdentityProvider(
 
         return Task.FromResult(new TokenResponse
         {
-            AccessToken = this.tokenService.GenerateServiceToken(clientId, scope),
+            AccessToken = tokenService.GenerateServiceToken(clientId, scope),
             TokenType = "Bearer",
             ExpiresIn = (int)this.options.AccessTokenLifetime.TotalSeconds,
             Scope = scope
@@ -267,7 +263,7 @@ public class FakeIdentityProvider(
             httpContext?.Request?.Cookies?.TryGetValue(".AspNetCore.Identity", out refreshToken);
         }
 
-        var validation = this.tokenService.ValidateRefreshToken(refreshToken);
+        var validation = tokenService.ValidateRefreshToken(refreshToken);
         if (!validation.IsValid)
         {
             throw new OAuth2Exception("invalid_grant", "Invalid refresh token");
@@ -297,8 +293,8 @@ public class FakeIdentityProvider(
         var isOidcRequest = scope?.Contains("openid", StringComparison.OrdinalIgnoreCase) == true;
         var response = new TokenResponse
         {
-            AccessToken = this.tokenService.GenerateAccessToken(user, clientId, scope),
-            RefreshToken = this.tokenService.GenerateRefreshToken(user, clientId, scope),
+            AccessToken = tokenService.GenerateAccessToken(user, clientId, scope),
+            RefreshToken = tokenService.GenerateRefreshToken(user, clientId, scope),
             TokenType = "Bearer",
             ExpiresIn = (int)this.options.AccessTokenLifetime.TotalSeconds,
             RefreshExpiresIn = (int)this.options.RefreshTokenLifetime.TotalSeconds,
@@ -308,7 +304,7 @@ public class FakeIdentityProvider(
 
         if (isOidcRequest)
         {
-            response.IdToken = this.tokenService.GenerateIdToken(user, clientId, nonce);
+            response.IdToken = tokenService.GenerateIdToken(user, clientId, nonce);
         }
 
         return response;
@@ -347,7 +343,7 @@ public class FakeIdentityProvider(
         }
         catch (InvalidOperationException ex)
         {
-            this.logger.LogError(ex, "Failed to sign in user");
+            logger.LogError(ex, "Failed to sign in user");
         }
     }
 }

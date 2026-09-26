@@ -16,7 +16,6 @@ public sealed class ResolveWeatherReportPeriodsStep(
     IBusinessCalendarResolver businessCalendarResolver = null) : PipelineStep<WeatherIngestionContext>
 {
     private readonly TimeProvider timeProvider = timeProvider ?? TimeProvider.System;
-    private readonly IBusinessCalendarResolver businessCalendarResolver = businessCalendarResolver;
 
     /// <inheritdoc />
     protected override PipelineControl Execute(
@@ -39,7 +38,7 @@ public sealed class ResolveWeatherReportPeriodsStep(
             context.TodayReportPeriod = CreatePeriod(localToday, localToday.AddDays(1), city.TimeZone);
             context.TomorrowReportPeriod = CreatePeriod(localToday.AddDays(1), localToday.AddDays(2), city.TimeZone);
             context.WeekReportPeriod = CreatePeriod(localToday, localToday.AddDays(7), city.TimeZone);
-            var calendar = this.businessCalendarResolver?.Resolve(city.CountryCode) ?? BusinessCalendars.Resolve(city.CountryCode);
+            var calendar = businessCalendarResolver?.Resolve(city.CountryCode) ?? BusinessCalendars.Resolve(city.CountryCode);
             var nextBusinessDay = calendar.NextBusinessDay(localToday);
             context.NextBusinessDayReportPeriod = CreatePeriod(nextBusinessDay, nextBusinessDay.AddDays(1), city.TimeZone);
 

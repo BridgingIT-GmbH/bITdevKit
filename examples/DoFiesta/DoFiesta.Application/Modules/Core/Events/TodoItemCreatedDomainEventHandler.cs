@@ -35,11 +35,6 @@ public class TodoItemCreatedDomainEventHandler(
     ITodoItemOrchestrationCoordinator orchestrationCoordinator)
     : DomainEventHandlerBase<TodoItemCreatedDomainEvent>(loggerFactory)
 {
-    private readonly IMessageBroker broker = broker;
-    private readonly IQueueBroker queueBroker = queueBroker;
-    private readonly INotificationService<EmailMessage> notificationService = notificationService;
-    private readonly ITodoItemOrchestrationCoordinator orchestrationCoordinator = orchestrationCoordinator;
-
     /// <summary>
     /// Determines whether this handler can handle the given event.
     /// Returns <c>true</c> unconditionally in this template.
@@ -55,7 +50,7 @@ public class TodoItemCreatedDomainEventHandler(
         // implement event reaction logic (audit, notify, etc.)
         this.Logger.LogInformation("DoFiesta - TodoItemCreatedDomainEvent handled in Application " + notification.Model?.Title);
 
-        await this.broker.Publish(
+        await broker.Publish(
             new TodoItemActivityMessage(
                 notification.Model?.Id?.ToString(),
                 notification.Model?.Title,
@@ -63,7 +58,7 @@ public class TodoItemCreatedDomainEventHandler(
                 notification.Model?.Status.ToString()),
             cancellationToken);
 
-        await this.queueBroker.Enqueue(
+        await queueBroker.Enqueue(
             new TodoItemEchoQueueMessage(
                 notification.Model?.Id?.ToString(),
                 notification.Model?.Title,
@@ -73,7 +68,7 @@ public class TodoItemCreatedDomainEventHandler(
 
         if (notification.Model is not null) // ensure orchestration is started for this todo item to track its lifecycle and send reminders
         {
-            await this.orchestrationCoordinator.EnsureStartedAsync(notification.Model, cancellationToken);
+            await orchestrationCoordinator.EnsureStartedAsync(notification.Model, cancellationToken);
         }
 
         if (string.IsNullOrWhiteSpace(notification.Model?.Assignee))
@@ -85,7 +80,7 @@ public class TodoItemCreatedDomainEventHandler(
             return;
         }
 
-        var result = await this.notificationService.QueueAsync(
+        var result = await notificationService.QueueAsync(
             new EmailMessage
             {
                 Id = Guid.NewGuid(),

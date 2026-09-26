@@ -13,17 +13,15 @@ using System.Globalization;
 internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> progress, Format format)
 {
     private const int ReportInterval = 25;
-    private readonly IProgress<ExportProgressReport> progress = progress;
-    private readonly Format format = format;
     private int lastReportedBucket;
     private int skippedRows;
 
     public void ReportStart(string message = "Starting export")
     {
-        this.progress?.Report(new ExportProgressReport
+        progress?.Report(new ExportProgressReport
         {
             Operation = "Export",
-            Format = this.format,
+            Format = format,
             ProcessedRows = 0,
             TotalRows = null,
             PercentageComplete = null,
@@ -38,7 +36,7 @@ internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> prog
     {
         this.skippedRows = skippedRows ?? this.skippedRows;
 
-        if (this.progress is null || processedRows < ReportInterval)
+        if (progress is null || processedRows < ReportInterval)
         {
             return;
         }
@@ -50,10 +48,10 @@ internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> prog
         }
 
         this.lastReportedBucket = bucket;
-        this.progress.Report(new ExportProgressReport
+        progress.Report(new ExportProgressReport
         {
             Operation = "Export",
-            Format = this.format,
+            Format = format,
             ProcessedRows = processedRows,
             TotalRows = totalRows,
             PercentageComplete = GetPercentage(processedRows, totalRows),
@@ -66,7 +64,7 @@ internal sealed class ExportProgressTracker(IProgress<ExportProgressReport> prog
 
     public void ReportCompleted(ExportResult result, string message = "Export completed")
     {
-        this.progress?.Report(new ExportProgressReport
+        progress?.Report(new ExportProgressReport
         {
             Operation = "Export",
             Format = result.Format,

@@ -13,8 +13,6 @@ using System.Globalization;
 internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> progress, Format format)
 {
     private const int ReportInterval = 25;
-    private readonly IProgress<ImportProgressReport> progress = progress;
-    private readonly Format format = format;
     private int lastReportedBucket;
     private int processedRows;
     private int successfulRows;
@@ -33,10 +31,10 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
         this.totalRows = null;
         this.lastReportedBucket = 0;
 
-        this.progress?.Report(new ImportProgressReport
+        progress?.Report(new ImportProgressReport
         {
             Operation = "Import",
-            Format = this.format,
+            Format = format,
             ProcessedRows = 0,
             TotalRows = null,
             PercentageComplete = null,
@@ -66,7 +64,7 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
         this.skippedRows = skippedRows ?? this.skippedRows;
         this.totalRows = totalRows ?? this.totalRows;
 
-        if (this.progress is null)
+        if (progress is null)
         {
             return;
         }
@@ -87,10 +85,10 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
             this.lastReportedBucket = bucket;
         }
 
-        this.progress.Report(new ImportProgressReport
+        progress.Report(new ImportProgressReport
         {
             Operation = "Import",
-            Format = this.format,
+            Format = format,
             ProcessedRows = processedRows,
             TotalRows = this.totalRows,
             PercentageComplete = GetPercentage(processedRows, totalRows),
@@ -113,10 +111,10 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
         this.skippedRows = result.SkippedRows;
         this.totalRows = result.TotalRows;
 
-        this.progress?.Report(new ImportProgressReport
+        progress?.Report(new ImportProgressReport
         {
             Operation = "Import",
-            Format = this.format,
+            Format = format,
             ProcessedRows = result.TotalRows,
             TotalRows = result.TotalRows,
             PercentageComplete = 100d,
@@ -131,10 +129,10 @@ internal sealed class ImportProgressTracker(IProgress<ImportProgressReport> prog
 
     public void ReportCompleted(string message = "Import completed")
     {
-        this.progress?.Report(new ImportProgressReport
+        progress?.Report(new ImportProgressReport
         {
             Operation = "Import",
-            Format = this.format,
+            Format = format,
             ProcessedRows = this.processedRows,
             TotalRows = this.totalRows ?? this.processedRows,
             PercentageComplete = 100d,

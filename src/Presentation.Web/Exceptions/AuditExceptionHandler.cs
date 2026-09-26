@@ -27,8 +27,6 @@ public class AuditExceptionHandler(
     ICurrentUserAccessor currentUserAccessor = null)
     : ExceptionHandlerBase<Exception>(logger, options)
 {
-    private readonly ICurrentUserAccessor currentUserAccessor = currentUserAccessor;
-
     /// <inheritdoc />
     protected override int StatusCode => StatusCodes.Status500InternalServerError;
 
@@ -94,7 +92,7 @@ public class AuditExceptionHandler(
     /// </summary>
     private UserAuditInfo GetUserAuditInfo()
     {
-        if (this.currentUserAccessor is null)
+        if (currentUserAccessor is null)
         {
             return new UserAuditInfo
             {
@@ -110,12 +108,12 @@ public class AuditExceptionHandler(
 
         return new UserAuditInfo
         {
-            UserId = this.currentUserAccessor.UserId ?? "Anonymous",
-            UserName = this.currentUserAccessor.UserName ?? "Anonymous",
-            Email = this.currentUserAccessor.Email,
-            IsAuthenticated = this.currentUserAccessor.IsAuthenticated,
-            Roles = this.currentUserAccessor.Roles ?? Array.Empty<string>(),
-            ClaimCount = this.currentUserAccessor.Principal?.Claims.Count() ?? 0,
+            UserId = currentUserAccessor.UserId ?? "Anonymous",
+            UserName = currentUserAccessor.UserName ?? "Anonymous",
+            Email = currentUserAccessor.Email,
+            IsAuthenticated = currentUserAccessor.IsAuthenticated,
+            Roles = currentUserAccessor.Roles ?? Array.Empty<string>(),
+            ClaimCount = currentUserAccessor.Principal?.Claims.Count() ?? 0,
             AccessorRegistered = true
         };
     }

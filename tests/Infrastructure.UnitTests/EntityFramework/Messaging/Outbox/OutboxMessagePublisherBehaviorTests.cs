@@ -12,8 +12,6 @@ using Microsoft.Extensions.Logging;
 
 public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) : IClassFixture<StubDbContextFixture>
 {
-    private readonly StubDbContextFixture fixture = fixture;
-
     [Fact]
     public async Task Publish_IsCalled_OutboxReceivedEvent()
     {
@@ -22,17 +20,17 @@ public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) :
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var message = new StubMessage { FirstName = "John", LastName = $"Doe{ticks}" };
         var next = Substitute.For<MessagePublisherDelegate>();
-        var sut = OutboxMessageWorkerBehaviorFacade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, this.fixture.Context);
+        var sut = OutboxMessageWorkerBehaviorFacade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, fixture.Context);
         //var sut = new OutboxMessagePublisherBehavior<StubDbContext>(loggerFactory, this.fixture.Context);
 
         // Act
         await sut.Publish(message, CancellationToken.None, next); // OutboxMessage are autosaved
 
         // Assert
-        this.fixture.Context.OutboxMessages.ToList()
+        fixture.Context.OutboxMessages.ToList()
             .Any(e => e.Content.Contains(message.LastName))
             .ShouldBeTrue();
-        this.fixture.Context.OutboxMessages.ToList()
+        fixture.Context.OutboxMessages.ToList()
             .Count(e => e.Content.Contains(ticks.ToString()))
             .ShouldBe(1); // insert
     }
@@ -46,17 +44,17 @@ public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) :
         var message = new StubMessage { FirstName = "John", LastName = $"Doe{ticks}" };
         var messageQueue = Substitute.For<IOutboxMessageQueue>();
         var next = Substitute.For<MessagePublisherDelegate>();
-        var sut = OutboxMessageWorkerBehaviorFacade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, this.fixture.Context);
+        var sut = OutboxMessageWorkerBehaviorFacade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, fixture.Context);
 
         // Act
         await sut.Publish(message, CancellationToken.None, next); // OutboxMessage are autosaved and enqueued
 
         // Assert
         //messageQueue.Received().Enqueue(Arg.Any<string>());
-        this.fixture.Context.OutboxMessages.ToList()
+        fixture.Context.OutboxMessages.ToList()
             .Any(e => e.Content.Contains(message.LastName))
             .ShouldBeTrue();
-        this.fixture.Context.OutboxMessages.ToList()
+        fixture.Context.OutboxMessages.ToList()
             .Count(e => e.Content.Contains(ticks.ToString()))
             .ShouldBe(1); // insert
     }

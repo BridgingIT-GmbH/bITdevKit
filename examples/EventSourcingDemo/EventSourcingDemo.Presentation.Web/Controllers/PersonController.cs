@@ -26,14 +26,10 @@ public class PersonController(
     IProjectionRequester<Person> personProjectionRequester,
     IOutboxWorkerService outboxWorkerService)
 {
-    private readonly IPersonService personService = personService;
-    private readonly IProjectionRequester<Person> personProjectionRequester = personProjectionRequester;
-    private readonly IOutboxWorkerService outboxWorkerService = outboxWorkerService;
-
     [HttpGet]
     public async Task<ActionResult<IEnumerable<PersonOverviewViewModel>>> Get()
     {
-        var persons = await this.personService.GetAllPersonsAsync().AnyContext();
+        var persons = await personService.GetAllPersonsAsync().AnyContext();
 
         return persons.ToArray();
     }
@@ -45,7 +41,7 @@ public class PersonController(
         int skip,
         int take)
     {
-        var persons = await this.personService.GetAllPersonsAsync(firstname, lastname, skip, take).AnyContext();
+        var persons = await personService.GetAllPersonsAsync(firstname, lastname, skip, take).AnyContext();
 
         return persons.ToArray();
     }
@@ -53,36 +49,36 @@ public class PersonController(
     [HttpGet("replay/{id}")]
     public async Task<ActionResult<Person>> GetReplay(Guid id)
     {
-        return await this.personService.ReplayPersonAsync(id).AnyContext();
+        return await personService.ReplayPersonAsync(id).AnyContext();
     }
 
     [HttpGet("startPersonProjection")]
     public async Task StartPersonProjection()
     {
-        await this.personProjectionRequester.RequestProjectionAsync(CancellationToken.None).AnyContext();
+        await personProjectionRequester.RequestProjectionAsync(CancellationToken.None).AnyContext();
     }
 
     [HttpGet("startOutboxWorker")]
     public async Task StartOutboxWorker()
     {
-        await this.outboxWorkerService.DoWorkAsync().AnyContext();
+        await outboxWorkerService.DoWorkAsync().AnyContext();
     }
 
     [HttpPost]
     public async Task<PersonOverviewViewModel> CreatePersonAsync(CreatePersonViewModel model)
     {
-        return await this.personService.CreatePersonAsync(model).AnyContext();
+        return await personService.CreatePersonAsync(model).AnyContext();
     }
 
     [HttpPut("ChangeSurname")]
     public async Task<PersonOverviewViewModel> ChangeSurname(ChangeSurnameViewModel model)
     {
-        return await this.personService.ChangeSurnameAsync(model, CancellationToken.None).AnyContext();
+        return await personService.ChangeSurnameAsync(model, CancellationToken.None).AnyContext();
     }
 
     [HttpDelete("{id}")]
     public async Task Deactivate(Guid id)
     {
-        await this.personService.DeactivateAsync(id).AnyContext();
+        await personService.DeactivateAsync(id).AnyContext();
     }
 }

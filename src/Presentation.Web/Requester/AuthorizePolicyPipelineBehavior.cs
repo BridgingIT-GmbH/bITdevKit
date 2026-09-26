@@ -42,7 +42,6 @@ public sealed class AuthorizationPolicyPipelineBehavior<TRequest, TResponse>(
 {
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
     private readonly IAuthorizationService authorizationService = authorizationService ?? throw new ArgumentNullException(nameof(authorizationService));
-    private readonly ICurrentUserAccessor currentUserAccessor = currentUserAccessor;
 
     /// <summary>
     /// Always returns true; actual applicability is determined during
@@ -78,7 +77,7 @@ public sealed class AuthorizationPolicyPipelineBehavior<TRequest, TResponse>(
             return await next();
         }
 
-        var principal = this.currentUserAccessor?.Principal ?? new ClaimsPrincipal();
+        var principal = currentUserAccessor?.Principal ?? new ClaimsPrincipal();
         if (principal.Identity?.IsAuthenticated != true)
         {
             return (TResponse)(object)Result.Failure(new UnauthorizedError());

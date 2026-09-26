@@ -13,7 +13,6 @@ using Infrastructure.EntityFramework.Storage;
 public class EntityFrameworkSqliteDocumentStoreCacheProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreCacheProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task GetAsync_WithInvalidKey_ShouldNotReturnValue()
@@ -125,11 +124,11 @@ public class EntityFrameworkSqliteDocumentStoreCacheProviderTests(ITestOutputHel
 
     protected override DocumentStoreCacheProvider GetProvider()
     {
-        var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(this.output),
+        var client = new LoggingDocumentStoreClientBehavior<CacheDocument>(XunitLoggerFactory.Create(output),
             new DocumentStoreClient<CacheDocument>(new
-                EntityFrameworkDocumentStoreProvider<StubDbContext>(DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqliteDbContext(this.output, true)))));
+                EntityFrameworkDocumentStoreProvider<StubDbContext>(DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqliteDbContext(output, true)))));
 
-        var provider = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(this.output),
+        var provider = new DocumentStoreCacheProvider(XunitLoggerFactory.Create(output),
             new DocumentStoreCache(client),
             client);
 

@@ -31,7 +31,6 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<LogEntryEndpoints> logger = null) : EndpointsBase
 {
     private readonly LogEntryEndpointsOptions options = options ?? new LogEntryEndpointsOptions();
-    private readonly ILogger<LogEntryEndpoints> logger = logger;
 
     /// <summary>
     ///     Maps the log entry query, stream, cleanup, statistics, and export routes to the configured endpoint group.
@@ -201,7 +200,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: invalid query request", "LOG");
+            logger?.LogError(ex, "{LogKey}: invalid query request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -211,7 +210,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: error fetching logs", "LOG");
+            logger?.LogError(ex, "{LogKey}: error fetching logs", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -313,7 +312,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
-            this.logger?.LogError(ex, "{LogKey}: error streaming logs", "LOG");
+            logger?.LogError(ex, "{LogKey}: error streaming logs", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -403,7 +402,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (InvalidOperationException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: maintenance operation failed", "LOG");
+            logger?.LogError(ex, "{LogKey}: maintenance operation failed", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -413,7 +412,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: invalid purge request", "LOG");
+            logger?.LogError(ex, "{LogKey}: invalid purge request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -423,7 +422,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: error queuing purge operation", "LOG");
+            logger?.LogError(ex, "{LogKey}: error queuing purge operation", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -485,7 +484,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: invalid statistics request", "LOG");
+            logger?.LogError(ex, "{LogKey}: invalid statistics request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -495,7 +494,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: error fetching log statistics", "LOG");
+            logger?.LogError(ex, "{LogKey}: error fetching log statistics", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,
@@ -616,7 +615,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (ArgumentException ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: invalid export request", "LOG");
+            logger?.LogError(ex, "{LogKey}: invalid export request", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.BadRequest,
@@ -626,7 +625,7 @@ public class LogEntryEndpoints(LogEntryEndpointsOptions options = null, ILogger<
         }
         catch (Exception ex)
         {
-            this.logger?.LogError(ex, "{LogKey}: error exporting logs", "LOG");
+            logger?.LogError(ex, "{LogKey}: error exporting logs", "LOG");
             return Results.Problem(new ProblemDetails
             {
                 Status = (int)HttpStatusCode.InternalServerError,

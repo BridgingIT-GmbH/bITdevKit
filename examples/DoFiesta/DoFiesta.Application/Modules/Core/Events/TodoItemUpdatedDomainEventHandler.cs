@@ -32,10 +32,6 @@ public class TodoItemUpdatedDomainEventHandler(
     ITodoItemOrchestrationCoordinator orchestrationCoordinator)
     : DomainEventHandlerBase<TodoItemUpdatedDomainEvent>(loggerFactory)
 {
-    private readonly IMessageBroker broker = broker;
-    private readonly IQueueBroker queueBroker = queueBroker;
-    private readonly ITodoItemOrchestrationCoordinator orchestrationCoordinator = orchestrationCoordinator;
-
     /// <summary>
     /// Determines whether this handler can handle the given event.
     /// Returns <c>true</c> unconditionally in this template.
@@ -51,7 +47,7 @@ public class TodoItemUpdatedDomainEventHandler(
         // implement event reaction logic (audit, notify, etc.)
         this.Logger.LogInformation("DoFiesta - TodoItemUpdatedDomainEvent handled in Application " + notification.Model?.Title);
 
-        await this.broker.Publish(
+        await broker.Publish(
             new TodoItemActivityMessage(
                 notification.Model?.Id?.ToString(),
                 notification.Model?.Title,
@@ -59,7 +55,7 @@ public class TodoItemUpdatedDomainEventHandler(
                 notification.Model?.Status.ToString()),
             cancellationToken);
 
-        await this.queueBroker.Enqueue(
+        await queueBroker.Enqueue(
             new TodoItemEchoQueueMessage(
                 notification.Model?.Id?.ToString(),
                 notification.Model?.Title,
@@ -69,7 +65,7 @@ public class TodoItemUpdatedDomainEventHandler(
 
         if (notification.Model is not null) // ensure orchestration is updated for this todo item to keep lifecycle tracking and reminders up to date with the latest changes
         {
-            await this.orchestrationCoordinator.SynchronizeAsync(notification.Model, cancellationToken);
+            await orchestrationCoordinator.SynchronizeAsync(notification.Model, cancellationToken);
         }
     }
 }

@@ -13,7 +13,6 @@ using Infrastructure.EntityFramework.Storage;
 public class EntityFrameworkSqlServerDocumentStoreProviderTests(ITestOutputHelper output, TestEnvironmentFixture fixture) : EntityFrameworkDocumentStoreProviderTestsBase
 {
     private readonly TestEnvironmentFixture fixture = fixture.WithOutput(output);
-    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public override async Task CountResultAsync_ReturnsDocumentCount()
@@ -103,7 +102,7 @@ public class EntityFrameworkSqlServerDocumentStoreProviderTests(ITestOutputHelpe
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        await using var dbContext = this.fixture.EnsureSqlServerDbContext(this.output, true);
+        await using var dbContext = this.fixture.EnsureSqlServerDbContext(output, true);
         await action(dbContext);
     }
 
@@ -111,7 +110,7 @@ public class EntityFrameworkSqlServerDocumentStoreProviderTests(ITestOutputHelpe
     {
         ArgumentNullException.ThrowIfNull(action);
 
-        await using var dbContext = this.fixture.EnsureSqlServerDbContext(this.output, true);
+        await using var dbContext = this.fixture.EnsureSqlServerDbContext(output, true);
         return await action(dbContext);
     }
 
@@ -121,7 +120,7 @@ public class EntityFrameworkSqlServerDocumentStoreProviderTests(ITestOutputHelpe
         DocumentStoreOptions documentStoreOptions = null)
     {
         return new EntityFrameworkDocumentStoreProvider<StubDbContext>(
-            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqlServerDbContext(this.output, true)),
+            DocumentStoreTestScopeFactory.Create(() => this.fixture.EnsureSqlServerDbContext(output, true)),
             documentStoreOptions);
     }
 }

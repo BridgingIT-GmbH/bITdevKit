@@ -29,8 +29,6 @@ public class TodoItemOrchestrationCoordinator(
     private const string OrchestrationCreatedUtcPropertyKey = "orchestration.createdUtc";
     private const string OrchestrationUpdatedUtcPropertyKey = "orchestration.updatedUtc";
 
-    private readonly CoreDbContext dbContext = dbContext;
-    private readonly IOrchestrationService orchestrationService = orchestrationService;
     private readonly ILogger<TodoItemOrchestrationCoordinator> logger = loggerFactory.CreateLogger<TodoItemOrchestrationCoordinator>();
 
     /// <summary>
@@ -57,7 +55,7 @@ public class TodoItemOrchestrationCoordinator(
             return;
         }
 
-        var dispatch = await this.orchestrationService.DispatchAsync<TodoItemLifecycleOrchestration, TodoItemLifecycleOrchestrationData>(
+        var dispatch = await orchestrationService.DispatchAsync<TodoItemLifecycleOrchestration, TodoItemLifecycleOrchestrationData>(
             MapData(todoItem),
             cancellationToken);
 
@@ -80,7 +78,7 @@ public class TodoItemOrchestrationCoordinator(
 
         if (persistedTodoItem is not null)
         {
-            await this.dbContext.SaveChangesAsync(cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -108,7 +106,7 @@ public class TodoItemOrchestrationCoordinator(
             return;
         }
 
-        var result = await this.orchestrationService.SignalAsync(
+        var result = await orchestrationService.SignalAsync(
             orchestrationInstanceId.Value,
             TodoItemLifecycleSignals.Updated,
             MapUpdateSignal(todoItem),
@@ -133,7 +131,7 @@ public class TodoItemOrchestrationCoordinator(
 
         if (persistedTodoItem is not null)
         {
-            await this.dbContext.SaveChangesAsync(cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
     }
 
@@ -158,7 +156,7 @@ public class TodoItemOrchestrationCoordinator(
             return;
         }
 
-        var result = await this.orchestrationService.SignalAsync(
+        var result = await orchestrationService.SignalAsync(
             orchestrationInstanceId.Value,
             TodoItemLifecycleSignals.Deleted,
             new TodoItemLifecycleDeletedSignal
@@ -181,7 +179,7 @@ public class TodoItemOrchestrationCoordinator(
 
     private async Task<TodoItem> FindTodoItemAsync(Guid todoItemId, CancellationToken cancellationToken)
     {
-        var trackedTodoItem = this.dbContext.ChangeTracker
+        var trackedTodoItem = dbContext.ChangeTracker
             .Entries<TodoItem>()
             .FirstOrDefault(entry => entry.Entity.Id?.Value == todoItemId)
             ?.Entity;
@@ -191,7 +189,7 @@ public class TodoItemOrchestrationCoordinator(
             return trackedTodoItem;
         }
 
-        return await this.dbContext.TodoItems
+        return await dbContext.TodoItems
             .SingleOrDefaultAsync(item => item.Id == TodoItemId.Create(todoItemId), cancellationToken);
     }
 

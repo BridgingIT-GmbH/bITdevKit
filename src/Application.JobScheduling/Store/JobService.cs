@@ -223,7 +223,7 @@ public partial class JobService(
     public Task SaveJobRunAsync(JobRun jobRun, CancellationToken cancellationToken = default)
     {
         EnsureArg.IsNotNull(jobRun, nameof(jobRun));
-        TypedLogger.LogSaveJobRun(this.logger, Constants.LogKey, jobRun?.JobName, jobRun?.JobGroup, jobRun?.Id);
+        TypedLogger.LogSaveJobRun(this.logger, Constants.LogKey, jobRun.JobName, jobRun.JobGroup, jobRun.Id);
 
         return provider.SaveJobRunAsync(jobRun, cancellationToken);
     }

@@ -26,11 +26,19 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     /// <inheritdoc />
     public DocumentStoreProviderCapabilities Capabilities { get; } = new()
     {
-        FullMatch = DocumentQuerySupport.SupportedEfficiently, RowKeyPrefixMatch = DocumentQuerySupport.SupportedServerSide,
-        RowKeySuffixMatch = DocumentQuerySupport.SupportedServerSide, FullScan = DocumentQuerySupport.SupportedServerSide,
-        KeyListing = DocumentQuerySupport.SupportedServerSide, SupportsContinuationPaging = true, SupportsServerSideCount = false,
-        SupportsKeyOnlyProjection = true, SupportsConditionalWrite = true, SupportsConditionalDelete = true,
-        SupportsAtomicPropertyUpdate = true, SupportsLogicalExpiration = true, SupportsRetention = true
+        FullMatch = DocumentQuerySupport.SupportedEfficiently,
+        RowKeyPrefixMatch = DocumentQuerySupport.SupportedServerSide,
+        RowKeySuffixMatch = DocumentQuerySupport.SupportedServerSide,
+        FullScan = DocumentQuerySupport.SupportedServerSide,
+        KeyListing = DocumentQuerySupport.SupportedServerSide,
+        SupportsContinuationPaging = true,
+        SupportsServerSideCount = false,
+        SupportsKeyOnlyProjection = true,
+        SupportsConditionalWrite = true,
+        SupportsConditionalDelete = true,
+        SupportsAtomicPropertyUpdate = true,
+        SupportsLogicalExpiration = true,
+        SupportsRetention = true
     };
 
     /// <inheritdoc />

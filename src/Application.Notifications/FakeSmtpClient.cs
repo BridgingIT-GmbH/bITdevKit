@@ -500,7 +500,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public void Connect(Socket socket, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket?.Connected);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket.Connected);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -517,7 +517,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ConnectAsync(Socket socket, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket?.Connected);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via socket to {Host}:{Port} with options {Options}. Socket connected: {IsSocketConnected}", Constants.LogKey, host, port, options, socket.Connected);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -534,7 +534,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public void Connect(Stream stream, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream?.GetType().Name);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Connecting via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream.GetType().Name);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -551,7 +551,7 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ConnectAsync(Stream stream, string host, int port = 0, SecureSocketOptions options = SecureSocketOptions.Auto, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("[{LogKey}] fakesmtpclient - ConnectAsync via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream?.GetType().Name);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - ConnectAsync via stream to {Host}:{Port} with options {Options}. Stream type: {StreamType}", Constants.LogKey, host, port, options, stream.GetType().Name);
         this.isConnected = true;
         this.SimulateConnectionSecurityDetails(options);
         this.Connected?.Invoke(this, new ConnectedEventArgs(host, port, options));
@@ -676,9 +676,9 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <param name="cancellationToken">The token used to cancel the asynchronous operation.</param>
     public void Authenticate(SaslMechanism mechanism, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism?.MechanismName);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism.MechanismName);
         this.isAuthenticated = true;
-        this.Authenticated?.Invoke(this, new AuthenticatedEventArgs(mechanism?.MechanismName ?? "SASL_UNKNOWN"));
+        this.Authenticated?.Invoke(this, new AuthenticatedEventArgs(mechanism.MechanismName ?? "SASL_UNKNOWN"));
     }
 
     /// <summary>
@@ -689,9 +689,9 @@ public class FakeSmtpClient(ILogger<FakeSmtpClient> logger, FakeSmtpClientOption
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task AuthenticateAsync(SaslMechanism mechanism, CancellationToken cancellationToken = default)
     {
-        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism?.MechanismName);
+        this.logger.LogDebug("[{LogKey}] fakesmtpclient - Authenticating with SASL mechanism: {MechanismName}", Constants.LogKey, mechanism.MechanismName);
         this.isAuthenticated = true;
-        this.Authenticated?.Invoke(this, new AuthenticatedEventArgs(mechanism?.MechanismName ?? "SASL_UNKNOWN"));
+        this.Authenticated?.Invoke(this, new AuthenticatedEventArgs(mechanism.MechanismName ?? "SASL_UNKNOWN"));
         return Task.CompletedTask;
     }
 

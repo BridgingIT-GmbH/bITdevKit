@@ -172,8 +172,8 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
                 .WhereExpressions(expressions)
                 .OrderByIf(options, this.Options.Mapper)
                 .DistinctByIf(options, this.Options.Mapper)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take)
+                .SkipIf(options.Skip)
+                .TakeIf(options.Take)
                 .ToListAsyncSafe(cancellationToken)
                 .AnyContext()).Select(d => this.Options.Mapper.Map<TEntity>(d));
         }
@@ -274,8 +274,8 @@ public class EntityFrameworkReadOnlyGenericRepository<TEntity, TDatabaseEntity>
                     .WhereExpressions(expressions)
                     .OrderByIf(options, this.Options.Mapper)
                     .DistinctByIf(options, this.Options.Mapper)
-                    .SkipIf(options?.Skip)
-                    .TakeIf(options?.Take)
+                    .SkipIf(options.Skip)
+                    .TakeIf(options.Take)
                     .ToListAsyncSafe(cancellationToken)
                     .AnyContext())
                 .Select(d => this.Options.Mapper.Map<TEntity>(d)) // mapping needs to be done client-side, otherwise ef core sql translation error

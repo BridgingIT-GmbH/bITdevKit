@@ -21,14 +21,14 @@ public static partial class Extensions
         IFindOptions<TEntity> options)
         where TEntity : class, IEntity
     {
-        if (options is null || options?.HasOrders() == false)
+        if (options is null || options.HasOrders() == false)
         {
             return
                 source as IOrderedQueryable<TEntity>; // TODO: this returns null, find a way to return an IOrderedQueryable event if no orders are provided. possible?
         }
 
         IOrderedQueryable<TEntity> result = null;
-        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options?.Order)
+        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options.Order)
                  ?.Where(o => o.Expression is not null))
         {
             result = result is null ? order.Direction == OrderDirection.Ascending
@@ -39,7 +39,7 @@ public static partial class Extensions
                 result.ThenByDescending(order.Expression);
         }
 
-        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options?.Order)
+        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options.Order)
                  ?.Where(o => !o.Ordering.IsNullOrEmpty()))
         {
             result = result is null
@@ -65,14 +65,14 @@ public static partial class Extensions
         IEntityMapper mapper)
         where TEntity : class, IEntity
     {
-        if (options is null || options?.HasOrders() == false)
+        if (options is null || options.HasOrders() == false)
         {
             return
                 source as IOrderedQueryable<TDatabaseEntity>; // TODO: this returns null, find a way to return an IOrderedQueryable event if no orders are provided. possible?
         }
 
         IOrderedQueryable<TDatabaseEntity> result = null;
-        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options?.Order))
+        foreach (var order in (options.Orders.EmptyToNull() ?? []).Insert(options.Order))
         {
             result = result is null
                 ? order.Direction == OrderDirection.Ascending

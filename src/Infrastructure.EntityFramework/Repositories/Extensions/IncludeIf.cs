@@ -17,7 +17,7 @@ public static partial class Extensions
     public static IQueryable<TEntity> IncludeIf<TEntity>(this IQueryable<TEntity> source, IFindOptions<TEntity> options)
         where TEntity : class, IEntity
     {
-        if (options is null || options?.HasIncludes() == false)
+        if (options is null || options.HasIncludes() == false)
         {
             return source;
         }
@@ -55,7 +55,7 @@ public static partial class Extensions
     {
         EnsureArg.IsNotNull(mapper, nameof(mapper));
 
-        if (options is null || options?.HasIncludes() == false)
+        if (options is null || options.HasIncludes() == false)
         {
             return source;
         }

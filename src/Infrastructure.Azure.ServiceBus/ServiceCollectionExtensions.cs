@@ -33,7 +33,7 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<ServiceBusMessageBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<ServiceBusMessageBrokerConfiguration>() ??
             new ServiceBusMessageBrokerConfiguration();
 
         context.Services.TryAddSingleton(sp =>
@@ -138,7 +138,7 @@ public static partial class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<ServiceBusQueueBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<ServiceBusQueueBrokerConfiguration>() ??
             new ServiceBusQueueBrokerConfiguration();
 
         return context.WithServiceBusBroker(options => options

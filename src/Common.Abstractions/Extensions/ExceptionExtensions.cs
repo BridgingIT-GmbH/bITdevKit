@@ -27,8 +27,8 @@ public static class ExceptionExtensions
                 return null;
             }
 
-            return source?.InnerException is null
-                ? $"[{source.GetType().Name}] {source?.Message}".Replace(Environment.NewLine, Environment.NewLine + " ")
+            return source.InnerException is null
+                ? $"[{source.GetType().Name}] {source.Message}".Replace(Environment.NewLine, Environment.NewLine + " ")
                 : $"[{source.GetType().Name}] {source.Message}  --> {source.InnerException.GetFullMessage()}".Replace(
                     Environment.NewLine,
                     Environment.NewLine + " ");

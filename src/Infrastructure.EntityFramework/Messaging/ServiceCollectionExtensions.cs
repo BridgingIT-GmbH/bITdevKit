@@ -101,7 +101,7 @@ public static partial class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<EntityFrameworkMessageBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<EntityFrameworkMessageBrokerConfiguration>() ??
             new EntityFrameworkMessageBrokerConfiguration();
 
         return context.WithEntityFrameworkBroker<TContext>(options => options

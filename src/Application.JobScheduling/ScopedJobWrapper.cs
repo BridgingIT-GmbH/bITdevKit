@@ -23,7 +23,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
         var correlationId = triggerCorrelationId.EmptyToNull() ?? GuidGenerator.CreateSequential().ToString("N");
         var flowId = GuidGenerator.Create(this.GetType().ToString()).ToString("N");
         var logger = scope.ServiceProvider.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
-        var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
+        var jobId = context.JobDetail.JobDataMap.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
         var jobTypeName = context.JobDetail.JobType.FullName;
 
         using (logger.BeginScope(new Dictionary<string, object>
@@ -37,7 +37,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
             try
             {
                 var behaviors = scope.ServiceProvider.GetServices<IJobSchedulingBehavior>();
-                logger?.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
+                logger.LogDebug($"{{LogKey}} behaviors: {behaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Execute", Constants.LogKey);
 
                 context.Put("ModuleContextAccessors", this.ModuleAccessors);
                 context.Put(Constants.CorrelationIdKey, correlationId);

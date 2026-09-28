@@ -13,6 +13,7 @@ trim_trailing_whitespace = true
 [*.{razor,cshtml}]
 indent_size = 4
 resharper_inconsistent_naming_highlighting = hint
+resharper_possible_multiple_enumeration_highlighting = hint
 resharper_redundant_default_member_initializer_highlighting = hint
 
 [*.css]
@@ -271,6 +272,7 @@ resharper_inconsistent_naming_highlighting = none
 resharper_local_variable_hides_member_highlighting = none
 resharper_not_accessed_positional_property_global_highlighting = hint
 resharper_parameter_hides_member_highlighting = none
+resharper_possible_multiple_enumeration_highlighting = hint
 resharper_redundant_default_member_initializer_highlighting = hint
 resharper_unused_auto_property_accessor_global_highlighting = hint
 resharper_variable_hides_outer_variable_highlighting = none

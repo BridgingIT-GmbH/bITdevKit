@@ -408,7 +408,7 @@
         return Environment.GetEnvironmentVariables()
             .Cast<System.Collections.DictionaryEntry>()
             .Select(entry => new DashboardEnvironmentVariableModel(
-                entry.Key?.ToString() ?? string.Empty,
+                entry.Key.ToString() ?? string.Empty,
                 entry.Value?.ToString() ?? string.Empty))
             .OrderBy(entry => entry.Name, StringComparer.OrdinalIgnoreCase)
             .ToArray();

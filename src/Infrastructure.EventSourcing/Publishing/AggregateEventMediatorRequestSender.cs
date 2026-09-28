@@ -121,7 +121,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         where TAggregate : EventSourcingAggregateRoot
     {
         var eventType = typeof(AggregateEventProjectionCommand<>);
-        var aggregateType = aggregate?.GetType();
+        var aggregateType = aggregate.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
 
@@ -131,7 +131,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
     private static Type CreateProjectionCommand(object aggregate, out ConstructorInfo geni)
     {
         var eventType = typeof(AggregateEventProjectionCommand<>);
-        var aggregateType = aggregate?.GetType();
+        var aggregateType = aggregate.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
 
@@ -142,7 +142,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         where TAggregate : EventSourcingAggregateRoot
     {
         var eventType = typeof(AggregateEventOccuredCommand<>);
-        var aggregateType = aggregate?.GetType();
+        var aggregateType = aggregate.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
 
@@ -152,7 +152,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
     private static Type CreateAggregateEventOccuredCommand(object aggregate, out ConstructorInfo geni)
     {
         var eventType = typeof(AggregateEventOccuredCommand<>);
-        var aggregateType = aggregate?.GetType();
+        var aggregateType = aggregate.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
 

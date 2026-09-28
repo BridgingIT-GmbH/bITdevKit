@@ -90,7 +90,7 @@ public partial class OutboxMessagePublisherBehavior<TContext> : MessagePublisher
     {
         // create *scoped* TContext through ServiceProvider (broker and it's behaviors are registered as singletons), or uses injected context
         using var scope = this.serviceProvider?.CreateScope();
-        var context = this.context ?? scope.ServiceProvider?.GetRequiredService<TContext>();
+        var context = this.context ?? scope.ServiceProvider.GetRequiredService<TContext>();
         var messageType = typeof(TMessage).PrettyName(false);
         TypedLogger.LogPublish(this.Logger, "MSG", messageType, message.MessageId);
 

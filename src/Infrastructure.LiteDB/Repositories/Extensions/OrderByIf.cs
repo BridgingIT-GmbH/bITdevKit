@@ -26,13 +26,13 @@ public static partial class Extensions
         IFindOptions<TEntity> options)
         where TEntity : class, IEntity
     {
-        if (options is null || options?.HasOrders() == false)
+        if (options is null || options.HasOrders() == false)
         {
             return source;
         }
 
         var result = source;
-        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options.Order)
                  ?.Where(o => o.Expression is not null))
         {
             result = order.Direction == OrderDirection.Ascending
@@ -41,7 +41,7 @@ public static partial class Extensions
                 : result.OrderByDescending(order.Expression);
         }
 
-        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options?.Order)
+        foreach (var order in (options.Orders.EmptyToNull() ?? new List<OrderOption<TEntity>>()).Insert(options.Order)
                  ?.Where(o => !o.Ordering.IsNullOrEmpty()))
         {
             result = result is null

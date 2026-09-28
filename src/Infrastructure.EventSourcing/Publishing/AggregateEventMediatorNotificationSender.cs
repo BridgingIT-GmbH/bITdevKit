@@ -97,7 +97,7 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         where TAggregate : EventSourcingAggregateRoot
     {
         var eventType = typeof(PublishAggregateEvent<>);
-        var aggregateType = aggregate?.GetType();
+        var aggregateType = aggregate.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(IAggregateEvent)]);
 
@@ -108,7 +108,7 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
         where TAggregate : EventSourcingAggregateRoot
     {
         var eventType = typeof(AggregateEventOccuredCommand<>);
-        var aggregateType = aggregate?.GetType();
+        var aggregateType = aggregate.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
 
@@ -118,7 +118,7 @@ public class AggregateEventMediatorNotificationSender(IMediator mediator) : IAgg
     private static Type CreateAggregateEventOccuredCommand(object aggregate, out ConstructorInfo geni)
     {
         var eventType = typeof(AggregateEventOccuredCommand<>);
-        var aggregateType = aggregate?.GetType();
+        var aggregateType = aggregate.GetType();
         var gent = eventType.MakeGenericType(aggregateType);
         geni = gent.GetConstructor([aggregateType, typeof(AggregateEvent)]);
 

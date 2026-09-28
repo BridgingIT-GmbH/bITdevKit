@@ -302,9 +302,16 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
 
     private static StoredDocument Map(DocumentKey key, byte[] content, IDictionary<string, string> metadata, string etag, DateTimeOffset modified) => new()
     {
-        Key = key, Content = content, ETag = etag, ContentHash = metadata.GetValueOrDefault(ContentHashKey), StoredContentHash = metadata.GetValueOrDefault(StoredHashKey),
-        CreatedAt = ReadDate(metadata, CreatedKey) ?? modified, LastModifiedAt = ReadDate(metadata, ModifiedKey) ?? modified, ExpiresAt = ReadDate(metadata, ExpiresKey),
-        Properties = DecodeBag(metadata.GetValueOrDefault(PropertiesKey)), TransformMetadata = DecodeBag(metadata.GetValueOrDefault(TransformsKey))
+        Key = key,
+        Content = content,
+        ETag = etag,
+        ContentHash = metadata.GetValueOrDefault(ContentHashKey),
+        StoredContentHash = metadata.GetValueOrDefault(StoredHashKey),
+        CreatedAt = ReadDate(metadata, CreatedKey) ?? modified,
+        LastModifiedAt = ReadDate(metadata, ModifiedKey) ?? modified,
+        ExpiresAt = ReadDate(metadata, ExpiresKey),
+        Properties = DecodeBag(metadata.GetValueOrDefault(PropertiesKey)),
+        TransformMetadata = DecodeBag(metadata.GetValueOrDefault(TransformsKey))
     };
 
     private static Dictionary<string, string> Metadata(StoredDocumentWrite write, StoredDocument current, DateTimeOffset now)

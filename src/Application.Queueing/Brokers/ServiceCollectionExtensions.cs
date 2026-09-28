@@ -58,7 +58,7 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<InProcessQueueBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<InProcessQueueBrokerConfiguration>() ??
             new InProcessQueueBrokerConfiguration();
 
         return context.WithInProcessBroker(options => options

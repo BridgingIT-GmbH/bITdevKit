@@ -241,7 +241,7 @@ public class SystemEndpoints(SystemEndpointsOptions options = null, ILogger<Syst
 
     private static bool IsLocal(HttpRequest source)
     {
-        var connection = source?.HttpContext?.Connection;
+        var connection = source?.HttpContext.Connection;
         if (IsIpAddressSet(connection?.RemoteIpAddress))
         {
             return IsIpAddressSet(connection.LocalIpAddress)

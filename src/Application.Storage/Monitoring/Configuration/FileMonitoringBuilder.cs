@@ -60,7 +60,7 @@ public class FileMonitoringBuilder
         EnsureArg.IsNotNull(configure, nameof(configure));
 
         var options = new LocationOptions(name);
-        configure?.Invoke(options);
+        configure.Invoke(options);
         this.RegisterLocation(name, options, () => new LocalFileStorageProvider(name, path, ensureRoot), typeof(LocalLocationHandler));
 
         return this;
@@ -79,7 +79,7 @@ public class FileMonitoringBuilder
         EnsureArg.IsNotNull(configure, nameof(configure));
 
         var options = new LocationOptions(name);
-        configure?.Invoke(options);
+        configure.Invoke(options);
         this.RegisterLocation(name, options, () => new InMemoryFileStorageProvider(name), typeof(InMemoryLocationHandler));
 
         return this;

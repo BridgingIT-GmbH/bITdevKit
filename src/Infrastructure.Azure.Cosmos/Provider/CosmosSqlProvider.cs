@@ -613,7 +613,7 @@ public class CosmosSqlProvider<TItem> : ICosmosSqlProvider<TItem>, IDisposable
                     linqSerializerOptions: new CosmosLinqSerializerOptions
                     {
                         PropertyNamingPolicy = CosmosPropertyNamingPolicy.CamelCase
-                })
+                    })
                 .WhereIf(expressions)
                 .OrderByIf(orderExpression, orderDescending)
                 .TakeIf(take)

@@ -75,7 +75,7 @@ public class EntityFrameworkMessageBroker<TContext> : MessageBrokerBase
     protected override async Task OnPublish(IMessage message, CancellationToken cancellationToken)
     {
         using var scope = this.serviceProvider?.CreateScope();
-        var context = this.context ?? scope?.ServiceProvider?.GetRequiredService<TContext>();
+        var context = this.context ?? scope?.ServiceProvider.GetRequiredService<TContext>();
         EnsureArg.IsNotNull(context, nameof(context));
 
         var brokerMessage = this.CreateBrokerMessage(message);

@@ -36,7 +36,7 @@ public class SimpleNotifier(
     IProgress<SimpleNotifierProgress> progress = null)
 {
     private readonly Dictionary<Type, (ISimpleNotificationHandler Handler, int Order)[]> subscribers = []; // Changed to array for fixed size after subscribe
-    private readonly ISimpleNotificationPipelineBehavior[] pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToArray() ?? []; // To array for faster access
+    private readonly ISimpleNotificationPipelineBehavior[] pipelineBehaviors = pipelineBehaviors?.Reverse().ToArray() ?? []; // To array for faster access
     private readonly ReaderWriterLockSlim lockObject = new();
 
     /// <summary>
@@ -257,7 +257,6 @@ public class SimpleNotifier(
                 }
                 catch (OperationCanceledException)
                 {
-                    continue;
                 }
                 catch (Exception ex) when (handleErrors)
                 {
@@ -285,7 +284,6 @@ public class SimpleNotifier(
                 }
                 catch (OperationCanceledException)
                 {
-                    continue;
                 }
                 catch (Exception ex) when (handleErrors)
                 {

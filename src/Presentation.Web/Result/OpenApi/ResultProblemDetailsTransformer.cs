@@ -171,7 +171,7 @@ public class ResultProblemDetailsSchemaTransformer : IOpenApiSchemaTransformer
     /// </remarks>
     private void TransformResultProblemResultSchema(OpenApiSchema schema)
     {
-        schema.Type = JsonSchemaType.Object ;
+        schema.Type = JsonSchemaType.Object;
         schema.AdditionalPropertiesAllowed = true;
         schema.AdditionalProperties = new OpenApiSchema();
         schema.Description = "Represents the operation outcome with success status, messages, and errors";

@@ -99,7 +99,7 @@ public abstract class EntityFrameworkJobSchedulerExamplesTestsBase
         successor.Status.ShouldBe(JobOccurrenceStatus.Completed);
         successor.Properties["chain:predecessorJob"].ShouldBe("reference-chain-source");
         successor.Properties["chain:predecessorTrigger"].ShouldBe("manual");
-        successor.Properties["chain"] .ShouldBe("example");
+        successor.Properties["chain"].ShouldBe("example");
         dependencies.Count.ShouldBe(1);
         dependencies[0].Status.ShouldBe(JobDependencyStatus.Satisfied);
         recorder.ChainSteps.ShouldBe(["source", "target"]);

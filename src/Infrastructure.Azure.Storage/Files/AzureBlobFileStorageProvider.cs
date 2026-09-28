@@ -674,7 +674,7 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
                 .AsPages(continuationToken, 100); // Match Local's PageSize
 
             var page = await resultSegment.FirstOrDefaultAsync(cancellationToken: cancellationToken);
-            if (page == null || page.Values?.Count == 0)
+            if (page == null || page.Values.Count == 0)
             {
                 return Result<(IEnumerable<string> Files, string NextContinuationToken)>.Success(([], null))
                     .WithMessage($"Listed files in '{path}' with pattern '{searchPattern}'");

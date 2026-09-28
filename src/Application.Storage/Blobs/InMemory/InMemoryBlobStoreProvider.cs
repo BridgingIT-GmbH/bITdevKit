@@ -259,21 +259,21 @@ public sealed class InMemoryBlobStoreProvider(
                 .OrderBy(entry => entry.Info.Key.Name, StringComparer.Ordinal)
                 .ToList();
 
-            if (!string.IsNullOrWhiteSpace(validation.Value.ContinuationToken?.Name))
-            {
-                rows = rows
-                    .Where(entry => string.Compare(entry.Info.Key.Name, validation.Value.ContinuationToken.Name, StringComparison.Ordinal) > 0)
-                    .ToList();
-            }
-
-            var pageRows = rows.Take(validation.Value.Take + 1).ToList();
-            var items = pageRows
-                .Take(validation.Value.Take)
-                .Select(entry => CloneInfo(entry.Info))
+        if (!string.IsNullOrWhiteSpace(validation.Value.ContinuationToken?.Name))
+        {
+            rows = rows
+                .Where(entry => string.Compare(entry.Info.Key.Name, validation.Value.ContinuationToken.Name, StringComparison.Ordinal) > 0)
                 .ToList();
-            var continuationToken = pageRows.Count > validation.Value.Take
-                ? this.CreateContinuationToken(validation.Value.QueryHash, items[^1].Key)
-                : null;
+        }
+
+        var pageRows = rows.Take(validation.Value.Take + 1).ToList();
+        var items = pageRows
+            .Take(validation.Value.Take)
+            .Select(entry => CloneInfo(entry.Info))
+            .ToList();
+        var continuationToken = pageRows.Count > validation.Value.Take
+            ? this.CreateContinuationToken(validation.Value.QueryHash, items[^1].Key)
+            : null;
 
         return Task.FromResult(Result<BlobPage>.Success(new BlobPage
         {

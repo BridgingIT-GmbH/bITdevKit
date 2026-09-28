@@ -104,7 +104,7 @@ public class CoreModule : WebModuleBase
                 .ProcessingModeImmediate()
                 .ProcessingInterval("00:00:30")
                 .StartupDelay("00:00:15"));
-                //.PurgeOnStartup());
+        //.PurgeOnStartup());
 
         services.AddActiveEntities();
 

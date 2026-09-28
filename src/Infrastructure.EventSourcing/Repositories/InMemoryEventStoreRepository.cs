@@ -137,7 +137,7 @@ public class InMemoryEventStoreRepository : IEventStoreRepository
     /// <returns>A task that represents the asynchronous operation.</returns>
     public Task ExecuteScopedAsync(Func<Task> operation)
     {
-        operation?.Invoke();
+        operation.Invoke();
 
         return Task.CompletedTask;
     }

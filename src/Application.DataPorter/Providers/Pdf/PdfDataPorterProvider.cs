@@ -1082,7 +1082,7 @@ public sealed class PdfDataPorterProvider(
 
         if (
             column.Converter is null
-            && (column.PropertyInfo?.PropertyType?.SupportsStructuredValue() == true)
+                    && (column.PropertyInfo?.PropertyType.SupportsStructuredValue() == true)
         )
         {
             value = this.FormatStructuredValue(

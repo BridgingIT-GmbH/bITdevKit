@@ -237,7 +237,7 @@ public partial class JobSchedulerService(
         }
 
         active.InterruptRequested = true;
-    active.Reason = string.IsNullOrWhiteSpace(reason) ? "Execution was interrupted." : reason.Trim();
+        active.Reason = string.IsNullOrWhiteSpace(reason) ? "Execution was interrupted." : reason.Trim();
         active.CancellationSource.Cancel();
 
         var occurrence = await storeProvider.Occurrences.GetAsync(occurrenceId, cancellationToken).ConfigureAwait(false);

@@ -79,7 +79,7 @@ public class DbUpdateExceptionHandler(
     /// </summary>
     private (int StatusCode, string ErrorType) ClassifyException(DbUpdateException exception)
     {
-        var innerMessage = exception.InnerException?.Message?.ToUpperInvariant() ?? string.Empty;
+        var innerMessage = exception.InnerException?.Message.ToUpperInvariant() ?? string.Empty;
 
         // Unique constraint violation
         if (innerMessage.Contains("UNIQUE") ||

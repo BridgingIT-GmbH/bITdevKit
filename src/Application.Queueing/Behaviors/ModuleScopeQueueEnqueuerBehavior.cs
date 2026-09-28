@@ -100,13 +100,13 @@ public class ModuleScopeQueueEnqueuerBehavior(
         if (message?.Properties?.ContainsKey(Constants.CorrelationIdKey) == false)
         {
             var correlationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey);
-            message?.Properties?.Add(Constants.CorrelationIdKey, correlationId);
+            message.Properties?.Add(Constants.CorrelationIdKey, correlationId);
         }
 
         if (message?.Properties?.ContainsKey(Constants.FlowIdKey) == false)
         {
             var flowId = Activity.Current?.GetBaggageItem(ActivityConstants.FlowIdTagKey);
-            message?.Properties?.Add(Constants.FlowIdKey, flowId);
+            message.Properties?.Add(Constants.FlowIdKey, flowId);
         }
     }
 }

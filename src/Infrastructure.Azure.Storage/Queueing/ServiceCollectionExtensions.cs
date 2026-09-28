@@ -77,7 +77,7 @@ public static partial class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<AzureQueueStorageQueueBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<AzureQueueStorageQueueBrokerConfiguration>() ??
             new AzureQueueStorageQueueBrokerConfiguration();
 
         return context.WithAzureQueueStorageBroker(options => options

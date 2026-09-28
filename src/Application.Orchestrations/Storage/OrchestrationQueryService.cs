@@ -190,19 +190,19 @@ public class OrchestrationQueryService(IOrchestrationQueryStore queryStore) : IO
 
             var snapshots = await this
                 .GetSnapshotsAsync(new OrchestrationQueryRequest
-            {
-                OrchestrationName = request.OrchestrationName,
-                Statuses = request.Statuses,
-                States = request.States,
-                StartedFrom = request.StartedFrom,
-                StartedTo = request.StartedTo,
-                CompletedFrom = request.CompletedFrom,
-                CompletedTo = request.CompletedTo,
-                Skip = 0,
-                Take = int.MaxValue,
-                SortBy = "StartedUtc",
-                SortDescending = true,
-            }, cancellationToken).ConfigureAwait(false);
+                {
+                    OrchestrationName = request.OrchestrationName,
+                    Statuses = request.Statuses,
+                    States = request.States,
+                    StartedFrom = request.StartedFrom,
+                    StartedTo = request.StartedTo,
+                    CompletedFrom = request.CompletedFrom,
+                    CompletedTo = request.CompletedTo,
+                    Skip = 0,
+                    Take = int.MaxValue,
+                    SortBy = "StartedUtc",
+                    SortDescending = true,
+                }, cancellationToken).ConfigureAwait(false);
 
             var durationValues = snapshots
                 .Where(item => item.CompletedUtc.HasValue)

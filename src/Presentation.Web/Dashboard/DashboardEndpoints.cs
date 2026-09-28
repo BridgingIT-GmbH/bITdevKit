@@ -33,8 +33,8 @@ public class DashboardEndpoints(
 
         var group = this.MapGroup(app, options)
             .WithTags("_bdk.Dashboard");
-            //.DisableAntiforgery();
-            //.RequireCors(nameof(BridgingIT.DevKit.Presentation.Web.Dashboard));
+        //.DisableAntiforgery();
+        //.RequireCors(nameof(BridgingIT.DevKit.Presentation.Web.Dashboard));
 
         group.MapGet("/", this.HandleIndex)
             .WithName("_bdk.Dashboard.Index")

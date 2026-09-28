@@ -146,7 +146,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
         EnsureArg.IsNotNull(assemblies, nameof(assemblies));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<MapsterConfiguration>() ?? new MapsterConfiguration();
+        configuration ??= context.Configuration?.GetSection(section).Get<MapsterConfiguration>() ?? new MapsterConfiguration();
 
         var adapterConfiguration = new TypeAdapterConfig();
         adapterConfiguration.Scan(assemblies.ToArray());
@@ -170,7 +170,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
         EnsureArg.IsNotNull(adapterConfiguration, nameof(adapterConfiguration));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<MapsterConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<MapsterConfiguration>() ??
             new MapsterConfiguration();
 
         context.Services.TryAddSingleton(adapterConfiguration);

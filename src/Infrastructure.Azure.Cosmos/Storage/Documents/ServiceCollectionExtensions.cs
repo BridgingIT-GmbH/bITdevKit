@@ -435,7 +435,7 @@ public class CosmosDocumentStoreClientBuilderContext<T>(
         foreach (var descriptor in this.Services.Where(s =>
                          s.ServiceType is DecoratedType &&
                          s.ServiceType.ImplementsInterface(typeof(IDocumentStoreClient<T>)))
-                     ?.ToList())
+                    .ToList())
         {
             this.Services.Remove(descriptor); // remove the registered behavior
         }

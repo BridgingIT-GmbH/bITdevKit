@@ -1746,7 +1746,7 @@ public class RepositoryChangeHistoryBehavior<TEntity, TContext> : IGenericReposi
         var current = instance;
         for (var i = 0; i < parts.Length - 1; i++)
         {
-            current = current?.GetType().GetProperty(parts[i], BindingFlags.Instance | BindingFlags.Public)?.GetValue(current);
+            current = current.GetType().GetProperty(parts[i], BindingFlags.Instance | BindingFlags.Public)?.GetValue(current);
             if (current is null)
             {
                 return;

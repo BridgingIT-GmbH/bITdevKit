@@ -173,7 +173,6 @@ public class TodoItemOrchestrationCoordinator(
                 "DoFiesta orchestration could not be deleted for todo item {TodoItemId}: {Error}",
                 todoItemId,
                 result.Errors.FirstOrDefault()?.Message);
-            return;
         }
     }
 

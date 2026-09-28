@@ -69,7 +69,7 @@ public class QueueingService : BackgroundService
     /// <inheritdoc />
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("[{LogKey}] queueing service stopping (broker={QueueBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("[{LogKey}] queueing service stopping (broker={QueueBroker})", Constants.LogKey, this.broker?.GetType().Name);
         this.linkedCts?.Cancel();
 
         if (this.startupTask is not null)

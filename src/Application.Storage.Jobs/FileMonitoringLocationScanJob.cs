@@ -108,7 +108,7 @@ public partial class FileMonitoringLocationScanJob( // obsolete job, replaced by
 
         if (this.Data.TryGetValue(DataKeys.FileBlackListFilter, out var fileBlacklistFilter))
         {
-            scanOptions.FileBlackListFilter = fileBlacklistFilter?.Split(";")?.Select(f => f.Trim())?.ToArray();
+            scanOptions.FileBlackListFilter = fileBlacklistFilter?.Split(";").Select(f => f.Trim()).ToArray();
         }
 
         if (this.Data.TryGetValue(DataKeys.MaxFilesToScan, out var maxFilesToScan) && int.TryParse(maxFilesToScan, out var maxFilesToScanValue))

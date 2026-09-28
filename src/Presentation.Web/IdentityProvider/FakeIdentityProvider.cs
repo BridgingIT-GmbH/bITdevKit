@@ -260,7 +260,7 @@ public class FakeIdentityProvider(
 
         if (this.options.EnablePersistentRefreshTokens && refreshToken.IsNullOrEmpty())
         {
-            httpContext?.Request?.Cookies?.TryGetValue(".AspNetCore.Identity", out refreshToken);
+            httpContext?.Request.Cookies.TryGetValue(".AspNetCore.Identity", out refreshToken);
         }
 
         var validation = tokenService.ValidateRefreshToken(refreshToken);
@@ -290,7 +290,7 @@ public class FakeIdentityProvider(
     private TokenResponse CreateTokenResponse(FakeUser user, string clientId, string scope, string nonce = null)
     {
         scope ??= "openid profile email offline_access";
-        var isOidcRequest = scope?.Contains("openid", StringComparison.OrdinalIgnoreCase) == true;
+        var isOidcRequest = scope.Contains("openid", StringComparison.OrdinalIgnoreCase) == true;
         var response = new TokenResponse
         {
             AccessToken = tokenService.GenerateAccessToken(user, clientId, scope),

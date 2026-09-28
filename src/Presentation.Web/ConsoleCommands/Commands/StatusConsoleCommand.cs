@@ -40,7 +40,7 @@ public class StatusConsoleCommand : ConsoleCommandBase
         {
             var server = services.GetService<IServer>();
             var feature = server?.Features.Get<IServerAddressesFeature>();
-            var first = feature?.Addresses?.FirstOrDefault();
+            var first = feature?.Addresses.FirstOrDefault();
             if (!string.IsNullOrEmpty(first))
             {
                 var healthUrl = first.TrimEnd('/') + "/health";

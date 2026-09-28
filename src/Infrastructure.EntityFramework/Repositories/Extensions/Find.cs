@@ -51,7 +51,7 @@ public static partial class DbContextExtensions
 
         var filter = Expression.Lambda<Func<TEntity, bool>>(body, parameter);
 
-        if (options?.NoTracking == true)
+        if (options.NoTracking == true)
         {
             return await source.Set<TEntity>()
                 .AsNoTracking()
@@ -108,7 +108,7 @@ public static partial class DbContextExtensions
 
         var filter = Expression.Lambda<Func<TDatabaseEntity, bool>>(body, parameter);
 
-        if (options?.NoTracking == true)
+        if (options.NoTracking == true)
         {
             return await source.Set<TDatabaseEntity>()
                 .AsNoTracking()
@@ -129,7 +129,7 @@ public static partial class DbContextExtensions
     /// <returns>The result of the operation.</returns>
     public static PropertyInfo[] GetKeyProperties<T>(this DbContext source)
     {
-        return [.. source.Model?.FindEntityType(typeof(T))?
-            .FindPrimaryKey()?.Properties?.Select(p => p.PropertyInfo).SafeNull()];
+        return [.. source.Model.FindEntityType(typeof(T))?
+            .FindPrimaryKey()?.Properties.Select(p => p.PropertyInfo).SafeNull()];
     }
 }

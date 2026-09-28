@@ -253,8 +253,8 @@ public static class ActivityHelper
             return;
         }
 
-        activity?.AddTag("exception.type", ex.GetType().Name);
-        activity?.AddTag("exception.message", ex.Message);
-        activity?.AddTag("exception.stacktrace", ex.StackTrace);
+        activity.AddTag("exception.type", ex.GetType().Name);
+        activity.AddTag("exception.message", ex.Message);
+        activity.AddTag("exception.stacktrace", ex.StackTrace);
     }
 }

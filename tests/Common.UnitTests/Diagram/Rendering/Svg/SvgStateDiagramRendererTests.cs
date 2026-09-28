@@ -1,4 +1,5 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Diagrams;
+
 public class SvgStateDiagramRendererTests
 {
     private readonly SvgStateDiagramRenderer sut = new();

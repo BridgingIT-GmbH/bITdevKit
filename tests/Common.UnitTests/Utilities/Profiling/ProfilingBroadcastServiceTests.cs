@@ -10,6 +10,8 @@ using Microsoft.Extensions.Hosting;
 
 public class ProfilingBroadcastServiceTests
 {
+    private static readonly TimeSpan HandlerTimeout = TimeSpan.FromSeconds(10);
+
     [Fact]
     public void BroadcastService_PublicContract_RemainsStandalone()
     {
@@ -42,6 +44,7 @@ public class ProfilingBroadcastServiceTests
             })
             .Build();
         await host.StartAsync();
+        await WaitForNodeRegistrationAsync(host);
         var sut = host.Services.GetRequiredService<IProfilingBroadcastService>();
         var registry = host.Services.GetRequiredService<IBroadcastRegistryStore>();
         var prepared = await sut.PrepareTargetsAsync();
@@ -59,7 +62,7 @@ public class ProfilingBroadcastServiceTests
 
         // Act
         var result = await sut.PublishAsync(new TestProfilingBroadcast("fixed"), prepared.Value);
-        var received = await handled.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var received = await handled.Task.WaitAsync(HandlerTimeout);
 
         // Assert
         prepared.IsSuccess.ShouldBeTrue();
@@ -70,6 +73,20 @@ public class ProfilingBroadcastServiceTests
         received.Value.ShouldBe("fixed");
         (await registry.ListAsync()).Count.ShouldBe(2);
         await host.StopAsync();
+    }
+
+    private static async Task WaitForNodeRegistrationAsync(IHost host)
+    {
+        var registry = host.Services.GetRequiredService<IBroadcastRegistryStore>();
+        var identity = host.Services
+            .GetRequiredService<IBroadcastNodeIdentityProvider>()
+            .GetNodeIdentity();
+        using var timeout = new CancellationTokenSource(HandlerTimeout);
+
+        while (await registry.FindAsync(identity, timeout.Token) is null)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(10), timeout.Token);
+        }
     }
 
     public sealed record TestProfilingBroadcast(string Value) : IProfilingBroadcast;

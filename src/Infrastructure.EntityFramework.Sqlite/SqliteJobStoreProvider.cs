@@ -190,7 +190,6 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
         {
             this.logger.LogWarning("[{LogKey}] SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
-            return;
         }
     }
 
@@ -242,7 +241,6 @@ public class SqliteJobStoreProvider : IJobStoreProvider
         catch (SQLiteException ex) when (ex.Message.Contains("no such table"))
         {
             this.logger.LogWarning("[{LogKey}] SqliteJobStoreProvider - table does not exist: " + ex.Message, "JOB");
-            return;
         }
         catch (Exception)
         {

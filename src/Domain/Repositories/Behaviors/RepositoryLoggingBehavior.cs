@@ -555,18 +555,18 @@ public partial class RepositoryLoggingBehavior<TEntity>(ILoggerFactory loggerFac
             Constants.LogKey,
             options is not null && options.NoTracking);
 
-        if (options?.Skip.HasValue == true && options?.Take.HasValue == true)
+        if (options?.Skip.HasValue == true && options.Take.HasValue == true)
         {
             this.Logger.LogDebug("[{LogKey}] repository: skip={Skip}, take={Take}",
                 Constants.LogKey,
                 options.Skip.Value,
                 options.Take.Value);
         }
-        else if (options?.Skip.HasValue == true && options?.Take.HasValue == false)
+        else if (options?.Skip.HasValue == true && options.Take.HasValue == false)
         {
             this.Logger.LogDebug("[{LogKey}] repository: skip={Skip}", Constants.LogKey, options.Skip.Value);
         }
-        else if (options?.Skip.HasValue == false && options?.Take.HasValue == true)
+        else if (options?.Skip.HasValue == false && options.Take.HasValue == true)
         {
             this.Logger.LogDebug("[{LogKey}] repository: take={Take}", Constants.LogKey, options.Take.Value);
         }

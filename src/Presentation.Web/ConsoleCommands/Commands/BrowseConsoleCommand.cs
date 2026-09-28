@@ -49,7 +49,7 @@ public class BrowseConsoleCommand : ConsoleCommandBase, IGroupedConsoleCommand
     /// <inheritdoc/>
     public override Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
-        var server = services.GetService<IServer>(); var feature = server?.Features.Get<IServerAddressesFeature>(); var addresses = feature?.Addresses?.ToList() ?? [];
+        var server = services.GetService<IServer>(); var feature = server?.Features.Get<IServerAddressesFeature>(); var addresses = feature?.Addresses.ToList() ?? [];
         if (addresses.Count == 0) { console.MarkupLine("[yellow]No server addresses available (server not fully started?).[/]"); return Task.CompletedTask; }
 
         var httpAddresses = addresses.Where(a => a.StartsWith("http://", StringComparison.OrdinalIgnoreCase)).ToList();

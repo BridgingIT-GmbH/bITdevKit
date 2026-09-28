@@ -300,15 +300,28 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
 
     private static StorageDocument Create(DocumentTypeIdentity type, DocumentKey key, DateTimeOffset now) => new()
     {
-        Id = Guid.NewGuid(), Type = type.Value, TypeHash = HashHelper.ComputeSha256(type.Value), PartitionKey = key.PartitionKey,
-        PartitionKeyHash = HashHelper.ComputeSha256(key.PartitionKey), RowKey = key.RowKey, RowKeyHash = HashHelper.ComputeSha256(key.RowKey), CreatedDate = now
+        Id = Guid.NewGuid(),
+        Type = type.Value,
+        TypeHash = HashHelper.ComputeSha256(type.Value),
+        PartitionKey = key.PartitionKey,
+        PartitionKeyHash = HashHelper.ComputeSha256(key.PartitionKey),
+        RowKey = key.RowKey,
+        RowKeyHash = HashHelper.ComputeSha256(key.RowKey),
+        CreatedDate = now
     };
 
     private static StoredDocument Map(StorageDocument x) => new()
     {
-        Key = new(x.PartitionKey, x.RowKey), Content = x.Content?.ToArray() ?? [], ContentHash = x.ContentHash,
-        StoredContentHash = x.StoredContentHash, ETag = x.ConcurrencyVersion.ToString("N"), CreatedAt = x.CreatedDate,
-        LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = FromUnixTimeMilliseconds(x.ExpiresAtUnixMilliseconds), Properties = new PropertyBag(x.Properties), TransformMetadata = new PropertyBag(x.TransformMetadata)
+        Key = new(x.PartitionKey, x.RowKey),
+        Content = x.Content?.ToArray() ?? [],
+        ContentHash = x.ContentHash,
+        StoredContentHash = x.StoredContentHash,
+        ETag = x.ConcurrencyVersion.ToString("N"),
+        CreatedAt = x.CreatedDate,
+        LastModifiedAt = x.UpdatedDate ?? x.CreatedDate,
+        ExpiresAt = FromUnixTimeMilliseconds(x.ExpiresAtUnixMilliseconds),
+        Properties = new PropertyBag(x.Properties),
+        TransformMetadata = new PropertyBag(x.TransformMetadata)
     };
     private static DocumentInfo ToInfo(StorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), ETag = x.ConcurrencyVersion.ToString("N"), ContentHash = x.ContentHash, CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = FromUnixTimeMilliseconds(x.ExpiresAtUnixMilliseconds), Properties = new PropertyBag(x.Properties) };
     private static long? ToUnixTimeMilliseconds(DateTimeOffset? value) => value?.ToUnixTimeMilliseconds();

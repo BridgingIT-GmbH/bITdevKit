@@ -35,7 +35,7 @@ public class ModuleScopeJobSchedulingBehavior(
                 throw new ModuleNotEnabledException(moduleName);
             }
 
-            var jobId = context.JobDetail.JobDataMap?.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
+            var jobId = context.JobDetail.JobDataMap.GetString(Constants.JobIdKey) ?? context.FireInstanceId;
             var jobTypeName = context.JobDetail.JobType.Name;
             var correlationId = context.Get(Constants.CorrelationIdKey) as string;
             var flowId = context.Get(Constants.FlowIdKey) as string;

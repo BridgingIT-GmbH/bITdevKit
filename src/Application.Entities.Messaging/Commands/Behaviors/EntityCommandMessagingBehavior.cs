@@ -70,15 +70,15 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
             return result;
         }
 
-        if (request is IEntityCreateCommand instanceCreate && instanceCreate?.Entity != null)
+        if (request is IEntityCreateCommand instanceCreate && instanceCreate.Entity != null)
         {
             await this.ProcessCreated(result, instanceCreate, cancellationToken);
         }
-        else if (request is IEntityUpdateCommand instanceUpdate && instanceUpdate?.Entity != null)
+        else if (request is IEntityUpdateCommand instanceUpdate && instanceUpdate.Entity != null)
         {
             await this.ProcessUpdated(result, instanceUpdate, cancellationToken);
         }
-        else if (request is IEntityDeleteCommand instanceDelete && instanceDelete?.Entity != null)
+        else if (request is IEntityDeleteCommand instanceDelete && instanceDelete.Entity != null)
         {
             await this.ProcessDeleted(result, instanceDelete, cancellationToken);
         }
@@ -124,7 +124,7 @@ public class EntityCommandMessagingBehavior<TRequest, TResponse>(
                 await Task.Delay(this.options.PublishDelay, cancellationToken);
                 this.Logger.LogInformation("[{LogKey}] send entity updated message (type={EntityType})",
                     Constants.LogKey,
-                    instance?.Entity.GetType().PrettyName());
+                    instance.Entity.GetType().PrettyName());
                 await messageBroker?.Publish(message, cancellationToken);
             }
         }

@@ -50,12 +50,12 @@ public class WeatherReportEntityTypeConfiguration : IEntityTypeConfiguration<Wea
             .IsRequired();
 
         builder.HasIndex(e => new
-            {
-                e.CityId,
-                e.ReportType,
-                e.PeriodStartUtc,
-                e.PeriodEndUtc
-            })
+        {
+            e.CityId,
+            e.ReportType,
+            e.PeriodStartUtc,
+            e.PeriodEndUtc
+        })
             .IsUnique();
 
         builder.HasOne<City>()

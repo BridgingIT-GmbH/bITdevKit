@@ -196,10 +196,10 @@ public sealed class JobSchedulerMaintenanceService(
                 $"purgedBatchMemberships={removedBatchMembershipCount}",
                 $"affectedBatches={affectedBatchIds.Length}"
             ]);
-            activity?.SetTag("jobs.maintenance.matched", matched.Length);
-            activity?.SetTag("jobs.maintenance.processed", selected.Length);
-            this.metrics.RecordManagementOperation("purge-occurrences", true, request.JobName, request.TriggerName);
-            return report;
+        activity?.SetTag("jobs.maintenance.matched", matched.Length);
+        activity?.SetTag("jobs.maintenance.processed", selected.Length);
+        this.metrics.RecordManagementOperation("purge-occurrences", true, request.JobName, request.TriggerName);
+        return report;
     }
 
     /// <summary>
@@ -210,7 +210,7 @@ public sealed class JobSchedulerMaintenanceService(
     /// <returns>A task that represents the asynchronous operation.</returns>
     public async Task<JobMaintenanceReport> PurgeHistoryAsync(JobPurgeHistoryJobData options, CancellationToken cancellationToken = default)
     {
-            using var activity = JobSchedulerInstrumentation.StartManagementActivity("purge-history");
+        using var activity = JobSchedulerInstrumentation.StartManagementActivity("purge-history");
         options ??= new JobPurgeHistoryJobData();
         var cutoffUtc = timeProvider.GetUtcNow().Subtract(options.RetentionWindow);
         var archivedOccurrenceIds = (await storeProvider.Queries.ListOccurrencesAsync(cancellationToken).ConfigureAwait(false))

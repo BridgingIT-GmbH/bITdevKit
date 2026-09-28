@@ -419,8 +419,8 @@ public sealed class BlobStoreClientBehaviorTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-    retryTracker.Attempts.ShouldBe(2);
-    retryTracker.ActiveUploads.ShouldBe([1, 1]);
+        retryTracker.Attempts.ShouldBe(2);
+        retryTracker.ActiveUploads.ShouldBe([1, 1]);
         activeDuringBackoff.ShouldBe(0);
         coordinator.GetSnapshots().Single().ActiveUploads.ShouldBe(0);
         recorder.CounterSum("blobstorage_retries").ShouldBe(1);

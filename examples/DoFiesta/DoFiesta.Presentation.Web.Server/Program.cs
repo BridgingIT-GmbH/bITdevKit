@@ -119,7 +119,7 @@ builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopme
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o
         .Enabled().StartupDelay(builder.Configuration["StartupTasks:StartupDelay"]))
-                                                                                                  //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
+    //.WithTask<EchoStartupTask>(o => o.Enabled(builder.Environment.IsDevelopment()).StartupDelay("00:00:30"))
     .WithBehavior<ModuleScopeStartupTaskBehavior>();
 
 // Configure Authentication ==============================

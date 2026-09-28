@@ -81,7 +81,7 @@ public class MessagingService : BackgroundService
     /// <returns>A task that completes once shutdown coordination has finished.</returns>
     public override async Task StopAsync(CancellationToken cancellationToken)
     {
-        this.logger.LogInformation("[{LogKey}] broker message service stopping (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("[{LogKey}] broker message service stopping (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType().Name);
 
         this.linkedCts?.Cancel();
 
@@ -99,7 +99,7 @@ public class MessagingService : BackgroundService
 
         this.broker?.Unsubscribe();
 
-        this.logger.LogInformation("[{LogKey}] broker message service stopped (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+        this.logger.LogInformation("[{LogKey}] broker message service stopped (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType().Name);
 
         await base.StopAsync(cancellationToken);
     }
@@ -142,7 +142,7 @@ public class MessagingService : BackgroundService
             try
             {
                 this.broker = this.scope.ServiceProvider.GetService<IMessageBrokerRuntime>();
-                this.logger.LogInformation("[{LogKey}] broker message service starting (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+                this.logger.LogInformation("[{LogKey}] broker message service starting (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType().Name);
             }
             catch (InvalidOperationException ex)
             {
@@ -156,7 +156,7 @@ public class MessagingService : BackgroundService
             }
             else
             {
-                this.logger.LogWarning("[{LogKey}] broker message service not started (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType()?.Name);
+                this.logger.LogWarning("[{LogKey}] broker message service not started (broker={MessageBroker})", Constants.LogKey, this.broker?.GetType().Name);
             }
         }
         catch (OperationCanceledException)

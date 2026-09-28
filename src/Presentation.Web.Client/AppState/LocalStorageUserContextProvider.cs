@@ -78,7 +78,7 @@ public class LocalStorageUserContextProvider(IJSRuntime jsRuntime = null, Authen
 
         var authState = await authStateProvider.GetAuthenticationStateAsync();
         var user = authState.User;
-        return user?.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        return user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
     }
 
     /// <summary>

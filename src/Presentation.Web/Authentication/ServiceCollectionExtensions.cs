@@ -58,7 +58,7 @@ public static partial class ServiceCollectionExtensions
     {
         services.Configure<AuthenticationOptions>(configuration.GetSection("Authentication"));
         var authOptions = new AuthenticationOptions();
-        configuration.GetSection("Authentication")?.Bind(authOptions);
+        configuration.GetSection("Authentication").Bind(authOptions);
 
         return services.AddJwtBearerAuthentication(authOptions);
     }

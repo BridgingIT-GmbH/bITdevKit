@@ -2105,9 +2105,9 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             var fileConflict = await this.TryGetTrackedFileAsync(context, currentPath, includeContent: false, cancellationToken);
             if (fileConflict is not null)
             {
-                    return Result<FileStorageDirectoryEntity>.Failure()
-                        .WithError(new ConflictError("Path conflicts with an existing file"))
-                        .WithMessage($"Failed to materialize parent directories for '{originalPath}'");
+                return Result<FileStorageDirectoryEntity>.Failure()
+                    .WithError(new ConflictError("Path conflicts with an existing file"))
+                    .WithMessage($"Failed to materialize parent directories for '{originalPath}'");
             }
 
             var directory = await this.TryGetTrackedDirectoryAsync(context, currentPath, cancellationToken);

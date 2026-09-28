@@ -146,7 +146,7 @@ public class DebugExceptionHandler(
                 }
                 else
                 {
-                    properties[prop.Name] = value?.ToString() ?? "null";
+                    properties[prop.Name] = value.ToString() ?? "null";
                 }
             }
             catch

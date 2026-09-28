@@ -29,7 +29,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<InProcessMessageBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<InProcessMessageBrokerConfiguration>() ??
             new InProcessMessageBrokerConfiguration();
 
         context.Services.TryAddSingleton(sp =>

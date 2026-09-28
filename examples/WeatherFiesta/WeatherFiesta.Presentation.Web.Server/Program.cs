@@ -170,11 +170,11 @@ builder.Services.AddDashboard(o => o
     .Authorize(o => o
         .UseOpenIdConnect(builder.Configuration["Authentication:Authority"])
         .RequireRole(Role.Administrators)));
-    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>()
-    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
-    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
-    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints>()
-    // .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard.DashboardEndpoints>());
+// .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Jobs.Dashboard.DashboardEndpoints>()
+// .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Messaging.Dashboard.DashboardEndpoints>()
+// .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Queueing.Dashboard.DashboardEndpoints>()
+// .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints>()
+// .WithPluginAssemblyContaining<BridgingIT.DevKit.Presentation.Web.Storage.Files.Dashboard.DashboardEndpoints>());
 
 // ===============================================================================================
 // Register log services and endpoints

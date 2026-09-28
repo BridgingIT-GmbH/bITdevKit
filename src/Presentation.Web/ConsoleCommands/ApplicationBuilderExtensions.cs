@@ -71,7 +71,7 @@ public static partial class ApplicationBuilderExtensions
         {
             var server = app.Services.GetService<IServer>();
             var hasFeature = server?.Features.Get<IServerAddressesFeature>() is not null;
-            var hasUrls = app.Urls?.Count > 0;
+            var hasUrls = app.Urls.Count > 0;
             return hasFeature || hasUrls;
         }
         catch { return false; }

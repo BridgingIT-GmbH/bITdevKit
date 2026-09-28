@@ -143,7 +143,7 @@ public class EventStore<TAggregate>(
                 @event.AggregateVersion += diff;
 
                 await eventStoreRepository.AddAsync<TAggregate>(@event, cancellationToken).AnyContext();
-                (aggregate as IAggregateRootCommitting)?.EventHasBeenAddedToEventStore(@event);
+                (aggregate as IAggregateRootCommitting).EventHasBeenAddedToEventStore(@event);
                 await eventSender.WriteToOutboxAsync(@event as AggregateEvent, aggregate).AnyContext();
                 try
                 {

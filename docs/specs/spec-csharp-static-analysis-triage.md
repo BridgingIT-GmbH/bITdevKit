@@ -58,7 +58,7 @@ The baseline tables in this specification remain the immutable starting point fo
 
 | Measure | Baseline | Current | Status |
 | --- | ---: | ---: | --- |
-| Total findings | 9,050 | 2,455 | In progress |
+| Total findings | 9,050 | 1,886 | In progress |
 | `InvalidXmlDocComment` | 1,708 | 0 | Resolved |
 | `InheritdocInvalidUsage` | 18 | 0 | Resolved |
 | `Html.PathError` | 14 | 0 | Resolved |
@@ -75,7 +75,10 @@ The baseline tables in this specification remain the immutable starting point fo
 | `UnusedAutoPropertyAccessor.Global` | 1,077 | 0 | Configured as hint for externally consumed contracts |
 | `NotAccessedPositionalProperty.Global` | 147 | 0 | Configured as hint for externally consumed contracts |
 | `RedundantDefaultMemberInitializer` | 61 | 0 | Configured as style hint |
-| `UnusedMember.Local` | 194 | 105 | Source findings remain warnings; test findings are hints |
+| `PossibleMultipleEnumeration` | 686 | 0 | Configured as hint |
+| `ConstantConditionalAccessQualifier` | 193 | 0 | Resolved |
+| `RedundantJumpStatement` | 16 | 0 | Resolved |
+| `UnusedMember.Local` | 194 | 100 | Source findings remain warnings; test findings are hints |
 | `UnusedType.Local` | 2 | 0 | Resolved |
 
 The `InvalidXmlDocComment` batch repaired malformed XML, generic code examples, parameter and type-parameter tags, and unresolved documentation references across the solution. A fresh full-solution InspectCode scan reported zero remaining findings for this rule. The full solution build completed with zero warnings and zero errors, and `git diff --check` passed.
@@ -84,37 +87,34 @@ The remaining documentation rules are resolved. Invalid inheritance comments wer
 
 ### Current Open Findings Snapshot
 
-The open findings were revalidated on **2026-09-28** with JetBrains InspectCode 2026.2.2 after adding a nested test-project severity policy. The scan used `--no-build --swea --severity=WARNING` and reported **2,455 findings across 86 rules**. The verified report is `%TEMP%\bitdevkit-inspectcode-test-hints.sarif`; `UnusedVariable`, `InvalidXmlDocComment`, `InheritdocInvalidUsage`, and `Html.PathError` each reported zero findings. Test-only fixture, invalid-input, constant-condition, assertion-flow, and unused-member diagnostics remain available as editor hints. Warnings for disposal, closure mutation, ignored required results, stream handling, empty catches, and other correctness risks remain enabled in tests. The `src` count is unchanged at 2,212.
+The open findings were revalidated on **2026-09-28** with JetBrains InspectCode 2026.2.2 after configuring possible multiple enumeration as a hint and fixing constant conditional access and redundant jumps. The scan used `--no-build --swea --severity=WARNING` and reported **1,886 findings across 81 rules**. The verified report is `%TEMP%\bitdevkit-inspectcode-enumeration-conditional-jumps-final.sarif`; `PossibleMultipleEnumeration`, `ConstantConditionalAccessQualifier`, `RedundantJumpStatement`, `UnusedVariable`, `InvalidXmlDocComment`, `InheritdocInvalidUsage`, and `Html.PathError` each reported zero findings. Redundant explicit params collection creation is explicitly retained as a test-project hint. Warnings for disposal, closure mutation, ignored required results, stream handling, empty catches, and other correctness risks remain enabled in tests.
 
 | Severity | Open findings |
 | --- | ---: |
 | Error | 348 |
-| Warning | 2,107 |
-| **Total** | **2,455** |
+| Warning | 1,538 |
+| **Total** | **1,886** |
 
 | Source root | Open findings |
 | --- | ---: |
-| `src` | 2,212 |
+| `src` | 1,725 |
 | `tests` | 125 |
-| `examples` | 110 |
-| `benchmarks` | 8 |
-| **Total** | **2,455** |
+| `examples` | 36 |
+| **Total** | **1,886** |
 
 | Highest-count open rule | Findings |
 | --- | ---: |
 | `.CSharpErrors` | 342 |
-| `PossibleMultipleEnumeration` | 333 |
-| `UnusedParameter.Local` | 253 |
-| `PossibleNullReferenceException` | 214 |
-| `ConstantConditionalAccessQualifier` | 187 |
-| `AssignNullToNotNullAttribute` | 121 |
-| `UnusedMember.Local` | 105 |
+| `UnusedParameter.Local` | 232 |
+| `PossibleNullReferenceException` | 209 |
+| `AssignNullToNotNullAttribute` | 120 |
+| `UnusedMember.Local` | 100 |
 | `PossibleInvalidOperationException` | 93 |
-| `ConditionIsAlwaysTrueOrFalse` | 78 |
+| `ConditionIsAlwaysTrueOrFalse` | 76 |
 | `UnusedAutoPropertyAccessor.Local` | 63 |
 | `SuspiciousTypeConversion.Global` | 53 |
-| `RedundantAssignment` | 41 |
 | `AccessToDisposedClosure` | 39 |
+| `RedundantAssignment` | 39 |
 | `NonReadonlyMemberInGetHashCode` | 31 |
 | `OptionalParameterHierarchyMismatch` | 29 |
 | `PossiblyMistakenUseOfCancellationToken` | 27 |
@@ -124,9 +124,11 @@ The open findings were revalidated on **2026-09-28** with JetBrains InspectCode 
 | `RedundantExtendsListEntry` | 20 |
 | `PossibleUnintendedReferenceComparison` | 17 |
 | `ParameterHidesPrimaryConstructorParameter` | 16 |
-| `RedundantJumpStatement` | 16 |
-| `NotAccessedField.Local` | 13 |
 | `UsingStatementResourceInitialization` | 13 |
+| `MemberHidesStaticFromOuterClass` | 12 |
+| `UnusedMethodReturnValue.Local` | 12 |
+| `InconsistentlySynchronizedField` | 11 |
+| `NotAccessedField.Local` | 11 |
 
 The successful compiler build remains the authority for build validity. InspectCode model-loading findings such as `.CSharpErrors` remain open for individual reproduction and classification; they are not treated as compiler failures solely because InspectCode reports error severity.
 
@@ -150,16 +152,19 @@ This ledger tracks completed and active remediation batches. It complements the 
 | `DEAD-004` | 2026-09-26 | Dead or unused code | `UnusedMember.Local` | 186 | 184 | -2 | Fix unreachable private helpers | Resolved | Full-solution build passed; reference searches found no call sites; InspectCode: 184 rule findings and 5,207 total findings |
 | `CFG-003` | 2026-09-27 | Low-signal API and style diagnostics | Global unused accessors; global unread positional properties; redundant default initializers; Razor naming | 1,344 | 0 | -1,344 | Configure as editor hints | Resolved | InspectCode warning threshold: 3,632 findings across 88 rules; internal unused parameters and sampled correctness rules unchanged |
 | `CFG-004` | 2026-09-28 | Test-only fixture and assertion diagnostics | 19 low-signal inspections under `tests` | 1,302 | 125 | -1,177 | Configure as test-only editor hints | Resolved | InspectCode warning threshold: 2,455 findings across 86 rules; `tests`: 125; `src`: unchanged at 2,212 |
+| `CFG-005` | 2026-09-28 | Performance and test style | `PossibleMultipleEnumeration`; test `RedundantExplicitParamsArrayCreation` | 333 | 0 | -333 | Configure as editor hints | Resolved | InspectCode: 0 warning-level multiple-enumeration findings; params collection creation remains note-level in tests |
+| `COR-002` | 2026-09-28 | Correctness/nullability/control-flow | `ConstantConditionalAccessQualifier` | 178 | 0 | -178 | Fix analyzer-proven non-null access | Resolved | Full-solution build passed; InspectCode: 0 rule findings |
+| `STYLE-004` | 2026-09-28 | Naming/spelling/style | `RedundantJumpStatement` | 16 | 0 | -16 | Remove redundant control-flow jumps | Resolved | Full-solution build passed; InspectCode: 0 rule findings |
 
 For an active batch, `Completed` may be `-`, but `Before` must come from a fresh full-solution report. Mark a batch `Resolved` only after its focused validation, solution-level validation when required, and post-change InspectCode scan succeed.
 
 ### Next low-risk candidates
 
-The cleanup batches listed previously are complete. The verified report leaves 41 warning-level `RedundantAssignment` findings as the smallest plausible follow-up group. These require semantic review because assignments can preserve ordering or side effects. Redundant default initializers and test-only redundant assignments remain visible as editor hints and are no longer part of the warning-level backlog.
+The cleanup batches listed previously are complete. The verified report leaves 39 warning-level `RedundantAssignment` findings as the smallest plausible follow-up group. These require semantic review because assignments can preserve ordering or side effects. Redundant default initializers and test-only redundant assignments remain visible as editor hints and are no longer part of the warning-level backlog.
 
 The two remaining redundant-using findings are required Razor imports, and the four remaining redundant-cast findings establish a common switch-expression type required by the C# compiler. Retain these findings unless a future analyzer version stops reporting them.
 
-The conservative unused-symbol pass removed unused captures, proven-dead private helpers, and two private test types. Remaining high-count unused-code and multiple-enumeration findings are not mechanical cleanup. Reflection, dependency injection, public API compatibility, deferred execution, and side effects require semantic review.
+The conservative unused-symbol pass removed unused captures, proven-dead private helpers, and two private test types. Remaining high-count unused-code findings are not mechanical cleanup. Reflection, dependency injection, public API compatibility, and side effects require semantic review.
 
 ## Goals
 

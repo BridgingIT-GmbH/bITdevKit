@@ -24,7 +24,11 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions options) : I
         if (context.RequestServices.GetService<IStoragePermalinkRegistryProvider>() is null) yield break;
         yield return new DashboardPage("storage.permalinks", "Permalinks", "link-45deg", StoragePermalinkDashboardRoutes.Index(options))
         {
-            Group = "bdk", GroupOrder = 0, Order = 52, Description = "Manage stable storage download links", Tooltip = "Storage permalinks",
+            Group = "bdk",
+            GroupOrder = 0,
+            Order = 52,
+            Description = "Manage stable storage download links",
+            Tooltip = "Storage permalinks",
             Card = _ => ValueTask.FromResult(new DashboardPageCard("Permalinks", "Storage registry", "Open") { Detail = "List, expire, or delete links", Icon = "link-45deg", Url = StoragePermalinkDashboardRoutes.Index(options), Group = "bdk", GroupOrder = 0, Order = 52 })
         };
     }

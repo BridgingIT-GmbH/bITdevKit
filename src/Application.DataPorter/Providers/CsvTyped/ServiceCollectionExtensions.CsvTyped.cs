@@ -30,7 +30,7 @@ public static partial class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<CsvTypedConfiguration>()
+        configuration ??= context.Configuration?.GetSection(section).Get<CsvTypedConfiguration>()
             ?? new CsvTypedConfiguration();
 
         context.Services.AddSingleton<IDataPorterProvider>(sp =>

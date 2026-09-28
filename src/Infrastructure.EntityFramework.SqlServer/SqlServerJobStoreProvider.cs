@@ -235,7 +235,6 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
         {
             this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
-            return;
         }
         catch (Exception)
         {
@@ -272,7 +271,6 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         catch (SqlException ex) when (ex.Number == 208 && ex.Message.Contains("Invalid object name"))
         {
             this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
-            return;
         }
     }
 

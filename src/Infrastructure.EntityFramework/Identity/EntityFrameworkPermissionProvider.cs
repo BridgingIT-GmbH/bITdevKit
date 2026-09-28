@@ -242,7 +242,7 @@ public partial class EntityFrameworkPermissionProvider<TContext>
 
         // Execute the query and return the list of parent IDs
         var queryResult = method.Invoke(null, [context.Database, query, typedParams]);
-        var parentIds = (((IEnumerable)queryResult)?.Cast<object>()?.AsEnumerable() ?? []).ToList();
+        var parentIds = (((IEnumerable)queryResult)?.Cast<object>().AsEnumerable() ?? []).ToList();
 
         TypedLogger.LogFoundHierarchyPath(this.logger, "AUT", entityType.Name, entityId?.ToString(), parentIds.Count);
 

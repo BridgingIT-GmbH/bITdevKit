@@ -153,7 +153,7 @@ public abstract class EntityUpdateCommandHandlerBase<TCommand, TEntity>
     {
         if (command.Entity is IAuditable entity)
         {
-            if (entity?.AuditState?.IsDeleted() == true)
+            if (entity.AuditState?.IsDeleted() == true)
             {
                 throw new EntityNotFoundException($"{typeof(TEntity).Name}: {command.Entity?.Id}");
             }

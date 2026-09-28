@@ -192,9 +192,13 @@ public class ApplicationCommandTests : IAsyncLifetime
             .SearchCityAsync("Paris", "FR", Arg.Any<CancellationToken>())
             .Returns(new GeocodingResultModel
             {
-                Name = "Paris", Country = "France", CountryCode = "FR",
-                Latitude = 48.8566m, Longitude = 2.3522m,
-                TimeZone = "Europe/Paris", ExternalId = 2988507
+                Name = "Paris",
+                Country = "France",
+                CountryCode = "FR",
+                Latitude = 48.8566m,
+                Longitude = 2.3522m,
+                TimeZone = "Europe/Paris",
+                ExternalId = 2988507
             });
 
         await this.requester.SendAsync(new CityCreateCommand
@@ -237,9 +241,13 @@ public class ApplicationCommandTests : IAsyncLifetime
             .SearchCityAsync("Paris", "FR", Arg.Any<CancellationToken>())
             .Returns(new GeocodingResultModel
             {
-                Name = "Paris", Country = "France", CountryCode = "FR",
-                Latitude = 48.8566m, Longitude = 2.3522m,
-                TimeZone = "Europe/Paris", ExternalId = 2988507
+                Name = "Paris",
+                Country = "France",
+                CountryCode = "FR",
+                Latitude = 48.8566m,
+                Longitude = 2.3522m,
+                TimeZone = "Europe/Paris",
+                ExternalId = 2988507
             });
 
         await this.requester.SendAsync(new CityCreateCommand

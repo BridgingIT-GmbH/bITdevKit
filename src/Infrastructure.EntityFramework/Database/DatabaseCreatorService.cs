@@ -177,7 +177,6 @@ public class DatabaseCreatorService<TContext> : IHostedService
             }, cancellationToken);
         });
 
-        return;
     }
 
     /// <summary>

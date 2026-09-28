@@ -43,7 +43,7 @@ public class DiagnosticSchemaTransformer : IOpenApiSchemaTransformer
         OpenApiSchemaTransformerContext context,
         CancellationToken cancellationToken)
     {
-        var typeName = context.JsonTypeInfo.Type?.FullName ?? "(unknown)";
+        var typeName = context.JsonTypeInfo.Type.FullName ?? "(unknown)";
 
         // Skip System.* types
         if (typeName.StartsWith("System.") || typeName.StartsWith("Microsoft."))

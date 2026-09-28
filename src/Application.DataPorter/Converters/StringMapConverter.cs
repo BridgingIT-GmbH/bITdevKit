@@ -49,7 +49,7 @@ public sealed class StringMapConverter<T> : IValueConverter<T>
             }
         }
 
-        return value?.ToString();
+        return value.ToString();
     }
 
     /// <inheritdoc/>

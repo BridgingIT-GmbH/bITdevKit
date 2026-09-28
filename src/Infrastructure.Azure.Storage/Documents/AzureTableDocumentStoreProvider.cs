@@ -291,11 +291,15 @@ public class AzureTableDocumentStoreProvider : IDocumentStoreProvider, IDocument
     {
         var entity = new TableEntity(Encode(write.Key.PartitionKey), Encode(write.Key.RowKey))
         {
-            ["bdk_partition_key"] = write.Key.PartitionKey, ["bdk_row_key"] = write.Key.RowKey,
-            ["bdk_content_hash"] = write.ContentHash, ["bdk_stored_content_hash"] = write.StoredContentHash,
-            ["bdk_created_at"] = current?.CreatedAt ?? now, ["bdk_modified_at"] = now,
+            ["bdk_partition_key"] = write.Key.PartitionKey,
+            ["bdk_row_key"] = write.Key.RowKey,
+            ["bdk_content_hash"] = write.ContentHash,
+            ["bdk_stored_content_hash"] = write.StoredContentHash,
+            ["bdk_created_at"] = current?.CreatedAt ?? now,
+            ["bdk_modified_at"] = now,
             ["bdk_expires_at"] = write.PreserveExpiration ? current?.ExpiresAt : write.ExpiresAt,
-            ["bdk_properties"] = EncodeBag(write.Properties ?? current?.Properties), ["bdk_transforms"] = EncodeBag(write.TransformMetadata),
+            ["bdk_properties"] = EncodeBag(write.Properties ?? current?.Properties),
+            ["bdk_transforms"] = EncodeBag(write.TransformMetadata),
             ["bdk_content_chunk_count"] = (write.Content.Length + ChunkSize - 1) / ChunkSize
         };
         for (var offset = 0; offset < write.Content.Length; offset += ChunkSize)

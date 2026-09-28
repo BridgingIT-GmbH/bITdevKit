@@ -101,8 +101,8 @@ public sealed class OpenApiSecurityDocumentTransformer : IOpenApiDocumentTransfo
             [
                 .. (document.Security ?? [])
                     .Where(requirement => !requirement.Keys.Any(scheme =>
-                        string.Equals(scheme.Reference?.Id, options.OAuth2SchemeName, StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(scheme.Reference?.Id, options.BearerSchemeName, StringComparison.OrdinalIgnoreCase))),
+                        string.Equals(scheme.Reference.Id, options.OAuth2SchemeName, StringComparison.OrdinalIgnoreCase) ||
+                        string.Equals(scheme.Reference.Id, options.BearerSchemeName, StringComparison.OrdinalIgnoreCase))),
             ];
 
         if (options.AddOAuth2Scheme &&

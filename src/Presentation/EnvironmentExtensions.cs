@@ -75,7 +75,7 @@ public static class EnvironmentExtensions
     /// or if the app is running under OpenAPI build-time doc generation.
     /// </summary>
     public static bool IsLocalDevelopment(this IHostEnvironment env) =>
-        (env?.IsDevelopment() == true && env?.IsCloud() == false && env?.IsContainerized() == false)
+            (env?.IsDevelopment() == true && env.IsCloud() == false && env.IsContainerized() == false)
         || IsBuildTimeOpenApiGeneration();
 
     /// <summary>

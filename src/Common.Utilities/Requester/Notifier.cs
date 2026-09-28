@@ -681,7 +681,7 @@ public partial class Notifier(
                 var errors = handlerResults.SelectMany(r => r.Errors).ToList();
                 var messages = handlerResults.SelectMany(r => r.Messages).ToList();
                 TypedLogger.LogFailed(this.logger, RequestLogKey, notificationTypeName, notificationIdString, Environment.TickCount64 - startTicks);
-                foreach(var handlerResult in handlerResults)
+                foreach (var handlerResult in handlerResults)
                 {
                     this.logger.LogError("[{LogKey}] notification failed with errors: {Errors}", RequestLogKey, string.Join("; ", handlerResult.Errors.Select(e => e.Message)));
                 }

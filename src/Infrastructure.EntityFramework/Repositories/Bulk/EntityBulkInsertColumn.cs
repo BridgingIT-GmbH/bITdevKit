@@ -52,7 +52,8 @@ public sealed class EntityBulkInsertColumn<TEntity>
             EntityBulkInsertColumnSource.ClrProperty,
             false,
             providerValueAccessor
-        ) { }
+        )
+    { }
 
     /// <summary>
     /// Initializes a column descriptor with its value source and identity classification.

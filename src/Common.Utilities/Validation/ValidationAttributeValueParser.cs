@@ -68,7 +68,7 @@ public static class ValidationAttributeValueParser
         }
 
         var converter = TypeDescriptor.GetConverter(actualType);
-        if (converter?.CanConvertFrom(typeof(string)) == true)
+        if (converter.CanConvertFrom(typeof(string)) == true)
         {
             return converter.ConvertFromInvariantString(value);
         }

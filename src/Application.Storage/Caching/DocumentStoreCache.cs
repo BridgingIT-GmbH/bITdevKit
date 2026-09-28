@@ -127,8 +127,8 @@ public class DocumentStoreCache : IDistributedCache
         var document = new CacheDocument
         {
             Value = value,
-            AbsoluteExpiration = options?.AbsoluteExpiration,
-            SlidingExpiration = options?.SlidingExpiration
+            AbsoluteExpiration = options.AbsoluteExpiration,
+            SlidingExpiration = options.SlidingExpiration
         };
 
         await this.client.UpsertAsync(new DocumentKey("storage-cache", key), document, cancellationToken: token);

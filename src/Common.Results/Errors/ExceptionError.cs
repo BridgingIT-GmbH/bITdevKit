@@ -51,7 +51,7 @@ public class ExceptionError : IResultError
     /// <summary>
     /// Gets the type of the encapsulated exception.
     /// </summary>
-    public string ExceptionType => this.Exception?.GetType()?.FullName;
+    public string ExceptionType => this.Exception?.GetType().FullName;
 
     /// <summary>
     /// Gets the stack trace of the encapsulated exception.

@@ -9,7 +9,7 @@
     var pageTitle = string.IsNullOrWhiteSpace(Model.Title) ? dashboardTitle : Model.Title;
     var detachedView = string.Equals(HttpContext.Request.Query["dashboardView"].ToString(), "window", StringComparison.OrdinalIgnoreCase);
     var hideSideBar = Model.HideSideBar || detachedView;
-    var isAuthenticated = HttpContext.User?.Identity?.IsAuthenticated == true;
+    var isAuthenticated = HttpContext.User.Identity?.IsAuthenticated == true;
     var signOutPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.SignOut);
     var dashboardHomePath = DashboardPath.Combine(HttpContext.Request.PathBase, dashboardOptions.GroupPath);
     var currentDashboardUrl = $"{HttpContext.Request.PathBase}{HttpContext.Request.Path}{HttpContext.Request.QueryString}";

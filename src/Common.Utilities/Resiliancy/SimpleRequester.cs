@@ -31,7 +31,7 @@ public class SimpleRequester(
     IProgress<SimpleRequesterProgress> progress = null)
 {
     private readonly Dictionary<Type, (ISimpleRequestHandler Handler, Type ResponseType)> handlers = [];
-    private readonly ISimpleRequestPipelineBehavior[] pipelineBehaviors = pipelineBehaviors?.Reverse()?.ToArray() ?? [];
+    private readonly ISimpleRequestPipelineBehavior[] pipelineBehaviors = pipelineBehaviors?.Reverse().ToArray() ?? [];
     private readonly ReaderWriterLockSlim lockObject = new(); // Upgraded to RW lock for potential concurrency
 
     /// <summary>

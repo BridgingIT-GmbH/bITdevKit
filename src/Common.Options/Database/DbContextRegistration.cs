@@ -46,5 +46,5 @@ public sealed class DbContextRegistration(
     /// var name = registration.Name;
     /// </code>
     /// </example>
-    public string Name { get; } = string.IsNullOrWhiteSpace(name) ? contextType?.Name : name;
+    public string Name { get; } = string.IsNullOrWhiteSpace(name) ? contextType.Name : name;
 }

@@ -70,7 +70,7 @@ public class EntityFrameworkQueueBroker<TContext> : QueueBrokerBase
     internal async Task<QueueBrokerSummary> GetSummaryAsync(CancellationToken cancellationToken = default)
     {
         using var scope = this.serviceProvider?.CreateScope();
-        var context = this.context ?? scope?.ServiceProvider?.GetRequiredService<TContext>();
+        var context = this.context ?? scope?.ServiceProvider.GetRequiredService<TContext>();
         EnsureArg.IsNotNull(context, nameof(context));
 
         var query = context.QueueMessages.AsNoTracking();
@@ -122,7 +122,7 @@ public class EntityFrameworkQueueBroker<TContext> : QueueBrokerBase
     internal async Task<IEnumerable<QueueMessageInfo>> GetWaitingMessagesAsync(int? take = null, CancellationToken cancellationToken = default)
     {
         using var scope = this.serviceProvider?.CreateScope();
-        var context = this.context ?? scope?.ServiceProvider?.GetRequiredService<TContext>();
+        var context = this.context ?? scope?.ServiceProvider.GetRequiredService<TContext>();
         EnsureArg.IsNotNull(context, nameof(context));
 
         IQueryable<QueueMessage> query = context.QueueMessages
@@ -254,7 +254,7 @@ public class EntityFrameworkQueueBroker<TContext> : QueueBrokerBase
     protected override async Task OnEnqueue(IQueueMessage message, CancellationToken cancellationToken)
     {
         using var scope = this.serviceProvider?.CreateScope();
-        var context = this.context ?? scope?.ServiceProvider?.GetRequiredService<TContext>();
+        var context = this.context ?? scope?.ServiceProvider.GetRequiredService<TContext>();
         EnsureArg.IsNotNull(context, nameof(context));
 
         context.QueueMessages.Add(this.CreateQueueMessage(message));
@@ -270,7 +270,7 @@ public class EntityFrameworkQueueBroker<TContext> : QueueBrokerBase
         await this.Enqueue(message, cancellationToken);
 
         using var scope = this.serviceProvider?.CreateScope();
-        var context = this.context ?? scope?.ServiceProvider?.GetRequiredService<TContext>();
+        var context = this.context ?? scope?.ServiceProvider.GetRequiredService<TContext>();
         EnsureArg.IsNotNull(context, nameof(context));
 
         if (!this.options.AutoSave)

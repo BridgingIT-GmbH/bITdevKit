@@ -142,7 +142,7 @@ public class DashboardEndpointsOptionsBuilder
                 throw new ArgumentException("Dashboard page keys must be strings, with an optional boolean as the last argument.", nameof(pageKeys));
             }
 
-            key = key?.Trim();
+            key = key.Trim();
             if (string.IsNullOrWhiteSpace(key))
             {
                 continue;

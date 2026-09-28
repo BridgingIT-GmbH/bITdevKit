@@ -34,7 +34,7 @@ public static class ServiceCollectionExtensions
         EnsureArg.IsNotNull(context, nameof(context));
         EnsureArg.IsNotNull(context.Services, nameof(context.Services));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<RabbitMQMessageBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<RabbitMQMessageBrokerConfiguration>() ??
             new RabbitMQMessageBrokerConfiguration();
 
         context.Services.TryAddSingleton(sp =>
@@ -125,7 +125,7 @@ public static class ServiceCollectionExtensions
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        configuration ??= context.Configuration?.GetSection(section)?.Get<RabbitMQQueueBrokerConfiguration>() ??
+        configuration ??= context.Configuration?.GetSection(section).Get<RabbitMQQueueBrokerConfiguration>() ??
             new RabbitMQQueueBrokerConfiguration();
 
         return context.WithRabbitMQBroker(options => options

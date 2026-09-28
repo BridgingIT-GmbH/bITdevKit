@@ -623,7 +623,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     {
         var entities = await this.FindAllAsync(options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -647,7 +647,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     {
         var entities = await this.FindAllAsync(specification, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specification, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -671,7 +671,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     {
         var entities = await this.FindAllAsync(specifications, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specifications, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -782,7 +782,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     {
         var entities = await this.ProjectAllAsync(projection, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TProjection>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -808,7 +808,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     {
         var entities = await this.ProjectAllAsync(specification, projection, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specification, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TProjection>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -834,7 +834,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
     {
         var entities = await this.ProjectAllAsync(specifications, projection, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specifications, options, cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TProjection>.Success(entities.Value, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -1086,7 +1086,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
         var entities = await this.FindAllAsync(options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(options, cancellationToken).AnyContext();
         var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TId>.Success(ids, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -1111,7 +1111,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
         var entities = await this.FindAllAsync(specification, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specification, options, cancellationToken).AnyContext();
         var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TId>.Success(ids, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }
@@ -1136,7 +1136,7 @@ public partial class EntityFrameworkActiveEntityProvider<TEntity, TId, TContext>
         var entities = await this.FindAllAsync(specifications, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specifications, options, cancellationToken).AnyContext();
         var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TId>.Success(ids, totalCount.Value, page.Value, options?.Take > 0 ? options.Take.Value : 10);
     }

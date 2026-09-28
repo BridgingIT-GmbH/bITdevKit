@@ -75,7 +75,7 @@ public abstract partial class JobBase : IJob
     {
         EnsureArg.IsNotNull(context, nameof(context));
 
-        var jobId = context.JobDetail.JobDataMap?.GetString(JobIdKey) ?? context.FireInstanceId;
+        var jobId = context.JobDetail.JobDataMap.GetString(JobIdKey) ?? context.FireInstanceId;
         var jobTypeName = context.JobDetail.JobType.Name;
         var watch = ValueStopwatch.StartNew();
         long elapsedMilliseconds = 0;
@@ -92,7 +92,7 @@ public abstract partial class JobBase : IJob
 
             GetJobProperties(context);
 
-            this.Data = context.MergedJobDataMap.Keys.ToDictionary(k => k, k => context.MergedJobDataMap[k]?.ToString() ?? string.Empty);
+            this.Data = context.MergedJobDataMap.Keys.ToDictionary(k => k, k => context.MergedJobDataMap[k].ToString() ?? string.Empty);
 
             try
             {

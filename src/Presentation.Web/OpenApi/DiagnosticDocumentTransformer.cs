@@ -39,7 +39,7 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
         //Console.WriteLine($"[OpenAPI] Version: {document.Info?.Version}");
 
         // Log paths
-        if (document.Paths?.Count > 0)
+        if (document.Paths.Count > 0)
         {
             //Console.WriteLine($"[OpenAPI] Paths ({document.Paths.Count}):");
             foreach (var path in document.Paths)

@@ -16,7 +16,7 @@ public class DummyJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSched
     /// <inheritdoc/>
     public override async Task Execute(IJobExecutionContext context, JobDelegate next)
     {
-        var jobId = context.JobDetail.JobDataMap?.GetString(JobIdKey) ?? context.FireInstanceId;
+        var jobId = context.JobDetail.JobDataMap.GetString(JobIdKey) ?? context.FireInstanceId;
         var jobTypeName = context.JobDetail.JobType.FullName;
 
         this.Logger.LogDebug("[{LogKey}] >>>>> dummy job scheduling behavior - before (type={JobType}, id={JobId})",

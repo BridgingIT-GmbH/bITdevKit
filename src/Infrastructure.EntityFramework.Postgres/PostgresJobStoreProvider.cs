@@ -199,7 +199,6 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist
         {
             this.logger.LogWarning("[{LogKey}] PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
-            return;
         }
     }
 
@@ -271,7 +270,6 @@ public class PostgresJobStoreProvider : IJobStoreProvider
         catch (NpgsqlException ex) when (ex.SqlState == "42P01") // Relation (table) does not exist
         {
             this.logger.LogWarning("[{LogKey}] PostgresJobStoreProvider - table does not exist: " + ex.Message, "JOB");
-            return;
         }
     }
 

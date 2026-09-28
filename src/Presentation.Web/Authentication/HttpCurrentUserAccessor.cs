@@ -24,7 +24,7 @@ public class HttpCurrentUserAccessor(IHttpContextAccessor httpContextAccessor) :
     /// <summary>
     ///     Gets a value indicating whether the current user is authenticated.
     /// </summary>
-    public bool IsAuthenticated => httpContextAccessor.HttpContext?.User?.Identity?.IsAuthenticated ?? false;
+    public bool IsAuthenticated => httpContextAccessor.HttpContext?.User.Identity?.IsAuthenticated ?? false;
 
     /// <summary>
     ///     Gets the User ID of the current user.
@@ -33,24 +33,24 @@ public class HttpCurrentUserAccessor(IHttpContextAccessor httpContextAccessor) :
     ///     The User ID is a unique identifier assigned to the user,
     ///     typically obtained from the security claims.
     /// </value>
-    public string UserId => httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
+    public string UserId => httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.NameIdentifier);
 
     /// <summary>
     ///     Gets the user name of the currently authenticated user.
     ///     The user name is determined from the authenticated user's claims.
     /// </summary>
-    public string UserName => httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Name) ?? httpContextAccessor.HttpContext?.User?.FindFirstValue("name");
+    public string UserName => httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Name) ?? httpContextAccessor.HttpContext?.User.FindFirstValue("name");
 
     /// <summary>
     ///     Gets the email address of the currently authenticated user.
     ///     Returns null if the email claim is not present in the user's claims.
     /// </summary>
-    public string Email => httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.Email);
+    public string Email => httpContextAccessor.HttpContext?.User.FindFirstValue(ClaimTypes.Email);
 
     /// <summary>
     ///     Gets the roles associated with the current user.
     ///     It retrieves the roles from the current HTTP context's user claims.
     /// </summary>
     public string[] Roles =>
-        httpContextAccessor.HttpContext?.User?.FindAll(ClaimTypes.Role)?.Select(c => c.Value)?.ToArray() ?? [];
+        httpContextAccessor.HttpContext?.User.FindAll(ClaimTypes.Role).Select(c => c.Value).ToArray() ?? [];
 }

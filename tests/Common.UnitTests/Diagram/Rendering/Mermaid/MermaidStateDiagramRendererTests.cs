@@ -1,4 +1,5 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Diagrams;
+
 public class MermaidStateDiagramRendererTests
 {
     private readonly MermaidStateDiagramRenderer sut = new();

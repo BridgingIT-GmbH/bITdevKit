@@ -293,7 +293,6 @@ public static class JsRuntimeExtensions
         try
         {
             await source.InvokeVoidAsync("localStorage.setItem", key, value);
-            return;
         }
         catch (JSDisconnectedException)
         {
@@ -329,7 +328,6 @@ public static class JsRuntimeExtensions
         try
         {
             await source.InvokeVoidAsync("localStorage.removeItem", key);
-            return;
         }
         catch (JSDisconnectedException)
         {
@@ -351,7 +349,6 @@ public static class JsRuntimeExtensions
         try
         {
             await source.InvokeVoidAsync("localStorage.clear");
-            return;
         }
         catch (JSDisconnectedException)
         {
@@ -435,7 +432,6 @@ public static class JsRuntimeExtensions
         try
         {
             await source.InvokeVoidAsync("sessionStorage.setItem", key, value);
-            return;
         }
         catch (JSDisconnectedException)
         {
@@ -471,7 +467,6 @@ public static class JsRuntimeExtensions
         try
         {
             await source.InvokeVoidAsync("sessionStorage.removeItem", key);
-            return;
         }
         catch (JSDisconnectedException)
         {
@@ -493,7 +488,6 @@ public static class JsRuntimeExtensions
         try
         {
             await source.InvokeVoidAsync("sessionStorage.clear");
-            return;
         }
         catch (JSDisconnectedException)
         {

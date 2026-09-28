@@ -907,14 +907,14 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 return;
             }
 
-                await this.FailContextAsync(
-                    definition,
-                    context,
-                    snapshot,
-                    lease,
-                    $"State '{state.Name}' has no matching transition or terminal behavior.",
-                    cancellationToken)
-                .ConfigureAwait(false);
+            await this.FailContextAsync(
+                definition,
+                context,
+                snapshot,
+                lease,
+                $"State '{state.Name}' has no matching transition or terminal behavior.",
+                cancellationToken)
+            .ConfigureAwait(false);
             return;
         }
     }
@@ -2783,7 +2783,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             {
                 int intValue => intValue,
                 long longValue => checked((int)longValue),
-                _ when int.TryParse(value?.ToString(), out var parsed) => parsed,
+                _ when int.TryParse(value.ToString(), out var parsed) => parsed,
                 _ => 0,
             };
         }

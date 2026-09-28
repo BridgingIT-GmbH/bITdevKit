@@ -339,7 +339,7 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
                         File.Move(filePath, fullPath, overwrite: true);
                         return Task.CompletedTask;
                     }
-                    : null,
+            : null,
                 onFinalizeAsync: success =>
                 {
                     if (useTemporaryWrite && !success && File.Exists(filePath))

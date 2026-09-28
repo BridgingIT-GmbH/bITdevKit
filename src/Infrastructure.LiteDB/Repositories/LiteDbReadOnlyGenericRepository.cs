@@ -100,8 +100,8 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
                 .WhereExpressions(expressions)
                 .OrderByIf(options)
                 //.DistinctIf(options)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take)
+                .SkipIf(options.Skip)
+                .TakeIf(options.Take)
                 .ToList());
         }
 
@@ -174,8 +174,8 @@ public class LiteDbReadOnlyGenericRepository<TEntity> : IGenericReadOnlyReposito
                 .OrderByIf(options)
                 .Select(projection)
                 //.DistinctIf(options, this.Options.Mapper)
-                .SkipIf(options?.Skip)
-                .TakeIf(options?.Take)
+                .SkipIf(options.Skip)
+                .TakeIf(options.Take)
                 .ToList());
         }
 

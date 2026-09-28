@@ -691,7 +691,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     {
         var entities = await this.FindAllAsync(options: options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(cancellationToken: cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page ?? 1);
     }
@@ -717,7 +717,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     {
         var entities = await this.FindAllAsync(specification, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specification: specification, cancellationToken: cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page ?? 1);
     }
@@ -743,7 +743,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
     {
         var entities = await this.FindAllAsync(specifications, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specifications: specifications, cancellationToken: cancellationToken).AnyContext();
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TEntity>.Success(entities.Value, totalCount.Value, page ?? 1);
     }
@@ -854,7 +854,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
         var totalCount = await this.CountAsync(cancellationToken: cancellationToken).AnyContext();
         var compiledProjection = projection.Compile();
         var projected = entities.Value.Select(compiledProjection);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TProjection>.Success(projected, totalCount.Value, page ?? 1);
     }
@@ -884,7 +884,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
         var totalCount = await this.CountAsync(specification: specification, cancellationToken: cancellationToken).AnyContext();
         var compiledProjection = projection.Compile();
         var projected = entities.Value.Select(compiledProjection);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TProjection>.Success(projected, totalCount.Value, page ?? 1);
     }
@@ -914,7 +914,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
         var totalCount = await this.CountAsync(specifications: specifications, cancellationToken: cancellationToken).AnyContext();
         var compiledProjection = projection.Compile();
         var projected = entities.Value.Select(compiledProjection);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TProjection>.Success(projected, totalCount.Value, page ?? 1);
     }
@@ -1192,7 +1192,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
         var entities = await this.FindAllAsync(options: options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(cancellationToken: cancellationToken).AnyContext();
         var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TId>.Success(ids, totalCount.Value, page ?? 1);
     }
@@ -1219,7 +1219,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
         var entities = await this.FindAllAsync(specification, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specification: specification, cancellationToken: cancellationToken).AnyContext();
         var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TId>.Success(ids, totalCount.Value, page ?? 1);
     }
@@ -1246,7 +1246,7 @@ public class ActiveEntityInMemoryProvider<TEntity, TId> : IActiveEntityEntityPro
         var entities = await this.FindAllAsync(specifications, options, cancellationToken).AnyContext();
         var totalCount = await this.CountAsync(specifications: specifications, cancellationToken: cancellationToken).AnyContext();
         var ids = entities.Value.Select(e => (TId)e.Id);
-        var page = options?.Skip > 0 && options?.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
+        var page = options?.Skip > 0 && options.Take > 0 ? (options.Skip / options.Take) + 1 : 1;
 
         return ResultPaged<TId>.Success(ids, totalCount.Value, page ?? 1);
     }

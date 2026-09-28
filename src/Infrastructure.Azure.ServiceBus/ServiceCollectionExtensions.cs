@@ -16,7 +16,7 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 /// Represents service collection extensions.
 /// </summary>
-public static partial class ServiceCollectionExtensions
+public static class ServiceCollectionExtensions
 {
     /// <summary>
     /// Executes the with service bus broker operation.

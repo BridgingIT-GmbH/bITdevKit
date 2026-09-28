@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 ///     Extension methods for asynchronous <see cref="ResultPaged{T}"/> instances to enable chaining.
 /// </summary>
-public static partial class ResultPagedFunctionTaskExtensions
+public static class ResultPagedFunctionTaskExtensions
 {
     /// <summary>
     /// Throws a <see cref="ResultException"/> if the ResultPaged task indicates failure.

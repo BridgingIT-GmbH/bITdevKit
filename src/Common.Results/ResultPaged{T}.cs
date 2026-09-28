@@ -28,7 +28,7 @@ namespace BridgingIT.DevKit.Common;
 /// }
 /// </example>
 [DebuggerDisplay("{IsSuccess ? \"✓\" : \"✗\"} {messages.Count}Msg {errors.Count}Err, Page {CurrentPage}/{TotalPages} {FirstMessageOrError}")]
-public readonly partial struct ResultPaged<T> : IResultPaged<T>
+public readonly struct ResultPaged<T> : IResultPaged<T>
 {
     private readonly bool success;
     private readonly ValueList<string> messages;

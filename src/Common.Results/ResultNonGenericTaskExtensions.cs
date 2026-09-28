@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 
 /// <summary>Provides asynchronous chaining, inspection, logging, and recovery operations for non-generic result tasks.</summary>
-public static partial class ResultNonGenericTaskExtensions
+public static class ResultNonGenericTaskExtensions
 {
     /// <summary>
     /// Throws an exception if the Result task indicates failure.

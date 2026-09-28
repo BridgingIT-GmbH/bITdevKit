@@ -80,7 +80,7 @@ public sealed class BackgroundServiceHealthCheck<TService>(
             return Task.FromResult(HealthCheckResult.Degraded($"{serviceName} was canceled.", data: data));
         }
 
-        if (trackedTask.Task is null && executeTask.IsCompleted == true && applicationLifetime?.ApplicationStarted.IsCancellationRequested == true)
+        if (trackedTask.Task is null && executeTask.IsCompleted && applicationLifetime?.ApplicationStarted.IsCancellationRequested == true)
         {
             return Task.FromResult(HealthCheckResult.Degraded($"{serviceName} completed without a running startup task.", data: data));
         }

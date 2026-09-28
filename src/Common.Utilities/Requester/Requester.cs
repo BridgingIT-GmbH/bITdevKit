@@ -645,8 +645,6 @@ public partial class Requester(
                 if (handlerResult.IsSuccess)
                 {
                     TypedLogger.LogSuccess(this.logger, RequestLogKey, requestTypeName, requestIdString, Environment.TickCount64 - startTicks);
-
-                    return (Result<TValue>)handlerResult;
                 }
                 else
                 {

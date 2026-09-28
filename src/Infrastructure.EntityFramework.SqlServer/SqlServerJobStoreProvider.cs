@@ -236,10 +236,6 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
         {
             this.logger.LogWarning("[{LogKey}] SqlServerJobStoreProvider - table does not exist: " + ex.Message, "JOB");
         }
-        catch (Exception)
-        {
-            throw;
-        }
     }
 
     /// <summary>

@@ -47,7 +47,7 @@ public class IncludeIfTests
         plainBlog.Editor.ShouldBeNull();
 
         var includeOption = new SingleIncludeOption<BlogEntity, ReviewerEntity>(b => b.Editor);
-        var editorProfileInclude = ((IIncludableOption<BlogEntity, ReviewerEntity>)includeOption)
+        var editorProfileInclude = (includeOption)
             .ThenInclude(e => e.Profile);
         var options = new FindOptions<BlogEntity>().AddInclude(editorProfileInclude);
 
@@ -108,20 +108,6 @@ public class IncludeIfTests
         context.Blogs.Add(blog);
         context.SaveChanges();
         context.ChangeTracker.Clear();
-    }
-
-    private class CollectionIncludeOption<TEntity, TElement> : IncludeOptionBase<TEntity>, IIncludableOption<TEntity, IEnumerable<TElement>>
-        where TEntity : class, IEntity
-    {
-        public CollectionIncludeOption(Expression<Func<TEntity, IEnumerable<TElement>>> expression)
-        {
-            this.TypedExpression = expression;
-            this.Expression = System.Linq.Expressions.Expression.Lambda<Func<TEntity, object>>(
-                System.Linq.Expressions.Expression.Convert(expression.Body, typeof(object)),
-                expression.Parameters);
-        }
-
-        public Expression<Func<TEntity, IEnumerable<TElement>>> TypedExpression { get; }
     }
 
     private class SingleIncludeOption<TEntity, TProperty> : IncludeOptionBase<TEntity>, IIncludableOption<TEntity, TProperty>

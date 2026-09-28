@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Globalization;
 using System.Text.Json;
 /// <summary>
 /// Adds JSON-based parsing for <see cref="FilterModel"/> so Minimal APIs can bind it

@@ -179,26 +179,6 @@ public sealed class MetricsFileStorageBehavior(
         return result;
     }
 
-    private async Task<Result<T>> ExecuteAsync<T>(
-        string operation,
-        Func<Task<Result<T>>> next,
-        CancellationToken cancellationToken,
-        long bytes)
-    {
-        if (metricsService is null || cancellationToken.IsCancellationRequested)
-        {
-            return await next().ConfigureAwait(false);
-        }
-
-        var started = Stopwatch.GetTimestamp();
-        this.AddCounter("filestorage_operations", 1, operation);
-
-        var result = await next().ConfigureAwait(false);
-        this.Record(operation, started, result, result.IsSuccess ? bytes : 0, itemCount: 0);
-
-        return result;
-    }
-
     private async Task<Result> ExecuteAsync(
         string operation,
         Func<Task<Result>> next,

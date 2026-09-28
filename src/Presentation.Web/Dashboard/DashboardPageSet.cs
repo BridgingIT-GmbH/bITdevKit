@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Dashboard;
 
-using System.Net;
 using BridgingIT.DevKit.Presentation.Web;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

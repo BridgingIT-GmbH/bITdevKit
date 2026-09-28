@@ -24,7 +24,7 @@ public class ResultOperationScopeTests
         }
 
         // Act
-        var scope = Result<int>.Success(value)
+        _ = Result<int>.Success(value)
             .StartOperation(ct => Task.FromResult(Factory(ct)));
 
         // Assert

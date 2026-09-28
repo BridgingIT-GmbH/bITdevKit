@@ -36,7 +36,7 @@ public class RequesterInfoConsoleCommand : ConsoleCommandBase, IGroupedConsoleCo
         var requester = services.GetRequiredService<IRequester>();
         if (requester != null)
         {
-            var infos = requester.GetRegistrationInformation();
+            _ = requester.GetRegistrationInformation();
         }
         else
         {

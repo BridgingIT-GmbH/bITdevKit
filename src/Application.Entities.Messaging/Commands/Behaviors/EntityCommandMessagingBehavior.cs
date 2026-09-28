@@ -9,7 +9,6 @@ using Commands;
 using Common;
 using Domain.Model;
 using MediatR;
-using Messaging;
 using Microsoft.Extensions.Logging;
 using Constants = Commands.Constants;
 

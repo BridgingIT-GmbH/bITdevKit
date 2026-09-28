@@ -3,7 +3,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 using Configuration;
-using Microsoft.Extensions.Hosting;
 
 /// <summary>
 /// Provides dependency injection registration helpers for the queueing feature.

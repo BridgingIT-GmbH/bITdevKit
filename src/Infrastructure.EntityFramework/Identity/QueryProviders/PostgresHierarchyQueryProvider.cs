@@ -23,10 +23,10 @@ public class PostgresHierarchyQueryProvider : IHierarchyQueryProvider
     {
         var paramCast = idType switch
         {
-            Type t when t == typeof(Guid) || t == typeof(Guid?) => "::uuid",
-            Type t when t == typeof(int) || t == typeof(int?) => "::integer",
-            Type t when t == typeof(long) || t == typeof(long?) => "::bigint",
-            Type t when t == typeof(string) => "::text",
+            { } t when t == typeof(Guid) || t == typeof(Guid?) => "::uuid",
+            { } t when t == typeof(int) || t == typeof(int?) => "::integer",
+            { } t when t == typeof(long) || t == typeof(long?) => "::bigint",
+            { } t when t == typeof(string) => "::text",
             _ => "" // Fallback: no cast, let EF Core handle it
         };
 

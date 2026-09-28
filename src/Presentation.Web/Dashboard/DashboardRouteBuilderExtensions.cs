@@ -5,9 +5,7 @@
 
 namespace Microsoft.AspNetCore.Routing;
 
-using System.Net;
 using System.Reflection;
-using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using RazorSlices;

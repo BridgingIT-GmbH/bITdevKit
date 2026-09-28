@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.RabbitMQ;
 using BridgingIT.DevKit.Application.IntegrationTests.Queueing;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Infrastructure;
-using BridgingIT.DevKit.Infrastructure.RabbitMQ;
 using Microsoft.Extensions.DependencyInjection;
 
 [Collection(nameof(TestEnvironmentCollection))]
@@ -202,9 +201,10 @@ public class RabbitMQQueueBrokerTests(ITestOutputHelper output, TestEnvironmentF
             attempts: 120,
             delayMilliseconds: 250);
 
-        var summary = await brokerService.GetSummaryAsync();
+        _ = await brokerService.GetSummaryAsync();
 
         // Handler should have been invoked at least twice (original + retry)
+        deadLettered.ShouldBeTrue();
         RabbitMQFailingQueueMessageHandler.AttemptCount.ShouldBeGreaterThanOrEqualTo(2);
     }
 

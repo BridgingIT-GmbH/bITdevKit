@@ -7,8 +7,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
-using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory;
 using BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard;
 using Microsoft.EntityFrameworkCore;

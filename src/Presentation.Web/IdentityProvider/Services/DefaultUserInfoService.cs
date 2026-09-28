@@ -30,7 +30,7 @@ public class DefaultUserInfoService(ITokenService tokenService, FakeIdentityProv
         }
 
         var claims = validationResult.Claims;
-        var user = options.Users.FirstOrDefault(u => u.Id == claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value)
+        _ = options.Users.FirstOrDefault(u => u.Id == claims.FirstOrDefault(c => c.Type == JwtRegisteredClaimNames.Sub)?.Value)
             ?? throw new OAuth2Exception("invalid_grant", "Invalid credentials");
 
         return new UserInfoResponse

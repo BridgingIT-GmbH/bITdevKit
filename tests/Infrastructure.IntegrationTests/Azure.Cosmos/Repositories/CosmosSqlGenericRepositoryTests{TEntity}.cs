@@ -114,11 +114,11 @@ public class CosmosSqlGenericRepositoryTests
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var entity1 = await this.InsertEntityAsync(17);
-        var entity2 = await this.InsertEntityAsync(18);
-        var entity3 = await this.InsertEntityAsync(20);
-        var entity4 = await this.InsertEntityAsync(18);
-        var entity5 = await this.InsertEntityAsync();
+        _ = await this.InsertEntityAsync(17);
+        _ = await this.InsertEntityAsync(18);
+        _ = await this.InsertEntityAsync(20);
+        _ = await this.InsertEntityAsync(18);
+        _ = await this.InsertEntityAsync();
         // Act
         var results = await this.sut.FindAllAsync(new Specification<PersonStub>(_ => false),
             new FindOptions<PersonStub>(10, 2, new OrderOption<PersonStub>(e => e.Age)));

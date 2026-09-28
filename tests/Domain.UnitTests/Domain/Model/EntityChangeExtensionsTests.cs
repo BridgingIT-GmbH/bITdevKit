@@ -1016,6 +1016,7 @@ public class EntityChangeExtensionsTests
 
         // Event from before When should still be registered
         var events = person.DomainEvents.GetAll().OfType<PersonStub.PersonNameChangedEvent>().ToList();
+        events.ShouldHaveSingleItem();
     }
 
     [Fact]
@@ -1226,7 +1227,7 @@ public class EntityChangeExtensionsTests
         var address = AddressStub.Create("Home", "Street", "", "12345", "City", "Country");
 
         // Act - Try to remove with custom error message using method with custom message
-        var result = person.Change()
+        _ = person.Change()
             .Execute(p => { }) // Dummy operation to test direct access
             .Apply();
 

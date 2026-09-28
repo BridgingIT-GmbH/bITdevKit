@@ -184,11 +184,6 @@ public class ResultPagedSerializationTests
         using var document = JsonDocument.Parse(json);
         var root = document.RootElement;
 
-        var jsonMessages = root.GetProperty("messages").EnumerateArray()
-            .Select(m => m.GetString())
-            .ToArray();
-        // jsonMessages.ShouldContain(messages);
-
         var error = root.GetProperty("errors")[0];
         error.GetProperty("message").GetString().ShouldBe("Filter validation failed");
     }

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 
-using BridgingIT.DevKit.Application.Queueing;
-
 /// <summary>
 /// Enqueues document-storage archive work after weather ingestion data has been persisted.
 /// </summary>

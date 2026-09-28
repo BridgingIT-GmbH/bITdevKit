@@ -1,6 +1,5 @@
 ﻿@page "/authentication/{action}"
 @rendermode @(new InteractiveWebAssemblyRenderMode(prerender: false))
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @inject ILogger<Authentication> Logger
 
 <RemoteAuthenticatorView Action="@Action">

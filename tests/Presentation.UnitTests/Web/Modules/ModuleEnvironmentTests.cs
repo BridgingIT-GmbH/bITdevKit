@@ -54,7 +54,7 @@ public class ModuleEnvironmentTests
             IConfiguration configuration = null,
             IWebHostEnvironment environment = null)
         {
-            RegisterEnvironmentName = environment?.EnvironmentName;
+            this.RegisterEnvironmentName = environment?.EnvironmentName;
 
             return services;
         }
@@ -64,7 +64,7 @@ public class ModuleEnvironmentTests
             IConfiguration configuration = null,
             IWebHostEnvironment environment = null)
         {
-            UseEnvironmentName = environment?.EnvironmentName;
+            this.UseEnvironmentName = environment?.EnvironmentName;
 
             return app;
         }
@@ -74,7 +74,7 @@ public class ModuleEnvironmentTests
             IConfiguration configuration = null,
             IWebHostEnvironment environment = null)
         {
-            MapEnvironmentName = environment?.EnvironmentName;
+            this.MapEnvironmentName = environment?.EnvironmentName;
 
             return app;
         }

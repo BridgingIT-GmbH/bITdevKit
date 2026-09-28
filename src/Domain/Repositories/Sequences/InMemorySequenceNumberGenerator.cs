@@ -76,7 +76,7 @@ public class InMemorySequenceNumberGenerator(
         var key = GetKey(sequenceName, schema);
         var semaphore = this.locks.GetOrAdd(key, _ => new SemaphoreSlim(1, 1));
 
-        if (!this.sequences.TryGetValue(key, out var foundState))
+        if (!this.sequences.TryGetValue(key, out _))
         {
             return Result<long>.Failure()
                     .WithError(new SequenceNotFoundError(sequenceName, schema));

@@ -23,10 +23,10 @@ public class SqlServerHierarchyQueryProvider : IHierarchyQueryProvider
     {
         var paramCast = idType switch
         {
-            Type t when t == typeof(Guid) || t == typeof(Guid?) => "CAST(@p0 AS uniqueidentifier)",
-            Type t when t == typeof(int) || t == typeof(int?) => "CAST(@p0 AS int)",
-            Type t when t == typeof(long) || t == typeof(long?) => "CAST(@p0 AS bigint)",
-            Type t when t == typeof(string) => "@p0", // No cast needed for nvarchar
+            { } t when t == typeof(Guid) || t == typeof(Guid?) => "CAST(@p0 AS uniqueidentifier)",
+            { } t when t == typeof(int) || t == typeof(int?) => "CAST(@p0 AS int)",
+            { } t when t == typeof(long) || t == typeof(long?) => "CAST(@p0 AS bigint)",
+            { } t when t == typeof(string) => "@p0", // No cast needed for nvarchar
             _ => "@p0" // Fallback: no cast
         };
 

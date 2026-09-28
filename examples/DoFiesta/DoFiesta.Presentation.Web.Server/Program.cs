@@ -8,7 +8,6 @@ using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Notifications;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Infrastructure;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client.Layout;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server;

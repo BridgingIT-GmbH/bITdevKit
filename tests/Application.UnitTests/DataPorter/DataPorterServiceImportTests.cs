@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Application.UnitTests.DataPorter;
 
 using System.Globalization;
-using System.IO.Compression;
 using System.Text;
 using BridgingIT.DevKit.Application.DataPorter;
 using ClosedXML.Excel;

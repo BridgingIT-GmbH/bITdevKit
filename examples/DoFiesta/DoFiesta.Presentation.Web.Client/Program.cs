@@ -6,7 +6,6 @@
 #pragma warning disable SA1200 // Using directives should be placed correctly
 using System.Net.Http.Headers;
 using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen;
-using BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Client;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Kiota.Abstractions;

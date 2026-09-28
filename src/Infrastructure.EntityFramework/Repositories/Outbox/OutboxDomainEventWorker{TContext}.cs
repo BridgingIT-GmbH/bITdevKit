@@ -599,13 +599,6 @@ public partial class OutboxDomainEventWorker<TContext> : IOutboxDomainEventWorke
             (outboxEvent.LockedUntil == null || outboxEvent.LockedUntil < now);
     }
 
-    private bool ShouldArchive(OutboxDomainEvent outboxEvent)
-    {
-        return this.options.AutoArchiveAfter.HasValue &&
-            outboxEvent.ProcessedDate.HasValue &&
-            outboxEvent.ProcessedDate.Value.Add(this.options.AutoArchiveAfter.Value) <= DateTimeOffset.UtcNow;
-    }
-
     private async Task ArchiveProcessedEventsAsync(CancellationToken cancellationToken)
     {
         if (!this.options.AutoArchiveAfter.HasValue)

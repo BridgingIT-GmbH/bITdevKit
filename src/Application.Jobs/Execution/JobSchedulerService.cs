@@ -100,10 +100,10 @@ public partial class JobSchedulerService(
         var definition = this.ResolveJobDefinition(typeof(TJob));
         if (definition is null)
         {
-            return TraceManagementResult(activity, "dispatch", Result<JobDispatchResult>.Failure().WithError(new ValidationError($"The job type '{typeof(TJob).FullName}' is not registered.")), typeof(TJob).Name);
+            return this.TraceManagementResult(activity, "dispatch", Result<JobDispatchResult>.Failure().WithError(new ValidationError($"The job type '{typeof(TJob).FullName}' is not registered.")), typeof(TJob).Name);
         }
 
-        return TraceManagementResult(activity, "dispatch", await this.DispatchInternalAsync(definition, data, options, waitForCompletion: false, cancellationToken).ConfigureAwait(false), definition.JobName);
+        return this.TraceManagementResult(activity, "dispatch", await this.DispatchInternalAsync(definition, data, options, waitForCompletion: false, cancellationToken).ConfigureAwait(false), definition.JobName);
     }
 
     /// <inheritdoc />
@@ -117,10 +117,10 @@ public partial class JobSchedulerService(
         var definition = this.ResolveJobDefinition(jobName);
         if (definition is null)
         {
-            return TraceManagementResult(activity, "dispatch", Result<JobDispatchResult>.Failure().WithError(new ValidationError($"The job '{jobName}' is not registered.")), jobName);
+            return this.TraceManagementResult(activity, "dispatch", Result<JobDispatchResult>.Failure().WithError(new ValidationError($"The job '{jobName}' is not registered.")), jobName);
         }
 
-        return TraceManagementResult(activity, "dispatch", await this.DispatchInternalAsync(definition, data, options, waitForCompletion: false, cancellationToken).ConfigureAwait(false), definition.JobName);
+        return this.TraceManagementResult(activity, "dispatch", await this.DispatchInternalAsync(definition, data, options, waitForCompletion: false, cancellationToken).ConfigureAwait(false), definition.JobName);
     }
 
     /// <inheritdoc />
@@ -135,7 +135,7 @@ public partial class JobSchedulerService(
         var definition = this.ResolveJobDefinition(typeof(TJob));
         if (definition is null)
         {
-            return TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithError(new ValidationError($"The job type '{typeof(TJob).FullName}' is not registered.")), typeof(TJob).Name);
+            return this.TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithError(new ValidationError($"The job type '{typeof(TJob).FullName}' is not registered.")), typeof(TJob).Name);
         }
 
         options ??= new JobDispatchOptions();
@@ -147,10 +147,10 @@ public partial class JobSchedulerService(
         var dispatch = await this.DispatchPreparedAsync(definition, data, options, true, linkedCts.Token).ConfigureAwait(false);
         if (dispatch.IsFailure)
         {
-            return TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithErrors(dispatch.Errors).WithMessages(dispatch.Messages), definition.JobName);
+            return this.TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithErrors(dispatch.Errors).WithMessages(dispatch.Messages), definition.JobName);
         }
 
-        return TraceManagementResult(activity, "dispatch-and-wait", dispatch.Value.ExecutionResult is null
+        return this.TraceManagementResult(activity, "dispatch-and-wait", dispatch.Value.ExecutionResult is null
             ? Result<JobExecutionResult>.Failure().WithError(new Error("The inline execution result was not produced."))
             : Result<JobExecutionResult>.Success(dispatch.Value.ExecutionResult, dispatch.Value.ExecutionResult.Messages), definition.JobName);
     }
@@ -167,7 +167,7 @@ public partial class JobSchedulerService(
         var definition = this.ResolveJobDefinition(jobName);
         if (definition is null)
         {
-            return TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithError(new ValidationError($"The job '{jobName}' is not registered.")), jobName);
+            return this.TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithError(new ValidationError($"The job '{jobName}' is not registered.")), jobName);
         }
 
         options ??= new JobDispatchOptions();
@@ -179,10 +179,10 @@ public partial class JobSchedulerService(
         var dispatch = await this.DispatchPreparedAsync(definition, data, options, true, linkedCts.Token).ConfigureAwait(false);
         if (dispatch.IsFailure)
         {
-            return TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithErrors(dispatch.Errors).WithMessages(dispatch.Messages), definition.JobName);
+            return this.TraceManagementResult(activity, "dispatch-and-wait", Result<JobExecutionResult>.Failure().WithErrors(dispatch.Errors).WithMessages(dispatch.Messages), definition.JobName);
         }
 
-        return TraceManagementResult(activity, "dispatch-and-wait", dispatch.Value.ExecutionResult is null
+        return this.TraceManagementResult(activity, "dispatch-and-wait", dispatch.Value.ExecutionResult is null
             ? Result<JobExecutionResult>.Failure().WithError(new Error("The inline execution result was not produced."))
             : Result<JobExecutionResult>.Success(dispatch.Value.ExecutionResult, dispatch.Value.ExecutionResult.Messages), definition.JobName);
     }
@@ -197,7 +197,7 @@ public partial class JobSchedulerService(
         var occurrence = await storeProvider.Occurrences.GetAsync(occurrenceId, cancellationToken).ConfigureAwait(false);
         if (occurrence is null)
         {
-            return TraceManagementResult(activity, "cancel-occurrence", Result.Failure().WithError(new ValidationError($"The occurrence '{occurrenceId}' was not found.")), occurrenceId: occurrenceId);
+            return this.TraceManagementResult(activity, "cancel-occurrence", Result.Failure().WithError(new ValidationError($"The occurrence '{occurrenceId}' was not found.")), occurrenceId: occurrenceId);
         }
 
         if (this.activeExecutions.TryGetValue(occurrenceId, out var active))
@@ -206,12 +206,12 @@ public partial class JobSchedulerService(
             active.Reason = string.IsNullOrWhiteSpace(reason) ? "Execution was cancelled." : reason.Trim();
             active.CancellationSource.Cancel();
             await this.AppendHistoryAsync(occurrence, active.ExecutionId, "OccurrenceCancelRequested", JobOccurrenceStatus.Running, null, reason, cancellationToken).ConfigureAwait(false);
-            return TraceManagementResult(activity, "cancel-occurrence", Result.Success(), occurrence.JobName, occurrence.TriggerName, occurrenceId);
+            return this.TraceManagementResult(activity, "cancel-occurrence", Result.Success(), occurrence.JobName, occurrence.TriggerName, occurrenceId);
         }
 
         if (occurrence.Status is JobOccurrenceStatus.Completed or JobOccurrenceStatus.Failed or JobOccurrenceStatus.Cancelled or JobOccurrenceStatus.Archived)
         {
-            return TraceManagementResult(activity, "cancel-occurrence", Result.Failure().WithError(new ValidationError($"The occurrence '{occurrenceId}' cannot be cancelled from status '{occurrence.Status}'.")), occurrence.JobName, occurrence.TriggerName, occurrenceId);
+            return this.TraceManagementResult(activity, "cancel-occurrence", Result.Failure().WithError(new ValidationError($"The occurrence '{occurrenceId}' cannot be cancelled from status '{occurrence.Status}'.")), occurrence.JobName, occurrence.TriggerName, occurrenceId);
         }
 
         var updated = occurrence with
@@ -222,7 +222,7 @@ public partial class JobSchedulerService(
 
         await this.UpdateOccurrenceAsync(updated, cancellationToken).ConfigureAwait(false);
         await this.AppendHistoryAsync(updated, null, "OccurrenceCancelled", JobOccurrenceStatus.Cancelled, null, reason, cancellationToken).ConfigureAwait(false);
-        return TraceManagementResult(activity, "cancel-occurrence", Result.Success(), occurrence.JobName, occurrence.TriggerName, occurrenceId);
+        return this.TraceManagementResult(activity, "cancel-occurrence", Result.Success(), occurrence.JobName, occurrence.TriggerName, occurrenceId);
     }
 
     /// <inheritdoc />
@@ -259,13 +259,13 @@ public partial class JobSchedulerService(
         var definition = this.ResolveJobDefinition(jobName);
         if (definition is null)
         {
-            return TraceManagementResult(activity, "enable-job", Result.Failure().WithError(new ValidationError($"The job '{jobName}' is not registered.")), jobName);
+            return this.TraceManagementResult(activity, "enable-job", Result.Failure().WithError(new ValidationError($"The job '{jobName}' is not registered.")), jobName);
         }
 
         var existing = await storeProvider.RuntimeStates.GetAsync(definition.JobName, cancellationToken).ConfigureAwait(false);
         if (existing is { Enabled: true } || (existing is not { Enabled: false } && definition.Enabled))
         {
-            return TraceManagementResult(activity, "enable-job", Result.Failure().WithError(new ValidationError($"The job '{definition.JobName}' is already enabled.")), definition.JobName);
+            return this.TraceManagementResult(activity, "enable-job", Result.Failure().WithError(new ValidationError($"The job '{definition.JobName}' is already enabled.")), definition.JobName);
         }
 
         var nowUtc = timeProvider.GetUtcNow();
@@ -281,7 +281,7 @@ public partial class JobSchedulerService(
             cancellationToken).ConfigureAwait(false);
 
         await this.AppendRegistrationHistoryAsync(definition.JobName, null, "JobEnabled", reason, cancellationToken).ConfigureAwait(false);
-        return TraceManagementResult(activity, "enable-job", Result.Success(), definition.JobName);
+        return this.TraceManagementResult(activity, "enable-job", Result.Success(), definition.JobName);
     }
 
     /// <inheritdoc />
@@ -1356,7 +1356,7 @@ public partial class JobSchedulerService(
             return Result<JobDispatchResult>.Failure().WithErrors(dispatch.Errors).WithMessages(dispatch.Messages);
         }
 
-        if (!waitForCompletion && dispatch.Value.ExecutionResult is { } executionResult && dispatch.Value.ExecutionFailure is null)
+        if (!waitForCompletion && dispatch.Value.ExecutionResult is not null && dispatch.Value.ExecutionFailure is null)
         {
             return Result<JobDispatchResult>.Success(dispatch.Value.DispatchResult);
         }

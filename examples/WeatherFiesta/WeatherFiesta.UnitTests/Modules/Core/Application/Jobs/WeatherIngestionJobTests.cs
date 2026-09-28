@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.UnitTests.Modules.Core.Jobs;
 
 using BridgingIT.DevKit.Application.Jobs;
-using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 

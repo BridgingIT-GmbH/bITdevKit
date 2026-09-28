@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Task
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Domain.Modules.Core.Model;
 using Microsoft.Extensions.Logging;

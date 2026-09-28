@@ -141,10 +141,10 @@ public sealed class McpServerSessionPublisher(
             }
 
             selections.Delete(context.Workspace);
-            return ResolveUnselectedRuntime(hosts, "workspace-repaired");
+            return this.ResolveUnselectedRuntime(hosts, "workspace-repaired");
         }
 
-        return ResolveUnselectedRuntime(hosts, "auto");
+        return this.ResolveUnselectedRuntime(hosts, "auto");
     }
 
     private RuntimeSelection ResolveUnselectedRuntime(IReadOnlyList<HostRuntimeInfo> hosts, string singleRuntimeSource)

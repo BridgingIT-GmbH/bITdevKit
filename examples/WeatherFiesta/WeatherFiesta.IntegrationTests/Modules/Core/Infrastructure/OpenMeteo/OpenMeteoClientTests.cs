@@ -180,13 +180,5 @@ public class OpenMeteoClientTests
         result.ShouldNotBeNull();
         result.Daily.ShouldNotBeNull();
         result.Daily.Count.ShouldBe(7);
-
-        // These fields may be null for some days — verify they don't throw
-        foreach (var day in result.Daily)
-        {
-            // PrecipitationProbabilityMax can be null for some forecast days
-            // UvIndexMax can be null at night
-            // The parser should handle these gracefully with defaults
-        }
     }
 }

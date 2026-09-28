@@ -1903,7 +1903,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
             while ((read = await content.ReadAsync(buffer.AsMemory(0, buffer.Length), cancellationToken)) > 0)
             {
                 totalBytes += read;
-                if (this.options.MaximumBufferedContentSize is long limit && totalBytes > limit)
+                if (this.options.MaximumBufferedContentSize is { } limit && totalBytes > limit)
                 {
                     throw new BufferedContentLimitExceededException(limit, totalBytes);
                 }
@@ -3024,7 +3024,7 @@ public class EntityFrameworkFileStorageProvider<TContext> : BaseFileStorageProvi
 
     private void EnsureBufferedContentSizeAllowed(long actualSize)
     {
-        if (this.options.MaximumBufferedContentSize is long limit && actualSize > limit)
+        if (this.options.MaximumBufferedContentSize is { } limit && actualSize > limit)
         {
             throw new BufferedContentLimitExceededException(limit, actualSize);
         }

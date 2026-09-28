@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Application.UnitTests.Orchestrations;
 
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
-using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 
 public partial class OrchestrationAdvancedWorkflowTests(ITestOutputHelper output) : OrchestrationTestBase(output)

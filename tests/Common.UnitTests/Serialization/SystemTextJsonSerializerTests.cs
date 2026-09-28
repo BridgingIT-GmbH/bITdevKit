@@ -50,7 +50,7 @@ public class SystemTextJsonSerializerTests(ITestOutputHelper output) : Serialize
     [Fact(Skip = "Skip benchmarks for now")]
     public virtual void RunBenchmarks()
     {
-        var summary = BenchmarkRunner.Run<SystemTextJsonSerializerBenchmark>();
+        _ = BenchmarkRunner.Run<SystemTextJsonSerializerBenchmark>();
     }
 
     protected override ISerializer GetSerializer()

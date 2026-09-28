@@ -4,7 +4,6 @@
 namespace Microsoft.Extensions.DependencyInjection;
 
 using Microsoft.Extensions.Configuration;
-using Scrutor;
 
 /// <summary>Provides the direct single-client behavior builder used by provider-specific registration overloads.</summary>
 /// <typeparam name="T">The document type.</typeparam>

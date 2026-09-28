@@ -1,7 +1,6 @@
 @using System.Data
 @using System.Diagnostics
 @using BridgingIT.DevKit.Common
-@using BridgingIT.DevKit.Presentation.Web
 @using Microsoft.EntityFrameworkCore
 @using Microsoft.Extensions.DependencyInjection
 @using Microsoft.Extensions.Logging
@@ -9,8 +8,6 @@
 
 @{
     var model = CreateModel();
-    var connectedCount = model.Databases.Count(database => database.IsConnected);
-    var unavailableCount = model.Databases.Count - connectedCount;
 }
 
 <section class="card dashboard-system-span-12">

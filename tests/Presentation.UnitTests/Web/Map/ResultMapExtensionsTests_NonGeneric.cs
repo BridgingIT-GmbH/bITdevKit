@@ -38,7 +38,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<NoContent>();
     }
 
@@ -53,7 +53,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<UnauthorizedHttpResult>();
     }
 
@@ -68,7 +68,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok>();
     }
 
@@ -83,7 +83,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<NotFound>();
     }
 
@@ -99,7 +99,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<Accepted, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Accepted, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Accepted>();
         var acceptedResult = (Accepted)innerResult;
         acceptedResult.Location.ShouldBe(location);
@@ -128,7 +128,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<Created, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Created, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Created>();
         var createdResult = (Created)innerResult;
         createdResult.Location.ShouldBe("/api/custom");
@@ -147,7 +147,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<NoContent>();
     }
 
@@ -162,7 +162,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<ProblemHttpResult>();
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(400);
@@ -188,7 +188,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<ProblemHttpResult>();
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(418); // CustomHttpResult status preserved
@@ -213,7 +213,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<ProblemHttpResult>(); // MapError<TProblem> returns ProblemHttpResult
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(500); // MapError defaults to 500, not 418
@@ -236,7 +236,7 @@ public class ResultMapExtensionsNonGenericTests
 
         // Assert
         response.ShouldBeOfType<Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<NoContent, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<ProblemHttpResult>();
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(400);

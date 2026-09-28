@@ -66,7 +66,7 @@ public sealed class JobTestHarness : IDisposable
         }
 
         var job = this.provider.GetRequiredService<TJob>();
-        return await ((IJob)job).ExecuteAsync(this.Context, cancellationToken == CancellationToken.None ? this.Context.CancellationToken : cancellationToken).ConfigureAwait(false);
+        return await (job).ExecuteAsync(this.Context, cancellationToken == CancellationToken.None ? this.Context.CancellationToken : cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

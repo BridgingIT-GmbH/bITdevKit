@@ -11,7 +11,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 /// <summary>
 /// Analyzes and builds provider-neutral Entity Framework values for one entity bulk insert operation.

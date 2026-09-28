@@ -60,7 +60,7 @@ public class ActiveEntityFeatureGenerator : IIncrementalGenerator
             foreach (var classDecl in classes)
             {
                 var model = compilation.GetSemanticModel(classDecl.SyntaxTree);
-                if (model.GetDeclaredSymbol(classDecl) is not INamedTypeSymbol classSymbol)
+                if (model.GetDeclaredSymbol(classDecl) is not { } classSymbol)
                 {
                     continue;
                 }
@@ -179,7 +179,7 @@ namespace {ns}
 
             foreach (var m in methods)
             {
-                if (model.GetDeclaredSymbol(m) is not IMethodSymbol methodSymbol)
+                if (model.GetDeclaredSymbol(m) is not { } methodSymbol)
                 {
                     continue;
                 }

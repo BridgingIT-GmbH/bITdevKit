@@ -29,7 +29,7 @@ public class NotifierBenchmarks
     public async Task Notifier_Baseline()
     {
         var notification = new MyTestNotification();
-        var result = await this.notifier.PublishAsync(notification);
+        _ = await this.notifier.PublishAsync(notification);
     }
 }
 

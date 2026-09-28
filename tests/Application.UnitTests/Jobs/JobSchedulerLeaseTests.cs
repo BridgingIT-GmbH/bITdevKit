@@ -75,11 +75,11 @@ public class JobSchedulerLeaseTests(ITestOutputHelper output) : JobSchedulerTest
 
         var fakeTime = (FakeTimeProvider)provider.GetRequiredService<TimeProvider>();
         var store = provider.GetRequiredService<IJobStoreProvider>();
-        var scheduler = provider.GetRequiredService<JobSchedulerService>();
+        _ = provider.GetRequiredService<JobSchedulerService>();
         var background = provider.GetRequiredService<JobSchedulerBackgroundService>();
 
         var occurrenceId = await CreateDueOccurrenceAsync(store, "lease-job", "manual", fakeTime.GetUtcNow());
-        var lease = await store.Leases.TryAcquireAsync(occurrenceId, "abandoned-scheduler", TimeSpan.FromSeconds(5));
+        _ = await store.Leases.TryAcquireAsync(occurrenceId, "abandoned-scheduler", TimeSpan.FromSeconds(5));
         await store.Occurrences.UpdateAsync((await store.Occurrences.GetAsync(occurrenceId)) with { Status = JobOccurrenceStatus.Running, UpdatedDate = fakeTime.GetUtcNow() });
 
         fakeTime.Advance(TimeSpan.FromSeconds(6));

@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.UnitTests.Modules.Core.Jobs;
 
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Domain;
-using BridgingIT.DevKit.Domain.Model;
 
 /// <summary>
 /// Unit tests for <see cref="WeatherCleanupJob"/>.

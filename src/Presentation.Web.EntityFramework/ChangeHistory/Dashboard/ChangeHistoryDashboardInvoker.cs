@@ -10,7 +10,6 @@ using System.Reflection;
 using BridgingIT.DevKit.Application.Entities;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
-using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Invokes registered ChangeHistory services for dashboard pages without issuing HTTP calls to the same application.

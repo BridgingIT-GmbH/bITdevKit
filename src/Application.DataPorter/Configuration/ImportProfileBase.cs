@@ -30,28 +30,42 @@ public abstract class ImportProfileBase<TTarget> : IImportProfile<TTarget>
         this.Configure();
     }
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the target type configured by this import profile.
+    /// </summary>
     public Type TargetType => typeof(TTarget);
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the column configurations for this import profile.
+    /// </summary>
     public IReadOnlyList<ImportColumnConfiguration> Columns => this.columns;
 
     /// <inheritdoc/>
     IReadOnlyList<ImportColumnConfiguration> IImportProfile.Columns => this.columns;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the sheet or section name to import from.
+    /// </summary>
     public string SheetName => this.sheetName;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the zero-based sheet index, or <c>-1</c> when <see cref="SheetName" /> is used.
+    /// </summary>
     public int SheetIndex => this.sheetIndex;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the zero-based row index containing column headers.
+    /// </summary>
     public int HeaderRowIndex => this.headerRowIndex;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the number of data rows to skip after the header.
+    /// </summary>
     public int SkipRows => this.skipRows;
 
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets the behavior applied when import validation fails.
+    /// </summary>
     public ImportValidationBehavior ValidationBehavior => this.validationBehavior;
 
     /// <inheritdoc/>

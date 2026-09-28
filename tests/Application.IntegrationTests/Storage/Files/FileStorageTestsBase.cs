@@ -1075,7 +1075,7 @@ public abstract class FileStorageTestsBase
         var processFile = async (string filePath, Stream stream, CancellationToken ct) =>
         {
             using var reader = new StreamReader(stream);
-            var content = await reader.ReadToEndAsync(ct);
+            _ = await reader.ReadToEndAsync(ct);
             processedFiles.Add(filePath);
             //this.output.WriteLine($"Processed {filePath}: {content}");
         };
@@ -1129,7 +1129,6 @@ public abstract class FileStorageTestsBase
 
         var expectedDirs = new List<string> { "dest/dir1", "dest/dir1/dir2", "dest/dir3" };
         var expectedFiles = new List<string> { "dest/file1.txt", "dest/dir1/file2.txt", "dest/dir1/dir2/file3.txt" };
-        long expectedBytes = "File 1 content".Length + "File 2 content".Length + "File 3 content".Length;
         var progressItems = new List<FileProgress>();
 
         // Act
@@ -1187,7 +1186,6 @@ public abstract class FileStorageTestsBase
         await provider.WriteTextFileAsync("source/dir1/dir2/file3.txt", "File 3 content");
 
         var expectedDirs = new List<string> { "dest/dir1", "dest/dir1/dir2", "dest/dir3" };
-        var expectedFiles = new List<string>();
         var progressItems = new List<FileProgress>();
 
         // Act
@@ -1235,7 +1233,6 @@ public abstract class FileStorageTestsBase
 
         var expectedDirs = new List<string> { "dest/dir1", "dest/dir1/dir2", "dest/dir3" };
         var expectedFiles = new List<string> { "dest/file1.txt", "dest/dir1/file2.txt", "dest/dir3/file4.txt" };
-        long expectedBytes = "File 1 content".Length + "File 2 content".Length + "File 4 content".Length;
         var progressItems = new List<FileProgress>();
 
         // Act

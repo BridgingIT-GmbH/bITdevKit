@@ -24,7 +24,7 @@ public class SimpleRequesterBenchmarks
     public async Task SimpleRequester_Baseline()
     {
         var request = new MyTestSimpleRequest();
-        var response = await this.requester.SendAsync<MyTestSimpleRequest, string>(request);
+        _ = await this.requester.SendAsync<MyTestSimpleRequest, string>(request);
     }
 }
 

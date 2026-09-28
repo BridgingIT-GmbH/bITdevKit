@@ -247,7 +247,7 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
                 var candidates = new List<BlobItem>(request.BatchSize);
                 await foreach (var item in container.GetBlobsAsync(BlobTraits.Metadata, BlobStates.None, prefix: null, cancellationToken))
                 {
-                    if (ReadDate(item.Metadata, ExpiresKey) is DateTimeOffset expiresAt && expiresAt <= request.VisibilityCutoff)
+                    if (ReadDate(item.Metadata, ExpiresKey) is { } expiresAt && expiresAt <= request.VisibilityCutoff)
                     {
                         candidates.Add(item);
                         if (candidates.Count == request.BatchSize) break;
@@ -324,10 +324,10 @@ public class AzureBlobDocumentStoreProvider : IDocumentStoreProvider, IDocumentS
     private static DateTimeOffset? ReadDate(IDictionary<string, string> metadata, string key) => metadata.TryGetValue(key, out var value) && DateTimeOffset.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind, out var parsed) ? parsed : null;
     private static string Name(DocumentKey key) => $"{Base64UrlHelper.Encode(Encoding.UTF8.GetBytes(key.PartitionKey))}/{Base64UrlHelper.Encode(Encoding.UTF8.GetBytes(key.RowKey))}";
     private static DocumentKey ParseName(string name) { var parts = name.Split('/', 2); return new(Encoding.UTF8.GetString(Base64UrlHelper.Decode(parts[0])), Encoding.UTF8.GetString(Base64UrlHelper.Decode(parts[1]))); }
-    private static string QueryPrefix(DocumentQuery query) => query?.DocumentKey is DocumentKey key
+    private static string QueryPrefix(DocumentQuery query) => query?.DocumentKey is { } key
         ? $"{Base64UrlHelper.Encode(Encoding.UTF8.GetBytes(key.PartitionKey))}/"
         : null;
-    private static bool Matches(DocumentKey key, DocumentQuery query) => query?.DocumentKey is not DocumentKey match || query.Filter switch { DocumentKeyFilter.FullMatch => key == match, DocumentKeyFilter.RowKeyPrefixMatch => key.PartitionKey == match.PartitionKey && key.RowKey.StartsWith(match.RowKey ?? string.Empty, StringComparison.Ordinal), DocumentKeyFilter.RowKeySuffixMatch => key.PartitionKey == match.PartitionKey && key.RowKey.EndsWith(match.RowKey ?? string.Empty, StringComparison.Ordinal), _ => true };
+    private static bool Matches(DocumentKey key, DocumentQuery query) => query?.DocumentKey is not { } match || query.Filter switch { DocumentKeyFilter.FullMatch => key == match, DocumentKeyFilter.RowKeyPrefixMatch => key.PartitionKey == match.PartitionKey && key.RowKey.StartsWith(match.RowKey ?? string.Empty, StringComparison.Ordinal), DocumentKeyFilter.RowKeySuffixMatch => key.PartitionKey == match.PartitionKey && key.RowKey.EndsWith(match.RowKey ?? string.Empty, StringComparison.Ordinal), _ => true };
     private static string CreateToken(string operation, DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, string native) { var result = DocumentContinuationTokenSerializer.Serialize(new() { Provider = type.Value, QueryHash = DocumentQueryHash.Compute(operation, type, query, query?.Take ?? 100), VisibilityCutoff = visibilityCutoff, NativeToken = native }); return result.IsSuccess ? result.Value : null; }
     private static string RebindToken(string operation, DocumentTypeIdentity type, DocumentQuery query, DateTimeOffset visibilityCutoff, string token) => string.IsNullOrWhiteSpace(token) ? null : CreateToken(operation, type, query, visibilityCutoff, ReadNativeToken(token));
     private static string ReadNativeToken(string token) { if (string.IsNullOrWhiteSpace(token)) return null; var result = DocumentContinuationTokenSerializer.Deserialize(token); return result.IsSuccess ? result.Value.NativeToken : null; }

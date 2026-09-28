@@ -675,12 +675,12 @@ public class DefaultActionResultMapper : IActionResultMapper
 
     private static ActionResult MapError(IResult result)
     {
-        if (result.TryGetErrors<NotFoundError>(out var notFoundErrors))
+        if (result.TryGetErrors<NotFoundError>(out _))
         {
             return new NotFoundResult();
         }
 
-        if (result.TryGetErrors<EntityNotFoundError>(out var entityNotFoundErrors))
+        if (result.TryGetErrors<EntityNotFoundError>(out _))
         {
             return new NotFoundResult();
         }
@@ -703,17 +703,17 @@ public class DefaultActionResultMapper : IActionResultMapper
             })
             { StatusCode = 400 };
         }
-        else if (result.TryGetErrors<FluentValidationError>(out var fluentValidationErrors))
+        else if (result.TryGetErrors<FluentValidationError>(out _))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
         }
-        else if (result.TryGetErrors<RuleError>(out var ruleErrors))
+        else if (result.TryGetErrors<RuleError>(out _))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware
         }
-        else if (result.TryGetErrors<DomainPolicyError>(out var domainPolicyErrors))
+        else if (result.TryGetErrors<DomainPolicyError>(out _))
         {
             // TODO: not yet handled
             // throw new DomainRuleNotSatisfiedException(error) > handled by ProblemsDetails middleware

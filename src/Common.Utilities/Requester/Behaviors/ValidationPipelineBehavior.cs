@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Data;
 using FluentValidation;
 using Microsoft.Extensions.Logging;
 

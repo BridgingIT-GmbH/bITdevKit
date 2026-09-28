@@ -233,8 +233,12 @@ public class NotifierBuilder
             throw new ArgumentException($"The number of type arguments ({typeArguments.Length}) must match the number of generic parameters in the notification type ({notificationTypeParams}) and handler type ({handlerTypeParams}).");
         }
 
-        var handlerInterface = genericHandlerType.GetInterfaces()
-            .FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)) ?? throw new ArgumentException($"Generic handler type {genericHandlerType.Name} does not implement INotificationHandler<>.", nameof(genericHandlerType));
+        if (!genericHandlerType.GetInterfaces()
+            .Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(INotificationHandler<>)))
+        {
+            throw new ArgumentException($"Generic handler type {genericHandlerType.Name} does not implement INotificationHandler<>.", nameof(genericHandlerType));
+        }
+
         foreach (var typeArg in typeArguments)
         {
             var closedNotificationType = genericNotificationType.MakeGenericType(typeArg);

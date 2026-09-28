@@ -21,9 +21,6 @@ public class MapsterMapperTests
         // Act
         var target = mapper.Map(source);
 
-        var d = new PersonDtoStub();
-        var t2 = source.Adapt(d, config);
-
         // Assert
         target.ShouldNotBeNull();
         target.Age.ShouldBe(25);

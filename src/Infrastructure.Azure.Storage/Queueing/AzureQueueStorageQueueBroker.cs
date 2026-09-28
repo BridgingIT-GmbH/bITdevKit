@@ -6,8 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System.Collections.Concurrent;
-using System.Diagnostics;
-using System.Globalization;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;

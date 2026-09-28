@@ -10,8 +10,10 @@ indent_style = space
 indent_size = 2
 trim_trailing_whitespace = true
 
-[*.razor]
+[*.{razor,cshtml}]
 indent_size = 4
+resharper_inconsistent_naming_highlighting = hint
+resharper_redundant_default_member_initializer_highlighting = hint
 
 [*.css]
 indent_size = 4
@@ -267,7 +269,10 @@ resharper_suggest_var_or_type_elsewhere_highlighting = hint
 resharper_suggest_var_or_type_simple_types_highlighting = hint
 resharper_inconsistent_naming_highlighting = none
 resharper_local_variable_hides_member_highlighting = none
+resharper_not_accessed_positional_property_global_highlighting = hint
 resharper_parameter_hides_member_highlighting = none
+resharper_redundant_default_member_initializer_highlighting = hint
+resharper_unused_auto_property_accessor_global_highlighting = hint
 resharper_variable_hides_outer_variable_highlighting = none
 
 [*.proto]

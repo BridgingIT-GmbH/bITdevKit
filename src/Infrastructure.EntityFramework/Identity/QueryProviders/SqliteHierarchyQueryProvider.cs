@@ -23,10 +23,10 @@ public class SqliteHierarchyQueryProvider : IHierarchyQueryProvider
     {
         var paramCast = idType switch
         {
-            Type t when t == typeof(Guid) || t == typeof(Guid?) => "CAST(@p0 AS TEXT)", // SQLite stores GUIDs as TEXT
-            Type t when t == typeof(int) || t == typeof(int?) => "CAST(@p0 AS INTEGER)",
-            Type t when t == typeof(long) || t == typeof(long?) => "CAST(@p0 AS INTEGER)",
-            Type t when t == typeof(string) => "@p0",
+            { } t when t == typeof(Guid) || t == typeof(Guid?) => "CAST(@p0 AS TEXT)", // SQLite stores GUIDs as TEXT
+            { } t when t == typeof(int) || t == typeof(int?) => "CAST(@p0 AS INTEGER)",
+            { } t when t == typeof(long) || t == typeof(long?) => "CAST(@p0 AS INTEGER)",
+            { } t when t == typeof(string) => "@p0",
             _ => "@p0"
         };
 

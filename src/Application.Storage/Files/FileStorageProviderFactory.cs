@@ -141,7 +141,7 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
 
     private IFileStorageProvider GetOrCreateSingletonProvider(string name, (ServiceLifetime Lifetime, Func<IServiceProvider, IFileStorageProvider> ProviderFactory, List<Func<IFileStorageProvider, IServiceProvider, IFileStorageProvider>> Behaviors) config)
     {
-        if (!this.singletonProviders.TryGetValue(name, out var providerLazy))
+        if (!this.singletonProviders.TryGetValue(name, out _))
         {
             var provider = config.ProviderFactory(this.serviceProvider);
             var decoratedProvider = this.ApplyBehaviors(provider, config.Behaviors);

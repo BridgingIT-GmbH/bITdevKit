@@ -86,11 +86,11 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
     public virtual async Task FindAllAsync_AnyEntityPagedAndOrdered_EntitiesNotFound()
     {
         // Arrange
-        var entity1 = await this.InsertEntityAsync("C");
-        var entity2 = await this.InsertEntityAsync("D");
-        var entity3 = await this.InsertEntityAsync("B");
-        var entity4 = await this.InsertEntityAsync("A");
-        var entity5 = await this.InsertEntityAsync("Z");
+        _ = await this.InsertEntityAsync("C");
+        _ = await this.InsertEntityAsync("D");
+        _ = await this.InsertEntityAsync("B");
+        _ = await this.InsertEntityAsync("A");
+        _ = await this.InsertEntityAsync("Z");
 
         var sut = this.CreateBlogRepository(this.GetContext());
 
@@ -319,7 +319,6 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         // Arrange
         var entity = await this.InsertEntityAsync();
         var sut = this.CreateBlogRepository(this.GetContext());
-        var sut2 = this.CreatePostRepository(this.GetContext());
 
         // Act
         var result1 = await sut.FindOneAsync(new Specification<Blog>(e => e.Name == entity.Name));
@@ -416,7 +415,6 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
     {
         // Arrange
         var faker = new Faker();
-        var ticks = DateTime.UtcNow.Ticks;
         var entity = Blog.Create(faker.Company.CompanyName(), faker.Internet.Url(), EmailAddressStub.Create(faker.Person.Email))
             .AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())
                 .Publish(faker.Date.PastDateOnly()))
@@ -551,12 +549,6 @@ public abstract class EntityFrameworkGenericRepositoryTypedIdTestsBase
         // Act
         entity.Name = $"{entity.Name} {ticks}";
         entity.Email = EmailAddressStub.Create(faker.Person.Email);
-        var location1 = LocationStub.Create(faker.Company.CompanyName(),
-            faker.Address.StreetAddress(),
-            faker.Address.BuildingNumber(),
-            faker.Address.ZipCode(),
-            faker.Address.City(),
-            faker.Address.Country());
         entity.AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())); // add 1 - idx 3
         entity.AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())); // add 2 - idx 4
         entity.AddPost(Post.Create(faker.Hacker.Phrase(), faker.Lorem.Text())); // add 3 - idx 5

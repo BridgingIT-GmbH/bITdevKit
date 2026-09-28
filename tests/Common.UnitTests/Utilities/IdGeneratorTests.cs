@@ -44,7 +44,7 @@ public class IdGeneratorTests(ITestOutputHelper output) : TestsBase(output)
     {
         this.Benchmark(() =>
             {
-                var id = IdGenerator.Create();
+                _ = IdGenerator.Create();
             },
             10000);
     }

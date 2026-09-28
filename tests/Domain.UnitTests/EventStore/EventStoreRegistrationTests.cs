@@ -18,7 +18,7 @@ public class EventStoreRegistrationTests
     public void AggregateNotRegisteredTest()
     {
         var registration = new EventStoreAggregateRegistration();
-        Exception ex =
+        _ =
             Assert.Throws<AggregateIsNotRegisteredException>(() => registration.GetImmutableName<Order>());
     }
 
@@ -48,7 +48,7 @@ public class EventStoreRegistrationTests
     {
         var registration = new EventStoreAggregateRegistration();
         registration.Register<Person>(PersonImmutableConst);
-        Exception ex =
+        _ =
             Assert.Throws<ImmutableNameShouldBeUniqueException>(() =>
                 registration.Register<Order>(PersonImmutableConst));
     }

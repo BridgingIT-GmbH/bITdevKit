@@ -293,7 +293,7 @@ public class SqlServerJobStoreProvider : IJobStoreProvider
             JobGroup = reader.GetString(4),
             Description = reader.IsDBNull(5) ? null : reader.GetString(5),
             StartTime = reader.GetDateTime(6),
-            EndTime = reader.IsDBNull(7) ? null : (DateTimeOffset?)reader.GetDateTime(7),
+            EndTime = reader.IsDBNull(7) ? null : reader.GetDateTime(7),
             ScheduledTime = reader.GetDateTime(8),
             DurationMs = reader.IsDBNull(9) ? null : reader.GetInt64(9),
             Status = reader.GetString(10),

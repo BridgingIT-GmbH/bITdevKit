@@ -21,14 +21,12 @@ internal static class MermaidFlowchartRenderer
         options ??= new DiagramRenderOptions();
 
         var aliases = BuildAliasMap(document);
-        var groupMap = BuildGroupMap(document.Groups);
         var lines = new List<string>();
         if (options.IncludeHeader)
         {
             lines.Add($"flowchart {ToDirection(document.Direction)}");
         }
 
-        var explicitNodeIds = document.Nodes.Select(node => node.Id).ToHashSet(StringComparer.Ordinal);
         var orderedNodeIds = document.Nodes.Select(node => node.Id)
             .Concat(document.Edges.SelectMany(edge => new[] { edge.From, edge.To }))
             .Concat(document.Notes.Select(note => note.TargetId))

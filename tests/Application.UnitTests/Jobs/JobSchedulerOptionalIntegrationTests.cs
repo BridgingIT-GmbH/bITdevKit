@@ -314,7 +314,7 @@ public class JobSchedulerOptionalIntegrationTests(ITestOutputHelper output) : Jo
         public IPipeline<TContext> Create<TPipelineDefinition, TContext>()
             where TPipelineDefinition : class, IPipelineDefinitionSource<TContext>
             where TContext : PipelineContextBase
-            => (IPipeline<TContext>)(object)new RecordingPipeline(context => this.LastContext = (OptionalPipelineContext)(object)context);
+            => (IPipeline<TContext>)(object)new RecordingPipeline(context => this.LastContext = context);
     }
 
     private sealed class RecordingPipeline : IPipeline<OptionalPipelineContext>

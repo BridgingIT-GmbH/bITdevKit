@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework;
 
-using BridgingIT.DevKit.Domain.Repositories;
 using Common;
 using Microsoft.Data.SqlClient;
 using Microsoft.Extensions.Configuration;

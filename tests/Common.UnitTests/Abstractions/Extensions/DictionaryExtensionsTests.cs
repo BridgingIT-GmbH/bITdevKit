@@ -394,7 +394,7 @@ public class DictionaryExtensionsTests
         var sut = new Dictionary<int, string>();
 
         // Act & Assert
-        Should.Throw<ArgumentNullException>(() => sut.AddIf(1, "one", (Func<string, bool>)null));
+        Should.Throw<ArgumentNullException>(() => sut.AddIf(1, "one", null));
     }
 
     [Fact]
@@ -419,7 +419,7 @@ public class DictionaryExtensionsTests
         var sut = new Dictionary<int, string>();
 
         // Act
-        var result = sut.AddIfNotNull(1, (string)null);
+        var result = sut.AddIfNotNull(1, null);
 
         // Assert
         result.ShouldNotBeNull();

@@ -34,7 +34,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         if (genericPublishAggregateCommandConstructor is not null)
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
-            var commandResult = await mediator.Send(@event).AnyContext() as CommandResponse<bool>;
+            await mediator.Send(@event).AnyContext();
         }
         else
         {
@@ -83,7 +83,7 @@ public class AggregateEventMediatorRequestSender(IMediator mediator) : IAggregat
         if (genericPublishAggregateCommandConstructor is not null)
         {
             var @event = genericPublishAggregateCommandConstructor.Invoke([aggregate, savedEvent]);
-            var commandResult = await mediator.Send(@event).AnyContext() as CommandResponse<bool>;
+            await mediator.Send(@event).AnyContext();
         }
         else
         {

@@ -8,7 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation;
-using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Jobs;
 
 /// <summary>

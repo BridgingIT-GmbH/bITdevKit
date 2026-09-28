@@ -41,7 +41,7 @@ public sealed class FileStorageHealthCheck(IFileStorageProviderFactory factory) 
         var probeResults = new List<FileStorageProviderProbeResult>(providerNames.Length);
         foreach (var providerName in providerNames)
         {
-            probeResults.Add(await ProbeProviderAsync(providerName, cancellationToken));
+            probeResults.Add(await this.ProbeProviderAsync(providerName, cancellationToken));
         }
 
         var failedResults = probeResults.Where(result => !result.IsHealthy).ToArray();

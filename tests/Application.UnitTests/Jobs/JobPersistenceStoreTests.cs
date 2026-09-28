@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Jobs;
 
-using System.Text;
 using BridgingIT.DevKit.Application.Jobs;
 using Microsoft.Extensions.DependencyInjection;
 

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Utilities;
 
-using System;
 using System.Threading.Tasks;
 using Shouldly;
 using Xunit;

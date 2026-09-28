@@ -184,7 +184,7 @@ public class RequesterTests
         var request = new AnotherTestRequest(); // No handler registered for this request type
 
         // Act & Assert
-        var exception = await Should.ThrowAsync<RequesterException>(async () =>
+        _ = await Should.ThrowAsync<RequesterException>(async () =>
             await requester.SendAsync(request));
         //exception.Message.ShouldBe("No handler found for request type AnotherTestRequest");
     }
@@ -600,7 +600,7 @@ public class RequesterTests
             .AddHandler<ProcessDataRequest<UserData>, string, GenericDataProcessor<UserData>>() // add the generic handler
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
-        var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        _ = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
         var request = new ProcessDataRequest<UserData> { Data = data };
@@ -632,8 +632,8 @@ public class RequesterTests
                 typeArguments: [typeof(OtherUserData)])
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
-        var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
-        var otherHandler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>(); // test if handler registered?
+        _ = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>(); // test if handler registered?
+        _ = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>(); // test if handler registered?
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
         var otherData = new OtherUserData { UserId = "user456", Name = "Jane Doe" };
@@ -661,8 +661,8 @@ public class RequesterTests
             .AddGenericHandlers() // Automatically discover and register generic handlers
             .WithBehavior(typeof(ValidationPipelineBehavior<,>));
         var serviceProvider = services.BuildServiceProvider();
-        var handler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>();
-        var otherHandler = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>();
+        _ = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<UserData>, string>>();
+        _ = serviceProvider.GetRequiredService<IRequestHandler<ProcessDataRequest<OtherUserData>, string>>();
         var requester = serviceProvider.GetService<IRequester>();
         var data = new UserData { UserId = "user123", Name = "John Doe" };
         var otherData = new OtherUserData { UserId = "user456", Name = "Jane Doe" };

@@ -1,6 +1,5 @@
 @using System.Text.Json
 @using BridgingIT.DevKit.Application.Orchestrations
-@using BridgingIT.DevKit.Presentation.Web.Logging.Dashboard
 @using Microsoft.Extensions.Logging
 @using OrchestrationsDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Orchestrations.Dashboard.DashboardEndpoints
 @inherits RazorSlice
@@ -8,7 +7,6 @@
 @{
     var vm = await CreateModelAsync();
     var actionBase = vm.ActionBase;
-    var dashboardOptions = this.HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
 }
 
 @if (!vm.IsAvailable)

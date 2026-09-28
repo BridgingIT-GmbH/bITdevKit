@@ -222,7 +222,7 @@ public static class BlobBehaviorTransform
             }
 
             contentType = ContentTypeFromMimeType(properties.Get<string>(contentTypeKey));
-            contentHash = properties.Get<string>(contentHashKey, info.ContentHash);
+            contentHash = properties.Get(contentHashKey, info.ContentHash);
         }
 
         properties.Remove(algorithmKey);

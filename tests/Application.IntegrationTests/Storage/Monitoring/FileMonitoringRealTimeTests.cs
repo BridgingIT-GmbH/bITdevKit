@@ -49,7 +49,7 @@ public class FileMonitoringRealTimeTests
                 });
         });
         using var provider = services.BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        _ = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
@@ -86,7 +86,7 @@ public class FileMonitoringRealTimeTests
                 });
         });
         using var provider = services.BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        _ = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act: Start real-time watching and simulate file events
@@ -145,7 +145,7 @@ public class FileMonitoringRealTimeTests
         });
 
         using var provider = services.BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        _ = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
@@ -158,7 +158,7 @@ public class FileMonitoringRealTimeTests
         //await sut.StopAsync(CancellationToken.None);
 
         // Assert
-        var storedEvents = await store.GetFileEventsAsync("test1.txt");
+        _ = await store.GetFileEventsAsync("test1.txt");
         var events1 = await store.GetFileEventsForLocationAsync("Docs1");
         var events2 = await store.GetFileEventsForLocationAsync("Docs2");
         events1.ShouldNotBeNull();
@@ -233,7 +233,7 @@ public class FileMonitoringRealTimeTests
                 });
         });
         using var provider = services.BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        _ = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
@@ -271,7 +271,7 @@ public class FileMonitoringRealTimeTests
                 });
         });
         using var provider = services.BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        _ = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
 
         // Act
@@ -322,7 +322,7 @@ public class FileMonitoringRealTimeTests
                 });
         });
         using var provider = services.BuildServiceProvider();
-        var sut = provider.GetRequiredService<IFileMonitoringService>();
+        _ = provider.GetRequiredService<IFileMonitoringService>();
         var store = provider.GetRequiredService<IFileEventStore>();
         var sourceFiles = new Dictionary<string, List<(string Action, FileEventType ExpectedEvent)>>();
 

@@ -206,8 +206,8 @@ public class BooleanYesNoConverterTests
         var context = CreateContext();
 
         // Act
-        var trueResult = sut.ConvertToExport((object)true, context);
-        var falseResult = sut.ConvertToExport((object)false, context);
+        var trueResult = sut.ConvertToExport(true, context);
+        var falseResult = sut.ConvertToExport(false, context);
 
         // Assert
         trueResult.ShouldBe("Yes");

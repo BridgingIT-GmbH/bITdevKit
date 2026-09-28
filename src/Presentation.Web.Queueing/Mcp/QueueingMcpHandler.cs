@@ -36,19 +36,19 @@ public sealed class QueueingMcpHandler(IQueueBrokerService broker) : IMcpHandler
     public async ValueTask<McpResponse> HandleAsync(McpRequest request, CancellationToken cancellationToken)
         => request.Operation switch
         {
-            "queueing.summary" => await SummaryAsync(cancellationToken).ConfigureAwait(false),
-            "queueing.subscriptions" => await SubscriptionsAsync(cancellationToken).ConfigureAwait(false),
-            "queueing.waiting" => await WaitingAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.messages" => await ListAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.messageDetails" => await DetailsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.retry" => await RetryAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.releaseLease" => await ReleaseLeaseAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.archive" => await ArchiveAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.pauseQueue" => await PauseQueueAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.resumeQueue" => await ResumeQueueAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.pauseType" => await PauseTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.resumeType" => await ResumeTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "queueing.purge" => await PurgeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.summary" => await this.SummaryAsync(cancellationToken).ConfigureAwait(false),
+            "queueing.subscriptions" => await this.SubscriptionsAsync(cancellationToken).ConfigureAwait(false),
+            "queueing.waiting" => await this.WaitingAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.messages" => await this.ListAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.messageDetails" => await this.DetailsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.retry" => await this.RetryAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.releaseLease" => await this.ReleaseLeaseAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.archive" => await this.ArchiveAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.pauseQueue" => await this.PauseQueueAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.resumeQueue" => await this.ResumeQueueAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.pauseType" => await this.PauseTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.resumeType" => await this.ResumeTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "queueing.purge" => await this.PurgeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
             _ => McpResponse.Unavailable(McpErrorCode.FeatureUnavailable, $"Operation '{request.Operation}' is not handled by queueing.")
         };
 

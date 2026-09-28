@@ -1,7 +1,6 @@
 namespace BridgingIT.DevKit.Presentation.Web;
 
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Presentation;
 using Microsoft.Extensions.Hosting;
 
 /// <summary>

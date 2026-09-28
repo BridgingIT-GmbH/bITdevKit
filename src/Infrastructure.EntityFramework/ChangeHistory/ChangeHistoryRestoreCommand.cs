@@ -21,7 +21,6 @@ using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
 
 /// <summary>
 /// Restores scalar ChangeHistory rows using configured domain restore policies.

@@ -322,7 +322,7 @@ public class HierarchicalEntityPermissionEvaluatorTests : IClassFixture<StubDbCo
 
         // Verify initial state
         var initialTypePermissions = await this.evaluator.GetPermissionsAsync(userId, []);
-        var initialEmployeePermissions = await this.evaluator.GetPermissionsAsync(userId, [], employee);
+        _ = await this.evaluator.GetPermissionsAsync(userId, [], employee);
 
         initialTypePermissions.Count.ShouldBe(1);
         //initialEmployeePermissions.Count.ShouldBe(6);

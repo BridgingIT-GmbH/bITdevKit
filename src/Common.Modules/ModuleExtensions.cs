@@ -576,7 +576,7 @@ public static class ModuleExtensions
 
     private static ServiceDescriptor AddActivitySource(IServiceCollection services, string name)
     {
-        var descriptor = ServiceDescriptor.Singleton<ActivitySource>(_ => new ActivitySource(name));
+        var descriptor = ServiceDescriptor.Singleton(_ => new ActivitySource(name));
         services.Add(descriptor);
         return descriptor;
     }

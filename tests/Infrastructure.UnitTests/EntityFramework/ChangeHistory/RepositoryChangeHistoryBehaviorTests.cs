@@ -267,7 +267,7 @@ public class RepositoryChangeHistoryBehaviorTests
         var options = new ChangeHistoryOptions();
         options.Track<ChangeHistoryStubEntity>()
             .CaptureCreates()
-            .CaptureCollection<ChangeHistoryTag>(e => e.Tags);
+            .CaptureCollection(e => e.Tags);
 
         var inner = new EntityFrameworkRepositoryWrapper<ChangeHistoryStubEntity, ChangeHistoryGraphIdentityStubDbContext>(
             NullLoggerFactory.Instance,
@@ -483,7 +483,7 @@ public class RepositoryChangeHistoryBehaviorTests
         var options = new ChangeHistoryOptions();
         options.Track<ChangeHistoryStubEntity>()
             .CaptureDirectMutations(ChangeHistoryCaptureStrategy.RepositorySnapshot, ChangeHistoryCaptureMode.Required)
-            .CaptureCollection<ChangeHistoryTag>(e => e.Tags);
+            .CaptureCollection(e => e.Tags);
         var sut = new RepositoryChangeHistoryBehavior<ChangeHistoryStubEntity, ChangeHistoryGraphIdentityStubDbContext>(
             NullLoggerFactory.Instance,
             context,
@@ -631,7 +631,7 @@ public class RepositoryChangeHistoryBehaviorTests
         options.Track<ChangeHistoryStubEntity>()
             .CaptureDirectMutations(ChangeHistoryCaptureStrategy.EfChangeTracker, ChangeHistoryCaptureMode.Required)
             .CaptureOwned(e => e.BillingAddress)
-            .CaptureCollection<ChangeHistoryTag>(e => e.Tags);
+            .CaptureCollection(e => e.Tags);
         var inner = new EntityFrameworkRepositoryWrapper<ChangeHistoryStubEntity, ChangeHistoryTrackedPathStubDbContext>(
             NullLoggerFactory.Instance,
             context);

@@ -409,11 +409,11 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
             using var command = connection.CreateCommand();
             command.CommandText = providerName switch
             {
-                string name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM sys.tables WHERE name = @name",
-                string name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM information_schema.tables WHERE table_name = @name",
-                string name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = @name",
                 _ => null
             };
@@ -460,11 +460,11 @@ public abstract class EntityFrameworkDocumentStoreProviderTestsBase
             using var command = connection.CreateCommand();
             command.CommandText = providerName switch
             {
-                string name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM sys.columns WHERE object_id = OBJECT_ID(@table) AND name = @column",
-                string name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM information_schema.columns WHERE table_name = @table AND column_name = @column",
-                string name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
                     $"PRAGMA table_info(\"{tableName}\")",
                 _ => null
             };

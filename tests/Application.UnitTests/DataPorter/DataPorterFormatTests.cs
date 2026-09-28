@@ -175,7 +175,7 @@ public class DataPorterFormatTests
             {
                 Data =
                 [
-                    new TTarget() is SimpleEntity entity
+                    new TTarget() is SimpleEntity
                         ? (TTarget)(object)new SimpleEntity { Id = 1, Name = "Imported" }
                         : new TTarget()
                 ],

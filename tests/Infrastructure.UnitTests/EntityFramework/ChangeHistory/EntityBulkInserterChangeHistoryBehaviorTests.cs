@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.ChangeHistory;
 
-using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Repositories;
 using BridgingIT.DevKit.Infrastructure.EntityFramework;

@@ -35,18 +35,18 @@ public sealed class MessagingMcpHandler(IMessageBrokerService broker) : IMcpHand
     public async ValueTask<McpResponse> HandleAsync(McpRequest request, CancellationToken cancellationToken)
         => request.Operation switch
         {
-            "messages.summary" => await SummaryAsync(cancellationToken).ConfigureAwait(false),
-            "messages.subscriptions" => await SubscriptionsAsync(cancellationToken).ConfigureAwait(false),
-            "messages.waiting" => await WaitingAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.list" => await ListAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.details" => await DetailsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.content" => await ContentAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.retry" => await RetryAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.releaseLease" => await ReleaseLeaseAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.archive" => await ArchiveAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.pauseType" => await PauseTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.resumeType" => await ResumeTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "messages.purge" => await PurgeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.summary" => await this.SummaryAsync(cancellationToken).ConfigureAwait(false),
+            "messages.subscriptions" => await this.SubscriptionsAsync(cancellationToken).ConfigureAwait(false),
+            "messages.waiting" => await this.WaitingAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.list" => await this.ListAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.details" => await this.DetailsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.content" => await this.ContentAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.retry" => await this.RetryAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.releaseLease" => await this.ReleaseLeaseAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.archive" => await this.ArchiveAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.pauseType" => await this.PauseTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.resumeType" => await this.ResumeTypeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "messages.purge" => await this.PurgeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
             _ => McpResponse.Unavailable(McpErrorCode.FeatureUnavailable, $"Operation '{request.Operation}' is not handled by messaging.")
         };
 

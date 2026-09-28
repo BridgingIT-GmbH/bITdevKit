@@ -49,7 +49,7 @@ public class CompressionSerializerTests(ITestOutputHelper output) : SerializerTe
     [Fact(Skip = "Skip benchmarks for now")]
     public virtual void RunBenchmarks()
     {
-        var summary = BenchmarkRunner.Run<JsonNetSerializerBenchmark>();
+        _ = BenchmarkRunner.Run<JsonNetSerializerBenchmark>();
     }
 
     protected override ISerializer GetSerializer()

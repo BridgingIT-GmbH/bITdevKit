@@ -29,7 +29,7 @@ public class RequesterBenchmarks
     public async Task Requester_Baseline()
     {
         var request = new MyTestRequest();
-        var result = await this.requester.SendAsync(request);
+        _ = await this.requester.SendAsync(request);
     }
 }
 

@@ -1,0 +1,23 @@
+# Test code intentionally uses fixed values, invalid inputs, test doubles, and fixture-only members.
+# Keep these inspections visible as hints without mixing them into the actionable problem backlog.
+
+[*.cs]
+resharper_assign_null_to_not_null_attribute_highlighting = hint
+resharper_collection_never_queried_global_highlighting = hint
+resharper_collection_never_queried_local_highlighting = hint
+resharper_collection_never_updated_local_highlighting = hint
+resharper_condition_is_always_true_or_false_highlighting = hint
+resharper_constant_conditional_access_qualifier_highlighting = hint
+resharper_empty_constructor_highlighting = hint
+resharper_expression_is_always_null_highlighting = hint
+resharper_not_accessed_field_local_highlighting = hint
+resharper_not_accessed_variable_highlighting = hint
+resharper_parameter_only_used_for_precondition_check_local_highlighting = hint
+resharper_possible_multiple_enumeration_highlighting = hint
+resharper_possible_null_reference_exception_highlighting = hint
+resharper_private_field_can_be_converted_to_local_variable_highlighting = hint
+resharper_redundant_assignment_highlighting = hint
+resharper_unused_auto_property_accessor_local_highlighting = hint
+resharper_unused_member_local_highlighting = hint
+resharper_unused_parameter_local_highlighting = hint
+resharper_unused_type_parameter_highlighting = hint

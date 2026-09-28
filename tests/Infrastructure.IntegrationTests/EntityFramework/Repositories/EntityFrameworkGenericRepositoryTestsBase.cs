@@ -76,8 +76,8 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         // Arrange
         var marker = $"delete-spec-{Guid.NewGuid():N}";
         var entity1 = await this.InsertEntityAsync(17, lastName: marker);
-        var entity2 = await this.InsertEntityAsync(18, lastName: marker);
-        var entity3 = await this.InsertEntityAsync(19, lastName: marker);
+        _ = await this.InsertEntityAsync(18, lastName: marker);
+        _ = await this.InsertEntityAsync(19, lastName: marker);
         var sut = this.CreateRepository(this.GetContext());
 
         // Act
@@ -96,7 +96,7 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
         // Arrange
         var marker = $"delete-specs-{Guid.NewGuid():N}";
         var entity1 = await this.InsertEntityAsync(17, lastName: marker);
-        var entity2 = await this.InsertEntityAsync(18, lastName: marker);
+        _ = await this.InsertEntityAsync(18, lastName: marker);
         var entity3 = await this.InsertEntityAsync(19, lastName: marker);
         var sut = this.CreateRepository(this.GetContext());
 
@@ -146,11 +146,11 @@ public abstract class EntityFrameworkGenericRepositoryTestsBase
     public virtual async Task FindAllAsync_AnyEntityPagedAndOrdered_EntitiesNotFound()
     {
         // Arrange
-        var entity1 = await this.InsertEntityAsync(17);
-        var entity2 = await this.InsertEntityAsync(18);
-        var entity3 = await this.InsertEntityAsync(20);
-        var entity4 = await this.InsertEntityAsync(18);
-        var entity5 = await this.InsertEntityAsync();
+        _ = await this.InsertEntityAsync(17);
+        _ = await this.InsertEntityAsync(18);
+        _ = await this.InsertEntityAsync(20);
+        _ = await this.InsertEntityAsync(18);
+        _ = await this.InsertEntityAsync();
 
         var sut = this.CreateRepository(this.GetContext());
 

@@ -39,19 +39,19 @@ public sealed class OrchestrationMcpHandler(
     public async ValueTask<McpResponse> HandleAsync(McpRequest request, CancellationToken cancellationToken)
         => request.Operation switch
         {
-            "orchestrations.list" => await ListAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.instanceDetails" => await DetailsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.history" => await HistoryAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.signals" => await SignalsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.timers" => await TimersAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.signal" => await SignalAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.pause" => await PauseAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.resume" => await ResumeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.cancel" => await CancelAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.terminate" => await TerminateAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.repair" => await RepairAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "orchestrations.purge" => await PurgeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
-            "investigate.orchestrationInstance" => await InvestigateAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.list" => await this.ListAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.instanceDetails" => await this.DetailsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.history" => await this.HistoryAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.signals" => await this.SignalsAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.timers" => await this.TimersAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.signal" => await this.SignalAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.pause" => await this.PauseAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.resume" => await this.ResumeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.cancel" => await this.CancelAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.terminate" => await this.TerminateAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.repair" => await this.RepairAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "orchestrations.purge" => await this.PurgeAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
+            "investigate.orchestrationInstance" => await this.InvestigateAsync(request.Arguments, cancellationToken).ConfigureAwait(false),
             _ => McpResponse.Unavailable(McpErrorCode.FeatureUnavailable, $"Operation '{request.Operation}' is not handled by orchestrations.")
         };
 
@@ -271,7 +271,7 @@ public sealed class OrchestrationMcpHandler(
 
     private async Task<McpResponse> InvestigateAsync(JsonElement arguments, CancellationToken cancellationToken)
     {
-        var details = await DetailsAsync(arguments, cancellationToken).ConfigureAwait(false);
+        var details = await this.DetailsAsync(arguments, cancellationToken).ConfigureAwait(false);
         if (!details.Available)
         {
             return details;

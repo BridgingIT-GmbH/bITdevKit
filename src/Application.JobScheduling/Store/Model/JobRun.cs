@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Application.JobScheduling;
 
-using System.Text.Json.Serialization;
-using BridgingIT.DevKit.Common.Converters;
 using Humanizer;
 
 /// <summary>

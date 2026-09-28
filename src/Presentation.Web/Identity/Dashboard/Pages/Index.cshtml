@@ -6,7 +6,6 @@
 @using BridgingIT.DevKit.Presentation.Web.Identity.Dashboard.Pages
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.Extensions.DependencyInjection
-@using RazorSlices
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
@@ -234,8 +233,6 @@
         var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
         var fakeIdentityProviderOptions = HttpContext.RequestServices.GetService<FakeIdentityProviderEndpointsOptions>();
         var currentUserAccessor = HttpContext.RequestServices.GetService<ICurrentUserAccessor>();
-        var fakeIdentityProvider = HttpContext.RequestServices.GetService<IFakeIdentityProvider>();
-        var tokenService = HttpContext.RequestServices.GetService<ITokenService>();
         var principal = currentUserAccessor?.IsAuthenticated == true
             ? currentUserAccessor.Principal
             : HttpContext.User ?? currentUserAccessor?.Principal;

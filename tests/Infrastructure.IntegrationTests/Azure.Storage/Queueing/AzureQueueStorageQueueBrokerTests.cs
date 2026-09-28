@@ -34,7 +34,6 @@ public class AzureQueueStorageQueueBrokerTests(ITestOutputHelper output, TestEnv
 
         await using var provider = services.BuildServiceProvider();
         var broker = provider.GetRequiredService<IQueueBrokerRuntime>();
-        var brokerService = provider.GetRequiredService<IQueueBrokerService>();
 
         await broker.Subscribe<AzureQueueStorageTestMessage, AzureQueueStorageTestMessageHandler>();
         await Task.Delay(500); // give poller time to start

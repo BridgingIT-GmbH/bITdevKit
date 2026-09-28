@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 
 public static partial class ServiceCollectionExtensions

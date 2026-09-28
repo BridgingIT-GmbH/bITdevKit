@@ -354,14 +354,14 @@ public partial class EntityFrameworkGenericRepository<TEntity>
         var idType = id.GetType();
         return idType switch
         {
-            Type t when t == typeof(Guid) => (Guid)id == Guid.Empty,
-            Type t when t == typeof(int) => (int)id == 0,
-            Type t when t == typeof(long) => (long)id == 0,
-            Type t when t == typeof(string) => string.IsNullOrEmpty((string)id),
-            Type t when typeof(EntityId<Guid>).IsAssignableFrom(t) => ((EntityId<Guid>)id).Value == Guid.Empty,
-            Type t when typeof(EntityId<int>).IsAssignableFrom(t) => ((EntityId<int>)id).Value == 0,
-            Type t when typeof(EntityId<long>).IsAssignableFrom(t) => ((EntityId<long>)id).Value == 0,
-            Type t when typeof(EntityId<string>).IsAssignableFrom(t) => string.IsNullOrEmpty(((EntityId<string>)id).Value),
+            { } t when t == typeof(Guid) => (Guid)id == Guid.Empty,
+            { } t when t == typeof(int) => (int)id == 0,
+            { } t when t == typeof(long) => (long)id == 0,
+            { } t when t == typeof(string) => string.IsNullOrEmpty((string)id),
+            { } t when typeof(EntityId<Guid>).IsAssignableFrom(t) => ((EntityId<Guid>)id).Value == Guid.Empty,
+            { } t when typeof(EntityId<int>).IsAssignableFrom(t) => ((EntityId<int>)id).Value == 0,
+            { } t when typeof(EntityId<long>).IsAssignableFrom(t) => ((EntityId<long>)id).Value == 0,
+            { } t when typeof(EntityId<string>).IsAssignableFrom(t) => string.IsNullOrEmpty(((EntityId<string>)id).Value),
             // Add other types as needed (e.g., short, byte, custom structs)
             _ => Equals(id, Activator.CreateInstance(idType)) // Fallback for value types
         };

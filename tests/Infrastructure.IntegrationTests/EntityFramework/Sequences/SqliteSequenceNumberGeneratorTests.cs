@@ -26,7 +26,7 @@ public class SqliteSequenceNumberGeneratorTests(ITestOutputHelper output, TestEn
         var services = new ServiceCollection();
         services.AddLogging(builder => builder.AddProvider(new XunitLoggerProvider(output)));
 
-        var db = this.fixture.EnsureSqliteDbContext(output);
+        _ = this.fixture.EnsureSqliteDbContext(output);
         services.AddDbContext<StubDbContext>(options =>
         {
             options.UseSqlite(this.fixture.SqliteConnectionString);
@@ -43,7 +43,7 @@ public class SqliteSequenceNumberGeneratorTests(ITestOutputHelper output, TestEn
 
         // Ensure the database and sequences are created
         using var scope = serviceProvider.CreateScope();
-        var context = scope.ServiceProvider.GetRequiredService<StubDbContext>();
+        _ = scope.ServiceProvider.GetRequiredService<StubDbContext>();
 
         return serviceProvider.GetRequiredService<ISequenceNumberGenerator>();
     }

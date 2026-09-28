@@ -31,8 +31,6 @@ public class GenericRepositoryCancellationDecorator<TEntity>(IGenericRepository<
 public class RepositoryCancellationBehavior<TEntity>(IGenericRepository<TEntity> inner) : IGenericRepository<TEntity>
     where TEntity : class, IEntity
 {
-    private readonly string type = typeof(TEntity).Name;
-
     /// <summary>
     /// Gets the inner.
     /// </summary>

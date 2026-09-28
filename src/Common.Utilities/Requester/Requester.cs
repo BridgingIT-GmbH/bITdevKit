@@ -6,9 +6,7 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Collections.Concurrent;
-using System.Data;
 using System.Reflection;
-using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -633,14 +631,10 @@ public partial class Requester(
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var behavior = behaviors[i];
-                    var behaviorTypeName = TypeNameCache.GetOrAdd(behavior.GetType(), static t => t.Name);
-                    //TypedLogger.LogProcessing(this.logger, behaviorTypeName, requestTypeName, requestIdString);
-                    var behaviorStartTicks = Environment.TickCount64;
                     var currentNext = next;
                     next = async () =>
                     {
                         var result = await behavior.HandleAsync(request, options, handler.GetType(), currentNext, cancellationToken);
-                        //TypedLogger.LogProcessed(this.logger, behaviorTypeName, requestTypeName, requestIdString, Environment.TickCount64 - behaviorStartTicks);
                         return result;
                     };
                 }

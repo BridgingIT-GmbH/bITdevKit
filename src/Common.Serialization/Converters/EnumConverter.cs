@@ -23,7 +23,7 @@ public class EnumConverter<T> : JsonConverter<T>
         var value = reader.GetString();
         foreach (var field in typeof(T).GetFields())
         {
-            if (field.GetCustomAttribute<EnumMemberAttribute>() is EnumMemberAttribute attribute && attribute.Value?.Equals(value, StringComparison.OrdinalIgnoreCase) == true)
+            if (field.GetCustomAttribute<EnumMemberAttribute>() is { } attribute && attribute.Value?.Equals(value, StringComparison.OrdinalIgnoreCase) == true)
             {
                 return (T)field.GetValue(null);
             }

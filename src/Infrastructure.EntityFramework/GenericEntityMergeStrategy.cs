@@ -10,7 +10,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
@@ -220,7 +219,7 @@ public static class GenericEntityMergeStrategy
                 continue;
             }
 
-            var existingCollection = ((IEnumerable)clrCollection).Cast<object>().ToList();
+            var existingCollection = (clrCollection).Cast<object>().ToList();
             var incomingList = incomingCollection.Cast<object>().ToList();
 
             var keyProps = nav.TargetEntityType.FindPrimaryKey().Properties;

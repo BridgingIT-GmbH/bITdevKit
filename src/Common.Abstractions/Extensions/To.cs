@@ -438,44 +438,4 @@ public static partial class Extensions
         }
     }
 
-    private static TEnum ToEnum<TEnum>(this int source)
-        where TEnum : struct
-    {
-        if (!typeof(TEnum).IsEnum)
-        {
-            return default;
-        }
-
-        if (Enum.IsDefined(typeof(TEnum), source))
-        {
-            return (TEnum)Enum.ToObject(typeof(TEnum), source);
-        }
-
-        var values = Enum.GetValues(typeof(TEnum)).Cast<int>().ToList();
-
-        var isBitwise = values.Select((n, i) =>
-            {
-                if (i < 2)
-                {
-                    return n == 0 || n == 1;
-                }
-
-                return n / 2 == values[i - 1];
-            })
-            .All(y => y);
-
-        var maxValue = values.Sum();
-
-        if (Enum.TryParse(source.ToString(), out TEnum result) && (source <= maxValue || !isBitwise))
-        {
-            return result;
-        }
-
-        var excess = Enumerable.Range(0, 32)
-            .Select(n => (int)Math.Pow(2, n))
-            .Where(n => n <= source && n > 0 && !values.Contains(n))
-            .Sum();
-
-        return Enum.TryParse((source - excess).ToString(), out result) ? result : default;
-    }
 }

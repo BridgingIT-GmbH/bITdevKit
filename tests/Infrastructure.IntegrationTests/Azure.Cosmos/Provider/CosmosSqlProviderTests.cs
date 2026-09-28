@@ -209,8 +209,8 @@ public class CosmosSqlProviderTests : IDisposable
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var item = await this.CreateItemAsync();
         var ticks = DateTime.UtcNow.Ticks;
+        var item = await this.CreateItemAsync();
 
         // Act
         item.FirstName = $"John {ticks}";
@@ -235,7 +235,6 @@ public class CosmosSqlProviderTests : IDisposable
 
         // Arrange
         var item = await this.CreateItemAsync();
-        var ticks = DateTime.UtcNow.Ticks;
 
         // Act
         var results = await this.sut.ReadItemsAsync(e => e.FirstName == item.FirstName);
@@ -261,7 +260,6 @@ public class CosmosSqlProviderTests : IDisposable
 
         // Arrange
         var item = await this.CreateItemAsync();
-        var ticks = DateTime.UtcNow.Ticks;
 
         // Act
         var results = await this.sut.ReadItemsAsync(
@@ -329,8 +327,7 @@ public class CosmosSqlProviderTests : IDisposable
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
 
         // Arrange
-        var item = await this.CreateItemAsync();
-        var ticks = DateTime.UtcNow.Ticks;
+        _ = await this.CreateItemAsync();
 
         // Act
         var results = await this.sut.ReadItemsAsync(e => e.FirstName == "UNKNOWN");

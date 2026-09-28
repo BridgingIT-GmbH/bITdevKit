@@ -200,7 +200,7 @@ public partial class JobRunHistoryListener(ILoggerFactory loggerFactory, IJobSer
         //var status = jobException == null ? "Success" : "Failed";
         context.Trigger.JobDataMap.TryGetString(nameof(JobBase.Status), out var status);
         context.Trigger.JobDataMap.TryGetString(nameof(JobBase.ErrorMessage), out var errorMessage);
-        context.Trigger.JobDataMap.TryGetString(nameof(JobBase.ElapsedMilliseconds), out var elapsedMilliseconds);
+        context.Trigger.JobDataMap.TryGetString(nameof(JobBase.ElapsedMilliseconds), out _);
 
         TypedLogger.LogJobCompleted(this.logger, Constants.LogKey, jobKey.Name, jobKey.Group, entryId, status);
 

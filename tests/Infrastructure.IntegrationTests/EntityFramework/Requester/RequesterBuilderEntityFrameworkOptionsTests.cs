@@ -143,7 +143,7 @@ public class RequesterBuilderEntityFrameworkOptionsTests
         // Arrange
         var services = new ServiceCollection();
         services.AddLogging();
-        var builder = services.AddRequester()
+        services.AddRequester()
             .AddHandlers()
             .WithDatabaseTransactionOptions("Core");
         var serviceProvider = services.BuildServiceProvider();

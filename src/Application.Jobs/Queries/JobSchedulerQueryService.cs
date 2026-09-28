@@ -659,13 +659,13 @@ public class JobSchedulerQueryService(
                 AverageExecutionDurationSeconds = durations.Length == 0 ? null : durations.Average(),
                 OccurrenceCountsByStatus = filteredOccurrences
                     .GroupBy(x => x.Status)
-                    .ToDictionary(group => group.Key, group => (long)group.LongCount()),
+                    .ToDictionary(group => group.Key, group => group.LongCount()),
                 ExecutionCountsByStatus = filteredExecutions
                     .GroupBy(x => x.Status)
-                    .ToDictionary(group => group.Key, group => (long)group.LongCount()),
+                    .ToDictionary(group => group.Key, group => group.LongCount()),
                 CountsByJob = filteredOccurrences
                     .GroupBy(x => x.JobName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-                    .ToDictionary(group => group.Key, group => (long)group.LongCount(), StringComparer.OrdinalIgnoreCase),
+                    .ToDictionary(group => group.Key, group => group.LongCount(), StringComparer.OrdinalIgnoreCase),
             };
 
             return Result<JobSchedulerMetricsModel>.Success(model);
@@ -1391,7 +1391,7 @@ public class JobSchedulerQueryService(
             var counts = items
                 .Where(x => x.RecordedAt >= bucketStart && x.RecordedAt < bucketEnd)
                 .GroupBy(x => x.Status, StringComparer.OrdinalIgnoreCase)
-                .ToDictionary(group => group.Key, group => (long)group.LongCount(), StringComparer.OrdinalIgnoreCase);
+                .ToDictionary(group => group.Key, group => group.LongCount(), StringComparer.OrdinalIgnoreCase);
 
             buckets.Add(new JobSchedulerTimelineBucketModel
             {

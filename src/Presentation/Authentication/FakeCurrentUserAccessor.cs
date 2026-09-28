@@ -14,7 +14,6 @@ using Common;
 public class FakeCurrentUserAccessor : ICurrentUserAccessor
 {
     private static readonly Dictionary<string, FakeUser> UserStore = [];
-    private static readonly Random Random = new();
 
     static FakeCurrentUserAccessor()
     {

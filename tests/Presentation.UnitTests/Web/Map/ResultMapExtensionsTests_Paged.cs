@@ -55,7 +55,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok<PagedResponse<PersonStub>>>();
         var okResult = (Ok<PagedResponse<PersonStub>>)innerResult;
         var pagedResponse = okResult.Value;
@@ -81,7 +81,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<UnauthorizedHttpResult>();
     }
 
@@ -97,7 +97,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<ProblemHttpResult>();
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(400);
@@ -126,7 +126,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok<PagedResponse<PersonStub>>>();
         var okResult = (Ok<PagedResponse<PersonStub>>)innerResult;
         var pagedResponse = okResult.Value;
@@ -153,7 +153,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok<PagedResponse<PersonStub>>>();
         var okResult = (Ok<PagedResponse<PersonStub>>)innerResult;
         var pagedResponse = okResult.Value;
@@ -183,7 +183,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok<PagedResponse<PersonStub>>>();
         var okResult = (Ok<PagedResponse<PersonStub>>)innerResult;
         var pagedResponse = okResult.Value;
@@ -212,7 +212,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok<PagedResponse<PersonStub>>>();
         var okResult = (Ok<PagedResponse<PersonStub>>)innerResult;
         var pagedResponse = okResult.Value;
@@ -241,7 +241,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok<PagedResponse<PersonStub>>>();
         var okResult = (Ok<PagedResponse<PersonStub>>)innerResult;
         var pagedResponse = okResult.Value;
@@ -270,7 +270,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<Ok<PagedResponse<PersonStub>>>();
         var okResult = (Ok<PagedResponse<PersonStub>>)innerResult;
         var pagedResponse = okResult.Value;
@@ -297,7 +297,7 @@ public class ResultMapExtensionsPagedTests
 
         // Assert
         response.ShouldBeOfType<Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>>();
-        var innerResult = ((Results<Ok<PagedResponse<PersonStub>>, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>)response).Result;
+        var innerResult = (response).Result;
         innerResult.ShouldBeOfType<ProblemHttpResult>();
         var problemResult = (ProblemHttpResult)innerResult;
         problemResult.StatusCode.ShouldBe(418); // CustomHttpResult status preserved

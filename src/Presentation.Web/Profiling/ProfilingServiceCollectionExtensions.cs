@@ -7,7 +7,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation;
-using BridgingIT.DevKit.Presentation.Web.Profiling;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 
 /// <summary>Registers profiling Presentation capabilities.</summary>

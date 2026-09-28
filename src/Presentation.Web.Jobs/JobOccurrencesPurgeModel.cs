@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Jobs;
 
-using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 
 /// <summary>

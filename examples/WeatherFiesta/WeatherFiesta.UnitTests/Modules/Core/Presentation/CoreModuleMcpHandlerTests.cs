@@ -95,7 +95,7 @@ public class CoreModuleMcpHandlerTests
             SendOptions options = null,
             CancellationToken cancellationToken = default)
             where TRequest : class, IRequest<TValue>
-            => this.SendAsync((IRequest<TValue>)request, options, cancellationToken);
+            => this.SendAsync(request, options, cancellationToken);
 
         public Task<Result<TValue>> SendAsync<TValue>(
             IRequest<TValue> request,

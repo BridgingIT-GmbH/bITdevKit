@@ -1,7 +1,6 @@
 namespace BridgingIT.DevKit.Presentation.Web.Orchestrations;
 
 using System.Net;
-using System.Text.Json;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
@@ -29,7 +28,6 @@ public class OrchestrationEndpoints(
     OrchestrationEndpointsOptions options = null) : EndpointsBase
 {
     private const string ValidationProblemType = "/problems/orchestrations/validation";
-    private const string NotFoundProblemType = "/problems/orchestrations/not-found";
     private const string InvalidStateProblemType = "/problems/orchestrations/invalid-state";
     private const string ConcurrencyConflictProblemType = "/problems/orchestrations/concurrency-conflict";
     private const string UnsupportedOperationProblemType = "/problems/orchestrations/unsupported-operation";

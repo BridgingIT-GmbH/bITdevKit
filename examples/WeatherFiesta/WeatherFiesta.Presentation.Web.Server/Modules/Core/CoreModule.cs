@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 
-using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;

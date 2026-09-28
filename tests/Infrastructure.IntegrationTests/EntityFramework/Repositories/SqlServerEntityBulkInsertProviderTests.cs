@@ -10,7 +10,6 @@ using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Outbox;
 using BridgingIT.DevKit.Domain.Repositories;
-using BridgingIT.DevKit.Infrastructure.EntityFramework;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
@@ -148,7 +147,7 @@ public class SqlServerEntityBulkInsertProviderTests(
         using var serviceProvider = this.CreateServiceProvider<BulkInsertDecoratedPersonStub, StubDbContext>(
             connectionString: verificationContext.Database.GetConnectionString(),
             configure: builder => builder
-                .WithBehavior<EntityBulkInserterOutboxDomainEventBehavior<BulkInsertDecoratedPersonStub, StubDbContext>>(
+                .WithBehavior(
                     (inner, serviceProvider) => new EntityBulkInserterOutboxDomainEventBehavior<BulkInsertDecoratedPersonStub, StubDbContext>(
                         serviceProvider.GetRequiredService<StubDbContext>(),
                         inner,

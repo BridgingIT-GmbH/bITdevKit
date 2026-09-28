@@ -32,7 +32,9 @@ public class SampleConsoleCommand : ConsoleCommandBase
     /// Gets or sets the target.
     /// </summary>
     [ConsoleCommandArgument(0, Description = "Greeting target", Required = true)] public string Target { get; set; }
-    /// <inheritdoc/>
+    /// <summary>
+    /// Gets or sets the optional repeat-count override.
+    /// </summary>
     [ConsoleCommandArgument(1, Description = "Repeat override", Required = false)] public int Repeat { get; set; }
 
     /// <summary>

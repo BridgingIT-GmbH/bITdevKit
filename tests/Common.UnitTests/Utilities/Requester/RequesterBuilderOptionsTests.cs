@@ -288,7 +288,7 @@ public class RequesterBuilderOptionsTests
         // Arrange
         var services = new ServiceCollection();
         services.AddLogging();
-        var builder = services.AddRequester()
+        services.AddRequester()
             .AddHandlers()
             .WithBehavior(typeof(RetryPipelineBehavior<,>))
             .WithRetryOptions(3, 100)

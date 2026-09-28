@@ -351,86 +351,6 @@ public static class CustomSpecificationBuilder
         return new Specification<TEntity>(lambda);
     }
 
-    private static ISpecification<TEntity> BuildTimeRelative<TEntity>(FilterCriteria filter)
-        where TEntity : class, IEntity
-    {
-        if (!filter.CustomParameters.TryGetValue("field", out var fieldObj) ||
-            !filter.CustomParameters.TryGetValue("unit", out var unitObj) ||
-            !filter.CustomParameters.TryGetValue("amount", out var amountObj) ||
-            !filter.CustomParameters.TryGetValue("direction", out var directionObj))
-        {
-            throw new ArgumentException("Field, Unit, Amount, and Direction must be provided for TimeRelative filter.");
-        }
-
-        var field = fieldObj as string;
-        var unit = (unitObj as string)?.ToLowerInvariant();
-        var amount = Convert.ToInt32(amountObj);
-        var direction = (directionObj as string)?.ToLowerInvariant();
-
-        if (string.IsNullOrWhiteSpace(field) ||
-            string.IsNullOrWhiteSpace(unit) ||
-            string.IsNullOrWhiteSpace(direction))
-        {
-            throw new ArgumentException("Invalid parameters for TimeRelative filter.");
-        }
-
-        if (!new[] { "minute", "hour" }.Contains(unit))
-        {
-            throw new ArgumentException("Unit must be either 'minute' or 'hour'");
-        }
-
-        if (!new[] { "past", "future" }.Contains(direction))
-        {
-            throw new ArgumentException("Direction must be either 'past' or 'future'");
-        }
-
-        var parameter = Expression.Parameter(typeof(TEntity), "x");
-        var property = Expression.Property(parameter, field);
-        var propertyType = property.Type;
-
-        // Check if the property is TimeSpan or DateTime
-        if (propertyType != typeof(TimeSpan) &&
-            propertyType != typeof(TimeSpan?) &&
-            propertyType != typeof(DateTime) &&
-            propertyType != typeof(DateTime?))
-        {
-            throw new ArgumentException($"Property type must be TimeSpan or DateTime, but was {propertyType.Name}");
-        }
-
-        var isNullable = propertyType.IsGenericType && propertyType.GetGenericTypeDefinition() == typeof(Nullable<>);
-        var isDateTime = propertyType == typeof(DateTime) || propertyType == typeof(DateTime?);
-        var referenceTime = GetReferenceTime(DateTime.UtcNow, unit, amount, direction, isDateTime);
-
-        Expression timeConstant;
-        Expression timeProperty = isNullable
-            ? Expression.Property(property, "Value")
-            : property;
-        if (isDateTime) // For DateTime, we need to compare the TimeOfDay part
-        {
-            timeProperty = Expression.Property(timeProperty, "TimeOfDay");
-            timeConstant = Expression.Constant(((DateTime)referenceTime).TimeOfDay);
-        }
-        else // TimeSpan
-        {
-            timeConstant = Expression.Constant((TimeSpan)referenceTime);
-        }
-
-        Expression timeComparisonExpression = direction == "past"
-            ? Expression.GreaterThanOrEqual(timeProperty, timeConstant)
-            : Expression.LessThanOrEqual(timeProperty, timeConstant);
-
-        // For nullable properties, add null check
-        if (isNullable)
-        {
-            var notNullCheck = Expression.NotEqual(property, Expression.Constant(null, propertyType));
-            timeComparisonExpression = Expression.AndAlso(notNullCheck, timeComparisonExpression);
-        }
-
-        var lambda = Expression.Lambda<Func<TEntity, bool>>(timeComparisonExpression, parameter);
-
-        return new Specification<TEntity>(lambda);
-    }
-
     private static ISpecification<TEntity> BuildEnumValues<TEntity>(FilterCriteria filter)
         where TEntity : class, IEntity
     {
@@ -749,17 +669,4 @@ public static class CustomSpecificationBuilder
         };
     }
 
-    private static object GetReferenceTime(DateTime now, string unit, int amount, string direction, bool returnDateTime)
-    {
-        var multiplier = direction == "past" ? -1 : 1;
-
-        var resultDateTime = unit switch
-        {
-            "minute" => now.AddMinutes(amount * multiplier),
-            "hour" => now.AddHours(amount * multiplier),
-            _ => throw new ArgumentException("Invalid time unit")
-        };
-
-        return returnDateTime ? resultDateTime : resultDateTime.TimeOfDay;
-    }
 }

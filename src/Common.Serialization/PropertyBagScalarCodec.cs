@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Globalization;
-using System.Text;
 using System.Text.Json;
 
 /// <summary>

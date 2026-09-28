@@ -22,7 +22,7 @@ public static class JobSchedulerQueueingIntegrationExtensions
         string jobName,
         Action<JobQueueSendDefinitionBuilder<TData, TMessage>> configure)
         where TMessage : class, IQueueMessage
-        => context.WithQueueSendJob<TData, TMessage>(jobName, configure);
+        => context.WithQueueSendJob(jobName, configure);
 
     /// <summary>
     /// Represents with queue send job.
@@ -44,7 +44,7 @@ public static class JobSchedulerQueueingIntegrationExtensions
         configure?.Invoke(builder);
 
         EnsureRegistrations(context.Services).Add(jobName, builder.BuildSettings());
-        context.Services.AddTransient<QueueSendJob<TData, TMessage>>(sp =>
+        context.Services.AddTransient(sp =>
             new QueueSendJob<TData, TMessage>(sp, sp.GetRequiredService<QueueSendJobRegistrationStore>()));
         context.Registrations.Add(builder.BuildDefinition());
         return context;
@@ -157,7 +157,7 @@ public sealed class JobQueueSendDefinitionBuilder<TData, TMessage>
     /// <param name="propertyName">The property name used by the operation.</param>
     /// <returns>The result of the operation.</returns>
     public JobQueueSendDefinitionBuilder<TData, TMessage> MapContextProperty(string propertyKey, string propertyName = null)
-        => this.MapProperty(string.IsNullOrWhiteSpace(propertyName) ? propertyKey : propertyName, (Func<IJobExecutionContext<TData>, object>)(context => (object)(context.Properties.TryGetValue(propertyKey, out var value) ? value : null)));
+        => this.MapProperty(string.IsNullOrWhiteSpace(propertyName) ? propertyKey : propertyName, (context => (context.Properties.TryGetValue(propertyKey, out var value) ? value : null)));
 
     /// <summary>
     /// Executes the map correlation id operation.

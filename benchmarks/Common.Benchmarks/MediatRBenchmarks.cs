@@ -29,6 +29,6 @@ public class MediatRBenchmarks
     public async Task MediatR_Baseline()
     {
         var request = new MediatRTestRequest();
-        var result = await this.mediator.Send(request);
+        _ = await this.mediator.Send(request);
     }
 }

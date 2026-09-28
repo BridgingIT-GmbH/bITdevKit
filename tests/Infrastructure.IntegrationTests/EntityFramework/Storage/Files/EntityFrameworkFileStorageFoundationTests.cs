@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework;
 using System.Reflection;
 using Application.Storage;
 using Infrastructure.EntityFramework;
-using Infrastructure.EntityFramework.Storage;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;

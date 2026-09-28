@@ -124,7 +124,7 @@ public class DomainEventsTests
     {
         // Arrange
         var sut = new DomainEvents();
-        var act = () => sut.PublishAsync((INotifier)null);
+        var act = () => sut.PublishAsync(null);
 
         // Act & Assert
         await act.ShouldThrowAsync<ArgumentNullException>();

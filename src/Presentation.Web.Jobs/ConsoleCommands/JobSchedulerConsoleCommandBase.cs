@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Presentation;
 
 using System.Collections.Generic;
 using System.Globalization;
-using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 using Spectre.Console;
 

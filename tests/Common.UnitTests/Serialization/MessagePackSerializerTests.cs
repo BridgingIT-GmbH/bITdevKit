@@ -49,7 +49,7 @@ public class MessagePackSerializerTests(ITestOutputHelper output) : SerializerTe
     [Fact(Skip = "Skip benchmarks for now")]
     public virtual void RunBenchmarks()
     {
-        var summary = BenchmarkRunner.Run<MessagePackSerializerBenchmark>();
+        _ = BenchmarkRunner.Run<MessagePackSerializerBenchmark>();
     }
 
     protected override ISerializer GetSerializer()

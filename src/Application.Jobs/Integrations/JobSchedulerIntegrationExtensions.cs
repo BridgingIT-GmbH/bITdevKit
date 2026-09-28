@@ -37,7 +37,7 @@ public static class JobSchedulerIntegrationExtensions
         string jobName,
         Action<JobRequesterDefinitionBuilder<TData, TRequest, TValue>> configure)
         where TRequest : class, IRequest<TValue>
-        => context.WithRequesterJob<TData, TRequest, TValue>(jobName, configure);
+        => context.WithRequesterJob(jobName, configure);
 
     /// <summary>
     /// Registers a Requester-backed outbound command job.
@@ -62,7 +62,7 @@ public static class JobSchedulerIntegrationExtensions
         string jobName,
         Action<JobRequesterDefinitionBuilder<TData, TCommand, Result>> configure)
         where TCommand : class, IRequest<Result>
-        => context.WithRequesterJob<TData, TCommand, Result>(jobName, configure);
+        => context.WithRequesterJob(jobName, configure);
 
     /// <summary>
     /// Registers a Requester-backed outbound job.
@@ -95,7 +95,7 @@ public static class JobSchedulerIntegrationExtensions
         configure?.Invoke(builder);
 
         EnsureRequesterRegistrations(context.Services).Add(jobName, builder.BuildSettings());
-        context.Services.AddTransient<RequesterJob<TData, TRequest, TValue>>(sp =>
+        context.Services.AddTransient(sp =>
             new RequesterJob<TData, TRequest, TValue>(
                 sp,
                 sp.GetRequiredService<RequesterJobRegistrationStore>()));
@@ -134,7 +134,7 @@ public static class JobSchedulerIntegrationExtensions
         configure?.Invoke(builder);
 
         EnsureNotifierRegistrations(context.Services).Add(jobName, builder.BuildSettings());
-        context.Services.AddTransient<NotifierJob<TData, TNotification>>(sp =>
+        context.Services.AddTransient(sp =>
             new NotifierJob<TData, TNotification>(
                 sp,
                 sp.GetRequiredService<NotifierJobRegistrationStore>()));
@@ -166,7 +166,7 @@ public static class JobSchedulerIntegrationExtensions
         string jobName,
         Action<JobNotifierDefinitionBuilder<TData, TNotification>> configure)
         where TNotification : class, INotification
-        => context.WithNotifierJob<TData, TNotification>(jobName, configure);
+        => context.WithNotifierJob(jobName, configure);
 
     private static RequesterJobRegistrationStore EnsureRequesterRegistrations(IServiceCollection services)
     {

@@ -44,7 +44,6 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
             //Console.WriteLine($"[OpenAPI] Paths ({document.Paths.Count}):");
             foreach (var path in document.Paths)
             {
-                var pathKey = path.Key;
                 var pathItem = path.Value;
                 var operations = new List<string>();
 
@@ -56,7 +55,7 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
                     }
                 }
 
-                var operationList = operations.Count > 0 ? string.Join(", ", operations) : "NONE";
+                _ = operations.Count > 0 ? string.Join(", ", operations) : "NONE";
                 //Console.WriteLine($"[OpenAPI] - {pathKey} [{operationList}]");
             }
         }
@@ -69,7 +68,7 @@ public class DiagnosticDocumentTransformer : IOpenApiDocumentTransformer
         if (document.Components?.Schemas?.Count > 0)
         {
             //Console.WriteLine($"[OpenAPI] Schemas ({document.Components.Schemas.Count}):");
-            foreach (var schemaKey in document.Components.Schemas.Keys)
+            foreach (var _ in document.Components.Schemas.Keys)
             {
                 //Console.WriteLine($"[OpenAPI]   - {schemaKey}");
             }

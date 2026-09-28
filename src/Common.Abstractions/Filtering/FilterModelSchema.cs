@@ -5,9 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
-
 /// <summary>
 /// Represents a model for building filter criteria for data queries.
 /// Contains properties for pagination, ordering, filtering, and including related entities.

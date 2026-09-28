@@ -755,7 +755,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
 
             var properties = await sourceFileClient.GetPropertiesAsync(cancellationToken);
             await destFileClient.CreateAsync(properties.Value.ContentLength, cancellationToken: cancellationToken);
-            var copyInfo = await destFileClient.StartCopyAsync(sourceFileClient.Uri, cancellationToken: cancellationToken);
+            _ = await destFileClient.StartCopyAsync(sourceFileClient.Uri, cancellationToken: cancellationToken);
 
             // Poll for copy completion
             ShareFileProperties destProperties;
@@ -830,7 +830,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
 
             var properties = await oldFileClient.GetPropertiesAsync(cancellationToken);
             await newFileClient.CreateAsync(properties.Value.ContentLength, cancellationToken: cancellationToken);
-            var copyInfo = await newFileClient.StartCopyAsync(oldFileClient.Uri, cancellationToken: cancellationToken);
+            _ = await newFileClient.StartCopyAsync(oldFileClient.Uri, cancellationToken: cancellationToken);
 
             // Poll for copy completion
             ShareFileProperties newProperties;
@@ -906,7 +906,7 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
 
             var properties = await sourceFileClient.GetPropertiesAsync(cancellationToken);
             await destFileClient.CreateAsync(properties.Value.ContentLength, cancellationToken: cancellationToken);
-            var copyInfo = await destFileClient.StartCopyAsync(sourceFileClient.Uri, cancellationToken: cancellationToken);
+            _ = await destFileClient.StartCopyAsync(sourceFileClient.Uri, cancellationToken: cancellationToken);
 
             // Poll for copy completion
             ShareFileProperties destProperties;

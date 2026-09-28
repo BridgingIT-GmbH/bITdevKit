@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Presentation.Web.Health.Dashboard;
 
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 

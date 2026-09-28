@@ -1,6 +1,6 @@
 ---
 created: 2026-09-24
-updated: 2026-09-25
+updated: 2026-09-26
 status: draft
 ---
 
@@ -52,25 +52,83 @@ This baseline is a planning snapshot, not an allowlist or a fixed completion tar
 
 ## Campaign Progress
 
-Last updated: **2026-09-25**
+Last updated: **2026-09-28**
 
 The baseline tables in this specification remain the immutable starting point for the campaign. Progress is recorded separately so completed work does not erase the original inventory.
 
 | Measure | Baseline | Current | Status |
 | --- | ---: | ---: | --- |
-| Total findings | 9,050 | 6,078 | In progress |
+| Total findings | 9,050 | 2,455 | In progress |
 | `InvalidXmlDocComment` | 1,708 | 0 | Resolved |
-| `InconsistentNaming` | 1,156 | 0 | Configured |
+| `InheritdocInvalidUsage` | 18 | 0 | Resolved |
+| `Html.PathError` | 14 | 0 | Resolved |
+| `InconsistentNaming` | 1,156 | 0 | Configured below warning severity |
+| `ParameterHidesMember` | 359 | 0 | Configured |
 | `LocalVariableHidesMember` | 172 | 0 | Configured |
+| `VariableHidesOuterVariable` | 66 | 0 | Configured |
+| `RedundantUsingDirective` and `.Global` | 217 | 2 | Resolved with two retained Razor false positives |
+| `ArrangeThisQualifier` | 78 | 0 | Resolved |
+| `ConvertTypeCheckPatternToNullCheck` | 71 | 0 | Resolved |
+| `RedundantCast` | 62 | 4 | Resolved with four retained compiler-required casts |
+| `RedundantTypeArgumentsOfMethod` | 33 | 0 | Resolved |
+| `UnusedVariable` | 168 | 0 | Resolved after side-effect review |
+| `UnusedAutoPropertyAccessor.Global` | 1,077 | 0 | Configured as hint for externally consumed contracts |
+| `NotAccessedPositionalProperty.Global` | 147 | 0 | Configured as hint for externally consumed contracts |
+| `RedundantDefaultMemberInitializer` | 61 | 0 | Configured as style hint |
+| `UnusedMember.Local` | 194 | 105 | Source findings remain warnings; test findings are hints |
+| `UnusedType.Local` | 2 | 0 | Resolved |
 
 The `InvalidXmlDocComment` batch repaired malformed XML, generic code examples, parameter and type-parameter tags, and unresolved documentation references across the solution. A fresh full-solution InspectCode scan reported zero remaining findings for this rule. The full solution build completed with zero warnings and zero errors, and `git diff --check` passed.
 
-The documentation family is not yet complete. The next documentation findings to rebaseline and triage are:
+The remaining documentation rules are resolved. Invalid inheritance comments were replaced with explicit contracts or connected to the missing implemented interface, and stale footer links to routes that are not registered by the web project were removed. The verified report contains zero findings for `InvalidXmlDocComment`, `InheritdocInvalidUsage`, and `Html.PathError`.
 
-* `InheritdocInvalidUsage` (18 findings in the original baseline)
-* `Html.PathError` (14 findings in the original baseline)
+### Current Open Findings Snapshot
 
-Current counts for these remaining rules must be taken from a fresh InspectCode report before the next batch begins.
+The open findings were revalidated on **2026-09-28** with JetBrains InspectCode 2026.2.2 after adding a nested test-project severity policy. The scan used `--no-build --swea --severity=WARNING` and reported **2,455 findings across 86 rules**. The verified report is `%TEMP%\bitdevkit-inspectcode-test-hints.sarif`; `UnusedVariable`, `InvalidXmlDocComment`, `InheritdocInvalidUsage`, and `Html.PathError` each reported zero findings. Test-only fixture, invalid-input, constant-condition, assertion-flow, and unused-member diagnostics remain available as editor hints. Warnings for disposal, closure mutation, ignored required results, stream handling, empty catches, and other correctness risks remain enabled in tests. The `src` count is unchanged at 2,212.
+
+| Severity | Open findings |
+| --- | ---: |
+| Error | 348 |
+| Warning | 2,107 |
+| **Total** | **2,455** |
+
+| Source root | Open findings |
+| --- | ---: |
+| `src` | 2,212 |
+| `tests` | 125 |
+| `examples` | 110 |
+| `benchmarks` | 8 |
+| **Total** | **2,455** |
+
+| Highest-count open rule | Findings |
+| --- | ---: |
+| `.CSharpErrors` | 342 |
+| `PossibleMultipleEnumeration` | 333 |
+| `UnusedParameter.Local` | 253 |
+| `PossibleNullReferenceException` | 214 |
+| `ConstantConditionalAccessQualifier` | 187 |
+| `AssignNullToNotNullAttribute` | 121 |
+| `UnusedMember.Local` | 105 |
+| `PossibleInvalidOperationException` | 93 |
+| `ConditionIsAlwaysTrueOrFalse` | 78 |
+| `UnusedAutoPropertyAccessor.Local` | 63 |
+| `SuspiciousTypeConversion.Global` | 53 |
+| `RedundantAssignment` | 41 |
+| `AccessToDisposedClosure` | 39 |
+| `NonReadonlyMemberInGetHashCode` | 31 |
+| `OptionalParameterHierarchyMismatch` | 29 |
+| `PossiblyMistakenUseOfCancellationToken` | 27 |
+| `RedundantCallerArgumentExpressionDefaultValue` | 26 |
+| `ConstantNullCoalescingCondition` | 20 |
+| `HeuristicUnreachableCode` | 20 |
+| `RedundantExtendsListEntry` | 20 |
+| `PossibleUnintendedReferenceComparison` | 17 |
+| `ParameterHidesPrimaryConstructorParameter` | 16 |
+| `RedundantJumpStatement` | 16 |
+| `NotAccessedField.Local` | 13 |
+| `UsingStatementResourceInitialization` | 13 |
+
+The successful compiler build remains the authority for build validity. InspectCode model-loading findings such as `.CSharpErrors` remain open for individual reproduction and classification; they are not treated as compiler failures solely because InspectCode reports error severity.
 
 ### Batch Progress Ledger
 
@@ -80,8 +138,28 @@ This ledger tracks completed and active remediation batches. It complements the 
 | --- | --- | --- | --- | ---: | ---: | ---: | --- | --- | --- |
 | `DOC-001` | 2026-09-25 | Documentation | `InvalidXmlDocComment` | 1,708 | 0 | -1,708 | Fix | Resolved | Full-solution InspectCode: 0 rule findings and 7,414 total findings; solution build: 0 warnings, 0 errors; `git diff --check`: passed |
 | `CFG-001` | 2026-09-25 | Naming/spelling/style and API/design/encapsulation | `InconsistentNaming`; `LocalVariableHidesMember` | 1,328 | 0 | -1,328 | Configure/disable rule | Resolved | Single-threaded full-solution InspectCode: 0 findings for both rules and 6,078 total findings; `InvalidXmlDocComment`: 0 |
+| `CFG-002` | 2026-09-26 | API/design/encapsulation | `ParameterHidesMember`; `VariableHidesOuterVariable` | 413 | 0 | -413 | Configure/disable rule | Resolved | Single-threaded full-solution InspectCode: 0 findings for both rules and 5,723 total findings; `InvalidXmlDocComment`: 0 |
+| `STYLE-001` | 2026-09-26 | Naming/spelling/style | `RedundantUsingDirective`; `RedundantUsingDirective.Global` | 217 | 2 | -215 | Fix; retain two Razor false positives | Resolved | Full-solution build passed; InspectCode: 2 required Razor imports, 0 global-using findings, and 5,509 total findings |
+| `STYLE-002` | 2026-09-26 | Naming/spelling/style | `ArrangeThisQualifier` | 78 | 0 | -78 | Fix | Resolved | Full-solution build passed; InspectCode: 0 rule findings and 5,431 total findings |
+| `COR-001` | 2026-09-26 | Correctness/nullability/control-flow | `ConvertTypeCheckPatternToNullCheck` | 71 | 0 | -71 | Fix | Resolved | Full-solution build passed; InspectCode: 0 rule findings and 5,360 total findings |
+| `STYLE-003` | 2026-09-26 | Naming/spelling/style | `RedundantCast`; `RedundantTypeArgumentsOfMethod` | 95 | 4 | -91 | Fix; retain four compiler-required switch casts | Resolved | Full-solution build passed; 1,207 Application unit tests passed; InspectCode: 4 required casts, 0 redundant type arguments |
+| `DOC-002` | 2026-09-26 | Documentation | `InheritdocInvalidUsage`; `Html.PathError` | 32 | 0 | -32 | Fix | Resolved | Full-solution build passed; InspectCode: 0 findings for both rules, 0 `InvalidXmlDocComment`, and 5,237 total findings |
+| `DEAD-001` | 2026-09-27 | Dead or unused code | `UnusedVariable` | 149 | 0 | -149 | Fix; preserve effectful calls with discards | Resolved | Focused tests passed; full unit suite and solution build passed; InspectCode: 0 rule findings and 4,976 total findings |
+| `DEAD-002` | 2026-09-26 | Dead or unused code | `UnusedMember.Local` | 194 | 186 | -8 | Fix proven-dead private members | Resolved | Full-solution build passed; reference searches found no call sites; InspectCode: 186 rule findings and 5,211 total findings |
+| `DEAD-003` | 2026-09-26 | Dead or unused code | `UnusedType.Local`; nested `UnusedAutoPropertyAccessor.Local` | 3 | 0 | -3 | Fix proven-dead private test helpers | Resolved | 9 focused tests passed; InspectCode: 0 unused local types, 101 remaining unused local accessors, and 5,209 total findings |
+| `DEAD-004` | 2026-09-26 | Dead or unused code | `UnusedMember.Local` | 186 | 184 | -2 | Fix unreachable private helpers | Resolved | Full-solution build passed; reference searches found no call sites; InspectCode: 184 rule findings and 5,207 total findings |
+| `CFG-003` | 2026-09-27 | Low-signal API and style diagnostics | Global unused accessors; global unread positional properties; redundant default initializers; Razor naming | 1,344 | 0 | -1,344 | Configure as editor hints | Resolved | InspectCode warning threshold: 3,632 findings across 88 rules; internal unused parameters and sampled correctness rules unchanged |
+| `CFG-004` | 2026-09-28 | Test-only fixture and assertion diagnostics | 19 low-signal inspections under `tests` | 1,302 | 125 | -1,177 | Configure as test-only editor hints | Resolved | InspectCode warning threshold: 2,455 findings across 86 rules; `tests`: 125; `src`: unchanged at 2,212 |
 
 For an active batch, `Completed` may be `-`, but `Before` must come from a fresh full-solution report. Mark a batch `Resolved` only after its focused validation, solution-level validation when required, and post-change InspectCode scan succeed.
+
+### Next low-risk candidates
+
+The cleanup batches listed previously are complete. The verified report leaves 41 warning-level `RedundantAssignment` findings as the smallest plausible follow-up group. These require semantic review because assignments can preserve ordering or side effects. Redundant default initializers and test-only redundant assignments remain visible as editor hints and are no longer part of the warning-level backlog.
+
+The two remaining redundant-using findings are required Razor imports, and the four remaining redundant-cast findings establish a common switch-expression type required by the C# compiler. Retain these findings unless a future analyzer version stops reporting them.
+
+The conservative unused-symbol pass removed unused captures, proven-dead private helpers, and two private test types. Remaining high-count unused-code and multiple-enumeration findings are not mechanical cleanup. Reflection, dependency injection, public API compatibility, deferred execution, and side effects require semantic review.
 
 ## Goals
 
@@ -357,9 +435,11 @@ Every triaged finding must receive exactly one disposition:
 
 Repository-wide analyzer configuration is an acceptable remediation when a finding conflicts with a deliberate, consistently applied repository convention and changing source would reduce clarity or compatibility. A configuration batch may resolve multiple findings, but it must name each affected rule, document the retained convention, and verify that unrelated inspections remain enabled.
 
-Batch `CFG-001` disables the JetBrains `InconsistentNaming` inspection because the repository's naming policy is enforced by explicit `dotnet_naming_rule` entries and intentionally permits established acronyms and domain identifiers. JetBrains requires this setting at both all-file scope for Razor and CSHTML and C# scope for its C# naming model. The batch also disables `LocalVariableHidesMember` for all files because local names may intentionally match instance fields when `this.` keeps member access unambiguous. Related inspections such as `ParameterHidesMember`, `VariableHidesOuterVariable`, and `ParameterHidesPrimaryConstructorParameter` remain enabled pending separate review.
+Batch `CFG-001` disables the JetBrains `InconsistentNaming` inspection for C# because the repository's naming policy is enforced by explicit `dotnet_naming_rule` entries and intentionally permits established acronyms and domain identifiers. The current C# scope leaves 58 Razor and CSHTML naming findings for later policy review. The batch also disables `LocalVariableHidesMember` because local names may intentionally match instance fields when `this.` keeps member access unambiguous.
 
-The current SARIF report was produced by JetBrains InspectCode. Its 104 rule identifiers include no standard Roslyn analyzer identifiers such as `CA`, `IDE`, `CS`, `RCS`, or `SA`. This does not disable or replace compiler and Roslyn analysis: `dotnet build`, `dotnet format`, and the explicit `dotnet_naming_rule` entries remain separate validation sources.
+Batch `CFG-002` disables `ParameterHidesMember` and `VariableHidesOuterVariable`. The repository permits these names when qualification and lexical scope keep the referenced value clear. `ParameterHidesPrimaryConstructorParameter` remains enabled because primary-constructor capture can create less obvious state and requires separate review.
+
+The current SARIF report was produced by JetBrains InspectCode. Its 101 rule identifiers include no standard Roslyn analyzer identifiers such as `CA`, `IDE`, `CS`, `RCS`, or `SA`. This does not disable or replace compiler and Roslyn analysis: `dotnet build`, `dotnet format`, and the explicit `dotnet_naming_rule` entries remain separate validation sources.
 
 * **DSP-001**: `Suppress with rationale` must be local unless a broader suppression is independently justified.
 * **DSP-002**: `Configure/disable rule` must identify the exact rule, scope, before-and-after count, and policy reason.
@@ -418,9 +498,9 @@ Review closure lifetime, cancellation-token use, synchronization, and modified c
 
 Review possible null dereferences, invalid operations, impossible expressions, constant conditions, unintended comparisons, and redundant assignments. Require tests for behavior-changing fixes.
 
-### Phase 5: triage documentation (in progress)
+### Phase 5: triage documentation (complete)
 
-`InvalidXmlDocComment` is resolved at 0 findings. Continue with `InheritdocInvalidUsage` and `Html.PathError` after establishing their current counts. Coordinate all documentation work with the public API XML documentation policy, and do not rewrite meaningful documentation merely for consistency.
+`InvalidXmlDocComment`, `InheritdocInvalidUsage`, and `Html.PathError` are resolved at 0 findings. Continue to coordinate future documentation work with the public API XML documentation policy, and do not rewrite meaningful documentation merely for consistency.
 
 ### Phase 6: triage performance and allocation
 

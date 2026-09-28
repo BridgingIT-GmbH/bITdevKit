@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
-using System.Globalization;
 
 /// <summary>
 /// Provides human-readable duration and relative-time extension methods.

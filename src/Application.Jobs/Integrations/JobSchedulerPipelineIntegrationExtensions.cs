@@ -36,7 +36,7 @@ public static class JobSchedulerPipelineIntegrationExtensions
         configure?.Invoke(builder);
 
         EnsurePipelineRegistrations(context.Services).Add(jobName, builder.BuildSettings());
-        context.Services.AddTransient<PipelineExecuteJob<TData, TPipelineDefinition, TPipelineContext>>(sp =>
+        context.Services.AddTransient(sp =>
             new PipelineExecuteJob<TData, TPipelineDefinition, TPipelineContext>(
                 sp,
                 sp.GetRequiredService<PipelineExecuteJobRegistrationStore>()));

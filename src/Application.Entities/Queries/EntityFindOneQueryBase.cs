@@ -75,7 +75,7 @@ public abstract class EntityFindOneQueryBase<TEntity> : QueryRequestBase<Result<
                 this.Include(validator); // https://docs.fluentvalidation.net/en/latest/including-rules.html
             }
 
-            this.RuleFor(c => c.EntityId).Must(id => Guid.TryParse(id, out var idOut)).WithMessage("Invalid guid.");
+            this.RuleFor(c => c.EntityId).Must(id => Guid.TryParse(id, out _)).WithMessage("Invalid guid.");
         }
     }
 }

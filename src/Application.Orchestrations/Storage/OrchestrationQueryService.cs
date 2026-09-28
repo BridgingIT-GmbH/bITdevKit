@@ -227,10 +227,10 @@ public class OrchestrationQueryService(IOrchestrationQueryStore queryStore) : IO
                     .FirstOrDefault(),
                 CountsByOrchestration = snapshots
                     .GroupBy(item => item.OrchestrationName ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-                    .ToDictionary(group => group.Key, group => (long)group.LongCount(), StringComparer.OrdinalIgnoreCase),
+                    .ToDictionary(group => group.Key, group => group.LongCount(), StringComparer.OrdinalIgnoreCase),
                 CountsByState = snapshots
                     .GroupBy(item => item.CurrentState ?? string.Empty, StringComparer.OrdinalIgnoreCase)
-                    .ToDictionary(group => group.Key, group => (long)group.LongCount(), StringComparer.OrdinalIgnoreCase),
+                    .ToDictionary(group => group.Key, group => group.LongCount(), StringComparer.OrdinalIgnoreCase),
             };
 
             return Result<OrchestrationMetricsModel>.Success(metrics);

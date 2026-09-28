@@ -11,6 +11,8 @@ using Microsoft.Extensions.Hosting;
 
 public class BroadcastingRuntimeTests
 {
+    private static readonly TimeSpan HandlerTimeout = TimeSpan.FromSeconds(10);
+
     [Fact]
     public async Task PublishAsync_WithoutScopes_RegistersAndTargetsDefaultScope()
     {
@@ -28,11 +30,12 @@ public class BroadcastingRuntimeTests
             })
             .Build();
         await host.StartAsync();
+        await WaitForNodeRegistrationAsync(host);
         var sut = host.Services.GetRequiredService<IBroadcastService>();
 
         // Act
         var result = await sut.PublishAsync(new TestBroadcast("default"));
-        var received = await handled.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var received = await handled.Task.WaitAsync(HandlerTimeout);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -59,11 +62,12 @@ public class BroadcastingRuntimeTests
             })
             .Build();
         await host.StartAsync();
+        await WaitForNodeRegistrationAsync(host);
         var sut = host.Services.GetRequiredService<IBroadcastService>();
 
         // Act
         var result = await sut.PublishAsync(new TestBroadcast("value"), ["alpha"]);
-        var received = await handled.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var received = await handled.Task.WaitAsync(HandlerTimeout);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -118,13 +122,14 @@ public class BroadcastingRuntimeTests
             })
             .Build();
         await host.StartAsync();
+        await WaitForNodeRegistrationAsync(host);
         var sut = host.Services.GetRequiredService<IBroadcastService>();
         using var activity = new Activity("broadcast-correlation-test").Start();
         using var correlationScope = CorrelationId.BeginScope("correlation-123");
 
         // Act
         var result = await sut.PublishAsync(new CorrelationBroadcast(), ["Alpha"]);
-        var captured = await handled.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var captured = await handled.Task.WaitAsync(HandlerTimeout);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
@@ -152,18 +157,33 @@ public class BroadcastingRuntimeTests
             })
             .Build();
         await host.StartAsync();
+        await WaitForNodeRegistrationAsync(host);
         var sut = host.Services.GetRequiredService<IBroadcastService>();
         using var correlationScope = CorrelationId.BeginScope("invalid\r\nheader");
 
         // Act
         var result = await sut.PublishAsync(new CorrelationBroadcast(), ["Alpha"]);
-        var captured = await handled.Task.WaitAsync(TimeSpan.FromSeconds(2));
+        var captured = await handled.Task.WaitAsync(HandlerTimeout);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
         captured.Context.CorrelationId.ShouldBeNull();
         captured.AmbientCorrelationId.ShouldBeNull();
         await host.StopAsync();
+    }
+
+    private static async Task WaitForNodeRegistrationAsync(IHost host)
+    {
+        var registry = host.Services.GetRequiredService<IBroadcastRegistryStore>();
+        var identity = host.Services
+            .GetRequiredService<IBroadcastNodeIdentityProvider>()
+            .GetNodeIdentity();
+        using var timeout = new CancellationTokenSource(HandlerTimeout);
+
+        while (await registry.FindAsync(identity, timeout.Token) is null)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(10), timeout.Token);
+        }
     }
 
     public sealed record TestBroadcast(string Value);

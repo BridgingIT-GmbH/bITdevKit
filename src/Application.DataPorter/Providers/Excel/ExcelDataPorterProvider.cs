@@ -747,7 +747,6 @@ public sealed class ExcelDataPorterProvider(
         where TTarget : class, new()
     {
         var errors = new List<ImportRowError>();
-        var warnings = new List<string>();
 
         using var workbook = new XLWorkbook(inputStream);
         var worksheet = this.GetWorksheet(workbook, importConfiguration);

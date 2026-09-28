@@ -84,14 +84,14 @@ public static class ProfilingServiceCollectionExtensions
                     provider.GetService<TimeProvider>() ?? TimeProvider.System
                 )
             );
-            services.TryAddSingleton<ProfilingSessionFinalizer>(
+            services.TryAddSingleton(
                 provider => new ProfilingSessionFinalizer(
                     provider.GetRequiredService<IProfilingStore>(),
                     options,
                     provider.GetService<TimeProvider>() ?? TimeProvider.System
                 )
             );
-            services.TryAddSingleton<ProfilingStartupReconciler>(
+            services.TryAddSingleton(
                 provider => new ProfilingStartupReconciler(
                     provider.GetRequiredService<IProfilingStore>(),
                     options,
@@ -99,7 +99,7 @@ public static class ProfilingServiceCollectionExtensions
                     provider.GetRequiredService<ProfilingSessionFinalizer>()
                 )
             );
-            services.TryAddSingleton<ProfilingCollector>(provider => new ProfilingCollector(
+            services.TryAddSingleton(provider => new ProfilingCollector(
                 provider.GetRequiredService<IProfilingStore>(),
                 provider.GetRequiredService<IProfilingSnapshotProbe>(),
                 provider.GetRequiredService<IProfilingRuntimeContextFactory>(),
@@ -114,7 +114,7 @@ public static class ProfilingServiceCollectionExtensions
             services.TryAddSingleton<IProfilingCollector>(provider =>
                 provider.GetRequiredService<ProfilingCollector>()
             );
-            services.TryAddSingleton<ProfilingCustomMetricListener>(
+            services.TryAddSingleton(
                 provider => new ProfilingCustomMetricListener(
                     provider.GetRequiredService<IProfilingStore>(),
                     provider.GetRequiredService<ProfilingActiveSessionContext>(),

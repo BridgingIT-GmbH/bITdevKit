@@ -35,7 +35,7 @@ public static class ServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(services);
 
-        services.TryAddSingleton<TimeProvider>(TimeProvider.System);
+        services.TryAddSingleton(TimeProvider.System);
         services.TryAddSingleton<ISerializer, SystemTextJsonSerializer>();
         services.TryAddSingleton<IJobCronEngine, CronosJobCronEngine>();
         services.TryAddSingleton<IJobCalendarEngine, DefaultJobCalendarEngine>();

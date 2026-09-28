@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Domain.IntegrationTests.Repositories;
 
-using System.Linq.Expressions;
 using Bogus;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain.Repositories;
@@ -196,22 +195,5 @@ public class InMemoryRepositoryDbTests
         findResult.ShouldNotBeNull();
         findResult.Id.ShouldBe(result.entity.Id);
         findResult.FirstName.ShouldBe(updatedEntity.FirstName);
-    }
-
-    private class StubHasNameSpecification : Specification<StubEntity>
-    {
-        private readonly string firstName;
-        private readonly string lastName;
-
-        public StubHasNameSpecification(string firstName, string lastName)
-        {
-            this.firstName = firstName;
-            this.lastName = lastName;
-        }
-
-        public override Expression<Func<StubEntity, bool>> ToExpression()
-        {
-            return e => e.FirstName == this.firstName && e.LastName == this.lastName;
-        }
     }
 }

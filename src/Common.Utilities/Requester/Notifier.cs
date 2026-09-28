@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Collections.Concurrent;
-using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 
@@ -314,7 +313,6 @@ public class NotificationHandlerProvider(IHandlerCache handlerCache) : INotifica
         // Resolve directly from IServiceProvider (for generic handlers or if not found in cache)
         try
         {
-            var a = serviceProvider.GetServices<INotificationHandler<TNotification>>();
             return [.. serviceProvider.GetServices<INotificationHandler<TNotification>>()];
         }
         catch (InvalidOperationException)
@@ -598,13 +596,9 @@ public partial class Notifier(
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             var behavior = handlerSpecificBehaviors[i];
-                            var behaviorTypeName = TypeNameCache.GetOrAdd(behavior.GetType(), static t => t.Name);
-                            //TypedLogger.LogProcessing(this.logger, behaviorTypeName, notificationTypeName, notificationIdString);
-                            var behaviorStartTicks = Environment.TickCount64;
                             var currentNext = handlerNext;
                             handlerNext = async () =>
                             {
-                                //TypedLogger.LogProcessed(this.logger, behaviorTypeName, notificationTypeName, notificationIdString, Environment.TickCount64 - behaviorStartTicks);
                                 return await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
                             };
                         }
@@ -628,14 +622,10 @@ public partial class Notifier(
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             var behavior = handlerSpecificBehaviors[j];
-                            var behaviorTypeName = TypeNameCache.GetOrAdd(behavior.GetType(), static t => t.Name);
-                            //TypedLogger.LogProcessing(this.logger, behaviorTypeName, notificationTypeName, notificationIdString);
-                            var behaviorStartTicks = Environment.TickCount64;
                             var currentNext = handlerNext;
                             handlerNext = async () =>
                             {
                                 var result = await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
-                                //TypedLogger.LogProcessed(this.logger, behaviorTypeName, notificationTypeName, notificationIdString, Environment.TickCount64 - behaviorStartTicks);
                                 return result;
                             };
                         }
@@ -657,15 +647,10 @@ public partial class Notifier(
                         {
                             cancellationToken.ThrowIfCancellationRequested();
                             var behavior = handlerSpecificBehaviors[i];
-                            var behaviorTypeName = TypeNameCache.GetOrAdd(behavior.GetType(), static t => t.Name);
-                            //TypedLogger.LogProcessing(this.logger, behaviorTypeName, notificationTypeName, notificationIdString);
-                            var behaviorStartTicks = Environment.TickCount64;
                             var currentNext = handlerNext;
                             handlerNext = async () =>
                             {
                                 var result = await behavior.HandleAsync(notification, options, handlerType, currentNext, cancellationToken);
-                                //TypedLogger.LogProcessed(this.logger, behaviorTypeName, notificationTypeName, notificationIdString, Environment.TickCount64 - behaviorStartTicks);
-
                                 return result;
                             };
                         }
@@ -711,14 +696,10 @@ public partial class Notifier(
                 {
                     cancellationToken.ThrowIfCancellationRequested();
                     var behavior = notificationLevelBehaviors[i];
-                    var behaviorTypeName = TypeNameCache.GetOrAdd(behavior.GetType(), static t => t.Name);
-                    //TypedLogger.LogProcessing(this.logger, behaviorTypeName, notificationTypeName, notificationIdString);
-                    var behaviorStartTicks = Environment.TickCount64;
                     var currentNext = next;
                     next = async () =>
                     {
                         var result = await behavior.HandleAsync(notification, options, null, currentNext, cancellationToken);
-                        //TypedLogger.LogProcessed(this.logger, behaviorTypeName, notificationTypeName, notificationIdString, Environment.TickCount64 - behaviorStartTicks);
                         return result;
                     };
                 }

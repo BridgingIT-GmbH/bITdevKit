@@ -117,7 +117,7 @@ public static class AsyncEnumerableExtensions
         {
             var result = 0;
 
-            await foreach (var item in source.WithCancellation(cancellationToken).ConfigureAwait(false))
+            await foreach (var _ in source.WithCancellation(cancellationToken).ConfigureAwait(false))
             {
                 result++;
             }

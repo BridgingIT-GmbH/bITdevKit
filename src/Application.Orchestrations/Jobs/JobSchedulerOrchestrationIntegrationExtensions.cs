@@ -36,7 +36,7 @@ public static class JobSchedulerOrchestrationIntegrationExtensions
         configure?.Invoke(builder);
 
         EnsureRegistrations(context.Services).Add(jobName, builder.BuildSettings());
-        context.Services.AddTransient<OrchestrationExecuteJob<TData, TOrchestration, TOrchestrationData>>(sp =>
+        context.Services.AddTransient(sp =>
             new OrchestrationExecuteJob<TData, TOrchestration, TOrchestrationData>(sp, sp.GetRequiredService<OrchestrationExecuteJobRegistrationStore>()));
         context.Registrations.Add(builder.BuildDefinition());
         return context;

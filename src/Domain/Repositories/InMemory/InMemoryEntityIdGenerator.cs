@@ -79,10 +79,10 @@ public class InMemoryEntityIdGenerator<TEntity>(InMemoryContext<TEntity> context
             // Generate the underlying value
             object underlyingValue = underlyingType switch
             {
-                Type t when t == typeof(Guid) => GuidGenerator.CreateSequential(),
-                Type t when t == typeof(int) => context.Entities.Count + 1,
-                Type t when t == typeof(long) => context.Entities.Count + 1,
-                Type t when t == typeof(string) => GuidGenerator.CreateSequential().ToString(),
+                { } t when t == typeof(Guid) => GuidGenerator.CreateSequential(),
+                { } t when t == typeof(int) => context.Entities.Count + 1,
+                { } t when t == typeof(long) => context.Entities.Count + 1,
+                { } t when t == typeof(string) => GuidGenerator.CreateSequential().ToString(),
                 _ => throw new NotSupportedException($"Underlying ID type {underlyingType.Name} not supported for typed ID {idType.Name}")
             };
 

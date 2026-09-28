@@ -47,7 +47,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
     public async Task<Result> FileExistsAsync(string path, IProgress<FileProgress> progress = null, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"exists_{path}";
-        if (this.cache.TryGetValue(cacheKey, out bool cachedResult))
+        if (this.cache.TryGetValue(cacheKey, out bool _))
         {
             return Result.Success()
                 .WithMessage($"Cached existence check for file at '{path}'");
@@ -418,7 +418,7 @@ public class CachingFileStorageBehavior(IFileStorageProvider innerProvider, IMem
     public async Task<Result> DirectoryExistsAsync(string path, CancellationToken cancellationToken = default)
     {
         var cacheKey = $"isdir_{path}";
-        if (this.cache.TryGetValue(cacheKey, out bool cachedResult))
+        if (this.cache.TryGetValue(cacheKey, out bool _))
         {
             return Result.Success()
                 .WithMessage($"Cached existence check for directory at '{path}'");

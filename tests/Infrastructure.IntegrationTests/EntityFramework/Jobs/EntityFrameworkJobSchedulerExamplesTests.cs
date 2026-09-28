@@ -119,15 +119,15 @@ public abstract class EntityFrameworkJobSchedulerExamplesTestsBase
             .Description("Demonstrates a normal typed job with constructor injection.")
             .AddTrigger("manual", trigger => trigger.Manual()));
 
-        jobs.WithJob("reference-inline-job", (Action<InlineJobDefinitionBuilder>)(job => job
+        jobs.WithJob("reference-inline-job", (job => job
             .WithDescription("Demonstrates a normal inline delegate job.")
-            .Execute<ExamplePayload>((Func<IJobExecutionContext<ExamplePayload>, IServiceProvider, CancellationToken, Task<Result>>)((context, serviceProvider, cancellationToken) =>
+            .Execute<ExamplePayload>(((context, serviceProvider, cancellationToken) =>
             {
                 var recorder = serviceProvider.GetRequiredService<ExampleUsageRecorder>();
                 var dependency = serviceProvider.GetRequiredService<ExampleScopedDependency>();
                 recorder.InlineJobExecutions.Add(new ExampleExecutionRecord(
                     context.Data.CustomerId,
-                    context.Properties.Get<string>("tenant", string.Empty),
+                    context.Properties.Get("tenant", string.Empty),
                     dependency.Value));
                 context.Messages.Add("Inline delegate completed.");
                 return Task.FromResult(Result.Success());

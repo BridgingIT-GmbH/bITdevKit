@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
-using BridgingIT.DevKit.Common;
 using Microsoft.EntityFrameworkCore.Metadata;
 
 /// <summary>

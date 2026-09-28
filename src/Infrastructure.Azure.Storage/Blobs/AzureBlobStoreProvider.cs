@@ -18,7 +18,7 @@ using global::Azure;
 /// var result = await provider.ExistsAsync(new BlobKey("reports", "2026/06/report.pdf"));
 /// </code>
 /// </example>
-public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreContainerCatalog
+public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreRetentionProvider, IBlobStoreContainerCatalog
 {
     /// <summary>
     /// Defines the provider name used for diagnostics and continuation-token binding.
@@ -349,7 +349,7 @@ public partial class AzureBlobStoreProvider : IBlobStoreProvider, IBlobStoreCont
             return Result<BlobPage>.Success(new BlobPage
             {
                 Items = page.Items.Select(ToInfo).ToList(),
-                ContinuationToken = CreateContinuationToken(validation.Value.QueryHash, page.ContinuationToken)
+                ContinuationToken = this.CreateContinuationToken(validation.Value.QueryHash, page.ContinuationToken)
             });
         }
         catch (OperationCanceledException)

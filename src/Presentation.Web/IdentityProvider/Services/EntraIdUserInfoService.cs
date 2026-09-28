@@ -32,7 +32,7 @@ public class EntraIdUserInfoService(ITokenService tokenService, FakeIdentityProv
         }
 
         var claims = validationResult.Claims;
-        var user = options.Users.FirstOrDefault(u => u.Id == claims.FirstOrDefault(c => c.Type == "oid")?.Value)
+        _ = options.Users.FirstOrDefault(u => u.Id == claims.FirstOrDefault(c => c.Type == "oid")?.Value)
             ?? throw new OAuth2Exception("invalid_grant", "Invalid credentials");
 
         return new UserInfoResponse

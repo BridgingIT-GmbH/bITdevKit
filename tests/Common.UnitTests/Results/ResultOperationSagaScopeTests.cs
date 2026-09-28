@@ -136,7 +136,6 @@ public class ResultOperationSagaScopeTests
         var saga = new SagaScope();
         var booking = new TripBooking();
         var flightService = new TestFlightService();
-        var hotelService = new TestHotelService();
 
         // Act
         var result = await Result<TripBooking>.Success(booking)

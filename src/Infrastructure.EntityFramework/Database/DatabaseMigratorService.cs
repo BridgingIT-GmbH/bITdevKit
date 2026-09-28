@@ -70,7 +70,7 @@ public class DatabaseMigratorService<TContext> : IHostedService
             return;
         }
 
-        var registration = this.applicationLifetime.ApplicationStarted.Register(() =>
+        this.applicationLifetime.ApplicationStarted.Register(() =>
         {
             this.startupTask = Task.Run(async () =>
             {

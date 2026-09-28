@@ -5,12 +5,9 @@
 
 namespace BridgingIT.DevKit.Presentation.Web.Metrics.Dashboard;
 
-using System.Net;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
-using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>
 /// Maps the metrics dashboard plugin endpoints.

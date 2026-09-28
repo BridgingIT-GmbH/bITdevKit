@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard;
 
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using BridgingIT.DevKit.Presentation.Web.Profiling;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 

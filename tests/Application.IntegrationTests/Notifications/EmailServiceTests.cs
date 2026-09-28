@@ -326,7 +326,6 @@ public class EmailServiceTests : IAsyncLifetime
     public async Task SendAsync_RetryFailure_MarksAsFailed()
     {
         // Arrange
-        var emailService = this.serviceProvider.GetRequiredService<INotificationService<EmailMessage>>();
         var worker = new OutboxNotificationEmailWorker(Substitute.For<ILoggerFactory>(), this.serviceProvider);
         var message = new EmailMessage
         {

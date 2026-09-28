@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions.Extensions;
 
-using System;
 using System.Collections.Generic;
 using Shouldly;
 using Xunit;
@@ -79,7 +78,7 @@ public class ConditionalCollectionExtensionsTests
         var person = new PersonStub("Jane", "Doe", "jane.doe@example.com", 25);
 
         // Act
-        people.AddIf(person, (Func<PersonStub, bool>)null);
+        people.AddIf(person, null);
 
         // Assert
         people.ShouldBeEmpty(); // No exception, just no add

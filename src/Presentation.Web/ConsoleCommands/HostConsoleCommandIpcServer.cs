@@ -50,7 +50,7 @@ public sealed class HostConsoleCommandIpcServer(
             try
             {
                 await pipe.WaitForConnectionAsync(stoppingToken).ConfigureAwait(false);
-                await HandleConnectionAsync(pipe, stoppingToken).ConfigureAwait(false);
+                await this.HandleConnectionAsync(pipe, stoppingToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {

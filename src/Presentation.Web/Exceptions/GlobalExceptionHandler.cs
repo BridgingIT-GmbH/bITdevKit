@@ -31,7 +31,7 @@ public class GlobalExceptionHandler(
         Exception exception,
         CancellationToken cancellationToken)
     {
-        if (exception is not Exception ex)
+        if (exception is not { } ex)
         {
             return false;
         }

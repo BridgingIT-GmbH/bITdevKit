@@ -7,9 +7,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Application.Modules.Core;
 
 using System.Threading;
 using System.Threading.Tasks;
-using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Notifications;
-using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Examples.DoFiesta.Domain.Modules.Core;

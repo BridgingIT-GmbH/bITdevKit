@@ -35,6 +35,7 @@ public static class CompositionRoot
             // Since the assembly of PersonCreatedProjection won't be loaded automatically, we add it to ensure it's loaded.
             .Union([typeof(PersonService).Assembly, typeof(PersonCreatedNotificationProjection).Assembly])
             .ToArray();
+        _ = assemblies;
 
         // application composition root
         // tag::MapperSetup[]

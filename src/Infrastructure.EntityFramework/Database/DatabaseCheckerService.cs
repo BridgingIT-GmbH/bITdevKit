@@ -64,7 +64,7 @@ public class DatabaseCheckerService<TContext> : IHostedService
             return Task.CompletedTask;
         }
 
-        var registration = this.applicationLifetime.ApplicationStarted.Register(() =>
+        this.applicationLifetime.ApplicationStarted.Register(() =>
         {
             this.startupTask = Task.Run(async () =>
             {

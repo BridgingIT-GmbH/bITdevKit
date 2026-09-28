@@ -138,7 +138,6 @@ public class PostgresIdempotentMigrationsSqlGenerator(
         builder.AppendLine();
 
         var schema = operation.Schema ?? "public";
-        var table = operation.Table;
         var index = operation.Name;
         var innerSql = this.CaptureInnerSql(i => base.Generate(operation, model, i, terminate: false));
 

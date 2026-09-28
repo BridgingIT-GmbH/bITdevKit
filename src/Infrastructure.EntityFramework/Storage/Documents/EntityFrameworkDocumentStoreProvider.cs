@@ -282,7 +282,7 @@ public class EntityFrameworkDocumentStoreProvider<TContext>(IServiceScopeFactory
         var typeHash = HashHelper.ComputeSha256(type.Value);
         var cutoffUnixMilliseconds = cutoff.ToUnixTimeMilliseconds();
         var rows = context.StorageDocuments.Where(x => x.TypeHash == typeHash && x.Type == type.Value && (x.ExpiresAtUnixMilliseconds == null || x.ExpiresAtUnixMilliseconds > cutoffUnixMilliseconds));
-        if (query?.DocumentKey is not DocumentKey key) return rows;
+        if (query?.DocumentKey is not { } key) return rows;
         var partitionHash = HashHelper.ComputeSha256(key.PartitionKey);
         rows = rows.Where(x => x.PartitionKeyHash == partitionHash && x.PartitionKey == key.PartitionKey);
         return query.Filter switch

@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Profiling;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
 
 public sealed class EntityFrameworkProfilingModelTests

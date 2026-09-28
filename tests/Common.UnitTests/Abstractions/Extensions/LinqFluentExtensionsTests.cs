@@ -2123,7 +2123,7 @@ public class LinqFluentExtensionsTests
         int? value = 42;
 
         // Act
-        var result = await value.DoAsync((Func<int, CancellationToken, Task>)null);
+        var result = await value.DoAsync(null);
 
         // Assert
         result.ShouldBe(42);

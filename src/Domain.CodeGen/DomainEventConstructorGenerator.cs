@@ -50,7 +50,7 @@ public class DomainEventConstructorGenerator : ISourceGenerator
         foreach (var candidate in receiver.CandidateClasses)
         {
             var model = context.Compilation.GetSemanticModel(candidate.SyntaxTree);
-            var symbol = model.GetDeclaredSymbol(candidate) as INamedTypeSymbol;
+            var symbol = model.GetDeclaredSymbol(candidate);
             if (symbol == null ||
                 !symbol.BaseType?.Equals(domainEventBaseType, SymbolEqualityComparer.Default) == true)
             {

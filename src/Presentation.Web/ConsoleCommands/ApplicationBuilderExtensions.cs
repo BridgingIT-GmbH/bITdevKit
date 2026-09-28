@@ -8,7 +8,6 @@ namespace Microsoft.Extensions.DependencyInjection;
 using System.Text;
 using BridgingIT.DevKit.Presentation;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 using Microsoft.Extensions.Hosting;

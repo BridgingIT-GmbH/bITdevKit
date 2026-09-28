@@ -501,7 +501,7 @@ public class ApplicationQueryTests : IAsyncLifetime
     {
         // Arrange
         await this.testHost.ResetDatabaseAsync();
-        await SeedLondonForecastsAsync(5);
+        await this.SeedLondonForecastsAsync(5);
         var today = DateOnly.FromDateTime(DateTime.UtcNow);
         var period = new DateOnlyRange(today.AddDays(1), today.AddDays(3));
 

@@ -248,7 +248,6 @@ namespace {namespaceName}
 
     private static string GenerateJsonConverterClass(string className, ITypeSymbol underlyingType)
     {
-        var typeName = underlyingType.Name;
         var readMethod = GetJsonConverterReadMethod(underlyingType, className);
         var writeMethod = GetJsonConverterWriteMethod(underlyingType);
 

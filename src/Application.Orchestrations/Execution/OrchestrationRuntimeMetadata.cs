@@ -171,7 +171,7 @@ internal static class OrchestrationRuntimeMetadata
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        if (context.Properties.TryGet<OrchestrationWaitPlan>(WaitPlanPropertyName, out plan) && plan is not null)
+        if (context.Properties.TryGet(WaitPlanPropertyName, out plan) && plan is not null)
         {
             return true;
         }

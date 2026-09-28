@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Reflection;
 using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 

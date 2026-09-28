@@ -52,7 +52,6 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         });
         var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
-        var handlers = provider.GetServices<ILocationHandler>();
 
         Directory.CreateDirectory(tempFolder1);
         var sourceFile1 = Path.Combine(tempFolder1, "test.txt");
@@ -110,7 +109,6 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         });
         var provider = services.BuildServiceProvider();
         var sut = provider.GetRequiredService<IFileMonitoringService>();
-        var handlers = provider.GetServices<ILocationHandler>();
 
         // Act
         //await sut.StartAsync(CancellationToken.None);
@@ -361,8 +359,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Scan 1: Initial state for both locations
         //await sut.StartAsync(CancellationToken.None);
-        var scan1Docs1Context = await sut.ScanLocationAsync("Docs1", token: CancellationToken.None);
-        var scan1Docs2Context = await sut.ScanLocationAsync("Docs2", token: CancellationToken.None);
+        _ = await sut.ScanLocationAsync("Docs1", token: CancellationToken.None);
+        _ = await sut.ScanLocationAsync("Docs2", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert Scan 1
@@ -385,8 +383,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         File.WriteAllText(file3Docs2, "Docs2 Content 3"); // Add file3
 
         // Scan 2: Detect changes for both locations
-        var scan2Docs1Context = await sut.ScanLocationAsync("Docs1", token: CancellationToken.None);
-        var scan2Docs2Context = await sut.ScanLocationAsync("Docs2", token: CancellationToken.None);
+        _ = await sut.ScanLocationAsync("Docs1", token: CancellationToken.None);
+        _ = await sut.ScanLocationAsync("Docs2", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert Scan 2
@@ -447,8 +445,8 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
 
         // Act: Scan both locations
         //await sut.StartAsync(CancellationToken.None);
-        var localScanContext = await sut.ScanLocationAsync("LocalDocs", token: CancellationToken.None);
-        var inMemScanContext = await sut.ScanLocationAsync("InMemDocs", token: CancellationToken.None);
+        _ = await sut.ScanLocationAsync("LocalDocs", token: CancellationToken.None);
+        _ = await sut.ScanLocationAsync("InMemDocs", token: CancellationToken.None);
         await Task.Delay(500); // Allow processing
 
         // Assert
@@ -481,8 +479,6 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         const int foldersPerLevel = 5; // Number of subfolders per level
         const int filesPerFolder = 10; // Number of files per folder
         var totalFolders = (int)(Math.Pow(foldersPerLevel, depth + 1) - 1) / (foldersPerLevel - 1); // 156
-        var totalFiles = totalFolders * filesPerFolder; // 1560
-
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
         GenerateFolderTree(tempFolder, depth, foldersPerLevel, filesPerFolder);
@@ -561,8 +557,6 @@ public class FileMonitoringOnDemandTests(ITestOutputHelper output)
         const int foldersPerLevel = 5;
         const int filesPerFolder = 2; // Reduced to 2 files per folder
         var totalFolders = (int)(Math.Pow(foldersPerLevel, depth + 1) - 1) / (foldersPerLevel - 1); // 6
-        var totalFiles = totalFolders * filesPerFolder; // 6 * 2 = 12 (incorrect, actual is 50)
-
         var stopwatch = new System.Diagnostics.Stopwatch();
         stopwatch.Start();
         GenerateFolderTree(tempFolder, depth, foldersPerLevel, filesPerFolder);

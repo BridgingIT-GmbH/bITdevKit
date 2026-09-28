@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Web.Server.Modules.Co
 
 using Application.Modules.Core;
 using Application.Modules.Core.DataPorter;
-using BridgingIT.DevKit.Application;
 using BridgingIT.DevKit.Application.DataPorter;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Application.Orchestrations;
@@ -23,7 +22,6 @@ using BridgingIT.DevKit.Presentation;
 using Common;
 using DevKit.Domain.Repositories;
 using Domain.Model;
-using FluentValidation;
 using Infrastructure;
 using JobsCronExpressions = BridgingIT.DevKit.Application.Jobs.CronExpressions;
 
@@ -93,8 +91,8 @@ public class CoreModule : WebModuleBase
 
         // queueing
         services.AddQueueing(configuration)
-            .WithBehavior(sp => (IQueueEnqueuerBehavior)new MetricsQueueEnqueuerBehavior(sp.GetService<IMetricsService>()))
-            .WithBehavior(sp => (IQueueHandlerBehavior)new MetricsQueueHandlerBehavior(sp.GetService<IMetricsService>()))
+            .WithBehavior(sp => new MetricsQueueEnqueuerBehavior(sp.GetService<IMetricsService>()))
+            .WithBehavior(sp => new MetricsQueueHandlerBehavior(sp.GetService<IMetricsService>()))
             .WithSubscription<TodoItemEchoQueueMessage, TodoItemEchoQueueMessageHandler>();
 
         // dbcontext
@@ -123,7 +121,7 @@ public class CoreModule : WebModuleBase
             options.Track<TodoItem>()
                 .CaptureChanges()
                 .CaptureBulkInserts()
-                .CaptureCollection<TodoStep, TodoStepId>(e => e.Steps, e => e.Id)
+                .CaptureCollection(e => e.Steps, e => e.Id)
                 .HashOnly(e => e.UserId)
                 .Redact(e => e.Assignee)
                 .Exclude(e => e.Properties)

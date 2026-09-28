@@ -45,18 +45,18 @@ public sealed class RuntimeDiagnosticsMcpHandler(IServiceProvider services) : IM
     {
         if (string.Equals(request.Operation, "health.snapshot", StringComparison.OrdinalIgnoreCase))
         {
-            return await HealthSnapshotAsync(cancellationToken).ConfigureAwait(false);
+            return await this.HealthSnapshotAsync(cancellationToken).ConfigureAwait(false);
         }
 
         if (string.Equals(request.Operation, "metrics.snapshot", StringComparison.OrdinalIgnoreCase) ||
             string.Equals(request.Operation, "metrics.query", StringComparison.OrdinalIgnoreCase))
         {
-            return MetricsSnapshot();
+            return this.MetricsSnapshot();
         }
 
         if (string.Equals(request.Operation, "project.summary", StringComparison.OrdinalIgnoreCase))
         {
-            return ProjectSummary();
+            return this.ProjectSummary();
         }
 
         return McpResponse.Unavailable(McpErrorCode.FeatureUnavailable, $"Operation '{request.Operation}' is not handled by runtime diagnostics.");

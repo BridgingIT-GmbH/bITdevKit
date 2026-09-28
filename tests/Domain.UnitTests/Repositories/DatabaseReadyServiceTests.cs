@@ -232,7 +232,7 @@ public class DatabaseReadyServiceTests
     public async Task OnReadyAsync_TimesOut_Throws_TimeoutException()
     {
         // Arrange & Act & Assert
-        var ex = await Should.ThrowAsync<TimeoutException>(() =>
+        _ = await Should.ThrowAsync<TimeoutException>(() =>
             this.service.OnReadyAsync(
                 onReady: () => { },
                 onFaulted: null,

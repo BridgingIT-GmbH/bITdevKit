@@ -5,7 +5,6 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Collections.Concurrent;
-using System.Data;
 using System.Reflection;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;

@@ -13,7 +13,6 @@ public sealed partial class ProfilingEvaluator
 {
     private const double CpuSustainedThreshold = 70;
     private const double CpuStrongAverageThreshold = 85;
-    private const double CpuStrongIntervalThreshold = 80;
     private const double CpuSustainedRatio = 0.60;
     private const double CpuStrongRatio = 0.80;
     private const double CpuRisePoints = 20;

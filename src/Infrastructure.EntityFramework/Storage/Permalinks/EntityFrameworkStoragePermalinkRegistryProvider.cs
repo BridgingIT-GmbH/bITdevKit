@@ -310,7 +310,7 @@ public sealed class EntityFrameworkStoragePermalinkRegistryProvider<TContext>(
         var hash = location.ComputeHash();
         var exactCandidates = await context.StoragePermalinks.AsNoTracking()
             .Where(x => x.LocationHash == hash && (x.IsSynchronizationTombstone || x.DeletedAt != null))
-            .Select(x => x.IsSynchronizationTombstone ? (DateTimeOffset?)x.StorageChangedAt : x.DeletedAt)
+            .Select(x => x.IsSynchronizationTombstone ? x.StorageChangedAt : x.DeletedAt)
             .ToListAsync(cancellationToken);
         var exact = exactCandidates.OrderByDescending(x => x).FirstOrDefault();
         if (location.Kind != StorageResourceKind.File) return exact;

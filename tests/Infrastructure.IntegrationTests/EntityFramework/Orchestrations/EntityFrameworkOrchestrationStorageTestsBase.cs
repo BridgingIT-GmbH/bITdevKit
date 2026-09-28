@@ -295,7 +295,7 @@ public abstract class EntityFrameworkOrchestrationStorageTestsBase
         var runningId = await this.CreatePersistedInstanceAsync("OrderApproval", OrchestrationStatus.Running, "Reviewing", "corr-running", "order-running", DateTimeOffset.UtcNow.AddMinutes(-20));
         var waitingId = await this.CreatePersistedInstanceAsync("OrderApproval", OrchestrationStatus.Waiting, "AwaitingApproval", "corr-waiting", "order-waiting", DateTimeOffset.UtcNow.AddMinutes(-40));
         var completedId = await this.CreatePersistedInstanceAsync("TelephoneCall", OrchestrationStatus.Completed, "Destroyed", "corr-completed", "call-completed", DateTimeOffset.UtcNow.AddMinutes(-5));
-        var terminatedId = await this.CreatePersistedInstanceAsync("TelephoneCall", OrchestrationStatus.Terminated, "Rejected", "corr-terminated", "call-terminated", DateTimeOffset.UtcNow.AddMinutes(-3));
+        _ = await this.CreatePersistedInstanceAsync("TelephoneCall", OrchestrationStatus.Terminated, "Rejected", "corr-terminated", "call-terminated", DateTimeOffset.UtcNow.AddMinutes(-3));
 
         await history.AppendAsync(new OrchestrationHistoryEntry { InstanceId = runningId, EventType = "Created", StateName = "Reviewing" });
         await history.AppendAsync(new OrchestrationHistoryEntry { InstanceId = waitingId, EventType = "Waiting", StateName = "AwaitingApproval" });
@@ -494,11 +494,11 @@ public sealed class EntityFrameworkOrchestrationTestSupport : IDisposable
             using var command = connection.CreateCommand();
             command.CommandText = providerName switch
             {
-                string name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM sys.tables WHERE name = @name",
-                string name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = @name",
-                string name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = @name",
                 _ => throw new InvalidOperationException($"Unsupported provider '{providerName}' for orchestration table checks.")
             };

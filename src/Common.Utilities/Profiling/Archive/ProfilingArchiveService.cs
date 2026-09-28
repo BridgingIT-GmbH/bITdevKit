@@ -56,7 +56,7 @@ public sealed class ProfilingArchiveService(
         var archiveResult = CreateArchive(dataResult.Value, ProfilingArchiveKind.Session);
         return archiveResult.IsFailure
             ? Result.Failure().WithErrors(archiveResult.Errors).WithMessages(archiveResult.Messages)
-            : await WriteAsync(archiveResult.Value, destination, cancellationToken).ConfigureAwait(false);
+            : await this.WriteAsync(archiveResult.Value, destination, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />
@@ -124,7 +124,7 @@ public sealed class ProfilingArchiveService(
         var archiveResult = CreateArchive(snapshotData, ProfilingArchiveKind.Snapshot);
         return archiveResult.IsFailure
             ? Result.Failure().WithErrors(archiveResult.Errors).WithMessages(archiveResult.Messages)
-            : await WriteAsync(archiveResult.Value, destination, cancellationToken).ConfigureAwait(false);
+            : await this.WriteAsync(archiveResult.Value, destination, cancellationToken).ConfigureAwait(false);
     }
 
     /// <inheritdoc />

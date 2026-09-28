@@ -80,7 +80,7 @@ public static class CliArgumentParser
                         return Error(outputError);
                     }
 
-                    if (!Enum.TryParse<CliOutputFormat>(outputValue, ignoreCase: true, out outputFormat))
+                    if (!Enum.TryParse(outputValue, ignoreCase: true, out outputFormat))
                     {
                         return Error("Unsupported output format. Use 'text' or 'json'.");
                     }

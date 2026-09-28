@@ -42,7 +42,6 @@ public class OutboxMessagePublisherBehaviorTests(StubDbContextFixture fixture) :
         var ticks = DateTime.UtcNow.Ticks;
         var loggerFactory = Substitute.For<ILoggerFactory>();
         var message = new StubMessage { FirstName = "John", LastName = $"Doe{ticks}" };
-        var messageQueue = Substitute.For<IOutboxMessageQueue>();
         var next = Substitute.For<MessagePublisherDelegate>();
         var sut = OutboxMessageWorkerBehaviorFacade<StubDbContext>.CreatePublishBehaviorForTest(loggerFactory, fixture.Context);
 

@@ -7,7 +7,6 @@ namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories;
 
 using System.Data;
 using BridgingIT.DevKit.Common;
-using BridgingIT.DevKit.Domain;
 using BridgingIT.DevKit.Domain.Model;
 using BridgingIT.DevKit.Domain.Outbox;
 using Microsoft.EntityFrameworkCore;

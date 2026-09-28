@@ -5,7 +5,6 @@
 
 namespace Microsoft.AspNetCore.Builder;
 
-using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web;
 
 /// <summary>

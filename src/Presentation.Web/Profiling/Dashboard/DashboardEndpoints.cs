@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard;
 using System.Text;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
-using BridgingIT.DevKit.Presentation.Web.Profiling;
 using BridgingIT.DevKit.Presentation.Web.Profiling.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;

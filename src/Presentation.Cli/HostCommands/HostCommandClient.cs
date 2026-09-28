@@ -2,7 +2,6 @@ namespace BridgingIT.DevKit.Cli;
 
 using System.IO.Pipes;
 using System.Text.Json;
-using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Sends Console Command forwarding requests to a selected host.

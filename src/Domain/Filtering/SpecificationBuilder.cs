@@ -135,7 +135,6 @@ public static class SpecificationBuilder
                 var propertyId = Expression.Property(Expression.Property(property, "Value"), nameof(Enumeration.Id));
                 var valueId = Expression.Constant(value != null ? ((Enumeration)value).Id : 0);
 
-                var hasValueProperty = Expression.Property(property, "HasValue");
                 var nullCheckExpression = Expression.NotEqual(property, Expression.Constant(null, property.Type));
 
                 var comparisonExpression = filter.Operator switch

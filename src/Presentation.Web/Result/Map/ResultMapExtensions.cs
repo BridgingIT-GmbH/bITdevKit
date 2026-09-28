@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Common;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.Extensions.Logging;
-using Microsoft.Net.Http.Headers;
 using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>

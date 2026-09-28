@@ -55,14 +55,14 @@ public class DiagnosticSchemaTransformer : IOpenApiSchemaTransformer
         if (LoggedSchemas.TryAdd(typeName, true))
         {
             // Properly format type (handles multiple types like "String, Null")
-            var schemaType = schema.Type.HasValue
+            _ = schema.Type.HasValue
                 ? string.Join(", ", Enum.GetValues<JsonSchemaType>()
                     .Where(flag => schema.Type.Value.HasFlag(flag))
                     .Select(flag => flag.ToString()))
                 : "(none)";
 
-            var propertyCount = schema.Properties?.Count ?? 0;
-            var isNullable = schema.Type?.HasFlag(JsonSchemaType.Null) == true ? "nullable" : "non-nullable";
+            _ = schema.Properties?.Count ?? 0;
+            _ = schema.Type?.HasFlag(JsonSchemaType.Null) == true ? "nullable" : "non-nullable";
 
             //Console.WriteLine("[OpenAPI] Schema: {typeName}, Type: {schemaType}, Properties: {propertyCount}, Nullability: {isNullable}");
         }

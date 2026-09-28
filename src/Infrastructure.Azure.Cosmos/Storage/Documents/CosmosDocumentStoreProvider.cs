@@ -187,7 +187,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
     {
         yield return x => x.Type == storageType;
         yield return x => x.Ttl == -1 || x.ExpiresAt > cutoff;
-        if (query?.DocumentKey is not DocumentKey key) yield break;
+        if (query?.DocumentKey is not { } key) yield break;
         yield return x => x.PartitionKey == key.PartitionKey;
         if (query.Filter == DocumentKeyFilter.FullMatch) yield return x => x.RowKey == key.RowKey;
         else if (query.Filter == DocumentKeyFilter.RowKeyPrefixMatch) yield return x => x.RowKey.StartsWith(key.RowKey);

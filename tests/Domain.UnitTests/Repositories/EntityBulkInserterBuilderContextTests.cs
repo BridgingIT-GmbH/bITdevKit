@@ -21,8 +21,8 @@ public class EntityBulkInserterBuilderContextTests
         var sut = new EntityBulkInserterBuilderContext<BuilderEntity>(services);
 
         sut.WithBehavior<TypeBehavior>()
-            .WithBehavior<FactoryBehavior>(inner => new FactoryBehavior(inner, events))
-            .WithBehavior<ServiceProviderFactoryBehavior>((inner, serviceProvider) =>
+            .WithBehavior(inner => new FactoryBehavior(inner, events))
+            .WithBehavior((inner, serviceProvider) =>
                 new ServiceProviderFactoryBehavior(
                     inner,
                     serviceProvider.GetRequiredService<IList<string>>()));

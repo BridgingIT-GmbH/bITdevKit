@@ -362,7 +362,7 @@ public sealed class CsvTypedDataPorterProvider(
 
         if (configuration.IncludeHints && configuration.AnnotationStyle == TemplateAnnotationStyle.Annotated)
         {
-            foreach (var column in BaseColumnNames)
+            foreach (var _ in BaseColumnNames)
             {
                 csv.WriteField(string.Empty);
             }

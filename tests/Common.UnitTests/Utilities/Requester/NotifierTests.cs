@@ -621,7 +621,7 @@ public class MessageAddingBehavior<TNotification, TResponse> : IPipelineBehavior
 {
     public async Task<TResponse> HandleAsync(TNotification notification, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
-        var result = await next();
+        _ = await next();
         return (TResponse)(object)Result.Success("Behavior message");
     }
 

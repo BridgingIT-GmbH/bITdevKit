@@ -141,7 +141,7 @@ public class OutboxNotificationEmailWorker(
         {
             message.Properties["Outbox"] = true; // prevents readding (Save) in email service (SendAsync)
             message.RetryCount++;
-            var sendResult = await emailService.SendAsync(
+            _ = await emailService.SendAsync(
                 message, new NotificationSendOptions { SendImmediately = true }, cancellationToken);
 
             //message.Status = sendResult.IsSuccess ? EmailMessageStatus.Sent : EmailMessageStatus.Failed;

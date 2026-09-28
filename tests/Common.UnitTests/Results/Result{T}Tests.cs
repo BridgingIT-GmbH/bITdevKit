@@ -90,11 +90,9 @@ public class ResultValueTests
     public Result<string> To_ConversionBetweenTypes1()
     {
         // Arrange
-        var value = this.faker.Random.Int(1, 100);
         var message = this.faker.Lorem.Sentence();
         var error = new Error("Test error");
 
-        var successResult = Result<int>.Success(value).WithMessage(message);
         var failureResult = Result<int>.Failure().WithMessage(message).WithError(error);
 
         return failureResult.Wrap<string>(); //explicit  conversion
@@ -1310,11 +1308,6 @@ public class ResultValueTests
     public void When_WithMultipleWhenBlocks_ExecutesConditionally()
     {
         // Arrange
-        var person = new PersonStub(
-            this.faker.Name.FirstName(),
-            this.faker.Name.LastName(),
-            this.faker.Internet.Email(),
-            30);
         var result = Result<int>.Success(100);
         var firstWhenExecuted = false;
         var secondWhenExecuted = false;

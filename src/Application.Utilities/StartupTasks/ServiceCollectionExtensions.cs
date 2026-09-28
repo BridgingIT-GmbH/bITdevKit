@@ -5,7 +5,6 @@
 
 namespace Microsoft.Extensions.DependencyInjection;
 
-using System.Linq.Expressions;
 using BridgingIT.DevKit.Application.Utilities;
 using BridgingIT.DevKit.Common;
 using Extensions;
@@ -220,38 +219,5 @@ public static partial class ServiceCollectionExtensions
         }
 
         return context;
-    }
-
-    private static Type GetImplementationType(Func<IServiceProvider, IStartupTask> factory)
-    {
-        // Create an expression representing the delegate
-        Expression<Func<IServiceProvider, IStartupTask>> expression = sp => factory(sp);
-
-        // Extract the body of the expression
-        if (expression.Body is MethodCallExpression methodCall)
-        {
-            // Handle the case where the body is a method call
-            if (methodCall.Method.ReturnType != typeof(IStartupTask))
-            {
-                throw new InvalidOperationException("The delegate does not return IStartupTask.");
-            }
-
-            // Analyze the method call to get the return type
-            return methodCall.Method.ReturnType;
-        }
-
-        if (expression.Body is NewExpression newExpression)
-        {
-            // Handle the case where the body is a new expression
-            return newExpression.Type;
-        }
-
-        if (expression.Body is MemberInitExpression memberInitExpression)
-        {
-            // Handle the case where the body is a member initialization expression
-            return memberInitExpression.NewExpression.Type;
-        }
-
-        throw new InvalidOperationException("Unable to determine the implementation type.");
     }
 }

@@ -442,11 +442,11 @@ public sealed class EntityFrameworkJobSchedulerTestSupport : IDisposable
             using var command = connection.CreateCommand();
             command.CommandText = providerName switch
             {
-                string name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("SqlServer", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM sys.tables WHERE name = @name",
-                string name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Npgsql", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM information_schema.tables WHERE table_schema = current_schema() AND table_name = @name",
-                string name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
+                { } name when name.Contains("Sqlite", StringComparison.OrdinalIgnoreCase) =>
                     "SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = @name",
                 _ => throw new InvalidOperationException($"Unsupported provider '{providerName}' for jobs table checks.")
             };

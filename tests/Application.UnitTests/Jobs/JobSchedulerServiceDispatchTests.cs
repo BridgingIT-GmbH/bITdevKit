@@ -206,12 +206,12 @@ public class JobSchedulerServiceDispatchTests(ITestOutputHelper output) : JobSch
         {
             services.AddScoped<InlineDependency>();
             services.AddJobScheduler()
-                .WithJob("inline-export", (Action<InlineJobDefinitionBuilder>)(job => job
+                .WithJob("inline-export", (job => job
                     .WithDescription("Uses an inline delegate job.")
-                    .Execute<TypedPayload>((Func<IJobExecutionContext<TypedPayload>, IServiceProvider, CancellationToken, Task<Result>>)((context, serviceProvider, cancellationToken) =>
+                    .Execute<TypedPayload>(((context, serviceProvider, cancellationToken) =>
                     {
                         InlineDelegateRecorder.LastCustomerId = context.Data.CustomerId;
-                        InlineDelegateRecorder.LastTenant = context.Properties.Get<string>("tenant", string.Empty);
+                        InlineDelegateRecorder.LastTenant = context.Properties.Get("tenant", string.Empty);
                         InlineDelegateRecorder.LastDependencyValue = serviceProvider.GetRequiredService<InlineDependency>().Value;
                         context.Messages.Add("Inline delegate completed.");
                         context.Properties["processed"] = true;

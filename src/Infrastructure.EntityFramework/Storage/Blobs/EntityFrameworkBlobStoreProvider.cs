@@ -514,7 +514,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
                 .Select(ToInfo)
                 .ToList();
             var continuationToken = pageRows.Count > validation.Value.Take
-                ? CreateContinuationToken(validation.Value.QueryHash, items[^1].Key)
+                ? this.CreateContinuationToken(validation.Value.QueryHash, items[^1].Key)
                 : null;
 
             return Result<BlobPage>.Success(new BlobPage

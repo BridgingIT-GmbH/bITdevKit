@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Presentation.Web;
 
-using BridgingIT.DevKit.Common;
-
 /// <summary>
 /// Provides shared metadata for metrics snapshot responses.
 /// </summary>

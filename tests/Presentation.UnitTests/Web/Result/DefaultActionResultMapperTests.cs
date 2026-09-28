@@ -74,7 +74,6 @@ public class DefaultActionResultMapperTests
     public void OkWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
 
         // Act
@@ -156,7 +155,6 @@ public class DefaultActionResultMapperTests
     public void CreatedWithAction_WhenGivenSuccessResultAndNoRouteName_ReturnsOkObjectResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
 
         // Act
@@ -172,7 +170,6 @@ public class DefaultActionResultMapperTests
     public void CreatedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
 
         // Act
@@ -253,7 +250,6 @@ public class DefaultActionResultMapperTests
     public void UpdatedWithAction_WhenGivenSuccessResultAndNoModel_ReturnsNoContentResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
 
         // Act
@@ -268,7 +264,6 @@ public class DefaultActionResultMapperTests
     public void UpdatedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
 
         // Act
@@ -331,7 +326,6 @@ public class DefaultActionResultMapperTests
     public void AcceptedWithAction_WhenGivenSuccessResultAndModel_ReturnsAcceptedResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
         const string routeName = "test-route-name";
 
@@ -348,7 +342,6 @@ public class DefaultActionResultMapperTests
     public void AcceptedWithAction_WhenGivenSuccessResultAndNoModel_ReturnsNoContentResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
 
         // Act
@@ -363,7 +356,6 @@ public class DefaultActionResultMapperTests
     public void AcceptedWithAction_WhenGivenFailureResult_ReturnsMappedErrorResult()
     {
         // Arrange
-        var model = PersonStub.Create(DateTime.UtcNow.Ticks);
         var sut = new DefaultActionResultMapper();
 
         // Act

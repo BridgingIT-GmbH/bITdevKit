@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common;
 
-using static System.Runtime.InteropServices.JavaScript.JSType;
-
 /// <summary>
 /// Represents a paged result containing a collection of values with pagination details.
 /// Implements value semantics and immutable behavior for thread-safety.
@@ -197,7 +195,7 @@ public readonly partial struct ResultPaged<T> : IResultPaged<T>
 
         try
         {
-            var (values, totalCount) = await operation(cancellationToken);
+            var (values, _) = await operation(cancellationToken);
             return Success(values, 1, values.Count());
         }
         catch (OperationCanceledException)

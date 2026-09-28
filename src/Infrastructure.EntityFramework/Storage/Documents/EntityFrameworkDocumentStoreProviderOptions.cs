@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Storage;
 
-using Microsoft.Extensions.Logging.Abstractions;
-
 /// <summary>
 /// Defines runtime options for <see cref="EntityFrameworkDocumentStoreProvider{TContext}" />.
 /// </summary>
@@ -43,7 +41,4 @@ public class EntityFrameworkDocumentStoreProviderOptions
     /// Gets or sets the logger factory used by the provider.
     /// </summary>
     public ILoggerFactory LoggerFactory { get; set; }
-
-    private ILogger CreateLogger<T>() =>
-        (this.LoggerFactory ?? NullLoggerFactory.Instance).CreateLogger<T>();
 }

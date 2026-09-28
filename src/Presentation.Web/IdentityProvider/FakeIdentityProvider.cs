@@ -196,7 +196,7 @@ public class FakeIdentityProvider(
     {
         if (this.options.Clients.SafeAny() && !clientId.IsNullOrEmpty())
         {
-            var client = this.options.Clients.FirstOrDefault(c => c.ClientId == clientId) ?? throw new OAuth2Exception("invalid_grant", $"Invalid client '{clientId}'");
+            _ = this.options.Clients.FirstOrDefault(c => c.ClientId == clientId) ?? throw new OAuth2Exception("invalid_grant", $"Invalid client '{clientId}'");
         }
 
         var user = (this.options.Users?.FirstOrDefault(u => u.Email.Equals(username, StringComparison.OrdinalIgnoreCase))) ?? throw new OAuth2Exception("invalid_grant", "Invalid credentials");
@@ -255,7 +255,7 @@ public class FakeIdentityProvider(
     {
         if (this.options.Clients.SafeAny() && !clientId.IsNullOrEmpty())
         {
-            var client = this.options.Clients.FirstOrDefault(c => c.ClientId == clientId) ?? throw new OAuth2Exception("invalid_grant", $"Invalid client '{clientId}'");
+            _ = this.options.Clients.FirstOrDefault(c => c.ClientId == clientId) ?? throw new OAuth2Exception("invalid_grant", $"Invalid client '{clientId}'");
         }
 
         if (this.options.EnablePersistentRefreshTokens && refreshToken.IsNullOrEmpty())

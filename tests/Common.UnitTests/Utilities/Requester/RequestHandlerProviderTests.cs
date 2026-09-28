@@ -99,7 +99,7 @@ public class RequestHandlerProviderTests
         var sut = new RequestHandlerProvider(handlerCache);
 
         // Act
-        var exception = Should.Throw<RequesterException>(() =>
+        _ = Should.Throw<RequesterException>(() =>
             sut.GetHandler<MyTestRequest, string>(null));
     }
 

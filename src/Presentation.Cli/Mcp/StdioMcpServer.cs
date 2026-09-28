@@ -2,7 +2,6 @@ namespace BridgingIT.DevKit.Cli;
 
 using System.Reflection;
 using System.Text.Json;
-using BridgingIT.DevKit.Common;
 
 /// <summary>
 /// Hosts the bdk MCP server over newline-delimited JSON-RPC STDIO.

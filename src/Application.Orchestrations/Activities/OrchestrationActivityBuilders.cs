@@ -17,14 +17,27 @@ public interface IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> :
     where TData : class, IOrchestrationData
     where TRequest : class, IRequest<TValue>
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies a retry policy to the activity.
+    /// </summary>
+    /// <param name="policy">The retry policy to apply.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> Retry(OrchestrationRetryPolicy policy);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers a compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <typeparam name="TActivity">The compensation activity type.</typeparam>
+    /// <returns>The current builder.</returns>
     new IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> CompensateWith<TActivity>()
         where TActivity : class, IOrchestrationActivity<TData>;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers an inline compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <param name="executeAsync">The compensation delegate.</param>
+    /// <param name="name">The optional compensation activity name.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationRequestActivityBuilder<TData, TRequest, TValue> CompensateWith(
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
@@ -75,14 +88,27 @@ public interface IOrchestrationNotificationActivityBuilder<TData, TNotification>
     where TData : class, IOrchestrationData
     where TNotification : class, INotification
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies a retry policy to the activity.
+    /// </summary>
+    /// <param name="policy">The retry policy to apply.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationNotificationActivityBuilder<TData, TNotification> Retry(OrchestrationRetryPolicy policy);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers a compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <typeparam name="TActivity">The compensation activity type.</typeparam>
+    /// <returns>The current builder.</returns>
     new IOrchestrationNotificationActivityBuilder<TData, TNotification> CompensateWith<TActivity>()
         where TActivity : class, IOrchestrationActivity<TData>;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers an inline compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <param name="executeAsync">The compensation delegate.</param>
+    /// <param name="name">The optional compensation activity name.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationNotificationActivityBuilder<TData, TNotification> CompensateWith(
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
@@ -133,14 +159,27 @@ public interface IOrchestrationMessageActivityBuilder<TData, TMessage> : IOrches
     where TData : class, IOrchestrationData
     where TMessage : class, IMessage
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies a retry policy to the activity.
+    /// </summary>
+    /// <param name="policy">The retry policy to apply.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationMessageActivityBuilder<TData, TMessage> Retry(OrchestrationRetryPolicy policy);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers a compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <typeparam name="TActivity">The compensation activity type.</typeparam>
+    /// <returns>The current builder.</returns>
     new IOrchestrationMessageActivityBuilder<TData, TMessage> CompensateWith<TActivity>()
         where TActivity : class, IOrchestrationActivity<TData>;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers an inline compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <param name="executeAsync">The compensation delegate.</param>
+    /// <param name="name">The optional compensation activity name.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationMessageActivityBuilder<TData, TMessage> CompensateWith(
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
@@ -191,14 +230,27 @@ public interface IOrchestrationQueueActivityBuilder<TData, TMessage> : IOrchestr
     where TData : class, IOrchestrationData
     where TMessage : class, IQueueMessage
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies a retry policy to the activity.
+    /// </summary>
+    /// <param name="policy">The retry policy to apply.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationQueueActivityBuilder<TData, TMessage> Retry(OrchestrationRetryPolicy policy);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers a compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <typeparam name="TActivity">The compensation activity type.</typeparam>
+    /// <returns>The current builder.</returns>
     new IOrchestrationQueueActivityBuilder<TData, TMessage> CompensateWith<TActivity>()
         where TActivity : class, IOrchestrationActivity<TData>;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers an inline compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <param name="executeAsync">The compensation delegate.</param>
+    /// <param name="name">The optional compensation activity name.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationQueueActivityBuilder<TData, TMessage> CompensateWith(
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);
@@ -249,14 +301,27 @@ public interface IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> 
     where TData : class, IOrchestrationData
     where TPipelineContext : PipelineContextBase
 {
-    /// <inheritdoc />
+    /// <summary>
+    /// Applies a retry policy to the activity.
+    /// </summary>
+    /// <param name="policy">The retry policy to apply.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> Retry(OrchestrationRetryPolicy policy);
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers a compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <typeparam name="TActivity">The compensation activity type.</typeparam>
+    /// <returns>The current builder.</returns>
     new IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> CompensateWith<TActivity>()
         where TActivity : class, IOrchestrationActivity<TData>;
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Registers an inline compensation activity that is executed if the orchestration compensates.
+    /// </summary>
+    /// <param name="executeAsync">The compensation delegate.</param>
+    /// <param name="name">The optional compensation activity name.</param>
+    /// <returns>The current builder.</returns>
     new IOrchestrationPipelineActivityBuilder<TData, TPipelineContext> CompensateWith(
         Func<OrchestrationContext<TData>, CancellationToken, Task<OrchestrationOutcome>> executeAsync,
         string name = null);

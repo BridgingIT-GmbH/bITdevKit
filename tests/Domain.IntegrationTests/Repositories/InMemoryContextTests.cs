@@ -42,7 +42,7 @@ public class InMemoryContextTests
         public void WhenConstructedWithNullList_ThenCreatesEmptyContext()
         {
             // Arrange & Act
-            var context = new InMemoryContext<StubEntity>(entities: (List<StubEntity>)null);
+            var context = new InMemoryContext<StubEntity>(entities: null);
 
             // Assert
             context.Entities.ShouldBeEmpty();

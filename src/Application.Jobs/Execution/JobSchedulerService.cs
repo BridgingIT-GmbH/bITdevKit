@@ -1356,10 +1356,10 @@ public partial class JobSchedulerService(
             return Result<JobDispatchResult>.Failure().WithErrors(dispatch.Errors).WithMessages(dispatch.Messages);
         }
 
-        if (!waitForCompletion && dispatch.Value.ExecutionResult is not null && dispatch.Value.ExecutionFailure is null)
-        {
-            return Result<JobDispatchResult>.Success(dispatch.Value.DispatchResult);
-        }
+        // if (!waitForCompletion && dispatch.Value.ExecutionResult is not null && dispatch.Value.ExecutionFailure is null)
+        // {
+        //     return Result<JobDispatchResult>.Success(dispatch.Value.DispatchResult);
+        // }
 
         return Result<JobDispatchResult>.Success(dispatch.Value.DispatchResult);
     }

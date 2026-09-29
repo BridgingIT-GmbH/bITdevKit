@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.UnitTests.EntityFramework.Messaging;
 
 using Application.Messaging;
-using Infrastructure.EntityFramework;
 using Infrastructure.EntityFramework.Messaging;
 using Microsoft.Extensions.Logging;
 

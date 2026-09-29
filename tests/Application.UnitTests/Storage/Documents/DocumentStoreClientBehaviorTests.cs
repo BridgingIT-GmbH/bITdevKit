@@ -98,10 +98,7 @@ public sealed class DocumentStoreClientBehaviorTests
 
     public sealed class TestDocument { public string Value { get; set; } }
 
-    private class ForwardingClient : DocumentStoreClientBehaviorBase<TestDocument>
-    {
-        public ForwardingClient() : base(Substitute.For<IDocumentStoreClient<TestDocument>>()) { }
-    }
+    private class ForwardingClient() : DocumentStoreClientBehaviorBase<TestDocument>(Substitute.For<IDocumentStoreClient<TestDocument>>());
 
     private sealed class BlockingClient : ForwardingClient
     {

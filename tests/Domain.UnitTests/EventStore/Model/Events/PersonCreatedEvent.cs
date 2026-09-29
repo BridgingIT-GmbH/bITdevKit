@@ -10,24 +10,15 @@ using Newtonsoft.Json;
 
 // TODO: get rid of Newtonsoft dependency
 
-public class PersonCreatedEvent : AggregateCreatedEvent<Person>
+[method: JsonConstructor]
+public class PersonCreatedEvent(Guid id, string surname, string firstname) : AggregateCreatedEvent<Person>(id)
 {
     public PersonCreatedEvent(string surname, string firstname)
-        : base(Guid.NewGuid())
+        : this(Guid.NewGuid(), surname, firstname)
     {
-        this.Surname = surname;
-        this.Firstname = firstname;
     }
 
-    [JsonConstructor]
-    public PersonCreatedEvent(Guid id, string surname, string firstname)
-        : base(id)
-    {
-        this.Surname = surname;
-        this.Firstname = firstname;
-    }
+    public string Surname { get; set; } = surname;
 
-    public string Surname { get; set; }
-
-    public string Firstname { get; set; }
+    public string Firstname { get; set; } = firstname;
 }

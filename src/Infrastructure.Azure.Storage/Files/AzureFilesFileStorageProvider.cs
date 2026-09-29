@@ -42,8 +42,8 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         string shareName,
         bool ensureShare = true) : base(locationName)
     {
-        ArgumentException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
-        ArgumentException.ThrowIfNullOrEmpty(shareName, nameof(shareName));
+        ArgumentException.ThrowIfNullOrEmpty(connectionString);
+        ArgumentException.ThrowIfNullOrEmpty(shareName);
 
         this.connectionString = connectionString;
         this.shareName = shareName;
@@ -68,8 +68,8 @@ public class AzureFilesFileStorageProvider : BaseFileStorageProvider, IDisposabl
         string shareName,
         bool ensureShare = true) : base(locationName)
     {
-        ArgumentNullException.ThrowIfNull(client, nameof(client));
-        ArgumentException.ThrowIfNullOrEmpty(shareName, nameof(shareName));
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentException.ThrowIfNullOrEmpty(shareName);
 
         this.shareName = shareName;
         this.ensureShare = ensureShare;

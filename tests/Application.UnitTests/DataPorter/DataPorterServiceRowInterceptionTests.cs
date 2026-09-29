@@ -13,12 +13,7 @@ using Microsoft.Extensions.Logging;
 [UnitTest("Common")]
 public class DataPorterServiceRowInterceptionTests
 {
-    private readonly ConfigurationMerger configurationMerger;
-
-    public DataPorterServiceRowInterceptionTests()
-    {
-        this.configurationMerger = new ConfigurationMerger(new ProfileRegistry(), new AttributeConfigurationReader());
-    }
+    private readonly ConfigurationMerger configurationMerger = new(new ProfileRegistry(), new AttributeConfigurationReader());
 
     [Fact]
     public async Task ExportAsync_WithTypedInterceptors_MutatesRowsInOrder()
@@ -382,20 +377,11 @@ public class DataPorterServiceRowInterceptionTests
         }
     }
 
-    private sealed class TestExportRowInterceptor : IExportRowInterceptor<SimpleEntity>
+    private sealed class TestExportRowInterceptor(
+        Func<ExportRowContext<SimpleEntity>, RowInterceptionDecision> before,
+        Action<ExportRowContext<SimpleEntity>> after = null)
+        : IExportRowInterceptor<SimpleEntity>
     {
-        private readonly Func<ExportRowContext<SimpleEntity>, RowInterceptionDecision> before;
-
-        public TestExportRowInterceptor(
-            Func<ExportRowContext<SimpleEntity>, RowInterceptionDecision> before,
-            Action<ExportRowContext<SimpleEntity>> after = null)
-        {
-            this.before = before;
-            this.after = after;
-        }
-
-        private readonly Action<ExportRowContext<SimpleEntity>> after;
-
         public int BeforeCalls { get; private set; }
 
         public int AfterCalls { get; private set; }
@@ -405,7 +391,7 @@ public class DataPorterServiceRowInterceptionTests
             CancellationToken cancellationToken = default)
         {
             this.BeforeCalls++;
-            return Task.FromResult(this.before(context));
+            return Task.FromResult(before(context));
         }
 
         public Task AfterExportAsync(
@@ -413,28 +399,17 @@ public class DataPorterServiceRowInterceptionTests
             CancellationToken cancellationToken = default)
         {
             this.AfterCalls++;
-            this.after?.Invoke(context);
+            after?.Invoke(context);
             return Task.CompletedTask;
         }
     }
 
-    private sealed class TestImportRowInterceptor : IImportRowInterceptor<SimpleEntity>
+    private sealed class TestImportRowInterceptor(
+        Func<ImportRowContext<SimpleEntity>, RowInterceptionDecision> before,
+        Action<ImportRowContext<SimpleEntity>> after = null,
+        Func<ImportCompletionContext<SimpleEntity>, Result> completion = null)
+        : IImportRowInterceptor<SimpleEntity>
     {
-        private readonly Func<ImportRowContext<SimpleEntity>, RowInterceptionDecision> before;
-        private readonly Func<ImportCompletionContext<SimpleEntity>, Result> completion;
-
-        public TestImportRowInterceptor(
-            Func<ImportRowContext<SimpleEntity>, RowInterceptionDecision> before,
-            Action<ImportRowContext<SimpleEntity>> after = null,
-            Func<ImportCompletionContext<SimpleEntity>, Result> completion = null)
-        {
-            this.before = before;
-            this.after = after;
-            this.completion = completion;
-        }
-
-        private readonly Action<ImportRowContext<SimpleEntity>> after;
-
         public int BeforeCalls { get; private set; }
 
         public int AfterCalls { get; private set; }
@@ -446,7 +421,7 @@ public class DataPorterServiceRowInterceptionTests
             CancellationToken cancellationToken = default)
         {
             this.BeforeCalls++;
-            return Task.FromResult(this.before(context));
+            return Task.FromResult(before(context));
         }
 
         public Task AfterImportAsync(
@@ -454,7 +429,7 @@ public class DataPorterServiceRowInterceptionTests
             CancellationToken cancellationToken = default)
         {
             this.AfterCalls++;
-            this.after?.Invoke(context);
+            after?.Invoke(context);
             return Task.CompletedTask;
         }
 
@@ -463,7 +438,7 @@ public class DataPorterServiceRowInterceptionTests
             CancellationToken cancellationToken = default)
         {
             this.CompletionCalls++;
-            return Task.FromResult(this.completion?.Invoke(context) ?? Result.Success());
+            return Task.FromResult(completion?.Invoke(context) ?? Result.Success());
         }
     }
 

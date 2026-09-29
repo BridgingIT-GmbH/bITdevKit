@@ -703,20 +703,14 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
         }
     }
 
-    private sealed class LeaseFaultingLeaseStore : IOrchestrationLeaseStore
+    private sealed class LeaseFaultingLeaseStore(IOrchestrationLeaseStore inner) : IOrchestrationLeaseStore
     {
-        private readonly IOrchestrationLeaseStore inner;
         private readonly ConcurrentDictionary<Guid, Guid> activeLeaseIds = new();
         private readonly ConcurrentDictionary<(Guid InstanceId, Guid LeaseId), byte> invalidatedLeases = new();
 
-        public LeaseFaultingLeaseStore(IOrchestrationLeaseStore inner)
-        {
-            this.inner = inner;
-        }
-
         public async Task<OrchestrationLease> AcquireAsync(Guid instanceId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)
         {
-            var lease = await this.inner.AcquireAsync(instanceId, owner, duration, cancellationToken).ConfigureAwait(false);
+            var lease = await inner.AcquireAsync(instanceId, owner, duration, cancellationToken).ConfigureAwait(false);
             this.activeLeaseIds[instanceId] = lease.LeaseId;
             return lease;
         }
@@ -731,7 +725,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
 
         public async Task<OrchestrationLease> RenewAsync(Guid instanceId, Guid leaseId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)
         {
-            var lease = await this.inner.RenewAsync(instanceId, leaseId, owner, duration, cancellationToken).ConfigureAwait(false);
+            var lease = await inner.RenewAsync(instanceId, leaseId, owner, duration, cancellationToken).ConfigureAwait(false);
             this.activeLeaseIds[instanceId] = lease.LeaseId;
             return lease;
         }
@@ -740,7 +734,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
         {
             this.activeLeaseIds.TryRemove(instanceId, out _);
             this.invalidatedLeases.TryRemove((instanceId, leaseId), out _);
-            await this.inner.ReleaseAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
+            await inner.ReleaseAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<bool> VerifyAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)
@@ -750,85 +744,63 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
                 return false;
             }
 
-            return await this.inner.VerifyAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
+            return await inner.VerifyAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
         }
     }
 
-    private sealed class WaitBoundaryFaultingInstanceStore : IOrchestrationInstanceStore
+    private sealed class WaitBoundaryFaultingInstanceStore(
+        IOrchestrationInstanceStore inner,
+        LeaseFaultingLeaseStore leases,
+        FaultPoint faultPoint,
+        int triggerOccurrence)
+        : IOrchestrationInstanceStore
     {
-        private readonly IOrchestrationInstanceStore inner;
-        private readonly LeaseFaultingLeaseStore leases;
-        private readonly FaultPoint faultPoint;
-        private readonly int triggerOccurrence;
         private int occurrence;
-
-        public WaitBoundaryFaultingInstanceStore(
-            IOrchestrationInstanceStore inner,
-            LeaseFaultingLeaseStore leases,
-            FaultPoint faultPoint,
-            int triggerOccurrence)
-        {
-            this.inner = inner;
-            this.leases = leases;
-            this.faultPoint = faultPoint;
-            this.triggerOccurrence = triggerOccurrence;
-        }
 
         public Task<OrchestrationInstanceSnapshot> CreateAsync<TData>(OrchestrationContext<TData> context, string concurrencyKey = null, CancellationToken cancellationToken = default)
             where TData : class, IOrchestrationData
         {
-            return this.inner.CreateAsync(context, concurrencyKey, cancellationToken);
+            return inner.CreateAsync(context, concurrencyKey, cancellationToken);
         }
 
         public Task<OrchestrationInstanceSnapshot> GetAsync(Guid instanceId, CancellationToken cancellationToken = default)
         {
-            return this.inner.GetAsync(instanceId, cancellationToken);
+            return inner.GetAsync(instanceId, cancellationToken);
         }
 
         public async Task<OrchestrationInstanceSnapshot> SaveAsync<TData>(OrchestrationInstanceSnapshot snapshot, OrchestrationContext<TData> context, CancellationToken cancellationToken = default)
             where TData : class, IOrchestrationData
         {
-            var persisted = await this.inner.SaveAsync(snapshot, context, cancellationToken).ConfigureAwait(false);
-            if (this.faultPoint == FaultPoint.WaitingSnapshotSaved &&
+            var persisted = await inner.SaveAsync(snapshot, context, cancellationToken).ConfigureAwait(false);
+            if (faultPoint == FaultPoint.WaitingSnapshotSaved &&
                 context.Status == OrchestrationStatus.Waiting &&
                 context.Properties.Keys.Contains("__orchestration.wait.plan", StringComparer.OrdinalIgnoreCase) &&
-                Interlocked.Increment(ref this.occurrence) == this.triggerOccurrence)
+                Interlocked.Increment(ref this.occurrence) == triggerOccurrence)
             {
-                this.leases.InvalidateActiveLease(context.InstanceId);
+                leases.InvalidateActiveLease(context.InstanceId);
             }
 
             return persisted;
         }
     }
 
-    private sealed class WaitBoundaryFaultingHistoryStore : IOrchestrationHistoryStore
+    private sealed class WaitBoundaryFaultingHistoryStore(
+        IOrchestrationHistoryStore inner,
+        LeaseFaultingLeaseStore leases,
+        FaultPoint faultPoint,
+        int triggerOccurrence)
+        : IOrchestrationHistoryStore
     {
-        private readonly IOrchestrationHistoryStore inner;
-        private readonly LeaseFaultingLeaseStore leases;
-        private readonly FaultPoint faultPoint;
-        private readonly int triggerOccurrence;
         private int occurrence;
-
-        public WaitBoundaryFaultingHistoryStore(
-            IOrchestrationHistoryStore inner,
-            LeaseFaultingLeaseStore leases,
-            FaultPoint faultPoint,
-            int triggerOccurrence)
-        {
-            this.inner = inner;
-            this.leases = leases;
-            this.faultPoint = faultPoint;
-            this.triggerOccurrence = triggerOccurrence;
-        }
 
         public async Task<OrchestrationHistoryEntry> AppendAsync(OrchestrationHistoryEntry entry, CancellationToken cancellationToken = default)
         {
-            var persisted = await this.inner.AppendAsync(entry, cancellationToken).ConfigureAwait(false);
-            if (this.faultPoint == FaultPoint.TimerScheduledHistoryAppended &&
+            var persisted = await inner.AppendAsync(entry, cancellationToken).ConfigureAwait(false);
+            if (faultPoint == FaultPoint.TimerScheduledHistoryAppended &&
                 string.Equals(entry.EventType, "TimerScheduled", StringComparison.OrdinalIgnoreCase) &&
-                Interlocked.Increment(ref this.occurrence) == this.triggerOccurrence)
+                Interlocked.Increment(ref this.occurrence) == triggerOccurrence)
             {
-                this.leases.InvalidateActiveLease(entry.InstanceId);
+                leases.InvalidateActiveLease(entry.InstanceId);
             }
 
             return persisted;
@@ -836,7 +808,7 @@ public class OrchestrationRecoveryServiceTests(ITestOutputHelper output) : Orche
 
         public Task<IReadOnlyCollection<OrchestrationHistoryEntry>> GetAsync(Guid instanceId, CancellationToken cancellationToken = default)
         {
-            return this.inner.GetAsync(instanceId, cancellationToken);
+            return inner.GetAsync(instanceId, cancellationToken);
         }
     }
 }

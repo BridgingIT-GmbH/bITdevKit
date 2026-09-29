@@ -317,15 +317,8 @@ public class JobSchedulerOptionalIntegrationTests(ITestOutputHelper output) : Jo
             => (IPipeline<TContext>)(object)new RecordingPipeline(context => this.LastContext = context);
     }
 
-    private sealed class RecordingPipeline : IPipeline<OptionalPipelineContext>
+    private sealed class RecordingPipeline(Action<OptionalPipelineContext> onExecute) : IPipeline<OptionalPipelineContext>
     {
-        private readonly Action<OptionalPipelineContext> onExecute;
-
-        public RecordingPipeline(Action<OptionalPipelineContext> onExecute)
-        {
-            this.onExecute = onExecute;
-        }
-
         public Task<Result> ExecuteAsync(PipelineExecutionOptions options = null, CancellationToken cancellationToken = default)
             => throw new NotSupportedException();
 
@@ -352,7 +345,7 @@ public class JobSchedulerOptionalIntegrationTests(ITestOutputHelper output) : Jo
 
         public Task<Result> ExecuteAsync(OptionalPipelineContext context, PipelineExecutionOptions options = null, CancellationToken cancellationToken = default)
         {
-            this.onExecute(context);
+            onExecute(context);
             return Task.FromResult(Result.Success());
         }
 

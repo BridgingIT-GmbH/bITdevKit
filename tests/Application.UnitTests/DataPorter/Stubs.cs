@@ -245,17 +245,9 @@ public class TestImportProfile : IImportProfile<TestImportEntity>
 /// <summary>
 /// Test export provider for unit testing.
 /// </summary>
-public class TestExportProvider : IDataExportProvider
+public class TestExportProvider(Format? format = null, bool throwOnCancel = false) : IDataExportProvider
 {
-    private readonly bool throwOnCancel;
-
-    public TestExportProvider(Format? format = null, bool throwOnCancel = false)
-    {
-        this.Format = format ?? Format.Excel;
-        this.throwOnCancel = throwOnCancel;
-    }
-
-    public Format Format { get; }
+    public Format Format { get; } = format ?? Format.Excel;
 
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx"];
 
@@ -272,7 +264,7 @@ public class TestExportProvider : IDataExportProvider
         CancellationToken cancellationToken = default)
         where TSource : class
     {
-        if (this.throwOnCancel)
+        if (throwOnCancel)
         {
             cancellationToken.ThrowIfCancellationRequested();
         }
@@ -297,7 +289,7 @@ public class TestExportProvider : IDataExportProvider
         CancellationToken cancellationToken = default)
         where TSource : class
     {
-        if (this.throwOnCancel)
+        if (throwOnCancel)
         {
             cancellationToken.ThrowIfCancellationRequested();
         }
@@ -361,17 +353,9 @@ public class TestExportProvider : IDataExportProvider
 /// <summary>
 /// Test import provider for unit testing.
 /// </summary>
-public class TestImportProvider : IDataImportProvider
+public class TestImportProvider(Format? format = null, bool throwOnCancel = false) : IDataImportProvider
 {
-    private readonly bool throwOnCancel;
-
-    public TestImportProvider(Format? format = null, bool throwOnCancel = false)
-    {
-        this.Format = format ?? Format.Excel;
-        this.throwOnCancel = throwOnCancel;
-    }
-
-    public Format Format { get; }
+    public Format Format { get; } = format ?? Format.Excel;
 
     public IReadOnlyCollection<string> SupportedExtensions => [".xlsx"];
 
@@ -387,7 +371,7 @@ public class TestImportProvider : IDataImportProvider
         CancellationToken cancellationToken = default)
         where TTarget : class, new()
     {
-        if (this.throwOnCancel)
+        if (throwOnCancel)
         {
             cancellationToken.ThrowIfCancellationRequested();
         }

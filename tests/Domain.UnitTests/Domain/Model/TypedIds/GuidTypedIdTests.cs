@@ -72,12 +72,9 @@ public class GuidTypedIdTests
         //(instance2 <= instance3).ShouldBeTrue(); // operator
     }
 
-    public class StubTypedId : GuidTypedId
+    public class StubTypedId(Guid value) : GuidTypedId(value)
     {
         public StubTypedId()
-            : base(Guid.Empty) { }
-
-        public StubTypedId(Guid value)
-            : base(value) { }
+            : this(Guid.Empty) { }
     }
 }

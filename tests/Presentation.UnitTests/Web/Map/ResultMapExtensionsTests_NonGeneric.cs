@@ -20,12 +20,7 @@ using Xunit;
 [Collection(ResultMapTestCollection.Name)]
 public class ResultMapExtensionsNonGenericTests
 {
-    private readonly ILogger logger;
-
-    public ResultMapExtensionsNonGenericTests()
-    {
-        this.logger = NullLogger.Instance;
-    }
+    private readonly ILogger logger = NullLogger.Instance;
 
     [Fact]
     public void MapHttpNoContent_Success_ReturnsNoContent()

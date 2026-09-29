@@ -11,17 +11,9 @@ using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.C
 /// SQL Server-backed application test host for direct requester tests.
 /// It wires application services without starting ASP.NET Core or endpoint infrastructure.
 /// </summary>
-public sealed class WeatherFiestaApplicationTestHost : IAsyncDisposable
+public sealed class WeatherFiestaApplicationTestHost(string connectionString, ITestOutputHelper output) : IAsyncDisposable
 {
-    private readonly string connectionString;
-    private readonly ITestOutputHelper output;
     private ServiceProvider serviceProvider;
-
-    public WeatherFiestaApplicationTestHost(string connectionString, ITestOutputHelper output)
-    {
-        this.connectionString = connectionString;
-        this.output = output;
-    }
 
     /// <summary>Gets the application service provider.</summary>
     public IServiceProvider Services => this.serviceProvider;
@@ -44,16 +36,16 @@ public sealed class WeatherFiestaApplicationTestHost : IAsyncDisposable
         {
             logging.SetMinimumLevel(LogLevel.Debug);
             logging.AddFilter("Microsoft.EntityFrameworkCore", LogLevel.Warning);
-            logging.AddProvider(new XunitLoggerProvider(this.output));
+            logging.AddProvider(new XunitLoggerProvider(output));
         });
 
         services.AddOptions();
         services.Configure<CoreModuleConfiguration>(options =>
         {
-            options.ConnectionStrings = new Dictionary<string, string> { ["Default"] = this.connectionString };
+            options.ConnectionStrings = new Dictionary<string, string> { ["Default"] = connectionString };
         });
 
-        services.AddDbContext<CoreDbContext>(options => options.UseSqlServer(this.connectionString));
+        services.AddDbContext<CoreDbContext>(options => options.UseSqlServer(connectionString));
         services.AddScoped<IDbContextResolver, DbContextResolver>();
 
         services.AddMapping().WithMapster<CoreModuleMapperRegister>();

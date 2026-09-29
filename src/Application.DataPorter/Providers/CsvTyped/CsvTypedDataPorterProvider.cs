@@ -647,12 +647,10 @@ public sealed class CsvTypedDataPorterProvider(
         csv.ReadHeader();
         var headers = csv.HeaderRecord ?? [];
         var rows = new List<CsvTypedRow>();
-        var rowNumber = 1;
 
         while (await csv.ReadAsync())
         {
             cancellationToken.ThrowIfCancellationRequested();
-            rowNumber++;
             rows.Add(this.ReadRow(csv, headers));
             importConfiguration.ProgressTracker?.ReportProgress(rows.Count, 0, 0, 0);
         }

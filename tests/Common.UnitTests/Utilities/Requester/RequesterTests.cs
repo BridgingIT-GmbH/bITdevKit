@@ -717,17 +717,13 @@ public class DelayedRequestHandler : IRequestHandler<DelayedRequest, string>
 /// <summary>
 /// A sample behavior that records its execution order.
 /// </summary>
-public class OrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class OrderedBehavior<TRequest, TResponse>(List<string> orderList) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly List<string> orderList;
-
-    public OrderedBehavior(List<string> orderList) => this.orderList = orderList;
-
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
-        this.orderList.Add(this.GetType().PrettyName());
+        orderList.Add(this.GetType().PrettyName());
         return await next();
     }
 
@@ -737,17 +733,13 @@ public class OrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
 /// <summary>
 /// Another sample behavior that records its execution order.
 /// </summary>
-public class AnotherOrderedBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class AnotherOrderedBehavior<TRequest, TResponse>(List<string> orderList) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly List<string> orderList;
-
-    public AnotherOrderedBehavior(List<string> orderList) => this.orderList = orderList;
-
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
-        this.orderList.Add(this.GetType().PrettyName());
+        orderList.Add(this.GetType().PrettyName());
         return await next();
     }
 
@@ -817,26 +809,22 @@ public class FailingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, 
 /// <summary>
 /// A behavior that captures the RequestContext from SendOptions.
 /// </summary>
-public class ContextCapturingBehavior<TRequest, TResponse> : IPipelineBehavior<TRequest, TResponse>
+public class ContextCapturingBehavior<TRequest, TResponse>(List<string> capturedValues) : IPipelineBehavior<TRequest, TResponse>
     where TRequest : class
     where TResponse : IResult
 {
-    private readonly List<string> capturedValues;
-
-    public ContextCapturingBehavior(List<string> capturedValues) => this.capturedValues = capturedValues;
-
     public async Task<TResponse> HandleAsync(TRequest request, object options, Type handlerType, Func<Task<TResponse>> next, CancellationToken cancellationToken = default)
     {
         var sendOptions = options as SendOptions;
         if (sendOptions?.Context?.Properties.TryGetValue("UserId", out var userId) == true)
         {
-            this.capturedValues.Add(userId);
+            capturedValues.Add(userId);
         }
 
         var publishOptions = options as PublishOptions;
         if (publishOptions?.Context?.Properties.TryGetValue("UserId", out var userId2) == true)
         {
-            this.capturedValues.Add(userId2);
+            capturedValues.Add(userId2);
         }
 
         return await next();
@@ -848,27 +836,21 @@ public class ContextCapturingBehavior<TRequest, TResponse> : IPipelineBehavior<T
 /// <summary>
 /// A request that captures the RequestContext for testing.
 /// </summary>
-public class ContextCapturingRequest : RequestBase<string>
+public class ContextCapturingRequest(List<string> capturedValues) : RequestBase<string>
 {
-    private readonly List<string> capturedValues;
-
-    public ContextCapturingRequest(List<string> capturedValues) => this.capturedValues = capturedValues;
+    private readonly List<string> capturedValues = capturedValues;
 }
 
 /// <summary>
 /// A handler that captures the RequestContext and appends to the result.
 /// </summary>
-public class ContextCapturingRequestHandler : IRequestHandler<ContextCapturingRequest, string>
+public class ContextCapturingRequestHandler(List<string> capturedValues) : IRequestHandler<ContextCapturingRequest, string>
 {
-    private readonly List<string> capturedValues;
-
-    public ContextCapturingRequestHandler(List<string> capturedValues) => this.capturedValues = capturedValues;
-
     public Task<Result<string>> HandleAsync(ContextCapturingRequest request, SendOptions options, CancellationToken cancellationToken)
     {
         if (options?.Context?.Properties.TryGetValue("UserId", out var userId) == true)
         {
-            this.capturedValues.Add($"{userId}-Handler");
+            capturedValues.Add($"{userId}-Handler");
         }
 
         return Task.FromResult(Result<string>.Success("Test"));

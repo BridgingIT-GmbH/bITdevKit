@@ -322,10 +322,10 @@ namespace {ns}
         }
 
         // If it's not a supported scalar, then check if it's a collection and exclude it.
-        if (type.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == "System.Collections.IEnumerable"))
-        {
-            return false;
-        }
+        // if (type.AllInterfaces.Any(i => i.OriginalDefinition.ToDisplayString() == "System.Collections.IEnumerable"))
+        // {
+        //     return false;
+        // }
 
         return false;
     }

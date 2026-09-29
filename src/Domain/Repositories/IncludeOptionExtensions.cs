@@ -107,15 +107,8 @@ internal abstract class IncludableOptionWrapper<TEntity>
 /// </summary>
 /// <typeparam name="TEntity">The root entity type.</typeparam>
 /// <typeparam name="TProperty">The type of the current navigation property.</typeparam>
-internal class IncludableOptionWrapper<TEntity, TProperty> : IncludableOptionWrapper<TEntity>, IIncludableOption<TEntity, TProperty>
+internal class IncludableOptionWrapper<TEntity, TProperty>(IncludeOptionBase<TEntity> includeOption) : IncludableOptionWrapper<TEntity>, IIncludableOption<TEntity, TProperty>
     where TEntity : class, IEntity
 {
-    private readonly IncludeOptionBase<TEntity> includeOption;
-
-    public IncludableOptionWrapper(IncludeOptionBase<TEntity> includeOption)
-    {
-        this.includeOption = includeOption;
-    }
-
-    public override IncludeOptionBase<TEntity> IncludeOption => this.includeOption;
+    public override IncludeOptionBase<TEntity> IncludeOption => includeOption;
 }

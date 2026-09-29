@@ -42,8 +42,8 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         string containerName,
         bool ensureContainer = true) : base(locationName)
     {
-        ArgumentException.ThrowIfNullOrEmpty(connectionString, nameof(connectionString));
-        ArgumentException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
+        ArgumentException.ThrowIfNullOrEmpty(connectionString);
+        ArgumentException.ThrowIfNullOrEmpty(containerName);
 
         this.connectionString = connectionString;
         this.containerName = containerName;
@@ -68,8 +68,8 @@ public class AzureBlobFileStorageProvider : BaseFileStorageProvider, IDisposable
         string containerName,
         bool ensureContainer = true) : base(locationName)
     {
-        ArgumentNullException.ThrowIfNull(client, nameof(client));
-        ArgumentException.ThrowIfNullOrEmpty(containerName, nameof(containerName));
+        ArgumentNullException.ThrowIfNull(client);
+        ArgumentException.ThrowIfNullOrEmpty(containerName);
 
         this.containerName = containerName;
         this.ensureContainer = ensureContainer;

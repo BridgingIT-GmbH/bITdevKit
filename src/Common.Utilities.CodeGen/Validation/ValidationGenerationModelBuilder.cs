@@ -369,16 +369,10 @@ public static class ValidationGenerationModelBuilder
             namedType.OriginalDefinition.SpecialType == SpecialType.System_Nullable_T;
     }
 
-    private sealed class ValidationRuleMetadata
+    private sealed class ValidationRuleMetadata(ValidationRuleKind kind, ValidationRuleTargetKind targetKind)
     {
-        public ValidationRuleMetadata(ValidationRuleKind kind, ValidationRuleTargetKind targetKind)
-        {
-            this.Kind = kind;
-            this.TargetKind = targetKind;
-        }
+        public ValidationRuleKind Kind { get; } = kind;
 
-        public ValidationRuleKind Kind { get; }
-
-        public ValidationRuleTargetKind TargetKind { get; }
+        public ValidationRuleTargetKind TargetKind { get; } = targetKind;
     }
 }

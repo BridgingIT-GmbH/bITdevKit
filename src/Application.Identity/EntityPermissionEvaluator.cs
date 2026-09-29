@@ -36,7 +36,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
 
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, permission, bypassCache, cancellationToken);
     }
@@ -51,7 +51,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
 
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, permission, bypassCache, cancellationToken);
     }
@@ -65,7 +65,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string permission, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
 
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, permission, bypassCache, cancellationToken);
     }
@@ -78,7 +78,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
 
         return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, cancellationToken);
     }
@@ -91,7 +91,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, object entityId, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
 
         return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, cancellationToken);
     }
@@ -103,7 +103,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<IReadOnlyCollection<EntityPermissionInfo>> GetPermissionsAsync(ICurrentUserAccessor currentUserAccessor, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
 
         return await this.GetPermissionsAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, cancellationToken);
     }
@@ -260,7 +260,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, TEntity entity, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entity, permissions, bypassCache, cancellationToken);
     }
 
@@ -288,7 +288,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, object entityId, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, entityId, permissions, bypassCache, cancellationToken);
     }
 
@@ -328,7 +328,7 @@ public partial class EntityPermissionEvaluator<TEntity>(
     /// <param name="cancellationToken">The token that cancels permission provider operations.</param>
     public async Task<bool> HasPermissionAsync(ICurrentUserAccessor currentUserAccessor, string[] permissions, bool bypassCache = false, CancellationToken cancellationToken = default)
     {
-        ArgumentNullException.ThrowIfNull(currentUserAccessor, nameof(currentUserAccessor));
+        ArgumentNullException.ThrowIfNull(currentUserAccessor);
         return await this.HasPermissionAsync(currentUserAccessor.UserId, currentUserAccessor.Roles, permissions, bypassCache, cancellationToken);
     }
 

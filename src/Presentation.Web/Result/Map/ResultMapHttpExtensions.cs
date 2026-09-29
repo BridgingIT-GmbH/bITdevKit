@@ -145,7 +145,7 @@ public static class ResultMapHttpExtensions
         where TProblem : IResult
         where TValue : class
     {
-        ArgumentNullException.ThrowIfNull(successFunc, nameof(successFunc));
+        ArgumentNullException.ThrowIfNull(successFunc);
 
         // Check for custom handlers first
         if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
@@ -244,7 +244,7 @@ public static class ResultMapHttpExtensions
         where TBadRequest : IResult
         where TProblem : IResult
     {
-        ArgumentNullException.ThrowIfNull(successFunc, nameof(successFunc));
+        ArgumentNullException.ThrowIfNull(successFunc);
 
         // Check for custom handlers first
         if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
@@ -341,7 +341,7 @@ public static class ResultMapHttpExtensions
         where TBadRequest : IResult
         where TProblem : IResult
     {
-        ArgumentNullException.ThrowIfNull(successFunc, nameof(successFunc));
+        ArgumentNullException.ThrowIfNull(successFunc);
 
         // Check for custom handlers first
         if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
@@ -772,7 +772,7 @@ public static class ResultMapHttpExtensions
         string location,
         ILogger logger = null)
     {
-        ArgumentNullException.ThrowIfNull(location, nameof(location));
+        ArgumentNullException.ThrowIfNull(location);
 
         // Check for custom handlers first
         if (ResultMapErrorHandlerRegistry.TryExecuteCustomHandler(result, logger, out var customResult))
@@ -834,7 +834,7 @@ public static class ResultMapHttpExtensions
         ILogger logger = null)
         where T : class
     {
-        ArgumentNullException.ThrowIfNull(location, nameof(location));
+        ArgumentNullException.ThrowIfNull(location);
 
         if (result.Value == null)
         {
@@ -902,7 +902,7 @@ public static class ResultMapHttpExtensions
         ILogger logger = null)
         where T : class
     {
-        ArgumentNullException.ThrowIfNull(locationFactory, nameof(locationFactory));
+        ArgumentNullException.ThrowIfNull(locationFactory);
 
         if (result.IsSuccess)
         {
@@ -1071,7 +1071,7 @@ public static class ResultMapHttpExtensions
         Func<FileContent, string> fileNameFactory,
         ILogger logger = null)
     {
-        ArgumentNullException.ThrowIfNull(fileNameFactory, nameof(fileNameFactory));
+        ArgumentNullException.ThrowIfNull(fileNameFactory);
 
         if (result.IsSuccess && result.Value != null)
         {

@@ -22,12 +22,7 @@ public class MemoryEventStoreTests
     private const string PersonInfinityImmutableTypeIdentifierName = "PersonImmutable";
     private const string OrderInfinityImmutableTypeIdentifierName = "OrderImmutable";
 
-    private readonly JsonNetSerializer eventSerializer;
-
-    public MemoryEventStoreTests()
-    {
-        this.eventSerializer = new JsonNetSerializer();
-    }
+    private readonly JsonNetSerializer eventSerializer = new();
 
     [Fact]
     public async Task AddEventsToMemoryEventstore()

@@ -68,7 +68,7 @@ public class ResultOperationScopeTests
             // 2
             .StartOperation(ct => Task.FromResult<IOperationScope>(testScope2))
             .TapAsync(async (v, ct) => await Task.Delay(1, ct))
-            .EndOperationAsync(CancellationToken.None); ;
+            .EndOperationAsync(CancellationToken.None);
 
         // Assert
         result.ShouldBeSuccess();

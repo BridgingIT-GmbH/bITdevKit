@@ -26,14 +26,8 @@ public class TestEntity : Entity<Guid>
 
 public class HasPermissionRuleTests
 {
-    private readonly ICurrentUserAccessor userAccessor;
-    private readonly IEntityPermissionEvaluator<TestEntity> evaluator;
-
-    public HasPermissionRuleTests()
-    {
-        this.userAccessor = Substitute.For<ICurrentUserAccessor>();
-        this.evaluator = Substitute.For<IEntityPermissionEvaluator<TestEntity>>();
-    }
+    private readonly ICurrentUserAccessor userAccessor = Substitute.For<ICurrentUserAccessor>();
+    private readonly IEntityPermissionEvaluator<TestEntity> evaluator = Substitute.For<IEntityPermissionEvaluator<TestEntity>>();
 
     [Fact]
     public async Task EntityWide_HasPermission_ReturnsSuccess()

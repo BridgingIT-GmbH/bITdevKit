@@ -339,33 +339,19 @@ public class InMemoryRepositoryTests
         public int Age { get; set; }
     }
 
-    private class StubHasNameSpecification : Specification<StubEntityString>
+    private class StubHasNameSpecification(string firstName) : Specification<StubEntityString>
     {
-        private readonly string firstName;
-
-        public StubHasNameSpecification(string firstName)
-        {
-            this.firstName = firstName;
-        }
-
         public override Expression<Func<StubEntityString, bool>> ToExpression()
         {
-            return p => p.FirstName == this.firstName;
+            return p => p.FirstName == firstName;
         }
     }
 
-    private class StubHasMinimumAgeSpecification : Specification<StubEntityString>
+    private class StubHasMinimumAgeSpecification(int age) : Specification<StubEntityString>
     {
-        private readonly int age;
-
-        public StubHasMinimumAgeSpecification(int age)
-        {
-            this.age = age;
-        }
-
         public override Expression<Func<StubEntityString, bool>> ToExpression()
         {
-            return p => p.Age >= this.age;
+            return p => p.Age >= age;
         }
     }
 }

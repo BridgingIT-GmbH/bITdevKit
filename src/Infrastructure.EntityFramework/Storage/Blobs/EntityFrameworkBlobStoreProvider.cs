@@ -1218,22 +1218,13 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
             long byteCount);
     }
 
-    private sealed class BlobChunkReadStream : Stream
+    private sealed class BlobChunkReadStream(ContextLease lease, string blobId, long length) : Stream
     {
-        private readonly ContextLease lease;
-        private readonly string blobId;
         private byte[] currentChunk;
         private int currentOffset;
         private int nextIndex;
         private bool completed;
         private bool disposed;
-
-        public BlobChunkReadStream(ContextLease lease, string blobId, long length)
-        {
-            this.lease = lease;
-            this.blobId = blobId;
-            this.Length = length;
-        }
 
         public override bool CanRead => !this.disposed;
 
@@ -1241,7 +1232,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
 
         public override bool CanWrite => false;
 
-        public override long Length { get; }
+        public override long Length { get; } = length;
 
         public override long Position { get; set; }
 
@@ -1288,7 +1279,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         {
             if (disposing && !this.disposed)
             {
-                this.lease.Dispose();
+                lease.Dispose();
                 this.disposed = true;
             }
 
@@ -1299,7 +1290,7 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         {
             if (!this.disposed)
             {
-                await this.lease.DisposeAsync().ConfigureAwait(false);
+                await lease.DisposeAsync().ConfigureAwait(false);
                 this.disposed = true;
             }
 
@@ -1318,9 +1309,9 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
                 return true;
             }
 
-            var chunk = await this.lease.Context.StorageBlobChunks
+            var chunk = await lease.Context.StorageBlobChunks
                 .AsNoTracking()
-                .Where(e => e.BlobId == this.blobId && e.Index == this.nextIndex)
+                .Where(e => e.BlobId == blobId && e.Index == this.nextIndex)
                 .Select(e => new { e.Content, e.Length })
                 .SingleOrDefaultAsync(cancellationToken)
                 .ConfigureAwait(false);
@@ -1341,25 +1332,18 @@ public sealed partial class EntityFrameworkBlobStoreProvider<TContext> : IBlobSt
         }
     }
 
-    private sealed class ContextLease : IDisposable, IAsyncDisposable
+    private sealed class ContextLease(IServiceScope scope, TContext context) : IDisposable, IAsyncDisposable
     {
-        private readonly IServiceScope scope;
-        public ContextLease(IServiceScope scope, TContext context)
-        {
-            this.scope = scope;
-            this.Context = context;
-        }
-
-        public TContext Context { get; }
+        public TContext Context { get; } = context;
 
         public void Dispose()
         {
-            this.scope.Dispose();
+            scope.Dispose();
         }
 
         public ValueTask DisposeAsync()
         {
-            if (this.scope is IAsyncDisposable asyncDisposable)
+            if (scope is IAsyncDisposable asyncDisposable)
             {
                 return asyncDisposable.DisposeAsync();
             }

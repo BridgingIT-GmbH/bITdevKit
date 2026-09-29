@@ -45,17 +45,12 @@ public sealed class ProfilingSegmentContext
         return frame;
     }
 
-    internal sealed class Frame
+    internal sealed class Frame(Frame parent)
     {
         private int active = 1;
         private ProfilingAmbientSegment segment;
 
-        public Frame(Frame parent)
-        {
-            this.Parent = parent;
-        }
-
-        public Frame Parent { get; }
+        public Frame Parent { get; } = parent;
 
         public bool IsActive => Volatile.Read(ref this.active) != 0;
 

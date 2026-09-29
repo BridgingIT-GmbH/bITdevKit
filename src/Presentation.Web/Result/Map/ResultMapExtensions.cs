@@ -116,7 +116,7 @@ public static class ResultMapExtensions
         ILogger logger = null)
         where T : class
     {
-        ArgumentNullException.ThrowIfNull(uriFactory, nameof(uriFactory));
+        ArgumentNullException.ThrowIfNull(uriFactory);
 
         if (result.IsSuccess)
         {

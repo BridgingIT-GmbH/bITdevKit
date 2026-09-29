@@ -18,13 +18,9 @@ using Xunit;
 /// </summary>
 public class TimeProviderAccessorTests : IDisposable
 {
-    private readonly TimeProvider original;
+    private readonly TimeProvider original = TimeProviderAccessor.Current;
 
-    public TimeProviderAccessorTests()
-    {
-        // Capture original state before each test
-        this.original = TimeProviderAccessor.Current;
-    }
+    // Capture original state before each test
 
     public void Dispose()
     {

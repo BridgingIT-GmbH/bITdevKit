@@ -12,16 +12,11 @@ using Testcontainers.MsSql;
 /// </summary>
 public sealed class WeatherFiestaSqlServerFixture : IAsyncLifetime
 {
-    public WeatherFiestaSqlServerFixture()
-    {
-        this.SqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest").Build();
-    }
-
     /// <summary>Gets the SQL Server connection string.</summary>
     public string ConnectionString => this.SqlContainer.GetConnectionString();
 
     /// <summary>Gets the SQL Server container.</summary>
-    public MsSqlContainer SqlContainer { get; }
+    public MsSqlContainer SqlContainer { get; } = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest").Build();
 
     /// <inheritdoc />
     public async Task InitializeAsync()

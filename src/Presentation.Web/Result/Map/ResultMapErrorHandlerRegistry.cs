@@ -29,7 +29,7 @@ public static class ResultMapErrorHandlerRegistry
     public static void RegisterHandler<TError>(Func<ILogger, Result, IResult> handler)
         where TError : IResultError
     {
-        ArgumentNullException.ThrowIfNull(handler, nameof(handler));
+        ArgumentNullException.ThrowIfNull(handler);
 
         ErrorHandlers[typeof(TError)] = handler;
     }

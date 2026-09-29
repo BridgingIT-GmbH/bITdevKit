@@ -631,27 +631,21 @@ public class MessageAddingBehavior<TNotification, TResponse> : IPipelineBehavior
 /// <summary>
 /// A notification that captures the RequestContext for testing.
 /// </summary>
-public class ContextCapturingNotification : NotificationBase
+public class ContextCapturingNotification(List<string> capturedValues) : NotificationBase
 {
-    private readonly List<string> capturedValues;
-
-    public ContextCapturingNotification(List<string> capturedValues) => this.capturedValues = capturedValues;
+    private readonly List<string> capturedValues = capturedValues;
 }
 
 /// <summary>
 /// A handler that captures the RequestContext and appends to the captured values.
 /// </summary>
-public class ContextCapturingNotificationHandler : NotificationHandlerBase<ContextCapturingNotification>
+public class ContextCapturingNotificationHandler(List<string> capturedValues) : NotificationHandlerBase<ContextCapturingNotification>
 {
-    private readonly List<string> capturedValues;
-
-    public ContextCapturingNotificationHandler(List<string> capturedValues) => this.capturedValues = capturedValues;
-
     protected override Task<Result> HandleAsync(ContextCapturingNotification notification, PublishOptions options, CancellationToken cancellationToken)
     {
         if (options?.Context?.Properties.TryGetValue("UserId", out var userId) == true)
         {
-            this.capturedValues.Add($"{userId}-Handler");
+            capturedValues.Add($"{userId}-Handler");
         }
 
         return Task.FromResult(Result.Success());

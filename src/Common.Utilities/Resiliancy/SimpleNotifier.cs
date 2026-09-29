@@ -184,8 +184,9 @@ public class SimpleNotifier(
             if (this.subscribers.TryGetValue(notificationType, out var handlerArray))
             {
                 List<(ISimpleNotificationHandler, int)> handlers = [.. handlerArray];
-                handlers.RemoveAll(h => h.Item1 == handler);
+                handlers.RemoveAll(h => Equals(h.Item1, handler));
                 this.subscribers[notificationType] = [.. handlers]; // Back to array
+
                 if (handlers.Count == 0)
                 {
                     this.subscribers.Remove(notificationType);

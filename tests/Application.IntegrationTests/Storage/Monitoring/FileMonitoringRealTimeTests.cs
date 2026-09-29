@@ -18,14 +18,9 @@ using Xunit;
 
 [IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class FileMonitoringRealTimeTests
+public class FileMonitoringRealTimeTests(ITestOutputHelper output)
 {
-    private readonly ITestOutputHelper output;
-
-    public FileMonitoringRealTimeTests(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
+    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public async Task FileMonitoringService_RealTime_DetectsFileChanges()
@@ -415,15 +410,10 @@ public class FileMonitoringRealTimeTests
     }
 }
 
-public class TestProcessor : IFileEventProcessor
+public class TestProcessor(ILogger<TestProcessor> logger) : IFileEventProcessor
 {
-    private readonly ILogger<TestProcessor> logger;
+    private readonly ILogger<TestProcessor> logger = logger ?? throw new ArgumentNullException(nameof(logger));
     private int invocationCount;
-
-    public TestProcessor(ILogger<TestProcessor> logger)
-    {
-        this.logger = logger ?? throw new ArgumentNullException(nameof(logger));
-    }
 
     public string ProcessorName => nameof(TestProcessor);
 

@@ -19,12 +19,7 @@ using Xunit;
 /// </summary>
 public class TimeProviderRegistrationTests : IDisposable
 {
-    private readonly TimeProvider originalAccessor;
-
-    public TimeProviderRegistrationTests()
-    {
-        this.originalAccessor = TimeProviderAccessor.Current;
-    }
+    private readonly TimeProvider originalAccessor = TimeProviderAccessor.Current;
 
     public void Dispose()
     {

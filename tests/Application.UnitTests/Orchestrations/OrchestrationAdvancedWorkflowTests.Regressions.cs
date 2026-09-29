@@ -449,20 +449,14 @@ public partial class OrchestrationAdvancedWorkflowTests
         public ISerializer Serializer => this.inner.Serializer;
     }
 
-    private sealed class LeaseFaultingLeaseStore : IOrchestrationLeaseStore
+    private sealed class LeaseFaultingLeaseStore(IOrchestrationLeaseStore inner) : IOrchestrationLeaseStore
     {
-        private readonly IOrchestrationLeaseStore inner;
         private readonly ConcurrentDictionary<Guid, Guid> activeLeaseIds = new();
         private readonly ConcurrentDictionary<(Guid InstanceId, Guid LeaseId), byte> invalidatedLeases = new();
 
-        public LeaseFaultingLeaseStore(IOrchestrationLeaseStore inner)
-        {
-            this.inner = inner;
-        }
-
         public async Task<OrchestrationLease> AcquireAsync(Guid instanceId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)
         {
-            var lease = await this.inner.AcquireAsync(instanceId, owner, duration, cancellationToken).ConfigureAwait(false);
+            var lease = await inner.AcquireAsync(instanceId, owner, duration, cancellationToken).ConfigureAwait(false);
             this.activeLeaseIds[instanceId] = lease.LeaseId;
             return lease;
         }
@@ -477,7 +471,7 @@ public partial class OrchestrationAdvancedWorkflowTests
 
         public async Task<OrchestrationLease> RenewAsync(Guid instanceId, Guid leaseId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)
         {
-            var lease = await this.inner.RenewAsync(instanceId, leaseId, owner, duration, cancellationToken).ConfigureAwait(false);
+            var lease = await inner.RenewAsync(instanceId, leaseId, owner, duration, cancellationToken).ConfigureAwait(false);
             this.activeLeaseIds[instanceId] = lease.LeaseId;
             return lease;
         }
@@ -486,7 +480,7 @@ public partial class OrchestrationAdvancedWorkflowTests
         {
             this.activeLeaseIds.TryRemove(instanceId, out _);
             this.invalidatedLeases.TryRemove((instanceId, leaseId), out _);
-            await this.inner.ReleaseAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
+            await inner.ReleaseAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
         }
 
         public async Task<bool> VerifyAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)
@@ -496,37 +490,26 @@ public partial class OrchestrationAdvancedWorkflowTests
                 return false;
             }
 
-            return await this.inner.VerifyAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
+            return await inner.VerifyAsync(instanceId, leaseId, owner, cancellationToken).ConfigureAwait(false);
         }
     }
 
-    private sealed class LeaseFaultingHistoryStore : IOrchestrationHistoryStore
+    private sealed class LeaseFaultingHistoryStore(
+        IOrchestrationHistoryStore inner,
+        LeaseFaultingLeaseStore leases,
+        string triggerEventType,
+        int triggerOccurrence)
+        : IOrchestrationHistoryStore
     {
-        private readonly IOrchestrationHistoryStore inner;
-        private readonly LeaseFaultingLeaseStore leases;
-        private readonly string triggerEventType;
-        private readonly int triggerOccurrence;
         private int eventCount;
-
-        public LeaseFaultingHistoryStore(
-            IOrchestrationHistoryStore inner,
-            LeaseFaultingLeaseStore leases,
-            string triggerEventType,
-            int triggerOccurrence)
-        {
-            this.inner = inner;
-            this.leases = leases;
-            this.triggerEventType = triggerEventType;
-            this.triggerOccurrence = triggerOccurrence;
-        }
 
         public async Task<OrchestrationHistoryEntry> AppendAsync(OrchestrationHistoryEntry entry, CancellationToken cancellationToken = default)
         {
-            var persisted = await this.inner.AppendAsync(entry, cancellationToken).ConfigureAwait(false);
-            if (string.Equals(entry.EventType, this.triggerEventType, StringComparison.OrdinalIgnoreCase) &&
-                Interlocked.Increment(ref this.eventCount) == this.triggerOccurrence)
+            var persisted = await inner.AppendAsync(entry, cancellationToken).ConfigureAwait(false);
+            if (string.Equals(entry.EventType, triggerEventType, StringComparison.OrdinalIgnoreCase) &&
+                Interlocked.Increment(ref this.eventCount) == triggerOccurrence)
             {
-                this.leases.InvalidateActiveLease(entry.InstanceId);
+                leases.InvalidateActiveLease(entry.InstanceId);
             }
 
             return persisted;
@@ -534,7 +517,7 @@ public partial class OrchestrationAdvancedWorkflowTests
 
         public Task<IReadOnlyCollection<OrchestrationHistoryEntry>> GetAsync(Guid instanceId, CancellationToken cancellationToken = default)
         {
-            return this.inner.GetAsync(instanceId, cancellationToken);
+            return inner.GetAsync(instanceId, cancellationToken);
         }
     }
 }

@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Abstractions;
 
 using System.Reflection;
+using System.Reflection.Emit;
 using Shouldly;
 using Xunit;
 
@@ -68,7 +69,12 @@ public class VersionTests
     public void ParseFromAssembly_ValidAssembly_ReturnsCorrectVersion()
     {
         // Arrange
-        var assembly = new FakeAssembly("1.2.3-beta+build456");
+        var assembly = AssemblyBuilder.DefineDynamicAssembly(
+            new AssemblyName("VersionTests.DynamicAssembly"),
+            AssemblyBuilderAccess.Run);
+        assembly.SetCustomAttribute(new CustomAttributeBuilder(
+            typeof(AssemblyInformationalVersionAttribute).GetConstructor([typeof(string)]),
+            ["1.2.3-beta+build456"]));
 
         // Act
         var version = Version.Parse(assembly);
@@ -205,26 +211,5 @@ public class VersionTests
         // Act & Assert
         v1.Equals(v2).ShouldBeFalse();
         (v1 != v2).ShouldBeTrue();
-    }
-}
-
-// Fake Assembly for testing
-public class FakeAssembly : Assembly
-{
-    private readonly string informationalVersion;
-
-    public FakeAssembly(string informationalVersion)
-    {
-        this.informationalVersion = informationalVersion;
-    }
-
-    public override object[] GetCustomAttributes(Type attributeType, bool inherit)
-    {
-        if (attributeType == typeof(AssemblyInformationalVersionAttribute))
-        {
-            return new[] { new AssemblyInformationalVersionAttribute(this.informationalVersion) };
-        }
-
-        return Array.Empty<object>();
     }
 }

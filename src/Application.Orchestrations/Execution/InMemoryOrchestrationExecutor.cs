@@ -39,24 +39,14 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private readonly ConcurrentDictionary<Guid, byte> scheduledTimerWatchers = new ConcurrentDictionary<Guid, byte>();
     private readonly AsyncLocal<ActivityCheckpointSession> currentCheckpointSession = new();
 
-    private class LeaseHandle
+    private class LeaseHandle(OrchestrationLease lease)
     {
-        public LeaseHandle(OrchestrationLease lease)
-        {
-            this.Lease = lease;
-        }
-
-        public OrchestrationLease Lease { get; set; }
+        public OrchestrationLease Lease { get; set; } = lease;
     }
 
-    private sealed class ActivitySnapshotHolder
+    private sealed class ActivitySnapshotHolder(OrchestrationInstanceSnapshot snapshot)
     {
-        public ActivitySnapshotHolder(OrchestrationInstanceSnapshot snapshot)
-        {
-            this.Snapshot = snapshot;
-        }
-
-        public OrchestrationInstanceSnapshot Snapshot { get; set; }
+        public OrchestrationInstanceSnapshot Snapshot { get; set; } = snapshot;
     }
 
     private sealed class ActivityCheckpointSession
@@ -68,29 +58,11 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         public ActivitySnapshotHolder SnapshotHolder { get; init; }
     }
 
-    private class OrchestrationLeaseException : InvalidOperationException
-    {
-        public OrchestrationLeaseException(string message, Exception innerException = null)
-            : base(message, innerException)
-        {
-        }
-    }
+    private class OrchestrationLeaseException(string message, Exception innerException = null) : InvalidOperationException(message, innerException);
 
-    private class OrchestrationLeaseConflictException : OrchestrationLeaseException
-    {
-        public OrchestrationLeaseConflictException(string message, Exception innerException = null)
-            : base(message, innerException)
-        {
-        }
-    }
+    private class OrchestrationLeaseConflictException(string message, Exception innerException = null) : OrchestrationLeaseException(message, innerException);
 
-    private class OrchestrationLeaseLostException : OrchestrationLeaseException
-    {
-        public OrchestrationLeaseLostException(string message, Exception innerException = null)
-            : base(message, innerException)
-        {
-        }
-    }
+    private class OrchestrationLeaseLostException(string message, Exception innerException = null) : OrchestrationLeaseException(message, innerException);
 
     private sealed record ActivityExecutionResolution(ActivityExecutionResolutionKind Kind, OrchestrationOutcome Outcome = null, string Reason = null);
 

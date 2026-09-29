@@ -7,79 +7,60 @@ namespace BridgingIT.DevKit.Application.Jobs;
 
 using BridgingIT.DevKit.Common;
 
-internal sealed class RuntimeJobExecutionContext<TData> : IJobExecutionContext<TData>
+internal sealed class RuntimeJobExecutionContext<TData>(
+    string jobName,
+    string triggerName,
+    Guid occurrenceId,
+    Guid executionId,
+    int attemptNumber,
+    string correlationId,
+    string idempotencyKey,
+    DateTimeOffset? scheduledUtc,
+    DateTimeOffset dueUtc,
+    DateTimeOffset startedUtc,
+    TData data,
+    Type dataType,
+    PropertyBag properties,
+    JobExecutionContextSnapshot previousExecution,
+    JobExecutionContextSnapshot previousSuccessfulExecution,
+    CancellationToken cancellationToken)
+    : IJobExecutionContext<TData>
 {
-    public RuntimeJobExecutionContext(
-        string jobName,
-        string triggerName,
-        Guid occurrenceId,
-        Guid executionId,
-        int attemptNumber,
-        string correlationId,
-        string idempotencyKey,
-        DateTimeOffset? scheduledUtc,
-        DateTimeOffset dueUtc,
-        DateTimeOffset startedUtc,
-        TData data,
-        Type dataType,
-        PropertyBag properties,
-        JobExecutionContextSnapshot previousExecution,
-        JobExecutionContextSnapshot previousSuccessfulExecution,
-        CancellationToken cancellationToken)
-    {
-        this.JobName = jobName;
-        this.TriggerName = triggerName;
-        this.OccurrenceId = occurrenceId;
-        this.ExecutionId = executionId;
-        this.AttemptNumber = attemptNumber;
-        this.CorrelationId = correlationId;
-        this.IdempotencyKey = idempotencyKey;
-        this.ScheduledUtc = scheduledUtc;
-        this.DueUtc = dueUtc;
-        this.StartedUtc = startedUtc;
-        this.Data = data;
-        this.DataType = dataType;
-        this.Properties = properties?.Clone() ?? new PropertyBag();
-        this.PreviousExecution = previousExecution;
-        this.PreviousSuccessfulExecution = previousSuccessfulExecution;
-        this.CancellationToken = cancellationToken;
-    }
+    public string JobName { get; } = jobName;
 
-    public string JobName { get; }
+    public string TriggerName { get; } = triggerName;
 
-    public string TriggerName { get; }
+    public Guid OccurrenceId { get; } = occurrenceId;
 
-    public Guid OccurrenceId { get; }
+    public Guid ExecutionId { get; } = executionId;
 
-    public Guid ExecutionId { get; }
+    public int AttemptNumber { get; } = attemptNumber;
 
-    public int AttemptNumber { get; }
+    public string CorrelationId { get; } = correlationId;
 
-    public string CorrelationId { get; }
+    public string IdempotencyKey { get; } = idempotencyKey;
 
-    public string IdempotencyKey { get; }
+    public DateTimeOffset? ScheduledUtc { get; } = scheduledUtc;
 
-    public DateTimeOffset? ScheduledUtc { get; }
+    public DateTimeOffset DueUtc { get; } = dueUtc;
 
-    public DateTimeOffset DueUtc { get; }
+    public DateTimeOffset StartedUtc { get; } = startedUtc;
 
-    public DateTimeOffset StartedUtc { get; }
-
-    public TData Data { get; }
+    public TData Data { get; } = data;
 
     object IJobExecutionContext.Data => this.Data;
 
-    public Type DataType { get; }
+    public Type DataType { get; } = dataType;
 
-    public PropertyBag Properties { get; }
+    public PropertyBag Properties { get; } = properties?.Clone() ?? new PropertyBag();
 
     public ICollection<string> Messages { get; } = [];
 
     public IDictionary<string, object> Items { get; } = new Dictionary<string, object>();
 
-    public JobExecutionContextSnapshot PreviousExecution { get; }
+    public JobExecutionContextSnapshot PreviousExecution { get; } = previousExecution;
 
-    public JobExecutionContextSnapshot PreviousSuccessfulExecution { get; }
+    public JobExecutionContextSnapshot PreviousSuccessfulExecution { get; } = previousSuccessfulExecution;
 
-    public CancellationToken CancellationToken { get; }
+    public CancellationToken CancellationToken { get; } = cancellationToken;
 }

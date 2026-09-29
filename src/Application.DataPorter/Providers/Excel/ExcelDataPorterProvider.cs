@@ -154,7 +154,7 @@ public sealed class ExcelDataPorterProvider(
         // Write footer rows (if configured)
         foreach (var footerRow in exportConfiguration.FooterRows)
         {
-            var footerContent = footerRow.ContentFactory?.Invoke(dataList.Cast<object>()) ?? footerRow.Content;
+            var footerContent = footerRow.ContentFactory?.Invoke(dataList) ?? footerRow.Content;
             worksheet.Cell(currentRow, 1).Value = footerContent;
 
             var footerRange = worksheet.Range(currentRow, 1, currentRow, exportConfiguration.Columns.Count);

@@ -2734,7 +2734,7 @@ public static class ResultTExtensions
 
         try
         {
-            options ??= ProcessingOptions.Default;
+            // options ??= ProcessingOptions.Default;
             var errors = new List<IResultError>();
             var messages = new List<string>();
             var lastSuccessResult = default(Result<T>);
@@ -2824,7 +2824,7 @@ public static class ResultTExtensions
 
         try
         {
-            options ??= ProcessingOptions.Default;
+            // options ??= ProcessingOptions.Default;
             var errors = new List<IResultError>();
             var messages = new List<string>();
             var lastSuccessResult = default(Result<T>);

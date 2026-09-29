@@ -11,14 +11,8 @@ using BridgingIT.DevKit.Application.DataPorter;
 [UnitTest("Common")]
 public class ConfigurationMergerTests
 {
-    private readonly ProfileRegistry profileRegistry;
-    private readonly AttributeConfigurationReader attributeReader;
-
-    public ConfigurationMergerTests()
-    {
-        this.profileRegistry = new ProfileRegistry();
-        this.attributeReader = new AttributeConfigurationReader();
-    }
+    private readonly ProfileRegistry profileRegistry = new();
+    private readonly AttributeConfigurationReader attributeReader = new();
 
     [Fact]
     public void BuildExportConfiguration_WithNullOptions_UsesDefaults()

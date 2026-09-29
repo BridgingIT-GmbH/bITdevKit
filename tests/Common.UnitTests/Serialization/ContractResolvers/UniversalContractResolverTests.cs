@@ -11,16 +11,11 @@ using Xunit;
 
 public class UniversalContractResolverTests
 {
-    private readonly JsonSerializerOptions options;
-
-    public UniversalContractResolverTests()
+    private readonly JsonSerializerOptions options = new()
     {
-        this.options = new JsonSerializerOptions
-        {
-            TypeInfoResolver = new UniversalContractResolver(),
-            PropertyNameCaseInsensitive = true
-        };
-    }
+        TypeInfoResolver = new UniversalContractResolver(),
+        PropertyNameCaseInsensitive = true
+    };
 
     // Test class with public constructor and public setters
     public class TestPublicClass

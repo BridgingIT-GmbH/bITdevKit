@@ -248,39 +248,29 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
         return storeName.Trim().ToLowerInvariant();
     }
 
-    private sealed class StoreState : IDisposable
+    private sealed class StoreState(
+        string storeName,
+        UploadConcurrencyBlobStoreClientBehaviorOptions options,
+        IMetricsService metricsService)
+        : IDisposable
     {
-        private readonly IMetricsService metricsService;
         private int active;
         private int queued;
 
-        public StoreState(
-            string storeName,
-            UploadConcurrencyBlobStoreClientBehaviorOptions options,
-            IMetricsService metricsService)
+        public string StoreName { get; } = storeName;
+
+        public int MaxConcurrentUploads { get; } = options.MaxConcurrentUploads;
+
+        public int MaxQueuedUploads { get; } = options.MaxQueuedUploads;
+
+        public TimeSpan QueueWaitTimeout { get; } = options.QueueWaitTimeout;
+
+        public ConcurrencyLimiter Limiter { get; } = new(new ConcurrencyLimiterOptions
         {
-            this.StoreName = storeName;
-            this.MaxConcurrentUploads = options.MaxConcurrentUploads;
-            this.MaxQueuedUploads = options.MaxQueuedUploads;
-            this.QueueWaitTimeout = options.QueueWaitTimeout;
-            this.metricsService = metricsService;
-            this.Limiter = new ConcurrencyLimiter(new ConcurrencyLimiterOptions
-            {
-                PermitLimit = options.MaxConcurrentUploads,
-                QueueLimit = options.MaxQueuedUploads,
-                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
-            });
-        }
-
-        public string StoreName { get; }
-
-        public int MaxConcurrentUploads { get; }
-
-        public int MaxQueuedUploads { get; }
-
-        public TimeSpan QueueWaitTimeout { get; }
-
-        public ConcurrencyLimiter Limiter { get; }
+            PermitLimit = options.MaxConcurrentUploads,
+            QueueLimit = options.MaxQueuedUploads,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+        });
 
         public void EnsureCompatible(UploadConcurrencyBlobStoreClientBehaviorOptions options)
         {
@@ -330,7 +320,7 @@ public sealed class BlobUploadAdmissionCoordinator : IBlobUploadAdmissionCoordin
         private void RecordMetric(string name, long value)
         {
             MetricTag[] tags = [new("store", this.StoreName)];
-            this.metricsService?.AddUpDownCounter(name, value, tags);
+            metricsService?.AddUpDownCounter(name, value, tags);
         }
     }
 }

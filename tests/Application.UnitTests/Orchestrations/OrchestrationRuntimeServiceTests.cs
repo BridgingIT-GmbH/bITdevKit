@@ -847,35 +847,28 @@ public class OrchestrationRuntimeServiceTests(ITestOutputHelper output) : Orches
         public ISerializer Serializer => this.inner.Serializer;
     }
 
-    private class ControllableLeaseStore : IOrchestrationLeaseStore
+    private class ControllableLeaseStore(IOrchestrationLeaseStore inner) : IOrchestrationLeaseStore
     {
-        private readonly IOrchestrationLeaseStore inner;
-
-        public ControllableLeaseStore(IOrchestrationLeaseStore inner)
-        {
-            this.inner = inner;
-        }
-
         public TimeSpan? ForcedDuration { get; set; }
 
         public Task<OrchestrationLease> AcquireAsync(Guid instanceId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)
         {
-            return this.inner.AcquireAsync(instanceId, owner, this.ForcedDuration ?? duration, cancellationToken);
+            return inner.AcquireAsync(instanceId, owner, this.ForcedDuration ?? duration, cancellationToken);
         }
 
         public Task<OrchestrationLease> RenewAsync(Guid instanceId, Guid leaseId, string owner, TimeSpan duration, CancellationToken cancellationToken = default)
         {
-            return this.inner.RenewAsync(instanceId, leaseId, owner, this.ForcedDuration ?? duration, cancellationToken);
+            return inner.RenewAsync(instanceId, leaseId, owner, this.ForcedDuration ?? duration, cancellationToken);
         }
 
         public Task ReleaseAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)
         {
-            return this.inner.ReleaseAsync(instanceId, leaseId, owner, cancellationToken);
+            return inner.ReleaseAsync(instanceId, leaseId, owner, cancellationToken);
         }
 
         public Task<bool> VerifyAsync(Guid instanceId, Guid leaseId, string owner, CancellationToken cancellationToken = default)
         {
-            return this.inner.VerifyAsync(instanceId, leaseId, owner, cancellationToken);
+            return inner.VerifyAsync(instanceId, leaseId, owner, cancellationToken);
         }
     }
 }

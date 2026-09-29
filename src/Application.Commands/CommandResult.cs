@@ -263,7 +263,7 @@ public static class CommandResult
     /// <param name="message">An optional failure message to include in the response.</param>
     /// <param name="error">An optional error object implementing <see cref="IResultError"/>.</param>
     /// <returns>A <c>CommandResponse&lt;Result&lt;TValue&gt;&gt;</c> containing the failure result.</returns>
-    public static CommandResponse<Result<TValue>> Failure<TValue>(string message = null, IResultError error = null)
+    public static CommandResponse<Result<TValue>> Failure<TValue>(string message, IResultError error)
     {
         return new CommandResponse<Result<TValue>> { Result = Result<TValue>.Failure(message, error) };
     }

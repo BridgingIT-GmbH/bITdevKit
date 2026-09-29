@@ -397,15 +397,10 @@ public class ModuleRegistrationTests
         return (T)instance.GetType().GetProperty(name).GetValue(instance);
     }
 
-    public class TrackingWebModule : WebModuleBase
+    public class TrackingWebModule(string name, int priority = 99) : WebModuleBase(name, priority)
     {
         public TrackingWebModule()
             : this("tracking")
-        {
-        }
-
-        public TrackingWebModule(string name, int priority = 99)
-            : base(name, priority)
         {
         }
 
@@ -452,61 +447,19 @@ public class ModuleRegistrationTests
         }
     }
 
-    public sealed class AlphaModule : TrackingWebModule
-    {
-        public AlphaModule()
-            : base("alpha", 20)
-        {
-        }
-    }
+    public sealed class AlphaModule() : TrackingWebModule("alpha", 20);
 
-    public sealed class BravoModule : TrackingWebModule
-    {
-        public BravoModule()
-            : base("bravo", 10)
-        {
-        }
-    }
+    public sealed class BravoModule() : TrackingWebModule("bravo", 10);
 
-    public sealed class ZuluModule : TrackingWebModule
-    {
-        public ZuluModule()
-            : base("zulu", 20)
-        {
-        }
-    }
+    public sealed class ZuluModule() : TrackingWebModule("zulu", 20);
 
-    public sealed class HostAModule : TrackingWebModule
-    {
-        public HostAModule()
-            : base("host-a")
-        {
-        }
-    }
+    public sealed class HostAModule() : TrackingWebModule("host-a");
 
-    public sealed class HostBModule : TrackingWebModule
-    {
-        public HostBModule()
-            : base("host-b")
-        {
-        }
-    }
+    public sealed class HostBModule() : TrackingWebModule("host-b");
 
-    public sealed class DuplicateNameModuleA : TrackingWebModule
-    {
-        public DuplicateNameModuleA()
-            : base("duplicate")
-        {
-        }
-    }
+    public sealed class DuplicateNameModuleA() : TrackingWebModule("duplicate");
 
-    public sealed class DuplicateNameModuleB : TrackingWebModule
-    {
-        public DuplicateNameModuleB()
-            : base("DUPLICATE")
-        {
-        }
-    }
+    public sealed class DuplicateNameModuleB() : TrackingWebModule("DUPLICATE");
 
     public abstract class AbstractModule : ModuleBase
     {
@@ -516,13 +469,7 @@ public class ModuleRegistrationTests
     {
     }
 
-    public sealed class ModuleWithoutDefaultConstructor : TrackingWebModule
-    {
-        public ModuleWithoutDefaultConstructor(string name)
-            : base(name)
-        {
-        }
-    }
+    public sealed class ModuleWithoutDefaultConstructor(string name) : TrackingWebModule(name);
 
     private sealed class CollectingSink : ILogEventSink
     {

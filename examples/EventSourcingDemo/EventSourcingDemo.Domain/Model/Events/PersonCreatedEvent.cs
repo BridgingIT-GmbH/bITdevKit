@@ -12,25 +12,19 @@ using Newtonsoft.Json;
 
 // TODO: get rid of Newtonsoft dependency
 
-[ImmutableName("PersonAggregate_PersonCreatedEvent_v1_13.05.2019")] // <1>
-public class PersonCreatedEvent : AggregateCreatedEvent<Person> // <2>
+[ImmutableName("PersonAggregate_PersonCreatedEvent_v1_13.05.2019")]
+[method: JsonConstructor] // <1>
+public class PersonCreatedEvent(Guid id, string surname, string firstname) : AggregateCreatedEvent<Person>(id) // <2>
 {
     public PersonCreatedEvent(string surname, string firstname) // <3>
-        : base(Guid.NewGuid())
+        : this(Guid.NewGuid(), surname, firstname)
     {
-        this.Surname = surname;
-        this.Firstname = firstname;
     }
 
-    [JsonConstructor] // <5>
-    public PersonCreatedEvent(Guid id, string surname, string firstname) // <4>
-        : base(id)
-    {
-        this.Surname = surname;
-        this.Firstname = firstname;
-    }
+    // <5>
+    // <4>
 
-    public string Surname { get; set; }
+    public string Surname { get; set; } = surname;
 
-    public string Firstname { get; set; }
+    public string Firstname { get; set; } = firstname;
 }

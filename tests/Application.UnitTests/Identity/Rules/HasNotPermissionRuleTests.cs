@@ -16,14 +16,8 @@ using Xunit;
 
 public class HasNotPermissionRuleTests
 {
-    private readonly ICurrentUserAccessor userAccessor;
-    private readonly IEntityPermissionEvaluator<TestEntity> evaluator;
-
-    public HasNotPermissionRuleTests()
-    {
-        this.userAccessor = Substitute.For<ICurrentUserAccessor>();
-        this.evaluator = Substitute.For<IEntityPermissionEvaluator<TestEntity>>();
-    }
+    private readonly ICurrentUserAccessor userAccessor = Substitute.For<ICurrentUserAccessor>();
+    private readonly IEntityPermissionEvaluator<TestEntity> evaluator = Substitute.For<IEntityPermissionEvaluator<TestEntity>>();
 
     [Fact]
     public async Task EntityWide_NoPermission_ReturnsSuccess()

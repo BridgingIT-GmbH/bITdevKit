@@ -17,14 +17,9 @@ using Xunit;
 
 [IntegrationTest("Application")]
 [Collection(nameof(TestEnvironmentCollection))] // https://xunit.net/docs/shared-context#collection-fixture
-public class FileMonitoringConfigurationTests
+public class FileMonitoringConfigurationTests(ITestOutputHelper output)
 {
-    private readonly ITestOutputHelper output;
-
-    public FileMonitoringConfigurationTests(ITestOutputHelper output)
-    {
-        this.output = output;
-    }
+    private readonly ITestOutputHelper output = output;
 
     [Fact]
     public void FluentApi_AddFileMonitoring_RegistersComponentsCorrectly()
@@ -231,10 +226,8 @@ public class FileMonitoringConfigurationTests
     }
 
     // Dummy TestDbContext for the test (assumes EF extension)
-    public class TestDbContext : DbContext, IFileMonitoringContext
+    public class TestDbContext(DbContextOptions<TestDbContext> options) : DbContext(options), IFileMonitoringContext
     {
-        public TestDbContext(DbContextOptions<TestDbContext> options) : base(options) { }
-
         public DbSet<FileEventEntity> FileEvents { get; set; }
     }
 }

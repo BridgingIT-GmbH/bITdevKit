@@ -11,23 +11,17 @@ using Xunit.Abstractions;
 
 public class JobsTestEnvironmentFixture : IAsyncLifetime
 {
-    public JobsTestEnvironmentFixture()
-    {
-        this.SqlContainer = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest").Build();
-        this.PostgresContainer = new PostgreSqlBuilder("postgres:16-alpine")
-            .WithDatabase("testdb")
-            .WithUsername("postgres")
-            .WithPassword("postgres")
-            .Build();
-    }
-
     public string SqlConnectionString => this.SqlContainer.GetConnectionString();
 
     public string PostgresConnectionString => this.PostgresContainer.GetConnectionString();
 
-    public MsSqlContainer SqlContainer { get; }
+    public MsSqlContainer SqlContainer { get; } = new MsSqlBuilder("mcr.microsoft.com/mssql/server:2022-latest").Build();
 
-    public PostgreSqlContainer PostgresContainer { get; }
+    public PostgreSqlContainer PostgresContainer { get; } = new PostgreSqlBuilder("postgres:16-alpine")
+        .WithDatabase("testdb")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .Build();
 
     public ITestOutputHelper Output { get; private set; }
 

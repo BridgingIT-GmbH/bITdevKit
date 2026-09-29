@@ -8,7 +8,6 @@ namespace BridgingIT.DevKit.Presentation.Web.Dashboard;
 using System.Reflection;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication.OpenIdConnect;
-using Microsoft.IdentityModel.Tokens;
 
 /// <summary>
 ///     Builds <see cref="DashboardEndpointsOptions" /> for dashboard endpoint registration.
@@ -774,7 +773,7 @@ public sealed class DashboardOpenIdConnectOptionsBuilder(string authority, strin
                 : $"{normalizedAuthority}/.well-known/openid-configuration");
         options.ClientId = normalizedClientId;
         options.RequireHttpsMetadata = this.requireHttpsMetadata;
-        options.TokenValidationParameters ??= new TokenValidationParameters();
+        // options.TokenValidationParameters ??= new TokenValidationParameters();
         options.TokenValidationParameters.ValidIssuer = normalizedAuthority;
         options.TokenValidationParameters.ValidAudience = normalizedClientId;
         options.TokenValidationParameters.ValidateIssuer = this.validateIssuer;

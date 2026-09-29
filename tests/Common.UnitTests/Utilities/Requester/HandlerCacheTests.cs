@@ -11,12 +11,7 @@ using Xunit;
 
 public class HandlerCacheTests
 {
-    private readonly IHandlerCache handlerCache;
-
-    public HandlerCacheTests()
-    {
-        this.handlerCache = new HandlerCache();
-    }
+    private readonly IHandlerCache handlerCache = new HandlerCache();
 
     [Fact]
     public void TryAdd_NonGenericHandler_Succeeds()

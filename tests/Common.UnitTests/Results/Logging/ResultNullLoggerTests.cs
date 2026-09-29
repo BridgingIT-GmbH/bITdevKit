@@ -10,9 +10,7 @@ using Xunit;
 
 public class ResultNullLoggerTests
 {
-    private readonly ResultNullLogger logger;
-
-    public ResultNullLoggerTests() => this.logger = new ResultNullLogger();
+    private readonly ResultNullLogger logger = new();
 
     [Fact]
     public void Log_WithStringContext_DoesNotThrowException()

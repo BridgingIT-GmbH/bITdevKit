@@ -637,15 +637,10 @@ public class ChangeHistorySqliteIntegrationTests
         }
     }
 
-    private sealed class IncludeCustomerRepository : EntityFrameworkRepositoryWrapper<Customer, ChangeHistoryTestDbContext>
+    private sealed class IncludeCustomerRepository(ChangeHistoryTestDbContext context)
+        : EntityFrameworkRepositoryWrapper<Customer, ChangeHistoryTestDbContext>(NullLoggerFactory.Instance, context)
     {
-        private readonly ChangeHistoryTestDbContext context;
-
-        public IncludeCustomerRepository(ChangeHistoryTestDbContext context)
-            : base(NullLoggerFactory.Instance, context)
-        {
-            this.context = context;
-        }
+        private readonly ChangeHistoryTestDbContext context = context;
 
         public override async Task<Customer> FindOneAsync(
             object id,

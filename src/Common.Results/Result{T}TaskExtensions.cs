@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 ///     Extension methods for asynchronous <see cref="Result{TValue}"/> instances to enable chaining.
 /// </summary>
-public static partial class ResultTTaskExtensions
+public static class ResultTTaskExtensions
 {
     /// <summary>
     /// Throws a <see cref="ResultException"/> if the Result task indicates failure.

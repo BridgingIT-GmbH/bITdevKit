@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SimpleNotifier | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides a publish-subscribe pattern for loosely coupled event handling.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class SimpleNotifier
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides a publish-subscribe pattern for loosely coupled event handling.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -172,7 +173,7 @@ Class SimpleNotifier
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -199,7 +200,7 @@ Class SimpleNotifier
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -249,7 +250,15 @@ Class SimpleNotifier
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_examples">Examples</h2>
+  <pre><code class="lang-csharp">var notifier = new SimpleNotifier(progress: new Progress&lt;SimpleNotifierProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}")));
+notifier.Subscribe&lt;MyEvent&gt;(async (e, ct) =&gt; Console.WriteLine(e.Message));
+await notifier.PublishAsync(new MyEvent { Message = "Hello" }, CancellationToken.None);</code></pre>
 
+
+  <h2 id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Initializes a new instance of the SimpleNotifier class with the specified settings.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -263,7 +272,8 @@ Class SimpleNotifier
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Provides a publish-subscribe pattern for loosely coupled event handling.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,13 +283,17 @@ Class SimpleNotifier
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>An optional logger to log errors if handleErrors is true. Defaults to null.</p>
+</dd>
     <dt><code>handleErrors</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>If true, catches and logs exceptions from event handlers; otherwise, throws them. Defaults to false.</p>
+</dd>
     <dt><code>pipelineBehaviors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleNotificationPipelineBehavior.html">ISimpleNotificationPipelineBehavior</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A list of pipeline behaviors to execute before and after event handling, applied in reverse order. Defaults to an empty list.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.SimpleNotifierProgress.html">SimpleNotifierProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for notification operations. Defaults to null.</p>
+</dd>
   </dl>
 
 
@@ -288,7 +302,15 @@ Class SimpleNotifier
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier__ctor_Microsoft_Extensions_Logging_ILogger_System_Boolean_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Utilities_ISimpleNotificationPipelineBehavior__System_IProgress_BridgingIT_DevKit_Common_Resiliancy_SimpleNotifierProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var notifier = new SimpleNotifier(progress: new Progress&lt;SimpleNotifierProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}")));
+notifier.Subscribe&lt;MyEvent&gt;(async (e, ct) =&gt; Console.WriteLine(e.Message));
+await notifier.PublishAsync(new MyEvent { Message = "Hello" }, CancellationToken.None);</code></pre>
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier__ctor_Microsoft_Extensions_Logging_ILogger_System_Boolean_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Utilities_ISimpleNotificationPipelineBehavior__System_IProgress_BridgingIT_DevKit_Common_Resiliancy_SimpleNotifierProgress___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Initializes a new instance of the SimpleNotifier class with the specified settings.</p>
+</div>
 
 
 
@@ -304,41 +326,61 @@ Class SimpleNotifier
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Publishes an event to all subscribed handlers, applying pipeline behaviors before and after handling.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task PublishAsync&lt;TNotification&gt;(TNotification notification, IProgress&lt;SimpleNotifierProgress&gt; progress = null, CancellationToken cancellationToken = default) where TNotification : ISimpleNotification</code></pre>
+    <pre><code class="lang-csharp hljs">public Task PublishAsync&lt;TNotification&gt;(TNotification notification, IProgress&lt;SimpleNotifierProgress&gt; progress1 = null, CancellationToken cancellationToken = default) where TNotification : ISimpleNotification</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>notification</code> <span class="xref">TNotification</span></dt>
-    <dd></dd>
-    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.SimpleNotifierProgress.html">SimpleNotifierProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The notification to publish.</p>
+</dd>
+    <dt><code>progress1</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.SimpleNotifierProgress.html">SimpleNotifierProgress</a>&gt;</dt>
+    <dd><p>An optional progress reporter for notification operations. Defaults to null.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNotification</code></dt>
-    <dd></dd>
+    <dd><p>The type of event to publish.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_PublishAsync__1___0_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_SimpleNotifierProgress__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cts = new CancellationTokenSource();
+var progress = new Progress&lt;SimpleNotifierProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Handlers: {p.HandlersProcessed}/{p.TotalHandlers}"));
+var notifier = new SimpleNotifier();
+notifier.Subscribe&lt;MyEvent&gt;(async (e, ct) =&gt; Console.WriteLine(e.Message));
+await notifier.PublishAsync(new MyEvent { Message = "Hello" }, cts.Token, progress);
+cts.Cancel(); // Cancel the operation if needed</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown if the operation is canceled via the cancellation token.</p>
+</dd>
+  </dl>
 
 
 
@@ -389,7 +431,8 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Subscribes a handler to events of the specified type with an optional execution order.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -399,21 +442,28 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>handler</code> <a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleNotificationHandler-1.html">ISimpleNotificationHandler</a>&lt;TNotification&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler to invoke when the event is published.</p>
+</dd>
     <dt><code>order</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The order in which the handler should be executed (lower values execute first). Defaults to 0.</p>
+</dd>
   </dl>
 
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNotification</code></dt>
-    <dd></dd>
+    <dd><p>The type of event to subscribe to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_Subscribe__1_BridgingIT_DevKit_Common_Utilities_ISimpleNotificationHandler___0__System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var notifier = new SimpleNotifier();
+notifier.Subscribe&lt;MyEvent&gt;(new MyEventHandler(), order: 1);</code></pre>
 
 
 
@@ -427,7 +477,8 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Subscribes a handler to events of the specified type with an optional execution order.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -437,21 +488,28 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>handler</code> <span class="xref">Func</span>&lt;TNotification, <span class="xref">CancellationToken</span>, <span class="xref">ValueTask</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler to invoke when the event is published.</p>
+</dd>
     <dt><code>order</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The order in which the handler should be executed (lower values execute first). Defaults to 0.</p>
+</dd>
   </dl>
 
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNotification</code></dt>
-    <dd></dd>
+    <dd><p>The type of event to subscribe to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_Subscribe__1_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask__System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var notifier = new SimpleNotifier();
+notifier.Subscribe&lt;MyEvent&gt;(async (e, ct) =&gt; Console.WriteLine(e.Message), order: 1);</code></pre>
 
 
 
@@ -465,7 +523,8 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Subscribes a handler to events of the specified type with an optional execution order.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -475,19 +534,25 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>order</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The order in which the handler should be executed (lower values execute first). Defaults to 0.</p>
+</dd>
   </dl>
 
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>THandler</code></dt>
-    <dd></dd>
+    <dd><p>The type of the handler to instantiate and subscribe.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_Subscribe__1_System_Int32__examples">Examples</h4>
+  <pre><code class="lang-csharp">var notifier = new SimpleNotifier();
+notifier.Subscribe&lt;MyEventHandler&gt;(order: 1);</code></pre>
 
 
 
@@ -501,7 +566,8 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Unsubscribes a handler from events of the specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -511,19 +577,27 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>handler</code> <a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleNotificationHandler-1.html">ISimpleNotificationHandler</a>&lt;TNotification&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler to remove.</p>
+</dd>
   </dl>
 
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNotification</code></dt>
-    <dd></dd>
+    <dd><p>The type of event to unsubscribe from.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_Unsubscribe__1_BridgingIT_DevKit_Common_Utilities_ISimpleNotificationHandler___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var notifier = new SimpleNotifier();
+var handler = new MyEventHandler();
+notifier.Subscribe&lt;MyEvent&gt;(handler);
+notifier.Unsubscribe&lt;MyEvent&gt;(handler);</code></pre>
 
 
 
@@ -537,7 +611,8 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Unsubscribes a handler from events of the specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -547,19 +622,27 @@ notifier.Subscribe(new MyEventHandler(), order: 1);</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>handler</code> <span class="xref">Func</span>&lt;TNotification, <span class="xref">CancellationToken</span>, <span class="xref">ValueTask</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler to remove.</p>
+</dd>
   </dl>
 
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TNotification</code></dt>
-    <dd></dd>
+    <dd><p>The type of event to unsubscribe from.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleNotifier_Unsubscribe__1_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___examples">Examples</h4>
+  <pre><code class="lang-csharp">var notifier = new SimpleNotifier();
+Func&lt;MyEvent, CancellationToken, Task&gt; handler = async (e, ct) =&gt; Console.WriteLine(e.Message);
+notifier.Subscribe&lt;MyEvent&gt;(handler);
+notifier.Unsubscribe&lt;MyEvent&gt;(handler);</code></pre>
 
 
 

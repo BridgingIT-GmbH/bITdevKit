@@ -186,7 +186,7 @@ Class ImportProfileBase&lt;TTarget&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -213,7 +213,7 @@ Class ImportProfileBase&lt;TTarget&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -308,7 +308,8 @@ Class ImportProfileBase&lt;TTarget&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets the column configurations for this import profile.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -371,7 +372,7 @@ Class ImportProfileBase&lt;TTarget&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the row index containing headers (0-based).</p>
+  <div class="markdown level1 summary"><p>Gets the zero-based row index containing column headers.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -403,7 +404,7 @@ Class ImportProfileBase&lt;TTarget&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the sheet index to import from (0-based). -1 means use SheetName.</p>
+  <div class="markdown level1 summary"><p>Gets the zero-based sheet index, or <code>-1</code> when <a class="xref" href="BridgingIT.DevKit.Application.DataPorter.ImportProfileBase-1.html#BridgingIT_DevKit_Application_DataPorter_ImportProfileBase_1_SheetName">SheetName</a> is used.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -435,7 +436,7 @@ Class ImportProfileBase&lt;TTarget&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the sheet/section name to import from.</p>
+  <div class="markdown level1 summary"><p>Gets the sheet or section name to import from.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -467,7 +468,7 @@ Class ImportProfileBase&lt;TTarget&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the number of rows to skip after the header.</p>
+  <div class="markdown level1 summary"><p>Gets the number of data rows to skip after the header.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -499,7 +500,7 @@ Class ImportProfileBase&lt;TTarget&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the target type this profile is configured for.</p>
+  <div class="markdown level1 summary"><p>Gets the target type configured by this import profile.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -531,7 +532,7 @@ Class ImportProfileBase&lt;TTarget&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the behavior when validation fails.</p>
+  <div class="markdown level1 summary"><p>Gets the behavior applied when import validation fails.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 

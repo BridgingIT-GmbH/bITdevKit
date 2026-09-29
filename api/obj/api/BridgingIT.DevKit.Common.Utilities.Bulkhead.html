@@ -173,7 +173,7 @@ Class Bulkhead
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -200,7 +200,7 @@ Class Bulkhead
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -264,7 +264,8 @@ Class Bulkhead
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the Bulkhead class with the specified concurrency limit.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -274,13 +275,17 @@ Class Bulkhead
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>maxConcurrency</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum number of concurrent operations allowed.</p>
+</dd>
     <dt><code>handleErrors</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</p>
+</dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>An optional logger to log errors if handleErrors is true. Defaults to null.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.BulkheadProgress.html">BulkheadProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for bulkhead operations. Defaults to null.</p>
+</dd>
   </dl>
 
 
@@ -289,8 +294,18 @@ Class Bulkhead
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_Bulkhead__ctor_System_Int32_System_Boolean_Microsoft_Extensions_Logging_ILogger_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_BulkheadProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var bulkhead = new Bulkhead(5, progress: new Progress&lt;BulkheadProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}")));
+await bulkhead.ExecuteAsync(async ct =&gt; await Task.Delay(100, ct), CancellationToken.None);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
+    <dd><p>Thrown if maxConcurrency is less than 1.</p>
+</dd>
+  </dl>
 
 
 
@@ -305,7 +320,8 @@ Class Bulkhead
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the specified action within the bulkhead limit, queuing if the limit is reached.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -315,17 +331,21 @@ Class Bulkhead
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action to execute, accepting a CancellationToken.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.BulkheadProgress.html">BulkheadProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for bulkhead operations. Defaults to null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -333,8 +353,24 @@ Class Bulkhead
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_Bulkhead_ExecuteAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_BulkheadProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var cts = new CancellationTokenSource();
+var progress = new Progress&lt;BulkheadProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}"));
+var bulkhead = new Bulkhead(2);
+await bulkhead.ExecuteAsync(async ct =&gt;
+{
+    await Task.Delay(1000, ct); // Simulate work
+    Console.WriteLine("Operation completed");
+}, cts.Token, progress);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown if the operation is canceled via the cancellation token.</p>
+</dd>
+  </dl>
 
 
 
@@ -345,7 +381,8 @@ Class Bulkhead
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the specified action within the bulkhead limit, queuing if the limit is reached, and returns a result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -355,31 +392,53 @@ Class Bulkhead
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action to execute, accepting a CancellationToken.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.BulkheadProgress.html">BulkheadProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for bulkhead operations. Defaults to null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation, returning the result of the action.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result returned by the action.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_Bulkhead_ExecuteAsync__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_BulkheadProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var cts = new CancellationTokenSource();
+var progress = new Progress&lt;BulkheadProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Concurrency: {p.CurrentConcurrency}/{p.MaxConcurrency}, Queued: {p.QueuedTasks}"));
+var bulkhead = new Bulkhead(2);
+int result = await bulkhead.ExecuteAsync(async ct =&gt;
+{
+    await Task.Delay(1000, ct); // Simulate work
+    return 42;
+}, cts.Token, progress);
+Console.WriteLine($"Result: {result}");</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown if the operation is canceled via the cancellation token.</p>
+</dd>
+  </dl>
 
 
 

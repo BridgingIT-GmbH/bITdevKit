@@ -131,7 +131,9 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds the FileMonitoring system to the service collection with a fluent configuration API.
+Registers FileMonitoringService as a singleton and allows customization via a builder.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,23 +143,51 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd></dd>
+    <dd><p>The IServiceCollection to add services to.</p>
+</dd>
     <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.html">FileMonitoringBuilder</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An action to configure the FileMonitoringBuilder.</p>
+</dd>
     <dt><code>lifetime</code> <span class="xref">ServiceLifetime</span></dt>
-    <dd></dd>
+    <dd><p>The lifetime used for the monitoring service and default event store.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilderContext.html">FileMonitoringBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>A FileMonitoringBuilderContext for further configuration chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_Storage_ServiceCollectionExtensions_AddFileMonitoring_Microsoft_Extensions_DependencyInjection_IServiceCollection_System_Action_BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder__Microsoft_Extensions_DependencyInjection_ServiceLifetime__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddFileMonitoring(monitoring =&gt;
+{
+    monitoring
+        .WithBehavior&lt;LoggingBehavior&gt;() // monitoring behavior for all locations
+        .UseLocal("Docs", "C:\\Docs", options =&gt;
+        {
+            options.FilePattern = "*.txt";
+            options.UseOnDemandOnly();
+            options.WithProcessorBehavior&lt;LoggingProcessorBehavior&gt;();
+            options.UseProcessor&lt;FileMoverProcessor&gt;(config =&gt;
+                config.WithConfiguration(p =&gt; ((FileMoverProcessor)p).DestinationRoot = "C:\\MovedDocs")) // configure processor instance
+                .WithBehavior&lt;RetryProcessorBehavior&gt;();
+         })
+        .UseLocal("OtherDocs", "C:\\OtherDocs", options =&gt;
+        {
+            options.FilePattern = "*.pdf";
+            options.UseProcessor&lt;FileLoggerProcessor&gt;();
+            options.UseProcessor&lt;FileMoverProcessor&gt;(config =&gt;
+                config.WithConfiguration(p =&gt; ((FileMoverProcessor)p).DestinationRoot = "C:\\OtherMovedDocs")); // configure processor instance
+        });
+})
+.WithEntityFrameworkStore&lt;MyAppDbContext&gt;(); // Extension from EF infra project</code></pre>
 
 
 

@@ -3940,7 +3940,8 @@
 </code></pre></div>
 <p>The host now has a local runtime descriptor and IPC endpoint.</p>
 <h3 id="4-configure-the-mcp-client">4. Configure the MCP client<a class="headerlink" href="#4-configure-the-mcp-client" title="Permanent link">&para;</a></h3>
-<p>For VS Code, add <code>.vscode/mcp.json</code> to the project repository:</p>
+<p><strong>Github Copilot:</strong>
+For VS Code, add <code>.vscode/mcp.json</code> to the project repository:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>
 <span class="w">  </span><span class="nt">&quot;servers&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
 <span class="w">    </span><span class="nt">&quot;bdk&quot;</span><span class="p">:</span><span class="w"> </span><span class="p">{</span>
@@ -3950,6 +3951,18 @@
 <span class="w">    </span><span class="p">}</span>
 <span class="w">  </span><span class="p">}</span>
 <span class="p">}</span>
+</code></pre></div>
+<p><strong>Codex:</strong>
+For VS Code, add <code>.codex/config.toml</code> to the project repository:</p>
+<div class="highlight"><pre><span></span><code>[mcp_servers.bdk]
+command = &quot;dotnet&quot;
+args = [
+  &quot;tool&quot;, &quot;run&quot;, &quot;bdk&quot;, &quot;mcp&quot;
+]
+cwd = &quot;..&quot;
+startup_timeout_sec = 60
+tool_timeout_sec = 120
+enabled = true
 </code></pre></div>
 <p>Other clients use different configuration files. Keep the command and arguments equivalent. See <a href="../reference/features-cli-mcp-clients/">MCP Client Configuration</a> for VS Code, Visual Studio, Rider, and other supported clients.</p>
 <h3 id="5-verify-the-connection">5. Verify the connection<a class="headerlink" href="#5-verify-the-connection" title="Permanent link">&para;</a></h3>

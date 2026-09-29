@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class SimpleRequester | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Provides a request/response pattern for handling commands and queries.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class SimpleRequester
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Provides a request/response pattern for handling commands and queries.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -172,7 +173,7 @@ Class SimpleRequester
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -199,7 +200,7 @@ Class SimpleRequester
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -249,7 +250,16 @@ Class SimpleRequester
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Common_Utilities_SimpleRequester_examples">Examples</h2>
+  <pre><code class="lang-csharp">var requester = new SimpleRequester(progress: new Progress&lt;SimpleRequesterProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}")));
+requester.RegisterHandler(new MyRequestHandler());
+var response = await requester.SendAsync(new MyRequest { Data = "Test" }, CancellationToken.None);
+Console.WriteLine(response.Result);</code></pre>
 
+
+  <h2 id="BridgingIT_DevKit_Common_Utilities_SimpleRequester_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Initializes a new instance of the SimpleRequester class with the specified settings.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -263,7 +273,8 @@ Class SimpleRequester
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Provides a request/response pattern for handling commands and queries.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,13 +284,17 @@ Class SimpleRequester
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>An optional logger to log errors if handleErrors is true. Defaults to null.</p>
+</dd>
     <dt><code>handleErrors</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>If true, catches and logs exceptions from request handlers; otherwise, throws them. Defaults to false.</p>
+</dd>
     <dt><code>pipelineBehaviors</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleRequestPipelineBehavior.html">ISimpleRequestPipelineBehavior</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A list of pipeline behaviors to execute before and after request handling, applied in reverse order. Defaults to an empty list.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.SimpleRequesterProgress.html">SimpleRequesterProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for request operations. Defaults to null.</p>
+</dd>
   </dl>
 
 
@@ -288,7 +303,16 @@ Class SimpleRequester
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleRequester__ctor_Microsoft_Extensions_Logging_ILogger_System_Boolean_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Utilities_ISimpleRequestPipelineBehavior__System_IProgress_BridgingIT_DevKit_Common_Resiliancy_SimpleRequesterProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var requester = new SimpleRequester(progress: new Progress&lt;SimpleRequesterProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}")));
+requester.RegisterHandler(new MyRequestHandler());
+var response = await requester.SendAsync(new MyRequest { Data = "Test" }, CancellationToken.None);
+Console.WriteLine(response.Result);</code></pre>
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleRequester__ctor_Microsoft_Extensions_Logging_ILogger_System_Boolean_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Utilities_ISimpleRequestPipelineBehavior__System_IProgress_BridgingIT_DevKit_Common_Resiliancy_SimpleRequesterProgress___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Initializes a new instance of the SimpleRequester class with the specified settings.</p>
+</div>
 
 
 
@@ -304,7 +328,8 @@ Class SimpleRequester
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers a handler for a specific request type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -314,7 +339,8 @@ Class SimpleRequester
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>handler</code> <a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleRequestHandler.html">ISimpleRequestHandler</a></dt>
-    <dd></dd>
+    <dd><p>The handler to register.</p>
+</dd>
   </dl>
 
 
@@ -323,8 +349,18 @@ Class SimpleRequester
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleRequester_RegisterHandler_BridgingIT_DevKit_Common_Utilities_ISimpleRequestHandler__examples">Examples</h4>
+  <pre><code class="lang-csharp">var requester = new SimpleRequester();
+requester.RegisterHandler(new MyRequestHandler());</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown if a handler for the request type is already registered or the handler does not implement <a class="xref" href="BridgingIT.DevKit.Common.Utilities.ISimpleRequestHandler-2.html">ISimpleRequestHandler&lt;TRequest, TResponse&gt;</a>.</p>
+</dd>
+  </dl>
 
 
 
@@ -387,7 +423,8 @@ requester.RegisterHandler(new MyRequestHandler());</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers a handler function for a specific request type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -397,24 +434,37 @@ requester.RegisterHandler(new MyRequestHandler());</code></pre>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>handlerFunc</code> <span class="xref">Func</span>&lt;TRequest, <span class="xref">CancellationToken</span>, <span class="xref">ValueTask</span>&lt;TResponse&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The handler function to register.</p>
+</dd>
   </dl>
 
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TRequest</code></dt>
-    <dd></dd>
+    <dd><p>The type of request to handle.</p>
+</dd>
     <dt><code>TResponse</code></dt>
-    <dd></dd>
+    <dd><p>The type of response returned by the handler.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleRequester_RegisterHandler__2_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___1____examples">Examples</h4>
+  <pre><code class="lang-csharp">var requester = new SimpleRequester();
+requester.RegisterHandler&lt;MyRequest, MyResponse&gt;(async (req, ct) =&gt; new MyResponse { Result = req.Data });</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown if a handler for the request type is already registered.</p>
+</dd>
+  </dl>
 
 
 
@@ -425,43 +475,68 @@ requester.RegisterHandler(new MyRequestHandler());</code></pre>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sends a request to its registered handler and returns the response.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;TResponse&gt; SendAsync&lt;TRequest, TResponse&gt;(TRequest request, IProgress&lt;SimpleRequesterProgress&gt; progress = null, CancellationToken cancellationToken = default) where TRequest : ISimpleRequest&lt;TResponse&gt;</code></pre>
+    <pre><code class="lang-csharp hljs">public Task&lt;TResponse&gt; SendAsync&lt;TRequest, TResponse&gt;(TRequest request, IProgress&lt;SimpleRequesterProgress&gt; progress1 = null, CancellationToken cancellationToken = default) where TRequest : ISimpleRequest&lt;TResponse&gt;</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>request</code> <span class="xref">TRequest</span></dt>
-    <dd></dd>
-    <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.SimpleRequesterProgress.html">SimpleRequesterProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The request to send.</p>
+</dd>
+    <dt><code>progress1</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.SimpleRequesterProgress.html">SimpleRequesterProgress</a>&gt;</dt>
+    <dd><p>An optional progress reporter for request operations. Defaults to null.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResponse&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation, returning the response from the handler.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TRequest</code></dt>
-    <dd></dd>
+    <dd><p>The type of request to send.</p>
+</dd>
     <dt><code>TResponse</code></dt>
-    <dd></dd>
+    <dd><p>The type of response expected from the handler.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_SimpleRequester_SendAsync__2___0_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_SimpleRequesterProgress__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var cts = new CancellationTokenSource();
+var progress = new Progress&lt;SimpleRequesterProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, Request Type: {p.RequestType}"));
+var requester = new SimpleRequester();
+requester.RegisterHandler(new MyRequestHandler());
+var response = await requester.SendAsync(new MyRequest { Data = "Test" }, cts.Token, progress);
+Console.WriteLine(response.Result);
+cts.Cancel(); // Cancel the operation if needed</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown if no handler is registered for the request type.</p>
+</dd>
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown if the operation is canceled via the cancellation token.</p>
+</dd>
+  </dl>
 
 
 

@@ -137,14 +137,13 @@ If the dictionary is null, returns silently without adding.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfAll&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; dictionary, TKey key, TValue value, params Func&lt;TValue, bool&gt;[] predicates)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfAll&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, TKey key, TValue value, params Func&lt;TValue, bool&gt;[] predicates)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The dictionary to add to, or null.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key of the item to add.</p>
 </dd>
@@ -166,11 +165,9 @@ If the dictionary is null, returns silently without adding.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The type of the keys in the dictionary.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the values in the dictionary.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -201,14 +198,13 @@ If the dictionary is null, returns silently without adding.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfAny&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; dictionary, TKey key, TValue value, params Func&lt;TValue, bool&gt;[] predicates)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfAny&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, TKey key, TValue value, params Func&lt;TValue, bool&gt;[] predicates)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The dictionary to add to, or null.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key of the item to add.</p>
 </dd>
@@ -230,11 +226,9 @@ If the dictionary is null, returns silently without adding.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The type of the keys in the dictionary.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the values in the dictionary.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -271,14 +265,13 @@ If the dictionary is null, returns silently without adding.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfNotNull&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; dictionary, TKey key, TValue value)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfNotNull&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, TKey key, TValue value)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The dictionary to add to, or null.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key of the item to add.</p>
 </dd>
@@ -297,11 +290,9 @@ If the dictionary is null, returns silently without adding.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The type of the keys in the dictionary.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the values in the dictionary.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -334,14 +325,13 @@ If the dictionary is null, returns silently without adding.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfUnique&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; dictionary, TKey key, TValue value)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIfUnique&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, TKey key, TValue value)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The dictionary to add to, or null.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key of the item to add.</p>
 </dd>
@@ -360,11 +350,9 @@ If the dictionary is null, returns silently without adding.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The type of the keys in the dictionary.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the values in the dictionary.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -396,14 +384,13 @@ If the dictionary is null, returns silently without adding.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIf&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; dictionary, TKey key, TValue value, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIf&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, TKey key, TValue value, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The dictionary to add to, or null.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key of the item to add.</p>
 </dd>
@@ -425,11 +412,9 @@ If the dictionary is null, returns silently without adding.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The type of the keys in the dictionary.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the values in the dictionary.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -460,14 +445,13 @@ If the dictionary is null, returns silently without adding.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIf&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; dictionary, TKey key, TValue value, Func&lt;TValue, bool&gt; predicate)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddIf&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, TKey key, TValue value, Func&lt;TValue, bool&gt; predicate)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The dictionary to add to, or null.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key of the item to add.</p>
 </dd>
@@ -489,11 +473,9 @@ If the dictionary is null, returns silently without adding.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The type of the keys in the dictionary.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the values in the dictionary.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -536,8 +518,7 @@ dict.AddIf(2, "two", v =&gt; v.Length &gt; 2); // Does nothing and returns null 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The source.</p>
-</dd>
+    <dd></dd>
     <dt><code>items</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
     <dd><p>The items to add.</p>
 </dd>
@@ -552,11 +533,9 @@ dict.AddIf(2, "two", v =&gt; v.Length &gt; 2); // Does nothing and returns null 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The key type.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The value type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -586,8 +565,7 @@ dict.AddIf(2, "two", v =&gt; v.Length &gt; 2); // Does nothing and returns null 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The source.</p>
-</dd>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key.</p>
 </dd>
@@ -605,11 +583,9 @@ dict.AddIf(2, "two", v =&gt; v.Length &gt; 2); // Does nothing and returns null 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The key type.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The value type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -634,14 +610,13 @@ If the dictionary is null, returns silently without adding.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddRangeIf&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; dictionary, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt; items, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IDictionary&lt;TKey, TValue&gt; AddRangeIf&lt;TKey, TValue&gt;(this IDictionary&lt;TKey, TValue&gt; source, IEnumerable&lt;KeyValuePair&lt;TKey, TValue&gt;&gt; items, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>dictionary</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The dictionary to add to, or null.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
+    <dd></dd>
     <dt><code>items</code> <span class="xref">IEnumerable</span>&lt;<span class="xref">KeyValuePair</span>&lt;TKey, TValue&gt;&gt;</dt>
     <dd><p>The key-value pairs to add.</p>
 </dd>
@@ -660,11 +635,9 @@ If the dictionary is null, returns silently without adding.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The type of the keys in the dictionary.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The type of the values in the dictionary.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -755,8 +728,7 @@ dict.AddRangeIf(items, true); // Does nothing and returns null silently</code></
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The source.</p>
-</dd>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key.</p>
 </dd>
@@ -774,11 +746,9 @@ dict.AddRangeIf(items, true); // Does nothing and returns null silently</code></
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The key type.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The value type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -808,8 +778,7 @@ dict.AddRangeIf(items, true); // Does nothing and returns null silently</code></
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IDictionary</span>&lt;TKey, TValue&gt;</dt>
-    <dd><p>The source.</p>
-</dd>
+    <dd></dd>
     <dt><code>key</code> <span class="xref">TKey</span></dt>
     <dd><p>The key.</p>
 </dd>
@@ -824,11 +793,9 @@ dict.AddRangeIf(items, true); // Does nothing and returns null silently</code></
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TKey</code></dt>
-    <dd><p>The key type.</p>
-</dd>
+    <dd></dd>
     <dt><code>TValue</code></dt>
-    <dd><p>The value type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 

@@ -172,7 +172,7 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -199,7 +199,7 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -277,9 +277,11 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>The accessor for the current user</p>
 </dd>
     <dt><code>entityId</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The entity identifier to get permissions for.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -319,7 +321,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>The accessor for the current user</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -359,9 +362,11 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>The accessor for the current user</p>
 </dd>
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd></dd>
+    <dd><p>The entity to get permissions for.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -407,7 +412,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>The entity id to get permissions for.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -450,7 +456,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>The roles the user belongs to.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -496,7 +503,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>The entity to get permissions for.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -545,7 +553,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -594,7 +603,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -640,7 +650,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -686,7 +697,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -735,7 +747,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -784,7 +797,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -836,7 +850,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -888,7 +903,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -937,7 +953,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -986,7 +1003,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1038,7 +1056,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1090,7 +1109,8 @@ Interface IEntityPermissionEvaluator&lt;TEntity&gt;
     <dd><p>Whether to bypass the cache.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels permission provider operations.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>

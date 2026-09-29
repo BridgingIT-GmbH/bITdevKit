@@ -377,7 +377,8 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers the Azure Service Bus queue broker transport for the current queueing builder using a fluent options builder.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -387,21 +388,33 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueingBuilderContext.html">QueueingBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>The queueing builder context.</p>
+</dd>
     <dt><code>optionsBuilder</code> <a class="xref" href="BridgingIT.DevKit.Common.Builder-2.html">Builder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptionsBuilder.html">ServiceBusQueueBrokerOptionsBuilder</a>, <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerOptions.html">ServiceBusQueueBrokerOptions</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The options builder used to configure the broker.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueingBuilderContext.html">QueueingBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>The queueing builder context.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ServiceCollectionExtensions_WithServiceBusBroker_BridgingIT_DevKit_Application_Queueing_QueueingBuilderContext_BridgingIT_DevKit_Common_Builder_BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptionsBuilder_BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerOptions___examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddQueueing(builder.Configuration)
+    .WithSubscription&lt;OrderQueuedMessage, OrderQueuedHandler&gt;()
+    .WithServiceBusBroker(o =&gt; o
+        .ConnectionString("Endpoint=sb://...")
+        .QueueNamePrefix("bit")
+        .AutoCreateQueue(true)
+        .MaxConcurrentCalls(8));</code></pre>
 
 
 
@@ -415,7 +428,8 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers the Azure Service Bus queue broker transport for the current queueing builder using configuration values.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -425,23 +439,32 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueingBuilderContext.html">QueueingBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>The queueing builder context.</p>
+</dd>
     <dt><code>configuration</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.ServiceBusQueueBrokerConfiguration.html">ServiceBusQueueBrokerConfiguration</a></dt>
-    <dd></dd>
+    <dd><p>Optional configuration values.</p>
+</dd>
     <dt><code>section</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The configuration section name.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Queueing.QueueingBuilderContext.html">QueueingBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>The queueing builder context.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_ServiceCollectionExtensions_WithServiceBusBroker_BridgingIT_DevKit_Application_Queueing_QueueingBuilderContext_BridgingIT_DevKit_Infrastructure_Azure_ServiceBusQueueBrokerConfiguration_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddQueueing(builder.Configuration)
+    .WithSubscription&lt;OrderQueuedMessage, OrderQueuedHandler&gt;()
+    .WithServiceBusBroker();</code></pre>
 
 
 

@@ -412,7 +412,8 @@ pageSize: pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously creates a new ResultPaged by choosing elements from the current page.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -447,6 +448,18 @@ pageSize: pageSize)
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_ChooseAsync__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultChooseOption_System_Collections_Generic_IEnumerable___1_____System_Threading_CancellationToken__examples">Examples</h4>
+  <p>var activeUsers = await pagedUsers.ChooseAsync(
+async (users, ct) =&gt; {
+var activeStatuses = await GetActiveStatusesAsync(users, ct);
+var activeUsers = users.Where(u =&gt; activeStatuses[u.Id]);
+return activeUsers.Any()
+? new ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;(activeUsers)
+: ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;.None();
+},
+cancellationToken
+);</p>
+
 
 
 
@@ -459,7 +472,9 @@ pageSize: pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a new ResultPaged by choosing elements from the current page.
+Preserves paging metadata with adjusted counts.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -491,6 +506,13 @@ pageSize: pageSize)
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Choose__2_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__BridgingIT_DevKit_Common_ResultChooseOption_System_Collections_Generic_IEnumerable___1_____examples">Examples</h4>
+  <p>var adultUsers = pagedUsers.Choose(users =&gt;
+users.Any(u =&gt; u.Age &gt;= 18)
+? new ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;(users.Where(u =&gt; u.Age &gt;= 18))
+: ResultChooseOption&lt;IEnumerable&lt;User&gt;&gt;.None()
+);</p>
 
 
 
@@ -664,7 +686,8 @@ cancellationToken
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Ensures a condition is met for the page collection.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -696,6 +719,12 @@ cancellationToken
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedExtensions_Ensure__1_BridgingIT_DevKit_Common_ResultPaged___0__System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <p>var result = pagedUsers.Ensure(
+users =&gt; users.Count() &lt;= maxPageSize,
+new ValidationError($&quot;Page size cannot exceed {maxPageSize}&quot;)
+);</p>
 
 
 
@@ -775,7 +804,8 @@ cancellationToken
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result whose successful values are filtered.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
     <dd><p>The async filtering function that returns true for items to keep</p>
 </dd>

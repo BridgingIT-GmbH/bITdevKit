@@ -131,7 +131,9 @@ Class FileMonitoringBuilderExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configures the FileMonitoring system to use an Entity Framework Core event store with the specified DbContext.
+The DbContext must implement IFileMonitoringContext and be registered separately (e.g., via AddDbContext).</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,29 +143,52 @@ Class FileMonitoringBuilderExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilderContext.html">FileMonitoringBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>The FileMonitoringBuilderContext returned from AddFileMonitoring.</p>
+</dd>
     <dt><code>lifetime</code> <span class="xref">ServiceLifetime</span></dt>
-    <dd></dd>
+    <dd><p>The lifetime used to register the Entity Framework file event store.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilderContext.html">FileMonitoringBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>The FileMonitoringBuilderContext for further configuration chaining.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TContext</code></dt>
-    <dd></dd>
+    <dd><p>The DbContext type implementing IFileMonitoringContext.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_FileMonitoringBuilderExtensions_WithEntityFrameworkStore__1_BridgingIT_DevKit_Application_Storage_FileMonitoringBuilderContext_Microsoft_Extensions_DependencyInjection_ServiceLifetime__examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddFileMonitoring(monitoring =&gt;
+{
+    monitoring
+        .WithBehavior&lt;LoggingBehavior&gt;()
+        .UseLocal("Docs", "C:\\Docs", options =&gt;
+        {
+            options.FilePattern = "*.txt";
+            options.UseProcessor&lt;FileLoggerProcessor&gt;();
+        });
+})
+.WithEntityFrameworkStore&lt;MyAppDbContext&gt;(); // Use EF Core store</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown if the context is null.</p>
+</dd>
+  </dl>
 
 
 

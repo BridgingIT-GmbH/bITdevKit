@@ -131,7 +131,9 @@ Class ActiveEntityConfiguratorExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an annotations-based validation behavior for the specified entity type, using DataAnnotations attributes.
+This method should be called once per entity type to register the annotations validation behavior in the pipeline.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,27 +143,64 @@ Class ActiveEntityConfiguratorExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>configurator</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityConfigurator-2.html">ActiveEntityConfigurator</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The entity configurator instance.</p>
+</dd>
     <dt><code>configureOptions</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityValidatorBehaviorOptions.html">ActiveEntityValidatorBehaviorOptions</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional action to configure validation behavior options.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityConfigurator-2.html">ActiveEntityConfigurator</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The configurator instance for fluent configuration.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The entity type.</p>
+</dd>
     <dt><code>TId</code></dt>
-    <dd></dd>
+    <dd><p>The type of the entity's identifier.</p>
+</dd>
   </dl>
 
 
 
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityConfiguratorExtensions_AddAnnotationsValidator__2_BridgingIT_DevKit_Domain_ActiveEntityConfigurator___0___1__System_Action_BridgingIT_DevKit_Domain_ActiveEntityValidatorBehaviorOptions___examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddActiveEntity(cfg =&gt;
+{
+    cfg.For&lt;Customer, CustomerId&gt;()
+        .UseEntityFrameworkProvider(b =&gt; b.Context&lt;ActiveEntityDbContext&gt;())
+        .AddValidationBehavior()
+        .AddValidatorBehavior&lt;Customer, CustomerId, BusinessCustomerValidator&gt;(o =&gt; o.OnUpdate())
+        .AddAnnotationsValidator(o =&gt; o.OnInsert()); // Annotations validator for insert
+});</code></pre>
+<p>
+Example entity with DataAnnotations:
+<pre><code class="lang-csharp">public class Customer : ActiveEntity&lt;Customer, CustomerId&gt;
+{
+    [Required]
+    [StringLength(50)]
+    public string FirstName { get; set; }
+
+    [Required]
+    [StringLength(50)]
+    public string LastName { get; set; }
+
+    [Required]
+    [EmailAddress]
+    public EmailAddressStub Email { get; set; }
+
+    [Compare("Email")]
+    public EmailAddressStub ConfirmEmail { get; set; }
+
+    public string Title { get; set; }
+}</code></pre>
 
 
 

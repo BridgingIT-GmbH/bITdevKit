@@ -193,7 +193,7 @@ Class SqlServerEntityBulkInsertOptions
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -220,7 +220,7 @@ Class SqlServerEntityBulkInsertOptions
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -283,8 +283,8 @@ Class SqlServerEntityBulkInsertOptions
 
 
   <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_SqlServerEntityBulkInsertOptions_remarks">Remarks</h2>
-  <div class="markdown level0 remarks"><p>CommandTimeout configures <span class="xref">Microsoft.Data.SqlClient.SqlBulkCopy.BulkCopyTimeout</span>. Set
-KeepGeneratedIdentityValues to preserve store-generated identity values; do not add
+  <div class="markdown level0 remarks"><p><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertOptions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityBulkInsertOptions_CommandTimeout">CommandTimeout</a> configures <span class="xref">Microsoft.Data.SqlClient.SqlBulkCopy.BulkCopyTimeout</span>. Set
+<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertOptions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityBulkInsertOptions_KeepGeneratedIdentityValues">KeepGeneratedIdentityValues</a> to preserve store-generated identity values; do not add
 <span class="xref">Microsoft.Data.SqlClient.SqlBulkCopyOptions.KeepIdentity</span> or <span class="xref">Microsoft.Data.SqlClient.SqlBulkCopyOptions.UseInternalTransaction</span>
 to <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.SqlServerEntityBulkInsertOptions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_SqlServerEntityBulkInsertOptions_SqlBulkCopyOptions">SqlBulkCopyOptions</a>, because the provider derives those flags from the neutral option and
 the active EF transaction.</p>
@@ -358,7 +358,7 @@ the active EF transaction.</p>
 
   <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_SqlServerEntityBulkInsertOptions_SqlBulkCopyOptions_remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>Do not configure <span class="xref">Microsoft.Data.SqlClient.SqlBulkCopyOptions.KeepIdentity</span> or
-<span class="xref">Microsoft.Data.SqlClient.SqlBulkCopyOptions.UseInternalTransaction</span>. Use KeepGeneratedIdentityValues
+<span class="xref">Microsoft.Data.SqlClient.SqlBulkCopyOptions.UseInternalTransaction</span>. Use <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Repositories.EntityBulkInsertOptions.html#BridgingIT_DevKit_Infrastructure_EntityFramework_Repositories_EntityBulkInsertOptions_KeepGeneratedIdentityValues">KeepGeneratedIdentityValues</a>
 and the active EF transaction instead.</p>
 </div>
 

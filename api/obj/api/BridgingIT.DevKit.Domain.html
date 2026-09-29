@@ -102,7 +102,8 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityAuditStateBehavior-1.html">ActiveEntityAuditStateBehavior&lt;TEntity&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Implements auditing and soft delete behavior for entities using AuditState, inheriting from ActiveEntityBehaviorBase.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityBehaviorBase-1.html">ActiveEntityBehaviorBase&lt;TEntity&gt;</a></dt>
@@ -155,7 +156,7 @@ the same lifetime and dependencies (e.g., DbContext).</p>
 Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 <span class="xref">System.ObjectDisposedException</span> if the underlying scope (and its services) are disposed.
 Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html#BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___">UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt;, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt;)</a>
-or WithTransactionAsync&lt;TEntity, TId&gt;).
+or a <code>WithTransactionAsync</code> operation).
 </p>
 <p>
 If you need to extend the context with more dependencies, resolve them at creation time

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class BackgroundWorkerBuilder | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="A fluent builder for configuring and creating a BackgroundWorker instance.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class BackgroundWorkerBuilder
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>A fluent builder for configuring and creating a BackgroundWorker instance.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -172,7 +173,7 @@ Class BackgroundWorkerBuilder
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -199,7 +200,7 @@ Class BackgroundWorkerBuilder
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -250,6 +251,9 @@ Class BackgroundWorkerBuilder
 
 
 
+  <h2 id="BridgingIT_DevKit_Common_Utilities_BackgroundWorkerBuilder_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Initializes a new instance of the BackgroundWorkerBuilder with the specified work.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -263,7 +267,8 @@ Class BackgroundWorkerBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>A fluent builder for configuring and creating a BackgroundWorker instance.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,7 +278,8 @@ Class BackgroundWorkerBuilder
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>work</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">IProgress</span>&lt;<span class="xref">int</span>&gt;, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous work to execute in the background, accepting a <span class="xref">System.Threading.CancellationToken</span> and an <span class="xref">System.IProgress&lt;T&gt;</span> of <span class="xref">int</span> for progress reporting.</p>
+</dd>
   </dl>
 
 
@@ -283,6 +289,9 @@ Class BackgroundWorkerBuilder
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_BackgroundWorkerBuilder__ctor_System_Func_System_Threading_CancellationToken_System_IProgress_System_Int32__System_Threading_Tasks_Task___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Initializes a new instance of the BackgroundWorkerBuilder with the specified work.</p>
+</div>
 
 
 

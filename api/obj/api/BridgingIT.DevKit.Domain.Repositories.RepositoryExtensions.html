@@ -904,7 +904,8 @@ on the given specification, projection expression, options, and cancellation tok
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IGenericReadOnlyRepository-1.html">IGenericReadOnlyRepository</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The source repository.</p>
+</dd>
     <dt><code>expression</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, <span class="xref">bool</span>&gt;&gt;</dt>
     <dd><p>The expression used to filter entities.</p>
 </dd>
@@ -930,7 +931,8 @@ projected entities of type <code class="typeparamref">TProjection</code>.</p>
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The type of entity stored by the repository.</p>
+</dd>
     <dt><code>TProjection</code></dt>
     <dd><p>The type to which the entities will be projected.</p>
 </dd>

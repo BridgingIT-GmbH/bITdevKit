@@ -145,8 +145,7 @@ Class ExceptionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Exception</span></dt>
-    <dd><p>The exception to format.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -176,17 +175,17 @@ Class ExceptionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is the type matched by <code class="paramref">predicate</code>.</p>
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is the type matched by <code class="paramref">predicate</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException(this Exception ex, Func&lt;Exception, bool&gt; predicate)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException(this Exception source, Func&lt;Exception, bool&gt; predicate)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">Exception</span>, <span class="xref">bool</span>&gt;</dt>
     <dd></dd>
@@ -215,17 +214,17 @@ Class ExceptionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is of type <code class="typeparamref">TEx</code>.</p>
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is of type <code class="typeparamref">TEx</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx&gt;(this Exception ex) where TEx : Exception</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx&gt;(this Exception source) where TEx : Exception</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 
@@ -257,18 +256,18 @@ Class ExceptionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is any of the types <code class="typeparamref">TEx1</code>
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is any of the types <code class="typeparamref">TEx1</code>
 or <code class="typeparamref">TEx2</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2&gt;(this Exception ex) where TEx1 : Exception where TEx2 : Exception</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2&gt;(this Exception source) where TEx1 : Exception where TEx2 : Exception</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 
@@ -302,18 +301,18 @@ or <code class="typeparamref">TEx2</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is any of the types <code class="typeparamref">TEx1</code>,
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is any of the types <code class="typeparamref">TEx1</code>,
 <code class="typeparamref">TEx2</code> or <code class="typeparamref">TEx3</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3&gt;(this Exception ex) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3&gt;(this Exception source) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 
@@ -349,18 +348,18 @@ or <code class="typeparamref">TEx2</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is any of the types <code class="typeparamref">TEx1</code>,
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is any of the types <code class="typeparamref">TEx1</code>,
 <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code> or <code class="typeparamref">TEx4</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4&gt;(this Exception ex) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4&gt;(this Exception source) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 
@@ -398,19 +397,19 @@ or <code class="typeparamref">TEx2</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is any of the types <code class="typeparamref">TEx1</code>,
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is any of the types <code class="typeparamref">TEx1</code>,
 <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>, <code class="typeparamref">TEx4</code>
 or <code class="typeparamref">TEx5</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4, TEx5&gt;(this Exception ex) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4, TEx5&gt;(this Exception source) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 
@@ -450,19 +449,19 @@ or <code class="typeparamref">TEx5</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is any of the types <code class="typeparamref">TEx1</code>,
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is any of the types <code class="typeparamref">TEx1</code>,
 <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>, <code class="typeparamref">TEx4</code>,
 <code class="typeparamref">TEx5</code> or <code class="typeparamref">TEx6</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6&gt;(this Exception ex) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6&gt;(this Exception source) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 
@@ -504,19 +503,19 @@ or <code class="typeparamref">TEx5</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is any of the types <code class="typeparamref">TEx1</code>,
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is any of the types <code class="typeparamref">TEx1</code>,
 <code class="typeparamref">TEx2</code>, <code class="typeparamref">TEx3</code>, <code class="typeparamref">TEx4</code>,
 <code class="typeparamref">TEx5</code>, <code class="typeparamref">TEx6</code> or <code class="typeparamref">TEx7</code>.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TEx7&gt;(this Exception ex) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception where TEx7 : Exception</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsExpectedException&lt;TEx1, TEx2, TEx3, TEx4, TEx5, TEx6, TEx7&gt;(this Exception source) where TEx1 : Exception where TEx2 : Exception where TEx3 : Exception where TEx4 : Exception where TEx5 : Exception where TEx6 : Exception where TEx7 : Exception</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 
@@ -560,18 +559,18 @@ or <code class="typeparamref">TEx5</code>.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">ex</code> is a transient exception.
+  <div class="markdown level1 summary"><p>Determines whether the given <code class="paramref">source</code> is a transient exception.
 What are transient errors: <a href="https://docs.microsoft.com/en-us/azure/architecture/best-practices/transient-faults">https://docs.microsoft.com/en-us/azure/architecture/best-practices/transient-faults</a></p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsTransientException(this Exception ex)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsTransientException(this Exception source)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>ex</code> <span class="xref">Exception</span></dt>
+    <dt><code>source</code> <span class="xref">Exception</span></dt>
     <dd></dd>
   </dl>
 

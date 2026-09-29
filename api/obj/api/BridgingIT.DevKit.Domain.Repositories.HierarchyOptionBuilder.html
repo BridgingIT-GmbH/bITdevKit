@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class HierarchyOptionBuilder | bITdevKit API Reference ">
       
-      <meta name="description" content="A builder class for creating a list of  instances from a collection of include paths.">
+      <meta name="description" content="Builds hierarchy options from navigation-property paths.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,7 @@ Class HierarchyOptionBuilder
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>A builder class for creating a list of <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IncludeOption-1.html">IncludeOption&lt;TEntity&gt;</a> instances from a collection of include paths.</p>
+  <div class="markdown summary"><p>Builds hierarchy options from navigation-property paths.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -131,7 +131,8 @@ Class HierarchyOptionBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Builds a list of IncludeOptions for the given entity type based on the provided include paths.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,21 +142,25 @@ Class HierarchyOptionBuilder
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>hierarchy</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>A collection of string paths representing the properties to include.</p>
+</dd>
     <dt><code>maxDepth</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The maximum hierarchy depth to load.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.HierarchyOption-1.html">HierarchyOption</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>A hierarchy option for the path, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when the path is empty.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The type of the entity.</p>
+</dd>
   </dl>
 
 

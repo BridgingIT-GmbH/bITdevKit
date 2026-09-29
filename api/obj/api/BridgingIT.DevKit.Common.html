@@ -1547,7 +1547,7 @@ infrastructure-agnostic and can be used from the application layer.</p>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.HandlerDatabaseTransactionAttribute-1.html">HandlerDatabaseTransactionAttribute&lt;TDBcontext&gt;</a></dt>
       <dd><p>Specifies that handlers within the attributed class should execute within a database transaction using the provided
-DbContext type. Allows configuration of transaction isolation level and automatic rollback behavior on failure.</p>
+context type. Allows configuration of transaction isolation level and automatic rollback behavior on failure.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -1823,7 +1823,8 @@ with a specified entry point.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.LessThanOrEqualRule-1.html">LessThanOrEqualRule&lt;T&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Represents a validation rule that checks whether a given value is less than or equal to a specified value.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.LessThanRule-1.html">LessThanRule&lt;T&gt;</a></dt>
@@ -1857,7 +1858,7 @@ with a specified entry point.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.MapsterMapper.html">MapsterMapper</a></dt>
-      <dd><p>Maps an object of type <code class="typeparamref">TSource</code> to <code class="typeparamref">TDestination</code> by using mapster.</p>
+      <dd><p>Maps objects by using the configured Mapster type-adapter configuration.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -2122,7 +2123,8 @@ with a specified entry point.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.NotificationBehaviorsProvider.html">NotificationBehaviorsProvider</a></dt>
-      <dd></dd>
+      <dd><p>Provides pipeline behaviors for notifications using registered behavior types.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.NotificationError.html">NotificationError</a></dt>
@@ -2131,15 +2133,18 @@ with a specified entry point.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.NotificationHandlerBase-1.html">NotificationHandlerBase&lt;TNotification&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Base class for notification handlers, providing a template for handling notifications.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.NotificationHandlerProvider.html">NotificationHandlerProvider</a></dt>
-      <dd></dd>
+      <dd><p>Provides handlers for notifications using a cached dictionary of handler types.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Notifier.html">Notifier</a></dt>
-      <dd></dd>
+      <dd><p>Dispatches notifications to their handlers through a pipeline of behaviors.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Notifier.TypedLogger.html">Notifier.TypedLogger</a></dt>
@@ -2175,7 +2180,9 @@ is no current user context available or to avoid null reference exceptions.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.NumericNotInRule-1.html">NumericNotInRule&lt;T&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Represents a validation rule that checks if a given numeric value is not
+contained within a specified set of disallowed values.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.NumericRangeRule-1.html">NumericRangeRule&lt;T&gt;</a></dt>
@@ -2184,8 +2191,7 @@ is no current user context available or to avoid null reference exceptions.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ObjectMapper.html">ObjectMapper</a></dt>
-      <dd><p>Provides functionalities to map objects of type <code class="typeparamref">TSource</code> to objects of type
-<code class="typeparamref">TTarget</code>.</p>
+      <dd><p>Maps objects by using delegates registered for source and target type pairs.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -3032,7 +3038,8 @@ Strongly-typed keys are supported optionally via <a class="xref" href="BridgingI
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.PublishOptions.html">PublishOptions</a></dt>
-      <dd></dd>
+      <dd><p>Options for configuring notification processing.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.QueryAttribute.html">QueryAttribute</a></dt>
@@ -3081,11 +3088,13 @@ Strongly-typed keys are supported optionally via <a class="xref" href="BridgingI
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RequestBase-1.html">RequestBase&lt;TValue&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Base class for requests, providing metadata and implementing <a class="xref" href="BridgingIT.DevKit.Common.IRequest-1.html">IRequest&lt;TValue&gt;</a>.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RequestBehaviorsProvider.html">RequestBehaviorsProvider</a></dt>
-      <dd></dd>
+      <dd><p>Provides pipeline behaviors for requests using registered behavior types.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RequestContext.html">RequestContext</a></dt>
@@ -3094,11 +3103,13 @@ Strongly-typed keys are supported optionally via <a class="xref" href="BridgingI
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RequestHandlerBase-2.html">RequestHandlerBase&lt;TRequest, TValue&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Base class for request handlers, providing a template for handling requests.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RequestHandlerProvider.html">RequestHandlerProvider</a></dt>
-      <dd></dd>
+      <dd><p>Provides handlers for requests using a cached dictionary of handler types.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.RequestModuleContextAccessor.html">RequestModuleContextAccessor</a></dt>
@@ -3113,7 +3124,8 @@ find the appropriate module based on the provided HTTP request.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Requester.html">Requester</a></dt>
-      <dd></dd>
+      <dd><p>Dispatches requests to their handlers through a pipeline of behaviors.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.Requester.TypedLogger.html">Requester.TypedLogger</a></dt>
@@ -3255,7 +3267,8 @@ Contains functional methods to better work with success and failure results and 
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPagedFunctionTaskExtensions.html">ResultPagedFunctionTaskExtensions</a></dt>
-      <dd></dd>
+      <dd><p>Extension methods for asynchronous <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> instances to enable chaining.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultPagedJsonConverterFactory.html">ResultPagedJsonConverterFactory</a></dt>
@@ -3301,7 +3314,8 @@ Serialization only; deserialization is not supported.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultTTaskExtensions.html">ResultTTaskExtensions</a></dt>
-      <dd></dd>
+      <dd><p>Extension methods for asynchronous <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> instances to enable chaining.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ResultTaskExtensions.html">ResultTaskExtensions</a></dt>
@@ -3510,7 +3524,8 @@ distributed operations without traditional two-phase commit.
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.SendOptions.html">SendOptions</a></dt>
-      <dd></dd>
+      <dd><p>Options for configuring request processing.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.SequenceDiagramBuilder.html">SequenceDiagramBuilder</a></dt>
@@ -3771,7 +3786,8 @@ and utility functions such as logging, benchmarking, and service management.</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.TextInRule.html">TextInRule</a></dt>
-      <dd></dd>
+      <dd><p>Represents a rule for validating whether a specific text input adheres to predefined criteria.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.TextNotInRule.html">TextNotInRule</a></dt>
@@ -4037,7 +4053,8 @@ or [JsonConstructor].</p>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ValidationPipelineBehavior-2.html">ValidationPipelineBehavior&lt;TRequest, TResponse&gt;</a></dt>
-      <dd></dd>
+      <dd><p>A pipeline behavior that validates messages using FluentValidation.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.ValidationRule-1.html">ValidationRule&lt;T&gt;</a></dt>
@@ -4466,19 +4483,23 @@ Implementing classes will provide access to user details such as user ID, user n
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.INotificationBehaviorsProvider.html">INotificationBehaviorsProvider</a></dt>
-      <dd></dd>
+      <dd><p>Defines a provider for resolving pipeline behaviors for notifications.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.INotificationHandlerProvider.html">INotificationHandlerProvider</a></dt>
-      <dd></dd>
+      <dd><p>Defines a provider for resolving notification handlers.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.INotificationHandler-1.html">INotificationHandler&lt;TNotification&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Defines a handler for a specific notification type.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.INotifier.html">INotifier</a></dt>
-      <dd></dd>
+      <dd><p>Defines the interface for dispatching notifications.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IOperationScope.html">IOperationScope</a></dt>
@@ -4523,7 +4544,8 @@ This is the base interface for all operation scopes used with ResultOperationSco
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IPipelineBehavior-2.html">IPipelineBehavior&lt;TRequest, TResponse&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Defines a pipeline behavior for processing requests or notifications.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IPipelineContextValidationInvoker.html">IPipelineContextValidationInvoker</a></dt>
@@ -4742,15 +4764,18 @@ This is the base interface for all operation scopes used with ResultOperationSco
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IRequestBehaviorsProvider.html">IRequestBehaviorsProvider</a></dt>
-      <dd></dd>
+      <dd><p>Defines a provider for resolving pipeline behaviors for requests.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IRequestHandlerProvider.html">IRequestHandlerProvider</a></dt>
-      <dd></dd>
+      <dd><p>Defines a provider for resolving request handlers.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IRequestHandler-2.html">IRequestHandler&lt;TRequest, TValue&gt;</a></dt>
-      <dd></dd>
+      <dd><p>Defines a handler for a specific request type.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IRequestModuleContextAccessor.html">IRequestModuleContextAccessor</a></dt>
@@ -4764,7 +4789,8 @@ This is the base interface for all operation scopes used with ResultOperationSco
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IRequester.html">IRequester</a></dt>
-      <dd></dd>
+      <dd><p>Defines the interface for dispatching requests.</p>
+</dd>
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>

@@ -10832,7 +10832,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Queueing.InProcessQueueBroker",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Queueing.InProcessQueueBroker.yml\" sourcestartlinenumber=\"1\">Provides an in-memory queue broker using Channel&lt;T&gt;.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Queueing.InProcessQueueBroker.yml\" sourcestartlinenumber=\"1\">Provides an in-memory queue broker using <xref href=\"System.Threading.Channels.Channel%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -14178,7 +14178,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Application.Storage.FileProgress",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Application.Storage.FileProgress.yml\" sourcestartlinenumber=\"1\">Represents progress information for file operations, tracking bytes and file counts.\nUsed with <xref href=\"System.IProgress%601\" data-throw-if-not-resolved=\"false\"></xref> to report progress in <xref href=\"BridgingIT.DevKit.Application.Storage.IFileStorageProvider\" data-throw-if-not-resolved=\"false\"></xref> methods.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -21766,7 +21766,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.HandlerDatabaseTransactionAttribute<TDBcontext>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HandlerDatabaseTransactionAttribute-1.yml\" sourcestartlinenumber=\"1\">Specifies that handlers within the attributed class should execute within a database transaction using the provided\nDbContext type. Allows configuration of transaction isolation level and automatic rollback behavior on failure.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.HandlerDatabaseTransactionAttribute-1.yml\" sourcestartlinenumber=\"1\">Specifies that handlers within the attributed class should execute within a database transaction using the provided\ncontext type. Allows configuration of transaction isolation level and automatic rollback behavior on failure.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22718,7 +22718,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.INotificationBehaviorsProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.INotificationBehaviorsProvider.yml\" sourcestartlinenumber=\"1\">Defines a provider for resolving pipeline behaviors for notifications.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22732,7 +22732,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.INotificationHandler<TNotification>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.INotificationHandler-1.yml\" sourcestartlinenumber=\"1\">Defines a handler for a specific notification type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22746,7 +22746,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.INotificationHandlerProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.INotificationHandlerProvider.yml\" sourcestartlinenumber=\"1\">Defines a provider for resolving notification handlers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22760,7 +22760,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.INotifier",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.INotifier.yml\" sourcestartlinenumber=\"1\">Defines the interface for dispatching notifications.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -22886,7 +22886,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.IPipelineBehavior<TRequest, TResponse>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IPipelineBehavior-2.yml\" sourcestartlinenumber=\"1\">Defines a pipeline behavior for processing requests or notifications.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -23516,7 +23516,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.IRequestBehaviorsProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IRequestBehaviorsProvider.yml\" sourcestartlinenumber=\"1\">Defines a provider for resolving pipeline behaviors for requests.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -23530,7 +23530,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.IRequestHandler<TRequest, TValue>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IRequestHandler-2.yml\" sourcestartlinenumber=\"1\">Defines a handler for a specific request type.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -23544,7 +23544,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.IRequestHandlerProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IRequestHandlerProvider.yml\" sourcestartlinenumber=\"1\">Defines a provider for resolving request handlers.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -23572,7 +23572,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.IRequester",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.IRequester.yml\" sourcestartlinenumber=\"1\">Defines the interface for dispatching requests.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -24384,7 +24384,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.LessThanOrEqualRule<T>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.LessThanOrEqualRule-1.yml\" sourcestartlinenumber=\"1\">Represents a validation rule that checks whether a given value is less than or equal to a specified value.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -24496,7 +24496,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.MapsterMapper",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.MapsterMapper.yml\" sourcestartlinenumber=\"1\">Maps an object of type <code class=\"typeparamref\">TSource</code> to <code class=\"typeparamref\">TDestination</code> by using mapster.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.MapsterMapper.yml\" sourcestartlinenumber=\"1\">Maps objects by using the configured Mapster type-adapter configuration.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25266,7 +25266,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.NotificationBehaviorsProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.NotificationBehaviorsProvider.yml\" sourcestartlinenumber=\"1\">Provides pipeline behaviors for notifications using registered behavior types.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25294,7 +25294,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.NotificationHandlerBase<TNotification>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.NotificationHandlerBase-1.yml\" sourcestartlinenumber=\"1\">Base class for notification handlers, providing a template for handling notifications.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25308,7 +25308,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.NotificationHandlerProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.NotificationHandlerProvider.yml\" sourcestartlinenumber=\"1\">Provides handlers for notifications using a cached dictionary of handler types.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25336,7 +25336,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Notifier",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Notifier.yml\" sourcestartlinenumber=\"1\">Dispatches notifications to their handlers through a pipeline of behaviors.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25420,7 +25420,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.NumericNotInRule<T>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.NumericNotInRule-1.yml\" sourcestartlinenumber=\"1\">Represents a validation rule that checks if a given numeric value is not\ncontained within a specified set of disallowed values.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -25462,7 +25462,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ObjectMapper",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ObjectMapper.yml\" sourcestartlinenumber=\"1\">Provides functionalities to map objects of type <code class=\"typeparamref\">TSource</code> to objects of type\n<code class=\"typeparamref\">TTarget</code>.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ObjectMapper.yml\" sourcestartlinenumber=\"1\">Maps objects by using delegates registered for source and target type pairs.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -28178,7 +28178,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.PublishOptions",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.PublishOptions.yml\" sourcestartlinenumber=\"1\">Options for configuring notification processing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -28360,7 +28360,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.RequestBase<TValue>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.RequestBase-1.yml\" sourcestartlinenumber=\"1\">Base class for requests, providing metadata and implementing <xref href=\"BridgingIT.DevKit.Common.IRequest%601\" data-throw-if-not-resolved=\"false\"></xref>.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -28374,7 +28374,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.RequestBehaviorsProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.RequestBehaviorsProvider.yml\" sourcestartlinenumber=\"1\">Provides pipeline behaviors for requests using registered behavior types.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -28402,7 +28402,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.RequestHandlerBase<TRequest, TValue>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.RequestHandlerBase-2.yml\" sourcestartlinenumber=\"1\">Base class for request handlers, providing a template for handling requests.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -28416,7 +28416,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.RequestHandlerProvider",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.RequestHandlerProvider.yml\" sourcestartlinenumber=\"1\">Provides handlers for requests using a cached dictionary of handler types.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -28472,7 +28472,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Requester",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Requester.yml\" sourcestartlinenumber=\"1\">Dispatches requests to their handlers through a pipeline of behaviors.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -29018,7 +29018,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ResultPagedFunctionTaskExtensions",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultPagedFunctionTaskExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for asynchronous <xref href=\"BridgingIT.DevKit.Common.ResultPaged%601\" data-throw-if-not-resolved=\"false\"></xref> instances to enable chaining.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -29144,7 +29144,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ResultTTaskExtensions",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ResultTTaskExtensions.yml\" sourcestartlinenumber=\"1\">Extension methods for asynchronous <xref href=\"BridgingIT.DevKit.Common.Result%601\" data-throw-if-not-resolved=\"false\"></xref> instances to enable chaining.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -29662,7 +29662,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.SendOptions",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.SendOptions.yml\" sourcestartlinenumber=\"1\">Options for configuring request processing.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -30390,7 +30390,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.TextInRule",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.TextInRule.yml\" sourcestartlinenumber=\"1\">Represents a rule for validating whether a specific text input adheres to predefined criteria.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -30754,7 +30754,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Utilities.BackgroundWorker",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Utilities.BackgroundWorker.yml\" sourcestartlinenumber=\"1\">Manages long-running background tasks with cancellation and progress reporting.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -30768,7 +30768,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Utilities.BackgroundWorkerBuilder",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Utilities.BackgroundWorkerBuilder.yml\" sourcestartlinenumber=\"1\">A fluent builder for configuring and creating a BackgroundWorker instance.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -31524,7 +31524,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Utilities.SimpleNotifier",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Utilities.SimpleNotifier.yml\" sourcestartlinenumber=\"1\">Provides a publish-subscribe pattern for loosely coupled event handling.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -31566,7 +31566,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Utilities.SimpleRequester",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Utilities.SimpleRequester.yml\" sourcestartlinenumber=\"1\">Provides a request/response pattern for handling commands and queries.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -31594,7 +31594,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.Utilities.Throttler",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.Utilities.Throttler.yml\" sourcestartlinenumber=\"1\">Provides throttling functionality to rate-limit execution of an action, ensuring it executes immediately and then at fixed intervals during rapid calls.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -32084,7 +32084,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Common.ValidationPipelineBehavior<TRequest, TResponse>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.ValidationPipelineBehavior-2.yml\" sourcestartlinenumber=\"1\">A pipeline behavior that validates messages using FluentValidation.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -32294,7 +32294,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.ActiveEntityAuditStateBehavior<TEntity>",
-      "Summary": null
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.ActiveEntityAuditStateBehavior-1.yml\" sourcestartlinenumber=\"1\">Implements auditing and soft delete behavior for entities using AuditState, inheriting from ActiveEntityBehaviorBase.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -32420,7 +32420,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.ActiveEntityContext<TEntity, TId>",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.ActiveEntityContext-2.yml\" sourcestartlinenumber=\"1\">Represents a context for Active Entity operations, bundling the provider and behaviors\nresolved from the same DI scope. This ensures that the provider and behaviors share\nthe same lifetime and dependencies (e.g., DbContext).</p>\n<p>\n<b>Lifetime Warning:</b> This context is only valid within the DI scope it was created from.\nDo not cache or pass it across async boundaries outside of that scope, as it may lead to\n<xref href=\"System.ObjectDisposedException\" data-throw-if-not-resolved=\"false\"></xref> if the underlying scope (and its services) are disposed.\nAlways use it immediately within the creating method (e.g., inside <xref href=\"BridgingIT.DevKit.Domain.ActiveEntityContextScope.UseAsync%60%603(BridgingIT.DevKit.Domain.ActiveEntityContext%7b%60%600%2c%60%601%7d%2cSystem.Func%7bBridgingIT.DevKit.Domain.ActiveEntityContext%7b%60%600%2c%60%601%7d%2cSystem.Threading.Tasks.Task%7b%60%602%7d%7d)\" data-throw-if-not-resolved=\"false\"></xref>\nor WithTransactionAsync&lt;TEntity, TId&gt;).\n</p>\n<p>\nIf you need to extend the context with more dependencies, resolve them at creation time\nand add them as properties here, rather than resolving them later to avoid scope mismatches.\n</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.ActiveEntityContext-2.yml\" sourcestartlinenumber=\"1\">Represents a context for Active Entity operations, bundling the provider and behaviors\nresolved from the same DI scope. This ensures that the provider and behaviors share\nthe same lifetime and dependencies (e.g., DbContext).</p>\n<p>\n<b>Lifetime Warning:</b> This context is only valid within the DI scope it was created from.\nDo not cache or pass it across async boundaries outside of that scope, as it may lead to\n<xref href=\"System.ObjectDisposedException\" data-throw-if-not-resolved=\"false\"></xref> if the underlying scope (and its services) are disposed.\nAlways use it immediately within the creating method (e.g., inside <xref href=\"BridgingIT.DevKit.Domain.ActiveEntityContextScope.UseAsync%60%603(BridgingIT.DevKit.Domain.ActiveEntityContext%7b%60%600%2c%60%601%7d%2cSystem.Func%7bBridgingIT.DevKit.Domain.ActiveEntityContext%7b%60%600%2c%60%601%7d%2cSystem.Threading.Tasks.Task%7b%60%602%7d%7d)\" data-throw-if-not-resolved=\"false\"></xref>\nor a <code>WithTransactionAsync</code> operation).\n</p>\n<p>\nIf you need to extend the context with more dependencies, resolve them at creation time\nand add them as properties here, rather than resolving them later to avoid scope mismatches.\n</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -35360,7 +35360,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.Repositories.HierarchyOptionBuilder",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.HierarchyOptionBuilder.yml\" sourcestartlinenumber=\"1\">A builder class for creating a list of <xref href=\"BridgingIT.DevKit.Domain.Repositories.IncludeOption%601\" data-throw-if-not-resolved=\"false\"></xref> instances from a collection of include paths.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.HierarchyOptionBuilder.yml\" sourcestartlinenumber=\"1\">Builds hierarchy options from navigation-property paths.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -35738,7 +35738,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Domain.Repositories.IncludeOptionBuilder",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.IncludeOptionBuilder.yml\" sourcestartlinenumber=\"1\">A builder class for creating a list of <xref href=\"BridgingIT.DevKit.Domain.Repositories.IncludeOption%601\" data-throw-if-not-resolved=\"false\"></xref> instances from a collection of include paths.</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Domain.Repositories.IncludeOptionBuilder.yml\" sourcestartlinenumber=\"1\">Builds include options from navigation-property paths.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -37110,7 +37110,7 @@
       "Uid": null,
       "IsMRef": true,
       "Title": "BridgingIT.DevKit.Infrastructure.Azure.CosmosSystemTextJsonSerializer",
-      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.Azure.CosmosSystemTextJsonSerializer.yml\" sourcestartlinenumber=\"1\">Uses Azure.Core.Serialization.JsonObjectSerializer which leverages System.Text.Json</p>\n"
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Infrastructure.Azure.CosmosSystemTextJsonSerializer.yml\" sourcestartlinenumber=\"1\">Uses <xref href=\"Azure.Core.Serialization.JsonObjectSerializer\" data-throw-if-not-resolved=\"false\"></xref> which leverages System.Text.Json.</p>\n"
     },
     {
       "type": "ManagedReference",
@@ -51718,11 +51718,11 @@
       "type": "Toc",
       "source_relative_path": "obj/api/toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "obj/api/toc.json"
-        },
         ".html": {
           "relative_path": "obj/api/toc.html"
+        },
+        ".json": {
+          "relative_path": "obj/api/toc.json"
         }
       },
       "version": ""
@@ -51731,11 +51731,11 @@
       "type": "Toc",
       "source_relative_path": "toc.yml",
       "output": {
-        ".json": {
-          "relative_path": "toc.json"
-        },
         ".html": {
           "relative_path": "toc.html"
+        },
+        ".json": {
+          "relative_path": "toc.json"
         }
       },
       "version": ""

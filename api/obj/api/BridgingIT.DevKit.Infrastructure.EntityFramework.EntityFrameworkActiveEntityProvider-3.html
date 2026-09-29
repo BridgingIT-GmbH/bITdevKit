@@ -191,7 +191,7 @@ Class EntityFrameworkActiveEntityProvider&lt;TEntity, TId, TContext&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -218,7 +218,7 @@ Class EntityFrameworkActiveEntityProvider&lt;TEntity, TId, TContext&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -682,7 +682,8 @@ if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }<
     <dd><p>The entity to delete.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional callbacks invoked before and after deletion.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>
@@ -821,7 +822,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -831,23 +833,32 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_EntityFrameworkActiveEntityProvider_3_ExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.ExistsAsync(spec);
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Matching entities exist"); }</code></pre>
 
 
 
@@ -861,7 +872,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -871,23 +883,32 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_EntityFrameworkActiveEntityProvider_3_ExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.ExistsAsync(specs);
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Matching entities exist"); }</code></pre>
 
 
 
@@ -1574,7 +1595,8 @@ if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a single entity matching the given specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1584,23 +1606,32 @@ if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the found entity or null.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_EntityFrameworkActiveEntityProvider_3_FindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var spec = new Specification&lt;Customer&gt;(c =&gt; c.Email == "john.doe@example.com");
+var result = await provider.FindOneAsync(spec);
+if (result.IsSuccess &amp;&amp; result.Value != null) { Console.WriteLine(result.Value.FirstName); }</code></pre>
 
 
 
@@ -1614,7 +1645,8 @@ if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); 
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a single entity matching the given specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1624,23 +1656,32 @@ if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the found entity or null.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_EntityFrameworkActiveEntityProvider_3_FindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindOneAsync(specs);
+if (result.IsSuccess &amp;&amp; result.Value != null) { Console.WriteLine(result.Value.FirstName); }</code></pre>
 
 
 
@@ -1708,7 +1749,8 @@ if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); 
     <dd><p>The entity to insert.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional callbacks invoked around the upsert and insert operations.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>
@@ -2155,7 +2197,8 @@ if (transactionResult.IsSuccess) { await provider.RollbackAsync(); }</code></pre
     <dd><p>The entity to update.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional callbacks invoked around the upsert and update operations.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>
@@ -2320,7 +2363,8 @@ if (result.IsSuccess) { Console.WriteLine($"Archived {result.Value} users"); }</
     <dd><p>The entity to upsert.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The optional callbacks invoked before and after the upsert and selected persistence operation.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>

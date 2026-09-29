@@ -188,7 +188,7 @@ Class ActiveEntityInMemoryProvider&lt;TEntity, TId&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -215,7 +215,7 @@ Class ActiveEntityInMemoryProvider&lt;TEntity, TId&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -290,7 +290,8 @@ Class ActiveEntityInMemoryProvider&lt;TEntity, TId&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>loggerFactory</code> <span class="xref">ILoggerFactory</span></dt>
-    <dd></dd>
+    <dd><p>The logger factory used by the provider.</p>
+</dd>
     <dt><code>optionsBuilder</code> <a class="xref" href="BridgingIT.DevKit.Common.Builder-2.html">Builder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityInMemoryProviderOptionsBuilder-1.html">ActiveEntityInMemoryProviderOptionsBuilder</a>&lt;TEntity&gt;, <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityInMemoryProviderOptions-1.html">ActiveEntityInMemoryProviderOptions</a>&lt;TEntity&gt;&gt;</dt>
     <dd><p>The builder for configuration options.</p>
 </dd>
@@ -354,7 +355,7 @@ Class ActiveEntityInMemoryProvider&lt;TEntity, TId&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Begins a transaction in the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Begins a transaction in the in-memory store.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -382,7 +383,8 @@ Class ActiveEntityInMemoryProvider&lt;TEntity, TId&gt;
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_BeginTransactionAsync_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = await provider.BeginTransactionAsync();
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var result = await provider.BeginTransactionAsync();
 if (result.IsSuccess) { var transaction = result.Value; /* Use transaction */ }</code></pre>
 
 
@@ -397,7 +399,7 @@ if (result.IsSuccess) { var transaction = result.Value; /* Use transaction */ }<
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Commits a transaction in the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Commits a transaction in the in-memory store.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -425,10 +427,9 @@ if (result.IsSuccess) { var transaction = result.Value; /* Use transaction */ }<
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_CommitTransactionAsync_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var transactionResult = await provider.BeginTransactionAsync();
-if (transactionResult.IsSuccess) {
-    await provider.CommitAsync();
-}</code></pre>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var transactionResult = await provider.BeginTransactionAsync();
+if (transactionResult.IsSuccess) { await provider.CommitAsync(); }</code></pre>
 
 
 
@@ -442,7 +443,8 @@ if (transactionResult.IsSuccess) {
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Counts entities matching the given specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -452,23 +454,33 @@ if (transactionResult.IsSuccess) {
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the count of entities.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_CountAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.CountAsync(spec);
+if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }</code></pre>
 
 
 
@@ -482,7 +494,8 @@ if (transactionResult.IsSuccess) {
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Counts entities matching the given specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -492,23 +505,33 @@ if (transactionResult.IsSuccess) {
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">long</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the count of entities.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_CountAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.CountAsync(specs);
+if (result.IsSuccess) { Console.WriteLine($"Matching entities: {result.Value}"); }</code></pre>
 
 
 
@@ -550,7 +573,8 @@ if (transactionResult.IsSuccess) {
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_CountAsync_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = await provider.CountAsync();
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var result = await provider.CountAsync();
 if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }</code></pre>
 
 
@@ -565,7 +589,7 @@ if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }<
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Deletes an entity from the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Deletes an entity from the in-memory store.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -579,7 +603,8 @@ if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }<
     <dd><p>The entity to delete.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional callbacks invoked before and after deletion.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>
@@ -598,7 +623,8 @@ if (result.IsSuccess) { Console.WriteLine($"Total entities: {result.Value}"); }<
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_DeleteAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var customer = await provider.FindOneAsync(customerId);
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var customer = await provider.FindOneAsync(customerId);
 var result = await provider.DeleteAsync(customer.Value);
 if (result.IsSuccess) { Console.WriteLine("Customer deleted"); }</code></pre>
 
@@ -717,7 +743,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -727,23 +754,33 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.ExistsAsync(spec);
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Matching entities exist"); }</code></pre>
 
 
 
@@ -757,7 +794,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -767,23 +805,33 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.ExistsAsync(specs);
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Matching entities exist"); }</code></pre>
 
 
 
@@ -797,7 +845,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given options.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -807,21 +856,29 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The id.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ExistsAsync_System_Object_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var result = await provider.ExistsAsync();
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Entities exist"); }</code></pre>
 
 
 
@@ -835,7 +892,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Checks if any entities exist matching the given options.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -845,19 +903,26 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing a boolean indicating if entities exist.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ExistsAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var result = await provider.ExistsAsync();
+if (result.IsSuccess &amp;&amp; result.Value) { Console.WriteLine("Entities exist"); }</code></pre>
 
 
 
@@ -871,7 +936,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -881,23 +947,33 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the collection of entities.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.FindAllAsync(spec);
+if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }</code></pre>
 
 
 
@@ -911,7 +987,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entities matching the given options.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -921,21 +998,30 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the collection of entities.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var options = new FindOptions&lt;Customer&gt; { Take = 10 };
+var result = await provider.FindAllAsync(options);
+if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }</code></pre>
 
 
 
@@ -949,7 +1035,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -959,23 +1046,33 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TEntity&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the collection of entities.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindAllAsync(specs);
+if (result.IsSuccess) { foreach (var customer in result.Value) { Console.WriteLine(customer.FirstName); } }</code></pre>
 
 
 
@@ -989,7 +1086,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -999,23 +1097,33 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the collection of entity IDs.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllIdsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.FindAllIdsAsync(spec);
+if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }</code></pre>
 
 
 
@@ -1060,7 +1168,8 @@ if (result.IsSuccess) { Console.WriteLine($"Deleted {result.Value} users"); }</c
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllIdsAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var result = await provider.FindAllIdsAsync();
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var result = await provider.FindAllIdsAsync();
 if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }</code></pre>
 
 
@@ -1075,7 +1184,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1085,23 +1195,33 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TId&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the collection of entity IDs.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllIdsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindAllIdsAsync(specs);
+if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id); } }</code></pre>
 
 
 
@@ -1115,7 +1235,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specification with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1125,23 +1246,33 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged entity IDs and total count.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllIdsPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.FindAllIdsPagedAsync(spec);
+if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1155,7 +1286,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given options with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1165,21 +1297,30 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged entity IDs and total count.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllIdsPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var options = new FindOptions&lt;Customer&gt; { Skip = 10, Take = 5 };
+var result = await provider.FindAllIdsPagedAsync(options);
+if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1193,7 +1334,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entity IDs matching the given specifications with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1203,23 +1345,33 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged entity IDs and total count.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllIdsPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindAllIdsPagedAsync(specs);
+if (result.IsSuccess) { Console.WriteLine($"Total IDs: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1233,7 +1385,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specification with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1243,23 +1396,33 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged entities and total count.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.FindAllPagedAsync(spec);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1273,7 +1436,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entities matching the given options with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1283,21 +1447,30 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged entities and total count.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var options = new FindOptions&lt;Customer&gt; { Skip = 10, Take = 5 };
+var result = await provider.FindAllPagedAsync(options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1311,7 +1484,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds all entities matching the given specifications with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1321,23 +1495,33 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged entities and total count.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindAllPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindAllPagedAsync(specs);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1351,7 +1535,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a single entity matching the given specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1361,23 +1546,33 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the found entity or null.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.FindOneAsync(spec);
+if (result.IsSuccess &amp;&amp; result.Value != null) { Console.WriteLine(result.Value.FirstName); }</code></pre>
 
 
 
@@ -1391,7 +1586,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a single entity matching the given specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1401,23 +1597,33 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the found entity or null.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.FindOneAsync(specs);
+if (result.IsSuccess &amp;&amp; result.Value != null) { Console.WriteLine(result.Value.FirstName); }</code></pre>
 
 
 
@@ -1431,7 +1637,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Finds a single entity by its ID.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1441,23 +1648,32 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The ID of the entity to find.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the found entity or null.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_FindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var result = await provider.FindOneAsync(customerId);
+if (result.IsSuccess &amp;&amp; result.Value != null) { Console.WriteLine(result.Value.FirstName); }</code></pre>
 
 
 
@@ -1471,7 +1687,7 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Inserts an entity into the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Inserts an entity into the in-memory store.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1485,7 +1701,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
     <dd><p>The entity to insert.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional callbacks invoked around the insert and delegated upsert operations.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>
@@ -1504,7 +1721,8 @@ if (result.IsSuccess) { foreach (var id in result.Value) { Console.WriteLine(id)
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_InsertAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var customer = new Customer { FirstName = "John", LastName = "Doe" };
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var customer = new Customer { FirstName = "John" };
 var result = await provider.InsertAsync(customer);
 if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.Value.Id}"); }</code></pre>
 
@@ -1520,7 +1738,8 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specification to a specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1530,30 +1749,42 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the projected entities.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.ProjectAllAsync(spec, c =&gt; c.FirstName);
+if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }</code></pre>
 
 
 
@@ -1567,7 +1798,8 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specifications to a specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1577,30 +1809,42 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the projected entities.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ProjectAllAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.ProjectAllAsync(specs, c =&gt; c.FirstName);
+if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }</code></pre>
 
 
 
@@ -1614,7 +1858,8 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all entities to a specified type.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1624,28 +1869,38 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;TProjection&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a Result containing the projected entities.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var result = await provider.ProjectAllAsync(c =&gt; c.FirstName);
+if (result.IsSuccess) { foreach (var name in result.Value) { Console.WriteLine(name); } }</code></pre>
 
 
 
@@ -1659,7 +1914,8 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specification to a specified type with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1669,30 +1925,42 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter entities.</p>
+</dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged projected entities and total count.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ProjectAllPagedAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var spec = new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe");
+var result = await provider.ProjectAllPagedAsync(spec, c =&gt; c.FirstName);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1706,7 +1974,8 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all entities matching the given specifications to a specified type with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1716,30 +1985,42 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter entities.</p>
+</dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged projected entities and total count.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ProjectAllPagedAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var specs = new[] { new Specification&lt;Customer&gt;(c =&gt; c.LastName == "Doe") };
+var result = await provider.ProjectAllPagedAsync(specs, c =&gt; c.FirstName);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1753,7 +2034,8 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Projects all entities to a specified type with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1763,28 +2045,39 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering, includes).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A task with a ResultPaged containing the paged projected entities and total count.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_ProjectAllPagedAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var options = new FindOptions&lt;Customer&gt; { Skip = 10, Take = 5 };
+var result = await provider.ProjectAllPagedAsync(c =&gt; c.FirstName, options);
+if (result.IsSuccess) { Console.WriteLine($"Total: {result.Value.TotalCount}"); }</code></pre>
 
 
 
@@ -1798,7 +2091,7 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Rolls back a transaction in the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Rolls back a transaction in the in-memory store.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1826,10 +2119,9 @@ if (result.IsSuccess) { Console.WriteLine($"Inserted customer with ID: {result.V
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_RollbackAsync_System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var transactionResult = await provider.BeginTransactionAsync();
-if (transactionResult.IsSuccess) {
-    await provider.RollbackAsync();
-}</code></pre>
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var transactionResult = await provider.BeginTransactionAsync();
+if (transactionResult.IsSuccess) { await provider.RollbackAsync(); }</code></pre>
 
 
 
@@ -1843,7 +2135,7 @@ if (transactionResult.IsSuccess) {
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Updates an existing entity in the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Updates an existing entity in the in-memory store.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -1857,7 +2149,8 @@ if (transactionResult.IsSuccess) {
     <dd><p>The entity to update.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional callbacks invoked around the update and delegated upsert operations.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>
@@ -1876,7 +2169,8 @@ if (transactionResult.IsSuccess) {
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_UpdateAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var customer = await provider.FindOneAsync(customerId);
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var customer = await provider.FindOneAsync(customerId);
 customer.Value.FirstName = "Jane";
 var result = await provider.UpdateAsync(customer.Value);
 if (result.IsSuccess) { Console.WriteLine("Customer updated"); }</code></pre>
@@ -2005,7 +2299,7 @@ if (result.IsSuccess) { Console.WriteLine($"Archived {result.Value} users"); }</
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Upserts an entity (inserts if new, updates if exists) in the underlying storage.</p>
+  <div class="markdown level1 summary"><p>Upserts an entity in the in-memory store (inserts if new, updates if exists).</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -2019,7 +2313,8 @@ if (result.IsSuccess) { Console.WriteLine($"Archived {result.Value} users"); }</
     <dd><p>The entity to upsert.</p>
 </dd>
     <dt><code>callbacks</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityCallbackOptions-2.html">ActiveEntityCallbackOptions</a>&lt;TEntity, TId&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional callbacks invoked before and after the applicable upsert, insert, or update stages.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token to cancel the asynchronous operation.</p>
 </dd>
@@ -2028,7 +2323,7 @@ if (result.IsSuccess) { Console.WriteLine($"Archived {result.Value} users"); }</
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;(TEntity <span class="xref">entity</span>, <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.RepositoryActionResult.html">RepositoryActionResult</a> <span class="xref">action</span>)&gt;&gt;</dt>
-    <dd><p>A task with a Result containing the entity and the action performed (Inserted/Updated).</p>
+    <dd><p>A task with a Result containing the entity and the action performed.</p>
 </dd>
   </dl>
 
@@ -2038,7 +2333,8 @@ if (result.IsSuccess) { Console.WriteLine($"Archived {result.Value} users"); }</
 
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityInMemoryProvider_2_UpsertAsync__0_BridgingIT_DevKit_Domain_ActiveEntityCallbackOptions__0__1__System_Threading_CancellationToken__examples">Examples</h4>
-  <pre><code class="lang-csharp">var customer = new Customer { Id = Guid.NewGuid(), FirstName = "John" };
+  <pre><code class="lang-csharp">var provider = new InMemoryProvider&lt;Customer, Guid&gt;(loggerFactory, new InMemoryContext&lt;Customer&gt;());
+var customer = new Customer { Id = Guid.NewGuid(), FirstName = "John" };
 var result = await provider.UpsertAsync(customer);
 Console.WriteLine($"Action: {result.Value.action}"); // Inserted or Updated</code></pre>
 

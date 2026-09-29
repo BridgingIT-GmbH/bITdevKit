@@ -1205,11 +1205,11 @@ Returns failure if ANY result fails.</p>
 
   <h4 class="section" id="BridgingIT_DevKit_Common_Result_Flatten_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Common_Result___examples">Examples</h4>
   <pre><code class="lang-csharp">// Combine multiple validation results
-var result = new[] 
-{ 
-    ValidateName(user), 
-    ValidateEmail(user), 
-    ValidateAge(user) 
+var result = new[]
+{
+    ValidateName(user),
+    ValidateEmail(user),
+    ValidateAge(user)
 }.Flatten();
 // Result is successful only if all validations pass</code></pre>
 
@@ -1259,11 +1259,11 @@ Returns failure if ANY result fails.</p>
 
   <h4 class="section" id="BridgingIT_DevKit_Common_Result_FlattenAsync_System_Collections_Generic_IEnumerable_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___System_Threading_CancellationToken__examples">Examples</h4>
   <pre><code class="lang-csharp">// Combine multiple async validation results
-var result = await new[] 
-{ 
-    ValidateNameAsync(user), 
-    ValidateEmailAsync(user), 
-    ValidateAgeAsync(user) 
+var result = await new[]
+{
+    ValidateNameAsync(user),
+    ValidateEmailAsync(user),
+    ValidateAgeAsync(user)
 }.FlattenAsync(cancellationToken);
 // Result is successful only if all validations pass</code></pre>
 

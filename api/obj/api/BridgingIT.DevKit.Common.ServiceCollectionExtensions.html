@@ -131,7 +131,8 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds the Notifier service to the specified <span class="xref">Microsoft.Extensions.DependencyInjection.IServiceCollection</span> and returns a <a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html">NotifierBuilder</a> for configuration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -147,7 +148,8 @@ Class ServiceCollectionExtensions
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html">NotifierBuilder</a></dt>
-    <dd></dd>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html">NotifierBuilder</a> for fluent configuration.</p>
+</dd>
   </dl>
 
 
@@ -155,9 +157,63 @@ Class ServiceCollectionExtensions
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_AddNotifier_Microsoft_Extensions_DependencyInjection_IServiceCollection__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Basic usage with default configuration
+var services = new ServiceCollection();
+services.AddLogging(); // Required for INotifier logging
+services.AddNotifier()
+    .AddHandlers(new[] { "^System\\..*" }); // Exclude System assemblies
+var provider = services.BuildServiceProvider();
+var notifier = provider.GetRequiredService&lt;INotifier&gt;();
+var result = await notifier.PublishAsync(new EmailSentNotification());
+
+// Usage with pipeline behaviors
+var services = new ServiceCollection();
+services.AddLogging();
+services.AddNotifier()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior&lt;ValidationBehavior&lt;,&gt;&gt;() // Add validation behavior
+    .WithBehavior&lt;RetryBehavior&lt;,&gt;&gt;();    // Add retry behavior
+var provider = services.BuildServiceProvider();
+var notifier = provider.GetRequiredService&lt;INotifier&gt;();
+var result = await notifier.PublishAsync(new EmailSentNotification());</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_AddNotifier_Microsoft_Extensions_DependencyInjection_IServiceCollection__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This method registers the necessary services for the Notifier system, including the <a class="xref" href="BridgingIT.DevKit.Common.INotifier.html">INotifier</a> implementation
+and its dependencies. It returns a <a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html">NotifierBuilder</a> that can be used to configure handlers and behaviors
+using a fluent API. The Notifier system enables dispatching notifications to their corresponding handlers through a pipeline
+of behaviors, supporting features like validation, retry, and timeout.
+</p>
+<p>
+To use the Notifier system, you must:
+1. Call <a class="xref" href="BridgingIT.DevKit.Common.ServiceCollectionExtensions.html#BridgingIT_DevKit_Common_ServiceCollectionExtensions_AddNotifier_Microsoft_Extensions_DependencyInjection_IServiceCollection_">AddNotifier(IServiceCollection)</a> to register the core services.
+2. Use <a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html#BridgingIT_DevKit_Common_NotifierBuilder_AddHandlers_System_Collections_Generic_IEnumerable_System_String__">AddHandlers(IEnumerable&lt;string&gt;)</a> to scan for and register notification handlers.
+3. Optionally, use <a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html#BridgingIT_DevKit_Common_NotifierBuilder_WithBehavior_System_Type_">WithBehavior(Type)</a> to add pipeline behaviors.
+4. Build the service provider to resolve the <a class="xref" href="BridgingIT.DevKit.Common.INotifier.html">INotifier</a> service for dispatching notifications.
+</p>
+<p>
+The <a class="xref" href="BridgingIT.DevKit.Common.INotifier.html">INotifier</a> service is registered with a scoped lifetime, meaning a new instance is created for each
+scope (e.g., per HTTP request in ASP.NET Core). Ensure that any dependencies (e.g., logging) are also registered in the
+service collection before calling this method.
+</p>
+</div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when <code class="paramref">services</code> is null.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="BridgingIT.DevKit.Common.NotifierBuilder.html">NotifierBuilder</a></div>
+    <div><a class="xref" href="BridgingIT.DevKit.Common.INotifier.html">INotifier</a></div>
+    </dd>
+  </dl>
 
 
   <a id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_AddRequester_" data-uid="BridgingIT.DevKit.Common.ServiceCollectionExtensions.AddRequester*"></a>
@@ -167,7 +223,8 @@ Class ServiceCollectionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds the Requester service to the specified <span class="xref">Microsoft.Extensions.DependencyInjection.IServiceCollection</span> and returns a <a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html">RequesterBuilder</a> for configuration.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -177,13 +234,15 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd></dd>
+    <dd><p>The <span class="xref">Microsoft.Extensions.DependencyInjection.IServiceCollection</span> to add the Requester service to.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html">RequesterBuilder</a></dt>
-    <dd></dd>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html">RequesterBuilder</a> for fluent configuration.</p>
+</dd>
   </dl>
 
 
@@ -191,9 +250,63 @@ Class ServiceCollectionExtensions
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_AddRequester_Microsoft_Extensions_DependencyInjection_IServiceCollection__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Basic usage with default configuration
+var services = new ServiceCollection();
+services.AddLogging(); // Required for IRequester logging
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" }); // Exclude System assemblies
+var provider = services.BuildServiceProvider();
+var requester = provider.GetRequiredService&lt;IRequester&gt;();
+var result = await requester.SendAsync(new MyRequest());
+
+// Usage with pipeline behaviors
+var services = new ServiceCollection();
+services.AddLogging();
+services.AddRequester()
+    .AddHandlers(new[] { "^System\\..*" })
+    .WithBehavior&lt;ValidationBehavior&lt;,&gt;&gt;() // Add validation behavior
+    .WithBehavior&lt;RetryBehavior&lt;,&gt;&gt;();    // Add retry behavior
+var provider = services.BuildServiceProvider();
+var requester = provider.GetRequiredService&lt;IRequester&gt;();
+var result = await requester.SendAsync(new MyRequest());</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_AddRequester_Microsoft_Extensions_DependencyInjection_IServiceCollection__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>
+This method registers the necessary services for the Requester system, including the <a class="xref" href="BridgingIT.DevKit.Common.IRequester.html">IRequester</a> implementation
+and its dependencies. It returns a <a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html">RequesterBuilder</a> that can be used to configure handlers and behaviors
+using a fluent API. The Requester system enables dispatching requests to their corresponding handlers through a pipeline
+of behaviors, supporting features like validation, retry, timeout, and chaos injection.
+</p>
+<p>
+To use the Requester system, you must:
+1. Call <a class="xref" href="BridgingIT.DevKit.Common.ServiceCollectionExtensions.html#BridgingIT_DevKit_Common_ServiceCollectionExtensions_AddRequester_Microsoft_Extensions_DependencyInjection_IServiceCollection_">AddRequester(IServiceCollection)</a> to register the core services.
+2. Use <a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html#BridgingIT_DevKit_Common_RequesterBuilder_AddHandlers_System_Collections_Generic_IEnumerable_System_String__">AddHandlers(IEnumerable&lt;string&gt;)</a> to scan for and register request handlers.
+3. Optionally, use <a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html#BridgingIT_DevKit_Common_RequesterBuilder_WithBehavior_System_Type_">WithBehavior(Type)</a> to add pipeline behaviors.
+4. Build the service provider to resolve the <a class="xref" href="BridgingIT.DevKit.Common.IRequester.html">IRequester</a> service for dispatching requests.
+</p>
+<p>
+The <a class="xref" href="BridgingIT.DevKit.Common.IRequester.html">IRequester</a> service is registered with a scoped lifetime, meaning a new instance is created for each
+scope (e.g., per HTTP request in ASP.NET Core). Ensure that any dependencies (e.g., logging) are also registered in the
+service collection before calling this method.
+</p>
+</div>
 
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when <code class="paramref">services</code> is null.</p>
+</dd>
+  </dl>
+
+  <dl class="typelist seealso">
+    <dt>See Also</dt>
+    <dd>
+    <div><a class="xref" href="BridgingIT.DevKit.Common.RequesterBuilder.html">RequesterBuilder</a></div>
+    <div><a class="xref" href="BridgingIT.DevKit.Common.IRequester.html">IRequester</a></div>
+    </dd>
+  </dl>
 
 
   <a id="BridgingIT_DevKit_Common_ServiceCollectionExtensions_Find_" data-uid="BridgingIT.DevKit.Common.ServiceCollectionExtensions.Find*"></a>
@@ -214,8 +327,7 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd><p>The service collection to inspect.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -262,8 +374,7 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd><p>The service collection to inspect.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -310,8 +421,7 @@ Class ServiceCollectionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>services</code> <span class="xref">IServiceCollection</span></dt>
-    <dd><p>The service collection to inspect.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>

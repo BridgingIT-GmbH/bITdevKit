@@ -142,8 +142,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to adjust.</p>
-</dd>
+    <dd></dd>
     <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
     <dd><p>The calendar unit to add.</p>
 </dd>
@@ -193,8 +192,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to combine.</p>
-</dd>
+    <dd></dd>
     <dt><code>offset</code> <span class="xref">TimeSpan</span>?</dt>
     <dd><p>The offset to apply, or +00:00 when omitted.</p>
 </dd>
@@ -240,8 +238,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to combine.</p>
-</dd>
+    <dd></dd>
     <dt><code>time</code> <span class="xref">TimeOnly</span></dt>
     <dd><p>The time to combine.</p>
 </dd>
@@ -290,8 +287,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to ceiling.</p>
-</dd>
+    <dd></dd>
     <dt><code>dateUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
     <dd><p>The day, Monday-based week, month, or year boundary to use.</p>
 </dd>
@@ -332,14 +328,13 @@ Class DateOnlyExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static int DaysUntil(this DateOnly date)</code></pre>
+    <pre><code class="lang-csharp hljs">public static int DaysUntil(this DateOnly source)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>date</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The target date.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">DateOnly</span></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -371,14 +366,13 @@ Class DateOnlyExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static int DaysUntil(this DateOnly date, DateOnly reference)</code></pre>
+    <pre><code class="lang-csharp hljs">public static int DaysUntil(this DateOnly source, DateOnly reference)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>date</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The target date.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">DateOnly</span></dt>
+    <dd></dd>
     <dt><code>reference</code> <span class="xref">DateOnly</span></dt>
     <dd><p>The reference date.</p>
 </dd>
@@ -424,8 +418,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the end of the day for.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -463,8 +456,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the end of the month for.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -496,14 +488,13 @@ Class DateOnlyExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateOnly EndOfWeek(this DateOnly date)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateOnly EndOfWeek(this DateOnly source)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>date</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the end of the week for.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">DateOnly</span></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -541,8 +532,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the end of the year for.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -580,8 +570,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to floor.</p>
-</dd>
+    <dd></dd>
     <dt><code>dateUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
     <dd><p>The calendar boundary to use.</p>
 </dd>
@@ -628,8 +617,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date whose week number should be calculated.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -667,8 +655,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to evaluate.</p>
-</dd>
+    <dd></dd>
     <dt><code>start</code> <span class="xref">DateOnly</span></dt>
     <dd><p>The lower boundary.</p>
 </dd>
@@ -715,8 +702,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to evaluate.</p>
-</dd>
+    <dd></dd>
     <dt><code>unit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
     <dd><p>The calendar unit used to calculate the range boundary.</p>
 </dd>
@@ -766,8 +752,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to evaluate.</p>
-</dd>
+    <dd></dd>
     <dt><code>reference</code> <span class="xref">DateOnly</span></dt>
     <dd><p>The reference date.</p>
 </dd>
@@ -825,8 +810,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date whose year should be evaluated.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -864,8 +848,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to align.</p>
-</dd>
+    <dd></dd>
     <dt><code>dateUnit</code> <a class="xref" href="BridgingIT.DevKit.Common.DateUnit.html">DateUnit</a></dt>
     <dd><p>The calendar unit whose lower boundary should be returned.</p>
 </dd>
@@ -906,8 +889,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the start of the day for.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -939,14 +921,13 @@ Class DateOnlyExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static DateOnly StartOfMonth(this DateOnly date)</code></pre>
+    <pre><code class="lang-csharp hljs">public static DateOnly StartOfMonth(this DateOnly source)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>date</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the start of the month for.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">DateOnly</span></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -984,8 +965,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the start of the week for.</p>
-</dd>
+    <dd></dd>
     <dt><code>day</code> <span class="xref">DayOfWeek</span></dt>
     <dd></dd>
   </dl>
@@ -1025,8 +1005,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The DateOnly to get the start of the year for.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1064,8 +1043,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The starting date.</p>
-</dd>
+    <dd></dd>
     <dt><code>target</code> <span class="xref">DateOnly</span></dt>
     <dd><p>The ending date.</p>
 </dd>
@@ -1106,8 +1084,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to convert.</p>
-</dd>
+    <dd></dd>
     <dt><code>offset</code> <span class="xref">TimeSpan</span>?</dt>
     <dd><p>The offset to apply, or UTC when omitted.</p>
 </dd>
@@ -1148,8 +1125,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to format.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1192,8 +1168,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to convert.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -1237,8 +1212,7 @@ Class DateOnlyExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">DateOnly</span></dt>
-    <dd><p>The date to convert.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>

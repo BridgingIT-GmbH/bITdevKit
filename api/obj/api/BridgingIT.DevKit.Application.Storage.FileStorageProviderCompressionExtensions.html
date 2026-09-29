@@ -222,7 +222,7 @@ Supported formats: Zip, Tar, GZip. Password protection is not supported during c
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IEnumerable</span>&lt;<span class="xref">string</span>&gt;&gt;&gt;</dt>
-    <dd><p>A Result&lt;IEnumerable&lt;string&gt;&gt; containing the list of file names on success, or an error on failure.</p>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> containing the list of file names on success, or an error on failure.</p>
 </dd>
   </dl>
 
@@ -328,7 +328,8 @@ Uses <a class="xref" href="BridgingIT.DevKit.Common.DecryptionError.html">Decryp
     <dd><p>The directory path where the uncompressed files will be written (e.g., &quot;uncompressed&quot;).</p>
 </dd>
     <dt><code>searchPattern</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional pattern used to select archive entries for extraction.</p>
+</dd>
     <dt><code>password</code> <span class="xref">string</span></dt>
     <dd><p>An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</p>
 </dd>
@@ -389,7 +390,8 @@ Uses <a class="xref" href="BridgingIT.DevKit.Common.DecryptionError.html">Decryp
     <dd><p>The path of the compressed file to uncompress (e.g., &quot;input.zip&quot;).</p>
 </dd>
     <dt><code>searchPattern</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional pattern used to select archive entries for extraction.</p>
+</dd>
     <dt><code>password</code> <span class="xref">string</span></dt>
     <dd><p>An optional password for decrypting the compressed file. If null or empty, no decryption is applied.</p>
 </dd>
@@ -407,7 +409,7 @@ Uses <a class="xref" href="BridgingIT.DevKit.Common.DecryptionError.html">Decryp
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<span class="xref">IReadOnlyDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">MemoryStream</span>&gt;&gt;&gt;</dt>
-    <dd><p>A Result&lt;IReadOnlyDictionary&lt;string, MemoryStream&gt;&gt; containing the dictionary on success, or an error on failure.<br>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result&lt;T&gt;</a> containing the dictionary on success, or an error on failure.<br>
 The dictionary maps archive entry paths (including names) to their decompressed <span class="xref">System.IO.MemoryStream</span>s.</p>
 </dd>
   </dl>

@@ -131,7 +131,8 @@ Class JobScheduleBuilderExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sets the cron expression for the job schedule using a fluent CronExpressionBuilder.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,26 +142,41 @@ Class JobScheduleBuilderExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>builder</code> <a class="xref" href="BridgingIT.DevKit.Application.JobScheduleBuilder-1.html">JobScheduleBuilder</a>&lt;TJob&gt;</dt>
-    <dd></dd>
+    <dd><p>The JobScheduleBuilder instance.</p>
+</dd>
     <dt><code>cronExpressionBuilder</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.CronExpressionBuilder.html">CronExpressionBuilder</a>, <span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A function that takes a CronExpressionBuilder and returns the built cron expression string.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduleBuilder-1.html">JobScheduleBuilder</a>&lt;TJob&gt;</dt>
-    <dd></dd>
+    <dd><p>The JobScheduleBuilder instance for fluent chaining.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TJob</code></dt>
-    <dd></dd>
+    <dd><p>The job type implementing IJob.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilderExtensions_Cron__1_BridgingIT_DevKit_Application_JobScheduleBuilder___0__System_Func_BridgingIT_DevKit_Application_JobScheduling_CronExpressionBuilder_System_String___examples">Examples</h4>
+  <p>// Schedule a job to run on the 1st of every month at 11:59 PM
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(b =&gt; b
+.DayOfMonth(1)
+.AtTime(23, 59, 0)
+.Build())
+.Named(&quot;monthlyEcho&quot;)
+.RegisterScoped();</p>
 
 
 

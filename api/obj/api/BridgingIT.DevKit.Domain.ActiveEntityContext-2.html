@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ActiveEntityContext&lt;TEntity, TId&gt; | bITdevKit API Reference ">
       
-      <meta name="description" content="Represents a context for Active Entity operations, bundling the provider and behaviors resolved from the same DI scope. This ensures that the provider and behaviors share the same lifetime and dependencies (e.g., DbContext).  Lifetime Warning: This context is only valid within the DI scope it was created from. Do not cache or pass it across async boundaries outside of that scope, as it may lead to  if the underlying scope (and its services) are disposed. Always use it immediately within the creating method (e.g., inside  or WithTransactionAsync&amp;lt;TEntity, TId&amp;gt;).   If you need to extend the context with more dependencies, resolve them at creation time and add them as properties here, rather than resolving them later to avoid scope mismatches.">
+      <meta name="description" content="Represents a context for Active Entity operations, bundling the provider and behaviors resolved from the same DI scope. This ensures that the provider and behaviors share the same lifetime and dependencies (e.g., DbContext).  Lifetime Warning: This context is only valid within the DI scope it was created from. Do not cache or pass it across async boundaries outside of that scope, as it may lead to  if the underlying scope (and its services) are disposed. Always use it immediately within the creating method (e.g., inside  or a WithTransactionAsync operation).   If you need to extend the context with more dependencies, resolve them at creation time and add them as properties here, rather than resolving them later to avoid scope mismatches.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -101,7 +101,7 @@ the same lifetime and dependencies (e.g., DbContext).</p>
 Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 <span class="xref">System.ObjectDisposedException</span> if the underlying scope (and its services) are disposed.
 Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html#BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___">UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt;, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt;)</a>
-or WithTransactionAsync&lt;TEntity, TId&gt;).
+or a <code>WithTransactionAsync</code> operation).
 </p>
 <p>
 If you need to extend the context with more dependencies, resolve them at creation time
@@ -195,7 +195,7 @@ and add them as properties here, rather than resolving them later to avoid scope
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -222,7 +222,7 @@ and add them as properties here, rather than resolving them later to avoid scope
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -297,7 +297,7 @@ the same lifetime and dependencies (e.g., DbContext).</p>
 Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 <span class="xref">System.ObjectDisposedException</span> if the underlying scope (and its services) are disposed.
 Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html#BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___">UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt;, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt;)</a>
-or WithTransactionAsync&lt;TEntity, TId&gt;).
+or a <code>WithTransactionAsync</code> operation).
 </p>
 <p>
 If you need to extend the context with more dependencies, resolve them at creation time

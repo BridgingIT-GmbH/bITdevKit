@@ -167,7 +167,7 @@ Acts as a bridge between the domain layer and persistence layer, abstracting sto
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -194,7 +194,7 @@ Acts as a bridge between the domain layer and persistence layer, abstracting sto
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -272,11 +272,14 @@ Acts as a bridge between the domain layer and persistence layer, abstracting sto
     <dd><p>The relative file path to query.</p>
 </dd>
     <dt><code>fromDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive lower timestamp bound.</p>
+</dd>
     <dt><code>tillDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive upper timestamp bound.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels the storage query.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -320,11 +323,14 @@ Acts as a bridge between the domain layer and persistence layer, abstracting sto
     <dd><p>Indicates the path of the file for which the event is being retrieved.</p>
 </dd>
     <dt><code>fromDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive lower timestamp bound.</p>
+</dd>
     <dt><code>tillDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive upper timestamp bound.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels the storage query.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -365,11 +371,14 @@ Acts as a bridge between the domain layer and persistence layer, abstracting sto
     <dd><p>Specifies the location of the file for which events are being retrieved.</p>
 </dd>
     <dt><code>fromDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive lower timestamp bound.</p>
+</dd>
     <dt><code>tillDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive upper timestamp bound.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels the storage query.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -410,11 +419,14 @@ Acts as a bridge between the domain layer and persistence layer, abstracting sto
     <dd><p>The name of the monitored location.</p>
 </dd>
     <dt><code>fromDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive lower timestamp bound.</p>
+</dd>
     <dt><code>tillDate</code> <span class="xref">DateTimeOffset</span>?</dt>
-    <dd></dd>
+    <dd><p>The optional inclusive upper timestamp bound.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels the storage query.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -456,7 +468,8 @@ Used for deletion detection during scans.</p>
     <dd><p>The name of the monitored location.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels the storage query.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -497,7 +510,8 @@ Used for deletion detection during scans.</p>
     <dd><p>The FileEvent to store.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels the persistence operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -537,7 +551,8 @@ Used for deletion detection during scans.</p>
     <dd><p>The ProcessingResult to store.</p>
 </dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>The token that cancels the persistence operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>

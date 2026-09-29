@@ -218,8 +218,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Stream</span></dt>
-    <dd><p>The stream to copy from its current position.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels the copy operation.</p>
 </dd>
@@ -263,8 +262,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">byte</span>[]</dt>
-    <dd><p>The source byte array to convert.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -308,8 +306,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Stream</span></dt>
-    <dd><p>The source stream to convert.</p>
-</dd>
+    <dd></dd>
     <dt><code>bufferSize</code> <span class="xref">int</span></dt>
     <dd><p>The size of the buffer for copying.</p>
 </dd>
@@ -359,8 +356,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd><p>The source string to convert.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -404,8 +400,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">string</span></dt>
-    <dd><p>The source string to convert.</p>
-</dd>
+    <dd></dd>
     <dt><code>encoding</code> <span class="xref">Encoding</span></dt>
     <dd><p>The encoding to use for conversion.</p>
 </dd>
@@ -452,8 +447,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">byte</span>[]</dt>
-    <dd><p>The source byte array to convert.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -497,8 +491,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Stream</span></dt>
-    <dd><p>The source stream to convert.</p>
-</dd>
+    <dd></dd>
     <dt><code>bufferSize</code> <span class="xref">int</span></dt>
     <dd><p>The size of the buffer for copying.</p>
 </dd>
@@ -554,8 +547,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">T</span></dt>
-    <dd><p>The source object to serialize.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -568,8 +560,7 @@ Class StreamExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The type of object to serialize.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -605,8 +596,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">T</span></dt>
-    <dd><p>The source object to serialize.</p>
-</dd>
+    <dd></dd>
     <dt><code>options</code> <span class="xref">JsonSerializerOptions</span></dt>
     <dd><p>The JSON serialization options to use.</p>
 </dd>
@@ -622,8 +612,7 @@ Class StreamExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The type of object to serialize.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -659,8 +648,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">T</span></dt>
-    <dd><p>The source object to serialize.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -673,8 +661,7 @@ Class StreamExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The type of object to serialize.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -710,8 +697,7 @@ Class StreamExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">T</span></dt>
-    <dd><p>The source object to serialize.</p>
-</dd>
+    <dd></dd>
     <dt><code>options</code> <span class="xref">JsonSerializerOptions</span></dt>
     <dd><p>The JSON serialization options to use.</p>
 </dd>
@@ -727,8 +713,7 @@ Class StreamExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The type of object to serialize.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -801,14 +786,13 @@ Class StreamExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static int TryReadAll(this Stream stream, Span&lt;byte&gt; buffer)</code></pre>
+    <pre><code class="lang-csharp hljs">public static int TryReadAll(this Stream source, Span&lt;byte&gt; buffer)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>stream</code> <span class="xref">Stream</span></dt>
-    <dd><p>The stream to read from its current position.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">Stream</span></dt>
+    <dd></dd>
     <dt><code>buffer</code> <span class="xref">Span</span>&lt;<span class="xref">byte</span>&gt;</dt>
     <dd><p>The destination span to fill.</p>
 </dd>

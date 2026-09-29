@@ -142,8 +142,7 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type whose assembly-qualified name should be shortened.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -181,8 +180,7 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to format.</p>
-</dd>
+    <dd></dd>
     <dt><code>useAngleBrackets</code> <span class="xref">bool</span></dt>
     <dd><p>Whether generic arguments use angle brackets instead of square brackets.</p>
 </dd>
@@ -223,8 +221,7 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The most-derived type to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
     <dd><p>The field name.</p>
 </dd>
@@ -268,8 +265,7 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The most-derived type to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
     <dd><p>The property name.</p>
 </dd>
@@ -307,14 +303,13 @@ Class TypeExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool ImplementsAllInterfaces(this Type type, params Type[] interfaces)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool ImplementsAllInterfaces(this Type source, params Type[] interfaces)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to inspect.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">Type</span></dt>
+    <dd></dd>
     <dt><code>interfaces</code> <span class="xref">Type</span>[]</dt>
     <dd><p>The interface contracts that must all be implemented.</p>
 </dd>
@@ -349,14 +344,13 @@ Class TypeExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool ImplementsAnyInterface(this Type type, params Type[] interfaces)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool ImplementsAnyInterface(this Type source, params Type[] interfaces)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to inspect.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">Type</span></dt>
+    <dd></dd>
     <dt><code>interfaces</code> <span class="xref">Type</span>[]</dt>
     <dd><p>The interface contracts to test.</p>
 </dd>
@@ -397,8 +391,7 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>the instance to check</p>
-</dd>
+    <dd></dd>
     <dt><code>interface</code> <span class="xref">Type</span></dt>
     <dd><p>the interface to implement</p>
 </dd>
@@ -438,8 +431,7 @@ Class TypeExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>the instance to check</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -482,8 +474,7 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to check.</p>
-</dd>
+    <dd></dd>
     <dt><code>interface</code> <span class="xref">Type</span></dt>
     <dd><p>The open generic type which it may impelement</p>
 </dd>
@@ -523,8 +514,7 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to inspect.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -563,8 +553,7 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd><p>The object to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>targetType</code> <span class="xref">Type</span></dt>
     <dd><p>The exact runtime type used for comparison.</p>
 </dd>
@@ -605,8 +594,7 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to inspect.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -638,14 +626,13 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static bool IsNumeric(this Type type)</code></pre>
+    <pre><code class="lang-csharp hljs">public static bool IsNumeric(this Type source)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>type</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to inspect.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">Type</span></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -683,8 +670,7 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">object</span></dt>
-    <dd><p>The object to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>targetType</code> <span class="xref">Type</span></dt>
     <dd><p>The exact runtime type to match.</p>
 </dd>
@@ -725,8 +711,7 @@ IEnumerable&lt;&gt;. Note that this only checks against <em>interfaces</em>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to inspect.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -765,8 +750,7 @@ otherwise, <code>false</code>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to format.</p>
-</dd>
+    <dd></dd>
     <dt><code>useAngleBrackets</code> <span class="xref">bool</span></dt>
     <dd><p>Whether generic arguments use angle brackets instead of square brackets.</p>
 </dd>
@@ -807,8 +791,7 @@ otherwise, <code>false</code>.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">Type</span></dt>
-    <dd><p>The type to inspect.</p>
-</dd>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>

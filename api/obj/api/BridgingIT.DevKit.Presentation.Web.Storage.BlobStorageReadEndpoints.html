@@ -196,7 +196,7 @@ Class BlobStorageReadEndpoints
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -223,7 +223,7 @@ Class BlobStorageReadEndpoints
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -287,8 +287,8 @@ Class BlobStorageReadEndpoints
 
   <a id="BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpoints__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageReadEndpoints.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpoints__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClientFactory_BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpointsOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageReadEndpoints.#ctor(BridgingIT.DevKit.Application.Storage.IBlobStoreClientFactory,BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageReadEndpointsOptions)">
-  BlobStorageReadEndpoints(IBlobStoreClientFactory, BlobStorageReadEndpointsOptions)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpoints__ctor_BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpointsOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageReadEndpoints.#ctor(BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageReadEndpointsOptions)">
+  BlobStorageReadEndpoints(BlobStorageReadEndpointsOptions)
   
   </h3>
 
@@ -297,13 +297,11 @@ Class BlobStorageReadEndpoints
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public BlobStorageReadEndpoints(IBlobStoreClientFactory factory, BlobStorageReadEndpointsOptions options = null)</code></pre>
+    <pre><code class="lang-csharp hljs">public BlobStorageReadEndpoints(BlobStorageReadEndpointsOptions options = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>factory</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.IBlobStoreClientFactory.html">IBlobStoreClientFactory</a></dt>
-    <dd></dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Storage.BlobStorageReadEndpointsOptions.html">BlobStorageReadEndpointsOptions</a></dt>
     <dd></dd>
   </dl>
@@ -314,7 +312,7 @@ Class BlobStorageReadEndpoints
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpoints__ctor_BridgingIT_DevKit_Application_Storage_IBlobStoreClientFactory_BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpointsOptions__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpoints__ctor_BridgingIT_DevKit_Presentation_Web_Storage_BlobStorageReadEndpointsOptions__examples">Examples</h4>
   <pre><code class="lang-csharp">services.AddBlobStorage()
     .WithInMemoryClient("reports")
     .AddReadEndpoints(options =&gt; options.AllowAnonymous());</code></pre>

@@ -179,7 +179,7 @@ Class PublishAggregateEventSender
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -206,7 +206,7 @@ Class PublishAggregateEventSender
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -320,9 +320,9 @@ Class PublishAggregateEventSender
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als EventOccured für das Aggregat
-aggregate unter Nutzung von <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.aggregateEventMediatorNotificationSender</span>
+aggregate unter Nutzung von aggregateEventMediatorNotificationSender
 als Notification.
-Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.eventStorePublishingModes</span>
+Die Veröffentlichung erfolgt nur, falls in  eventStorePublishingModes
 <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.EventStorePublishingModes.html#BridgingIT_DevKit_Infrastructure_EventSourcing_Publishing_EventStorePublishingModes_NotifyEventOccuredUsingMediator">NotifyEventOccuredUsingMediator</a> gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -369,9 +369,9 @@ public Task NotifyEventOccuredAsync&lt;TAggregate&gt;(IAggregateEvent savedEvent
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als EventOccured für das Aggregat
-aggregate unter Nutzung von <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.aggregateEventMediatorNotificationSender</span>
+aggregate unter Nutzung von aggregateEventMediatorNotificationSender
 als Notification.
-Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.eventStorePublishingModes</span>
+Die Veröffentlichung erfolgt nur, falls in  eventStorePublishingModes
 <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.EventStorePublishingModes.html#BridgingIT_DevKit_Infrastructure_EventSourcing_Publishing_EventStorePublishingModes_NotifyEventOccuredUsingMediator">NotifyEventOccuredUsingMediator</a> gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -417,8 +417,8 @@ Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKi
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als ProjectionRequest in Form einer Notification für das
-Aggregat aggregate unter Nutzung von <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.aggregateEventMediatorNotificationSender</span>
-Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.eventStorePublishingModes</span>
+Aggregat aggregate unter Nutzung von aggregateEventMediatorNotificationSender
+Die Veröffentlichung erfolgt nur, falls in  eventStorePublishingModes
 <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.EventStorePublishingModes.html#BridgingIT_DevKit_Infrastructure_EventSourcing_Publishing_EventStorePublishingModes_NotifyForProjectionUsingMediator">NotifyForProjectionUsingMediator</a> gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -464,8 +464,8 @@ Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKi
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als EventOccured für das Aggregat
-aggregate unter Nutzung von <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.aggregateEventMediatorRequestSender</span>.
-Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.eventStorePublishingModes</span>
+aggregate unter Nutzung von aggregateEventMediatorRequestSender.
+Die Veröffentlichung erfolgt nur, falls in  eventStorePublishingModes
 <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.EventStorePublishingModes.html#BridgingIT_DevKit_Infrastructure_EventSourcing_Publishing_EventStorePublishingModes_SendEventOccuredRequestUsingMediator">SendEventOccuredRequestUsingMediator</a> gesetzt ist</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -511,8 +511,8 @@ Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKi
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als ProjectionRequest für das Aggregat
-aggregate unter Nutzung von <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.aggregateEventMediatorRequestSender</span>.
-Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.eventStorePublishingModes</span>
+aggregate unter Nutzung von aggregateEventMediatorRequestSender.
+Die Veröffentlichung erfolgt nur, falls in  eventStorePublishingModes
 <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.EventStorePublishingModes.html#BridgingIT_DevKit_Infrastructure_EventSourcing_Publishing_EventStorePublishingModes_SendProjectionRequestUsingMediator">SendProjectionRequestUsingMediator</a> gesetzt ist./&gt;</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -558,8 +558,8 @@ Die Veröffentlichung erfolgt nur, falls in  <span class="xref">BridgingIT.DevKi
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent currentEvent für das Aggregat aggregate unter Nutzung
-von <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.aggregateEventOutboxSender</span>.
-Wenn in <span class="xref">BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.PublishAggregateEventSender.eventStorePublishingModes</span> das Flag <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.EventStorePublishingModes.html#BridgingIT_DevKit_Infrastructure_EventSourcing_Publishing_EventStorePublishingModes_AddToOutbox">AddToOutbox</a>
+von aggregateEventOutboxSender.
+Wenn in eventStorePublishingModes das Flag <a class="xref" href="BridgingIT.DevKit.Infrastructure.EventSourcing.Publishing.EventStorePublishingModes.html#BridgingIT_DevKit_Infrastructure_EventSourcing_Publishing_EventStorePublishingModes_AddToOutbox">AddToOutbox</a>
 gesetzt ist,
 wird in die Outbox geschrieben. Ansonsten passiert nichts /&gt;</p>
 </div>

@@ -131,7 +131,9 @@ Class IncludeOptionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Specifies additional related data to be further included based on a related type
+that was just included (for collection navigation properties).</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,30 +143,42 @@ Class IncludeOptionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IIncludableOption-2.html">IIncludableOption</a>&lt;TEntity, <span class="xref">IEnumerable</span>&lt;TPreviousProperty&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The source includable option.</p>
+</dd>
     <dt><code>navigationPropertyPath</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TPreviousProperty, TProperty&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>An expression representing the navigation property to be included.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IIncludableOption-2.html">IIncludableOption</a>&lt;TEntity, TProperty&gt;</dt>
-    <dd></dd>
+    <dd><p>An IIncludableOption that can be used to further chain ThenInclude calls.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The root entity type.</p>
+</dd>
     <dt><code>TPreviousProperty</code></dt>
-    <dd></dd>
+    <dd><p>The element type of the previously included collection navigation property.</p>
+</dd>
     <dt><code>TProperty</code></dt>
-    <dd></dd>
+    <dd><p>The type of the navigation property to be included.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_IncludeOptionExtensions_ThenInclude__3_BridgingIT_DevKit_Domain_Repositories_IIncludableOption___0_System_Collections_Generic_IEnumerable___1___System_Linq_Expressions_Expression_System_Func___1___2____examples">Examples</h4>
+  <p>var options = new FindOptions&lt;Customer&gt;()
+.AddInclude(new IncludeOption&lt;Customer, ICollection&lt;Order&gt;&gt;(c =&gt; c.Orders)
+.ThenInclude(o =&gt; o.OrderItems)
+.ThenInclude(i =&gt; i.Product));</p>
 
 
 
@@ -178,7 +192,9 @@ Class IncludeOptionExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Specifies additional related data to be further included based on a related type
+that was just included (for reference navigation properties).</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -188,30 +204,42 @@ Class IncludeOptionExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IIncludableOption-2.html">IIncludableOption</a>&lt;TEntity, TPreviousProperty&gt;</dt>
-    <dd></dd>
+    <dd><p>The source includable option.</p>
+</dd>
     <dt><code>navigationPropertyPath</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TPreviousProperty, TProperty&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>An expression representing the navigation property to be included.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IIncludableOption-2.html">IIncludableOption</a>&lt;TEntity, TProperty&gt;</dt>
-    <dd></dd>
+    <dd><p>An IIncludableOption that can be used to further chain ThenInclude calls.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TEntity</code></dt>
-    <dd></dd>
+    <dd><p>The root entity type.</p>
+</dd>
     <dt><code>TPreviousProperty</code></dt>
-    <dd></dd>
+    <dd><p>The type of the previously included navigation property.</p>
+</dd>
     <dt><code>TProperty</code></dt>
-    <dd></dd>
+    <dd><p>The type of the navigation property to be included.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_IncludeOptionExtensions_ThenInclude__3_BridgingIT_DevKit_Domain_Repositories_IIncludableOption___0___1__System_Linq_Expressions_Expression_System_Func___1___2____examples">Examples</h4>
+  <p>var options = new FindOptions&lt;Customer&gt;()
+.AddInclude(new IncludeOption&lt;Customer, Address&gt;(c =&gt; c.BillingAddress)
+.ThenInclude(a =&gt; a.City)
+.ThenInclude(c =&gt; c.Country));</p>
 
 
 

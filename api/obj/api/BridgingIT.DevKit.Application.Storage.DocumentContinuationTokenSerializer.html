@@ -149,7 +149,8 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
     <dd><p>The opaque continuation token string to deserialize.</p>
 </dd>
     <dt><code>protector</code> <a class="xref" href="BridgingIT.DevKit.Common.IContinuationTokenProtector.html">IContinuationTokenProtector</a></dt>
-    <dd></dd>
+    <dd><p>The optional protector used to verify or decrypt the token payload.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
@@ -193,7 +194,8 @@ var deserialized = DocumentContinuationTokenSerializer.Deserialize(serialized.Va
     <dd><p>The continuation token envelope to serialize.</p>
 </dd>
     <dt><code>protector</code> <a class="xref" href="BridgingIT.DevKit.Common.IContinuationTokenProtector.html">IContinuationTokenProtector</a></dt>
-    <dd></dd>
+    <dd><p>The optional protector used to sign or encrypt the token payload.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>

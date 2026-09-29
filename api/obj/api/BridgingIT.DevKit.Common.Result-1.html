@@ -1173,7 +1173,8 @@ var result = Result{User}.FailureIf(
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a Result based on a failure predicate function evaluating the value.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1183,23 +1184,35 @@ var result = Result{User}.FailureIf(
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Function to evaluate the value for failure.</p>
+</dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
-    <dd></dd>
+    <dd><p>The value to evaluate and include in the Result.</p>
+</dd>
     <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
-    <dd></dd>
+    <dd><p>Optional error to include if predicate returns true.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>A failure Result if predicate returns true; otherwise, a successful Result.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Result_1_FailureIf_System_Func__0_System_Boolean___0_BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">var user = new User { LastLoginDate = DateTime.Now.AddDays(-31) };
+var result = Result{User}.FailureIf(
+    u =&gt; (DateTime.Now - u.LastLoginDate).Days &gt; 30,
+    user,
+    new ValidationError("Account inactive for too long")
+);</code></pre>
 
 
 

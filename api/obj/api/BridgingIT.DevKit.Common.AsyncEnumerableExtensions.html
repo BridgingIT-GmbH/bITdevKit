@@ -142,8 +142,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
     <dd><p>The condition used to identify a matching item.</p>
 </dd>
@@ -162,8 +161,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -193,8 +191,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The sequence enumerated first.</p>
-</dd>
+    <dd></dd>
     <dt><code>second</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
     <dd><p>The sequence enumerated after <code class="paramref">source</code> completes.</p>
 </dd>
@@ -213,8 +210,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -238,14 +234,13 @@ Class AsyncEnumerableExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ValueTask&lt;bool&gt; ContainsAsync&lt;T&gt;(this IAsyncEnumerable&lt;T&gt; enumerable, T value, IEqualityComparer&lt;T&gt; comparer, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;bool&gt; ContainsAsync&lt;T&gt;(this IAsyncEnumerable&lt;T&gt; source, T value, IEqualityComparer&lt;T&gt; comparer, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>enumerable</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
     <dd><p>The value to locate.</p>
 </dd>
@@ -267,8 +262,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -298,8 +292,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>value</code> <span class="xref">T</span></dt>
     <dd><p>The value to locate.</p>
 </dd>
@@ -318,8 +311,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -349,8 +341,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to enumerate.</p>
-</dd>
+    <dd></dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
     <dd><p>The condition that identifies items to count.</p>
 </dd>
@@ -369,8 +360,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -400,8 +390,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to enumerate.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels source enumeration.</p>
 </dd>
@@ -417,8 +406,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -448,8 +436,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to filter.</p>
-</dd>
+    <dd></dd>
     <dt><code>comparer</code> <span class="xref">IEqualityComparer</span>&lt;T&gt;</dt>
     <dd><p>The comparer used to identify duplicate values.</p>
 </dd>
@@ -468,8 +455,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -499,8 +485,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to filter.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels source enumeration.</p>
 </dd>
@@ -516,8 +501,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -541,14 +525,13 @@ Class AsyncEnumerableExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IAsyncEnumerable&lt;T&gt; DistinctByAsync&lt;T, TKey&gt;(this IAsyncEnumerable&lt;T&gt; enumerable, Func&lt;T, TKey&gt; getKey, IEqualityComparer&lt;TKey&gt; comparer, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IAsyncEnumerable&lt;T&gt; DistinctByAsync&lt;T, TKey&gt;(this IAsyncEnumerable&lt;T&gt; source, Func&lt;T, TKey&gt; getKey, IEqualityComparer&lt;TKey&gt; comparer, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>enumerable</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to filter.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
     <dt><code>getKey</code> <span class="xref">Func</span>&lt;T, TKey&gt;</dt>
     <dd><p>The function that selects a key from each item.</p>
 </dd>
@@ -570,8 +553,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
     <dt><code>TKey</code></dt>
     <dd><p>The projected key type.</p>
 </dd>
@@ -604,8 +586,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to filter.</p>
-</dd>
+    <dd></dd>
     <dt><code>getKey</code> <span class="xref">Func</span>&lt;T, TKey&gt;</dt>
     <dd><p>The function that selects a key from each item.</p>
 </dd>
@@ -624,8 +605,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
     <dt><code>TKey</code></dt>
     <dd><p>The projected key type.</p>
 </dd>
@@ -658,8 +638,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
     <dd><p>The condition used to select an item.</p>
 </dd>
@@ -678,8 +657,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -715,8 +693,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels source enumeration.</p>
 </dd>
@@ -732,8 +709,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -763,14 +739,13 @@ Class AsyncEnumerableExtensions
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ValueTask&lt;T&gt; FirstOrDefaultAsync&lt;T&gt;(this IAsyncEnumerable&lt;T&gt; enumerable, Func&lt;T, bool&gt; predicate, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;T&gt; FirstOrDefaultAsync&lt;T&gt;(this IAsyncEnumerable&lt;T&gt; source, Func&lt;T, bool&gt; predicate, CancellationToken cancellationToken = default)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>enumerable</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
+    <dd></dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
     <dd><p>The condition used to select an item.</p>
 </dd>
@@ -789,8 +764,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -820,8 +794,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
     <dd><p>The condition used to select an item.</p>
 </dd>
@@ -840,8 +813,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -877,8 +849,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels source enumeration.</p>
 </dd>
@@ -894,8 +865,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -931,8 +901,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
     <dd><p>The condition used to select an item.</p>
 </dd>
@@ -951,8 +920,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -982,8 +950,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to inspect.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels source enumeration.</p>
 </dd>
@@ -999,8 +966,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -1030,8 +996,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to transform.</p>
-</dd>
+    <dd></dd>
     <dt><code>selector</code> <span class="xref">Func</span>&lt;T, TResult&gt;</dt>
     <dd><p>The synchronous projection applied to each item.</p>
 </dd>
@@ -1050,8 +1015,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The source element type.</p>
-</dd>
+    <dd></dd>
     <dt><code>TResult</code></dt>
     <dd><p>The projected element type.</p>
 </dd>
@@ -1084,8 +1048,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to enumerate.</p>
-</dd>
+    <dd></dd>
     <dt><code>count</code> <span class="xref">int</span></dt>
     <dd><p>The number of leading items to skip.</p>
 </dd>
@@ -1105,8 +1068,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -1136,8 +1098,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to enumerate.</p>
-</dd>
+    <dd></dd>
     <dt><code>count</code> <span class="xref">int</span></dt>
     <dd><p>The maximum number of items to produce; non-positive values produce an empty sequence.</p>
 </dd>
@@ -1156,8 +1117,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -1187,8 +1147,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;T&gt;</dt>
-    <dd><p>The asynchronous sequence to filter.</p>
-</dd>
+    <dd></dd>
     <dt><code>selector</code> <span class="xref">Func</span>&lt;T, <span class="xref">bool</span>&gt;</dt>
     <dd><p>The condition used to retain items.</p>
 </dd>
@@ -1207,8 +1166,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd><p>The sequence element type.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -1238,8 +1196,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd><p>The asynchronous string sequence to filter.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels source enumeration.</p>
 </dd>
@@ -1280,8 +1237,7 @@ Class AsyncEnumerableExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>source</code> <span class="xref">IAsyncEnumerable</span>&lt;<span class="xref">string</span>&gt;</dt>
-    <dd><p>The asynchronous string sequence to filter.</p>
-</dd>
+    <dd></dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
     <dd><p>A token that cancels source enumeration.</p>
 </dd>

@@ -131,7 +131,9 @@ Class FileMonitoringBuilderExtensions
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Configures a Windows network share location for monitoring.
+Registers a LocationHandler with a NetworkFileStorageProvider for the specified UNC path.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -141,27 +143,43 @@ Class FileMonitoringBuilderExtensions
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>builder</code> <a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.html">FileMonitoringBuilder</a></dt>
-    <dd></dd>
+    <dd><p>The FileMonitoringBuilder instance.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The unique name of the location (e.g., &quot;NetworkDocs&quot;).</p>
+</dd>
     <dt><code>path</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The network share UNC path to monitor (e.g., &quot;\\server\docs&quot;).</p>
+</dd>
     <dt><code>impersonationService</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.Windows.IWindowsImpersonationService.html">IWindowsImpersonationService</a></dt>
-    <dd></dd>
+    <dd><p>The Windows impersonation service for accessing the network share.</p>
+</dd>
     <dt><code>configure</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Storage.LocationOptions.html">LocationOptions</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An action to configure the LocationOptions (e.g., file pattern, processors).</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Storage.FileMonitoringBuilder.html">FileMonitoringBuilder</a></dt>
-    <dd></dd>
+    <dd><p>The FileMonitoringBuilder instance for chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Windows_Storage_FileMonitoringBuilderExtensions_UseWindowsNetwork_BridgingIT_DevKit_Application_Storage_FileMonitoringBuilder_System_String_System_String_BridgingIT_DevKit_Infrastructure_Windows_IWindowsImpersonationService_System_Action_BridgingIT_DevKit_Application_Storage_LocationOptions___examples">Examples</h4>
+  <pre><code class="lang-csharp">services.AddFileMonitoring(monitoring =&gt;
+{
+    monitoring.UseWindowsNetwork("NetworkDocs", "\\\\server\\docs", impersonationService, options =&gt;
+    {
+        options.FilePattern = "*.docx";
+        options.UseProcessor&lt;FileLoggerProcessor&gt;();
+    });
+});</code></pre>
 
 
 

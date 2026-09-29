@@ -166,7 +166,7 @@ Interface IPublishAggregateEventSender
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -193,7 +193,7 @@ Interface IPublishAggregateEventSender
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -258,10 +258,10 @@ Interface IPublishAggregateEventSender
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als EventOccured für das Aggregat
-aggregate unter Nutzung von aggregateEventMediatorNotificationSender
+aggregate unter Nutzung des konfigurierten Mediator-Notification-Senders
 als Notification.
 Die Veröffentlichung erfolgt nur, falls
-EventStorePublishingModes.NotifiyEventOccuredRequestUsingMediator gesetzt ist.</p>
+<code>NotifyEventOccuredUsingMediator</code> gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -307,10 +307,10 @@ Task NotifyEventOccuredAsync&lt;TAggregate&gt;(IAggregateEvent savedEvent, TAggr
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als EventOccured für das Aggregat
-aggregate unter Nutzung von aggregateEventMediatorNotificationSender
+aggregate unter Nutzung des konfigurierten Mediator-Notification-Senders
 als Notification.
 Die Veröffentlichung erfolgt nur, falls
-EventStorePublishingModes.NotifiyEventOccuredRequestUsingMediator gesetzt ist.</p>
+<code>NotifyEventOccuredUsingMediator</code> gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -355,8 +355,8 @@ EventStorePublishingModes.NotifiyEventOccuredRequestUsingMediator gesetzt ist.</
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als ProjectionRequest in Form einer Notification für das
-Aggregat aggregate unter Nutzung von aggregateEventMediatorNotificationSender
-Die Veröffentlichung erfolgt nur, falls EventStorePublishingModes.NotifyForProjectionUsingMediator
+Aggregat aggregate unter Nutzung des konfigurierten Mediator-Notification-Senders.
+Die Veröffentlichung erfolgt nur, falls <code>NotifyForProjectionUsingMediator</code>
 gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
@@ -402,9 +402,9 @@ gesetzt ist.</p>
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als EventOccured für das Aggregat
-aggregate unter Nutzung von aggregateEventMediatorRequestSender.
+aggregate unter Nutzung des konfigurierten Mediator-Request-Senders.
 Die Veröffentlichung erfolgt nur, falls
-EventStorePublishingModes.SendEventOccuredRequestUsingMediator gesetzt ist</p>
+<code>SendEventOccuredRequestUsingMediator</code> gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -449,9 +449,8 @@ EventStorePublishingModes.SendEventOccuredRequestUsingMediator gesetzt ist</p>
   </h3>
 
   <div class="markdown level1 summary"><p>Veröffentlicht das DomänenEvent savedEvent als ProjectionRequest für das Aggregat
-aggregate unter Nutzung von aggregateEventMediatorRequestSender.
-Die Veröffentlichung erfolgt nur, falls EventStorePublishingModes.SendProjectionRequestUsingMediator
-gesetzt ist./&gt;</p>
+aggregate unter Nutzung des konfigurierten Mediator-Request-Senders.
+Die Veröffentlichung erfolgt nur, falls <code>SendProjectionRequestUsingMediator</code> gesetzt ist.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -508,21 +507,25 @@ innerhalb einer Transaktion beim Speichern im EventStore ausgelöst.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>currentEvent</code> <a class="xref" href="BridgingIT.DevKit.Domain.EventSourcing.Model.AggregateEvent.html">AggregateEvent</a></dt>
-    <dd></dd>
+    <dd><p>The aggregate event to write.</p>
+</dd>
     <dt><code>aggregate</code> <span class="xref">TAggregate</span></dt>
-    <dd></dd>
+    <dd><p>The aggregate that raised the event.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task that completes when the outbox write finishes.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TAggregate</code></dt>
-    <dd></dd>
+    <dd><p>The event-sourced aggregate type.</p>
+</dd>
   </dl>
 
 

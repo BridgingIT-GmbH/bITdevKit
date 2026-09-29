@@ -185,7 +185,7 @@ Class FindOptions&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -212,7 +212,7 @@ Class FindOptions&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -662,7 +662,8 @@ Provides options for finding entities in the repository.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an include option to the query.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -672,19 +673,25 @@ Provides options for finding entities in the repository.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>include</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IncludeOption-1.html">IncludeOption</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The include option to add.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The current instance for chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_FindOptions_1_AddInclude_BridgingIT_DevKit_Domain_Repositories_IncludeOption__0___examples">Examples</h4>
+  <p>var options = new FindOptions&lt;Customer&gt;()
+.AddInclude(new IncludeOption&lt;Customer&gt;(c =&gt; c.Orders));</p>
 
 
 
@@ -698,7 +705,8 @@ Provides options for finding entities in the repository.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an includable option (with ThenInclude chain) to the query.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -708,24 +716,33 @@ Provides options for finding entities in the repository.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>includable</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IIncludableOption-2.html">IIncludableOption</a>&lt;TEntity, TProperty&gt;</dt>
-    <dd></dd>
+    <dd><p>The includable option to add.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The current instance for chaining.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProperty</code></dt>
-    <dd></dd>
+    <dd><p>The type of the included property.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_FindOptions_1_AddInclude__1_BridgingIT_DevKit_Domain_Repositories_IIncludableOption__0___0___examples">Examples</h4>
+  <p>var options = new FindOptions&lt;Customer&gt;()
+.AddInclude(new IncludeOption&lt;Customer, ICollection&lt;Order&gt;&gt;(c =&gt; c.Orders)
+.ThenInclude(o =&gt; o.OrderItems)
+.ThenInclude(i =&gt; i.Product));</p>
 
 
 
@@ -739,7 +756,8 @@ Provides options for finding entities in the repository.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds an order option to the query.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -749,19 +767,25 @@ Provides options for finding entities in the repository.</p>
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>order</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.OrderOption-1.html">OrderOption</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The order option to add.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Domain.Repositories.FindOptions-1.html">FindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The current instance for chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_Repositories_FindOptions_1_AddOrder_BridgingIT_DevKit_Domain_Repositories_OrderOption__0___examples">Examples</h4>
+  <p>var options = new FindOptions&lt;Customer&gt;()
+.AddOrder(new OrderOption&lt;Customer&gt;(c =&gt; c.LastName, OrderDirection.Ascending));</p>
 
 
 

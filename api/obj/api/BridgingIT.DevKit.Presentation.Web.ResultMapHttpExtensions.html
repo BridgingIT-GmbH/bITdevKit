@@ -300,7 +300,7 @@ using a function to generate the location URI.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Results</span>&lt;<span class="xref">Accepted</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
-    <dd><p>A Results&lt;Accepted&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+    <dd><p>A typed HTTP result containing the accepted value on success or the mapped failure response.</p>
 </dd>
   </dl>
 
@@ -351,7 +351,7 @@ using a function to generate the location URI.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Results</span>&lt;<span class="xref">Accepted</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
-    <dd><p>A Results&lt;Accepted&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+    <dd><p>A typed HTTP result containing the accepted value on success or the mapped failure response.</p>
 </dd>
   </dl>
 
@@ -547,7 +547,7 @@ such as POST operations. Handles success, unauthorized, not found, bad request, 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Results</span>&lt;<span class="xref">Created</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
-    <dd><p>A Results&lt;Created&lt;T&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+    <dd><p>A typed HTTP result containing the created value on success or the mapped failure response.</p>
 </dd>
   </dl>
 
@@ -1000,7 +1000,7 @@ such as GET or PUT operations. Handles success, unauthorized, not found, bad req
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Results</span>&lt;<span class="xref">Ok</span>&lt;T&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
-    <dd><p>A Results&lt;Ok&lt;T&gt;, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+    <dd><p>A typed HTTP result containing the value on success or the mapped failure response.</p>
 </dd>
   </dl>
 
@@ -1064,7 +1064,7 @@ Example response for other errors: HTTP 400 Problem with details.</p>
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Results</span>&lt;<span class="xref">Ok</span>&lt;<a class="xref" href="BridgingIT.DevKit.Presentation.Web.PagedResponse-1.html">PagedResponse</a>&lt;T&gt;&gt;, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
-    <dd><p>A Results&lt;Ok&lt;PagedResponse&lt;T&gt;&gt;, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+    <dd><p>A typed HTTP result containing the paged response on success or the mapped failure response.</p>
 </dd>
   </dl>
 
@@ -1113,7 +1113,7 @@ such as GET or PUT operations. Handles success, unauthorized, not found, bad req
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Results</span>&lt;<span class="xref">Ok</span>&lt;T&gt;, <span class="xref">NotFound</span>, <span class="xref">UnauthorizedHttpResult</span>, <span class="xref">BadRequest</span>, <span class="xref">ProblemHttpResult</span>&gt;</dt>
-    <dd><p>A Results&lt;Ok&lt;T&gt;, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult&gt; representing the HTTP response.</p>
+    <dd><p>A typed HTTP result containing the value on success or the mapped failure response.</p>
 </dd>
   </dl>
 

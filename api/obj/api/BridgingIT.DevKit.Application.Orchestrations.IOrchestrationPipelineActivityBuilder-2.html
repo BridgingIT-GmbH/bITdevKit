@@ -175,7 +175,7 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -202,7 +202,7 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -266,7 +266,8 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers an inline compensation activity that is executed if the orchestration compensates.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -276,15 +277,18 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>executeAsync</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationContext-1.html">OrchestrationContext</a>&lt;TData&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationOutcome.html">OrchestrationOutcome</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The compensation delegate.</p>
+</dd>
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The optional compensation activity name.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationPipelineActivityBuilder-2.html">IOrchestrationPipelineActivityBuilder</a>&lt;TData, TPipelineContext&gt;</dt>
-    <dd></dd>
+    <dd><p>The current builder.</p>
+</dd>
   </dl>
 
 
@@ -304,7 +308,8 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers a compensation activity that is executed if the orchestration compensates.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -315,13 +320,15 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationPipelineActivityBuilder-2.html">IOrchestrationPipelineActivityBuilder</a>&lt;TData, TPipelineContext&gt;</dt>
-    <dd></dd>
+    <dd><p>The current builder.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TActivity</code></dt>
-    <dd></dd>
+    <dd><p>The compensation activity type.</p>
+</dd>
   </dl>
 
 
@@ -577,7 +584,8 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies a retry policy to the activity.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -587,13 +595,15 @@ Interface IOrchestrationPipelineActivityBuilder&lt;TData, TPipelineContext&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>policy</code> <a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.OrchestrationRetryPolicy.html">OrchestrationRetryPolicy</a></dt>
-    <dd></dd>
+    <dd><p>The retry policy to apply.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Orchestrations.IOrchestrationPipelineActivityBuilder-2.html">IOrchestrationPipelineActivityBuilder</a>&lt;TData, TPipelineContext&gt;</dt>
-    <dd></dd>
+    <dd><p>The current builder.</p>
+</dd>
   </dl>
 
 

@@ -179,7 +179,7 @@ Class JobScheduleBuilder&lt;TJob&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -206,7 +206,7 @@ Class JobScheduleBuilder&lt;TJob&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -307,7 +307,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Sets the cron expression defining the job's execution schedule.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -317,19 +318,28 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cronExpression</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The cron expression (e.g., &quot;0/5 * * * * ?&quot; for every 5 seconds). If null or empty, defaults to every 5 seconds.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduleBuilder-1.html">JobScheduleBuilder</a>&lt;TJob&gt;</dt>
-    <dd></dd>
+    <dd><p>The current JobScheduleBuilder instance for fluent chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_Cron_System_String__examples">Examples</h4>
+  <p>// Schedule a job to run every minute
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(&quot;0 * * * * ?&quot;)
+.RegisterScoped();</p>
 
 
 
@@ -343,7 +353,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Enables or disables the job's execution.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -353,19 +364,29 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>enabled</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Whether the job should be enabled (default: true).</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduleBuilder-1.html">JobScheduleBuilder</a>&lt;TJob&gt;</dt>
-    <dd></dd>
+    <dd><p>The current JobScheduleBuilder instance for fluent chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_Enabled_System_Boolean__examples">Examples</h4>
+  <p>// Disable a job in production
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(&quot;0 * * * * ?&quot;)
+.Enabled(builder.Environment.IsDevelopment())
+.RegisterScoped();</p>
 
 
 
@@ -379,7 +400,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Assigns a unique name to the job for identification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -389,21 +411,32 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>name</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The name of the job (optional; defaults to the job type name if null).</p>
+</dd>
     <dt><code>group</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The scheduler group used to qualify the job name. A <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> value selects the default group.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduleBuilder-1.html">JobScheduleBuilder</a>&lt;TJob&gt;</dt>
-    <dd></dd>
+    <dd><p>The current JobScheduleBuilder instance for fluent chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_Named_System_String_System_String__examples">Examples</h4>
+  <p>// Name a job explicitly
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(&quot;0/10 * * * * ?&quot;)
+.Named(&quot;echoTask&quot;)
+.RegisterScoped();</p>
 
 
 
@@ -417,7 +450,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers the job as a scoped service (default registration method).</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -428,13 +462,21 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobSchedulingBuilderContext.html">JobSchedulingBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>A JobSchedulingBuilderContext for further configuration.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_Register_examples">Examples</h4>
+  <p>// Register a scoped job (shorthand)
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(&quot;0 * * * * ?&quot;)
+.Register();</p>
 
 
 
@@ -448,7 +490,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers the job as a scoped service, creating a new instance per execution.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -459,13 +502,23 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobSchedulingBuilderContext.html">JobSchedulingBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>A JobSchedulingBuilderContext for further configuration.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_RegisterScoped_examples">Examples</h4>
+  <p>// Explicitly register a scoped job
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(&quot;0/5 * * * * ?&quot;)
+.Named(&quot;quickEcho&quot;)
+.WithData(&quot;message&quot;, &quot;Fast&quot;)
+.RegisterScoped();</p>
 
 
 
@@ -479,7 +532,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Registers the job as a singleton service, reusing the same instance across executions.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -490,13 +544,22 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduling.JobSchedulingBuilderContext.html">JobSchedulingBuilderContext</a></dt>
-    <dd></dd>
+    <dd><p>A JobSchedulingBuilderContext for further configuration.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_RegisterSingleton_examples">Examples</h4>
+  <p>// Register a singleton job for persistent state
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;MonitorJob&gt;()
+.Cron(&quot;0 0 * * * ?&quot;) // Hourly
+.Named(&quot;hourlyMonitor&quot;)
+.RegisterSingleton();</p>
 
 
 
@@ -510,7 +573,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds multiple key-value pairs to the job's metadata.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -520,19 +584,29 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>data</code> <span class="xref">Dictionary</span>&lt;<span class="xref">string</span>, <span class="xref">string</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>A dictionary of key-value pairs to merge into the job's data (null values are ignored).</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduleBuilder-1.html">JobScheduleBuilder</a>&lt;TJob&gt;</dt>
-    <dd></dd>
+    <dd><p>The current JobScheduleBuilder instance for fluent chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_WithData_System_Collections_Generic_Dictionary_System_String_System_String___examples">Examples</h4>
+  <p>// Add multiple metadata entries
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(&quot;0 * * * * ?&quot;)
+.WithData(new Dictionary&lt;string, string&gt; { { &quot;key1&quot;, &quot;value1&quot; }, { &quot;key2&quot;, &quot;value2&quot; } })
+.RegisterScoped();</p>
 
 
 
@@ -546,7 +620,8 @@ Class JobScheduleBuilder&lt;TJob&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Adds a single key-value pair to the job's metadata.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -556,21 +631,32 @@ Class JobScheduleBuilder&lt;TJob&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>key</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The key for the data (must not be null or empty).</p>
+</dd>
     <dt><code>value</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>The value associated with the key (can be null).</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.JobScheduleBuilder-1.html">JobScheduleBuilder</a>&lt;TJob&gt;</dt>
-    <dd></dd>
+    <dd><p>The current JobScheduleBuilder instance for fluent chaining.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Application_JobScheduleBuilder_1_WithData_System_String_System_String__examples">Examples</h4>
+  <p>// Add metadata to a job
+services.AddJobScheduling(builder.Configuration)
+.WithJob&lt;EchoJob&gt;()
+.Cron(&quot;0 * * * * ?&quot;)
+.WithData(&quot;message&quot;, &quot;Hello World&quot;)
+.RegisterScoped();</p>
 
 
 

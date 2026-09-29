@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ResultPagedFunctionTaskExtensions | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Extension methods for asynchronous  instances to enable chaining.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class ResultPagedFunctionTaskExtensions
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Results.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Extension methods for asynchronous <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged&lt;T&gt;</a> instances to enable chaining.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -613,7 +614,8 @@ var activeUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously applies an operation to each item in a page collection while maintaining error context.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -623,30 +625,70 @@ var activeUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The ResultPaged task to process.</p>
+</dd>
     <dt><code>operation</code> <span class="xref">Func</span>&lt;T, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOutput&gt;&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The async operation to apply to each item.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TOutput&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A new ResultPaged containing successful results or aggregated errors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the source value.</p>
+</dd>
     <dt><code>TOutput</code></dt>
-    <dd></dd>
+    <dd><p>The type of the output value.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_CollectAsync__2_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_Result___1____System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Process users with external service integration
+var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
+    .CollectAsync(async (user, ct) =&gt;
+    {
+        try
+        {
+            // Verify user permissions
+            var permissions = await permissionService
+                .GetPermissionsAsync(user.Id, ct);
+
+            if (!permissions.Contains("process"))
+                return Result&lt;ProcessedUser&gt;.Failure()
+                    .WithError(new ValidationError(
+                        "User lacks processing permission",
+                        nameof(user.Permissions)));
+
+            // Process user with external service
+            var enrichedData = await externalService
+                .EnrichUserDataAsync(user, ct);
+
+            var processed = await userProcessor
+                .ProcessAsync(user, enrichedData, ct);
+
+            return Result&lt;ProcessedUser&gt;.Success(processed);
+        }
+        catch (ServiceException ex)
+        {
+            return Result&lt;ProcessedUser&gt;.Failure()
+                .WithError(new ExternalServiceError(ex.Message));
+        }
+    },
+    cancellationToken);</code></pre>
 
 
 
@@ -660,7 +702,9 @@ var activeUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Applies an operation to each item in a page collection while maintaining error context.
+Useful for scenarios where individual item operations might fail independently.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -670,28 +714,57 @@ var activeUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The ResultPaged task to process.</p>
+</dd>
     <dt><code>operation</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TOutput&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The operation to apply to each item.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TOutput&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A new ResultPaged containing successful results or aggregated errors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the source value.</p>
+</dd>
     <dt><code>TOutput</code></dt>
-    <dd></dd>
+    <dd><p>The type of the output value.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_Collect__2_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Func___0_BridgingIT_DevKit_Common_Result___1____examples">Examples</h4>
+  <pre><code class="lang-csharp">// Process users with individual error handling
+var processedUsers = await GetPagedUsersAsync(pageNumber, pageSize)
+    .Collect(user =&gt;
+    {
+        try
+        {
+            var processed = userProcessor.Process(user);
+            return Result&lt;ProcessedUser&gt;.Success(processed);
+        }
+        catch (QuotaExceededException)
+        {
+            return Result&lt;ProcessedUser&gt;.Failure()
+                .WithError(new ValidationError(
+                    $"Quota exceeded for user {user.Id}",
+                    nameof(user.Quota)));
+        }
+        catch (Exception ex)
+        {
+            return Result&lt;ProcessedUser&gt;.Failure()
+                .WithError(new Error($"Processing failed: {ex.Message}"));
+        }
+    });</code></pre>
 
 
 
@@ -1069,7 +1142,9 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Filters a ResultPaged task based on a predicate, maintaining pagination metadata.
+Returns failure if the predicate isn't satisfied.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1079,28 +1154,48 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The ResultPaged task to filter.</p>
+</dd>
     <dt><code>predicate</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">bool</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The condition that must be true for the entire page.</p>
+</dd>
     <dt><code>error</code> <a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a></dt>
-    <dd></dd>
+    <dd><p>The error to return if the predicate fails.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The original ResultPaged if predicate is met; otherwise, a failure.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the value.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_Filter__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Func_System_Collections_Generic_IEnumerable___0__System_Boolean__BridgingIT_DevKit_Common_IResultError__examples">Examples</h4>
+  <pre><code class="lang-csharp">// Ensure all users in the page are active
+var activeUsers = await GetPagedUsersAsync(pageNumber, pageSize)
+    .Filter(
+        users =&gt; users.All(u =&gt; u.IsActive),
+        new ValidationError("Page contains inactive users")
+    );
+
+// Ensure page size is within limits
+var validPage = await GetPagedUsersAsync(pageNumber, pageSize)
+    .Filter(
+        users =&gt; users.Count() &lt;= maxPageSize,
+        new ValidationError($"Page size exceeds maximum of {maxPageSize}")
+    );</code></pre>
 
 
 
@@ -1157,7 +1252,8 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes a synchronous success function or an asynchronous failure handler for a paged result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1167,33 +1263,57 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The Task containing the ResultPaged to handle.</p>
+</dd>
     <dt><code>onSuccess</code> <span class="xref">Action</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>Synchronous function to execute if the Result is successful, receiving the values.</p>
+</dd>
     <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Async function to execute if the Result failed, receiving the errors.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A Task containing the original ResultPaged instance.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_HandleAsync__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Action_System_Collections_Generic_IEnumerable___0___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+await resultTask.HandleAsync(
+    users =&gt; {
+        foreach(var user in users) {
+            Console.WriteLine($"Processing user: {user.Name}");
+        }
+    },
+    async (errors, ct) =&gt; await LogErrorsAsync(errors, ct),
+    cancellationToken
+);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+  </dl>
 
 
 
@@ -1204,7 +1324,8 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes an asynchronous success function or a synchronous failure handler for a paged result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1214,33 +1335,57 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The Task containing the ResultPaged to handle.</p>
+</dd>
     <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Async function to execute if the Result is successful, receiving the values.</p>
+</dd>
     <dt><code>onFailure</code> <span class="xref">Action</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>Synchronous function to execute if the Result failed, receiving the errors.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A Task containing the original ResultPaged instance.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_HandleAsync__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+await resultTask.HandleAsync(
+    async (users, ct) =&gt; {
+        foreach(var user in users) {
+            await ProcessUserAsync(user, ct);
+        }
+    },
+    errors =&gt; Console.WriteLine($"Failed with {errors.Count} errors"),
+    cancellationToken
+);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+  </dl>
 
 
 
@@ -1251,7 +1396,8 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously executes different actions based on the success state of a paged result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1261,33 +1407,57 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The Task containing the ResultPaged to handle.</p>
+</dd>
     <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Async function to execute if the Result is successful, receiving the values.</p>
+</dd>
     <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>Async function to execute if the Result failed, receiving the errors.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A Task containing the original ResultPaged instance.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_HandleAsync__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Func_System_Collections_Generic_IEnumerable___0__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+await resultTask.HandleAsync(
+    async (users, ct) =&gt; {
+        foreach(var user in users) {
+            await LogUserAccessAsync(user, ct);
+        }
+    },
+    async (errors, ct) =&gt; await LogErrorsAsync(errors, ct),
+    cancellationToken
+);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+  </dl>
 
 
 
@@ -1298,7 +1468,8 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes different actions based on the success state of an asynchronous paged result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1308,31 +1479,54 @@ var validUsers = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The Task containing the ResultPaged to handle.</p>
+</dd>
     <dt><code>onSuccess</code> <span class="xref">Action</span>&lt;<span class="xref">IEnumerable</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>Action to execute if the Result is successful, receiving the values.</p>
+</dd>
     <dt><code>onFailure</code> <span class="xref">Action</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>Action to execute if the Result failed, receiving the errors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The original ResultPaged wrapped in a Task.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_Handle__1_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Action_System_Collections_Generic_IEnumerable___0___System_Action_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError____examples">Examples</h4>
+  <pre><code class="lang-csharp">var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+await resultTask.Handle(
+    onSuccess: users =&gt; {
+        Console.WriteLine($"Processing {users.Count()} users from page {result.CurrentPage}");
+        foreach(var user in users) {
+            Console.WriteLine($"User: {user.Name}");
+        }
+    },
+    onFailure: errors =&gt; Console.WriteLine($"Failed with {errors.Count} errors")
+);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+  </dl>
 
 
 
@@ -1717,7 +1911,8 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Asynchronously executes different functions based on the success state of a paged result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1727,35 +1922,59 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The Task containing the ResultPaged to match.</p>
+</dd>
     <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>Async function to execute if successful, receiving the values.</p>
+</dd>
     <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>Async function to execute if failed, receiving the errors.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>Token to cancel the operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>A Task containing the result of either the success or failure function.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The type of the return value.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_MatchAsync__2_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Func_BridgingIT_DevKit_Common_ResultPaged___0__System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError__System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+var status = await resultTask.MatchAsync(
+    async (r, ct) =&gt; await FormatSuccessMessageAsync(r, ct),
+    async (errors, ct) =&gt; await FormatErrorMessageAsync(errors, ct),
+    cancellationToken
+);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown if the operation is cancelled.</p>
+</dd>
+  </dl>
 
 
 
@@ -1766,7 +1985,8 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes different functions based on the success state of an asynchronous paged result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1776,33 +1996,55 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The Task containing the ResultPaged to match.</p>
+</dd>
     <dt><code>onSuccess</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;, TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>Function to execute if the Result is successful, receiving the values.</p>
+</dd>
     <dt><code>onFailure</code> <span class="xref">Func</span>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResultError.html">IResultError</a>&gt;, TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>Function to execute if the Result failed, receiving the errors.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>The result of either the success or failure function.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The type of the return value.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_Match__2_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0___System_Func_BridgingIT_DevKit_Common_ResultPaged___0____1__System_Func_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_IResultError____1___examples">Examples</h4>
+  <pre><code class="lang-csharp">var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+var message = await resultTask.Match(
+    onSuccess: r =&gt; $"Found {r.TotalCount} users across {r.TotalPages} pages",
+    onFailure: errors =&gt; $"Failed with {errors.Count} errors"
+);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentNullException</span></dt>
+    <dd><p>Thrown when onSuccess or onFailure is null.</p>
+</dd>
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown if an error occurs during pattern matching.</p>
+</dd>
+  </dl>
 
 
 
@@ -1813,7 +2055,8 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Returns different values based on the success state of an asynchronous paged result.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1823,33 +2066,52 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The Task containing the ResultPaged to match.</p>
+</dd>
     <dt><code>success</code> <span class="xref">TResult</span></dt>
-    <dd></dd>
+    <dd><p>Value to return if successful.</p>
+</dd>
     <dt><code>failure</code> <span class="xref">TResult</span></dt>
-    <dd></dd>
+    <dd><p>Value to return if failed.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
-    <dd></dd>
+    <dd><p>Either the success or failure value.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
     <dt><code>TResult</code></dt>
-    <dd></dd>
+    <dd><p>The type of the return value.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_Match__2_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0_____1___1__examples">Examples</h4>
+  <pre><code class="lang-csharp">var resultTask = GetPagedUsersAsync(pageNumber, pageSize);
+var status = await resultTask.Match(
+    success: "Users retrieved successfully",
+    failure: "Failed to retrieve users"
+);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">InvalidOperationException</span></dt>
+    <dd><p>Thrown if an error occurs during pattern matching.</p>
+</dd>
+  </dl>
 
 
 
@@ -2318,7 +2580,8 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Throws an exception of type TException if the ResultPaged task is a failure.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2328,29 +2591,43 @@ var userDtos = await GetPagedUsersAsync(pageNumber, pageSize)
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>resultTask</code> <span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The ResultPaged task to check.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The current ResultPaged if it indicates success.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result value.</p>
+</dd>
     <dt><code>TException</code></dt>
-    <dd></dd>
+    <dd><p>The type of exception to throw.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_ResultPagedFunctionTaskExtensions_ThrowIfFailed__2_System_Threading_Tasks_Task_BridgingIT_DevKit_Common_ResultPaged___0____examples">Examples</h4>
+  <pre><code class="lang-csharp">await GetPagedUsersAsync(pageNumber, pageSize)
+    .ThrowIfFailed&lt;InvalidOperationException&gt;();</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Exception</span></dt>
+    <dd><p>Throws an exception of type <code class="typeparamref">TException</code> if the ResultPaged indicates a failure.</p>
+</dd>
+  </dl>
 
 
 

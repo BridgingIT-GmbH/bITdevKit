@@ -172,7 +172,7 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -199,7 +199,7 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -263,7 +263,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after counting entities by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -273,25 +274,37 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>count</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The count of entities.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the count was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterCountAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Int64_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterCountAsync(ISpecification&lt;T&gt; specification, long count, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Counted {count} {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -305,7 +318,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after counting entities.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -315,23 +329,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>count</code> <span class="xref">long</span></dt>
-    <dd></dd>
+    <dd><p>The count of entities.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the count was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterCountAsync_System_Int64_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterCountAsync(IFindOptions&lt;T&gt; options, long count, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Counted {count} {typeof(T).Name}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -546,7 +571,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after checking if an entity exists by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -556,25 +582,37 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>exists</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the entity exists.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the check was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Boolean_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterExistsAsync(ISpecification&lt;T&gt; specification, bool exists, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Existence check for {typeof(T).Name} with specification {specification}: {(exists ? "found" : "not found")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -588,7 +626,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after checking if entities exist.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -598,23 +637,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>exists</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if entities exist.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the check was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterExistsAsync_System_Boolean_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterExistsAsync(IFindOptions&lt;T&gt; options, bool exists, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Existence check for {typeof(T).Name}: {(exists ? "found" : "not found")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -628,7 +678,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after checking if an entity exists by a collection of specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -638,25 +689,37 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>exists</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the entity exists.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the check was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Boolean_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterExistsAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, bool exists, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Existence check for {typeof(T).Name} with specifications: {(exists ? "found" : "not found")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -725,7 +788,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entities.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -735,25 +799,37 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The found entities.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable__0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllAsync(IFindOptions&lt;T&gt; options, IEnumerable&lt;T&gt; entities, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {entities.Count()} {typeof(T).Name}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -767,7 +843,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -777,21 +854,27 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The filter for the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>ids</code> <span class="xref">IEnumerable</span>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The found entity IDs.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -803,6 +886,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsAsync__1_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, IEnumerable&lt;TId&gt; ids, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -816,7 +906,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -826,21 +917,27 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>ids</code> <span class="xref">IEnumerable</span>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The found entity IDs.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -852,6 +949,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, IEnumerable&lt;TId&gt; ids, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -865,7 +969,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -875,19 +980,24 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>ids</code> <span class="xref">IEnumerable</span>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The found entity IDs.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -899,6 +1009,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsAsync__1_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsAsync(IFindOptions&lt;T&gt; options, IEnumerable&lt;TId&gt; ids, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -912,7 +1029,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -922,21 +1040,27 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>ids</code> <span class="xref">IEnumerable</span>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The found entity IDs.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -948,6 +1072,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, IEnumerable&lt;TId&gt; ids, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {ids.Count()} IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -961,7 +1092,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs by a collection of specifications with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -971,21 +1103,27 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The filter for the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result containing entity IDs and count.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -997,6 +1135,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsPagedAsync__1_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsPagedAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, IFindOptions&lt;T&gt; options, ResultPaged&lt;TId&gt; result, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found paged IDs for {typeof(T).Name} with specifications: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1010,7 +1155,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs by specification with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1020,21 +1166,27 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result containing entity IDs and count.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -1046,6 +1198,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsPagedAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsPagedAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, ResultPaged&lt;TId&gt; result, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found paged IDs for {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1059,7 +1218,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1069,19 +1229,24 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result containing entity IDs and count.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -1093,6 +1258,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsPagedAsync__1_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsPagedAsync(IFindOptions&lt;T&gt; options, ResultPaged&lt;TId&gt; result, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found paged IDs for {typeof(T).Name}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1106,7 +1278,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entity IDs by a collection of specifications with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1116,21 +1289,27 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TId&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result containing entity IDs and count.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
@@ -1142,6 +1321,13 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllIdsPagedAsync__1_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllIdsPagedAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, IFindOptions&lt;T&gt; options, ResultPaged&lt;TId&gt; result, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found paged IDs for {typeof(T).Name} with specifications: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1155,7 +1341,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entities with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1165,25 +1352,37 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result containing entities and count.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAllPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged__0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAllPagedAsync(IFindOptions&lt;T&gt; options, ResultPaged&lt;T&gt; result, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found paged {typeof(T).Name}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1197,7 +1396,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding all entities by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1207,27 +1407,40 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The found entities.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable__0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, IEnumerable&lt;T&gt; entities, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {entities.Count()} {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1241,7 +1454,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding a single entity by a filter model.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1251,27 +1465,40 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The filter model containing query criteria.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd></dd>
+    <dd><p>The found entity or null.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindOneAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindOneAsync(FilterModel filter, IFindOptions&lt;T&gt; options, T entity, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {typeof(T).Name} with filter: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1285,7 +1512,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding a single entity by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1295,27 +1523,40 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd></dd>
+    <dd><p>The found entity or null.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindOneAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, T entity, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1329,7 +1570,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding a single entity by a collection of specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1339,27 +1581,40 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd></dd>
+    <dd><p>The found entity or null.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindOneAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, IFindOptions&lt;T&gt; options, T entity, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {typeof(T).Name} with specifications: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1373,7 +1628,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after finding a single entity by ID.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1383,27 +1639,40 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The ID of the entity to find.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>entity</code> <span class="xref">TEntity</span></dt>
-    <dd></dd>
+    <dd><p>The found entity or null.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the find was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterFindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0___0_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterFindOneAsync(object id, IFindOptions&lt;T&gt; options, T entity, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Found {typeof(T).Name} with ID {id}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1469,7 +1738,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after projecting all entities by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1479,34 +1749,49 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;TProjection&gt;</dt>
-    <dd></dd>
+    <dd><p>The projected entities.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the projection was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;T&gt; specification, Expression&lt;Func&lt;T, TProjection&gt;&gt; projection, IFindOptions&lt;T&gt; options, IEnumerable&lt;TProjection&gt; entities, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Projected {entities.Count()} {typeof(T).Name} with specification {specification}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1520,7 +1805,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after projecting all entities.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1530,32 +1816,46 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>entities</code> <span class="xref">IEnumerable</span>&lt;TProjection&gt;</dt>
-    <dd></dd>
+    <dd><p>The projected entities.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the projection was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Collections_Generic_IEnumerable___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;T, TProjection&gt;&gt; projection, IFindOptions&lt;T&gt; options, IEnumerable&lt;TProjection&gt; entities, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Projected {entities.Count()} {typeof(T).Name}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1569,7 +1869,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes after projecting all entities with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1579,32 +1880,46 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ResultPaged-1.html">ResultPaged</a>&lt;TProjection&gt;</dt>
-    <dd></dd>
+    <dd><p>The paged result containing projected entities and count.</p>
+</dd>
     <dt><code>success</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>Indicates if the projection was successful.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_AfterProjectAllPagedAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__BridgingIT_DevKit_Common_ResultPaged___0__System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task AfterProjectAllPagedAsync&lt;TProjection&gt;(Expression&lt;Func&lt;T, TProjection&gt;&gt; projection, IFindOptions&lt;T&gt; options, ResultPaged&lt;TProjection&gt; result, bool success, CancellationToken ct)
+{
+    Console.WriteLine($"Projected paged {typeof(T).Name}: {(success ? "success" : "failed")}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1816,7 +2131,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before counting entities by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1826,21 +2142,31 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeCountAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeCountAsync(ISpecification&lt;T&gt; specification, CancellationToken ct)
+{
+    Console.WriteLine($"Counting {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -1854,7 +2180,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before counting entities.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -1864,19 +2191,28 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeCountAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeCountAsync(IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Counting {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2076,7 +2412,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before checking if an entity exists by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2086,21 +2423,31 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeExistsAsync_BridgingIT_DevKit_Domain_ISpecification__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeExistsAsync(ISpecification&lt;T&gt; specification, CancellationToken ct)
+{
+    Console.WriteLine($"Checking existence of {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2114,7 +2461,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before checking if an entity exists by a collection of specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2124,21 +2472,31 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeExistsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeExistsAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, CancellationToken ct)
+{
+    Console.WriteLine($"Checking existence of {typeof(T).Name} with specifications");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2201,7 +2559,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before checking if entities exist.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2211,19 +2570,28 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeExistsAsync_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeExistsAsync(IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Checking existence of {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2237,7 +2605,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entities.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2247,21 +2616,31 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllAsync(IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding all {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2275,7 +2654,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2285,23 +2665,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The filter for the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding all IDs for {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2315,7 +2706,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2325,23 +2717,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding all IDs for {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2355,7 +2758,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2365,21 +2769,31 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsAsync(IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding all IDs for {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2393,7 +2807,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2403,23 +2818,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., filtering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding all IDs for {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2433,7 +2859,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs by a collection of specifications with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2443,23 +2870,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The filter for the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsPagedAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsPagedAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding paged IDs for {typeof(T).Name} with specifications");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2473,7 +2911,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs by specification with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2483,23 +2922,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsPagedAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsPagedAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding paged IDs for {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2513,7 +2963,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2523,21 +2974,31 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsPagedAsync(IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding paged IDs for {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2551,7 +3012,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entity IDs by a collection of specifications with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2561,23 +3023,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllIdsPagedAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllIdsPagedAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding paged IDs for {typeof(T).Name} with specifications");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2591,7 +3064,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entities with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2601,21 +3075,31 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAllPagedAsync_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAllPagedAsync(IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding paged {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2629,7 +3113,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding all entities by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2639,23 +3124,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2669,7 +3165,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding a single entity by a filter model.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2679,23 +3176,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>filter</code> <a class="xref" href="BridgingIT.DevKit.Common.FilterModel.html">FilterModel</a></dt>
-    <dd></dd>
+    <dd><p>The filter model containing query criteria.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindOneAsync_BridgingIT_DevKit_Common_FilterModel_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindOneAsync(FilterModel filter, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding {typeof(T).Name} with filter");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2709,7 +3217,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding a single entity by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2719,23 +3228,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindOneAsync_BridgingIT_DevKit_Domain_ISpecification__0__BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindOneAsync(ISpecification&lt;T&gt; specification, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2749,7 +3269,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding a single entity by a collection of specifications.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2759,23 +3280,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specifications</code> <span class="xref">IEnumerable</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The specifications to filter the entity.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindOneAsync_System_Collections_Generic_IEnumerable_BridgingIT_DevKit_Domain_ISpecification__0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindOneAsync(IEnumerable&lt;ISpecification&lt;T&gt;&gt; specifications, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding {typeof(T).Name} with specifications");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2789,7 +3321,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before finding a single entity by ID.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2799,23 +3332,34 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>id</code> <span class="xref">object</span></dt>
-    <dd></dd>
+    <dd><p>The ID of the entity to find.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., includes, no-tracking).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeFindOneAsync_System_Object_BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeFindOneAsync(object id, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Finding {typeof(T).Name} with ID {id}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2878,7 +3422,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before projecting all entities by specification.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2888,30 +3433,43 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>specification</code> <a class="xref" href="BridgingIT.DevKit.Domain.ISpecification-1.html">ISpecification</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>The specification to filter the entity.</p>
+</dd>
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeProjectAllAsync__1_BridgingIT_DevKit_Domain_ISpecification__0__System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeProjectAllAsync&lt;TProjection&gt;(ISpecification&lt;T&gt; specification, Expression&lt;Func&lt;T, TProjection&gt;&gt; projection, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Projecting all {typeof(T).Name} with specification {specification}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2925,7 +3483,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before projecting all entities.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2935,28 +3494,40 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeProjectAllAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeProjectAllAsync&lt;TProjection&gt;(Expression&lt;Func&lt;T, TProjection&gt;&gt; projection, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Projecting all {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 
@@ -2970,7 +3541,8 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes before projecting all entities with pagination.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -2980,28 +3552,40 @@ Interface IActiveEntityBehavior&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>projection</code> <span class="xref">Expression</span>&lt;<span class="xref">Func</span>&lt;TEntity, TProjection&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The projection expression.</p>
+</dd>
     <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Domain.Repositories.IFindOptions-1.html">IFindOptions</a>&lt;TEntity&gt;</dt>
-    <dd></dd>
+    <dd><p>Optional find options (e.g., paging, ordering).</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A token to cancel the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TProjection</code></dt>
-    <dd></dd>
+    <dd><p>The type to project to.</p>
+</dd>
   </dl>
 
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_IActiveEntityBehavior_1_BeforeProjectAllPagedAsync__1_System_Linq_Expressions_Expression_System_Func__0___0___BridgingIT_DevKit_Domain_Repositories_IFindOptions__0__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">public override async Task BeforeProjectAllPagedAsync&lt;TProjection&gt;(Expression&lt;Func&lt;T, TProjection&gt;&gt; projection, IFindOptions&lt;T&gt; options, CancellationToken ct)
+{
+    Console.WriteLine($"Projecting paged {typeof(T).Name}");
+    await Task.CompletedTask;
+}</code></pre>
 
 
 

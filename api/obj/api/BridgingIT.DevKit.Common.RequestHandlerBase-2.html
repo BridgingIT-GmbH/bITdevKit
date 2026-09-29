@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class RequestHandlerBase&lt;TRequest, TValue&gt; | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Base class for request handlers, providing a template for handling requests.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class RequestHandlerBase&lt;TRequest, TValue&gt;
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Base class for request handlers, providing a template for handling requests.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -105,9 +106,11 @@ Class RequestHandlerBase&lt;TRequest, TValue&gt;
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TRequest</code></dt>
-    <dd></dd>
+    <dd><p>The type of the request to handle.</p>
+</dd>
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the response value returned by the handler.</p>
+</dd>
   </dl>
 
   <dl class="typelist inheritance">
@@ -194,7 +197,7 @@ Class RequestHandlerBase&lt;TRequest, TValue&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -221,7 +224,7 @@ Class RequestHandlerBase&lt;TRequest, TValue&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -271,7 +274,22 @@ Class RequestHandlerBase&lt;TRequest, TValue&gt;
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Common_RequestHandlerBase_2_examples">Examples</h2>
+  <pre><code class="lang-csharp">public class CustomerCreateCommandHandler : RequestHandlerBase&lt;CustomerCreateCommand, string&gt;
+{
+    protected override async Task&lt;Result&lt;string&gt;&gt; HandleAsync(CustomerCreateCommand request, SendOptions options, CancellationToken cancellationToken)
+    {
+        // Implementation
+        return Result&lt;string&gt;.Success("Customer created");
+    }
+}</code></pre>
 
+
+  <h2 id="BridgingIT_DevKit_Common_RequestHandlerBase_2_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>This abstract class implements <a class="xref" href="BridgingIT.DevKit.Common.IRequestHandler-2.html">IRequestHandler&lt;TRequest, TValue&gt;</a> and requires
+derived classes to provide the handling logic in the <a class="xref" href="BridgingIT.DevKit.Common.RequestHandlerBase-2.html#BridgingIT_DevKit_Common_RequestHandlerBase_2_HandleAsync__0_BridgingIT_DevKit_Common_SendOptions_System_Threading_CancellationToken_">HandleAsync(TRequest, SendOptions, CancellationToken)</a> method.
+It serves as a foundation for concrete handlers, ensuring consistent implementation patterns.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors

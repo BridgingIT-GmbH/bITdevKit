@@ -422,12 +422,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ConcatIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ConcatIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -470,12 +470,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ConcatIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ConcatIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -796,12 +796,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ExceptIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ExceptIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -844,12 +844,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ExceptIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; ExceptIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -975,7 +975,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIfElse*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIfElse__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___0___2__System_Func___1___2__System_Func___1___2__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIfElse``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``0,``2},System.Func{``1,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Boolean)">
-  GroupJoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)
+  GroupJoinIfElse&lt;TSource, TInner, TKey, TResult&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TSource, IEnumerable&lt;TInner&gt;, TResult&gt;, Func&lt;TSource, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)
   
   </h3>
 
@@ -984,28 +984,28 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; GroupJoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; innerIf, IEnumerable&lt;TInner&gt; innerElse, Func&lt;TOuter, TKey&gt; outerKeySelectorIf, Func&lt;TOuter, TKey&gt; outerKeySelectorElse, Func&lt;TInner, TKey&gt; innerKeySelectorIf, Func&lt;TInner, TKey&gt; innerKeySelectorElse, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelectorIf, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelectorElse, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; GroupJoinIfElse&lt;TSource, TInner, TKey, TResult&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TInner&gt; innerIf, IEnumerable&lt;TInner&gt; innerElse, Func&lt;TSource, TKey&gt; outerKeySelectorIf, Func&lt;TSource, TKey&gt; outerKeySelectorElse, Func&lt;TInner, TKey&gt; innerKeySelectorIf, Func&lt;TInner, TKey&gt; innerKeySelectorElse, Func&lt;TSource, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelectorIf, Func&lt;TSource, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelectorElse, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>innerIf</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
     <dd></dd>
     <dt><code>innerElse</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
     <dd></dd>
-    <dt><code>outerKeySelectorIf</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dt><code>outerKeySelectorIf</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
     <dd></dd>
-    <dt><code>outerKeySelectorElse</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dt><code>outerKeySelectorElse</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
     <dd></dd>
     <dt><code>innerKeySelectorIf</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
     <dd></dd>
     <dt><code>innerKeySelectorElse</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TOuter, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
+    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TOuter, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
+    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
     <dd></dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
     <dd></dd>
@@ -1019,7 +1019,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
-    <dt><code>TOuter</code></dt>
+    <dt><code>TSource</code></dt>
     <dd></dd>
     <dt><code>TInner</code></dt>
     <dd></dd>
@@ -1041,7 +1041,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIf*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_GroupJoinIf__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___1___2__System_Func___0_System_Collections_Generic_IEnumerable___1____3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.GroupJoinIf``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,System.Collections.Generic.IEnumerable{``1},``3},System.Boolean)">
-  GroupJoinIf&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)
+  GroupJoinIf&lt;TSource, TInner, TKey, TResult&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TSource, IEnumerable&lt;TInner&gt;, TResult&gt;, bool)
   
   </h3>
 
@@ -1050,20 +1050,20 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; GroupJoinIf&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; inner, Func&lt;TOuter, TKey&gt; outerKeySelector, Func&lt;TInner, TKey&gt; innerKeySelector, Func&lt;TOuter, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelector, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; GroupJoinIf&lt;TSource, TInner, TKey, TResult&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TInner&gt; inner, Func&lt;TSource, TKey&gt; outerKeySelector, Func&lt;TInner, TKey&gt; innerKeySelector, Func&lt;TSource, IEnumerable&lt;TInner&gt;, TResult&gt; resultSelector, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>inner</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
     <dd></dd>
-    <dt><code>outerKeySelector</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dt><code>outerKeySelector</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
     <dd></dd>
     <dt><code>innerKeySelector</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TOuter, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TSource, <span class="xref">IEnumerable</span>&lt;TInner&gt;, TResult&gt;</dt>
     <dd></dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
     <dd></dd>
@@ -1077,7 +1077,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
-    <dt><code>TOuter</code></dt>
+    <dt><code>TSource</code></dt>
     <dd></dd>
     <dt><code>TInner</code></dt>
     <dd></dd>
@@ -1108,12 +1108,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; IntersectIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; IntersectIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -1156,12 +1156,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; IntersectIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; IntersectIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -1193,7 +1193,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIfElse*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIfElse__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___0___2__System_Func___1___2__System_Func___1___2__System_Func___0___1___3__System_Func___0___1___3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIfElse``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``0,``2},System.Func{``1,``2},System.Func{``1,``2},System.Func{``0,``1,``3},System.Func{``0,``1,``3},System.Boolean)">
-  JoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, TInner, TResult&gt;, Func&lt;TOuter, TInner, TResult&gt;, bool)
+  JoinIfElse&lt;TSource, TInner, TKey, TResult&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TInner&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TSource, TInner, TResult&gt;, Func&lt;TSource, TInner, TResult&gt;, bool)
   
   </h3>
 
@@ -1202,28 +1202,28 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; JoinIfElse&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; innerIf, IEnumerable&lt;TInner&gt; innerElse, Func&lt;TOuter, TKey&gt; outerKeySelectorIf, Func&lt;TOuter, TKey&gt; outerKeySelectorElse, Func&lt;TInner, TKey&gt; innerKeySelectorIf, Func&lt;TInner, TKey&gt; innerKeySelectorElse, Func&lt;TOuter, TInner, TResult&gt; resultSelectorIf, Func&lt;TOuter, TInner, TResult&gt; resultSelectorElse, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; JoinIfElse&lt;TSource, TInner, TKey, TResult&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TInner&gt; innerIf, IEnumerable&lt;TInner&gt; innerElse, Func&lt;TSource, TKey&gt; outerKeySelectorIf, Func&lt;TSource, TKey&gt; outerKeySelectorElse, Func&lt;TInner, TKey&gt; innerKeySelectorIf, Func&lt;TInner, TKey&gt; innerKeySelectorElse, Func&lt;TSource, TInner, TResult&gt; resultSelectorIf, Func&lt;TSource, TInner, TResult&gt; resultSelectorElse, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>innerIf</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
     <dd></dd>
     <dt><code>innerElse</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
     <dd></dd>
-    <dt><code>outerKeySelectorIf</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dt><code>outerKeySelectorIf</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
     <dd></dd>
-    <dt><code>outerKeySelectorElse</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dt><code>outerKeySelectorElse</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
     <dd></dd>
     <dt><code>innerKeySelectorIf</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
     <dd></dd>
     <dt><code>innerKeySelectorElse</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TOuter, TInner, TResult&gt;</dt>
+    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TSource, TInner, TResult&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TOuter, TInner, TResult&gt;</dt>
+    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TSource, TInner, TResult&gt;</dt>
     <dd></dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
     <dd></dd>
@@ -1237,7 +1237,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
-    <dt><code>TOuter</code></dt>
+    <dt><code>TSource</code></dt>
     <dd></dd>
     <dt><code>TInner</code></dt>
     <dd></dd>
@@ -1259,7 +1259,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIf*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_JoinIf__4_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___2__System_Func___1___2__System_Func___0___1___3__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.JoinIf``4(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``2},System.Func{``1,``2},System.Func{``0,``1,``3},System.Boolean)">
-  JoinIf&lt;TOuter, TInner, TKey, TResult&gt;(IEnumerable&lt;TOuter&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TOuter, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TOuter, TInner, TResult&gt;, bool)
+  JoinIf&lt;TSource, TInner, TKey, TResult&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TInner&gt;, Func&lt;TSource, TKey&gt;, Func&lt;TInner, TKey&gt;, Func&lt;TSource, TInner, TResult&gt;, bool)
   
   </h3>
 
@@ -1268,20 +1268,20 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; JoinIf&lt;TOuter, TInner, TKey, TResult&gt;(this IEnumerable&lt;TOuter&gt; outer, IEnumerable&lt;TInner&gt; inner, Func&lt;TOuter, TKey&gt; outerKeySelector, Func&lt;TInner, TKey&gt; innerKeySelector, Func&lt;TOuter, TInner, TResult&gt; resultSelector, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; JoinIf&lt;TSource, TInner, TKey, TResult&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TInner&gt; inner, Func&lt;TSource, TKey&gt; outerKeySelector, Func&lt;TInner, TKey&gt; innerKeySelector, Func&lt;TSource, TInner, TResult&gt; resultSelector, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>outer</code> <span class="xref">IEnumerable</span>&lt;TOuter&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>inner</code> <span class="xref">IEnumerable</span>&lt;TInner&gt;</dt>
     <dd></dd>
-    <dt><code>outerKeySelector</code> <span class="xref">Func</span>&lt;TOuter, TKey&gt;</dt>
+    <dt><code>outerKeySelector</code> <span class="xref">Func</span>&lt;TSource, TKey&gt;</dt>
     <dd></dd>
     <dt><code>innerKeySelector</code> <span class="xref">Func</span>&lt;TInner, TKey&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TOuter, TInner, TResult&gt;</dt>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TSource, TInner, TResult&gt;</dt>
     <dd></dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
     <dd></dd>
@@ -1295,7 +1295,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
-    <dt><code>TOuter</code></dt>
+    <dt><code>TSource</code></dt>
     <dd></dd>
     <dt><code>TInner</code></dt>
     <dd></dd>
@@ -2614,12 +2614,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; UnionIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; UnionIfElse&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; secondIf, IEnumerable&lt;TSource&gt; secondElse, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -2662,12 +2662,12 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; UnionIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; first, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TSource&gt; UnionIf&lt;TSource&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSource&gt; second, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
@@ -2793,7 +2793,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIfElse_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIfElse*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIfElse__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__System_Func___0___1___2__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIfElse``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2},System.Func{``0,``1,``2},System.Boolean)">
-  ZipIfElse&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;, Func&lt;TFirst, TSecond, TResult&gt;, bool)
+  ZipIfElse&lt;TSource, TSecond, TResult&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSecond&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TSource, TSecond, TResult&gt;, Func&lt;TSource, TSecond, TResult&gt;, bool)
   
   </h3>
 
@@ -2802,20 +2802,20 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ZipIfElse&lt;TFirst, TSecond, TResult&gt;(this IEnumerable&lt;TFirst&gt; first, IEnumerable&lt;TSecond&gt; secondIf, IEnumerable&lt;TSecond&gt; secondElse, Func&lt;TFirst, TSecond, TResult&gt; resultSelectorIf, Func&lt;TFirst, TSecond, TResult&gt; resultSelectorElse, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ZipIfElse&lt;TSource, TSecond, TResult&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSecond&gt; secondIf, IEnumerable&lt;TSecond&gt; secondElse, Func&lt;TSource, TSecond, TResult&gt; resultSelectorIf, Func&lt;TSource, TSecond, TResult&gt; resultSelectorElse, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TFirst&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>secondIf</code> <span class="xref">IEnumerable</span>&lt;TSecond&gt;</dt>
     <dd></dd>
     <dt><code>secondElse</code> <span class="xref">IEnumerable</span>&lt;TSecond&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TFirst, TSecond, TResult&gt;</dt>
+    <dt><code>resultSelectorIf</code> <span class="xref">Func</span>&lt;TSource, TSecond, TResult&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TFirst, TSecond, TResult&gt;</dt>
+    <dt><code>resultSelectorElse</code> <span class="xref">Func</span>&lt;TSource, TSecond, TResult&gt;</dt>
     <dd></dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
     <dd></dd>
@@ -2829,7 +2829,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
-    <dt><code>TFirst</code></dt>
+    <dt><code>TSource</code></dt>
     <dd></dd>
     <dt><code>TSecond</code></dt>
     <dd></dd>
@@ -2849,7 +2849,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <a id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIf_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIf*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ConditionalLinqExtensions_ZipIf__3_System_Collections_Generic_IEnumerable___0__System_Collections_Generic_IEnumerable___1__System_Func___0___1___2__System_Boolean_" data-uid="BridgingIT.DevKit.Common.ConditionalLinqExtensions.ZipIf``3(System.Collections.Generic.IEnumerable{``0},System.Collections.Generic.IEnumerable{``1},System.Func{``0,``1,``2},System.Boolean)">
-  ZipIf&lt;TFirst, TSecond, TResult&gt;(IEnumerable&lt;TFirst&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TFirst, TSecond, TResult&gt;, bool)
+  ZipIf&lt;TSource, TSecond, TResult&gt;(IEnumerable&lt;TSource&gt;, IEnumerable&lt;TSecond&gt;, Func&lt;TSource, TSecond, TResult&gt;, bool)
   
   </h3>
 
@@ -2858,16 +2858,16 @@ operation only when the condition is true; an <code>IfElse</code> method selects
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ZipIf&lt;TFirst, TSecond, TResult&gt;(this IEnumerable&lt;TFirst&gt; first, IEnumerable&lt;TSecond&gt; second, Func&lt;TFirst, TSecond, TResult&gt; resultSelector, bool condition)</code></pre>
+    <pre><code class="lang-csharp hljs">public static IEnumerable&lt;TResult&gt; ZipIf&lt;TSource, TSecond, TResult&gt;(this IEnumerable&lt;TSource&gt; source, IEnumerable&lt;TSecond&gt; second, Func&lt;TSource, TSecond, TResult&gt; resultSelector, bool condition)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>first</code> <span class="xref">IEnumerable</span>&lt;TFirst&gt;</dt>
+    <dt><code>source</code> <span class="xref">IEnumerable</span>&lt;TSource&gt;</dt>
     <dd></dd>
     <dt><code>second</code> <span class="xref">IEnumerable</span>&lt;TSecond&gt;</dt>
     <dd></dd>
-    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TFirst, TSecond, TResult&gt;</dt>
+    <dt><code>resultSelector</code> <span class="xref">Func</span>&lt;TSource, TSecond, TResult&gt;</dt>
     <dd></dd>
     <dt><code>condition</code> <span class="xref">bool</span></dt>
     <dd></dd>
@@ -2881,7 +2881,7 @@ operation only when the condition is true; an <code>IfElse</code> method selects
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
-    <dt><code>TFirst</code></dt>
+    <dt><code>TSource</code></dt>
     <dd></dd>
     <dt><code>TSecond</code></dt>
     <dd></dd>

@@ -295,7 +295,6 @@ Class CommandResult
 
   <div class="markdown level1 summary"><p>Generates a failure response with a specific error type.
 This method creates a CommandResponse object that contains a Result indicating failure and an optional error message.</p>
-<param name="message">An optional error message describing the failure. Default is null. <typeparam name="TError">The type of the error implementing the IResultError interface.</typeparam> <return>A CommandResponse object containing the failure Result.</return>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -306,19 +305,22 @@ This method creates a CommandResponse object that contains a Result indicating f
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>message</code> <span class="xref">string</span></dt>
-    <dd></dd>
+    <dd><p>An optional message describing the failure.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A command response containing the failure result.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TError</code></dt>
-    <dd></dd>
+    <dd><p>The error type to create and attach to the failure result.</p>
+</dd>
   </dl>
 
 
@@ -337,7 +339,7 @@ This method creates a CommandResponse object that contains a Result indicating f
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Creates a CommandResponse&lt;Result&lt;TValue&gt;&gt; indicating a failure with an optional message and error.</p>
+  <div class="markdown level1 summary"><p>Creates a <code>CommandResponse&lt;Result&lt;TValue&gt;&gt;</code> containing a failure with an optional message and error.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -358,7 +360,7 @@ This method creates a CommandResponse object that contains a Result indicating f
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
-    <dd><p>A CommandResponse&lt;Result&lt;TValue&gt;&gt; indicating a failure.</p>
+    <dd><p>A <code>CommandResponse&lt;Result&lt;TValue&gt;&gt;</code> containing the failure result.</p>
 </dd>
   </dl>
 
@@ -386,9 +388,6 @@ This method creates a CommandResponse object that contains a Result indicating f
   </h3>
 
   <div class="markdown level1 summary"><p>Creates a failure CommandResponse with a specified value.</p>
-<param name="value">The value to be associated with the failure result.
-<typeparam name="TValue">The type of the value to be included in the failure result.</typeparam>
-<return>A CommandResponse containing a Result with the provided value.</return>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -399,19 +398,22 @@ This method creates a CommandResponse object that contains a Result indicating f
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>value</code> <span class="xref">TValue</span></dt>
-    <dd></dd>
+    <dd><p>The value associated with the failure result.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>A command response containing a failure result with the provided value.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>TValue</code></dt>
-    <dd></dd>
+    <dd><p>The type of the value to include in the failure result.</p>
+</dd>
   </dl>
 
 
@@ -835,7 +837,8 @@ This method creates a CommandResponse object that contains a Result indicating f
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> object indicating a successful operation.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -846,7 +849,8 @@ This method creates a CommandResponse object that contains a Result indicating f
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>A <a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse&lt;TResult&gt;</a> object with the result set to success.</p>
+</dd>
   </dl>
 
 
@@ -1097,7 +1101,7 @@ This method creates a CommandResponse object that contains a Result indicating f
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Application.Commands.CommandResponse-1.html">CommandResponse</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;TValue&gt;&gt;</dt>
-    <dd><p>A CommandResponse&lt;Result&lt;TValue&gt;&gt; instance representing the successful command response.</p>
+    <dd><p>A <code>CommandResponse&lt;Result&lt;TValue&gt;&gt;</code> containing the successful result.</p>
 </dd>
   </dl>
 

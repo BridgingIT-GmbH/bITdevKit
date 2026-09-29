@@ -193,7 +193,7 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -220,7 +220,7 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -284,7 +284,8 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Creates a Cosmos SQL repository from options configured through a builder delegate.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -294,7 +295,8 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>optionsBuilder</code> <a class="xref" href="BridgingIT.DevKit.Common.Builder-2.html">Builder</a>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepositoryOptionsBuilder-1.html">CosmosSqlGenericRepositoryOptionsBuilder</a>&lt;TEntity&gt;, <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.CosmosSqlGenericRepositoryOptions-1.html">CosmosSqlGenericRepositoryOptions</a>&lt;TEntity&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The delegate that configures the repository options.</p>
+</dd>
   </dl>
 
 
@@ -302,6 +304,9 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_1__ctor_BridgingIT_DevKit_Common_Builder_BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepositoryOptionsBuilder__0__BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepositoryOptions__0____examples">Examples</h4>
+  <pre><code class="lang-csharp">var repository = new CosmosSqlGenericRepository&lt;Customer&gt;(options =&gt; options.Provider(provider));</code></pre>
 
 
 
@@ -315,7 +320,8 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>A generic repository for interacting with data stored in Cosmos DB SQL API.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -333,6 +339,9 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_1__ctor_BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepositoryOptions__0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var repository = new CosmosSqlGenericRepository&lt;Customer&gt;(options);</code></pre>
 
 
 
@@ -384,7 +393,8 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Gets an instance of the logger used for logging repository operations and diagnostics.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -402,6 +412,10 @@ Class CosmosSqlGenericRepository&lt;TEntity&gt;
   </dl>
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_1_Logger_examples">Examples</h4>
+  <p>Usage:</p>
+<pre><code class="lang-csharp">private readonly ILogger&lt;CosmosSqlGenericRepository&lt;MyEntity&gt;&gt; logger;</code></pre>
 
 
 
@@ -448,7 +462,9 @@ The options include settings such as the provider and ID generation strategy.</p
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Provides access to an underlying data provider for executing
+data operations such as creating, reading, updating, and deleting entities.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -466,6 +482,12 @@ The options include settings such as the provider and ID generation strategy.</p
   </dl>
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_Azure_CosmosSqlGenericRepository_1_Provider_examples">Examples</h4>
+  <p>Sample usage:</p>
+<pre><code class="lang-csharp">var provider = new CosmosSqlProvider&lt;TEntity&gt;(...);
+var repository = new CosmosSqlGenericRepository&lt;TEntity&gt;(loggerFactory, provider);
+var entities = await repository.FindAllAsync();</code></pre>
 
 
 

@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class Requester | bITdevKit API Reference ">
       
-      
+      <meta name="description" content="Dispatches requests to their handlers through a pipeline of behaviors.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -93,7 +93,8 @@ Class Requester
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"></div>
+  <div class="markdown summary"><p>Dispatches requests to their handlers through a pipeline of behaviors.</p>
+</div>
   <div class="markdown conceptual"></div>
 
   <div class="codewrapper">
@@ -178,7 +179,7 @@ Class Requester
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -205,7 +206,7 @@ Class Requester
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -255,7 +256,20 @@ Class Requester
   </dd></dl>
 
 
+  <h2 id="BridgingIT_DevKit_Common_Requester_examples">Examples</h2>
+  <pre><code class="lang-csharp">var requester = serviceProvider.GetRequiredService&lt;IRequester&gt;();
+var request = new SampleRequest();
+var options = new SendOptions { Context = new RequestContext { Properties = { ["UserId"] = "user123" } } };
+var result = await requester.SendAsync&lt;SampleRequest, string&gt;(request, options);
+var info = requester.GetRegistrationInformation();</code></pre>
 
+
+  <h2 id="BridgingIT_DevKit_Common_Requester_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>This class implements <a class="xref" href="BridgingIT.DevKit.Common.IRequester.html">IRequester</a> to dispatch requests to their handlers, processing them through
+a pipeline of behaviors resolved via <a class="xref" href="BridgingIT.DevKit.Common.IRequestBehaviorsProvider.html">IRequestBehaviorsProvider</a>. It uses structured logging
+with <a class="xref" href="BridgingIT.DevKit.Common.Requester.TypedLogger.html">Requester.TypedLogger</a> to log processing details and supports registration information retrieval
+through <a class="xref" href="BridgingIT.DevKit.Common.Requester.html#BridgingIT_DevKit_Common_Requester_GetRegistrationInformation">GetRegistrationInformation()</a>.</p>
+</div>
 
 
   <h2 class="section" id="constructors">Constructors
@@ -269,7 +283,8 @@ Class Requester
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Dispatches requests to their handlers through a pipeline of behaviors.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -279,17 +294,23 @@ Class Requester
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>serviceProvider</code> <span class="xref">IServiceProvider</span></dt>
-    <dd></dd>
+    <dd><p>The service provider for resolving services.</p>
+</dd>
     <dt><code>logger</code> <span class="xref">ILogger</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Requester.html">Requester</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>The logger for structured logging.</p>
+</dd>
     <dt><code>handlerProvider</code> <a class="xref" href="BridgingIT.DevKit.Common.IRequestHandlerProvider.html">IRequestHandlerProvider</a></dt>
-    <dd></dd>
+    <dd><p>The provider for resolving request handlers.</p>
+</dd>
     <dt><code>behaviorsProvider</code> <a class="xref" href="BridgingIT.DevKit.Common.IRequestBehaviorsProvider.html">IRequestBehaviorsProvider</a></dt>
-    <dd></dd>
+    <dd><p>The provider for resolving pipeline behaviors.</p>
+</dd>
     <dt><code>handlerCache</code> <a class="xref" href="BridgingIT.DevKit.Common.IHandlerCache.html">IHandlerCache</a></dt>
-    <dd></dd>
+    <dd><p>The cache of handler types, mapping request handler interfaces to concrete types.</p>
+</dd>
     <dt><code>pipelineBehaviorTypes</code> <span class="xref">IReadOnlyList</span>&lt;<span class="xref">Type</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The list of registered behavior types.</p>
+</dd>
   </dl>
 
 
@@ -298,7 +319,20 @@ Class Requester
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Requester__ctor_System_IServiceProvider_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Common_Requester__BridgingIT_DevKit_Common_IRequestHandlerProvider_BridgingIT_DevKit_Common_IRequestBehaviorsProvider_BridgingIT_DevKit_Common_IHandlerCache_System_Collections_Generic_IReadOnlyList_System_Type___examples">Examples</h4>
+  <pre><code class="lang-csharp">var requester = serviceProvider.GetRequiredService&lt;IRequester&gt;();
+var request = new SampleRequest();
+var options = new SendOptions { Context = new RequestContext { Properties = { ["UserId"] = "user123" } } };
+var result = await requester.SendAsync&lt;SampleRequest, string&gt;(request, options);
+var info = requester.GetRegistrationInformation();</code></pre>
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_Requester__ctor_System_IServiceProvider_Microsoft_Extensions_Logging_ILogger_BridgingIT_DevKit_Common_Requester__BridgingIT_DevKit_Common_IRequestHandlerProvider_BridgingIT_DevKit_Common_IRequestBehaviorsProvider_BridgingIT_DevKit_Common_IHandlerCache_System_Collections_Generic_IReadOnlyList_System_Type___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>This class implements <a class="xref" href="BridgingIT.DevKit.Common.IRequester.html">IRequester</a> to dispatch requests to their handlers, processing them through
+a pipeline of behaviors resolved via <a class="xref" href="BridgingIT.DevKit.Common.IRequestBehaviorsProvider.html">IRequestBehaviorsProvider</a>. It uses structured logging
+with <a class="xref" href="BridgingIT.DevKit.Common.Requester.TypedLogger.html">Requester.TypedLogger</a> to log processing details and supports registration information retrieval
+through <a class="xref" href="BridgingIT.DevKit.Common.Requester.html#BridgingIT_DevKit_Common_Requester_GetRegistrationInformation">GetRegistrationInformation()</a>.</p>
+</div>
 
 
 

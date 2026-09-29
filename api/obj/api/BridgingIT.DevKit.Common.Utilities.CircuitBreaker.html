@@ -173,7 +173,7 @@ Class CircuitBreaker
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
@@ -200,7 +200,7 @@ Class CircuitBreaker
       <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
   </div>
   <div>
-      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, bool&gt;, Func&lt;TIn, TOut&gt;, Func&lt;TIn, TOut&gt;)</a>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
   </div>
   <div>
       <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
@@ -264,7 +264,8 @@ Class CircuitBreaker
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Initializes a new instance of the CircuitBreaker class with the specified settings.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -274,15 +275,20 @@ Class CircuitBreaker
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>failureThreshold</code> <span class="xref">int</span></dt>
-    <dd></dd>
+    <dd><p>The number of failures allowed before opening the circuit.</p>
+</dd>
     <dt><code>resetTimeout</code> <span class="xref">TimeSpan</span></dt>
-    <dd></dd>
+    <dd><p>The duration to wait before transitioning from Open to Half-Open state.</p>
+</dd>
     <dt><code>handleErrors</code> <span class="xref">bool</span></dt>
-    <dd></dd>
+    <dd><p>If true, catches and logs exceptions from the action; otherwise, throws them. Defaults to false.</p>
+</dd>
     <dt><code>logger</code> <span class="xref">ILogger</span></dt>
-    <dd></dd>
+    <dd><p>An optional logger to log errors if handleErrors is true. Defaults to null.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.CircuitBreakerProgress.html">CircuitBreakerProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for circuit breaker operations. Defaults to null.</p>
+</dd>
   </dl>
 
 
@@ -291,8 +297,20 @@ Class CircuitBreaker
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_CircuitBreaker__ctor_System_Int32_System_TimeSpan_System_Boolean_Microsoft_Extensions_Logging_ILogger_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_CircuitBreakerProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var cts = new CancellationTokenSource();
+var progress = new Progress&lt;CircuitBreakerProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
+var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30), progress: progress);
+await circuitBreaker.ExecuteAsync(async ct =&gt; await SomeOperation(ct), cts.Token);</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ArgumentOutOfRangeException</span></dt>
+    <dd><p>Thrown if failureThreshold is less than 1 or resetTimeout is negative.</p>
+</dd>
+  </dl>
 
 
 
@@ -347,7 +365,8 @@ Console.WriteLine($"Circuit breaker state: {circuitBreaker.State}");</code></pre
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the specified action, applying circuit breaker logic to prevent repeated calls if the circuit is open.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -357,17 +376,21 @@ Console.WriteLine($"Circuit breaker state: {circuitBreaker.State}");</code></pre
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action to execute, accepting a CancellationToken.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.CircuitBreakerProgress.html">CircuitBreakerProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for circuit breaker operations. Defaults to null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span></dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation.</p>
+</dd>
   </dl>
 
 
@@ -375,8 +398,29 @@ Console.WriteLine($"Circuit breaker state: {circuitBreaker.State}");</code></pre
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_CircuitBreaker_ExecuteAsync_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_CircuitBreakerProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var cts = new CancellationTokenSource();
+var progress = new Progress&lt;CircuitBreakerProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
+var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
+await circuitBreaker.ExecuteAsync(async ct =&gt;
+{
+    await Task.Delay(100, ct); // Simulate work
+    if (new Random().Next(2) == 0) throw new Exception("Operation failed");
+    Console.WriteLine("Success");
+}, cts.Token, progress);
+cts.Cancel(); // Cancel the operation if needed</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Utilities.CircuitBreakerOpenException.html">CircuitBreakerOpenException</a></dt>
+    <dd><p>Thrown if the circuit is open and the reset timeout has not elapsed.</p>
+</dd>
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown if the operation is canceled via the cancellation token.</p>
+</dd>
+  </dl>
 
 
 
@@ -387,7 +431,8 @@ Console.WriteLine($"Circuit breaker state: {circuitBreaker.State}");</code></pre
   
   </h3>
 
-  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 summary"><p>Executes the specified action with a return value, applying circuit breaker logic to prevent repeated calls if the circuit is open.</p>
+</div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
@@ -397,31 +442,57 @@ Console.WriteLine($"Circuit breaker state: {circuitBreaker.State}");</code></pre
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>action</code> <span class="xref">Func</span>&lt;<span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
-    <dd></dd>
+    <dd><p>The asynchronous action to execute, accepting a CancellationToken.</p>
+</dd>
     <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
+    <dd><p>A cancellation token to cancel the operation.</p>
+</dd>
     <dt><code>progress</code> <span class="xref">IProgress</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Resiliancy.CircuitBreakerProgress.html">CircuitBreakerProgress</a>&gt;</dt>
-    <dd></dd>
+    <dd><p>An optional progress reporter for circuit breaker operations. Defaults to null.</p>
+</dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><span class="xref">Task</span>&lt;T&gt;</dt>
-    <dd></dd>
+    <dd><p>A task representing the asynchronous operation, returning the result of the action.</p>
+</dd>
   </dl>
 
   <h4 class="section">Type Parameters</h4>
   <dl class="parameters">
     <dt><code>T</code></dt>
-    <dd></dd>
+    <dd><p>The type of the result returned by the action.</p>
+</dd>
   </dl>
 
 
 
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_Utilities_CircuitBreaker_ExecuteAsync__1_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_IProgress_BridgingIT_DevKit_Common_Resiliancy_CircuitBreakerProgress___examples">Examples</h4>
+  <pre><code class="lang-csharp">var cts = new CancellationTokenSource();
+var progress = new Progress&lt;CircuitBreakerProgress&gt;(p =&gt; Console.WriteLine($"Progress: {p.Status}, State: {p.State}, Failures: {p.FailureCount}, ResetTimeout: {p.ResetTimeout.TotalSeconds}s"));
+var circuitBreaker = new CircuitBreaker(3, TimeSpan.FromSeconds(30));
+int result = await circuitBreaker.ExecuteAsync(async ct =&gt;
+{
+    await Task.Delay(100, ct); // Simulate work
+    if (new Random().Next(2) == 0) throw new Exception("Operation failed");
+    return 42;
+}, cts.Token, progress);
+Console.WriteLine($"Result: {result}");</code></pre>
 
 
+
+  <h4 class="section">Exceptions</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.Utilities.CircuitBreakerOpenException.html">CircuitBreakerOpenException</a></dt>
+    <dd><p>Thrown if the circuit is open and the reset timeout has not elapsed.</p>
+</dd>
+    <dt><span class="xref">OperationCanceledException</span></dt>
+    <dd><p>Thrown if the operation is canceled via the cancellation token.</p>
+</dd>
+  </dl>
 
 
 

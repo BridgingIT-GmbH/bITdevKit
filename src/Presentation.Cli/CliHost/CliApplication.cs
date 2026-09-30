@@ -117,7 +117,8 @@ public static class CliApplication
             HostRegistry = registryOptions,
             Environment = Environment.GetEnvironmentVariables()
                 .Cast<System.Collections.DictionaryEntry>()
-                .ToDictionary(entry => entry.Key.ToString(), entry => entry.Value?.ToString(), StringComparer.OrdinalIgnoreCase)
+                .ToDictionary(entry => entry.Key.ToString(), entry => entry.Value?.ToString(),
+                    OperatingSystem.IsWindows() ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal)
         };
         foreach (var module in modules)
         {

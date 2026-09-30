@@ -281,16 +281,24 @@ public class BroadcastingHttpTests
         await using var nodeB = CreateNode("node-b", registry, probe);
         await nodeA.StartAsync();
         await nodeB.StartAsync();
+
+          // Registration runs in the background after the web hosts have started.
+        using var registrationTimeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while ((await registry.GetActiveAsync(["Alpha"], registrationTimeout.Token)).Count != 2)
+        {
+            await Task.Delay(TimeSpan.FromMilliseconds(10), registrationTimeout.Token);
+        }
+
         var sut = nodeA.Services.GetRequiredService<IBroadcastService>();
 
         // Act
         var result = await sut.PublishAsync(new TestBroadcast("two-nodes"), ["Alpha"]);
-        var handledNodes = await probe.WaitAsync(TimeSpan.FromSeconds(5));
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.TargetCount.ShouldBe(2);
         result.Value.AcceptedCount.ShouldBe(2);
+         var handledNodes = await probe.WaitAsync(TimeSpan.FromSeconds(5));
         handledNodes.OrderBy(value => value, StringComparer.Ordinal).ShouldBe(["node-a", "node-b"]);
         await nodeB.StopAsync();
         await nodeA.StopAsync();

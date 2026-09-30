@@ -300,6 +300,38 @@ public sealed class CliFoundationTests
         }
     }
 
+     [Fact]
+    public async Task CliApplication_WhenEnvironmentNamesDifferOnlyByCase_ReturnsSuccess()
+    {
+        // Arrange
+        const string UPPER_NAME = "BDK_TEST_CASE_SENSITIVE_ENVIRONMENT";
+        const string LOWER_NAME = "bdk_test_case_sensitive_environment";
+        var originalUpper = Environment.GetEnvironmentVariable(UPPER_NAME);
+        var originalLower = Environment.GetEnvironmentVariable(LOWER_NAME);
+        var originalOut = Console.Out;
+        await using var writer = new StringWriter();
+
+        try
+        {
+            Environment.SetEnvironmentVariable(UPPER_NAME, "upper");
+            Environment.SetEnvironmentVariable(LOWER_NAME, "lower");
+            Console.SetOut(writer);
+
+            // Act
+            var exitCode = await CliApplication.RunAsync(["version", "--output", "json"]);
+
+            // Assert
+            exitCode.ShouldBe(0);
+            writer.ToString().ShouldContain("\"exitCode\": 0");
+        }
+        finally
+        {
+            Console.SetOut(originalOut);
+            Environment.SetEnvironmentVariable(UPPER_NAME, originalUpper);
+            Environment.SetEnvironmentVariable(LOWER_NAME, originalLower);
+        }
+    }
+
     [Fact]
     public async Task CliApplication_HostsListJson_UsesConsoleCommandBinding()
     {

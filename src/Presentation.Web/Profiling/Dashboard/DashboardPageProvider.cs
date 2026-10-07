@@ -21,8 +21,8 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions dashboardOpt
     {
         if (
             httpContext.RequestServices.GetService<ProfilingOptions>()?.Enabled != true
-            || httpContext.RequestServices.GetService<IProfilingControlService>() is null
-            || httpContext.RequestServices.GetService<IProfilingQueryService>() is null
+            || httpContext.RequestServices.GetService<IRuntimeProfilingControlService>() is null
+            || httpContext.RequestServices.GetService<IRuntimeProfilingQueryService>() is null
         )
         {
             yield break;
@@ -46,7 +46,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions dashboardOpt
     private static async ValueTask<DashboardPageCard> GetCardAsync(HttpContext context)
     {
         var options = context.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
-        var control = context.RequestServices.GetService<IProfilingControlService>();
+        var control = context.RequestServices.GetService<IRuntimeProfilingControlService>();
         if (control is null)
         {
             return CreateCard(options, "Unavailable", "Profiling control is not registered.");

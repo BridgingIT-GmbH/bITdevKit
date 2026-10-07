@@ -5,214 +5,103 @@
 
 namespace BridgingIT.DevKit.Common;
 
-/// <summary>
-/// Configures the opt-in profiling feature.
-/// </summary>
-/// <example>
-/// <code>
-/// services.AddProfiling(options => options
-///     .Enabled()
-///     .SamplingInterval(TimeSpan.FromSeconds(1))
-///     .Duration(TimeSpan.FromSeconds(30)));
-/// </code>
-/// </example>
+/// <summary>Configures the overarching Profiling feature and its independent capabilities.</summary>
+/// <example><code>services.AddProfiling(o => o.Enabled()).WithRuntimeProfiling();</code></example>
 public sealed class ProfilingOptions
 {
-    /// <summary>Gets the fixed minimum supported sampling interval.</summary>
-    /// <example><code>var minimum = ProfilingOptions.MinimumSamplingInterval;</code></example>
-    public static readonly TimeSpan MinimumSamplingInterval = TimeSpan.FromMilliseconds(500);
-
-    /// <summary>Gets the format used for a generated default session name.</summary>
-    /// <example><code>var name = utcNow.ToString(ProfilingOptions.DefaultSessionNameFormat);</code></example>
-    public const string DefaultSessionNameFormat = "O";
-
-    /// <summary>Gets or sets whether profiling collection is enabled.</summary>
-    /// <example><code>options.Enabled = environment.IsDevelopment();</code></example>
+    /// <summary>Gets or sets whether the master feature is enabled.</summary>
+    /// <example><code>var value = options.Enabled;</code></example>
     public bool Enabled { get; set; }
 
-    /// <summary>Gets or sets the default interval between scheduled snapshots.</summary>
-    /// <example><code>options.SamplingInterval = TimeSpan.FromSeconds(1);</code></example>
-    public TimeSpan SamplingInterval { get; set; } = TimeSpan.FromSeconds(1);
+    /// <summary>Gets or sets the bounded local process display name.</summary>
+    /// <example><code>var value = options.NodeDisplayName;</code></example>
+    public string NodeDisplayName { get; set; }
 
-    /// <summary>Gets or sets the required maximum duration of a collection session.</summary>
-    /// <example><code>options.Duration = TimeSpan.FromSeconds(30);</code></example>
-    public TimeSpan Duration { get; set; } = TimeSpan.FromSeconds(30);
+    /// <summary>Gets or sets the bounded application version override.</summary>
+    /// <example><code>var value = options.ApplicationVersion;</code></example>
+    public string ApplicationVersion { get; set; }
 
-    /// <summary>Gets or sets whether collection stops when the configured duration elapses.</summary>
-    /// <example><code>options.AutomaticStop = true;</code></example>
-    public bool AutomaticStop { get; set; } = true;
+    /// <summary>Gets or sets independent runtime capture settings.</summary>
+    /// <example><code>var value = options.Runtime;</code></example>
+    public RuntimeProfilingOptions Runtime { get; set; } = new();
 
-    /// <summary>Gets or sets the maximum number of retained unpinned terminal sessions.</summary>
-    /// <example><code>options.MaximumRetainedSessions = 20;</code></example>
-    public int MaximumRetainedSessions { get; set; } = 20;
+    /// <summary>Gets or sets independent operation recording settings.</summary>
+    /// <example><code>var value = options.Operations;</code></example>
+    public OperationProfilingOptions Operations { get; set; } = new();
 
-    /// <summary>Gets or sets the maximum age of an unpinned terminal session.</summary>
-    /// <example><code>options.MaximumSessionAge = TimeSpan.FromDays(7);</code></example>
-    public TimeSpan MaximumSessionAge { get; set; } = TimeSpan.FromDays(7);
+    /// <summary>Gets or sets http adapter enablement, configured by the web package.</summary>
+    /// <example><code>var value = options.Requests;</code></example>
+    public ProfilingCapabilityOptions Requests { get; set; } = new();
 
-    /// <summary>Gets or sets the default dashboard refresh interval.</summary>
-    /// <example><code>options.RefreshInterval = TimeSpan.FromSeconds(5);</code></example>
-    public TimeSpan RefreshInterval { get; set; } = TimeSpan.FromSeconds(5);
+    /// <summary>Gets or sets bounded retained-history query settings.</summary>
+    /// <example><code>var value = options.Queries;</code></example>
+    public ProfilingQueryOptions Queries { get; set; } = new();
 
-    /// <summary>Gets or sets the deadline for accepting start-command participants.</summary>
-    /// <example><code>options.ParticipationDeadline = TimeSpan.FromSeconds(1);</code></example>
-    public TimeSpan ParticipationDeadline { get; set; } = TimeSpan.FromSeconds(1);
+    /// <summary>Gets the effective Runtime capture state.</summary>
+    /// <example><code>if (options.RuntimeEnabled) StartRuntime();</code></example>
+    public bool RuntimeEnabled => this.Enabled && this.Runtime.Enabled;
 
-    /// <summary>Gets or sets the delay after the logical end before finalization may occur.</summary>
-    /// <example><code>options.FinalizationGracePeriod = TimeSpan.FromSeconds(1);</code></example>
-    public TimeSpan FinalizationGracePeriod { get; set; } = TimeSpan.FromSeconds(1);
+    /// <summary>Gets the effective operation capture state.</summary>
+    /// <example><code>if (options.OperationEnabled) StartRecorder();</code></example>
+    public bool OperationEnabled => this.Enabled && this.Operations.Enabled;
 
-    /// <summary>Validates the configured profiling limits.</summary>
-    /// <exception cref="InvalidOperationException">Thrown when an enabled configuration is invalid.</exception>
+    /// <summary>Validates the final composed configuration.</summary>
     /// <example><code>options.Validate();</code></example>
     public void Validate()
     {
+        if (this.Runtime is null || this.Operations is null || this.Requests is null || this.Queries is null)
+        {
+            throw new InvalidOperationException("Profiling capability options cannot be null.");
+        }
+
         if (!this.Enabled)
         {
             return;
         }
 
-        if (this.SamplingInterval < MinimumSamplingInterval)
+        if (this.Requests.Enabled && !this.Operations.Enabled)
         {
-            throw new InvalidOperationException(
-                $"The profiling sampling interval must be at least {MinimumSamplingInterval.TotalMilliseconds:0} ms."
-            );
+            throw new InvalidOperationException("Request Profiling requires explicitly enabled Operation Profiling.");
         }
 
-        if (this.Duration <= TimeSpan.Zero)
+        if (this.NodeDisplayName?.Length > 128 || this.ApplicationVersion?.Length > 128)
         {
-            throw new InvalidOperationException(
-                "The profiling collection duration must be greater than zero."
-            );
+            throw new InvalidOperationException("Profiling node metadata cannot exceed 128 characters.");
         }
 
-        if (!this.AutomaticStop)
-        {
-            throw new InvalidOperationException(
-                "Profiling collection requires automatic stop at the configured duration."
-            );
-        }
-
-        if (this.MaximumRetainedSessions <= 0)
-        {
-            throw new InvalidOperationException(
-                "The maximum retained profiling session count must be greater than zero."
-            );
-        }
-
-        if (
-            this.MaximumSessionAge <= TimeSpan.Zero
-            || this.RefreshInterval <= TimeSpan.Zero
-            || this.ParticipationDeadline <= TimeSpan.Zero
-            || this.FinalizationGracePeriod < TimeSpan.Zero
-        )
-        {
-            throw new InvalidOperationException(
-                "Profiling time limits must be positive and the finalization grace period cannot be negative."
-            );
-        }
+        this.Runtime.Validate();
+        this.Operations.Validate();
+        this.Queries.Validate();
     }
 }
 
-/// <summary>
-/// Fluently updates one shared <see cref="ProfilingOptions"/> instance.
-/// </summary>
-/// <example><code>options.Enabled().Duration(TimeSpan.FromMinutes(1));</code></example>
-public sealed class ProfilingOptionsBuilder
+/// <summary>Configures master enablement and shared process metadata.</summary>
+/// <example><code>options.Enabled().Node("worker-1");</code></example>
+public sealed class ProfilingOptionsBuilder(ProfilingOptions target)
 {
-    /// <summary>Creates a builder for the supplied options.</summary>
-    /// <param name="target">The options instance to update.</param>
-    /// <example><code>var builder = new ProfilingOptionsBuilder(options);</code></example>
-    public ProfilingOptionsBuilder(ProfilingOptions target)
-    {
-        this.Target = target ?? throw new ArgumentNullException(nameof(target));
-    }
-
-    private ProfilingOptions Target { get; }
-
-    /// <summary>Enables or disables profiling collection.</summary>
-    /// <param name="enabled">Whether collection is enabled.</param>
-    /// <returns>This builder.</returns>
+    /// <summary>Sets the master capture flag.</summary>
     /// <example><code>options.Enabled(environment.IsDevelopment());</code></example>
-    public ProfilingOptionsBuilder Enabled(bool enabled = true)
+    public ProfilingOptionsBuilder Enabled(bool value = true)
     {
-        this.Target.Enabled = enabled;
+        target.Enabled = value;
         return this;
     }
 
-    /// <summary>Sets the default sampling interval.</summary>
-    /// <param name="value">An interval of at least 500 milliseconds.</param>
-    /// <returns>This builder.</returns>
-    /// <example><code>options.SamplingInterval(TimeSpan.FromSeconds(1));</code></example>
-    public ProfilingOptionsBuilder SamplingInterval(TimeSpan value)
+    /// <summary>Sets bounded cached local process metadata.</summary>
+    /// <example><code>options.Node("worker-1", "2.0.0");</code></example>
+    public ProfilingOptionsBuilder Node(string displayName, string applicationVersion = null)
     {
-        if (value < ProfilingOptions.MinimumSamplingInterval)
-        {
-            throw new ArgumentOutOfRangeException(
-                nameof(value),
-                $"The sampling interval must be at least {ProfilingOptions.MinimumSamplingInterval.TotalMilliseconds:0} ms."
-            );
-        }
-
-        this.Target.SamplingInterval = value;
+        target.NodeDisplayName = displayName;
+        target.ApplicationVersion = applicationVersion;
         return this;
     }
+}
 
-    /// <summary>Sets the required maximum collection duration.</summary>
-    /// <param name="value">A positive duration.</param>
-    /// <returns>This builder.</returns>
-    /// <example><code>options.Duration(TimeSpan.FromSeconds(30));</code></example>
-    public ProfilingOptionsBuilder Duration(TimeSpan value)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, TimeSpan.Zero);
-        this.Target.Duration = value;
-        return this;
-    }
-
-    /// <summary>Sets the terminal-session retention limits.</summary>
-    /// <param name="maximumSessions">The positive maximum retained session count.</param>
-    /// <param name="maximumAge">The positive maximum session age.</param>
-    /// <returns>This builder.</returns>
-    /// <example><code>options.Retention(20, TimeSpan.FromDays(7));</code></example>
-    public ProfilingOptionsBuilder Retention(int maximumSessions, TimeSpan maximumAge)
-    {
-        ArgumentOutOfRangeException.ThrowIfNegativeOrZero(maximumSessions);
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(maximumAge, TimeSpan.Zero);
-        this.Target.MaximumRetainedSessions = maximumSessions;
-        this.Target.MaximumSessionAge = maximumAge;
-        return this;
-    }
-
-    /// <summary>Sets the dashboard refresh interval.</summary>
-    /// <param name="value">A positive refresh interval.</param>
-    /// <returns>This builder.</returns>
-    /// <example><code>options.RefreshInterval(TimeSpan.FromSeconds(5));</code></example>
-    public ProfilingOptionsBuilder RefreshInterval(TimeSpan value)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, TimeSpan.Zero);
-        this.Target.RefreshInterval = value;
-        return this;
-    }
-
-    /// <summary>Sets the start participation deadline.</summary>
-    /// <param name="value">A positive deadline.</param>
-    /// <returns>This builder.</returns>
-    /// <example><code>options.ParticipationDeadline(TimeSpan.FromSeconds(1));</code></example>
-    public ProfilingOptionsBuilder ParticipationDeadline(TimeSpan value)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThanOrEqual(value, TimeSpan.Zero);
-        this.Target.ParticipationDeadline = value;
-        return this;
-    }
-
-    /// <summary>Sets the session finalization grace period.</summary>
-    /// <param name="value">A non-negative grace period.</param>
-    /// <returns>This builder.</returns>
-    /// <example><code>options.FinalizationGracePeriod(TimeSpan.FromSeconds(1));</code></example>
-    public ProfilingOptionsBuilder FinalizationGracePeriod(TimeSpan value)
-    {
-        ArgumentOutOfRangeException.ThrowIfLessThan(value, TimeSpan.Zero);
-        this.Target.FinalizationGracePeriod = value;
-        return this;
-    }
+/// <summary>Records whether an adapter capability is configured and enabled.</summary>
+/// <example><code>var enabled = options.Requests.Enabled;</code></example>
+public class ProfilingCapabilityOptions
+{
+    /// <summary>Gets or sets explicit capability enablement.</summary>
+    /// <example><code>options.Enabled = true;</code></example>
+    public bool Enabled { get; set; }
 }

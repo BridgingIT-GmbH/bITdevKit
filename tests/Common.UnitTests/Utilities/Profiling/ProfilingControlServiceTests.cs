@@ -16,7 +16,7 @@ public class ProfilingControlServiceTests
     {
         // Arrange
         var harness = CreateHarness(
-            new InMemoryProfilingStore(),
+            new InMemoryRuntimeProfilingStore(),
             CreateRegistration("node-a"),
             CreateRegistration("node-b")
         );
@@ -36,7 +36,7 @@ public class ProfilingControlServiceTests
     public async Task StartAsync_ConcurrentRequests_CreateOneSessionAndPublishOnce()
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
 
         // Act
         var results = await Task.WhenAll(
@@ -79,13 +79,13 @@ public class ProfilingControlServiceTests
         result
             .Value.NodeOutcomes.Select(outcome => outcome.Outcome)
             .ShouldBe([
-                BroadcastDeliveryOutcome.Accepted,
-                BroadcastDeliveryOutcome.Rejected,
-                BroadcastDeliveryOutcome.Unreachable,
+                RuntimeProfilingDeliveryOutcome.Accepted,
+                RuntimeProfilingDeliveryOutcome.Rejected,
+                RuntimeProfilingDeliveryOutcome.Unreachable,
             ]);
         data.Value.Participations.ShouldHaveSingleItem();
-        data.Value.Participations[0].Role.ShouldBe(ProfilingNodeRole.ExpectedParticipant);
-        data.Value.Participations[0].State.ShouldBe(ProfilingParticipationState.Accepted);
+        data.Value.Participations[0].Role.ShouldBe(RuntimeProfilingNodeRole.ExpectedParticipant);
+        data.Value.Participations[0].State.ShouldBe(RuntimeProfilingParticipationState.Accepted);
     }
 
     [Fact]
@@ -125,26 +125,26 @@ public class ProfilingControlServiceTests
         harness.Broadcasts.PublishedSnapshots[1].TargetCount.ShouldBe(2);
         harness
             .Broadcasts.PublishedPayloads[1]
-            .ShouldBeOfType<ProfilingSnapshotBroadcast>()
-            .Role.ShouldBe(ProfilingNodeRole.AdHocContributor);
+            .ShouldBeOfType<RuntimeProfilingSnapshotBroadcast>()
+            .Role.ShouldBe(RuntimeProfilingNodeRole.AdHocContributor);
         data.Value.Participations.ShouldHaveSingleItem();
-        data.Value.Participations[0].Role.ShouldBe(ProfilingNodeRole.ExpectedParticipant);
+        data.Value.Participations[0].Role.ShouldBe(RuntimeProfilingNodeRole.ExpectedParticipant);
     }
 
     [Fact]
     public async Task FinalizeAsync_FailedAdHocContributor_DoesNotCreateCompletionWarning()
     {
         // Arrange
-        var store = new InMemoryProfilingStore();
+        var store = new InMemoryRuntimeProfilingStore();
         var time = new FakeTimeProvider(StartUtc);
         var options = CreateOptions();
         var session = (
             await store.GetOrCreateActiveSessionAsync(
                 new(
-                    ProfilingSessionIdentity.Create(),
+                    ProfilingIdentityFactory.CreateRuntimeSession(),
                     "load",
                     StartUtc,
-                    options.SamplingInterval,
+                    options.Runtime.SamplingInterval,
                     TimeSpan.FromSeconds(1),
                     []
                 )
@@ -158,34 +158,34 @@ public class ProfilingControlServiceTests
             CreateParticipation(
                 session,
                 expected,
-                ProfilingNodeRole.ExpectedParticipant,
-                ProfilingParticipationState.Completed
+                RuntimeProfilingNodeRole.ExpectedParticipant,
+                RuntimeProfilingParticipationState.Completed
             )
         );
         await store.UpsertParticipationAsync(
             CreateParticipation(
                 session,
                 adHoc,
-                ProfilingNodeRole.AdHocContributor,
-                ProfilingParticipationState.Failed
+                RuntimeProfilingNodeRole.AdHocContributor,
+                RuntimeProfilingParticipationState.Failed
             )
         );
         time.Advance(TimeSpan.FromSeconds(3));
-        var sut = new ProfilingSessionFinalizer(store, options, time);
+        var sut = new RuntimeProfilingSessionFinalizer(store, options, time);
 
         // Act
         var result = await sut.FinalizeAsync(session);
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value.State.ShouldBe(ProfilingSessionState.Completed);
+        result.Value.State.ShouldBe(RuntimeProfilingSessionState.Completed);
     }
 
     [Fact]
     public async Task SnapshotAsync_WithoutActiveSession_CompletesStandaloneSession()
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
 
         // Act
         var result = await harness.Sut.SnapshotAsync();
@@ -194,17 +194,17 @@ public class ProfilingControlServiceTests
         // Assert
         result.IsSuccess.ShouldBeTrue();
         result.Value.Created.ShouldBeTrue();
-        result.Value.Session.State.ShouldBe(ProfilingSessionState.Completed);
+        result.Value.Session.State.ShouldBe(RuntimeProfilingSessionState.Completed);
         result.Value.Session.Name.ShouldBe("Manual snapshot");
         data.Value.Participations.ShouldHaveSingleItem();
-        data.Value.Participations[0].Role.ShouldBe(ProfilingNodeRole.ExpectedParticipant);
+        data.Value.Participations[0].Role.ShouldBe(RuntimeProfilingNodeRole.ExpectedParticipant);
     }
 
     [Fact]
     public async Task StopAsync_UnreachableNode_StopsLogicalSessionAndPreservesOriginalEnd()
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
         var startResult = await harness.Sut.StartAsync(
             new("load", Duration: TimeSpan.FromMinutes(1))
         );
@@ -216,18 +216,18 @@ public class ProfilingControlServiceTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value.Session.State.ShouldBe(ProfilingSessionState.Stopped);
+        result.Value.Session.State.ShouldBe(RuntimeProfilingSessionState.Stopped);
         result.Value.Session.EndsUtc.ShouldBe(originalEnd);
         result
             .Value.NodeOutcomes.ShouldHaveSingleItem()
-            .Outcome.ShouldBe(BroadcastDeliveryOutcome.Unreachable);
+            .Outcome.ShouldBe(RuntimeProfilingDeliveryOutcome.Unreachable);
     }
 
     [Fact]
     public async Task CollectGarbageAsync_WithoutActiveSession_DoesNotCreateSession()
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
 
         // Act
         var result = await harness.Sut.CollectGarbageAsync();
@@ -237,55 +237,55 @@ public class ProfilingControlServiceTests
         result.Value.Session.ShouldBeNull();
         harness
             .Broadcasts.PublishedPayloads.ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingGarbageCollectionBroadcast>()
+            .ShouldBeOfType<RuntimeProfilingGarbageCollectionBroadcast>()
             .SessionId.ShouldBe(Guid.Empty);
         (await harness.Store.ListSessionsAsync()).Value.ShouldBeEmpty();
     }
 
     [Fact]
-    public async Task AddPhaseMarkerAsync_ActiveSession_TrimsAndAllowsDuplicateNames()
+    public async Task AddMarkerAsync_ActiveSession_TrimsAndAllowsDuplicateNames()
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
         var startResult = await harness.Sut.StartAsync(new("load"));
 
         // Act
-        var first = await harness.Sut.AddPhaseMarkerAsync("  warm-up  ");
-        var second = await harness.Sut.AddPhaseMarkerAsync("warm-up");
+        var first = await harness.Sut.AddMarkerAsync("  warm-up  ");
+        var second = await harness.Sut.AddMarkerAsync("warm-up");
         var data = await harness.Store.GetSessionDataAsync(startResult.Value.Session.Identity.Key);
 
         // Assert
         first.IsSuccess.ShouldBeTrue();
         second.IsSuccess.ShouldBeTrue();
-        data.Value.PhaseMarkers.Count.ShouldBe(2);
-        data.Value.PhaseMarkers.ShouldAllBe(marker => marker.Name == "warm-up");
+        data.Value.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).Count().ShouldBe(2);
+        data.Value.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).ShouldAllBe(marker => marker.Name == "warm-up");
         harness.Broadcasts.PublishCount.ShouldBe(1);
     }
 
     [Theory]
     [InlineData("")]
     [InlineData("   ")]
-    public async Task AddPhaseMarkerAsync_InvalidName_FailsWithoutStoreMutation(string name)
+    public async Task AddMarkerAsync_InvalidName_FailsWithoutStoreMutation(string name)
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
         var startResult = await harness.Sut.StartAsync(new("load"));
 
         // Act
-        var result = await harness.Sut.AddPhaseMarkerAsync(name);
+        var result = await harness.Sut.AddMarkerAsync(name);
         var data = await harness.Store.GetSessionDataAsync(startResult.Value.Session.Identity.Key);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
         result.Errors.ShouldContain(error => error is ProfilingValidationError);
-        data.Value.PhaseMarkers.ShouldBeEmpty();
+        data.Value.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).ShouldBeEmpty();
     }
 
     [Fact]
     public async Task RestartAsync_CopiesOnlyApprovedSessionParameters()
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
         var sourceResult = await harness.Sut.StartAsync(
             new(
                 "baseline",
@@ -318,7 +318,7 @@ public class ProfilingControlServiceTests
         replacement.Tags.ShouldBe(["memory", "local"]);
         replacement.Note.ShouldBeNull();
         replacement.IsPinned.ShouldBeFalse();
-        source.State.ShouldBe(ProfilingSessionState.Stopped);
+        source.State.ShouldBe(RuntimeProfilingSessionState.Stopped);
         source.Note.ShouldBe("do not copy");
         source.IsPinned.ShouldBeTrue();
     }
@@ -327,9 +327,9 @@ public class ProfilingControlServiceTests
     public async Task QueryLifecycle_ActiveDeleteAndClear_AreRejectedWithoutMutation()
     {
         // Arrange
-        var harness = CreateHarness(new InMemoryProfilingStore(), CreateRegistration("node-a"));
+        var harness = CreateHarness(new InMemoryRuntimeProfilingStore(), CreateRegistration("node-a"));
         var startResult = await harness.Sut.StartAsync(new("active"));
-        var sut = new ProfilingQueryService(
+        var sut = new RuntimeProfilingQueryService(
             CreateOptions(),
             harness.Store,
             harness.Sut
@@ -345,7 +345,7 @@ public class ProfilingControlServiceTests
         (await harness.Store.ListSessionsAsync()).Value.ShouldHaveSingleItem();
         (
             await harness.Store.FindSessionAsync(startResult.Value.Session.Identity.Key)
-        ).Value.State.ShouldBe(ProfilingSessionState.Running);
+        ).Value.State.ShouldBe(RuntimeProfilingSessionState.Running);
     }
 
     [Fact]
@@ -353,14 +353,14 @@ public class ProfilingControlServiceTests
     {
         // Arrange
         var collector = new RecordingCollector();
-        var sut = new ProfilingSnapshotBroadcastHandler(
+        var sut = new RuntimeProfilingSnapshotBroadcastHandler(
             collector,
-            new ProfilingBroadcastExecutionTracker()
+            new RuntimeProfilingBroadcastExecutionTracker()
         );
         var session = CreateSession();
-        var payload = new ProfilingSnapshotBroadcast(
-            ProfilingSessionBroadcast.From(session),
-            ProfilingNodeRole.AdHocContributor
+        var payload = new RuntimeProfilingSnapshotBroadcast(
+            RuntimeProfilingSessionBroadcast.From(session),
+            RuntimeProfilingNodeRole.AdHocContributor
         );
         var broadcastId = Guid.NewGuid();
         var context = new BroadcastContext(
@@ -380,10 +380,20 @@ public class ProfilingControlServiceTests
     }
 
     private static ControlHarness CreateHarness(
-        IProfilingStore store,
+        IRuntimeProfilingStore store,
         params BroadcastNodeRegistration[] registrations
     )
     {
+        foreach (var registration in registrations)
+        {
+            var correlation = new RuntimeProfilingNodeCorrelation(registration.NodeIdentity, registration.ProcessStartedUtc);
+            store.GetOrCreateNodeAsync(correlation, new ProfilingNode
+            {
+                Identity = ProfilingIdentityFactory.CreateNode(), Correlation = correlation,
+                HostName = "test", ProcessId = 1
+            }).GetAwaiter().GetResult();
+        }
+
         var options = CreateOptions();
         var broadcastingOptions = new BroadcastingOptions();
         var time = new FakeTimeProvider(StartUtc);
@@ -397,7 +407,7 @@ public class ProfilingControlServiceTests
                 time,
                 store,
                 broadcasts,
-                new ProfilingNodeIdentityProvider(store),
+                new RuntimeProfilingNodeRegistrationAdapter(store, new ProfilingNodeIdentityProvider()),
                 broadcastingOptions
             ),
             store,
@@ -407,14 +417,7 @@ public class ProfilingControlServiceTests
     }
 
     private static ProfilingOptions CreateOptions() =>
-        new()
-        {
-            Enabled = true,
-            SamplingInterval = TimeSpan.FromSeconds(1),
-            Duration = TimeSpan.FromSeconds(30),
-            ParticipationDeadline = TimeSpan.FromSeconds(1),
-            FinalizationGracePeriod = TimeSpan.FromSeconds(1),
-        };
+        new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true, SamplingInterval = TimeSpan.FromSeconds(1), Duration = TimeSpan.FromSeconds(30), ParticipationDeadline = TimeSpan.FromSeconds(1), FinalizationGracePeriod = TimeSpan.FromSeconds(1) } };
 
     private static BroadcastNodeRegistration CreateRegistration(string identity) =>
         new()
@@ -426,12 +429,12 @@ public class ProfilingControlServiceTests
             IsActive = true,
         };
 
-    private static ProfilingSession CreateSession() =>
+    private static RuntimeProfilingSession CreateSession() =>
         new()
         {
-            Identity = ProfilingSessionIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateRuntimeSession(),
             Name = "load",
-            State = ProfilingSessionState.Running,
+            State = RuntimeProfilingSessionState.Running,
             StartedUtc = StartUtc,
             EndsUtc = StartUtc.AddMinutes(1),
             SamplingInterval = TimeSpan.FromSeconds(1),
@@ -439,7 +442,7 @@ public class ProfilingControlServiceTests
         };
 
     private static async Task<ProfilingNode> CreateNodeAsync(
-        IProfilingStore store,
+        IRuntimeProfilingStore store,
         string identity
     ) =>
         (
@@ -447,7 +450,7 @@ public class ProfilingControlServiceTests
                 new(identity, StartUtc),
                 new()
                 {
-                    Identity = ProfilingNodeIdentity.Create(),
+                    Identity = ProfilingIdentityFactory.CreateNode(),
                     Correlation = new(identity, StartUtc),
                     HostName = "test",
                     ProcessId = 1,
@@ -455,11 +458,11 @@ public class ProfilingControlServiceTests
             )
         ).Value;
 
-    private static ProfilingNodeParticipation CreateParticipation(
-        ProfilingSession session,
+    private static RuntimeProfilingNodeParticipation CreateParticipation(
+        RuntimeProfilingSession session,
         ProfilingNode node,
-        ProfilingNodeRole role,
-        ProfilingParticipationState state
+        RuntimeProfilingNodeRole role,
+        RuntimeProfilingParticipationState state
     ) =>
         new()
         {
@@ -474,14 +477,14 @@ public class ProfilingControlServiceTests
         };
 
     private sealed record ControlHarness(
-        ProfilingControlService Sut,
-        IProfilingStore Store,
+        RuntimeProfilingControlService Sut,
+        IRuntimeProfilingStore Store,
         RecordingProfilingBroadcastService Broadcasts,
         FakeTimeProvider Time
     );
 
     private sealed class RecordingProfilingBroadcastService(string senderIdentity)
-        : IProfilingBroadcastService
+        : IRuntimeProfilingBroadcastService
     {
         public IReadOnlyList<BroadcastNodeRegistration> Targets { get; set; } = [];
 
@@ -493,18 +496,18 @@ public class ProfilingControlServiceTests
 
         public int PublishCount { get; private set; }
 
-        public List<ProfilingBroadcastTargetSnapshot> PublishedSnapshots { get; } = [];
+        public List<RuntimeProfilingBroadcastTargetSnapshot> PublishedSnapshots { get; } = [];
 
         public List<object> PublishedPayloads { get; } = [];
 
-        public Task<Result<ProfilingBroadcastTargetSnapshot>> PrepareTargetsAsync(
+        public Task<IResult<RuntimeProfilingBroadcastTargetSnapshot>> PrepareTargetsAsync(
             IEnumerable<string> targetScopes = null,
             CancellationToken cancellationToken = default
         )
         {
             cancellationToken.ThrowIfCancellationRequested();
-            return Task.FromResult(
-                Result<ProfilingBroadcastTargetSnapshot>.Success(
+            return Task.FromResult<IResult<RuntimeProfilingBroadcastTargetSnapshot>>(
+                Result<RuntimeProfilingBroadcastTargetSnapshot>.Success(
                     new(
                         targetScopes ?? [BroadcastingOptions.DefaultScope],
                         this.Targets,
@@ -514,20 +517,20 @@ public class ProfilingControlServiceTests
             );
         }
 
-        public Task<Result<BroadcastResult>> PublishAsync<TBroadcast>(
+        public Task<IResult<BroadcastResult>> PublishAsync<TBroadcast>(
             TBroadcast payload,
-            ProfilingBroadcastTargetSnapshot targetSnapshot,
+            RuntimeProfilingBroadcastTargetSnapshot targetSnapshot,
             BroadcastPublishOptions options = null,
             CancellationToken cancellationToken = default
         )
-            where TBroadcast : IProfilingBroadcast
+            where TBroadcast : IRuntimeProfilingBroadcast
         {
             cancellationToken.ThrowIfCancellationRequested();
             this.PublishCount++;
             this.PublishedSnapshots.Add(targetSnapshot);
             this.PublishedPayloads.Add(payload);
             var now = StartUtc;
-            return Task.FromResult(
+            return Task.FromResult<IResult<BroadcastResult>>(
                 Result<BroadcastResult>.Success(
                     new()
                     {
@@ -547,65 +550,73 @@ public class ProfilingControlServiceTests
         }
     }
 
-    private sealed class RecordingCollector : IProfilingCollector
+    private sealed class RecordingCollector : IRuntimeProfilingCollector
     {
         public int CaptureCount { get; private set; }
 
-        public Task<Result> StartAsync(
-            ProfilingSession session,
+        public Task<IResult> StartAsync(
+            RuntimeProfilingSession session,
             CancellationToken cancellationToken = default
-        ) => Task.FromResult(Result.Success());
+        ) => Task.FromResult<IResult>(Result.Success());
 
-        public Task<Result> StopAsync(
+        public Task<IResult> StopAsync(
             Guid sessionId,
             CancellationToken cancellationToken = default
-        ) => Task.FromResult(Result.Success());
+        ) => Task.FromResult<IResult>(Result.Success());
 
-        public Task<Result<ProfilingSnapshot>> CaptureAsync(
-            ProfilingSession session,
-            ProfilingNodeRole role,
+        public Task<IResult<RuntimeProfilingSnapshot>> CaptureAsync(
+            RuntimeProfilingSession session,
+            RuntimeProfilingNodeRole role,
             CancellationToken cancellationToken = default
         )
         {
             this.CaptureCount++;
-            return Task.FromResult(Result<ProfilingSnapshot>.Success(new ProfilingSnapshot()));
+            return Task.FromResult<IResult<RuntimeProfilingSnapshot>>(Result<RuntimeProfilingSnapshot>.Success(new RuntimeProfilingSnapshot()));
         }
     }
 
-    private sealed class SharedProfilingStore : IProfilingStore
+    private sealed class SharedProfilingStore : IRuntimeProfilingStore
     {
-        private readonly InMemoryProfilingStore inner = new();
+        private readonly InMemoryRuntimeProfilingStore inner = new();
+
+        public Task<IResult<ProfilingNode>> FindNodeAsync(RuntimeProfilingNodeCorrelation correlation, CancellationToken cancellationToken = default)
+            => this.inner.FindNodeAsync(correlation, cancellationToken);
+
+        public Task<IResult<RuntimeProfilingSession>> ImportSessionAsync(
+            RuntimeProfilingSessionData data,
+            CancellationToken cancellationToken = default
+        ) => this.inner.ImportSessionAsync(data, cancellationToken);
 
         public ProfilingStoreCapabilities Capabilities { get; } = new(true);
 
-        public Task<Result<ProfilingSessionResolution>> GetOrCreateActiveSessionAsync(
-            ProfilingSessionCreateRequest request,
+        public Task<IResult<RuntimeProfilingSessionResolution>> GetOrCreateActiveSessionAsync(
+            RuntimeProfilingSessionCreateRequest request,
             CancellationToken cancellationToken = default
         ) => this.inner.GetOrCreateActiveSessionAsync(request, cancellationToken);
 
-        public Task<Result<ProfilingSession>> GetActiveSessionAsync(
+        public Task<IResult<RuntimeProfilingSession>> GetActiveSessionAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.GetActiveSessionAsync(cancellationToken);
 
-        public Task<Result<ProfilingSession>> FindSessionAsync(
+        public Task<IResult<RuntimeProfilingSession>> FindSessionAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => this.inner.FindSessionAsync(sessionKey, cancellationToken);
 
-        public Task<Result<IReadOnlyList<ProfilingSession>>> ListSessionsAsync(
+        public Task<IResult<IReadOnlyList<RuntimeProfilingSession>>> ListSessionsAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.ListSessionsAsync(cancellationToken);
 
-        public Task<Result<ProfilingSession>> UpdateSessionMetadataAsync(
+        public Task<IResult<RuntimeProfilingSession>> UpdateSessionMetadataAsync(
             string sessionKey,
-            ProfilingSessionMetadata metadata,
+            RuntimeProfilingSessionMetadata metadata,
             CancellationToken cancellationToken = default
         ) => this.inner.UpdateSessionMetadataAsync(sessionKey, metadata, cancellationToken);
 
-        public Task<Result<ProfilingSession>> TryTransitionSessionAsync(
+        public Task<IResult<RuntimeProfilingSession>> TryTransitionSessionAsync(
             Guid sessionId,
-            IReadOnlyCollection<ProfilingSessionState> expectedStates,
-            ProfilingSessionState nextState,
+            IReadOnlyCollection<RuntimeProfilingSessionState> expectedStates,
+            RuntimeProfilingSessionState nextState,
             DateTimeOffset transitionedUtc,
             CancellationToken cancellationToken = default
         ) =>
@@ -617,66 +628,61 @@ public class ProfilingControlServiceTests
                 cancellationToken
             );
 
-        public Task<Result<ProfilingNode>> GetOrCreateNodeAsync(
-            ProfilingNodeCorrelation correlation,
+        public Task<IResult<ProfilingNode>> GetOrCreateNodeAsync(
+            RuntimeProfilingNodeCorrelation correlation,
             ProfilingNode proposedNode,
             CancellationToken cancellationToken = default
         ) => this.inner.GetOrCreateNodeAsync(correlation, proposedNode, cancellationToken);
 
-        public Task<Result<ProfilingNodeParticipation>> UpsertParticipationAsync(
-            ProfilingNodeParticipation participation,
+        public Task<IResult<RuntimeProfilingNodeParticipation>> UpsertParticipationAsync(
+            RuntimeProfilingNodeParticipation participation,
             CancellationToken cancellationToken = default
         ) => this.inner.UpsertParticipationAsync(participation, cancellationToken);
 
-        public Task<Result<ProfilingRuntimeContext>> AddRuntimeContextAsync(
-            ProfilingRuntimeContext context,
+        public Task<IResult<RuntimeProfilingContext>> AddRuntimeContextAsync(
+            RuntimeProfilingContext context,
             CancellationToken cancellationToken = default
         ) => this.inner.AddRuntimeContextAsync(context, cancellationToken);
 
-        public Task<Result<ProfilingSnapshot>> AddSnapshotAsync(
-            ProfilingSnapshot snapshot,
+        public Task<IResult<RuntimeProfilingSnapshot>> AddSnapshotAsync(
+            RuntimeProfilingSnapshot snapshot,
             CancellationToken cancellationToken = default
         ) => this.inner.AddSnapshotAsync(snapshot, cancellationToken);
 
-        public Task<Result<ProfilingPhaseMarker>> AddPhaseMarkerAsync(
-            ProfilingPhaseMarker marker,
+        public Task<IResult<ProfilingMarker>> AddMarkerAsync(
+            ProfilingMarker marker,
             CancellationToken cancellationToken = default
-        ) => this.inner.AddPhaseMarkerAsync(marker, cancellationToken);
+        ) => this.inner.AddMarkerAsync(marker, cancellationToken);
 
-        public Task<Result<ProfilingActionMarker>> AddActionMarkerAsync(
-            ProfilingActionMarker marker,
-            CancellationToken cancellationToken = default
-        ) => this.inner.AddActionMarkerAsync(marker, cancellationToken);
-
-        public Task<Result<ProfilingSegment>> UpsertSegmentAsync(
+        public Task<IResult<ProfilingSegment>> UpsertSegmentAsync(
             ProfilingSegment segment,
             CancellationToken cancellationToken = default
         ) => this.inner.UpsertSegmentAsync(segment, cancellationToken);
 
-        public Task<Result<ProfilingMetricObservation>> AddMetricObservationAsync(
+        public Task<IResult<ProfilingMetricObservation>> AddMetricObservationAsync(
             ProfilingMetricObservation observation,
             CancellationToken cancellationToken = default
         ) => this.inner.AddMetricObservationAsync(observation, cancellationToken);
 
-        public Task<Result<ProfilingSessionData>> GetSessionDataAsync(
+        public Task<IResult<RuntimeProfilingSessionData>> GetSessionDataAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => this.inner.GetSessionDataAsync(sessionKey, cancellationToken);
 
-        public Task<Result<bool>> DeleteSessionAsync(
+        public Task<IResult<bool>> DeleteSessionAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => this.inner.DeleteSessionAsync(sessionKey, cancellationToken);
 
-        public Task<Result<int>> DeleteUnpinnedSessionsAsync(
+        public Task<IResult<int>> DeleteUnpinnedSessionsAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.DeleteUnpinnedSessionsAsync(cancellationToken);
 
-        public Task<Result<ProfilingClearResult>> ClearAsync(
+        public Task<IResult<ProfilingClearResult>> ClearAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.ClearAsync(cancellationToken);
 
-        public Task<Result<int>> ApplyRetentionAsync(
+        public Task<IResult<int>> ApplyRetentionAsync(
             int maximumRetainedSessions,
             TimeSpan maximumSessionAge,
             DateTimeOffset utcNow,
@@ -693,8 +699,8 @@ public class ProfilingControlServiceTests
 
 file static class ProfilingControlStoreTestExtensions
 {
-    public static async Task<ProfilingSessionData> GetSessionDataOrDefaultAsync(
-        this IProfilingStore store
+    public static async Task<RuntimeProfilingSessionData> GetSessionDataOrDefaultAsync(
+        this IRuntimeProfilingStore store
     )
     {
         var sessions = await store.ListSessionsAsync();

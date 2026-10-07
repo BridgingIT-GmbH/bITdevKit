@@ -795,8 +795,8 @@
         }
 
         function getFilters() {
-            try { return { phases: true, actions: true, segments: true, ...JSON.parse(localStorage.getItem(storage.filters) || '{}') }; }
-            catch { return { phases: true, actions: true, segments: true }; }
+            try { return { sessionMarkers: true, nodeMarkers: true, segments: true, ...JSON.parse(localStorage.getItem(storage.filters) || '{}') }; }
+            catch { return { sessionMarkers: true, nodeMarkers: true, segments: true }; }
         }
 
         function toPlotlyLocalTime(value) {
@@ -825,8 +825,8 @@
                 shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: timestamp, x1: timestamp, y0: 0, y1: 1, line: { color, width: 1.4, dash } });
                 annotations.push({ x: timestamp, y: 1.035, xref: 'x', yref: 'paper', text: `${prefix}${escapeHtml(marker.name)}`, showarrow: false, yanchor: 'bottom', textangle: -35, font: { size: 9, color } });
             };
-            if (filters.phases) (data?.phaseMarkers || []).forEach(marker => addMarker(marker, '#fd971f', 'dash', 'PHASE · '));
-            if (filters.actions) (data?.actionMarkers || []).forEach(marker => addMarker(marker, '#66d9ef', 'dot', 'ACTION · '));
+            if (filters.sessionMarkers) (data?.markers || []).filter(marker => marker.scope === 0 || marker.scope === 'Session' || marker.scope === 'session').forEach(marker => addMarker(marker, '#fd971f', 'dash', 'SESSION MARKER · '));
+            if (filters.nodeMarkers) (data?.markers || []).filter(marker => marker.scope === 1 || marker.scope === 'Node' || marker.scope === 'node').forEach(marker => addMarker(marker, '#66d9ef', 'dot', 'NODE MARKER · '));
             const selectedSnapshot = selectedSnapshotKey
                 ? (data?.snapshots || []).find(item => item.identity?.key === selectedSnapshotKey)
                 : null;
@@ -1190,7 +1190,7 @@
             if (markerButton) {
                 markerButton.disabled = !running;
                 markerButton.title = running
-                    ? 'Add phase marker'
+                    ? 'Add marker'
                     : 'Start a session before adding a marker';
             }
 
@@ -1219,7 +1219,7 @@
             const liveSwitch = document.querySelector('#profiling-live-analysis');
             if (liveSwitch) liveSwitch.checked = live;
             const filters = getFilters();
-            ['phases', 'actions', 'segments'].forEach(key => { const input = document.querySelector(`#profiling-filter-${key}`); if (input) input.checked = filters[key] !== false; });
+            ['sessionMarkers', 'nodeMarkers', 'segments'].forEach(key => { const input = document.querySelector(`#profiling-filter-${key}`); if (input) input.checked = filters[key] !== false; });
             setSessionsExpanded(localStorage.getItem(storage.sessions) !== 'false');
             setSnapshotDetailsExpanded(localStorage.getItem(storage.snapshotDetails) !== 'false');
             localizeSnapshotOptions();
@@ -1239,7 +1239,7 @@
                 if (event.target.matches('#profiling-snapshot-select')) selectSnapshot(event.target.value);
                 if (event.target.matches('#profiling-live-analysis')) localStorage.setItem(storage.live, event.target.checked ? 'true' : 'false');
                 if (event.target.matches('.profiling-chart-filter')) {
-                    const filters = { phases: document.querySelector('#profiling-filter-phases')?.checked !== false, actions: document.querySelector('#profiling-filter-actions')?.checked !== false, segments: document.querySelector('#profiling-filter-segments')?.checked !== false };
+                    const filters = { sessionMarkers: document.querySelector('#profiling-filter-sessionMarkers')?.checked !== false, nodeMarkers: document.querySelector('#profiling-filter-nodeMarkers')?.checked !== false, segments: document.querySelector('#profiling-filter-segments')?.checked !== false };
                     localStorage.setItem(storage.filters, JSON.stringify(filters));
                     scheduleChartRender();
                 }
@@ -1301,7 +1301,7 @@
                 if (button.id === 'profiling-snapshot') takeSnapshot();
                 if (button.id === 'profiling-gc') runAction(state.root.dataset.gcPath, 'POST', undefined, 'GC requested.');
                 if (button.id === 'profiling-stress') startStress(button);
-                if (button.id === 'profiling-add-marker') runAction(state.root.dataset.markerPath, 'POST', { name: document.querySelector('#profiling-marker-name')?.value.trim() }, 'Phase marker added.');
+                if (button.id === 'profiling-add-marker') runAction(state.root.dataset.markerPath, 'POST', { name: document.querySelector('#profiling-marker-name')?.value.trim() }, 'Marker added.');
                 if (button.id === 'profiling-delete-session') runAction(state.root.dataset.deletePath, 'DELETE', undefined, 'Session deleted.', 'Delete the selected terminal profiling session and all of its data?');
                 if (button.id === 'profiling-delete-unpinned') runAction(state.root.dataset.deleteUnpinnedPath, 'DELETE', undefined, 'Unpinned sessions deleted.', 'Delete every unpinned terminal profiling session?');
                 if (button.id === 'profiling-clear') runAction(state.root.dataset.clearPath, 'POST', { confirmed: true }, 'Profiling store cleared.', 'Clear ALL profiling data? This includes pinned sessions, snapshots, markers, segments, custom metrics, node records, and invalidated identities. This cannot be undone.');

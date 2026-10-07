@@ -40,12 +40,12 @@ public class ProfilingBroadcastServiceTests
                 services
                     .AddBroadcasting(options => options.NodeIdentity("node-a"))
                     .AddHandler<TestProfilingBroadcast, TestProfilingBroadcastHandler>();
-                services.AddProfiling(options => options.Enabled());
+                services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling();
             })
             .Build();
         await host.StartAsync();
         await WaitForNodeRegistrationAsync(host);
-        var sut = host.Services.GetRequiredService<IProfilingBroadcastService>();
+        var sut = host.Services.GetRequiredService<IRuntimeProfilingBroadcastService>();
         var registry = host.Services.GetRequiredService<IBroadcastRegistryStore>();
         var prepared = await sut.PrepareTargetsAsync();
         var now = DateTimeOffset.UtcNow;
@@ -89,7 +89,7 @@ public class ProfilingBroadcastServiceTests
         }
     }
 
-    public sealed record TestProfilingBroadcast(string Value) : IProfilingBroadcast;
+    public sealed record TestProfilingBroadcast(string Value) : IRuntimeProfilingBroadcast;
 
     public sealed class TestProfilingBroadcastHandler(
         TaskCompletionSource<TestProfilingBroadcast> handled

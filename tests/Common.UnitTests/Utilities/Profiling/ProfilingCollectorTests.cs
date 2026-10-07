@@ -31,7 +31,7 @@ public class ProfilingCollectorTests
         repeatedStop.IsSuccess.ShouldBeTrue();
         var data = (await harness.Store.GetSessionDataAsync(session.Identity.Key)).Value;
         data.Participations.ShouldHaveSingleItem()
-            .State.ShouldBe(ProfilingParticipationState.Stopped);
+            .State.ShouldBe(RuntimeProfilingParticipationState.Stopped);
         harness.ActiveSession.Current.ShouldBeNull();
     }
 
@@ -50,7 +50,7 @@ public class ProfilingCollectorTests
         harness.ActiveSession.Current.ShouldBeNull();
         var data = (await harness.Store.GetSessionDataAsync(session.Identity.Key)).Value;
         var participation = data.Participations.ShouldHaveSingleItem();
-        participation.State.ShouldBe(ProfilingParticipationState.Failed);
+        participation.State.ShouldBe(RuntimeProfilingParticipationState.Failed);
         participation.Failure.ShouldBe("Host stopped before profiling collection completed.");
     }
 
@@ -114,7 +114,7 @@ public class ProfilingCollectorTests
         // Act
         var manualCapture = harness.Collector.CaptureAsync(
             session,
-            ProfilingNodeRole.ExpectedParticipant
+            RuntimeProfilingNodeRole.ExpectedParticipant
         );
         harness.Time.Advance(TimeSpan.FromMilliseconds(600));
         release.SetResult();
@@ -138,7 +138,7 @@ public class ProfilingCollectorTests
             (request, cancellationToken) =>
             {
                 var call = Interlocked.Increment(ref callCount);
-                return Task.FromResult(
+                return Task.FromResult<IResult<RuntimeProfilingSnapshot>>(
                     SuccessSnapshot(
                         request,
                         StartUtc.AddMilliseconds(call * 500),
@@ -154,12 +154,12 @@ public class ProfilingCollectorTests
         // Act
         var capture = harness.Collector.CaptureAsync(
             session,
-            ProfilingNodeRole.ExpectedParticipant
+            RuntimeProfilingNodeRole.ExpectedParticipant
         );
         await probe.WaitForCallsAsync(1);
         await AdvanceAndDrainAsync(
             harness.Time,
-            ProfilingOptions.MinimumSamplingInterval
+            RuntimeProfilingOptions.MinimumSamplingInterval
         );
         var result = await capture;
         var data = (await harness.Store.GetSessionDataAsync(session.Identity.Key)).Value;
@@ -205,7 +205,7 @@ public class ProfilingCollectorTests
         var data = (await harness.Store.GetSessionDataAsync(session.Identity.Key)).Value;
         data.Snapshots.ShouldHaveSingleItem().Sequence.ShouldBe(1);
         var participation = data.Participations.ShouldHaveSingleItem();
-        participation.State.ShouldBe(ProfilingParticipationState.Stopped);
+        participation.State.ShouldBe(RuntimeProfilingParticipationState.Stopped);
         participation.SuccessfulCaptureCount.ShouldBe(1);
     }
 
@@ -215,9 +215,9 @@ public class ProfilingCollectorTests
         // Arrange
         var probe = new RecordingProbe(
             (request, cancellationToken) =>
-                Task.FromResult(
+                Task.FromResult<IResult<RuntimeProfilingSnapshot>>(
                     request.Sequence == 1 && request.FailedCaptureCount == 0
-                        ? Result<ProfilingSnapshot>
+                        ? Result<RuntimeProfilingSnapshot>
                             .Failure()
                             .WithError(new ProfilingUnavailableError("Probe unavailable."))
                         : SuccessSnapshot(request, StartUtc.AddMilliseconds(500))
@@ -252,8 +252,8 @@ public class ProfilingCollectorTests
         await harness.Collector.StartAsync(older);
         await harness.Store.TryTransitionSessionAsync(
             older.Identity.Id,
-            [ProfilingSessionState.Running],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Running],
+            RuntimeProfilingSessionState.Stopped,
             harness.Time.GetUtcNow()
         );
         await AdvanceAndDrainAsync(harness.Time, TimeSpan.FromMilliseconds(100));
@@ -267,11 +267,11 @@ public class ProfilingCollectorTests
         var olderData = (await harness.Store.GetSessionDataAsync(older.Identity.Key)).Value;
         olderData
             .Participations.ShouldHaveSingleItem()
-            .State.ShouldBe(ProfilingParticipationState.Stopped);
+            .State.ShouldBe(RuntimeProfilingParticipationState.Stopped);
         var newerData = (await harness.Store.GetSessionDataAsync(newer.Identity.Key)).Value;
         newerData
             .Participations.ShouldHaveSingleItem()
-            .State.ShouldBe(ProfilingParticipationState.Collecting);
+            .State.ShouldBe(RuntimeProfilingParticipationState.Collecting);
         await harness.Collector.StopAsync(newer.Identity.Id);
     }
 
@@ -284,7 +284,7 @@ public class ProfilingCollectorTests
         await harness.Collector.StartAsync(current);
         var unstored = current with
         {
-            Identity = ProfilingSessionIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateRuntimeSession(),
             StartedUtc = current.StartedUtc.AddMilliseconds(100),
             EndsUtc = current.EndsUtc.AddMilliseconds(100),
         };
@@ -296,7 +296,7 @@ public class ProfilingCollectorTests
         result.IsFailure.ShouldBeTrue();
         var data = (await harness.Store.GetSessionDataAsync(current.Identity.Key)).Value;
         data.Participations.ShouldHaveSingleItem()
-            .State.ShouldBe(ProfilingParticipationState.Collecting);
+            .State.ShouldBe(RuntimeProfilingParticipationState.Collecting);
         await harness.Collector.StopAsync(current.Identity.Id);
     }
 
@@ -306,24 +306,24 @@ public class ProfilingCollectorTests
         // Arrange
         var options = CreateOptions(duration: TimeSpan.FromSeconds(1));
         var harness = await CollectorHarness.CreateAsync(options: options);
-        var session = await harness.CreateSessionAsync(duration: options.Duration);
+        var session = await harness.CreateSessionAsync(duration: options.Runtime.Duration);
         await harness.Collector.StartAsync(session);
 
         // Act
         await AdvanceAndDrainAsync(harness.Time, TimeSpan.FromMilliseconds(500));
         await AdvanceAndDrainAsync(harness.Time, TimeSpan.FromMilliseconds(500));
-        await AdvanceAndDrainAsync(harness.Time, options.FinalizationGracePeriod);
+        await AdvanceAndDrainAsync(harness.Time, options.Runtime.FinalizationGracePeriod);
         await WaitUntilAsync(async () =>
             (await harness.Store.FindSessionAsync(session.Identity.Key)).Value.State
-            == ProfilingSessionState.Completed
+            == RuntimeProfilingSessionState.Completed
         );
 
         // Assert
         var data = (await harness.Store.GetSessionDataAsync(session.Identity.Key)).Value;
-        data.Session.State.ShouldBe(ProfilingSessionState.Completed);
+        data.Session.State.ShouldBe(RuntimeProfilingSessionState.Completed);
         data.Snapshots.Count.ShouldBe(2);
         data.Participations.ShouldHaveSingleItem()
-            .State.ShouldBe(ProfilingParticipationState.Completed);
+            .State.ShouldBe(RuntimeProfilingParticipationState.Completed);
     }
 
     [Fact]
@@ -332,10 +332,10 @@ public class ProfilingCollectorTests
         // Arrange
         var options = CreateOptions(duration: TimeSpan.FromSeconds(1));
         var time = new FakeTimeProvider(StartUtc);
-        var store = new InMemoryProfilingStore();
+        var store = new InMemoryRuntimeProfilingStore();
         var session = await CreateSessionAsync(store, time, options);
-        time.Advance(session.Duration + options.FinalizationGracePeriod);
-        var finalizer = new ProfilingSessionFinalizer(store, options, time);
+        time.Advance(session.Duration + options.Runtime.FinalizationGracePeriod);
+        var finalizer = new RuntimeProfilingSessionFinalizer(store, options, time);
 
         // Act
         var results = await Task.WhenAll(
@@ -345,7 +345,7 @@ public class ProfilingCollectorTests
 
         // Assert
         results.ShouldAllBe(result => result.IsSuccess);
-        results.ShouldAllBe(result => result.Value.State == ProfilingSessionState.Completed);
+        results.ShouldAllBe(result => result.Value.State == RuntimeProfilingSessionState.Completed);
         (await store.ListSessionsAsync()).Value.ShouldHaveSingleItem();
     }
 
@@ -355,11 +355,11 @@ public class ProfilingCollectorTests
         // Arrange
         var options = CreateOptions(duration: TimeSpan.FromSeconds(1));
         var time = new FakeTimeProvider(StartUtc);
-        var store = new InMemoryProfilingStore();
+        var store = new InMemoryRuntimeProfilingStore();
         var session = await CreateSessionAsync(store, time, options);
-        time.Advance(session.Duration + options.FinalizationGracePeriod);
-        var finalizer = new ProfilingSessionFinalizer(store, options, time);
-        var reconciler = new ProfilingStartupReconciler(store, options, time, finalizer);
+        time.Advance(session.Duration + options.Runtime.FinalizationGracePeriod);
+        var finalizer = new RuntimeProfilingSessionFinalizer(store, options, time);
+        var reconciler = new RuntimeProfilingStartupReconciler(store, options, time, finalizer);
 
         // Act
         var result = await reconciler.ReconcileAsync();
@@ -368,7 +368,7 @@ public class ProfilingCollectorTests
         result.IsSuccess.ShouldBeTrue();
         result.Value.ShouldBe(1);
         (await store.FindSessionAsync(session.Identity.Key)).Value.State.ShouldBe(
-            ProfilingSessionState.Completed
+            RuntimeProfilingSessionState.Completed
         );
     }
 
@@ -378,26 +378,26 @@ public class ProfilingCollectorTests
         // Arrange
         var options = CreateOptions();
         var time = new FakeTimeProvider(StartUtc);
-        var store = Substitute.For<IProfilingStore>();
+        var store = Substitute.For<IRuntimeProfilingStore>();
         store
             .ListSessionsAsync(Arg.Any<CancellationToken>())
             .Returns(
-                Task.FromResult(
-                    Result<IReadOnlyList<ProfilingSession>>.Success(Array.Empty<ProfilingSession>())
+                Task.FromResult<IResult<IReadOnlyList<RuntimeProfilingSession>>>(
+                    Result<IReadOnlyList<RuntimeProfilingSession>>.Success(Array.Empty<RuntimeProfilingSession>())
                 )
             );
-        var finalizer = new ProfilingSessionFinalizer(store, options, time);
-        var reconciler = new ProfilingStartupReconciler(store, options, time, finalizer);
-        var collector = new ProfilingCollector(
+        var finalizer = new RuntimeProfilingSessionFinalizer(store, options, time);
+        var reconciler = new RuntimeProfilingStartupReconciler(store, options, time, finalizer);
+        var collector = new RuntimeProfilingCollector(
             store,
-            Substitute.For<IProfilingSnapshotProbe>(),
-            Substitute.For<IProfilingRuntimeContextFactory>(),
-            Substitute.For<IProfilingNodeIdentityProvider>(),
+            Substitute.For<IRuntimeProfilingSnapshotProbe>(),
+            Substitute.For<IRuntimeProfilingContextFactory>(),
+            Substitute.For<IRuntimeProfilingNodeRegistrationAdapter>(),
             finalizer,
             options,
             time
         );
-        var hostedService = new ProfilingCollectorHostedService(collector, reconciler);
+        var hostedService = new RuntimeProfilingCollectorHostedService(collector, reconciler);
 
         // Act
         await hostedService.StartAsync(CancellationToken.None);
@@ -414,43 +414,37 @@ public class ProfilingCollectorTests
         TimeSpan? duration = null,
         TimeSpan? samplingInterval = null
     ) =>
-        new()
-        {
-            Enabled = true,
-            Duration = duration ?? TimeSpan.FromSeconds(3),
-            SamplingInterval = samplingInterval ?? TimeSpan.FromMilliseconds(500),
-            FinalizationGracePeriod = TimeSpan.FromSeconds(1),
-        };
+        new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true, Duration = duration ?? TimeSpan.FromSeconds(3), SamplingInterval = samplingInterval ?? TimeSpan.FromMilliseconds(500), FinalizationGracePeriod = TimeSpan.FromSeconds(1) } };
 
-    private static async Task<ProfilingSession> CreateSessionAsync(
-        IProfilingStore store,
+    private static async Task<RuntimeProfilingSession> CreateSessionAsync(
+        IRuntimeProfilingStore store,
         TimeProvider time,
         ProfilingOptions options
     )
     {
         var result = await store.GetOrCreateActiveSessionAsync(
-            new ProfilingSessionCreateRequest(
-                ProfilingSessionIdentity.Create(),
-                time.GetUtcNow().ToString(ProfilingOptions.DefaultSessionNameFormat),
+            new RuntimeProfilingSessionCreateRequest(
+                ProfilingIdentityFactory.CreateRuntimeSession(),
+                time.GetUtcNow().ToString(RuntimeProfilingOptions.DefaultSessionNameFormat),
                 time.GetUtcNow(),
-                options.SamplingInterval,
-                options.Duration,
+                options.Runtime.SamplingInterval,
+                options.Runtime.Duration,
                 []
             )
         );
         return result.Value.Session;
     }
 
-    private static Result<ProfilingSnapshot> SuccessSnapshot(
-        ProfilingCaptureRequest request,
+    private static Result<RuntimeProfilingSnapshot> SuccessSnapshot(
+        RuntimeProfilingCaptureRequest request,
         DateTimeOffset timestampUtc,
         double? cpuUsagePercent = null,
         double? allocationRateBytesPerSecond = null
     ) =>
-        Result<ProfilingSnapshot>.Success(
-            new ProfilingSnapshot
+        Result<RuntimeProfilingSnapshot>.Success(
+            new RuntimeProfilingSnapshot
             {
-                Identity = ProfilingSnapshotIdentity.Create(),
+                Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
                 SessionId = request.Session.Identity.Id,
                 SessionKey = request.Session.Identity.Key,
                 NodeId = request.Node.Identity.Id,
@@ -491,16 +485,16 @@ public class ProfilingCollectorTests
     }
 
     private sealed class RecordingProbe(
-        Func<ProfilingCaptureRequest, CancellationToken, Task<Result<ProfilingSnapshot>>> capture
-    ) : IProfilingSnapshotProbe
+        Func<RuntimeProfilingCaptureRequest, CancellationToken, Task<IResult<RuntimeProfilingSnapshot>>> capture
+    ) : IRuntimeProfilingSnapshotProbe
     {
         private int activeCalls;
         private int callCount;
 
         public int MaximumConcurrentCalls { get; private set; }
 
-        public async Task<Result<ProfilingSnapshot>> CaptureAsync(
-            ProfilingCaptureRequest request,
+        public async Task<IResult<RuntimeProfilingSnapshot>> CaptureAsync(
+            RuntimeProfilingCaptureRequest request,
             CancellationToken cancellationToken = default
         )
         {
@@ -528,30 +522,30 @@ public class ProfilingCollectorTests
 
     private sealed class CollectorHarness(
         FakeTimeProvider time,
-        InMemoryProfilingStore store,
+        InMemoryRuntimeProfilingStore store,
         ProfilingOptions options,
-        ProfilingCollector collector,
-        ProfilingActiveSessionContext activeSession
+        RuntimeProfilingCollector collector,
+        RuntimeProfilingActiveSessionContext activeSession
     )
     {
         public FakeTimeProvider Time { get; } = time;
 
-        public InMemoryProfilingStore Store { get; } = store;
+        public InMemoryRuntimeProfilingStore Store { get; } = store;
 
         public ProfilingOptions Options { get; } = options;
 
-        public ProfilingCollector Collector { get; } = collector;
+        public RuntimeProfilingCollector Collector { get; } = collector;
 
-        public ProfilingActiveSessionContext ActiveSession { get; } = activeSession;
+        public RuntimeProfilingActiveSessionContext ActiveSession { get; } = activeSession;
 
         public static async Task<CollectorHarness> CreateAsync(
-            IProfilingSnapshotProbe probe = null,
+            IRuntimeProfilingSnapshotProbe probe = null,
             ProfilingOptions options = null
         )
         {
             var configuredOptions = options ?? CreateOptions();
             var time = new FakeTimeProvider(StartUtc);
-            var store = new InMemoryProfilingStore();
+            var store = new InMemoryRuntimeProfilingStore();
             var registry = new InMemoryBroadcastRegistryStore(new BroadcastingOptions(), time);
             var broadcastIdentity = new TestBroadcastNodeIdentityProvider();
             await registry.UpsertAsync(
@@ -564,17 +558,17 @@ public class ProfilingCollectorTests
                     null
                 )
             );
-            var finalizer = new ProfilingSessionFinalizer(store, configuredOptions, time);
-            var activeSession = new ProfilingActiveSessionContext();
-            var collector = new ProfilingCollector(
+            var finalizer = new RuntimeProfilingSessionFinalizer(store, configuredOptions, time);
+            var activeSession = new RuntimeProfilingActiveSessionContext();
+            var collector = new RuntimeProfilingCollector(
                 store,
                 probe
                     ?? new RecordingProbe(
                         (request, cancellationToken) =>
-                            Task.FromResult(SuccessSnapshot(request, time.GetUtcNow()))
+                            Task.FromResult<IResult<RuntimeProfilingSnapshot>>(SuccessSnapshot(request, time.GetUtcNow()))
                     ),
-                new ProfilingRuntimeContextFactory(),
-                new ProfilingNodeIdentityProvider(store),
+                new RuntimeProfilingContextFactory(),
+                new RuntimeProfilingNodeRegistrationAdapter(store, new ProfilingNodeIdentityProvider()),
                 finalizer,
                 configuredOptions,
                 time,
@@ -585,14 +579,14 @@ public class ProfilingCollectorTests
             return new CollectorHarness(time, store, configuredOptions, collector, activeSession);
         }
 
-        public Task<ProfilingSession> CreateSessionAsync(
+        public Task<RuntimeProfilingSession> CreateSessionAsync(
             TimeSpan? duration = null,
             TimeSpan? samplingInterval = null
         )
         {
             var sessionOptions = CreateOptions(
-                duration ?? this.Options.Duration,
-                samplingInterval ?? this.Options.SamplingInterval
+                duration ?? this.Options.Runtime.Duration,
+                samplingInterval ?? this.Options.Runtime.SamplingInterval
             );
             return ProfilingCollectorTests.CreateSessionAsync(
                 this.Store,

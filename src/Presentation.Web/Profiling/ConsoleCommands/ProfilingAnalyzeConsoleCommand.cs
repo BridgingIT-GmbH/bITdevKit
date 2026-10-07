@@ -11,7 +11,7 @@ using BridgingIT.DevKit.Common;
 using Spectre.Console;
 
 /// <summary>Computes an unpersisted deterministic profiling evaluation.</summary>
-/// <example><code>profiling analyze --session a1b2c3d4 --node e5f6g7h8</code></example>
+/// <example><code>profiling runtime analyze --session a1b2c3d4 --node e5f6g7h8</code></example>
 public sealed class ProfilingAnalyzeConsoleCommand()
     : ProfilingConsoleCommandBase("analyze", "Analyze one node timeline or two selected snapshots")
 {
@@ -59,7 +59,7 @@ public sealed class ProfilingAnalyzeConsoleCommand()
         CancellationToken cancellationToken = default
     )
     {
-        var queries = GetRequired<IProfilingQueryService>(console, services);
+        var queries = GetRequired<IRuntimeProfilingQueryService>(console, services);
         if (queries is null)
         {
             return;
@@ -67,7 +67,7 @@ public sealed class ProfilingAnalyzeConsoleCommand()
 
         var result = await queries
             .EvaluateAsync(
-                new ProfilingEvaluationRequest(
+                new RuntimeProfilingEvaluationRequest(
                     this.SessionKey,
                     this.NodeKey,
                     this.SnapshotAKey,
@@ -91,7 +91,7 @@ public sealed class ProfilingAnalyzeConsoleCommand()
         WriteHumanResult(console, result.Value);
     }
 
-    private static void WriteHumanResult(IAnsiConsole console, ProfilingEvaluationResult result)
+    private static void WriteHumanResult(IAnsiConsole console, RuntimeProfilingEvaluationResult result)
     {
         var summary = new Table()
             .Border(TableBorder.Minimal)

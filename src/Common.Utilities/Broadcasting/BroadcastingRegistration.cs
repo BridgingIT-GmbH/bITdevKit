@@ -42,6 +42,17 @@ public sealed class BroadcastingRegistrationState
         }
     }
 
+    internal void RemoveHandler(Type payloadType, Type handlerType)
+    {
+        lock (this.sync)
+        {
+            if (this.handlers.TryGetValue(payloadType, out var registration) && registration.HandlerType == handlerType)
+            {
+                this.handlers.Remove(payloadType);
+            }
+        }
+    }
+
     /// <summary>Adds one typed handler mapping or accepts an identical repeated registration.</summary>
     public void AddHandler<TBroadcast, THandler>()
         where THandler : class, IBroadcastHandler<TBroadcast>

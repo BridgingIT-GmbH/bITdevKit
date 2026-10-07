@@ -10,52 +10,38 @@ using System.ComponentModel.DataAnnotations.Schema;
 using BridgingIT.DevKit.Common;
 using Microsoft.EntityFrameworkCore;
 
-/// <summary>Represents one immutable phase marker owned by a profiling session JSON document.</summary>
-/// <example><code>session.PhaseMarkers.Add(new ProfilingPhaseMarkerEntity { Id = markerId });</code></example>
-public sealed class ProfilingPhaseMarkerEntity
+/// <summary>Stores one instantaneous Runtime annotation with explicit scope.</summary>
+/// <example><code>session.Markers.Add(new ProfilingMarkerEntity { Name = "Baseline" });</code></example>
+public sealed class ProfilingMarkerEntity
 {
-    /// <summary>Gets or sets the marker identifier.</summary>
+    /// <summary>Gets or sets the marker identity.</summary>
+    /// <example><code>var id = marker.Id;</code></example>
     public Guid Id { get; set; }
-
-    /// <summary>Gets or sets the session identifier.</summary>
+    /// <summary>Gets or sets the owning session identity.</summary>
+    /// <example><code>var id = marker.SessionId;</code></example>
     public Guid SessionId { get; set; }
-
-    /// <summary>Gets or sets the marker name.</summary>
-    [Required]
-    [MaxLength(100)]
+    /// <summary>Gets or sets an optional real node identity.</summary>
+    /// <example><code>var id = marker.NodeId;</code></example>
+    public Guid? NodeId { get; set; }
+    /// <summary>Gets or sets annotation scope.</summary>
+    /// <example><code>var scope = marker.Scope;</code></example>
+    public ProfilingMarkerScope Scope { get; set; }
+    /// <summary>Gets or sets the stable bounded kind.</summary>
+    /// <example><code>marker.Kind = "Annotation";</code></example>
+    [Required, MaxLength(128)]
+    public string Kind { get; set; }
+    /// <summary>Gets or sets the plain label.</summary>
+    /// <example><code>marker.Name = "Baseline";</code></example>
+    [Required, MaxLength(100)]
     public string Name { get; set; }
-
-    /// <summary>Gets or sets the marker timestamp.</summary>
-    [Required]
-    public DateTimeOffset TimestampUtc { get; set; }
-}
-
-/// <summary>Represents one immutable action marker owned by a profiling session JSON document.</summary>
-/// <example><code>session.ActionMarkers.Add(new ProfilingActionMarkerEntity { Id = markerId });</code></example>
-public sealed class ProfilingActionMarkerEntity
-{
-    /// <summary>Gets or sets the marker identifier.</summary>
-    public Guid Id { get; set; }
-
-    /// <summary>Gets or sets the session identifier.</summary>
-    public Guid SessionId { get; set; }
-
-    /// <summary>Gets or sets the node identifier.</summary>
-    public Guid NodeId { get; set; }
-
-    /// <summary>Gets or sets the action name.</summary>
-    [Required]
-    [MaxLength(100)]
-    public string Name { get; set; }
-
-    /// <summary>Gets or sets the action timestamp.</summary>
-    [Required]
+    /// <summary>Gets or sets observation UTC.</summary>
+    /// <example><code>var utc = marker.TimestampUtc;</code></example>
     public DateTimeOffset TimestampUtc { get; set; }
 }
 
 /// <summary>Represents one measured segment owned by a profiling session JSON document.</summary>
-/// <example><code>session.Segments.Add(new ProfilingSegmentEntity { Id = segmentId });</code></example>
-public sealed class ProfilingSegmentEntity
+/// <example><code>session.Segments.Add(new RuntimeProfilingSegmentEntity { Id = segmentId });</code></example>
+public sealed class RuntimeProfilingSegmentEntity
 {
     /// <summary>Gets or sets the segment identifier.</summary>
     public Guid Id { get; set; }
@@ -82,8 +68,7 @@ public sealed class ProfilingSegmentEntity
     public TimeSpan? Elapsed { get; set; }
 
     /// <summary>Gets or sets the segment outcome.</summary>
-    [Required]
-    public ProfilingSegmentOutcome Outcome { get; set; }
+    public ProfilingSegmentOutcome? Outcome { get; set; }
 
     /// <summary>Gets or sets the safe exception type.</summary>
     [MaxLength(512)]
@@ -109,12 +94,12 @@ public sealed class ProfilingSegmentEntity
     public bool CollectionEndedBeforeOperation { get; set; }
 
     /// <summary>Gets or sets ordered plain tags.</summary>
-    public ICollection<ProfilingSegmentTagEntity> Tags { get; set; } = [];
+    public ICollection<RuntimeProfilingSegmentTagEntity> Tags { get; set; } = [];
 }
 
 /// <summary>Represents one ordered tag nested in a segment JSON document.</summary>
-/// <example><code>segment.Tags.Add(new ProfilingSegmentTagEntity { Position = 0, Value = "database" });</code></example>
-public sealed class ProfilingSegmentTagEntity
+/// <example><code>segment.Tags.Add(new RuntimeProfilingSegmentTagEntity { Position = 0, Value = "database" });</code></example>
+public sealed class RuntimeProfilingSegmentTagEntity
 {
     /// <summary>Gets or sets the owning segment identifier.</summary>
     public Guid SegmentId { get; set; }
@@ -129,11 +114,11 @@ public sealed class ProfilingSegmentTagEntity
 }
 
 /// <summary>Represents one immutable custom profiling metric observation.</summary>
-/// <example><code>public DbSet&lt;ProfilingMetricObservationEntity&gt; ProfilingMetricObservations { get; set; }</code></example>
+/// <example><code>public DbSet&lt;RuntimeProfilingMetricObservationEntity&gt; ProfilingMetricObservations { get; set; }</code></example>
 [Table("__Profiling_MetricObservations")]
 [Index(nameof(SessionId), nameof(NodeId), nameof(TimestampUtc))]
 [Index(nameof(SessionId), nameof(MetricIdentifier), nameof(TimestampUtc))]
-public sealed class ProfilingMetricObservationEntity
+public sealed class RuntimeProfilingMetricObservationEntity
 {
     /// <summary>Gets or sets the observation identifier.</summary>
     [Key]
@@ -172,7 +157,7 @@ public sealed class ProfilingMetricObservationEntity
     /// <summary>Gets or sets the owning session.</summary>
     [Required]
     [ForeignKey(nameof(SessionId))]
-    public ProfilingSessionEntity Session { get; set; }
+    public RuntimeProfilingSessionEntity Session { get; set; }
 
     /// <summary>Gets or sets the producing node.</summary>
     [Required]

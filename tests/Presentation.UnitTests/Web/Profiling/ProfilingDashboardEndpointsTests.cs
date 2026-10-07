@@ -27,7 +27,7 @@ public sealed class ProfilingDashboardEndpointsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        services.AddProfiling(options => options.Enabled());
+        services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling();
 
         // Act
         services.AddDashboard(options => options.AllowAnonymous());
@@ -42,7 +42,7 @@ public sealed class ProfilingDashboardEndpointsTests
             .GetServices<IDashboardPageProvider>()
             .Count(page => page is ProfilingDashboardPageProvider)
             .ShouldBe(1);
-        provider.GetRequiredService<IProfilingStressService>().ShouldNotBeNull();
+        provider.GetRequiredService<IRuntimeProfilingStressService>().ShouldNotBeNull();
     }
 
     [Fact]
@@ -50,7 +50,7 @@ public sealed class ProfilingDashboardEndpointsTests
     {
         // Arrange
         var services = new ServiceCollection();
-        services.AddProfiling(options => options.Enabled(false));
+        services.AddProfiling(options => options.Enabled(false)).WithRuntimeProfiling();
 
         // Act
         services.AddDashboard(options => options.AllowAnonymous());
@@ -62,7 +62,7 @@ public sealed class ProfilingDashboardEndpointsTests
 
         // Assert
         pageProvider.GetPages(context).ShouldBeEmpty();
-        provider.GetService<IProfilingStressService>().ShouldBeNull();
+        provider.GetService<IRuntimeProfilingStressService>().ShouldBeNull();
     }
 
     [Fact]
@@ -80,7 +80,7 @@ public sealed class ProfilingDashboardEndpointsTests
             .DataSources.SelectMany(source => source.Endpoints)
             .OfType<RouteEndpoint>()
             .Where(route =>
-                route.RoutePattern.RawText?.Contains("/profiling", StringComparison.Ordinal) == true
+                route.RoutePattern.RawText?.Contains("/profiling/runtime", StringComparison.Ordinal) == true
             )
             .ToArray();
 
@@ -97,7 +97,7 @@ public sealed class ProfilingDashboardEndpointsTests
         builder.Services.AddSingleton(
             new DashboardEndpointsOptionsBuilder().AllowAnonymous().Build()
         );
-        builder.Services.AddProfiling(options => options.Enabled());
+        builder.Services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling();
         builder.Services.AddDashboard(options => options.AllowAnonymous());
         await using var app = builder.Build();
 
@@ -108,7 +108,7 @@ public sealed class ProfilingDashboardEndpointsTests
             .DataSources.SelectMany(source => source.Endpoints)
             .OfType<RouteEndpoint>()
             .Where(route =>
-                route.RoutePattern.RawText?.Contains("/profiling", StringComparison.Ordinal) == true
+                route.RoutePattern.RawText?.Contains("/profiling/runtime", StringComparison.Ordinal) == true
             )
             .Select(route =>
                 $"{route.Metadata.GetMetadata<HttpMethodMetadata>()?.HttpMethods.Single()} {route.RoutePattern.RawText}"
@@ -138,7 +138,7 @@ public sealed class ProfilingDashboardEndpointsTests
             .DataSources.SelectMany(source => source.Endpoints)
             .OfType<RouteEndpoint>()
             .Where(route =>
-                route.RoutePattern.RawText?.Contains("/profiling", StringComparison.Ordinal) == true
+                route.RoutePattern.RawText?.Contains("/profiling/runtime", StringComparison.Ordinal) == true
             )
             .ToArray();
 
@@ -153,24 +153,24 @@ public sealed class ProfilingDashboardEndpointsTests
     {
         // Arrange
         var (control, queries) = CreateConfiguredServices();
-        var stress = Substitute.For<IProfilingStressService>();
+        var stress = Substitute.For<IRuntimeProfilingStressService>();
         stress
             .TryStart(
-                Arg.Any<ProfilingStressRequest>(),
+                Arg.Any<RuntimeProfilingStressRequest>(),
                 Arg.Any<CancellationToken>()
             )
-            .Returns(new ProfilingStressResult(true, 30, 3, 64L * 1024 * 1024));
+            .Returns(new RuntimeProfilingStressResult(true, 30, 3, 64L * 1024 * 1024));
         await using var app = await StartAppAsync(control, queries, stress: stress);
         var client = app.GetTestClient();
 
         // Act
         var responses = new[]
         {
-            await client.GetAsync("/_bdk/dashboard/profiling/status"),
-            await client.GetAsync("/_bdk/dashboard/profiling/sessions"),
-            await client.GetAsync("/_bdk/dashboard/profiling/data?session=sess0001&node=node0001"),
+            await client.GetAsync("/_bdk/dashboard/profiling/runtime/status"),
+            await client.GetAsync("/_bdk/dashboard/profiling/runtime/sessions"),
+            await client.GetAsync("/_bdk/dashboard/profiling/runtime/data?session=sess0001&node=node0001"),
             await client.PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/start",
+                "/_bdk/dashboard/profiling/runtime/start",
                 new ProfilingDashboardStartRequest(
                     "warm-up",
                     TimeSpan.FromMilliseconds(500),
@@ -178,38 +178,38 @@ public sealed class ProfilingDashboardEndpointsTests
                     ["local"]
                 )
             ),
-            await client.PostAsync("/_bdk/dashboard/profiling/stop", null),
+            await client.PostAsync("/_bdk/dashboard/profiling/runtime/stop", null),
             await client.PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/snapshot",
+                "/_bdk/dashboard/profiling/runtime/snapshot",
                 new ProfilingDashboardSnapshotRequest("checkpoint")
             ),
-            await client.PostAsync("/_bdk/dashboard/profiling/gc", null),
-            await client.PostAsync("/_bdk/dashboard/profiling/stress", null),
+            await client.PostAsync("/_bdk/dashboard/profiling/runtime/gc", null),
+            await client.PostAsync("/_bdk/dashboard/profiling/runtime/stress", null),
             await client.PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/mark",
+                "/_bdk/dashboard/profiling/runtime/mark",
                 new ProfilingDashboardMarkerRequest("load")
             ),
-            await client.PostAsync("/_bdk/dashboard/profiling/sessions/sess0001/restart", null),
+            await client.PostAsync("/_bdk/dashboard/profiling/runtime/sessions/sess0001/restart", null),
             await client.PutAsJsonAsync(
-                "/_bdk/dashboard/profiling/sessions/sess0001/metadata",
+                "/_bdk/dashboard/profiling/runtime/sessions/sess0001/metadata",
                 new ProfilingDashboardMetadataRequest("renamed", ["local"], "note", true)
             ),
-            await client.DeleteAsync("/_bdk/dashboard/profiling/sessions/sess0001"),
-            await client.DeleteAsync("/_bdk/dashboard/profiling/sessions/unpinned"),
+            await client.DeleteAsync("/_bdk/dashboard/profiling/runtime/sessions/sess0001"),
+            await client.DeleteAsync("/_bdk/dashboard/profiling/runtime/sessions/unpinned"),
             await client.PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/clear",
+                "/_bdk/dashboard/profiling/runtime/clear",
                 new ProfilingDashboardClearRequest(true)
             ),
             await client.PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/compare",
+                "/_bdk/dashboard/profiling/runtime/compare",
                 new ProfilingDashboardCompareRequest("sess0001", "node0001", "snap0001", "snap0002")
             ),
             await client.PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/analyze",
+                "/_bdk/dashboard/profiling/runtime/analyze",
                 new ProfilingDashboardAnalyzeRequest("sess0001", "node0001")
             ),
             await client.GetAsync(
-                "/_bdk/dashboard/profiling/export?session=sess0001&node=node0001"
+                "/_bdk/dashboard/profiling/runtime/export?session=sess0001&node=node0001"
             ),
         };
 
@@ -219,7 +219,7 @@ public sealed class ProfilingDashboardEndpointsTests
         await control
             .Received(1)
             .StartAsync(
-                Arg.Is<ProfilingStartRequest>(request =>
+                Arg.Is<RuntimeProfilingStartRequest>(request =>
                     request.Name == "warm-up"
                     && request.SamplingInterval == TimeSpan.FromMilliseconds(500)
                     && request.Duration == TimeSpan.FromSeconds(30)
@@ -233,7 +233,7 @@ public sealed class ProfilingDashboardEndpointsTests
         stress
             .Received(1)
             .TryStart(
-                Arg.Is<ProfilingStressRequest>(request =>
+                Arg.Is<RuntimeProfilingStressRequest>(request =>
                     request.DurationSeconds == 30
                     && request.WorkerCount >= 1
                     && request.RetainedMemoryBytes >= 32L * 1024 * 1024
@@ -241,7 +241,7 @@ public sealed class ProfilingDashboardEndpointsTests
                 ),
                 Arg.Any<CancellationToken>()
             );
-        await control.Received(1).AddPhaseMarkerAsync("load", Arg.Any<CancellationToken>());
+        await control.Received(1).AddMarkerAsync("load", Arg.Any<CancellationToken>());
         await queries.Received().ListSessionsAsync(Arg.Any<CancellationToken>());
         await queries
             .Received(1)
@@ -251,7 +251,7 @@ public sealed class ProfilingDashboardEndpointsTests
             .Received(1)
             .UpdateMetadataAsync(
                 "sess0001",
-                Arg.Is<ProfilingSessionMetadata>(metadata =>
+                Arg.Is<RuntimeProfilingSessionMetadata>(metadata =>
                     metadata.Name == "renamed"
                     && metadata.Tags.SequenceEqual(new[] { "local" })
                     && metadata.Note == "note"
@@ -274,7 +274,7 @@ public sealed class ProfilingDashboardEndpointsTests
         await queries
             .Received(1)
             .EvaluateAsync(
-                new ProfilingEvaluationRequest("sess0001", "node0001"),
+                new RuntimeProfilingEvaluationRequest("sess0001", "node0001"),
                 Arg.Any<CancellationToken>()
             );
         await queries
@@ -292,7 +292,7 @@ public sealed class ProfilingDashboardEndpointsTests
         // Act
         var response = await app.GetTestClient()
             .PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/clear",
+                "/_bdk/dashboard/profiling/runtime/clear",
                 new ProfilingDashboardClearRequest(false)
             );
 
@@ -322,7 +322,7 @@ public sealed class ProfilingDashboardEndpointsTests
         // Act
         var response = await app.GetTestClient()
             .PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/clear",
+                "/_bdk/dashboard/profiling/runtime/clear",
                 new ProfilingDashboardClearRequest(true)
             );
 
@@ -341,7 +341,7 @@ public sealed class ProfilingDashboardEndpointsTests
         // Act
         var response = await app.GetTestClient()
             .PostAsJsonAsync(
-                "/_bdk/dashboard/profiling/analyze",
+                "/_bdk/dashboard/profiling/runtime/analyze",
                 new ProfilingDashboardAnalyzeRequest("sess0001", "node0001", "snap0001")
             );
 
@@ -349,7 +349,7 @@ public sealed class ProfilingDashboardEndpointsTests
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         await queries
             .DidNotReceive()
-            .EvaluateAsync(Arg.Any<ProfilingEvaluationRequest>(), Arg.Any<CancellationToken>());
+            .EvaluateAsync(Arg.Any<RuntimeProfilingEvaluationRequest>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -360,7 +360,7 @@ public sealed class ProfilingDashboardEndpointsTests
         queries
             .GetSessionAsync("invalid", Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingSessionData>
+                Result<RuntimeProfilingSessionData>
                     .Failure()
                     .WithError(new ProfilingInvalidKeyError("session"))
             );
@@ -368,7 +368,7 @@ public sealed class ProfilingDashboardEndpointsTests
 
         // Act
         var response = await app.GetTestClient()
-            .GetAsync("/_bdk/dashboard/profiling/data?session=invalid");
+            .GetAsync("/_bdk/dashboard/profiling/runtime/data?session=invalid");
         var body = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -387,7 +387,7 @@ public sealed class ProfilingDashboardEndpointsTests
 
         // Act
         var response = await app.GetTestClient()
-            .GetAsync("/_bdk/dashboard/profiling/data?session=sess0001");
+            .GetAsync("/_bdk/dashboard/profiling/runtime/data?session=sess0001");
         var body = await response.Content.ReadAsStringAsync();
 
         // Assert
@@ -407,10 +407,10 @@ public sealed class ProfilingDashboardEndpointsTests
 
         // Act
         var export = await client.GetAsync(
-            "/_bdk/dashboard/profiling/export?session=sess0001&node=node0001"
+            "/_bdk/dashboard/profiling/runtime/export?session=sess0001&node=node0001"
         );
         var forbiddenEvaluationExport = await client.GetAsync(
-            "/_bdk/dashboard/profiling/analyze/export"
+            "/_bdk/dashboard/profiling/runtime/analyze/export"
         );
 
         // Assert
@@ -424,18 +424,18 @@ public sealed class ProfilingDashboardEndpointsTests
     public async Task Stress_WhenWorkloadIsAlreadyRunning_ReturnsConflict()
     {
         // Arrange
-        var stress = Substitute.For<IProfilingStressService>();
+        var stress = Substitute.For<IRuntimeProfilingStressService>();
         stress
             .TryStart(
-                Arg.Any<ProfilingStressRequest>(),
+                Arg.Any<RuntimeProfilingStressRequest>(),
                 Arg.Any<CancellationToken>()
             )
-            .Returns(new ProfilingStressResult(false, 30, 3, 64L * 1024 * 1024));
+            .Returns(new RuntimeProfilingStressResult(false, 30, 3, 64L * 1024 * 1024));
         await using var app = await StartAppAsync(stress: stress);
 
         // Act
         var response = await app.GetTestClient()
-            .PostAsync("/_bdk/dashboard/profiling/stress", null);
+            .PostAsync("/_bdk/dashboard/profiling/runtime/stress", null);
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.Conflict);
@@ -447,7 +447,7 @@ public sealed class ProfilingDashboardEndpointsTests
     {
         // Arrange
         var (control, queries) = CreateConfiguredServices();
-        var archives = Substitute.For<IProfilingArchiveService>();
+        var archives = Substitute.For<IRuntimeProfilingArchiveService>();
         archives
             .ExportSessionAsync("sess0001", Arg.Any<Stream>(), Arg.Any<CancellationToken>())
             .Returns(call =>
@@ -471,11 +471,11 @@ public sealed class ProfilingDashboardEndpointsTests
         archives
             .ImportAsync(Arg.Any<Stream>(), Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingArchiveImportResult>.Success(
+                Result<RuntimeProfilingArchiveImportResult>.Success(
                     new("newsess1", new Dictionary<string, string>(), new Dictionary<string, string>())
                 )
             );
-        var perfetto = Substitute.For<IProfilingPerfettoExportService>();
+        var perfetto = Substitute.For<IRuntimeProfilingPerfettoExportService>();
         perfetto
             .ExportSessionAsync("sess0001", Arg.Any<Stream>(), Arg.Any<CancellationToken>())
             .Returns(call =>
@@ -490,16 +490,16 @@ public sealed class ProfilingDashboardEndpointsTests
 
         // Act
         var session = await client.GetAsync(
-            "/_bdk/dashboard/profiling/archive/sessions/sess0001"
+            "/_bdk/dashboard/profiling/runtime/archive/sessions/sess0001"
         );
         var snapshot = await client.GetAsync(
-            "/_bdk/dashboard/profiling/archive/sessions/sess0001/nodes/node0001/snapshots/snap0001"
+            "/_bdk/dashboard/profiling/runtime/archive/sessions/sess0001/nodes/node0001/snapshots/snap0001"
         );
         var trace = await client.GetAsync(
-            "/_bdk/dashboard/profiling/export/perfetto/sessions/sess0001"
+            "/_bdk/dashboard/profiling/runtime/export/perfetto/sessions/sess0001"
         );
         var imported = await client.PostAsync(
-            "/_bdk/dashboard/profiling/archive/import",
+            "/_bdk/dashboard/profiling/runtime/archive/import",
             form
         );
 
@@ -537,7 +537,7 @@ public sealed class ProfilingDashboardEndpointsTests
         await using var app = await StartAppAsync();
 
         // Act
-        var response = await app.GetTestClient().GetAsync("/_bdk/dashboard/profiling/status");
+        var response = await app.GetTestClient().GetAsync("/_bdk/dashboard/profiling/runtime/status");
 
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
@@ -553,18 +553,18 @@ public sealed class ProfilingDashboardEndpointsTests
         var dashboardOptions = new DashboardEndpointsOptionsBuilder().Build();
         var (control, queries) = CreateConfiguredServices();
         var disabledServices = new ServiceCollection();
-        disabledServices.AddSingleton(new ProfilingOptions { Enabled = false });
+        disabledServices.AddSingleton(new ProfilingOptions { Enabled = false, Runtime = new() { Enabled = true } });
         disabledServices.AddSingleton(control);
         disabledServices.AddSingleton(queries);
         var disabledContext = CreateHttpContext(disabledServices);
         var unavailableServices = new ServiceCollection();
-        unavailableServices.AddSingleton(new ProfilingOptions { Enabled = true });
+        unavailableServices.AddSingleton(new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } });
         var unavailableContext = CreateHttpContext(unavailableServices);
         var disabled = new ProfilingDashboardPageProvider(dashboardOptions);
         var unavailable = new ProfilingDashboardPageProvider(dashboardOptions);
         var availableServices = new ServiceCollection();
         availableServices.AddSingleton(dashboardOptions);
-        availableServices.AddSingleton(new ProfilingOptions { Enabled = true });
+        availableServices.AddSingleton(new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } });
         availableServices.AddSingleton(control);
         availableServices.AddSingleton(queries);
         var availableContext = CreateHttpContext(availableServices);
@@ -580,7 +580,7 @@ public sealed class ProfilingDashboardEndpointsTests
         disabledPages.ShouldBeEmpty();
         unavailablePages.ShouldBeEmpty();
         page.Key.ShouldBe("profiling");
-        page.Url.ShouldBe("/_bdk/dashboard/profiling");
+        page.Url.ShouldBe("/_bdk/dashboard/profiling/runtime");
         card.Value.ShouldBe("Running");
         card.Detail.ShouldContain("sess0001");
     }
@@ -613,18 +613,18 @@ public sealed class ProfilingDashboardEndpointsTests
         var stress = ProfilingDashboardEndpoints.BuildStressPath(options);
 
         // Assert
-        page.ShouldBe("/_bdk/dashboard/profiling?session=sess0001&node=node0001");
-        data.ShouldBe("/_bdk/dashboard/profiling/data?session=sess0001&node=node0001");
-        metadata.ShouldBe("/_bdk/dashboard/profiling/sessions/sess0001/metadata");
-        sessionArchive.ShouldBe("/_bdk/dashboard/profiling/archive/sessions/sess0001");
+        page.ShouldBe("/_bdk/dashboard/profiling/runtime?session=sess0001&node=node0001");
+        data.ShouldBe("/_bdk/dashboard/profiling/runtime/data?session=sess0001&node=node0001");
+        metadata.ShouldBe("/_bdk/dashboard/profiling/runtime/sessions/sess0001/metadata");
+        sessionArchive.ShouldBe("/_bdk/dashboard/profiling/runtime/archive/sessions/sess0001");
         sessionPerfetto.ShouldBe(
-            "/_bdk/dashboard/profiling/export/perfetto/sessions/sess0001"
+            "/_bdk/dashboard/profiling/runtime/export/perfetto/sessions/sess0001"
         );
         snapshotArchive.ShouldBe(
-            "/_bdk/dashboard/profiling/archive/sessions/sess0001/nodes/node0001/snapshots/snap0001"
+            "/_bdk/dashboard/profiling/runtime/archive/sessions/sess0001/nodes/node0001/snapshots/snap0001"
         );
-        archiveImport.ShouldBe("/_bdk/dashboard/profiling/archive/import");
-        stress.ShouldBe("/_bdk/dashboard/profiling/stress");
+        archiveImport.ShouldBe("/_bdk/dashboard/profiling/runtime/archive/import");
+        stress.ShouldBe("/_bdk/dashboard/profiling/runtime/stress");
     }
 
     private static readonly Guid TestInternalId = Guid.Parse(
@@ -632,11 +632,11 @@ public sealed class ProfilingDashboardEndpointsTests
     );
 
     private static async Task<WebApplication> StartAppAsync(
-        IProfilingControlService control = null,
-        IProfilingQueryService queries = null,
-        IProfilingArchiveService archives = null,
-        IProfilingStressService stress = null,
-        IProfilingPerfettoExportService perfetto = null
+        IRuntimeProfilingControlService control = null,
+        IRuntimeProfilingQueryService queries = null,
+        IRuntimeProfilingArchiveService archives = null,
+        IRuntimeProfilingStressService stress = null,
+        IRuntimeProfilingPerfettoExportService perfetto = null
     )
     {
         var builder = WebApplication.CreateBuilder();
@@ -676,48 +676,48 @@ public sealed class ProfilingDashboardEndpointsTests
     }
 
     private static (
-        IProfilingControlService Control,
-        IProfilingQueryService Queries
+        IRuntimeProfilingControlService Control,
+        IRuntimeProfilingQueryService Queries
     ) CreateConfiguredServices()
     {
         var session = CreateSession();
-        var status = new ProfilingStatus(true, true, session, []);
-        var controlResult = new ProfilingControlResult(session, false, []);
-        var control = Substitute.For<IProfilingControlService>();
+        var status = new RuntimeProfilingStatus(true, true, session, []);
+        var controlResult = new RuntimeProfilingControlResult(session, false, []);
+        var control = Substitute.For<IRuntimeProfilingControlService>();
         control
             .GetStatusAsync(Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingStatus>.Success(status));
+            .Returns(Result<RuntimeProfilingStatus>.Success(status));
         control
-            .StartAsync(Arg.Any<ProfilingStartRequest>(), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(controlResult));
+            .StartAsync(Arg.Any<RuntimeProfilingStartRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result<RuntimeProfilingControlResult>.Success(controlResult));
         control
             .StopAsync(Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(controlResult));
+            .Returns(Result<RuntimeProfilingControlResult>.Success(controlResult));
         control
             .SnapshotAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(controlResult));
+            .Returns(Result<RuntimeProfilingControlResult>.Success(controlResult));
         control
             .CollectGarbageAsync(Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(controlResult));
+            .Returns(Result<RuntimeProfilingControlResult>.Success(controlResult));
         control
-            .AddPhaseMarkerAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
+            .AddMarkerAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingPhaseMarker>.Success(
+                Result<ProfilingMarker>.Success(
                     new(Guid.NewGuid(), TestInternalId, "sess0001", "load", DateTimeOffset.UtcNow)
                 )
             );
 
-        var queries = Substitute.For<IProfilingQueryService>();
+        var queries = Substitute.For<IRuntimeProfilingQueryService>();
         queries
             .ListSessionsAsync(Arg.Any<CancellationToken>())
-            .Returns(Result<IReadOnlyList<ProfilingSession>>.Success([session]));
+            .Returns(Result<IReadOnlyList<RuntimeProfilingSession>>.Success([session]));
         queries
             .GetSessionAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingSessionData>.Success(new() { Session = session }));
+            .Returns(Result<RuntimeProfilingSessionData>.Success(new() { Session = session }));
         queries
             .GetNodeSessionAsync(Arg.Any<string>(), Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingNodeSessionData>.Success(
+                Result<RuntimeProfilingNodeSessionData>.Success(
                     new()
                     {
                         Session = session,
@@ -729,13 +729,13 @@ public sealed class ProfilingDashboardEndpointsTests
         queries
             .UpdateMetadataAsync(
                 Arg.Any<string>(),
-                Arg.Any<ProfilingSessionMetadata>(),
+                Arg.Any<RuntimeProfilingSessionMetadata>(),
                 Arg.Any<CancellationToken>()
             )
-            .Returns(Result<ProfilingSession>.Success(session));
+            .Returns(Result<RuntimeProfilingSession>.Success(session));
         queries
             .RestartAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(controlResult));
+            .Returns(Result<RuntimeProfilingControlResult>.Success(controlResult));
         queries
             .DeleteSessionAsync(Arg.Any<string>(), Arg.Any<CancellationToken>())
             .Returns(Result<bool>.Success(true));
@@ -761,32 +761,32 @@ public sealed class ProfilingDashboardEndpointsTests
                 Arg.Any<CancellationToken>()
             )
             .Returns(
-                Result<ProfilingSnapshotComparison>.Success(
+                Result<RuntimeProfilingSnapshotComparison>.Success(
                     new("sess0001", "node0001", "snap0001", "snap0002", [])
                 )
             );
         queries
-            .EvaluateAsync(Arg.Any<ProfilingEvaluationRequest>(), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingEvaluationResult>.Success(CreateEvaluation()));
+            .EvaluateAsync(Arg.Any<RuntimeProfilingEvaluationRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result<RuntimeProfilingEvaluationResult>.Success(CreateEvaluation()));
         return (control, queries);
     }
 
-    private static ProfilingSession CreateSession() =>
+    private static RuntimeProfilingSession CreateSession() =>
         new()
         {
             Identity = new(TestInternalId, "sess0001"),
             Name = "test",
-            State = ProfilingSessionState.Running,
+            State = RuntimeProfilingSessionState.Running,
             StartedUtc = DateTimeOffset.Parse("2026-08-07T10:00:00Z"),
             EndsUtc = DateTimeOffset.Parse("2026-08-07T10:00:30Z"),
             SamplingInterval = TimeSpan.FromSeconds(1),
             Duration = TimeSpan.FromSeconds(30),
         };
 
-    private static ProfilingEvaluationResult CreateEvaluation() =>
+    private static RuntimeProfilingEvaluationResult CreateEvaluation() =>
         new(
             new(
-                ProfilingEvaluationMode.NodeSession,
+                RuntimeProfilingEvaluationMode.NodeSession,
                 "sess0001",
                 "node0001",
                 [],
@@ -795,7 +795,7 @@ public sealed class ProfilingDashboardEndpointsTests
                 3,
                 false
             ),
-            new() { Sufficiency = ProfilingDataSufficiency.Sufficient },
+            new() { Sufficiency = RuntimeProfilingDataSufficiency.Sufficient },
             [],
             [],
             []

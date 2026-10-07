@@ -28,4 +28,12 @@
     <ProjectReference Include="..\Common.Serialization\Common.Serialization.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Common.UnitTests" />
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Presentation.UnitTests" />
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.UnitTests" />
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.IntegrationTests" />
+    <InternalsVisibleTo Include="Common.Benchmarks" />
+  </ItemGroup>
+
 </Project>

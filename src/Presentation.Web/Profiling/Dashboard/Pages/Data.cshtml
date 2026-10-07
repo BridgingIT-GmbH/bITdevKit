@@ -11,7 +11,7 @@
         ? node?.LatestSnapshot
         : node?.Snapshots.FirstOrDefault(item => item.Identity.Key == Model.SnapshotKey);
     var runtime = node?.RuntimeContext;
-    var running = session?.State == ProfilingSessionState.Running;
+    var running = session?.State == RuntimeProfilingSessionState.Running;
     var payload = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(node, JsonOptions)));
 }
 
@@ -69,9 +69,9 @@
             </div>
             <div class="profiling-session-actions">
                 <div class="input-group input-group-sm profiling-marker-control">
-                    <label for="profiling-marker-name" class="visually-hidden">Phase marker name</label>
-                    <input id="profiling-marker-name" class="form-control" maxlength="120" placeholder="Phase marker" disabled="@(running ? null : "disabled")" title="@(running ? "Name a marker for the active session" : "Start a session before adding a marker")" />
-                    <button class="btn btn-outline-secondary profiling-tool-button" id="profiling-add-marker" type="button" data-requires-running="true" disabled="@(running ? null : "disabled")" title="@(running ? "Add phase marker" : "Start a session before adding a marker")" aria-label="Add phase marker"><i class="bi bi-flag" aria-hidden="true"></i></button>
+                    <label for="profiling-marker-name" class="visually-hidden">Marker name</label>
+                    <input id="profiling-marker-name" class="form-control" maxlength="120" placeholder="Marker" disabled="@(running ? null : "disabled")" title="@(running ? "Name a marker for the active session" : "Start a session before adding a marker")" />
+                    <button class="btn btn-outline-secondary profiling-tool-button" id="profiling-add-marker" type="button" data-requires-running="true" disabled="@(running ? null : "disabled")" title="@(running ? "Add marker" : "Start a session before adding a marker")" aria-label="Add marker"><i class="bi bi-flag" aria-hidden="true"></i></button>
                 </div>
                 <button id="profiling-snapshot" class="btn btn-outline-info btn-sm profiling-tool-button" type="button" title="Take an ad-hoc snapshot" aria-label="Take profiling snapshot"><i class="bi bi-camera" aria-hidden="true"></i></button>
                 <button id="profiling-gc" class="btn btn-outline-danger btn-sm profiling-tool-button" type="button" title="Request a normal GC collection" aria-label="Request garbage collection"><i class="bi bi-recycle" aria-hidden="true"></i></button>
@@ -252,8 +252,8 @@
     </div>
 
     <div class="d-flex flex-wrap gap-3 align-items-center mb-3 profiling-chart-filters" aria-label="Chart annotation filters">
-        <div class="form-check form-switch"><input id="profiling-filter-phases" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-phases">Phase markers</label></div>
-        <div class="form-check form-switch"><input id="profiling-filter-actions" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-actions">Node actions</label></div>
+        <div class="form-check form-switch"><input id="profiling-filter-sessionMarkers" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-sessionMarkers">Session markers</label></div>
+        <div class="form-check form-switch"><input id="profiling-filter-nodeMarkers" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-nodeMarkers">Node actions</label></div>
         <div class="form-check form-switch"><input id="profiling-filter-segments" class="form-check-input profiling-chart-filter" type="checkbox" checked /><label class="form-check-label" for="profiling-filter-segments">Segments</label></div>
     </div>
     </div>
@@ -366,7 +366,7 @@
 @functions {
     private static readonly JsonSerializerOptions JsonOptions = new(JsonSerializerDefaults.Web);
 
-    private static string SessionOptionText(ProfilingSession session)
+    private static string SessionOptionText(RuntimeProfilingSession session)
     {
         var parts = new List<string>
         {
@@ -382,12 +382,12 @@
         return string.Join(" · ", parts);
     }
 
-    private static bool IsGeneratedSessionName(ProfilingSession session) =>
+    private static bool IsGeneratedSessionName(RuntimeProfilingSession session) =>
         string.IsNullOrWhiteSpace(session.Name)
         || (
             DateTimeOffset.TryParseExact(
                 session.Name,
-                ProfilingOptions.DefaultSessionNameFormat,
+                RuntimeProfilingOptions.DefaultSessionNameFormat,
                 CultureInfo.InvariantCulture,
                 DateTimeStyles.RoundtripKind,
                 out var generatedAt
@@ -419,7 +419,7 @@
     private static string FormatDuration(TimeSpan? value) => value is null ? "unavailable" : value.Value.TotalMilliseconds < 1000 ? $"{value.Value.TotalMilliseconds:N1} ms" : $"{value.Value.TotalSeconds:N2} s";
     private static string FormatSegmentEnd(ProfilingSegment segment) => segment.EndedUtc is { } endedUtc
         ? endedUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)
-        : segment.Outcome == ProfilingSegmentOutcome.Open ? "open" : "unavailable";
+        : segment.Outcome == null ? "open" : "unavailable";
     private static string DisplayParent(ProfilingSegment segment, IReadOnlyList<ProfilingSegment> segments)
     {
         if (segment.ParentSegmentId is not { } parentId)

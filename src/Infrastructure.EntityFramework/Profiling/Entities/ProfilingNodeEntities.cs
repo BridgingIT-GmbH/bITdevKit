@@ -39,17 +39,31 @@ public sealed class ProfilingNodeEntity
     [MaxLength(256)]
     public string HostName { get; set; }
 
+    /// <summary>Gets or sets the cached process-start UTC independently of Broadcast registration time.</summary>
+    /// <example><code>var utc = node.ExecutionStartedUtc;</code></example>
+    public DateTimeOffset ExecutionStartedUtc { get; set; }
+
+    /// <summary>Gets or sets the bounded display name.</summary>
+    /// <example><code>node.DisplayName = "worker-a";</code></example>
+    [MaxLength(128)]
+    public string DisplayName { get; set; }
+
+    /// <summary>Gets or sets bounded application-version metadata.</summary>
+    /// <example><code>node.ApplicationVersion = "1.2.3";</code></example>
+    [MaxLength(128)]
+    public string ApplicationVersion { get; set; }
+
     /// <summary>Gets or sets process identifier metadata.</summary>
     [Required]
     public int ProcessId { get; set; }
 }
 
 /// <summary>Represents one node's mutable participation in a profiling session.</summary>
-/// <example><code>public DbSet&lt;ProfilingParticipationEntity&gt; ProfilingParticipations { get; set; }</code></example>
+/// <example><code>public DbSet&lt;RuntimeProfilingParticipationEntity&gt; ProfilingParticipations { get; set; }</code></example>
 [Table("__Profiling_Participations")]
 [PrimaryKey(nameof(SessionId), nameof(NodeId))]
 [Index(nameof(SessionId), nameof(State))]
-public sealed class ProfilingParticipationEntity
+public sealed class RuntimeProfilingParticipationEntity
 {
     /// <summary>Gets or sets the session identifier.</summary>
     public Guid SessionId { get; set; }
@@ -59,11 +73,11 @@ public sealed class ProfilingParticipationEntity
 
     /// <summary>Gets or sets the node role.</summary>
     [Required]
-    public ProfilingNodeRole Role { get; set; }
+    public RuntimeProfilingNodeRole Role { get; set; }
 
     /// <summary>Gets or sets the participation state.</summary>
     [Required]
-    public ProfilingParticipationState State { get; set; }
+    public RuntimeProfilingParticipationState State { get; set; }
 
     /// <summary>Gets or sets when the node joined.</summary>
     [Required]
@@ -96,7 +110,7 @@ public sealed class ProfilingParticipationEntity
     /// <summary>Gets or sets the owning session.</summary>
     [Required]
     [ForeignKey(nameof(SessionId))]
-    public ProfilingSessionEntity Session { get; set; }
+    public RuntimeProfilingSessionEntity Session { get; set; }
 
     /// <summary>Gets or sets the participating node.</summary>
     [Required]
@@ -110,8 +124,8 @@ public sealed class ProfilingParticipationEntity
 }
 
 /// <summary>Represents immutable runtime context owned by a profiling session JSON document.</summary>
-/// <example><code>session.RuntimeContexts.Add(new ProfilingRuntimeContextEntity { NodeId = nodeId });</code></example>
-public sealed class ProfilingRuntimeContextEntity
+/// <example><code>session.RuntimeContexts.Add(new RuntimeProfilingRuntimeContextEntity { NodeId = nodeId });</code></example>
+public sealed class RuntimeProfilingRuntimeContextEntity
 {
     /// <summary>Gets or sets the session identifier.</summary>
     public Guid SessionId { get; set; }

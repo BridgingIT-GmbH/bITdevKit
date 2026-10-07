@@ -35,7 +35,7 @@ public class WeatherProfilingStressJobTests
             .WithServices(services =>
             {
                 services.AddLogging();
-                services.AddSingleton<IProfilingMeasurementService>(measurements);
+                services.AddSingleton<IRuntimeProfilingMeasurementService>(measurements);
                 services.AddSingleton(profile);
             })
             .Build();
@@ -53,16 +53,16 @@ public class WeatherProfilingStressJobTests
             && message.Contains("Allocated=1MiB"));
     }
 
-    private sealed class RecordingProfilingMeasurementService : IProfilingMeasurementService
+    private sealed class RecordingProfilingMeasurementService : IRuntimeProfilingMeasurementService
     {
         public List<string> Names { get; } = [];
 
-        public Task<Result<IProfilingMeasurementScope>> BeginAsync(
+        public Task<IResult<IRuntimeProfilingMeasurementScope>> BeginAsync(
             string name,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public async Task<Result> MeasureAsync(
+        public async Task<IResult> MeasureAsync(
             string name,
             Func<CancellationToken, Task> action,
             CancellationToken cancellationToken = default

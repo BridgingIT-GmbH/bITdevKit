@@ -10,7 +10,7 @@ using BridgingIT.DevKit.Common;
 using Spectre.Console;
 
 /// <summary>Shows profiling availability and the active session.</summary>
-/// <example><code>profiling status</code></example>
+/// <example><code>profiling runtime status</code></example>
 public sealed class ProfilingStatusConsoleCommand()
     : ProfilingConsoleCommandBase("status", "Show profiling availability and active collection")
 {
@@ -21,7 +21,7 @@ public sealed class ProfilingStatusConsoleCommand()
         CancellationToken cancellationToken = default
     )
     {
-        var control = GetRequired<IProfilingControlService>(console, services);
+        var control = GetRequired<IRuntimeProfilingControlService>(console, services);
         if (control is null)
         {
             return;
@@ -49,7 +49,7 @@ public sealed class ProfilingStatusConsoleCommand()
 }
 
 /// <summary>Starts profiling collection with optional core setting overrides.</summary>
-/// <example><code>profiling start --name warmup --interval 500ms --duration 30s</code></example>
+/// <example><code>profiling runtime start --name warmup --interval 500ms --duration 30s</code></example>
 public sealed class ProfilingStartConsoleCommand()
     : ProfilingConsoleCommandBase("start", "Start a profiling collection session")
 {
@@ -85,7 +85,7 @@ public sealed class ProfilingStartConsoleCommand()
         CancellationToken cancellationToken = default
     )
     {
-        var control = GetRequired<IProfilingControlService>(console, services);
+        var control = GetRequired<IRuntimeProfilingControlService>(console, services);
         if (control is null)
         {
             return;
@@ -93,7 +93,7 @@ public sealed class ProfilingStartConsoleCommand()
 
         var result = await control
             .StartAsync(
-                new ProfilingStartRequest(
+                new RuntimeProfilingStartRequest(
                     this.SessionName,
                     this.samplingInterval,
                     this.parsedDuration
@@ -129,7 +129,7 @@ public sealed class ProfilingStartConsoleCommand()
 }
 
 /// <summary>Stops the active profiling session.</summary>
-/// <example><code>profiling stop</code></example>
+/// <example><code>profiling runtime stop</code></example>
 public sealed class ProfilingStopConsoleCommand()
     : ProfilingConsoleCommandBase("stop", "Stop the active profiling collection session")
 {
@@ -139,7 +139,7 @@ public sealed class ProfilingStopConsoleCommand()
 
     private static async Task ExecuteControlAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken)
     {
-        var control = GetRequired<IProfilingControlService>(console, services);
+        var control = GetRequired<IRuntimeProfilingControlService>(console, services);
         if (control is null) return;
         var result = await control.StopAsync(cancellationToken).ConfigureAwait(false);
         if (result.IsFailure) WriteErrors(console, result); else WriteControlResult(console, result.Value);
@@ -147,9 +147,9 @@ public sealed class ProfilingStopConsoleCommand()
 }
 
 /// <summary>Captures a manual snapshot, optionally in a named standalone session.</summary>
-/// <example><code>profiling snapshot --name checkpoint</code></example>
+/// <example><code>profiling runtime snapshot --name checkpoint</code></example>
 public sealed class ProfilingSnapshotConsoleCommand()
-    : ProfilingConsoleCommandBase("snapshot", "Capture one manual profiling snapshot")
+    : ProfilingConsoleCommandBase("snapshot", "Capture one manual profiling runtime snapshot")
 {
     /// <summary>Gets or sets the optional standalone session name.</summary>
     /// <example><code>command.SessionName = "checkpoint";</code></example>
@@ -159,7 +159,7 @@ public sealed class ProfilingSnapshotConsoleCommand()
     /// <inheritdoc />
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
-        var control = GetRequired<IProfilingControlService>(console, services);
+        var control = GetRequired<IRuntimeProfilingControlService>(console, services);
         if (control is null) return;
         var result = await control.SnapshotAsync(this.SessionName, cancellationToken).ConfigureAwait(false);
         if (result.IsFailure) WriteErrors(console, result); else WriteControlResult(console, result.Value);
@@ -167,36 +167,36 @@ public sealed class ProfilingSnapshotConsoleCommand()
 }
 
 /// <summary>Requests one normal deployment-wide garbage collection action.</summary>
-/// <example><code>profiling gc</code></example>
+/// <example><code>profiling runtime gc</code></example>
 public sealed class ProfilingGarbageCollectionConsoleCommand()
     : ProfilingConsoleCommandBase("gc", "Request a profiling garbage collection action")
 {
     /// <inheritdoc />
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
-        var control = GetRequired<IProfilingControlService>(console, services);
+        var control = GetRequired<IRuntimeProfilingControlService>(console, services);
         if (control is null) return;
         var result = await control.CollectGarbageAsync(cancellationToken).ConfigureAwait(false);
         if (result.IsFailure) WriteErrors(console, result); else WriteControlResult(console, result.Value);
     }
 }
 
-/// <summary>Adds a named phase marker to the active session.</summary>
-/// <example><code>profiling mark --name "load started"</code></example>
+/// <summary>Adds a named marker to the active session.</summary>
+/// <example><code>profiling runtime mark --name "load started"</code></example>
 public sealed class ProfilingMarkConsoleCommand()
-    : ProfilingConsoleCommandBase("mark", "Add a phase marker to the active profiling session")
+    : ProfilingConsoleCommandBase("mark", "Add a marker to the active profiling session")
 {
     /// <summary>Gets or sets the required marker name.</summary>
     /// <example><code>command.MarkerName = "load started";</code></example>
-    [ConsoleCommandOption("name", Alias = "n", Description = "Phase marker name", Required = true)]
+    [ConsoleCommandOption("name", Alias = "n", Description = "Marker name", Required = true)]
     public string MarkerName { get; set; }
 
     /// <inheritdoc />
     public override async Task ExecuteAsync(IAnsiConsole console, IServiceProvider services, CancellationToken cancellationToken = default)
     {
-        var control = GetRequired<IProfilingControlService>(console, services);
+        var control = GetRequired<IRuntimeProfilingControlService>(console, services);
         if (control is null) return;
-        var result = await control.AddPhaseMarkerAsync(this.MarkerName, cancellationToken).ConfigureAwait(false);
+        var result = await control.AddMarkerAsync(this.MarkerName, cancellationToken).ConfigureAwait(false);
         if (result.IsFailure)
         {
             WriteErrors(console, result);
@@ -210,7 +210,7 @@ public sealed class ProfilingMarkConsoleCommand()
 }
 
 /// <summary>Clears all stored profiling data after explicit confirmation.</summary>
-/// <example><code>profiling clear --yes</code></example>
+/// <example><code>profiling runtime clear --yes</code></example>
 public sealed class ProfilingClearConsoleCommand()
     : ProfilingConsoleCommandBase("clear", "Clear all stored profiling data")
 {
@@ -230,7 +230,7 @@ public sealed class ProfilingClearConsoleCommand()
             return;
         }
 
-        var control = GetRequired<IProfilingControlService>(console, services);
+        var control = GetRequired<IRuntimeProfilingControlService>(console, services);
         if (control is null) return;
         var result = await control.ClearAsync(true, cancellationToken).ConfigureAwait(false);
         if (result.IsFailure)

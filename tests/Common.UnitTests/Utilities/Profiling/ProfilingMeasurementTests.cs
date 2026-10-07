@@ -27,9 +27,9 @@ public class ProfilingMeasurementTests
         beginResult.IsSuccess.ShouldBeTrue();
         harness.Control.StartCount.ShouldBe(1);
         harness.Control.StopCount.ShouldBe(1);
-        data.Value.Session.State.ShouldBe(ProfilingSessionState.Stopped);
+        data.Value.Session.State.ShouldBe(RuntimeProfilingSessionState.Stopped);
         data.Value.Segments.ShouldHaveSingleItem()
-            .Outcome.ShouldBe(ProfilingSegmentOutcome.Success);
+            .Outcome.ShouldBe(ProfilingSegmentOutcome.Completed);
     }
 
     [Fact]
@@ -71,8 +71,8 @@ public class ProfilingMeasurementTests
         inner.ParentSegmentId.ShouldBe(outer.Id);
         inner.SessionId.ShouldBe(outer.SessionId);
         inner.NodeId.ShouldBe(outer.NodeId);
-        outer.Outcome.ShouldBe(ProfilingSegmentOutcome.Success);
-        inner.Outcome.ShouldBe(ProfilingSegmentOutcome.Success);
+        outer.Outcome.ShouldBe(ProfilingSegmentOutcome.Completed);
+        inner.Outcome.ShouldBe(ProfilingSegmentOutcome.Completed);
     }
 
     [Fact]
@@ -91,7 +91,7 @@ public class ProfilingMeasurementTests
         var json = JsonSerializer.Serialize(segment);
 
         // Assert
-        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Failure);
+        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Failed);
         segment.ExceptionType.ShouldBe(typeof(InvalidOperationException).FullName);
         segment.ExceptionMessage.ShouldBe("expected failure");
         json.ShouldNotContain("StackTrace");
@@ -111,7 +111,7 @@ public class ProfilingMeasurementTests
 
         // Assert
         var segment = data.Value.Segments.ShouldHaveSingleItem();
-        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Cancellation);
+        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Canceled);
         segment.ExceptionType.ShouldBeNull();
         segment.ExceptionMessage.ShouldBeNull();
     }
@@ -134,7 +134,7 @@ public class ProfilingMeasurementTests
         // Assert
         exception.Message.ShouldBe("application failure");
         var segment = data.Value.Segments.ShouldHaveSingleItem();
-        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Failure);
+        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Failed);
         segment.ExceptionMessage.ShouldBe("application failure");
     }
 
@@ -155,7 +155,7 @@ public class ProfilingMeasurementTests
 
         // Assert
         data.Value.Segments.ShouldHaveSingleItem()
-            .Outcome.ShouldBe(ProfilingSegmentOutcome.Cancellation);
+            .Outcome.ShouldBe(ProfilingSegmentOutcome.Canceled);
     }
 
     [Fact]
@@ -173,7 +173,7 @@ public class ProfilingMeasurementTests
         // Assert
         harness.Control.StopCount.ShouldBe(0);
         var segment = data.Value.Segments.ShouldHaveSingleItem();
-        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Success);
+        segment.Outcome.ShouldBe(ProfilingSegmentOutcome.Completed);
         segment.CollectionEndedBeforeOperation.ShouldBeTrue();
         segment.Elapsed.ShouldBe(TimeSpan.FromSeconds(2));
     }
@@ -197,15 +197,15 @@ public class ProfilingMeasurementTests
                 SessionKey = harness.ActiveSession.Identity.Key,
                 NodeId = node.Identity.Id,
                 NodeKey = node.Identity.Key,
-                Role = ProfilingNodeRole.ExpectedParticipant,
-                State = ProfilingParticipationState.Failed,
+                Role = RuntimeProfilingNodeRole.ExpectedParticipant,
+                State = RuntimeProfilingParticipationState.Failed,
                 JoinedUtc = StartUtc,
                 CompletedUtc = StartUtc.AddSeconds(1),
                 Failure = "process ended",
             }
         );
         harness.Time.Advance(TimeSpan.FromSeconds(3));
-        var finalizer = new ProfilingSessionFinalizer(harness.Store, harness.Options, harness.Time);
+        var finalizer = new RuntimeProfilingSessionFinalizer(harness.Store, harness.Options, harness.Time);
 
         // Act
         var result = await finalizer.FinalizeAsync(harness.ActiveSession);
@@ -213,27 +213,27 @@ public class ProfilingMeasurementTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value.State.ShouldBe(ProfilingSessionState.CompletedWithWarnings);
+        result.Value.State.ShouldBe(RuntimeProfilingSessionState.CompletedWithWarnings);
         var interrupted = data.Value.Segments.Single(candidate => candidate.Id == segment.Id);
-        interrupted.Outcome.ShouldBe(ProfilingSegmentOutcome.Interruption);
+        interrupted.Outcome.ShouldBe(ProfilingSegmentOutcome.Incomplete);
         interrupted.EndedUtc.ShouldBeNull();
         interrupted.CollectionEndedBeforeOperation.ShouldBeTrue();
     }
 
     private sealed class MeasurementHarness(
-        ProfilingMeasurementService sut,
-        InMemoryProfilingStore store,
+        RuntimeProfilingMeasurementService sut,
+        InMemoryRuntimeProfilingStore store,
         TestProfilingControlService control,
         FakeTimeProvider time,
         ProfilingOptions options,
-        ProfilingSegmentContext segments,
-        ProfilingActiveSessionContext active,
-        ProfilingSession activeSession
+        RuntimeProfilingSegmentContext segments,
+        RuntimeProfilingActiveSessionContext active,
+        RuntimeProfilingSession activeSession
     )
     {
-        public ProfilingMeasurementService Sut { get; } = sut;
+        public RuntimeProfilingMeasurementService Sut { get; } = sut;
 
-        public InMemoryProfilingStore Store { get; } = store;
+        public InMemoryRuntimeProfilingStore Store { get; } = store;
 
         public TestProfilingControlService Control { get; } = control;
 
@@ -241,11 +241,11 @@ public class ProfilingMeasurementTests
 
         public ProfilingOptions Options { get; } = options;
 
-        public ProfilingSegmentContext Segments { get; } = segments;
+        public RuntimeProfilingSegmentContext Segments { get; } = segments;
 
-        public ProfilingActiveSessionContext Active { get; } = active;
+        public RuntimeProfilingActiveSessionContext Active { get; } = active;
 
-        public ProfilingSession ActiveSession { get; } = activeSession;
+        public RuntimeProfilingSession ActiveSession { get; } = activeSession;
 
         public static async Task<MeasurementHarness> CreateAsync(
             bool createActiveSession = false,
@@ -253,15 +253,8 @@ public class ProfilingMeasurementTests
         )
         {
             var time = new FakeTimeProvider(StartUtc);
-            var options = new ProfilingOptions
-            {
-                Enabled = true,
-                SamplingInterval = TimeSpan.FromSeconds(1),
-                Duration = duration ?? TimeSpan.FromSeconds(30),
-                ParticipationDeadline = TimeSpan.FromSeconds(1),
-                FinalizationGracePeriod = TimeSpan.FromSeconds(1),
-            };
-            var store = new InMemoryProfilingStore();
+            var options = new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true, SamplingInterval = TimeSpan.FromSeconds(1), Duration = duration ?? TimeSpan.FromSeconds(30), ParticipationDeadline = TimeSpan.FromSeconds(1), FinalizationGracePeriod = TimeSpan.FromSeconds(1) } };
+            var store = new InMemoryRuntimeProfilingStore();
             var registry = new InMemoryBroadcastRegistryStore(new BroadcastingOptions(), time);
             var identity = new TestBroadcastNodeIdentityProvider();
             await registry.UpsertAsync(
@@ -274,17 +267,17 @@ public class ProfilingMeasurementTests
                     null
                 )
             );
-            ProfilingSession activeSession = null;
+            RuntimeProfilingSession activeSession = null;
             if (createActiveSession)
             {
                 activeSession = (
                     await store.GetOrCreateActiveSessionAsync(
                         new(
-                            ProfilingSessionIdentity.Create(),
+                            ProfilingIdentityFactory.CreateRuntimeSession(),
                             "active",
                             StartUtc,
-                            options.SamplingInterval,
-                            options.Duration,
+                            options.Runtime.SamplingInterval,
+                            options.Runtime.Duration,
                             []
                         )
                     )
@@ -294,13 +287,13 @@ public class ProfilingMeasurementTests
             }
 
             var control = new TestProfilingControlService(store, options, time);
-            var segments = new ProfilingSegmentContext();
-            var active = new ProfilingActiveSessionContext();
-            var sut = new ProfilingMeasurementService(
+            var segments = new RuntimeProfilingSegmentContext();
+            var active = new RuntimeProfilingActiveSessionContext();
+            var sut = new RuntimeProfilingMeasurementService(
                 options,
                 control,
                 store,
-                new ProfilingNodeIdentityProvider(store),
+                new RuntimeProfilingNodeRegistrationAdapter(store, new ProfilingNodeIdentityProvider()),
                 registry,
                 identity,
                 active,
@@ -317,21 +310,21 @@ public class ProfilingMeasurementTests
     }
 
     private sealed class TestProfilingControlService(
-        IProfilingStore store,
+        IRuntimeProfilingStore store,
         ProfilingOptions options,
         TimeProvider timeProvider
-    ) : IProfilingControlService
+    ) : IRuntimeProfilingControlService
     {
         public int StartCount { get; private set; }
 
         public int StopCount { get; private set; }
 
-        public Task<Result<ProfilingStatus>> GetStatusAsync(
+        public Task<IResult<RuntimeProfilingStatus>> GetStatusAsync(
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public async Task<Result<ProfilingControlResult>> StartAsync(
-            ProfilingStartRequest request,
+        public async Task<IResult<RuntimeProfilingControlResult>> StartAsync(
+            RuntimeProfilingStartRequest request,
             CancellationToken cancellationToken = default
         )
         {
@@ -339,26 +332,26 @@ public class ProfilingMeasurementTests
             var now = timeProvider.GetUtcNow();
             var result = await store.GetOrCreateActiveSessionAsync(
                 new(
-                    ProfilingSessionIdentity.Create(),
+                    ProfilingIdentityFactory.CreateRuntimeSession(),
                     request.Name,
                     now,
-                    request.SamplingInterval ?? options.SamplingInterval,
-                    request.Duration ?? options.Duration,
+                    request.SamplingInterval ?? options.Runtime.SamplingInterval,
+                    request.Duration ?? options.Runtime.Duration,
                     request.Tags ?? []
                 ),
                 cancellationToken
             );
             return result.IsSuccess
-                ? Result<ProfilingControlResult>.Success(
+                ? Result<RuntimeProfilingControlResult>.Success(
                     new(result.Value.Session, result.Value.Created, [])
                 )
-                : Result<ProfilingControlResult>
+                : Result<RuntimeProfilingControlResult>
                     .Failure()
                     .WithErrors(result.Errors)
                     .WithMessages(result.Messages);
         }
 
-        public async Task<Result<ProfilingControlResult>> StopAsync(
+        public async Task<IResult<RuntimeProfilingControlResult>> StopAsync(
             CancellationToken cancellationToken = default
         )
         {
@@ -366,7 +359,7 @@ public class ProfilingMeasurementTests
             var active = await store.GetActiveSessionAsync(cancellationToken);
             if (active.IsFailure)
             {
-                return Result<ProfilingControlResult>
+                return Result<RuntimeProfilingControlResult>
                     .Failure()
                     .WithErrors(active.Errors)
                     .WithMessages(active.Messages);
@@ -374,48 +367,48 @@ public class ProfilingMeasurementTests
 
             var stopped = await store.TryTransitionSessionAsync(
                 active.Value.Identity.Id,
-                [ProfilingSessionState.Running],
-                ProfilingSessionState.Stopped,
+                [RuntimeProfilingSessionState.Running],
+                RuntimeProfilingSessionState.Stopped,
                 timeProvider.GetUtcNow(),
                 cancellationToken
             );
             return stopped.IsSuccess
-                ? Result<ProfilingControlResult>.Success(new(stopped.Value, false, []))
-                : Result<ProfilingControlResult>
+                ? Result<RuntimeProfilingControlResult>.Success(new(stopped.Value, false, []))
+                : Result<RuntimeProfilingControlResult>
                     .Failure()
                     .WithErrors(stopped.Errors)
                     .WithMessages(stopped.Messages);
         }
 
-        public Task<Result<ProfilingControlResult>> SnapshotAsync(
+        public Task<IResult<RuntimeProfilingControlResult>> SnapshotAsync(
             string standaloneSessionName = null,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public Task<Result<ProfilingControlResult>> CollectGarbageAsync(
+        public Task<IResult<RuntimeProfilingControlResult>> CollectGarbageAsync(
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public Task<Result<ProfilingPhaseMarker>> AddPhaseMarkerAsync(
+        public Task<IResult<ProfilingMarker>> AddMarkerAsync(
             string name,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public Task<Result<ProfilingControlResult>> RestartAsync(
+        public Task<IResult<RuntimeProfilingControlResult>> RestartAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public Task<Result<bool>> DeleteSessionAsync(
+        public Task<IResult<bool>> DeleteSessionAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public Task<Result<int>> DeleteUnpinnedSessionsAsync(
+        public Task<IResult<int>> DeleteUnpinnedSessionsAsync(
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public Task<Result<ProfilingClearResult>> ClearAsync(
+        public Task<IResult<ProfilingClearResult>> ClearAsync(
             bool confirmed,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();

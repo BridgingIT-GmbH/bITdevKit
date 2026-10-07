@@ -263,8 +263,29 @@ The following source, test, example, and documentation files contain Profiling r
 
 - TASK-001: complete. Solution build and focused checks recorded; restored Docker access verified with all 17 integration tests passing.
 - TASK-002: complete. Declaration, registration, serialized field, route, identity-factory, and consumer inventory recorded.
-- TASK-003 through TASK-055: incomplete.
+- TASK-003: complete. Pure Runtime contracts/DTOs extracted; concrete Result and identity factories stay in Utilities. Solution build: zero warnings/errors. Focused checks: Common 131, Infrastructure 18, Presentation 48, database integration 17 passing. Logs: `/tmp/bitdevkit-profiling-contract-*`; TRX: `/tmp/bitdevkit-profiling-contract-results`. Assembly dependency and identity generation tests added. Benchmark consumers included in the cutover.
+- TASK-004: complete. Generic facade/scopes and immutable value/root/summary/HTTP projection contracts added without web dependencies. Common profiling checks: 139 passing, including eight scalar/path/UTC/assembly tests. Runtime terminal outcomes now use the shared vocabulary; open intervals have no terminal outcome. Evidence: `/tmp/bitdevkit-profiling-operation-contract-tests.log`.
+- TASK-005: complete. Provider/runtime/operation facets, writer leases and immutable envelopes, fixed clear acknowledgements, settlement, stable query boundaries, health and typed analysis DTOs defined in Abstractions. Common profiling checks: 140 passing. Backend-independent asynchronous Result contract verified. Evidence: `/tmp/bitdevkit-profiling-storage-contract-tests.log`. Concrete provider conformance remains TASK-020/TASK-025.
+- TASK-006: complete. Cached no-I/O identity moved behind the pure common contract. Runtime Broadcast adapter and best-effort background registration reuse the cached GUID/key; remote targets resolve persisted identities instead of inventing a local identity. Runtime Control/Collector/Scopes implementations renamed. Node display/version/actual-start metadata survives EF roundtrip. Checks: Common 141, Presentation 48, Infrastructure 18, real-engine integration 20 passing. Evidence: `/tmp/bitdevkit-profiling-runtime-identity-*`.
+- TASK-007 through TASK-055: incomplete.
 
 ## Requirement acceptance
 
 REQ-001 through REQ-024 remain unverified for the new implementation. Baseline tests describe existing Runtime behavior only.
+
+### TASK-007 — scoped Runtime markers and version-2 archives
+
+- Runtime query, evaluation, metrics, archives and Perfetto implementations use Runtime-prefixed names.
+- One `Markers` collection and one EF owned JSON collection preserve explicit Session/Node scope and kind. Session markers have no node identity; node markers validate their real owner. Imports retain both scopes and reject malformed or duplicate markers before mutation.
+- Runtime interval state is separate from its optional terminal outcome. Perfetto uses `profiling.marker` with scope/kind. Archives retain the format identifier, use version 2 and reject version 1 before storage mutation.
+- Verification: Common 145, Infrastructure unit 18, Presentation 48 and real SQLite/SQL Server/PostgreSQL integration 20 tests passed. TRX files: `/tmp/bitdevkit-profiling-contract-results/markers-*.trx`; logs: `/tmp/bitdevkit-profiling-markers-*.log`.
+
+### TASK-008 / Phase 2 exit — explicit Runtime configuration and naming
+
+- `AddProfiling` no longer enables Runtime implicitly. Nested Runtime options retain the approved collection/retention defaults; `WithRuntimeProfiling` composes repeated/reordered setup and explicit disablement. Disabled Runtime removes only its owned Broadcast handlers and workers, preserving an independently configured Broadcast feature. Shared cached node metadata remains available without Runtime.
+- Runtime stores are internal `InMemoryRuntimeProfilingStore` and `EntityFrameworkRuntimeProfilingStore<TContext>` components. The context contract is `IProfilingDbContext`; the profiling-only EF extension is `WithEntityFrameworkProvider`. Shared `ProfilingNodeEntity` deliberately remains shared, rather than using the mechanical inventory's Runtime node name. Combined provider selection is TASK-029.
+- Runtime commands use `profiling runtime` (alias `prof runtime`); console dispatch matches complete group prefixes while preserving existing single-part groups. Runtime dashboard routes live under `/profiling/runtime`, and scoped marker filters no longer duplicate annotations. Dashboard refresh configuration is owned by `DashboardEndpointsOptions`.
+- Added operation/query option defaults and validation for the independent capabilities. Recorder/provider wiring remains in the later planned tasks; Runtime setup does not enable operation capture.
+- Build: `dotnet build bITdevKit.slnx --no-restore --nologo`, exit 0, zero warnings/errors, 1:32. Log `/tmp/bitdevkit-profiling-phase2-build.log`.
+- Focused tests: Common 149, Infrastructure unit 18, Presentation profiling plus console commands 68, actual SQLite/SQL Server/PostgreSQL integration 20; all passed (255 total). TRX `/tmp/bitdevkit-profiling-contract-results/phase2-*.trx`; logs `/tmp/bitdevkit-profiling-phase2-*.log`.
+- Intermediate build/test failures were repaired: the benchmark assembly needed friend access to the internal Runtime component; two Runtime route/alias expectations still used the old names; the Broadcast coexistence test needed to preserve the pre-existing built-in handler.

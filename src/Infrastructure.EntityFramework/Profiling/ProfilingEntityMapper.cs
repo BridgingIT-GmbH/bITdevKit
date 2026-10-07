@@ -13,14 +13,14 @@ public static class ProfilingEntityMapper
 {
     /// <summary>Maps a session creation request to a durable active-session row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(request);</code></example>
-    public static ProfilingSessionEntity ToEntity(ProfilingSessionCreateRequest request) =>
+    public static RuntimeProfilingSessionEntity ToEntity(RuntimeProfilingSessionCreateRequest request) =>
         new()
         {
             Id = request.Identity.Id,
             Key = request.Identity.Key,
             LifecycleKey = EntityFrameworkProfilingStoreConstants.ActiveLifecycleKey,
             Name = NormalizeOptional(request.Name),
-            State = ProfilingSessionState.Running,
+            State = RuntimeProfilingSessionState.Running,
             StartedUtc = request.StartedUtc,
             EndsUtc = request.StartedUtc.Add(request.Duration),
             SamplingInterval = request.SamplingInterval,
@@ -30,7 +30,7 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps an imported terminal session to a durable row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(session);</code></example>
-    public static ProfilingSessionEntity ToEntity(ProfilingSession session) =>
+    public static RuntimeProfilingSessionEntity ToEntity(RuntimeProfilingSession session) =>
         new()
         {
             Id = session.Identity.Id,
@@ -50,10 +50,10 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps a durable session row to its provider-neutral model.</summary>
     /// <example><code>var session = ProfilingEntityMapper.ToModel(entity);</code></example>
-    public static ProfilingSession ToModel(ProfilingSessionEntity entity) =>
+    public static RuntimeProfilingSession ToModel(RuntimeProfilingSessionEntity entity) =>
         new()
         {
-            Identity = new ProfilingSessionIdentity(entity.Id, entity.Key),
+            Identity = new RuntimeProfilingSessionIdentity(entity.Id, entity.Key),
             Name = entity.Name,
             State = entity.State,
             StartedUtc = entity.StartedUtc,
@@ -68,14 +68,14 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps normalized session tags to ordered durable rows.</summary>
     /// <example><code>var tags = ProfilingEntityMapper.ToSessionTags(sessionId, values);</code></example>
-    public static ICollection<ProfilingSessionTagEntity> ToSessionTags(
+    public static ICollection<RuntimeProfilingSessionTagEntity> ToSessionTags(
         Guid sessionId,
         IEnumerable<string> values
     ) =>
         NormalizeStrings(values)
             .Select(
                 (value, index) =>
-                    new ProfilingSessionTagEntity
+                    new RuntimeProfilingSessionTagEntity
                     {
                         SessionId = sessionId,
                         Position = index,
@@ -87,7 +87,7 @@ public static class ProfilingEntityMapper
     /// <summary>Maps a stable profiling node to a durable row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(correlation, node);</code></example>
     public static ProfilingNodeEntity ToEntity(
-        ProfilingNodeCorrelation correlation,
+        RuntimeProfilingNodeCorrelation correlation,
         ProfilingNode node
     ) =>
         new()
@@ -97,6 +97,9 @@ public static class ProfilingEntityMapper
             BroadcastNodeIdentity = correlation.BroadcastNodeIdentity.Trim(),
             ProcessStartedUtc = correlation.ProcessStartedUtc,
             HostName = node.HostName,
+            ExecutionStartedUtc = node.ProcessStartedUtc,
+            DisplayName = node.DisplayName,
+            ApplicationVersion = node.ApplicationVersion,
             ProcessId = node.ProcessId,
         };
 
@@ -106,17 +109,20 @@ public static class ProfilingEntityMapper
         new()
         {
             Identity = new ProfilingNodeIdentity(entity.Id, entity.Key),
-            Correlation = new ProfilingNodeCorrelation(
+            Correlation = new RuntimeProfilingNodeCorrelation(
                 entity.BroadcastNodeIdentity,
                 entity.ProcessStartedUtc
             ),
             HostName = entity.HostName,
+            ProcessStartedUtc = entity.ExecutionStartedUtc,
+            DisplayName = entity.DisplayName,
+            ApplicationVersion = entity.ApplicationVersion,
             ProcessId = entity.ProcessId,
         };
 
     /// <summary>Maps node participation to a durable row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(participation);</code></example>
-    public static ProfilingParticipationEntity ToEntity(ProfilingNodeParticipation model) =>
+    public static RuntimeProfilingParticipationEntity ToEntity(RuntimeProfilingNodeParticipation model) =>
         new()
         {
             SessionId = model.SessionId,
@@ -133,8 +139,8 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps a durable participation row and readable keys to its model.</summary>
     /// <example><code>var participation = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></example>
-    public static ProfilingNodeParticipation ToModel(
-        ProfilingParticipationEntity entity,
+    public static RuntimeProfilingNodeParticipation ToModel(
+        RuntimeProfilingParticipationEntity entity,
         string sessionKey,
         string nodeKey
     ) =>
@@ -156,7 +162,7 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps immutable runtime context to a durable row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(runtimeContext);</code></example>
-    public static ProfilingRuntimeContextEntity ToEntity(ProfilingRuntimeContext model) =>
+    public static RuntimeProfilingRuntimeContextEntity ToEntity(RuntimeProfilingContext model) =>
         new()
         {
             SessionId = model.SessionId,
@@ -176,8 +182,8 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps a durable runtime-context row and readable keys to its model.</summary>
     /// <example><code>var context = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></example>
-    public static ProfilingRuntimeContext ToModel(
-        ProfilingRuntimeContextEntity entity,
+    public static RuntimeProfilingContext ToModel(
+        RuntimeProfilingRuntimeContextEntity entity,
         string sessionKey,
         string nodeKey
     ) =>
@@ -202,7 +208,7 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps an immutable runtime snapshot to a durable row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(snapshot);</code></example>
-    public static ProfilingSnapshotEntity ToEntity(ProfilingSnapshot model) =>
+    public static RuntimeProfilingSnapshotEntity ToEntity(RuntimeProfilingSnapshot model) =>
         new()
         {
             Id = model.Identity.Id,
@@ -276,14 +282,14 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps a durable snapshot row and readable keys to its model.</summary>
     /// <example><code>var snapshot = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></example>
-    public static ProfilingSnapshot ToModel(
-        ProfilingSnapshotEntity entity,
+    public static RuntimeProfilingSnapshot ToModel(
+        RuntimeProfilingSnapshotEntity entity,
         string sessionKey,
         string nodeKey
     ) =>
         new()
         {
-            Identity = new ProfilingSnapshotIdentity(entity.Id, entity.Key),
+            Identity = new RuntimeProfilingSnapshotIdentity(entity.Id, entity.Key),
             SessionId = entity.SessionId,
             SessionKey = sessionKey,
             NodeId = entity.NodeId,
@@ -353,56 +359,26 @@ public static class ProfilingEntityMapper
             TotalUsedSocketCount = entity.TotalUsedSocketCount,
         };
 
-    /// <summary>Maps an immutable phase marker to a durable row.</summary>
+    /// <summary>Maps an instantaneous marker to its owned document.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(marker);</code></example>
-    public static ProfilingPhaseMarkerEntity ToEntity(ProfilingPhaseMarker model) =>
-        new()
-        {
-            Id = model.Id,
-            SessionId = model.SessionId,
-            Name = model.Name,
-            TimestampUtc = model.TimestampUtc,
-        };
+    public static ProfilingMarkerEntity ToEntity(ProfilingMarker model) => new()
+    {
+        Id = model.Id, SessionId = model.SessionId, NodeId = model.NodeId,
+        Scope = model.Scope, Kind = model.Kind, Name = model.Name, TimestampUtc = model.TimestampUtc
+    };
 
-    /// <summary>Maps a durable phase-marker row and readable session key to its model.</summary>
-    /// <example><code>var marker = ProfilingEntityMapper.ToModel(entity, sessionKey);</code></example>
-    public static ProfilingPhaseMarker ToModel(
-        ProfilingPhaseMarkerEntity entity,
-        string sessionKey
-    ) => new(entity.Id, entity.SessionId, sessionKey, entity.Name, entity.TimestampUtc);
-
-    /// <summary>Maps an immutable node action marker to a durable row.</summary>
-    /// <example><code>var entity = ProfilingEntityMapper.ToEntity(marker);</code></example>
-    public static ProfilingActionMarkerEntity ToEntity(ProfilingActionMarker model) =>
-        new()
-        {
-            Id = model.Id,
-            SessionId = model.SessionId,
-            NodeId = model.NodeId,
-            Name = model.Name,
-            TimestampUtc = model.TimestampUtc,
-        };
-
-    /// <summary>Maps a durable action-marker row and readable keys to its model.</summary>
+    /// <summary>Maps an owned marker to its scoped public record.</summary>
     /// <example><code>var marker = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></example>
-    public static ProfilingActionMarker ToModel(
-        ProfilingActionMarkerEntity entity,
-        string sessionKey,
-        string nodeKey
-    ) =>
-        new(
-            entity.Id,
-            entity.SessionId,
-            entity.NodeId,
-            sessionKey,
-            nodeKey,
-            entity.Name,
-            entity.TimestampUtc
-        );
+    public static ProfilingMarker ToModel(ProfilingMarkerEntity entity, string sessionKey, string nodeKey = null) => new()
+    {
+        Id = entity.Id, SessionId = entity.SessionId, NodeId = entity.NodeId,
+        SessionKey = sessionKey, NodeKey = nodeKey, Scope = entity.Scope,
+        Kind = entity.Kind, Name = entity.Name, TimestampUtc = entity.TimestampUtc
+    };
 
     /// <summary>Maps a measured segment to a durable row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(segment);</code></example>
-    public static ProfilingSegmentEntity ToEntity(ProfilingSegment model) =>
+    public static RuntimeProfilingSegmentEntity ToEntity(ProfilingSegment model) =>
         new()
         {
             Id = model.Id,
@@ -425,7 +401,7 @@ public static class ProfilingEntityMapper
     /// <summary>Maps a durable segment row and readable keys to its model.</summary>
     /// <example><code>var segment = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></example>
     public static ProfilingSegment ToModel(
-        ProfilingSegmentEntity entity,
+        RuntimeProfilingSegmentEntity entity,
         string sessionKey,
         string nodeKey
     ) =>
@@ -452,14 +428,14 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps normalized segment tags to ordered durable rows.</summary>
     /// <example><code>var tags = ProfilingEntityMapper.ToSegmentTags(segmentId, values);</code></example>
-    public static ICollection<ProfilingSegmentTagEntity> ToSegmentTags(
+    public static ICollection<RuntimeProfilingSegmentTagEntity> ToSegmentTags(
         Guid segmentId,
         IEnumerable<string> values
     ) =>
         NormalizeStrings(values)
             .Select(
                 (value, index) =>
-                    new ProfilingSegmentTagEntity
+                    new RuntimeProfilingSegmentTagEntity
                     {
                         SegmentId = segmentId,
                         Position = index,
@@ -470,7 +446,7 @@ public static class ProfilingEntityMapper
 
     /// <summary>Maps an immutable custom metric observation to a durable row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(observation);</code></example>
-    public static ProfilingMetricObservationEntity ToEntity(ProfilingMetricObservation model) =>
+    public static RuntimeProfilingMetricObservationEntity ToEntity(ProfilingMetricObservation model) =>
         new()
         {
             Id = model.Id,
@@ -487,7 +463,7 @@ public static class ProfilingEntityMapper
     /// <summary>Maps a durable metric-observation row and readable keys to its model.</summary>
     /// <example><code>var observation = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></example>
     public static ProfilingMetricObservation ToModel(
-        ProfilingMetricObservationEntity entity,
+        RuntimeProfilingMetricObservationEntity entity,
         string sessionKey,
         string nodeKey
     ) =>

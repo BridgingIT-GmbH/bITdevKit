@@ -10,7 +10,7 @@ using Microsoft.Extensions.DependencyInjection;
 /// <summary>
 /// Continues fluent configuration of the one host-wide profiling feature.
 /// </summary>
-/// <example><code>services.AddProfiling(options => options.Enabled());</code></example>
+/// <example><code>services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling();</code></example>
 public sealed class ProfilingBuilderContext
 {
     /// <summary>Creates a builder context over the configured services and shared options.</summary>

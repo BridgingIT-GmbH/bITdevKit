@@ -30,7 +30,7 @@ public static class ProfilingModelBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
 
-        var session = modelBuilder.Entity<ProfilingSessionEntity>();
+        var session = modelBuilder.Entity<RuntimeProfilingSessionEntity>();
 
         session.OwnsMany(
             x => x.Tags,
@@ -51,19 +51,10 @@ public static class ProfilingModelBuilderExtensions
         );
 
         session.OwnsMany(
-            x => x.PhaseMarkers,
+            x => x.Markers,
             owned =>
             {
-                owned.ToJson("PhaseMarkers");
-                owned.WithOwner().HasForeignKey(x => x.SessionId);
-            }
-        );
-
-        session.OwnsMany(
-            x => x.ActionMarkers,
-            owned =>
-            {
-                owned.ToJson("ActionMarkers");
+                owned.ToJson("Markers");
                 owned.WithOwner().HasForeignKey(x => x.SessionId);
             }
         );

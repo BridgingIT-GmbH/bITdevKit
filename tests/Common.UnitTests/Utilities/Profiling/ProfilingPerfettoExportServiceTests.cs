@@ -14,13 +14,13 @@ public sealed class ProfilingPerfettoExportServiceTests
     public async Task ExportSessionAsync_CompleteTerminalEvidence_WritesPerfettoTraceEvents()
     {
         // Arrange
-        var data = CreateSessionData(ProfilingSessionState.Completed);
-        var store = Substitute.For<IProfilingStore>();
+        var data = CreateSessionData(RuntimeProfilingSessionState.Completed);
+        var store = Substitute.For<IRuntimeProfilingStore>();
         store
             .GetSessionDataAsync("sess0001", Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingSessionData>.Success(data));
-        var service = new ProfilingPerfettoExportService(
-            new ProfilingOptions { Enabled = true },
+            .Returns(Result<RuntimeProfilingSessionData>.Success(data));
+        var service = new RuntimeProfilingPerfettoExportService(
+            new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } },
             store
         );
         await using var destination = new MemoryStream();
@@ -52,12 +52,12 @@ public sealed class ProfilingPerfettoExportServiceTests
         cpu.GetProperty("args").GetProperty("percent").GetDouble().ShouldBe(42.5);
         events.ShouldContain(item =>
             GetString(item, "ph") == "i"
-            && GetString(item, "cat") == "profiling.phase"
+            && GetString(item, "cat") == "profiling.marker"
             && GetString(item, "name") == "workload"
         );
         events.ShouldContain(item =>
             GetString(item, "ph") == "i"
-            && GetString(item, "cat") == "profiling.action"
+            && GetString(item, "cat") == "profiling.marker"
             && GetString(item, "name") == "GC requested"
         );
 
@@ -65,7 +65,7 @@ public sealed class ProfilingPerfettoExportServiceTests
             GetString(item, "ph") == "X" && GetString(item, "name") == "load customers"
         );
         segment.GetProperty("dur").GetInt64().ShouldBe(1_500_000);
-        segment.GetProperty("args").GetProperty("outcome").GetString().ShouldBe("Success");
+        segment.GetProperty("args").GetProperty("outcome").GetString().ShouldBe("Completed");
         events.ShouldContain(item =>
             GetString(item, "ph") == "C"
             && GetString(item, "name") == "devkit.jobs.completed (jobs)"
@@ -77,16 +77,16 @@ public sealed class ProfilingPerfettoExportServiceTests
     public async Task ExportSessionAsync_RunningSession_RejectsWithoutWritingDestination()
     {
         // Arrange
-        var store = Substitute.For<IProfilingStore>();
+        var store = Substitute.For<IRuntimeProfilingStore>();
         store
             .GetSessionDataAsync("sess0001", Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingSessionData>.Success(
-                    CreateSessionData(ProfilingSessionState.Running)
+                Result<RuntimeProfilingSessionData>.Success(
+                    CreateSessionData(RuntimeProfilingSessionState.Running)
                 )
             );
-        var service = new ProfilingPerfettoExportService(
-            new ProfilingOptions { Enabled = true },
+        var service = new RuntimeProfilingPerfettoExportService(
+            new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } },
             store
         );
         await using var destination = new MemoryStream();
@@ -100,20 +100,20 @@ public sealed class ProfilingPerfettoExportServiceTests
         destination.Length.ShouldBe(0);
     }
 
-    private static ProfilingSessionData CreateSessionData(ProfilingSessionState state)
+    private static RuntimeProfilingSessionData CreateSessionData(RuntimeProfilingSessionState state)
     {
         var startedUtc = DateTimeOffset.Parse("2026-08-11T10:00:00Z");
         var sessionId = Guid.Parse("11111111-1111-1111-1111-111111111111");
         var nodeId = Guid.Parse("22222222-2222-2222-2222-222222222222");
         var segmentId = Guid.Parse("33333333-3333-3333-3333-333333333333");
-        var session = new ProfilingSession
+        var session = new RuntimeProfilingSession
         {
             Identity = new(sessionId, "sess0001"),
             Name = "comparison run",
             State = state,
             StartedUtc = startedUtc,
             EndsUtc = startedUtc.AddSeconds(30),
-            CompletedUtc = state == ProfilingSessionState.Running
+            CompletedUtc = state == RuntimeProfilingSessionState.Running
                 ? null
                 : startedUtc.AddSeconds(3),
             SamplingInterval = TimeSpan.FromSeconds(1),
@@ -127,13 +127,13 @@ public sealed class ProfilingPerfettoExportServiceTests
             ProcessId = 1234,
         };
 
-        return new ProfilingSessionData
+        return new RuntimeProfilingSessionData
         {
             Session = session,
             Nodes = [node],
             RuntimeContexts =
             [
-                new ProfilingRuntimeContext
+                new RuntimeProfilingContext
                 {
                     SessionId = sessionId,
                     SessionKey = session.Identity.Key,
@@ -146,7 +146,7 @@ public sealed class ProfilingPerfettoExportServiceTests
             ],
             Snapshots =
             [
-                new ProfilingSnapshot
+                new RuntimeProfilingSnapshot
                 {
                     Identity = new(
                         Guid.Parse("44444444-4444-4444-4444-444444444444"),
@@ -169,7 +169,7 @@ public sealed class ProfilingPerfettoExportServiceTests
                     Gen0CollectionCount = 3,
                 },
             ],
-            PhaseMarkers =
+            Markers =
             [
                 new(
                     Guid.Parse("55555555-5555-5555-5555-555555555555"),
@@ -178,9 +178,7 @@ public sealed class ProfilingPerfettoExportServiceTests
                     "workload",
                     startedUtc.AddMilliseconds(500)
                 ),
-            ],
-            ActionMarkers =
-            [
+
                 new(
                     Guid.Parse("66666666-6666-6666-6666-666666666666"),
                     sessionId,
@@ -204,7 +202,7 @@ public sealed class ProfilingPerfettoExportServiceTests
                     StartedUtc = startedUtc.AddMilliseconds(750),
                     EndedUtc = startedUtc.AddMilliseconds(2250),
                     Elapsed = TimeSpan.FromMilliseconds(1500),
-                    Outcome = ProfilingSegmentOutcome.Success,
+                    Outcome = ProfilingSegmentOutcome.Completed,
                 },
             ],
             MetricObservations =

@@ -10,12 +10,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>Represents one immutable node-local profiling snapshot.</summary>
-/// <example><code>public DbSet&lt;ProfilingSnapshotEntity&gt; ProfilingSnapshots { get; set; }</code></example>
+/// <example><code>public DbSet&lt;RuntimeProfilingSnapshotEntity&gt; ProfilingSnapshots { get; set; }</code></example>
 [Table("__Profiling_Snapshots")]
 [Index(nameof(Key), IsUnique = true)]
 [Index(nameof(SessionId), nameof(NodeId), nameof(Sequence), IsUnique = true)]
 [Index(nameof(SessionId), nameof(NodeId), nameof(TimestampUtc))]
-public sealed class ProfilingSnapshotEntity
+public sealed class RuntimeProfilingSnapshotEntity
 {
     /// <summary>Gets or sets the snapshot identifier.</summary>
     [Key]
@@ -231,7 +231,7 @@ public sealed class ProfilingSnapshotEntity
     /// <summary>Gets or sets the owning session.</summary>
     [Required]
     [ForeignKey(nameof(SessionId))]
-    public ProfilingSessionEntity Session { get; set; }
+    public RuntimeProfilingSessionEntity Session { get; set; }
 
     /// <summary>Gets or sets the producing node.</summary>
     [Required]

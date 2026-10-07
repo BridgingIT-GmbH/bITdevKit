@@ -9,20 +9,20 @@ using System.Diagnostics;
 
 public sealed class ProfilingStressServiceTests
 {
-    public static TheoryData<ProfilingStressRequest, string> InvalidRequests =>
+    public static TheoryData<RuntimeProfilingStressRequest, string> InvalidRequests =>
         new()
         {
             {
-                ProfilingStressRequest.Default with { DurationSeconds = 0 },
-                nameof(ProfilingStressRequest.DurationSeconds)
+                RuntimeProfilingStressRequest.Default with { DurationSeconds = 0 },
+                nameof(RuntimeProfilingStressRequest.DurationSeconds)
             },
             {
-                ProfilingStressRequest.Default with { WorkerCount = 0 },
-                nameof(ProfilingStressRequest.WorkerCount)
+                RuntimeProfilingStressRequest.Default with { WorkerCount = 0 },
+                nameof(RuntimeProfilingStressRequest.WorkerCount)
             },
             {
-                ProfilingStressRequest.Default with { RetainedMemoryBytes = -1 },
-                nameof(ProfilingStressRequest.RetainedMemoryBytes)
+                RuntimeProfilingStressRequest.Default with { RetainedMemoryBytes = -1 },
+                nameof(RuntimeProfilingStressRequest.RetainedMemoryBytes)
             },
         };
 
@@ -31,8 +31,8 @@ public sealed class ProfilingStressServiceTests
     {
         // Arrange
         using var cancellation = new CancellationTokenSource();
-        var sut = new ProfilingStressService();
-        var request = ProfilingStressRequest.Default with
+        var sut = new RuntimeProfilingStressService();
+        var request = RuntimeProfilingStressRequest.Default with
         {
             DurationSeconds = 5,
             WorkerCount = 2,
@@ -66,8 +66,8 @@ public sealed class ProfilingStressServiceTests
     {
         // Arrange
         var measurements = new RecordingProfilingMeasurementService();
-        var sut = new ProfilingStressService(measurements: measurements);
-        var request = ProfilingStressRequest.Default with
+        var sut = new RuntimeProfilingStressService(measurements: measurements);
+        var request = RuntimeProfilingStressRequest.Default with
         {
             DurationSeconds = 1,
             WorkerCount = 1,
@@ -95,7 +95,7 @@ public sealed class ProfilingStressServiceTests
     public void Default_WhenCreated_UsesDashboardWorkloadShape()
     {
         // Act
-        var request = ProfilingStressRequest.Default;
+        var request = RuntimeProfilingStressRequest.Default;
 
         // Assert
         request.DurationSeconds.ShouldBe(30);
@@ -109,12 +109,12 @@ public sealed class ProfilingStressServiceTests
     [Theory]
     [MemberData(nameof(InvalidRequests))]
     public void TryStart_WithInvalidRequest_ThrowsArgumentOutOfRangeException(
-        ProfilingStressRequest request,
+        RuntimeProfilingStressRequest request,
         string parameterName
     )
     {
         // Arrange
-        var sut = new ProfilingStressService();
+        var sut = new RuntimeProfilingStressService();
 
         // Act
         var exception = Should.Throw<ArgumentOutOfRangeException>(() => sut.TryStart(request));
@@ -124,7 +124,7 @@ public sealed class ProfilingStressServiceTests
         sut.IsRunning.ShouldBeFalse();
     }
 
-    private sealed class RecordingProfilingMeasurementService : IProfilingMeasurementService
+    private sealed class RecordingProfilingMeasurementService : IRuntimeProfilingMeasurementService
     {
         public string Name { get; private set; }
 
@@ -134,12 +134,12 @@ public sealed class ProfilingStressServiceTests
 
         public bool MeasurementCompleted { get; private set; }
 
-        public Task<Result<IProfilingMeasurementScope>> BeginAsync(
+        public Task<IResult<IRuntimeProfilingMeasurementScope>> BeginAsync(
             string name,
             CancellationToken cancellationToken = default
         ) => throw new NotSupportedException();
 
-        public async Task<Result> MeasureAsync(
+        public async Task<IResult> MeasureAsync(
             string name,
             Func<CancellationToken, Task> action,
             CancellationToken cancellationToken = default

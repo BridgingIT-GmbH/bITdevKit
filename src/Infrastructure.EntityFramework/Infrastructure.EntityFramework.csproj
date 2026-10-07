@@ -39,4 +39,9 @@
     <ProjectReference Include="..\Domain.Outbox\Domain.Outbox.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.UnitTests" />
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.IntegrationTests" />
+  </ItemGroup>
+
 </Project>

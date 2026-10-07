@@ -164,6 +164,7 @@ builder.Services.AddFakeIdentityProvider(o => o
 builder.Services.AddEndpoints<SystemEndpoints>();
 builder.Services.AddProfiling(o => o
         .Enabled(builder.Environment.IsDevelopment()))
+    .WithRuntimeProfiling()
     .AddConsoleCommands(builder.Environment.IsDevelopment());
 builder.Services.AddDashboard(o => o
     .Enabled(builder.Environment.IsDevelopment())

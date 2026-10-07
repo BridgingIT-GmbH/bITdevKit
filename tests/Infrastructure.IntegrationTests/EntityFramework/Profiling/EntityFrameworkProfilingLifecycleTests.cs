@@ -55,22 +55,22 @@ public sealed class EntityFrameworkProfilingLifecycleTests
         var session = (
             await harness.Store.GetOrCreateActiveSessionAsync(
                 new(
-                    ProfilingSessionIdentity.Create(),
+                    ProfilingIdentityFactory.CreateRuntimeSession(),
                     "abandoned",
                     startedUtc,
-                    ProfilingOptions.MinimumSamplingInterval,
+                    RuntimeProfilingOptions.MinimumSamplingInterval,
                     TimeSpan.FromSeconds(1),
                     []
                 )
             )
         ).Value.Session;
-        var correlation = new ProfilingNodeCorrelation("node-a", startedUtc);
+        var correlation = new RuntimeProfilingNodeCorrelation("node-a", startedUtc);
         var node = (
             await harness.Store.GetOrCreateNodeAsync(
                 correlation,
                 new()
                 {
-                    Identity = ProfilingNodeIdentity.Create(),
+                    Identity = ProfilingIdentityFactory.CreateNode(),
                     Correlation = correlation,
                     HostName = "localhost",
                     ProcessId = 1234,
@@ -84,19 +84,15 @@ public sealed class EntityFrameworkProfilingLifecycleTests
                 SessionKey = session.Identity.Key,
                 NodeId = node.Identity.Id,
                 NodeKey = node.Identity.Key,
-                Role = ProfilingNodeRole.ExpectedParticipant,
-                State = ProfilingParticipationState.Accepted,
+                Role = RuntimeProfilingNodeRole.ExpectedParticipant,
+                State = RuntimeProfilingParticipationState.Accepted,
                 JoinedUtc = startedUtc,
             }
         );
-        var options = new ProfilingOptions
-        {
-            Enabled = true,
-            FinalizationGracePeriod = TimeSpan.Zero,
-        };
+        var options = new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true, FinalizationGracePeriod = TimeSpan.Zero } };
         var timeProvider = new FixedTimeProvider(startedUtc.AddSeconds(2));
-        var finalizer = new ProfilingSessionFinalizer(harness.Store, options, timeProvider);
-        var reconciler = new ProfilingStartupReconciler(
+        var finalizer = new RuntimeProfilingSessionFinalizer(harness.Store, options, timeProvider);
+        var reconciler = new RuntimeProfilingStartupReconciler(
             harness.Store,
             options,
             timeProvider,
@@ -114,12 +110,12 @@ public sealed class EntityFrameworkProfilingLifecycleTests
         second.IsSuccess.ShouldBeTrue();
         second.Value.ShouldBe(0);
         finalized.IsSuccess.ShouldBeTrue();
-        finalized.Value.State.ShouldBe(ProfilingSessionState.CompletedWithWarnings);
+        finalized.Value.State.ShouldBe(RuntimeProfilingSessionState.CompletedWithWarnings);
         finalized.Value.CompletedUtc.ShouldBe(timeProvider.GetUtcNow());
     }
 
-    private static async Task<ProfilingSession> CreateTerminalSessionAsync(
-        IProfilingStore store,
+    private static async Task<RuntimeProfilingSession> CreateTerminalSessionAsync(
+        IRuntimeProfilingStore store,
         string name,
         DateTimeOffset startedUtc
     )
@@ -127,10 +123,10 @@ public sealed class EntityFrameworkProfilingLifecycleTests
         var session = (
             await store.GetOrCreateActiveSessionAsync(
                 new(
-                    ProfilingSessionIdentity.Create(),
+                    ProfilingIdentityFactory.CreateRuntimeSession(),
                     name,
                     startedUtc,
-                    ProfilingOptions.MinimumSamplingInterval,
+                    RuntimeProfilingOptions.MinimumSamplingInterval,
                     TimeSpan.FromSeconds(1),
                     []
                 )
@@ -139,8 +135,8 @@ public sealed class EntityFrameworkProfilingLifecycleTests
         return (
             await store.TryTransitionSessionAsync(
                 session.Identity.Id,
-                [ProfilingSessionState.Running],
-                ProfilingSessionState.Completed,
+                [RuntimeProfilingSessionState.Running],
+                RuntimeProfilingSessionState.Completed,
                 startedUtc.AddSeconds(1)
             )
         ).Value;
@@ -156,7 +152,7 @@ public sealed class EntityFrameworkProfilingLifecycleTests
         string databasePath
     ) : IAsyncDisposable
     {
-        public IProfilingStore Store { get; } = provider.GetRequiredService<IProfilingStore>();
+        public IRuntimeProfilingStore Store { get; } = provider.GetRequiredService<IRuntimeProfilingStore>();
 
         public static async Task<ProfilingLifecycleHarness> CreateAsync()
         {
@@ -169,8 +165,8 @@ public sealed class EntityFrameworkProfilingLifecycleTests
                 options.UseSqlite($"Data Source={databasePath}")
             );
             services
-                .AddProfiling(options => options.Enabled())
-                .WithEntityFrameworkStore<ProfilingLifecycleDbContext>();
+                .AddProfiling(options => options.Enabled()).WithRuntimeProfiling()
+                .WithEntityFrameworkProvider<ProfilingLifecycleDbContext>();
             var provider = services.BuildServiceProvider(
                 new ServiceProviderOptions { ValidateScopes = true }
             );
@@ -203,19 +199,19 @@ public sealed class EntityFrameworkProfilingLifecycleTests
 
     private sealed class ProfilingLifecycleDbContext(
         DbContextOptions<ProfilingLifecycleDbContext> options
-    ) : DbContext(options), IProfilingContext
+    ) : DbContext(options), IProfilingDbContext
     {
-        public DbSet<ProfilingSessionEntity> ProfilingSessions { get; set; }
+        public DbSet<RuntimeProfilingSessionEntity> ProfilingSessions { get; set; }
 
-        public DbSet<ProfilingInvalidSessionEntity> ProfilingInvalidSessions { get; set; }
+        public DbSet<RuntimeProfilingInvalidSessionEntity> ProfilingInvalidSessions { get; set; }
 
         public DbSet<ProfilingNodeEntity> ProfilingNodes { get; set; }
 
-        public DbSet<ProfilingParticipationEntity> ProfilingParticipations { get; set; }
+        public DbSet<RuntimeProfilingParticipationEntity> ProfilingParticipations { get; set; }
 
-        public DbSet<ProfilingSnapshotEntity> ProfilingSnapshots { get; set; }
+        public DbSet<RuntimeProfilingSnapshotEntity> ProfilingSnapshots { get; set; }
 
-        public DbSet<ProfilingMetricObservationEntity> ProfilingMetricObservations { get; set; }
+        public DbSet<RuntimeProfilingMetricObservationEntity> ProfilingMetricObservations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

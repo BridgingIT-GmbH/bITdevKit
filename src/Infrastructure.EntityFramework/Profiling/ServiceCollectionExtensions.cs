@@ -14,7 +14,7 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 /// <example>
 /// <code>
 /// services.AddProfiling(options => options.Enabled())
-///     .WithEntityFrameworkStore&lt;AppDbContext&gt;();
+///     .WithEntityFrameworkProvider&lt;AppDbContext&gt;();
 /// </code>
 /// </example>
 public static class ProfilingEntityFrameworkServiceCollectionExtensions
@@ -23,7 +23,7 @@ public static class ProfilingEntityFrameworkServiceCollectionExtensions
     /// Replaces the default process-local profiling store with a durable Entity Framework store.
     /// </summary>
     /// <typeparam name="TContext">
-    /// The application context implementing <see cref="IProfilingContext"/>.
+    /// The application context implementing <see cref="IProfilingDbContext"/>.
     /// </typeparam>
     /// <param name="context">The profiling builder context.</param>
     /// <returns>The same builder context for fluent configuration.</returns>
@@ -37,19 +37,19 @@ public static class ProfilingEntityFrameworkServiceCollectionExtensions
     /// <example>
     /// <code>
     /// services.AddProfiling(options => options.Enabled())
-    ///     .WithEntityFrameworkStore&lt;AppDbContext&gt;();
+    ///     .WithEntityFrameworkProvider&lt;AppDbContext&gt;();
     /// </code>
     /// </example>
-    public static ProfilingBuilderContext WithEntityFrameworkStore<TContext>(
+    public static ProfilingBuilderContext WithEntityFrameworkProvider<TContext>(
         this ProfilingBuilderContext context
     )
-        where TContext : DbContext, IProfilingContext
+        where TContext : DbContext, IProfilingDbContext
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        var providerType = typeof(EntityFrameworkProfilingStore<TContext>);
+        var providerType = typeof(EntityFrameworkRuntimeProfilingStore<TContext>);
         var registrations = context
-            .Services.Where(descriptor => descriptor.ServiceType == typeof(IProfilingStore))
+            .Services.Where(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingStore))
             .ToArray();
         if (
             registrations.Any(descriptor =>
@@ -62,17 +62,17 @@ public static class ProfilingEntityFrameworkServiceCollectionExtensions
             );
         }
 
-        context.Services.RemoveAll<IProfilingStore>();
+        context.Services.RemoveAll<IRuntimeProfilingStore>();
         context.Services.TryAddSingleton<
-            IProfilingStore,
-            EntityFrameworkProfilingStore<TContext>
+            IRuntimeProfilingStore,
+            EntityFrameworkRuntimeProfilingStore<TContext>
         >();
 
         return context;
     }
 
     private static bool IsDefaultStore(ServiceDescriptor descriptor) =>
-        descriptor.ImplementationType == typeof(InMemoryProfilingStore);
+        descriptor.ImplementationType?.FullName == "BridgingIT.DevKit.Common.InMemoryRuntimeProfilingStore";
 
     private static bool IsSameProvider(ServiceDescriptor descriptor, Type providerType) =>
         descriptor.ImplementationType == providerType;

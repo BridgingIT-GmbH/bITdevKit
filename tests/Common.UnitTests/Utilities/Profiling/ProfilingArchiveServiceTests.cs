@@ -11,10 +11,32 @@ using System.Text.Json.Nodes;
 public sealed class ProfilingArchiveServiceTests
 {
     [Fact]
+    public async Task Import_VersionOneArchive_RejectsBeforeMutation()
+    {
+        // Arrange
+        var sourceStore = new InMemoryRuntimeProfilingStore();
+        var source = await CreateSessionGraphAsync(sourceStore, terminal: true, snapshotCount: 1);
+        await using var exported = new MemoryStream();
+        (await CreateService(sourceStore).ExportSessionAsync(source.Session.Identity.Key, exported)).IsSuccess.ShouldBeTrue();
+        var document = JsonNode.Parse(exported.ToArray()).AsObject();
+        document["version"] = 1;
+        await using var archive = new MemoryStream(Encoding.UTF8.GetBytes(document.ToJsonString()));
+        var targetStore = new InMemoryRuntimeProfilingStore();
+
+        // Act
+        var result = await CreateService(targetStore).ImportAsync(archive);
+
+        // Assert
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(error => error is ProfilingArchiveError);
+        (await targetStore.ListSessionsAsync()).Value.ShouldBeEmpty();
+    }
+
+    [Fact]
     public async Task ExportSessionAndImport_CompleteTerminalGraph_CreatesIndependentCopy()
     {
         // Arrange
-        var sourceStore = new InMemoryProfilingStore();
+        var sourceStore = new InMemoryRuntimeProfilingStore();
         var source = await CreateSessionGraphAsync(sourceStore, terminal: true, snapshotCount: 2);
         var sourceService = CreateService(sourceStore);
         await using var archive = new MemoryStream();
@@ -26,7 +48,7 @@ public sealed class ProfilingArchiveServiceTests
         );
         var json = Encoding.UTF8.GetString(archive.ToArray());
         archive.Position = 0;
-        var targetStore = new InMemoryProfilingStore();
+        var targetStore = new InMemoryRuntimeProfilingStore();
         var importResult = await CreateService(targetStore).ImportAsync(archive);
 
         // Assert
@@ -34,13 +56,13 @@ public sealed class ProfilingArchiveServiceTests
         importResult.IsSuccess.ShouldBeTrue();
         importResult.Value.SessionKey.ShouldNotBe(source.Session.Identity.Key);
         importResult.Value.SessionKey.Length.ShouldBe(8);
-        json.ShouldContain(ProfilingArchiveFormat.Identifier);
+        json.ShouldContain(RuntimeProfilingArchiveFormat.Identifier);
         json.ShouldNotContain(source.Session.Identity.Id.ToString("D"));
         json.ShouldNotContain("broadcast-test-node");
 
         var imported = (await targetStore.GetSessionDataAsync(importResult.Value.SessionKey)).Value;
         imported.Session.Name.ShouldBe(source.Session.Name);
-        imported.Session.State.ShouldBe(ProfilingSessionState.Completed);
+        imported.Session.State.ShouldBe(RuntimeProfilingSessionState.Completed);
         imported.Snapshots.Count.ShouldBe(2);
         imported.Segments.Count.ShouldBe(2);
         imported.Segments.Single(item => item.ParentSegmentId is not null)
@@ -61,7 +83,7 @@ public sealed class ProfilingArchiveServiceTests
     public async Task ExportSnapshot_RunningSession_ImportsAsCompletedOneSnapshotSession()
     {
         // Arrange
-        var sourceStore = new InMemoryProfilingStore();
+        var sourceStore = new InMemoryRuntimeProfilingStore();
         var source = await CreateSessionGraphAsync(sourceStore, terminal: false, snapshotCount: 1);
         var sourceService = CreateService(sourceStore);
         await using var archive = new MemoryStream();
@@ -74,14 +96,14 @@ public sealed class ProfilingArchiveServiceTests
             archive
         );
         archive.Position = 0;
-        var targetStore = new InMemoryProfilingStore();
+        var targetStore = new InMemoryRuntimeProfilingStore();
         var importResult = await CreateService(targetStore).ImportAsync(archive);
 
         // Assert
         exportResult.IsSuccess.ShouldBeTrue();
         importResult.IsSuccess.ShouldBeTrue();
         var imported = (await targetStore.GetSessionDataAsync(importResult.Value.SessionKey)).Value;
-        imported.Session.State.ShouldBe(ProfilingSessionState.Completed);
+        imported.Session.State.ShouldBe(RuntimeProfilingSessionState.Completed);
         imported.Session.Name.ShouldContain("Imported snapshot");
         imported.Snapshots.Count.ShouldBe(1);
         imported.Nodes.Count.ShouldBe(1);
@@ -93,11 +115,11 @@ public sealed class ProfilingArchiveServiceTests
     public async Task Import_InvalidOrOversizedArchive_RejectsWithoutStoreMutation()
     {
         // Arrange
-        var store = new InMemoryProfilingStore();
+        var store = new InMemoryRuntimeProfilingStore();
         var service = CreateService(store);
         await using var invalid = new MemoryStream(Encoding.UTF8.GetBytes("{\"format\":\"wrong\"}"));
         await using var oversized = new MemoryStream(
-            new byte[ProfilingArchiveFormat.MaximumSizeBytes + 1]
+            new byte[RuntimeProfilingArchiveFormat.MaximumSizeBytes + 1]
         );
 
         // Act
@@ -116,7 +138,7 @@ public sealed class ProfilingArchiveServiceTests
     public async Task Import_ArchiveWithUnknownProperty_RejectsWithoutStoreMutation()
     {
         // Arrange
-        var sourceStore = new InMemoryProfilingStore();
+        var sourceStore = new InMemoryRuntimeProfilingStore();
         var source = await CreateSessionGraphAsync(sourceStore, terminal: true, snapshotCount: 1);
         await using var exported = new MemoryStream();
         (await CreateService(sourceStore).ExportSessionAsync(source.Session.Identity.Key, exported))
@@ -124,7 +146,7 @@ public sealed class ProfilingArchiveServiceTests
         var document = JsonNode.Parse(exported.ToArray()).AsObject();
         document["unknown"] = true;
         await using var archive = new MemoryStream(Encoding.UTF8.GetBytes(document.ToJsonString()));
-        var targetStore = new InMemoryProfilingStore();
+        var targetStore = new InMemoryRuntimeProfilingStore();
 
         // Act
         var result = await CreateService(targetStore).ImportAsync(archive);
@@ -139,7 +161,7 @@ public sealed class ProfilingArchiveServiceTests
     public async Task ExportSession_RunningSession_RejectsWithoutWritingDestination()
     {
         // Arrange
-        var store = new InMemoryProfilingStore();
+        var store = new InMemoryRuntimeProfilingStore();
         var source = await CreateSessionGraphAsync(store, terminal: false, snapshotCount: 1);
         await using var destination = new MemoryStream();
 
@@ -154,11 +176,11 @@ public sealed class ProfilingArchiveServiceTests
         destination.Length.ShouldBe(0);
     }
 
-    private static ProfilingArchiveService CreateService(IProfilingStore store) =>
-        new(new ProfilingOptions { Enabled = true }, store);
+    private static RuntimeProfilingArchiveService CreateService(IRuntimeProfilingStore store) =>
+        new(new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } }, store);
 
     private static async Task<SourceGraph> CreateSessionGraphAsync(
-        IProfilingStore store,
+        IRuntimeProfilingStore store,
         bool terminal,
         int snapshotCount
     )
@@ -167,7 +189,7 @@ public sealed class ProfilingArchiveServiceTests
         var session = (
             await store.GetOrCreateActiveSessionAsync(
                 new(
-                    ProfilingSessionIdentity.Create(),
+                    ProfilingIdentityFactory.CreateRuntimeSession(),
                     "archive test",
                     startedUtc,
                     TimeSpan.FromSeconds(1),
@@ -176,13 +198,13 @@ public sealed class ProfilingArchiveServiceTests
                 )
             )
         ).Value.Session;
-        var correlation = new ProfilingNodeCorrelation("broadcast-test-node", startedUtc.AddMinutes(-1));
+        var correlation = new RuntimeProfilingNodeCorrelation("broadcast-test-node", startedUtc.AddMinutes(-1));
         var node = (
             await store.GetOrCreateNodeAsync(
                 correlation,
                 new()
                 {
-                    Identity = ProfilingNodeIdentity.Create(),
+                    Identity = ProfilingIdentityFactory.CreateNode(),
                     Correlation = correlation,
                     HostName = "test-host",
                     ProcessId = 1234,
@@ -196,10 +218,10 @@ public sealed class ProfilingArchiveServiceTests
                 SessionKey = session.Identity.Key,
                 NodeId = node.Identity.Id,
                 NodeKey = node.Identity.Key,
-                Role = ProfilingNodeRole.ExpectedParticipant,
+                Role = RuntimeProfilingNodeRole.ExpectedParticipant,
                 State = terminal
-                    ? ProfilingParticipationState.Completed
-                    : ProfilingParticipationState.Collecting,
+                    ? RuntimeProfilingParticipationState.Completed
+                    : RuntimeProfilingParticipationState.Collecting,
                 JoinedUtc = startedUtc,
                 CompletedUtc = terminal ? startedUtc.AddSeconds(5) : null,
                 SuccessfulCaptureCount = snapshotCount,
@@ -217,13 +239,13 @@ public sealed class ProfilingArchiveServiceTests
                 ProcessStartedUtc = startedUtc.AddMinutes(-1),
             }
         );
-        var snapshots = new List<ProfilingSnapshot>();
+        var snapshots = new List<RuntimeProfilingSnapshot>();
         for (var sequence = 1; sequence <= snapshotCount; sequence++)
         {
             var timestamp = startedUtc.AddSeconds(sequence);
-            var snapshot = new ProfilingSnapshot
+            var snapshot = new RuntimeProfilingSnapshot
             {
-                Identity = ProfilingSnapshotIdentity.Create(),
+                Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
                 SessionId = session.Identity.Id,
                 SessionKey = session.Identity.Key,
                 NodeId = node.Identity.Id,
@@ -253,7 +275,7 @@ public sealed class ProfilingArchiveServiceTests
                 NodeKey = node.Identity.Key,
                 Name = "parent",
                 StartedUtc = startedUtc.AddSeconds(1),
-                Outcome = ProfilingSegmentOutcome.Open,
+                Outcome = null,
             };
             var child = parent with
             {
@@ -267,13 +289,13 @@ public sealed class ProfilingArchiveServiceTests
             {
                 EndedUtc = startedUtc.AddSeconds(2),
                 Elapsed = TimeSpan.FromSeconds(1),
-                Outcome = ProfilingSegmentOutcome.Success,
+                Outcome = ProfilingSegmentOutcome.Completed,
             })).IsSuccess.ShouldBeTrue();
             (await store.UpsertSegmentAsync(child with
             {
                 EndedUtc = startedUtc.AddSeconds(2),
                 Elapsed = TimeSpan.FromSeconds(1),
-                Outcome = ProfilingSegmentOutcome.Success,
+                Outcome = ProfilingSegmentOutcome.Completed,
             })).IsSuccess.ShouldBeTrue();
             (await store.AddMetricObservationAsync(
                 new()
@@ -297,8 +319,8 @@ public sealed class ProfilingArchiveServiceTests
             session = (
                 await store.TryTransitionSessionAsync(
                     session.Identity.Id,
-                    [ProfilingSessionState.Running],
-                    ProfilingSessionState.Completed,
+                    [RuntimeProfilingSessionState.Running],
+                    RuntimeProfilingSessionState.Completed,
                     startedUtc.AddSeconds(5)
                 )
             ).Value;
@@ -308,8 +330,8 @@ public sealed class ProfilingArchiveServiceTests
     }
 
     private sealed record SourceGraph(
-        ProfilingSession Session,
+        RuntimeProfilingSession Session,
         ProfilingNode Node,
-        IReadOnlyList<ProfilingSnapshot> Snapshots
+        IReadOnlyList<RuntimeProfilingSnapshot> Snapshots
     );
 }

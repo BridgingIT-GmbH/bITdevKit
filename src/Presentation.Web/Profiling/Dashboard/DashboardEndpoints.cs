@@ -18,34 +18,34 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 
 /// <summary>Maps the authorized Profiling dashboard and operational endpoints.</summary>
 /// <param name="options">The shared dashboard endpoint options.</param>
-/// <example><code>services.AddProfiling(options => options.Enabled()); services.AddDashboard(options => options.Enabled());</code></example>
+/// <example><code>services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling(); services.AddDashboard(options => options.Enabled());</code></example>
 public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
     : EndpointsBase,
         IDashboardEndpoints
 {
-    private const string ProfilingPath = "/profiling";
-    private const string ContentPath = "/profiling/content";
-    private const string DataPath = "/profiling/data";
-    private const string StatusPath = "/profiling/status";
-    private const string SessionsPath = "/profiling/sessions";
-    private const string StartPath = "/profiling/start";
-    private const string StopPath = "/profiling/stop";
-    private const string SnapshotPath = "/profiling/snapshot";
-    private const string GarbageCollectionPath = "/profiling/gc";
-    private const string StressPath = "/profiling/stress";
-    private const string MarkerPath = "/profiling/mark";
-    private const string SessionRestartPath = "/profiling/sessions/{sessionKey}/restart";
-    private const string SessionMetadataPath = "/profiling/sessions/{sessionKey}/metadata";
-    private const string SessionDeletePath = "/profiling/sessions/{sessionKey}";
-    private const string DeleteUnpinnedPath = "/profiling/sessions/unpinned";
-    private const string ClearPath = "/profiling/clear";
-    private const string ComparePath = "/profiling/compare";
-    private const string AnalyzePath = "/profiling/analyze";
-    private const string ExportPath = "/profiling/export";
-    private const string SessionArchivePath = "/profiling/archive/sessions/{sessionKey}";
-    private const string SessionPerfettoPath = "/profiling/export/perfetto/sessions/{sessionKey}";
-    private const string SnapshotArchivePath = "/profiling/archive/sessions/{sessionKey}/nodes/{nodeKey}/snapshots/{snapshotKey}";
-    private const string ArchiveImportPath = "/profiling/archive/import";
+    private const string ProfilingPath = "/profiling/runtime";
+    private const string ContentPath = "/profiling/runtime/content";
+    private const string DataPath = "/profiling/runtime/data";
+    private const string StatusPath = "/profiling/runtime/status";
+    private const string SessionsPath = "/profiling/runtime/sessions";
+    private const string StartPath = "/profiling/runtime/start";
+    private const string StopPath = "/profiling/runtime/stop";
+    private const string SnapshotPath = "/profiling/runtime/snapshot";
+    private const string GarbageCollectionPath = "/profiling/runtime/gc";
+    private const string StressPath = "/profiling/runtime/stress";
+    private const string MarkerPath = "/profiling/runtime/mark";
+    private const string SessionRestartPath = "/profiling/runtime/sessions/{sessionKey}/restart";
+    private const string SessionMetadataPath = "/profiling/runtime/sessions/{sessionKey}/metadata";
+    private const string SessionDeletePath = "/profiling/runtime/sessions/{sessionKey}";
+    private const string DeleteUnpinnedPath = "/profiling/runtime/sessions/unpinned";
+    private const string ClearPath = "/profiling/runtime/clear";
+    private const string ComparePath = "/profiling/runtime/compare";
+    private const string AnalyzePath = "/profiling/runtime/analyze";
+    private const string ExportPath = "/profiling/runtime/export";
+    private const string SessionArchivePath = "/profiling/runtime/archive/sessions/{sessionKey}";
+    private const string SessionPerfettoPath = "/profiling/runtime/export/perfetto/sessions/{sessionKey}";
+    private const string SnapshotArchivePath = "/profiling/runtime/archive/sessions/{sessionKey}/nodes/{nodeKey}/snapshots/{snapshotKey}";
+    private const string ArchiveImportPath = "/profiling/runtime/archive/import";
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -81,13 +81,13 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
         group
             .MapGet(StatusPath, (Func<HttpContext, Task<IResult>>)this.GetStatusAsync)
-            .WithName("_bdk.Dashboard.ProfilingStatus")
-            .Produces<ProfilingStatus>()
+            .WithName("_bdk.Dashboard.RuntimeProfilingStatus")
+            .Produces<RuntimeProfilingStatus>()
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
         group
             .MapGet(SessionsPath, (Func<HttpContext, Task<IResult>>)this.ListSessionsAsync)
             .WithName("_bdk.Dashboard.ProfilingSessions")
-            .Produces<IReadOnlyList<ProfilingSession>>()
+            .Produces<IReadOnlyList<RuntimeProfilingSession>>()
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
         group
             .MapGet(ExportPath, (HttpContext context, string session, string node = null) =>
@@ -142,7 +142,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             .MapPost(SnapshotPath, (ProfilingDashboardSnapshotRequest request, HttpContext context) =>
                 this.SnapshotAsync(request, context)
             )
-            .WithName("_bdk.Dashboard.ProfilingSnapshot")
+            .WithName("_bdk.Dashboard.RuntimeProfilingSnapshot")
             .DisableAntiforgery();
         group
             .MapPost(
@@ -155,7 +155,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             .MapPost(StressPath, (HttpContext context) => this.Stress(context))
             .WithName("_bdk.Dashboard.ProfilingStress")
             .DisableAntiforgery()
-            .Produces<ProfilingStressResult>(StatusCodes.Status202Accepted)
+            .Produces<RuntimeProfilingStressResult>(StatusCodes.Status202Accepted)
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
         group
@@ -211,7 +211,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             .MapPost(ArchiveImportPath, (Func<HttpContext, Task<IResult>>)this.ImportArchiveAsync)
             .WithName("_bdk.Dashboard.ProfilingArchiveImport")
             .DisableAntiforgery()
-            .Produces<ProfilingArchiveImportResult>()
+            .Produces<RuntimeProfilingArchiveImportResult>()
             .ProducesProblem(StatusCodes.Status400BadRequest)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
     }
@@ -266,7 +266,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
     public static string BuildStressPath(DashboardEndpointsOptions options) =>
         BuildPath(options, StressPath);
 
-    /// <summary>Builds the phase-marker path.</summary>
+    /// <summary>Builds the marker path.</summary>
     /// <example><code>var path = DashboardEndpoints.BuildMarkerPath(options);</code></example>
     public static string BuildMarkerPath(DashboardEndpointsOptions options) => BuildPath(options, MarkerPath);
 
@@ -341,7 +341,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private IResult Stress(HttpContext context)
     {
-        var stress = GetService<IProfilingStressService>(context);
+        var stress = GetService<IRuntimeProfilingStressService>(context);
         if (stress is null)
         {
             return Unavailable("Profiling stress services are not registered.");
@@ -349,7 +349,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
         var applicationStopping = GetService<IHostApplicationLifetime>(context)
             ?.ApplicationStopping ?? CancellationToken.None;
-        var result = stress.TryStart(ProfilingStressRequest.Default, applicationStopping);
+        var result = stress.TryStart(RuntimeProfilingStressRequest.Default, applicationStopping);
         return result.Started
             ? Results.Accepted(value: result)
             : Results.Problem(
@@ -361,7 +361,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> GetStatusAsync(HttpContext context)
     {
-        var control = GetService<IProfilingControlService>(context);
+        var control = GetService<IRuntimeProfilingControlService>(context);
         return control is null
             ? Unavailable("Profiling control is not registered.")
             : ToHttpResult(await control.GetStatusAsync(context.RequestAborted).ConfigureAwait(false));
@@ -369,7 +369,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> ListSessionsAsync(HttpContext context)
     {
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(await queries.ListSessionsAsync(context.RequestAborted).ConfigureAwait(false));
@@ -377,8 +377,8 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> GetDataAsync(HttpContext context, string session, string node)
     {
-        var control = GetService<IProfilingControlService>(context);
-        var queries = GetService<IProfilingQueryService>(context);
+        var control = GetService<IRuntimeProfilingControlService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         if (control is null || queries is null)
         {
             return Unavailable("Profiling dashboard services are not registered.");
@@ -401,8 +401,8 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             return ToHttpResult(sessionsResult);
         }
 
-        ProfilingSessionData selectedSession = null;
-        ProfilingNodeSessionData selectedNode = null;
+        RuntimeProfilingSessionData selectedSession = null;
+        RuntimeProfilingNodeSessionData selectedNode = null;
         if (!string.IsNullOrWhiteSpace(session))
         {
             if (string.IsNullOrWhiteSpace(node))
@@ -439,7 +439,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> StartAsync(ProfilingDashboardStartRequest request, HttpContext context)
     {
-        var control = GetService<IProfilingControlService>(context);
+        var control = GetService<IRuntimeProfilingControlService>(context);
         return control is null
             ? Unavailable("Profiling control is not registered.")
             : ToHttpResult(
@@ -452,7 +452,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> StopAsync(HttpContext context)
     {
-        var control = GetService<IProfilingControlService>(context);
+        var control = GetService<IRuntimeProfilingControlService>(context);
         return control is null
             ? Unavailable("Profiling control is not registered.")
             : ToHttpResult(await control.StopAsync(context.RequestAborted).ConfigureAwait(false));
@@ -460,7 +460,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> SnapshotAsync(ProfilingDashboardSnapshotRequest request, HttpContext context)
     {
-        var control = GetService<IProfilingControlService>(context);
+        var control = GetService<IRuntimeProfilingControlService>(context);
         return control is null
             ? Unavailable("Profiling control is not registered.")
             : ToHttpResult(await control.SnapshotAsync(request.Name, context.RequestAborted).ConfigureAwait(false));
@@ -468,7 +468,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> CollectGarbageAsync(HttpContext context)
     {
-        var control = GetService<IProfilingControlService>(context);
+        var control = GetService<IRuntimeProfilingControlService>(context);
         return control is null
             ? Unavailable("Profiling control is not registered.")
             : ToHttpResult(await control.CollectGarbageAsync(context.RequestAborted).ConfigureAwait(false));
@@ -476,15 +476,15 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> AddMarkerAsync(ProfilingDashboardMarkerRequest request, HttpContext context)
     {
-        var control = GetService<IProfilingControlService>(context);
+        var control = GetService<IRuntimeProfilingControlService>(context);
         return control is null
             ? Unavailable("Profiling control is not registered.")
-            : ToHttpResult(await control.AddPhaseMarkerAsync(request.Name, context.RequestAborted).ConfigureAwait(false));
+            : ToHttpResult(await control.AddMarkerAsync(request.Name, context.RequestAborted).ConfigureAwait(false));
     }
 
     private async Task<IResult> RestartAsync(string sessionKey, HttpContext context)
     {
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(await queries.RestartAsync(sessionKey, context.RequestAborted).ConfigureAwait(false));
@@ -496,7 +496,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
         HttpContext context
     )
     {
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(
@@ -510,7 +510,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> DeleteSessionAsync(string sessionKey, HttpContext context)
     {
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(await queries.DeleteSessionAsync(sessionKey, context.RequestAborted).ConfigureAwait(false));
@@ -518,7 +518,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> DeleteUnpinnedAsync(HttpContext context)
     {
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(await queries.DeleteUnpinnedSessionsAsync(context.RequestAborted).ConfigureAwait(false));
@@ -531,7 +531,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             return ValidationProblem("Explicit confirmation is required to remove all profiling data, including pinned sessions.");
         }
 
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(await queries.ClearAsync(true, context.RequestAborted).ConfigureAwait(false));
@@ -539,7 +539,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> CompareAsync(ProfilingDashboardCompareRequest request, HttpContext context)
     {
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(
@@ -560,7 +560,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             return ValidationProblem("Snapshot A and snapshot B must be supplied together.");
         }
 
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         return queries is null
             ? Unavailable("Profiling queries are not registered.")
             : ToHttpResult(
@@ -573,7 +573,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> ExportAsync(HttpContext context, string session, string node)
     {
-        var queries = GetService<IProfilingQueryService>(context);
+        var queries = GetService<IRuntimeProfilingQueryService>(context);
         if (queries is null)
         {
             return Unavailable("Profiling queries are not registered.");
@@ -590,7 +590,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
         HttpContext context
     )
     {
-        var archives = GetService<IProfilingArchiveService>(context);
+        var archives = GetService<IRuntimeProfilingArchiveService>(context);
         if (archives is null)
         {
             return Unavailable("Profiling archives are not registered.");
@@ -616,7 +616,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
         HttpContext context
     )
     {
-        var archives = GetService<IProfilingArchiveService>(context);
+        var archives = GetService<IRuntimeProfilingArchiveService>(context);
         if (archives is null)
         {
             return Unavailable("Profiling archives are not registered.");
@@ -646,7 +646,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
         HttpContext context
     )
     {
-        var perfetto = GetService<IProfilingPerfettoExportService>(context);
+        var perfetto = GetService<IRuntimeProfilingPerfettoExportService>(context);
         if (perfetto is null)
         {
             return Unavailable("Profiling Perfetto export is not registered.");
@@ -667,7 +667,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
 
     private async Task<IResult> ImportArchiveAsync(HttpContext context)
     {
-        var archives = GetService<IProfilingArchiveService>(context);
+        var archives = GetService<IRuntimeProfilingArchiveService>(context);
         if (archives is null)
         {
             return Unavailable("Profiling archives are not registered.");
@@ -687,7 +687,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
             return ValidationProblem("A non-empty Profiling archive file is required.");
         }
 
-        if (file.Length > ProfilingArchiveFormat.MaximumSizeBytes)
+        if (file.Length > RuntimeProfilingArchiveFormat.MaximumSizeBytes)
         {
             return ValidationProblem("The Profiling archive exceeds the 25 MiB size limit.");
         }
@@ -701,7 +701,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
     private static T GetService<T>(HttpContext context)
         where T : class => context.RequestServices.GetService<T>();
 
-    private static IResult ToHttpResult<T>(Result<T> result)
+    private static IResult ToHttpResult<T>(BridgingIT.DevKit.Common.IResult<T> result)
     {
         if (result.IsSuccess)
         {
@@ -739,7 +739,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
         );
     }
 
-    private static IResult ToHttpResult(Result result)
+    private static IResult ToHttpResult(BridgingIT.DevKit.Common.IResult result)
     {
         if (result.IsSuccess)
         {

@@ -17,7 +17,7 @@ public abstract class ProfilingStoreContractTests
 {
     /// <summary>Creates a fresh isolated provider instance for one contract test.</summary>
     /// <returns>The store under test.</returns>
-    protected abstract IProfilingStore CreateStore();
+    protected abstract IRuntimeProfilingStore CreateStore();
 
     /// <summary>Gets the multi-node capability expected from the provider.</summary>
     protected abstract bool ExpectedSupportsMultiNode { get; }
@@ -63,16 +63,16 @@ public abstract class ProfilingStoreContractTests
         var session = await CreateSessionAsync(store, startedUtc);
         var first = await store.TryTransitionSessionAsync(
             session.Identity.Id,
-            [ProfilingSessionState.Running],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Running],
+            RuntimeProfilingSessionState.Stopped,
             completedUtc
         );
 
         // Act
         var repeated = await store.TryTransitionSessionAsync(
             session.Identity.Id,
-            [ProfilingSessionState.Stopped],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Stopped],
+            RuntimeProfilingSessionState.Stopped,
             completedUtc.AddMinutes(1)
         );
 
@@ -96,14 +96,14 @@ public abstract class ProfilingStoreContractTests
         var participation = CreateParticipation(session, node, startedUtc);
         var context = CreateContext(session, node, startedUtc);
         var snapshot = CreateSnapshot(session, node, startedUtc.AddSeconds(1));
-        var phaseMarker = new ProfilingPhaseMarker(
+        var sessionMarker = new ProfilingMarker(
             Guid.NewGuid(),
             session.Identity.Id,
             session.Identity.Key,
             "load",
             startedUtc.AddSeconds(1)
         );
-        var actionMarker = new ProfilingActionMarker(
+        var nodeMarker = new ProfilingMarker(
             Guid.NewGuid(),
             session.Identity.Id,
             node.Identity.Id,
@@ -119,8 +119,8 @@ public abstract class ProfilingStoreContractTests
         (await store.UpsertParticipationAsync(participation)).IsSuccess.ShouldBeTrue();
         (await store.AddRuntimeContextAsync(context)).IsSuccess.ShouldBeTrue();
         (await store.AddSnapshotAsync(snapshot)).IsSuccess.ShouldBeTrue();
-        (await store.AddPhaseMarkerAsync(phaseMarker)).IsSuccess.ShouldBeTrue();
-        (await store.AddActionMarkerAsync(actionMarker)).IsSuccess.ShouldBeTrue();
+        (await store.AddMarkerAsync(sessionMarker)).IsSuccess.ShouldBeTrue();
+        (await store.AddMarkerAsync(nodeMarker)).IsSuccess.ShouldBeTrue();
         (await store.UpsertSegmentAsync(segment)).IsSuccess.ShouldBeTrue();
         (await store.AddMetricObservationAsync(observation)).IsSuccess.ShouldBeTrue();
         var data = (await store.GetSessionDataAsync(session.Identity.Key)).Value;
@@ -130,8 +130,8 @@ public abstract class ProfilingStoreContractTests
         data.Participations.ShouldHaveSingleItem().ShouldBe(participation);
         data.RuntimeContexts.ShouldHaveSingleItem().ShouldBe(context);
         data.Snapshots.ShouldHaveSingleItem().ShouldBe(snapshot);
-        data.PhaseMarkers.ShouldHaveSingleItem().ShouldBe(phaseMarker);
-        data.ActionMarkers.ShouldHaveSingleItem().ShouldBe(actionMarker);
+        data.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).ShouldHaveSingleItem().ShouldBe(sessionMarker);
+        data.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Node).ShouldHaveSingleItem().ShouldBe(nodeMarker);
         data.Segments.ShouldHaveSingleItem().ShouldBe(segment);
         data.MetricObservations.ShouldHaveSingleItem().ShouldBe(observation);
     }
@@ -178,7 +178,7 @@ public abstract class ProfilingStoreContractTests
             await store.UpsertParticipationAsync(CreateParticipation(session, node, startedUtc)),
             await store.AddRuntimeContextAsync(CreateContext(session, node, startedUtc)),
             await store.AddSnapshotAsync(CreateSnapshot(session, node, startedUtc.AddSeconds(1))),
-            await store.AddPhaseMarkerAsync(
+            await store.AddMarkerAsync(
                 new(
                     Guid.NewGuid(),
                     session.Identity.Id,
@@ -187,7 +187,7 @@ public abstract class ProfilingStoreContractTests
                     startedUtc.AddSeconds(1)
                 )
             ),
-            await store.AddActionMarkerAsync(
+            await store.AddMarkerAsync(
                 new(
                     Guid.NewGuid(),
                     session.Identity.Id,
@@ -291,21 +291,21 @@ public abstract class ProfilingStoreContractTests
         // Arrange
         var store = this.CreateStore();
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
-        var sessionIdentity = ProfilingSessionIdentity.Create();
-        var nodeIdentity = ProfilingNodeIdentity.Create();
-        var snapshotIdentity = ProfilingSnapshotIdentity.Create();
-        var session = new ProfilingSession
+        var sessionIdentity = ProfilingIdentityFactory.CreateRuntimeSession();
+        var nodeIdentity = ProfilingIdentityFactory.CreateNode();
+        var snapshotIdentity = ProfilingIdentityFactory.CreateRuntimeSnapshot();
+        var session = new RuntimeProfilingSession
         {
             Identity = sessionIdentity,
             Name = "imported",
-            State = ProfilingSessionState.Completed,
+            State = RuntimeProfilingSessionState.Completed,
             StartedUtc = startedUtc,
             EndsUtc = startedUtc.AddSeconds(30),
             CompletedUtc = startedUtc.AddSeconds(5),
             SamplingInterval = TimeSpan.FromSeconds(1),
             Duration = TimeSpan.FromSeconds(30),
         };
-        var correlation = new ProfilingNodeCorrelation(
+        var correlation = new RuntimeProfilingNodeCorrelation(
             $"import-{nodeIdentity.Key}",
             startedUtc.AddMinutes(-1)
         );
@@ -316,7 +316,7 @@ public abstract class ProfilingStoreContractTests
             HostName = "import-host",
             ProcessId = 1234,
         };
-        var data = new ProfilingSessionData
+        var data = new RuntimeProfilingSessionData
         {
             Session = session,
             Nodes = [node],
@@ -328,8 +328,8 @@ public abstract class ProfilingStoreContractTests
                     SessionKey = sessionIdentity.Key,
                     NodeId = nodeIdentity.Id,
                     NodeKey = nodeIdentity.Key,
-                    Role = ProfilingNodeRole.ExpectedParticipant,
-                    State = ProfilingParticipationState.Completed,
+                    Role = RuntimeProfilingNodeRole.ExpectedParticipant,
+                    State = RuntimeProfilingParticipationState.Completed,
                     JoinedUtc = startedUtc,
                     CompletedUtc = startedUtc.AddSeconds(5),
                     SuccessfulCaptureCount = 1,
@@ -476,8 +476,8 @@ public abstract class ProfilingStoreContractTests
                     await startGate.Task;
                     await store.TryTransitionSessionAsync(
                         session.Identity.Id,
-                        [ProfilingSessionState.Running],
-                        ProfilingSessionState.Stopped,
+                        [RuntimeProfilingSessionState.Running],
+                        RuntimeProfilingSessionState.Stopped,
                         startedUtc.AddSeconds(1)
                     );
                 })
@@ -488,8 +488,8 @@ public abstract class ProfilingStoreContractTests
                     await startGate.Task;
                     await store.TryTransitionSessionAsync(
                         session.Identity.Id,
-                        [ProfilingSessionState.Running],
-                        ProfilingSessionState.CompletedWithWarnings,
+                        [RuntimeProfilingSessionState.Running],
+                        RuntimeProfilingSessionState.CompletedWithWarnings,
                         startedUtc.AddSeconds(1)
                     );
                 })
@@ -522,7 +522,7 @@ public abstract class ProfilingStoreContractTests
             sessions.Select(item => item.Identity.Id).Distinct().Count().ShouldBe(sessions.Count);
             sessions.Select(item => item.Identity.Key).Distinct().Count().ShouldBe(sessions.Count);
             sessions
-                .Count(item => item.State == ProfilingSessionState.Running)
+                .Count(item => item.State == RuntimeProfilingSessionState.Running)
                 .ShouldBeLessThanOrEqualTo(1);
 
             foreach (var storedSession in sessions)
@@ -574,26 +574,26 @@ public abstract class ProfilingStoreContractTests
         invalid.Errors.ShouldContain(error => error is ProfilingInvalidKeyError);
     }
 
-    protected static ProfilingSessionCreateRequest CreateSessionRequest(
+    protected static RuntimeProfilingSessionCreateRequest CreateSessionRequest(
         DateTimeOffset startedUtc
     ) =>
         new(
-            ProfilingSessionIdentity.Create(),
-            startedUtc.ToString(ProfilingOptions.DefaultSessionNameFormat),
+            ProfilingIdentityFactory.CreateRuntimeSession(),
+            startedUtc.ToString(RuntimeProfilingOptions.DefaultSessionNameFormat),
             startedUtc,
             TimeSpan.FromSeconds(1),
             TimeSpan.FromSeconds(30),
             []
         );
 
-    protected static async Task<ProfilingSession> CreateSessionAsync(
-        IProfilingStore store,
+    protected static async Task<RuntimeProfilingSession> CreateSessionAsync(
+        IRuntimeProfilingStore store,
         DateTimeOffset startedUtc
     ) =>
         (await store.GetOrCreateActiveSessionAsync(CreateSessionRequest(startedUtc))).Value.Session;
 
-    protected static async Task<ProfilingSession> CreateTerminalSessionAsync(
-        IProfilingStore store,
+    protected static async Task<RuntimeProfilingSession> CreateTerminalSessionAsync(
+        IRuntimeProfilingStore store,
         DateTimeOffset startedUtc
     )
     {
@@ -603,15 +603,15 @@ public abstract class ProfilingStoreContractTests
     }
 
     protected static async Task<ProfilingNode> CreateNodeAsync(
-        IProfilingStore store,
+        IRuntimeProfilingStore store,
         DateTimeOffset processStartedUtc,
         string broadcastIdentity = "test-node"
     )
     {
-        var correlation = new ProfilingNodeCorrelation(broadcastIdentity, processStartedUtc);
+        var correlation = new RuntimeProfilingNodeCorrelation(broadcastIdentity, processStartedUtc);
         var proposed = new ProfilingNode
         {
-            Identity = ProfilingNodeIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateNode(),
             Correlation = correlation,
             HostName = "test-host",
             ProcessId = 1234,
@@ -619,8 +619,8 @@ public abstract class ProfilingStoreContractTests
         return (await store.GetOrCreateNodeAsync(correlation, proposed)).Value;
     }
 
-    protected static ProfilingNodeParticipation CreateParticipation(
-        ProfilingSession session,
+    protected static RuntimeProfilingNodeParticipation CreateParticipation(
+        RuntimeProfilingSession session,
         ProfilingNode node,
         DateTimeOffset joinedUtc
     ) =>
@@ -630,13 +630,13 @@ public abstract class ProfilingStoreContractTests
             SessionKey = session.Identity.Key,
             NodeId = node.Identity.Id,
             NodeKey = node.Identity.Key,
-            Role = ProfilingNodeRole.ExpectedParticipant,
-            State = ProfilingParticipationState.Collecting,
+            Role = RuntimeProfilingNodeRole.ExpectedParticipant,
+            State = RuntimeProfilingParticipationState.Collecting,
             JoinedUtc = joinedUtc,
         };
 
-    protected static ProfilingRuntimeContext CreateContext(
-        ProfilingSession session,
+    protected static RuntimeProfilingContext CreateContext(
+        RuntimeProfilingSession session,
         ProfilingNode node,
         DateTimeOffset processStartedUtc
     ) =>
@@ -651,15 +651,15 @@ public abstract class ProfilingStoreContractTests
             ProcessStartedUtc = processStartedUtc,
         };
 
-    protected static ProfilingSnapshot CreateSnapshot(
-        ProfilingSession session,
+    protected static RuntimeProfilingSnapshot CreateSnapshot(
+        RuntimeProfilingSession session,
         ProfilingNode node,
         DateTimeOffset timestampUtc,
         long sequence = 1
     ) =>
         new()
         {
-            Identity = ProfilingSnapshotIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
             SessionId = session.Identity.Id,
             SessionKey = session.Identity.Key,
             NodeId = node.Identity.Id,
@@ -675,7 +675,7 @@ public abstract class ProfilingStoreContractTests
         };
 
     protected static ProfilingSegment CreateSegment(
-        ProfilingSession session,
+        RuntimeProfilingSession session,
         ProfilingNode node,
         DateTimeOffset startedUtc
     ) =>
@@ -688,11 +688,11 @@ public abstract class ProfilingStoreContractTests
             NodeKey = node.Identity.Key,
             Name = "operation",
             StartedUtc = startedUtc,
-            Outcome = ProfilingSegmentOutcome.Open,
+            Outcome = null,
         };
 
     protected static ProfilingMetricObservation CreateObservation(
-        ProfilingSession session,
+        RuntimeProfilingSession session,
         ProfilingNode node,
         Guid? segmentId,
         DateTimeOffset timestampUtc
@@ -712,15 +712,15 @@ public abstract class ProfilingStoreContractTests
         };
 
     protected static async Task StopAsync(
-        IProfilingStore store,
-        ProfilingSession session,
+        IRuntimeProfilingStore store,
+        RuntimeProfilingSession session,
         DateTimeOffset stoppedUtc
     )
     {
         var result = await store.TryTransitionSessionAsync(
             session.Identity.Id,
-            [ProfilingSessionState.Running],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Running],
+            RuntimeProfilingSessionState.Stopped,
             stoppedUtc
         );
         result.IsSuccess.ShouldBeTrue();
@@ -729,7 +729,7 @@ public abstract class ProfilingStoreContractTests
 
 public sealed class InMemoryProfilingStoreContractTests : ProfilingStoreContractTests
 {
-    protected override IProfilingStore CreateStore() => new InMemoryProfilingStore();
+    protected override IRuntimeProfilingStore CreateStore() => new InMemoryRuntimeProfilingStore();
 
     protected override bool ExpectedSupportsMultiNode => false;
 }

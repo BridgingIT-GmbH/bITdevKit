@@ -14,6 +14,32 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
     protected abstract void ConfigureDatabase(DbContextOptionsBuilder options);
 
     [Fact]
+    public async Task GetOrCreateNodeAsync_CachedProcessMetadata_RoundTripsWithOriginalIdentity()
+    {
+        // Arrange
+        await using var harness = await this.CreateHarnessAsync();
+        var utc = new DateTimeOffset(2026, 10, 7, 12, 0, 0, TimeSpan.Zero);
+        var correlation = new RuntimeProfilingNodeCorrelation("runtime-node", utc);
+        var node = new ProfilingNodeIdentityProvider(displayName: "worker-a", applicationVersion: "1.2.3").GetNode() with
+        {
+            ProcessStartedUtc = utc,
+            Correlation = correlation
+        };
+
+        // Act
+        var created = await harness.First.GetOrCreateNodeAsync(correlation, node);
+        var found = await harness.Second.FindNodeAsync(correlation);
+
+        // Assert
+        created.IsSuccess.ShouldBeTrue();
+        found.IsSuccess.ShouldBeTrue();
+        found.Value.Identity.ShouldBe(node.Identity);
+        found.Value.DisplayName.ShouldBe(node.DisplayName);
+        found.Value.ApplicationVersion.ShouldBe(node.ApplicationVersion);
+        found.Value.ProcessStartedUtc.ShouldBe(utc);
+    }
+
+    [Fact]
     public async Task CompetingStarts_AcrossStoreInstances_CreateOneActiveSession()
     {
         // Arrange
@@ -49,14 +75,14 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         var results = await Task.WhenAll(
             harness.First.TryTransitionSessionAsync(
                 session.Identity.Id,
-                [ProfilingSessionState.Running],
-                ProfilingSessionState.Stopped,
+                [RuntimeProfilingSessionState.Running],
+                RuntimeProfilingSessionState.Stopped,
                 startedUtc.AddSeconds(1)
             ),
             harness.Second.TryTransitionSessionAsync(
                 session.Identity.Id,
-                [ProfilingSessionState.Running],
-                ProfilingSessionState.Stopped,
+                [RuntimeProfilingSessionState.Running],
+                RuntimeProfilingSessionState.Stopped,
                 startedUtc.AddSeconds(1)
             )
         );
@@ -64,7 +90,7 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         // Assert
         results.Count(result => result.IsSuccess).ShouldBe(1);
         (await harness.First.FindSessionAsync(session.Identity.Key)).Value.State.ShouldBe(
-            ProfilingSessionState.Stopped
+            RuntimeProfilingSessionState.Stopped
         );
     }
 
@@ -77,7 +103,7 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         var session = (await harness.First.GetOrCreateActiveSessionAsync(CreateRequest(startedUtc)))
             .Value
             .Session;
-        var marker = new ProfilingPhaseMarker(
+        var marker = new ProfilingMarker(
             Guid.NewGuid(),
             session.Identity.Id,
             session.Identity.Key,
@@ -86,11 +112,11 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         );
 
         // Act
-        var markerTask = harness.First.AddPhaseMarkerAsync(marker);
+        var markerTask = harness.First.AddMarkerAsync(marker);
         var stopTask = harness.Second.TryTransitionSessionAsync(
             session.Identity.Id,
-            [ProfilingSessionState.Running],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Running],
+            RuntimeProfilingSessionState.Stopped,
             startedUtc.AddSeconds(2)
         );
         await Task.WhenAll(markerTask, stopTask);
@@ -100,8 +126,8 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         // Assert
         stopResult.IsSuccess.ShouldBeTrue();
         var data = (await harness.First.GetSessionDataAsync(session.Identity.Key)).Value;
-        data.Session.State.ShouldBe(ProfilingSessionState.Stopped);
-        data.PhaseMarkers.Count.ShouldBe(markerResult.IsSuccess ? 1 : 0);
+        data.Session.State.ShouldBe(RuntimeProfilingSessionState.Stopped);
+        data.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).Count().ShouldBe(markerResult.IsSuccess ? 1 : 0);
     }
 
     [Fact]
@@ -113,7 +139,7 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         var session = (await harness.First.GetOrCreateActiveSessionAsync(CreateRequest(startedUtc)))
             .Value
             .Session;
-        var firstMarker = new ProfilingPhaseMarker(
+        var firstMarker = new ProfilingMarker(
             Guid.NewGuid(),
             session.Identity.Id,
             session.Identity.Key,
@@ -129,16 +155,16 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
 
         // Act
         var results = await Task.WhenAll(
-            harness.First.AddPhaseMarkerAsync(firstMarker),
-            harness.Second.AddPhaseMarkerAsync(secondMarker)
+            harness.First.AddMarkerAsync(firstMarker),
+            harness.Second.AddMarkerAsync(secondMarker)
         );
 
         // Assert
         results.ShouldAllBe(result => result.IsSuccess);
         var markers = (await harness.First.GetSessionDataAsync(session.Identity.Key))
             .Value
-            .PhaseMarkers;
-        markers.Count.ShouldBe(2);
+            .Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session);
+        markers.Count().ShouldBe(2);
         markers
             .Select(marker => marker.Id)
             .ShouldBe([firstMarker.Id, secondMarker.Id], ignoreOrder: true);
@@ -153,13 +179,13 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         var session = (await harness.First.GetOrCreateActiveSessionAsync(CreateRequest(startedUtc)))
             .Value
             .Session;
-        var correlation = new ProfilingNodeCorrelation("node-a", startedUtc);
+        var correlation = new RuntimeProfilingNodeCorrelation("node-a", startedUtc);
         var node = (
             await harness.First.GetOrCreateNodeAsync(
                 correlation,
                 new ProfilingNode
                 {
-                    Identity = ProfilingNodeIdentity.Create(),
+                    Identity = ProfilingIdentityFactory.CreateNode(),
                     Correlation = correlation,
                     HostName = "localhost",
                     ProcessId = 1234,
@@ -168,8 +194,8 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         ).Value;
         await harness.First.TryTransitionSessionAsync(
             session.Identity.Id,
-            [ProfilingSessionState.Running],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Running],
+            RuntimeProfilingSessionState.Stopped,
             startedUtc.AddSeconds(2)
         );
         var snapshot = CreateSnapshot(session, node, startedUtc.AddSeconds(1));
@@ -182,7 +208,7 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         var delayed = await harness.Second.AddSnapshotAsync(
             snapshot with
             {
-                Identity = ProfilingSnapshotIdentity.Create(),
+                Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
                 Sequence = 2,
             }
         );
@@ -213,29 +239,29 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         var services = new ServiceCollection();
         services.AddDbContext<ProfilingIntegrationDbContext>(this.ConfigureDatabase);
         services
-            .AddProfiling(options => options.Enabled())
-            .WithEntityFrameworkStore<ProfilingIntegrationDbContext>();
+            .AddProfiling(options => options.Enabled()).WithRuntimeProfiling()
+            .WithEntityFrameworkProvider<ProfilingIntegrationDbContext>();
         return services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
     }
 
-    private static ProfilingSessionCreateRequest CreateRequest(DateTimeOffset startedUtc) =>
+    private static RuntimeProfilingSessionCreateRequest CreateRequest(DateTimeOffset startedUtc) =>
         new(
-            ProfilingSessionIdentity.Create(),
+            ProfilingIdentityFactory.CreateRuntimeSession(),
             "integration",
             startedUtc,
-            ProfilingOptions.MinimumSamplingInterval,
+            RuntimeProfilingOptions.MinimumSamplingInterval,
             TimeSpan.FromSeconds(10),
             ["integration"]
         );
 
-    private static ProfilingSnapshot CreateSnapshot(
-        ProfilingSession session,
+    private static RuntimeProfilingSnapshot CreateSnapshot(
+        RuntimeProfilingSession session,
         ProfilingNode node,
         DateTimeOffset timestampUtc
     ) =>
         new()
         {
-            Identity = ProfilingSnapshotIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
             SessionId = session.Identity.Id,
             SessionKey = session.Identity.Key,
             NodeId = node.Identity.Id,
@@ -254,10 +280,10 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         ServiceProvider secondProvider
     ) : IAsyncDisposable
     {
-        public IProfilingStore First { get; } = firstProvider.GetRequiredService<IProfilingStore>();
+        public IRuntimeProfilingStore First { get; } = firstProvider.GetRequiredService<IRuntimeProfilingStore>();
 
-        public IProfilingStore Second { get; } =
-            secondProvider.GetRequiredService<IProfilingStore>();
+        public IRuntimeProfilingStore Second { get; } =
+            secondProvider.GetRequiredService<IRuntimeProfilingStore>();
 
         public async Task AssertSnapshotCountAsync(int expected)
         {
@@ -285,19 +311,19 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
 
     protected sealed class ProfilingIntegrationDbContext(
         DbContextOptions<ProfilingIntegrationDbContext> options
-    ) : DbContext(options), IProfilingContext
+    ) : DbContext(options), IProfilingDbContext
     {
-        public DbSet<ProfilingSessionEntity> ProfilingSessions { get; set; }
+        public DbSet<RuntimeProfilingSessionEntity> ProfilingSessions { get; set; }
 
-        public DbSet<ProfilingInvalidSessionEntity> ProfilingInvalidSessions { get; set; }
+        public DbSet<RuntimeProfilingInvalidSessionEntity> ProfilingInvalidSessions { get; set; }
 
         public DbSet<ProfilingNodeEntity> ProfilingNodes { get; set; }
 
-        public DbSet<ProfilingParticipationEntity> ProfilingParticipations { get; set; }
+        public DbSet<RuntimeProfilingParticipationEntity> ProfilingParticipations { get; set; }
 
-        public DbSet<ProfilingSnapshotEntity> ProfilingSnapshots { get; set; }
+        public DbSet<RuntimeProfilingSnapshotEntity> ProfilingSnapshots { get; set; }
 
-        public DbSet<ProfilingMetricObservationEntity> ProfilingMetricObservations { get; set; }
+        public DbSet<RuntimeProfilingMetricObservationEntity> ProfilingMetricObservations { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

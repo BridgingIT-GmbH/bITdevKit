@@ -11,12 +11,12 @@ using BridgingIT.DevKit.Common;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>Represents one durable profiling session.</summary>
-/// <example><code>public DbSet&lt;ProfilingSessionEntity&gt; ProfilingSessions { get; set; }</code></example>
+/// <example><code>public DbSet&lt;RuntimeProfilingSessionEntity&gt; ProfilingSessions { get; set; }</code></example>
 [Table("__Profiling_Sessions")]
 [Index(nameof(Key), IsUnique = true)]
 [Index(nameof(LifecycleKey), IsUnique = true)]
 [Index(nameof(State), nameof(CompletedUtc))]
-public sealed class ProfilingSessionEntity
+public sealed class RuntimeProfilingSessionEntity
 {
     /// <summary>Gets or sets the session identifier.</summary>
     [Key]
@@ -38,7 +38,7 @@ public sealed class ProfilingSessionEntity
 
     /// <summary>Gets or sets the lifecycle state.</summary>
     [Required]
-    public ProfilingSessionState State { get; set; }
+    public RuntimeProfilingSessionState State { get; set; }
 
     /// <summary>Gets or sets the logical start timestamp.</summary>
     [Required]
@@ -73,19 +73,16 @@ public sealed class ProfilingSessionEntity
     public Guid ConcurrencyVersion { get; set; } = Guid.NewGuid();
 
     /// <summary>Gets or sets ordered session tags.</summary>
-    public ICollection<ProfilingSessionTagEntity> Tags { get; set; } = [];
+    public ICollection<RuntimeProfilingSessionTagEntity> Tags { get; set; } = [];
 
     /// <summary>Gets or sets immutable runtime contexts stored in the session document.</summary>
-    public ICollection<ProfilingRuntimeContextEntity> RuntimeContexts { get; set; } = [];
+    public ICollection<RuntimeProfilingRuntimeContextEntity> RuntimeContexts { get; set; } = [];
 
-    /// <summary>Gets or sets immutable phase markers stored in the session document.</summary>
-    public ICollection<ProfilingPhaseMarkerEntity> PhaseMarkers { get; set; } = [];
-
-    /// <summary>Gets or sets immutable action markers stored in the session document.</summary>
-    public ICollection<ProfilingActionMarkerEntity> ActionMarkers { get; set; } = [];
+    /// <summary>Gets or sets immutable markers stored in the session document.</summary>
+    public ICollection<ProfilingMarkerEntity> Markers { get; set; } = [];
 
     /// <summary>Gets or sets measured segments stored in the session document.</summary>
-    public ICollection<ProfilingSegmentEntity> Segments { get; set; } = [];
+    public ICollection<RuntimeProfilingSegmentEntity> Segments { get; set; } = [];
 
     /// <summary>Advances the optimistic concurrency token.</summary>
     /// <example><code>entity.AdvanceConcurrencyVersion();</code></example>
@@ -93,10 +90,10 @@ public sealed class ProfilingSessionEntity
 }
 
 /// <summary>Preserves one invalidated session identity after data deletion.</summary>
-/// <example><code>public DbSet&lt;ProfilingInvalidSessionEntity&gt; ProfilingInvalidSessions { get; set; }</code></example>
+/// <example><code>public DbSet&lt;RuntimeProfilingInvalidSessionEntity&gt; ProfilingInvalidSessions { get; set; }</code></example>
 [Table("__Profiling_InvalidSessions")]
 [Index(nameof(Key), IsUnique = true)]
-public sealed class ProfilingInvalidSessionEntity
+public sealed class RuntimeProfilingInvalidSessionEntity
 {
     /// <summary>Gets or sets the invalidated session identifier.</summary>
     [Key]
@@ -109,8 +106,8 @@ public sealed class ProfilingInvalidSessionEntity
 }
 
 /// <summary>Represents one ordered session tag owned by a profiling session JSON document.</summary>
-/// <example><code>session.Tags.Add(new ProfilingSessionTagEntity { Position = 0, Value = "checkout" });</code></example>
-public sealed class ProfilingSessionTagEntity
+/// <example><code>session.Tags.Add(new RuntimeProfilingSessionTagEntity { Position = 0, Value = "checkout" });</code></example>
+public sealed class RuntimeProfilingSessionTagEntity
 {
     /// <summary>Gets or sets the owning session identifier.</summary>
     public Guid SessionId { get; set; }

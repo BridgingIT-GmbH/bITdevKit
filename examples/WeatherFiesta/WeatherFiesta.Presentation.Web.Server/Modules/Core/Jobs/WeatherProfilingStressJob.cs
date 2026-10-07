@@ -21,7 +21,7 @@ using BridgingIT.DevKit.Common;
 /// </example>
 public sealed class WeatherProfilingStressJob(
     ILogger<WeatherProfilingStressJob> logger,
-    IProfilingMeasurementService measurements,
+    IRuntimeProfilingMeasurementService measurements,
     WeatherProfilingStressProfile profile = null
 ) : JobBase
 {

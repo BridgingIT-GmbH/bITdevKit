@@ -17,14 +17,14 @@
         var services = HttpContext.RequestServices;
         var dashboardOptions = services.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
         var profilingOptions = services.GetService<ProfilingOptions>() ?? new ProfilingOptions();
-        var control = services.GetService<IProfilingControlService>();
-        var queries = services.GetService<IProfilingQueryService>();
+        var control = services.GetService<IRuntimeProfilingControlService>();
+        var queries = services.GetService<IRuntimeProfilingQueryService>();
         var requestedSession = HttpContext.Request.Query["session"].FirstOrDefault();
         var requestedNode = HttpContext.Request.Query["node"].FirstOrDefault();
         var requestedSnapshot = HttpContext.Request.Query["snapshot"].FirstOrDefault();
         var model = new DashboardProfilingViewModel
         {
-            RefreshIntervalMilliseconds = Math.Max(1000, (int)profilingOptions.RefreshInterval.TotalMilliseconds),
+            RefreshIntervalMilliseconds = Math.Max(1000, (int)dashboardOptions.ProfilingRefreshInterval.TotalMilliseconds),
             PagePath = ProfilingDashboardEndpoints.BuildProfilingPath(dashboardOptions),
             ContentPath = ProfilingDashboardEndpoints.BuildContentPath(dashboardOptions),
             StartPath = ProfilingDashboardEndpoints.BuildStartPath(dashboardOptions),

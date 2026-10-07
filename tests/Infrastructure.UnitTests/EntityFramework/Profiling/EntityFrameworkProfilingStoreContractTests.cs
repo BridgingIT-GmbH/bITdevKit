@@ -26,8 +26,8 @@ public sealed class EntityFrameworkProfilingStoreContractTests
             options.UseSqlite($"Data Source={this.databasePath};Pooling=False")
         );
         services
-            .AddProfiling(options => options.Enabled())
-            .WithEntityFrameworkStore<ProfilingTestDbContext>();
+            .AddProfiling(options => options.Enabled()).WithRuntimeProfiling()
+            .WithEntityFrameworkProvider<ProfilingTestDbContext>();
         this.provider = services.BuildServiceProvider(
             new ServiceProviderOptions { ValidateScopes = true }
         );
@@ -37,8 +37,8 @@ public sealed class EntityFrameworkProfilingStoreContractTests
 
     protected override bool ExpectedSupportsMultiNode => true;
 
-    protected override IProfilingStore CreateStore() =>
-        this.provider.GetRequiredService<IProfilingStore>();
+    protected override IRuntimeProfilingStore CreateStore() =>
+        this.provider.GetRequiredService<IRuntimeProfilingStore>();
 
     public void Dispose()
     {

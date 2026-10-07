@@ -4,13 +4,13 @@ version: 1.0
 date_created: 2026-10-07
 last_updated: 2026-10-07
 owner: bITdevKit maintainers
-status: Planned
+status: In progress
 tags: [feature, profiling, architecture, persistence, dashboard]
 ---
 
 # Introduction
 
-![Status: Planned](https://img.shields.io/badge/status-Planned-blue)
+![Status: In progress](https://img.shields.io/badge/status-In_progress-yellow)
 
 Implement [Runtime and Operation Profiling](../docs/specs/spec-profiling-runtime-and-requests.md), including generic operation recording, aggregated segments, periodic provider persistence, the HTTP adapter, feature behaviors, and Runtime/Operations/Requests dashboard views. Preserve Runtime Broadcast behavior. Replace the unused profiling API and storage names without final compatibility aliases.
 
@@ -103,8 +103,8 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 
 | Task | Description | Completed | Date |
 | --- | --- | --- | --- |
-| TASK-001 | Inspect the canonical spec and run `.vscode/tasks.json` tasks `Solution - build` and the focused profiling tests listed in section 6, sequentially. Create `plan/pln-feature-profiling-runtime-and-operations-1-evidence.md` with the revision, commands, environment, exit codes, failures, and container availability. Record pre-existing failures separately; unavailable database infrastructure is not a passing test. Depends on: none. | [ ] | |
-| TASK-002 | Inventory profiling references in `src/`, `tests/`, `examples/`, and `docs/` using `rg`. Record exact old-to-final symbols from spec section 2.4 in the evidence file, including Runtime types, store facets, options, console routes, JSON fields, marker conversions, and host registrations. Identify `KeyGenerator.CreateLowercase` calls in `src/Common.Utilities/Profiling/ProfilingModels.cs`; generated identity factories must stay outside the abstractions assembly. Distinguish unrelated storage extensions before renaming. Depends on: TASK-001. | [ ] | |
+| TASK-001 | Inspect the canonical spec and run `.vscode/tasks.json` tasks `Solution - build` and the focused profiling tests listed in section 6, sequentially. Create `plan/pln-feature-profiling-runtime-and-operations-1-evidence.md` with the revision, commands, environment, exit codes, failures, and container availability. Record pre-existing failures separately; unavailable database infrastructure is not a passing test. Depends on: none. | [x] | 2026-10-07 |
+| TASK-002 | Inventory profiling references in `src/`, `tests/`, `examples/`, and `docs/` using `rg`. Record exact old-to-final symbols from spec section 2.4 in the evidence file, including Runtime types, store facets, options, console routes, JSON fields, marker conversions, and host registrations. Identify `KeyGenerator.CreateLowercase` calls in `src/Common.Utilities/Profiling/ProfilingModels.cs`; generated identity factories must stay outside the abstractions assembly. Distinguish unrelated storage extensions before renaming. Depends on: TASK-001. | [x] | 2026-10-07 |
 
 ### Implementation Phase 2
 

@@ -13,6 +13,41 @@ internal sealed class ProfilingWriterRegistry(Guid epoch, int capacity, Action<G
     public long Generation { get; private set; }
     public int Count => this.writers.Count;
 
+    internal IReadOnlyList<ProfilingWriterRegistrationState> Snapshot() => Array.AsReadOnly(this.writers.Values.Select(writer =>
+        new ProfilingWriterRegistrationState(writer.AttemptId, writer.Lease, writer.Retired)).ToArray());
+
+    internal void Restore(long generation, IReadOnlyList<ProfilingWriterRegistrationState> registrations)
+    {
+        if (generation < 0 || registrations is null || registrations.Count > capacity || this.writers.Count != 0)
+        {
+            throw new ArgumentException("A bounded original writer registry snapshot is required.");
+        }
+
+        var identities = new HashSet<Guid>();
+        var attempts = new HashSet<Guid>();
+        var tokens = new HashSet<Guid>();
+        foreach (var registration in registrations)
+        {
+            var lease = registration?.Lease;
+            if (registration is null || registration.AttemptId == Guid.Empty || lease is null || lease.WriterId == Guid.Empty || lease.Token == Guid.Empty || lease.StoreEpoch != epoch
+                || lease.Generation <= 0 || lease.Generation > generation || lease.NodeId == Guid.Empty || lease.ExpiresUtc.Offset != TimeSpan.Zero || lease.SettledThrough < 0
+                || !identities.Add(lease.WriterId) || !attempts.Add(registration.AttemptId) || !tokens.Add(lease.Token))
+            {
+                throw new ArgumentException("An original writer registration contains invalid persistent state.");
+            }
+
+        }
+
+        foreach (var registration in registrations)
+        {
+            var lease = registration.Lease;
+            this.writers.Add(lease.WriterId, new Writer(registration.AttemptId, lease) { Retired = registration.Retired });
+            this.attempts.Add(registration.AttemptId, lease.WriterId);
+        }
+
+        this.Generation = generation;
+    }
+
     public Result<ProfilingWriterLease> Open(ProfilingOpenWriterRequest request, DateTimeOffset utc, TimeSpan maximumDuration)
     {
         if (request is null || request.AttemptId == Guid.Empty || request.Node is null || request.Node.Identity.Id == Guid.Empty)
@@ -115,3 +150,5 @@ internal sealed class ProfilingWriterRegistry(Guid epoch, int capacity, Action<G
         public bool Retired { get; set; }
     }
 }
+
+internal sealed record ProfilingWriterRegistrationState(Guid AttemptId, ProfilingWriterLease Lease, bool Retired);

@@ -115,7 +115,7 @@ public sealed class RuntimeProfilingSegmentTagEntity
 
 /// <summary>Represents one immutable custom profiling metric observation.</summary>
 /// <example><code>public DbSet&lt;RuntimeProfilingMetricObservationEntity&gt; ProfilingMetricObservations { get; set; }</code></example>
-[Table("__Profiling_MetricObservations")]
+[Table("__Profiling_RuntimeMetricObservations")]
 [Index(nameof(SessionId), nameof(NodeId), nameof(TimestampUtc))]
 [Index(nameof(SessionId), nameof(MetricIdentifier), nameof(TimestampUtc))]
 public sealed class RuntimeProfilingMetricObservationEntity

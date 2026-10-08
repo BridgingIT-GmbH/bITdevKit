@@ -16,6 +16,7 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
     private readonly OperationProfilingOptions options;
     private readonly ProfilingStorageOptions storageOptions;
     private readonly ProfilingQueryOptions queryOptions;
+    private readonly ProfilingOperationQueryCodec queryCodec;
     private readonly InMemoryRuntimeProfilingStore runtime;
     private readonly ProfilingWriterRegistry writers;
     private readonly ProfilingClearCoordinator clears;
@@ -53,6 +54,7 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
         };
         this.queryOptions.Validate();
         this.clock = clock ?? TimeProvider.System;
+        this.queryCodec = new(this.options, this.queryOptions, this.clock, this.querySecret);
         this.Capabilities = new() { Name = "InMemory", Scope = $"process:{Environment.ProcessId}:{this.epoch:N}", Shared = false };
         this.runtime = new InMemoryRuntimeProfilingStore(this.sync);
         this.runtime.SharedClear = ct => this.ClearAsync(new ProfilingClearRequest { DataSet = ProfilingDataSet.Runtime }, ct);

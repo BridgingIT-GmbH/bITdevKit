@@ -60,7 +60,7 @@ public sealed partial class InMemoryProfilingStorageProvider
                     .Take(normalized.PageSize + 1).ToArray();
                 hasMore = ordered.Length > normalized.PageSize;
                 groups = ordered.Take(normalized.PageSize).Select(g => Group(g.Key, g.Value, [], normalized)).ToArray();
-                next = hasMore ? this.Encode(new PageCursor(groups[^1].Count, groups[^1].ComparisonKey, "groups", boundary)) : null;
+                next = hasMore ? this.queryCodec.Encode(new ProfilingPageCursor(groups[^1].Count, groups[^1].ComparisonKey, "groups", boundary)) : null;
             }
             else
             {
@@ -105,13 +105,13 @@ public sealed partial class InMemoryProfilingStorageProvider
     {
         try
         {
-            var cursor = query?.Cursor is not null ? this.Decode(query.Cursor) : null;
+            var cursor = query?.Cursor is not null ? this.queryCodec.Decode(query.Cursor) : null;
             if (cursor is not null && cursor.Target != target || query?.Boundary is not null && cursor is not null && query.Boundary != cursor.Boundary)
             {
                 return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError());
             }
 
-            var normalized = this.Normalize(query, cursor?.Boundary ?? query?.Boundary);
+            var normalized = this.queryCodec.Normalize(query, cursor?.Boundary ?? query?.Boundary);
             var fingerprint = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(normalized with { Boundary = null, Cursor = null, PageSize = 0, MaximumAnalysisCount = 0 }))));
             var boundary = cursor?.Boundary ?? query.Boundary;
             if (boundary is null)
@@ -121,11 +121,11 @@ public sealed partial class InMemoryProfilingStorageProvider
                     StoreEpoch = this.epoch, CommitWatermark = this.watermark, DeletionRevision = this.deletionRevision, FilterFingerprint = fingerprint,
                     FromUtc = normalized.FromUtc, ToUtc = normalized.ToUtc, ExpiresUtc = this.clock.GetUtcNow().Add(this.queryOptions.BoundaryLifetime),
                 };
-                boundary = boundary with { Signature = this.SignBoundary(boundary) };
+                boundary = boundary with { Signature = this.queryCodec.SignBoundary(boundary) };
             }
             else if (boundary.StoreEpoch != this.epoch || boundary.CommitWatermark > this.watermark || boundary.CommitWatermark < 0
                 || boundary.DeletionRevision != this.deletionRevision || boundary.ExpiresUtc <= this.clock.GetUtcNow()
-                || boundary.FilterFingerprint != fingerprint || !TagsEqual(boundary.Signature, this.SignBoundary(boundary with { Signature = null })))
+                || boundary.FilterFingerprint != fingerprint || !ProfilingOperationQueryCodec.TagsEqual(boundary.Signature, this.queryCodec.SignBoundary(boundary with { Signature = null })))
             {
                 return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError());
             }
@@ -141,82 +141,6 @@ public sealed partial class InMemoryProfilingStorageProvider
         {
             return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError());
         }
-    }
-
-    private OperationProfilingQuery Normalize(OperationProfilingQuery query, ProfilingQueryBoundary boundary)
-    {
-        if (query is null || !Enum.IsDefined(query.View) || query.PageSize <= 0 || query.PageSize > this.queryOptions.MaximumPageSize
-            || query.MaximumAnalysisCount <= 0 || query.MaximumAnalysisCount > this.queryOptions.MaximumAnalysisRecords
-            || query.Outcomes is null || query.Outcomes.Count > 5 || query.Outcomes.Any(o => !Enum.IsDefined(o))
-            || query.SegmentOutcomes is null || query.SegmentOutcomes.Count > 4 || query.SegmentOutcomes.Any(o => !Enum.IsDefined(o))
-            || query.Dimensions is null || query.SegmentDimensions is null || query.GroupingDimensions is null
-            || query.Dimensions.Count + query.SegmentDimensions.Count > this.queryOptions.MaximumDimensionPredicates
-            || query.GroupingDimensions.Count > this.queryOptions.MaximumGroupingDimensions || query.HttpStatusCode is < 100 or > 599
-            || query.FromUtc.HasValue != query.ToUtc.HasValue || query.FromUtc?.Offset != null && query.FromUtc.Value.Offset != TimeSpan.Zero
-            || query.ToUtc?.Offset != null && query.ToUtc.Value.Offset != TimeSpan.Zero)
-        {
-            throw new ArgumentException("Invalid profiling query.");
-        }
-
-        var from = query.FromUtc ?? boundary?.FromUtc ?? this.clock.GetUtcNow().Subtract(TimeSpan.FromMinutes(15));
-        var to = query.ToUtc ?? boundary?.ToUtc ?? this.clock.GetUtcNow();
-        if (from >= to || query.SegmentPath is { } path && (path.Components.Count > this.options.MaxSegmentDepth || path.Components.Any(c => !ProfilingValueValidator.IsKey(c, this.options.MaxKeyLength))))
-        {
-            throw new ArgumentException("Invalid profiling interval or path.");
-        }
-
-        string Key(string text, int? maximum = null)
-        {
-            if (text is not null && !ProfilingValueValidator.IsKey(text, maximum ?? this.options.MaxKeyLength))
-            {
-                throw new ArgumentException("Invalid profiling filter key.");
-            }
-
-            return ProfilingKeyComparer.Canonicalize(text);
-        }
-
-        string Value(string text)
-        {
-            if (text is not null && (text.Length > this.options.MaxStringLength || !ProfilingValueValidator.IsUnicode(text)))
-            {
-                throw new ArgumentException("Invalid profiling lookup value.");
-            }
-
-            return text;
-        }
-
-        IReadOnlyList<ProfilingDimensionPredicate> Predicates(IReadOnlyList<ProfilingDimensionPredicate> predicates, bool segment)
-        {
-            var result = predicates.Select(predicate =>
-            {
-                if (predicate is null || !Enum.IsDefined(predicate.Operator) || !segment && predicate.Operator == ProfilingDimensionOperator.Mixed
-                    || predicate.Operator == ProfilingDimensionOperator.Equal && predicate.Value is null
-                    || predicate.Operator != ProfilingDimensionOperator.Equal && predicate.Value is not null
-                    || predicate.Value?.Type == ProfilingValueType.String && (predicate.Value.Scalar.Length > this.options.MaxStringLength || !ProfilingValueValidator.IsUnicode(predicate.Value.Scalar)))
-                {
-                    throw new ArgumentException("Invalid profiling dimension predicate.");
-                }
-
-                return predicate with { Key = Key(predicate.Key) ?? throw new ArgumentException("A dimension name is required.") };
-            }).OrderBy(p => p.Key, StringComparer.Ordinal).ThenBy(p => p.Operator).ThenBy(p => p.Value?.Type).ThenBy(p => p.Value?.Scalar, StringComparer.Ordinal).ToArray();
-            return Array.AsReadOnly(result);
-        }
-
-        var grouping = query.GroupingDimensions.Select(d => Key(d) ?? throw new ArgumentException("A grouping dimension name is required.")).Order(StringComparer.Ordinal).ToArray();
-        if (grouping.Distinct(StringComparer.Ordinal).Count() != grouping.Length)
-        {
-            throw new ArgumentException("Duplicate profiling grouping dimensions.");
-        }
-
-        return query with
-        {
-            FromUtc = from, ToUtc = to, Kind = Key(query.Kind), Key = Key(query.Key), SegmentKey = Key(query.SegmentKey), HttpMethod = Key(query.HttpMethod), Route = Key(query.Route, this.options.MaxStringLength),
-            SamplingStrategyKey = Key(query.SamplingStrategyKey), SamplingConfigurationKey = Key(query.SamplingConfigurationKey),
-            CorrelationId = Value(query.CorrelationId), ApplicationRequestId = Value(query.ApplicationRequestId), ApplicationVersion = Value(query.ApplicationVersion),
-            SegmentPath = query.SegmentPath is null ? null : new ProfilingSegmentPath(query.SegmentPath.Components.Select(c => Key(c)).ToArray()),
-            Dimensions = Predicates(query.Dimensions, false), SegmentDimensions = Predicates(query.SegmentDimensions, true), GroupingDimensions = Array.AsReadOnly(grouping),
-            Outcomes = Array.AsReadOnly(query.Outcomes.Distinct().Order().ToArray()), SegmentOutcomes = Array.AsReadOnly(query.SegmentOutcomes.Distinct().Order().ToArray()),
-        };
     }
 
     private static bool Matches(OperationProfilingRecord record, OperationProfilingQuery query)
@@ -277,7 +201,7 @@ public sealed partial class InMemoryProfilingStorageProvider
         view == OperationProfilingView.Recent ? records.OrderByDescending(r => r.CompletedUtc).ThenByDescending(r => Id(r.Id), StringComparer.Ordinal)
             : records.OrderByDescending(r => r.Duration).ThenBy(r => Id(r.Id), StringComparer.Ordinal);
 
-    private static bool After(OperationProfilingRecord record, OperationProfilingView view, PageCursor cursor)
+    private static bool After(OperationProfilingRecord record, OperationProfilingView view, ProfilingPageCursor cursor)
     {
         if (cursor is null)
         {
@@ -334,48 +258,8 @@ public sealed partial class InMemoryProfilingStorageProvider
     }
 
     private string Cursor(OperationProfilingRecord record, OperationProfilingView view, string target, ProfilingQueryBoundary boundary) =>
-        this.Encode(new PageCursor(view == OperationProfilingView.Recent ? record.CompletedUtc.UtcTicks : record.Duration.Ticks, Id(record.Id), target, boundary));
+        this.queryCodec.Encode(new ProfilingPageCursor(view == OperationProfilingView.Recent ? record.CompletedUtc.UtcTicks : record.Duration.Ticks, Id(record.Id), target, boundary));
 
-    private string Encode(PageCursor cursor)
-    {
-        var data = Encoding.UTF8.GetBytes(JsonSerializer.Serialize(cursor));
-        return Convert.ToBase64String(data).TrimEnd('=').Replace('+', '-').Replace('/', '_') + "." + Convert.ToHexStringLower(HMACSHA256.HashData(this.querySecret, data));
-    }
-
-    private PageCursor Decode(string value)
-    {
-        if (value.Length > 8192)
-        {
-            throw new FormatException("Oversized cursor.");
-        }
-
-        var parts = value.Split('.');
-        if (parts.Length != 2)
-        {
-            throw new FormatException("Invalid cursor.");
-        }
-
-        var text = parts[0].Replace('-', '+').Replace('_', '/');
-        text += new string('=', (4 - text.Length % 4) % 4);
-        var data = Convert.FromBase64String(text);
-        if (!TagsEqual(parts[1], Convert.ToHexStringLower(HMACSHA256.HashData(this.querySecret, data))))
-        {
-            throw new FormatException("Invalid cursor authentication.");
-        }
-
-        var cursor = JsonSerializer.Deserialize<PageCursor>(data);
-        if (cursor?.Boundary is null || cursor.Identity is null || cursor.SortValue < 0)
-        {
-            throw new FormatException("Invalid continuation key.");
-        }
-
-        return cursor;
-    }
-
-    private string SignBoundary(ProfilingQueryBoundary boundary) => Convert.ToHexStringLower(HMACSHA256.HashData(this.querySecret, Encoding.UTF8.GetBytes(JsonSerializer.Serialize(boundary))));
-    private static bool TagsEqual(string left, string right) => left?.Length == 64 && right?.Length == 64
-        && CryptographicOperations.FixedTimeEquals(Encoding.ASCII.GetBytes(left), Encoding.ASCII.GetBytes(right));
     private static string Id(Guid id) => id.ToString("N");
-    private sealed record PageCursor(long SortValue, string Identity, string Target, ProfilingQueryBoundary Boundary);
-    private sealed record QuerySelection(OperationProfilingQuery Query, ProfilingQueryBoundary Boundary, PageCursor Cursor, OperationProfilingRecord[] Records);
+    private sealed record QuerySelection(OperationProfilingQuery Query, ProfilingQueryBoundary Boundary, ProfilingPageCursor Cursor, OperationProfilingRecord[] Records);
 }

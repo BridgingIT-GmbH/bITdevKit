@@ -75,6 +75,7 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Compile Include="../Shared/Profiling/*.cs" Link="Profiling/Shared/%(Filename)%(Extension)" />
         <Compile Include="..\Application.UnitTests\Storage\Blobs\BlobStoreProviderContractTests.cs" Link="Azure.Storage\Blobs\Shared\BlobStoreProviderContractTests.cs" />
     </ItemGroup>
 

@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 /// <summary>Represents one immutable node-local profiling snapshot.</summary>
 /// <example><code>public DbSet&lt;RuntimeProfilingSnapshotEntity&gt; ProfilingSnapshots { get; set; }</code></example>
-[Table("__Profiling_Snapshots")]
+[Table("__Profiling_RuntimeSnapshots")]
 [Index(nameof(Key), IsUnique = true)]
 [Index(nameof(SessionId), nameof(NodeId), nameof(Sequence), IsUnique = true)]
 [Index(nameof(SessionId), nameof(NodeId), nameof(TimestampUtc))]

@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.EntityFramework" />
     <InternalsVisibleTo Include="BridgingIT.DevKit.Common.UnitTests" />
     <InternalsVisibleTo Include="BridgingIT.DevKit.Presentation.UnitTests" />
     <InternalsVisibleTo Include="BridgingIT.DevKit.Infrastructure.UnitTests" />

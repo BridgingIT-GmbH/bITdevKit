@@ -12,6 +12,30 @@ internal sealed class ProfilingClearCoordinator(ProfilingStorageOptions options,
     public Clear Current => this.clears.FirstOrDefault(c => c.State is ProfilingClearState.Preparing or ProfilingClearState.Applying);
     public IReadOnlyList<Clear> Clears => this.clears;
 
+    internal void Restore(IReadOnlyList<Clear> stored)
+    {
+        if (stored is null || stored.Count > options.MaximumClearFences || this.clears.Count != 0
+            || stored.Any(clear => clear is null) || stored.Count(clear => clear.State is ProfilingClearState.Preparing or ProfilingClearState.Applying) > 1
+            || stored.Select(clear => clear.Id).Distinct().Count() != stored.Count)
+        {
+            throw new ArgumentException("A bounded serialized clear coordination snapshot is required.");
+        }
+
+        foreach (var clear in stored)
+        {
+            if (clear is null || clear.Id == Guid.Empty || Validate(clear.Selection) is not null || !Enum.IsDefined(clear.State)
+                || clear.Eligible.Count > options.MaximumWriterLeases || clear.Cutoffs.Count > clear.Eligible.Count
+                || clear.PreparedUtc.Offset != TimeSpan.Zero || clear.DeadlineUtc.Offset != TimeSpan.Zero || clear.DeadlineUtc <= clear.PreparedUtc
+                || clear.Generation < 0 || clear.Cutoffs.Any(cutoff => cutoff.Value < 0 || !clear.Eligible.ContainsKey(cutoff.Key)))
+            {
+                throw new ArgumentException("A persisted clear contains invalid eligibility or lifecycle state.");
+            }
+
+        }
+
+        this.clears.AddRange(stored);
+    }
+
     public Result<Clear> Prepare(ProfilingClearRequest request, ProfilingWriterRegistry writers, DateTimeOffset utc, bool runtimeActive)
     {
         var error = Validate(request);

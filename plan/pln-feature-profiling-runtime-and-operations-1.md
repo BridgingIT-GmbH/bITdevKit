@@ -4,17 +4,21 @@ version: 1.0
 date_created: 2026-10-07
 last_updated: 2026-10-08
 owner: bITdevKit maintainers
-status: In progress
+status: Paused
 tags: [feature, profiling, architecture, persistence, dashboard]
 ---
 
 # Introduction
 
-![Status: In progress](https://img.shields.io/badge/status-In_progress-yellow)
+![Status: Paused](https://img.shields.io/badge/status-Paused-yellow)
 
 Implement [Runtime and Operation Profiling](../docs/specs/spec-profiling-runtime-and-requests.md), including generic operation recording, aggregated segments, periodic provider persistence, the HTTP adapter, feature behaviors, and Runtime/Operations/Requests dashboard views. Preserve Runtime Broadcast behavior. Replace the unused profiling API and storage names without final compatibility aliases.
 
 This is an execution plan, not implementation evidence. All tasks start incomplete. Repository paths and extension points were inspected at commit `224904465`. Resolve paths from the repository root. The renamed specification is authoritative; the former `pln-feature-profiling-runtime-and-requests-1.md` is not an input. Here, implementation phases are work packages; the product's timed work is always called a **Segment**.
+
+## Execution checkpoint — 2026-10-08 UTC
+
+Paused at the user's request after Implementation Phase 5. TASK-001–TASK-025 are complete and verified; TASK-026–TASK-055 remain incomplete. Phase 6 has not started. Resume with TASK-026, the bounded operation completion queue, then follow the remaining dependencies. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for the verified build and database checks.
 
 ## 1. Requirements & Constraints
 
@@ -159,11 +163,11 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 
 | Task | Description | Completed | Date |
 | --- | --- | --- | --- |
-| TASK-021 | Create `src/Infrastructure.EntityFramework/Profiling/EntityFrameworkProfilingStorageProvider.cs` and compose the Runtime EF component. Extend `IProfilingDbContext.cs`, `ProfilingModelBuilderExtensions.cs`, and `Entities/` with `OperationProfilingEntities.cs` and `ProfilingCoordinationEntities.cs`. Map roots, summaries, typed dimensions/measurements, adapter projections, writer/open-attempt/clear state, epoch, publication position, and deletion revision. Add unique identities, owner references, completion/node/key/path/filter indexes, and provider-portable ordinal/binary comparison projections. Do not store operation collections in Runtime JSON or add a row per segment invocation. Depends on: TASK-020. | [ ] | |
-| TASK-022 | Implement AppendOperationsAsync and node upsert in `EntityFrameworkProfilingStorageProvider.cs` and `ProfilingEntityMapper.cs` with a fresh context per attempt, transactionally atomic root graphs, stable-ID conflict handling, typed partial results, and retention admission. Coordinate commit visibility with publication watermarks; a later commit cannot appear below an issued query boundary. Do not use database default text/GUID collation as the common comparer. Depends on: TASK-021. | [ ] | |
-| TASK-023 | Add `src/Infrastructure.EntityFramework/Profiling/EntityFrameworkProfilingCoordination.cs` for transactional lease registration/renewal/settlement, clear acknowledgements/fences, Runtime maintenance gates, and bounded recovery/retention. Settlement and clear sealing must serialize against append validation across independent contexts/processes. Retain an acknowledged cutoff even after its writer expires. Bounded metadata cleanup must continue rejecting stale tokens and deleted-root replays. Depends on: TASK-022. | [ ] | |
-| TASK-024 | Add `src/Infrastructure.EntityFramework/Profiling/EntityFrameworkOperationProfilingQueries.cs`. Translate validated filters, stable keyset pages, complete counts/rankings, and bounded analysis selections server-side. Preserve dimension types and same-summary matching. Validate cursor epoch/watermark/deletion revision/expiry and propagate cancellation/timeouts. Avoid deserializing all history, client-side unbounded grouping, and N+1 node/segment loads. Depends on: TASK-023. | [ ] | |
-| TASK-025 | Update `tests/Infrastructure.UnitTests/EntityFramework/Profiling/ProfilingTestDbContext.cs`, model/store tests, and `tests/Infrastructure.IntegrationTests/EntityFramework/Profiling/EntityFrameworkProfilingStoreTestsBase.cs` plus its Sqlite/SqlServer/Postgres subclasses to the final context/provider. Run TASK-020 scenarios with two service providers and skewed clocks. Verify ConfigureProfiling and migration SQL in isolated test databases, atomic root deletion, startup schema non-mutation, and preservation of unrelated host tables. Do not execute schema resets against developer application databases. Depends on: TASK-024. | [ ] | |
+| TASK-021 | Create `src/Infrastructure.EntityFramework/Profiling/EntityFrameworkProfilingStorageProvider.cs` and compose the Runtime EF component. Extend `IProfilingDbContext.cs`, `ProfilingModelBuilderExtensions.cs`, and `Entities/` with `OperationProfilingEntities.cs` and `ProfilingCoordinationEntities.cs`. Map roots, summaries, typed dimensions/measurements, adapter projections, writer/open-attempt/clear state, epoch, publication position, and deletion revision. Add unique identities, owner references, completion/node/key/path/filter indexes, and provider-portable ordinal/binary comparison projections. Do not store operation collections in Runtime JSON or add a row per segment invocation. Depends on: TASK-020. | [x] | 2026-10-08 |
+| TASK-022 | Implement AppendOperationsAsync and node upsert in `EntityFrameworkProfilingStorageProvider.cs` and `ProfilingEntityMapper.cs` with a fresh context per attempt, transactionally atomic root graphs, stable-ID conflict handling, typed partial results, and retention admission. Coordinate commit visibility with publication watermarks; a later commit cannot appear below an issued query boundary. Do not use database default text/GUID collation as the common comparer. Depends on: TASK-021. | [x] | 2026-10-08 |
+| TASK-023 | Add `src/Infrastructure.EntityFramework/Profiling/EntityFrameworkProfilingCoordination.cs` for transactional lease registration/renewal/settlement, clear acknowledgements/fences, Runtime maintenance gates, and bounded recovery/retention. Settlement and clear sealing must serialize against append validation across independent contexts/processes. Retain an acknowledged cutoff even after its writer expires. Bounded metadata cleanup must continue rejecting stale tokens and deleted-root replays. Depends on: TASK-022. | [x] | 2026-10-08 |
+| TASK-024 | Add `src/Infrastructure.EntityFramework/Profiling/EntityFrameworkOperationProfilingQueries.cs`. Translate validated filters, stable keyset pages, complete counts/rankings, and bounded analysis selections server-side. Preserve dimension types and same-summary matching. Validate cursor epoch/watermark/deletion revision/expiry and propagate cancellation/timeouts. Avoid deserializing all history, client-side unbounded grouping, and N+1 node/segment loads. Depends on: TASK-023. | [x] | 2026-10-08 |
+| TASK-025 | Update `tests/Infrastructure.UnitTests/EntityFramework/Profiling/ProfilingTestDbContext.cs`, model/store tests, and `tests/Infrastructure.IntegrationTests/EntityFramework/Profiling/EntityFrameworkProfilingStoreTestsBase.cs` plus its Sqlite/SqlServer/Postgres subclasses to the final context/provider. Run TASK-020 scenarios with two service providers and skewed clocks. Verify ConfigureProfiling and migration SQL in isolated test databases, atomic root deletion, startup schema non-mutation, and preservation of unrelated host tables. Do not execute schema resets against developer application databases. Depends on: TASK-024. | [x] | 2026-10-08 |
 
 ### Implementation Phase 6
 

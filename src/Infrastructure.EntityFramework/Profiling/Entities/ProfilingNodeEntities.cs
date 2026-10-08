@@ -17,6 +17,9 @@ using Microsoft.EntityFrameworkCore;
 [Index(nameof(BroadcastNodeIdentity), nameof(ProcessStartedUtc), IsUnique = true)]
 public sealed class ProfilingNodeEntity
 {
+    private DateTimeOffset processStartedUtc;
+    private DateTimeOffset executionStartedUtc;
+
     /// <summary>Gets or sets the node identifier.</summary>
     [Key]
     public Guid Id { get; set; }
@@ -27,13 +30,24 @@ public sealed class ProfilingNodeEntity
     public string Key { get; set; }
 
     /// <summary>Gets or sets the private Broadcast node identity.</summary>
-    [Required]
     [MaxLength(256)]
     public string BroadcastNodeIdentity { get; set; }
 
     /// <summary>Gets or sets the process start timestamp.</summary>
     [Required]
-    public DateTimeOffset ProcessStartedUtc { get; set; }
+    public DateTimeOffset ProcessStartedUtc
+    {
+        get => this.processStartedUtc;
+        set
+        {
+            this.processStartedUtc = value;
+            this.ProcessStartedUtcTicks = value.UtcTicks;
+        }
+    }
+
+    /// <summary>Gets or sets the exact cached process-start ticks independent of database timestamp precision.</summary>
+    /// <example><code>var ticks = entity.ProcessStartedUtcTicks;</code></example>
+    public long ProcessStartedUtcTicks { get; set; }
 
     /// <summary>Gets or sets hostname metadata.</summary>
     [MaxLength(256)]
@@ -41,7 +55,19 @@ public sealed class ProfilingNodeEntity
 
     /// <summary>Gets or sets the cached process-start UTC independently of Broadcast registration time.</summary>
     /// <example><code>var utc = node.ExecutionStartedUtc;</code></example>
-    public DateTimeOffset ExecutionStartedUtc { get; set; }
+    public DateTimeOffset ExecutionStartedUtc
+    {
+        get => this.executionStartedUtc;
+        set
+        {
+            this.executionStartedUtc = value;
+            this.ExecutionStartedUtcTicks = value.UtcTicks;
+        }
+    }
+
+    /// <summary>Gets or sets lossless process identity ticks for cross-provider correlation.</summary>
+    /// <example><code>var ticks = entity.ExecutionStartedUtcTicks;</code></example>
+    public long ExecutionStartedUtcTicks { get; set; }
 
     /// <summary>Gets or sets the bounded display name.</summary>
     /// <example><code>node.DisplayName = "worker-a";</code></example>
@@ -60,7 +86,7 @@ public sealed class ProfilingNodeEntity
 
 /// <summary>Represents one node's mutable participation in a profiling session.</summary>
 /// <example><code>public DbSet&lt;RuntimeProfilingParticipationEntity&gt; ProfilingParticipations { get; set; }</code></example>
-[Table("__Profiling_Participations")]
+[Table("__Profiling_RuntimeParticipations")]
 [PrimaryKey(nameof(SessionId), nameof(NodeId))]
 [Index(nameof(SessionId), nameof(State))]
 public sealed class RuntimeProfilingParticipationEntity

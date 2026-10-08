@@ -313,6 +313,22 @@ public abstract class EntityFrameworkProfilingStoreTestsBase
         DbContextOptions<ProfilingIntegrationDbContext> options
     ) : DbContext(options), IProfilingDbContext
     {
+        public DbSet<OperationProfilingEntity> ProfilingOperations { get; set; }
+
+        public DbSet<OperationProfilingSegmentEntity> ProfilingOperationSegments { get; set; }
+
+        public DbSet<OperationProfilingDimensionEntity> ProfilingOperationDimensions { get; set; }
+
+        public DbSet<OperationProfilingMeasurementEntity> ProfilingOperationMeasurements { get; set; }
+
+        public DbSet<ProfilingStoreStateEntity> ProfilingStoreStates { get; set; }
+
+        public DbSet<ProfilingRuntimeGateEntity> ProfilingRuntimeGates { get; set; }
+
+        public DbSet<ProfilingWriterEntity> ProfilingWriters { get; set; }
+
+        public DbSet<ProfilingClearEntity> ProfilingClears { get; set; }
+
         public DbSet<RuntimeProfilingSessionEntity> ProfilingSessions { get; set; }
 
         public DbSet<RuntimeProfilingInvalidSessionEntity> ProfilingInvalidSessions { get; set; }

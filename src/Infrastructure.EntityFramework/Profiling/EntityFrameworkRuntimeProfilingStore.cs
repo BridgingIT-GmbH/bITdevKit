@@ -33,6 +33,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
     where TContext : DbContext, IProfilingDbContext
 {
     private readonly SemaphoreSlim lifecycleGate = new(1, 1);
+    internal Func<CancellationToken, Task<IResult<ProfilingClearResult>>> SharedClear { get; set; }
 
     /// <inheritdoc />
     public ProfilingStoreCapabilities Capabilities { get; } = new(true);
@@ -55,6 +56,12 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
             return await this.ExecuteWriteAsync(
                     async (context, token) =>
                     {
+                        var maintenance = await EntityFrameworkProfilingRuntimeGate.AcquireAsync(context, token).ConfigureAwait(false);
+                        if (maintenance.MaintenanceClearId is not null)
+                        {
+                            return Failure<RuntimeProfilingSessionResolution>(new ProfilingBusyError("Runtime history is being cleared."));
+                        }
+
                         var active = await context
                             .ProfilingSessions.SingleOrDefaultAsync(
                                 x =>
@@ -355,22 +362,20 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                             return Success(ProfilingEntityMapper.ToModel(entity));
                         }
 
-                        if (
-                            await context
-                                .ProfilingNodes.AnyAsync(
-                                    x =>
-                                        x.Id == proposedNode.Identity.Id
-                                        || x.Key == proposedNode.Identity.Key,
-                                    token
-                                )
-                                .ConfigureAwait(false)
-                        )
+                        var shared = await context.ProfilingNodes.SingleOrDefaultAsync(node => node.Id == proposedNode.Identity.Id || node.Key == proposedNode.Identity.Key, token).ConfigureAwait(false);
+                        if (shared is not null)
                         {
-                            return Failure<ProfilingNode>(
-                                new ProfilingValidationError(
-                                    "The profiling node identity is already in use."
-                                )
-                            );
+                            if (shared.Id != proposedNode.Identity.Id || shared.Key != proposedNode.Identity.Key || shared.BroadcastNodeIdentity is not null
+                                || shared.ProcessId != proposedNode.ProcessId || shared.ExecutionStartedUtcTicks != proposedNode.ProcessStartedUtc.UtcTicks
+                                || shared.HostName != proposedNode.HostName || shared.DisplayName != proposedNode.DisplayName || shared.ApplicationVersion != proposedNode.ApplicationVersion)
+                            {
+                                return Failure<ProfilingNode>(new ProfilingValidationError("The profiling node identity is already in use."));
+                            }
+
+                            shared.BroadcastNodeIdentity = identity;
+                            shared.ProcessStartedUtc = correlation.ProcessStartedUtc;
+                            await context.SaveChangesAsync(token).ConfigureAwait(false);
+                            return Success(ProfilingEntityMapper.ToModel(shared));
                         }
 
                         entity = ProfilingEntityMapper.ToEntity(correlation, proposedNode);
@@ -1078,6 +1083,12 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
             return await this.ExecuteWriteAsync(
                     async (context, token) =>
                     {
+                        var maintenance = await EntityFrameworkProfilingRuntimeGate.AcquireAsync(context, token).ConfigureAwait(false);
+                        if (maintenance.MaintenanceClearId is not null)
+                        {
+                            return Failure<RuntimeProfilingSession>(new ProfilingBusyError("Runtime history is being cleared."));
+                        }
+
                         var sessionId = data.Session.Identity.Id;
                         var sessionKey = data.Session.Identity.Key;
                         var nodeIds = data.Nodes.Select(item => item.Identity.Id).ToArray();
@@ -1255,6 +1266,11 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         CancellationToken cancellationToken = default
     )
     {
+        if (this.SharedClear is not null)
+        {
+            return await this.SharedClear(cancellationToken).ConfigureAwait(false);
+        }
+
         await this.lifecycleGate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -1629,6 +1645,9 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         CancellationToken cancellationToken
     )
     {
+        var gate = context.ProfilingRuntimeGates.Local.SingleOrDefault(row => row.Id == 1)
+            ?? await EntityFrameworkProfilingRuntimeGate.AcquireAsync(context, cancellationToken).ConfigureAwait(false);
+        gate.DeletionRevision = checked(gate.DeletionRevision + 1);
         if (
             !await context
                 .ProfilingInvalidSessions.AnyAsync(

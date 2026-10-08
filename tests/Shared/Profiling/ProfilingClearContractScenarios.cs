@@ -233,8 +233,18 @@ public abstract partial class ProfilingStorageContractTestsBase
 
     private static async Task<ProfilingPendingClear> PendingAsync(Harness h, ProfilingWriterLease lease)
     {
-        var state = await h.Store.SynchronizeWriterAsync(new() { Lease = lease });
-        return state.Value.PendingClears.ShouldHaveSingleItem();
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(5));
+        while (true)
+        {
+            var state = await h.Store.SynchronizeWriterAsync(new() { Lease = lease }, deadline.Token);
+            state.IsSuccess.ShouldBeTrue();
+            if (state.Value.PendingClears.Count > 0)
+            {
+                return state.Value.PendingClears.ShouldHaveSingleItem();
+            }
+
+            await Task.Delay(10, deadline.Token);
+        }
     }
 
     private static Task<IResult<ProfilingClearAcknowledgement>> AckAsync(Harness h, Guid id, ProfilingWriterLease lease, long cutoff) =>

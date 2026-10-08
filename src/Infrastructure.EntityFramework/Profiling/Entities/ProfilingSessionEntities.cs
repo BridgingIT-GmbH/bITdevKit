@@ -12,12 +12,15 @@ using Microsoft.EntityFrameworkCore;
 
 /// <summary>Represents one durable profiling session.</summary>
 /// <example><code>public DbSet&lt;RuntimeProfilingSessionEntity&gt; ProfilingSessions { get; set; }</code></example>
-[Table("__Profiling_Sessions")]
+[Table("__Profiling_RuntimeSessions")]
 [Index(nameof(Key), IsUnique = true)]
 [Index(nameof(LifecycleKey), IsUnique = true)]
 [Index(nameof(State), nameof(CompletedUtc))]
 public sealed class RuntimeProfilingSessionEntity
 {
+    private DateTimeOffset endsUtc;
+    private DateTimeOffset? completedUtc;
+
     /// <summary>Gets or sets the session identifier.</summary>
     [Key]
     public Guid Id { get; set; }
@@ -46,10 +49,30 @@ public sealed class RuntimeProfilingSessionEntity
 
     /// <summary>Gets or sets the original logical end timestamp.</summary>
     [Required]
-    public DateTimeOffset EndsUtc { get; set; }
+    public DateTimeOffset EndsUtc
+    {
+        get => this.endsUtc;
+        set
+        {
+            this.endsUtc = value;
+            this.CompletionUtcTicks = (this.completedUtc ?? value).UtcTicks;
+        }
+    }
 
     /// <summary>Gets or sets the terminal transition timestamp.</summary>
-    public DateTimeOffset? CompletedUtc { get; set; }
+    public DateTimeOffset? CompletedUtc
+    {
+        get => this.completedUtc;
+        set
+        {
+            this.completedUtc = value;
+            this.CompletionUtcTicks = (value ?? this.endsUtc).UtcTicks;
+        }
+    }
+
+    /// <summary>Gets or sets portable completion ordering and maintenance range ticks.</summary>
+    /// <example><code>var ticks = entity.CompletionUtcTicks;</code></example>
+    public long CompletionUtcTicks { get; set; }
 
     /// <summary>Gets or sets the configured sampling interval.</summary>
     [Required]
@@ -91,7 +114,7 @@ public sealed class RuntimeProfilingSessionEntity
 
 /// <summary>Preserves one invalidated session identity after data deletion.</summary>
 /// <example><code>public DbSet&lt;RuntimeProfilingInvalidSessionEntity&gt; ProfilingInvalidSessions { get; set; }</code></example>
-[Table("__Profiling_InvalidSessions")]
+[Table("__Profiling_RuntimeInvalidSessions")]
 [Index(nameof(Key), IsUnique = true)]
 public sealed class RuntimeProfilingInvalidSessionEntity
 {

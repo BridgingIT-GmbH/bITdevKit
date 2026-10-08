@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 public sealed class EntityFrameworkProfilingModelTests
 {
     [Fact]
-    public void Model_ProfilingAggregates_HaveSixTablesAndOwnedJsonDocuments()
+    public void Model_ProfilingAggregates_HaveIndependentTablesAndRuntimeOwnedDocuments()
     {
         // Arrange
         using var context = CreateContext();
@@ -43,12 +43,20 @@ public sealed class EntityFrameworkProfilingModelTests
             .OrderBy(name => name, StringComparer.Ordinal)
             .ShouldBe(
                 [
-                    "__Profiling_InvalidSessions",
-                    "__Profiling_MetricObservations",
+                    "__Profiling_Clears",
                     "__Profiling_Nodes",
-                    "__Profiling_Participations",
-                    "__Profiling_Sessions",
-                    "__Profiling_Snapshots",
+                    "__Profiling_OperationDimensions",
+                    "__Profiling_OperationMeasurements",
+                    "__Profiling_OperationSegments",
+                    "__Profiling_Operations",
+                    "__Profiling_RuntimeGate",
+                    "__Profiling_RuntimeInvalidSessions",
+                    "__Profiling_RuntimeMetricObservations",
+                    "__Profiling_RuntimeParticipations",
+                    "__Profiling_RuntimeSessions",
+                    "__Profiling_RuntimeSnapshots",
+                    "__Profiling_StoreState",
+                    "__Profiling_Writers"
                 ]
             );
         session

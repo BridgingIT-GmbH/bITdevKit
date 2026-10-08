@@ -56,3 +56,16 @@ public sealed class ProfilingQueryBoundaryError() : ResultErrorBase("The profili
 /// <summary>Requires a narrower selection instead of silently truncating exact analysis.</summary>
 /// <example><code>var error = new ProfilingQueryLimitError();</code></example>
 public sealed class ProfilingQueryLimitError() : ResultErrorBase("The profiling selection exceeds its exact analysis bound. Narrow the filters.");
+
+/// <summary>Classifies a provider attempt without exposing backend payloads or guessing commit success.</summary>
+/// <example><code>if (error is ProfilingPersistenceError { MayHaveCommitted: true }) ReportUnknown();</code></example>
+public sealed class ProfilingPersistenceError(bool mayHaveCommitted, bool transient) : ResultErrorBase("Profiling persistence is unavailable; commit certainty and retry eligibility are reported separately.")
+{
+    /// <summary>Gets whether an acknowledgement may have been lost after commit began.</summary>
+    /// <example><code>var uncertain = error.MayHaveCommitted;</code></example>
+    public bool MayHaveCommitted { get; } = mayHaveCommitted;
+
+    /// <summary>Gets whether a bounded background retry is eligible.</summary>
+    /// <example><code>var retry = error.Transient;</code></example>
+    public bool Transient { get; } = transient;
+}

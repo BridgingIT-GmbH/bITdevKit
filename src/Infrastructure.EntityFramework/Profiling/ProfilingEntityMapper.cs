@@ -9,7 +9,7 @@ using BridgingIT.DevKit.Common;
 
 /// <summary>Maps provider-neutral profiling models to durable Entity Framework rows.</summary>
 /// <example><code>var model = ProfilingEntityMapper.ToModel(entity);</code></example>
-public static class ProfilingEntityMapper
+public static partial class ProfilingEntityMapper
 {
     /// <summary>Maps a session creation request to a durable active-session row.</summary>
     /// <example><code>var entity = ProfilingEntityMapper.ToEntity(request);</code></example>
@@ -94,8 +94,8 @@ public static class ProfilingEntityMapper
         {
             Id = node.Identity.Id,
             Key = node.Identity.Key,
-            BroadcastNodeIdentity = correlation.BroadcastNodeIdentity.Trim(),
-            ProcessStartedUtc = correlation.ProcessStartedUtc,
+            BroadcastNodeIdentity = correlation?.BroadcastNodeIdentity.Trim(),
+            ProcessStartedUtc = correlation?.ProcessStartedUtc ?? node.ProcessStartedUtc,
             HostName = node.HostName,
             ExecutionStartedUtc = node.ProcessStartedUtc,
             DisplayName = node.DisplayName,
@@ -109,12 +109,12 @@ public static class ProfilingEntityMapper
         new()
         {
             Identity = new ProfilingNodeIdentity(entity.Id, entity.Key),
-            Correlation = new RuntimeProfilingNodeCorrelation(
+            Correlation = entity.BroadcastNodeIdentity is null ? null : new RuntimeProfilingNodeCorrelation(
                 entity.BroadcastNodeIdentity,
-                entity.ProcessStartedUtc
+                new DateTimeOffset(entity.ProcessStartedUtcTicks, TimeSpan.Zero)
             ),
             HostName = entity.HostName,
-            ProcessStartedUtc = entity.ExecutionStartedUtc,
+            ProcessStartedUtc = new DateTimeOffset(entity.ExecutionStartedUtcTicks, TimeSpan.Zero),
             DisplayName = entity.DisplayName,
             ApplicationVersion = entity.ApplicationVersion,
             ProcessId = entity.ProcessId,

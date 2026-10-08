@@ -420,3 +420,28 @@ Verification used a stable final solution build followed by sequential `--no-bui
 A cancellation assertion originally used Shouldly's synthetic canceled-task exception; direct-await checks now prove original exception identity and token preservation. A pre-existing lost-clear-ack test had a scheduling-dependent administrative-counter assertion. It now explicitly waits for clear sealing before the append, proving the intended fence rather than relying on scheduling order. The final complete rerun above passes both checks.
 
 The overhaul remains incomplete. Continue with TASK-040–TASK-055; no query/dashboard/performance completion is claimed by this phase.
+
+## Phase 9 prerequisites: storage and failure-isolation refinements — 2026-10-08 UTC
+
+TASK-056 and TASK-057 are complete. TASK-040–TASK-055 remain incomplete; this checkpoint does not complete Phase 9 or the overall assignment.
+
+- `IProfilingDbContext` now exposes only inherited `Set<TEntity>()`. All EF consumers and fixture contexts use the generic contract. `ConfigureProfiling()` explicitly registers every retained Runtime entity, including invalid-session tombstones, rather than depending on host DbSet discovery.
+- Removed the redundant operation-measurement entity/table/navigation and append projections. Root `RecordJson` and segment `SummaryJson` preserve measurements and reducer/outcome information. Indexed relational segment/dimension projections remain available for bounded filters and grouping. Actual-engine tests verify JSON round trips, absence of the measurement table, and atomic root deletion.
+- Unexpected observation faults discard inconsistent capture under its own lock and release admission immediately. Discarded captures are counted as diagnostic loss. Queue health labels clock-dependent age unavailable and keeps record/byte counts; shutdown distinguishes pending uncertain commits from confirmed loss.
+- HTTP startup, metadata, status/ID access, callbacks, finalization and exception observation are guarded. Worker initialization, timers, warnings and shutdown are guarded. Independent job/pipeline/orchestration boundary restoration uses an idempotent safe wrapper. Faulty instrumentation cannot rerun a business delegate or replace its result/exception.
+- An injected `TimeProvider.CreateTimer` failure initially exposed a real test-host crash in `PeriodicTimer.Finalize()` (`NullReferenceException`). The inspected [.NET implementation](https://github.com/dotnet/runtime/blob/v10.0.0/src/libraries/System.Private.CoreLib/src/System/Threading/PeriodicTimer.cs) creates the injected timer before its finalizer can dispose it. Profiling workers now use a finalizer-free coalescing `ProfilingPeriodicTimer`. Tests cover failed factories plus forced finalization, coalescing, one consumer, cancellation, disposal, and survival of the actual registered hosted workers.
+- A new orchestration fault test initially failed because its fixture supplied a null service provider. The fixture was corrected; the final actual adapter test preserves both the action result and original business exception.
+- Recoverable profiling faults are isolated; invalid explicit setup remains a validation failure. Process-fatal failures and arbitrary application code used to compute metadata are outside this guarantee.
+
+Final validation was sequential against the final built artifacts:
+
+| Command / selector | Result | Log |
+| --- | --- | --- |
+| `dotnet build bITdevKit.slnx --nologo --no-restore` | Exit 0; 0 warnings, 0 errors; 2:41.42 | `/tmp/bitdevkit-profiling-refinement-final-build.log` |
+| Common UnitTests, `Profiling` or `Pipeline`, `--no-build` | 382 passed; 0 failed/skipped | `/tmp/bitdevkit-profiling-refinement-common-final.log` |
+| Application UnitTests, `Jobs`, `JobScheduling` or `Orchestration`, `--no-build` | 426 passed; 0 failed/skipped | `/tmp/bitdevkit-profiling-refinement-application-final.log` |
+| Presentation UnitTests, `Profiling`, `--no-build` | 129 passed; 0 failed/skipped | `/tmp/bitdevkit-profiling-refinement-presentation-final.log` |
+| Infrastructure UnitTests, `Profiling`, `--no-build` | 35 passed; 0 failed/skipped | `/tmp/bitdevkit-profiling-refinement-infrastructure-final.log` |
+| Infrastructure IntegrationTests, `Profiling`, `--no-build` | 149 passed; 0 failed/skipped; actual SQLite/SQL Server/PostgreSQL | `/tmp/bitdevkit-profiling-refinement-engines-final.log` |
+
+Total: **1,121 passing tests**. Docker server verified available (`29.7.2`). No host application database was migrated or reset. No new production package was introduced.

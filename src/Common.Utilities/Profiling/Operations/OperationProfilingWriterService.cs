@@ -46,12 +46,12 @@ public sealed class OperationProfilingWriterService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var boundary = this.profiler.BeginExecutionBoundary();
-        using var suppression = this.profiler.Suppress();
-        await this.OpenAsync(stoppingToken).ConfigureAwait(false);
-        using var timer = new PeriodicTimer(this.options.FlushInterval, this.clock);
         try
         {
+            using var boundary = this.profiler.BeginExecutionBoundary();
+            using var suppression = this.profiler.Suppress();
+            await this.OpenAsync(stoppingToken).ConfigureAwait(false);
+            using var timer = new ProfilingPeriodicTimer(this.options.FlushInterval, this.clock);
             while (await timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false))
             {
                 await this.TickAsync(stoppingToken).ConfigureAwait(false);
@@ -60,6 +60,12 @@ public sealed class OperationProfilingWriterService : BackgroundService
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // Shutdown owns the bounded final drain, not application cancellation.
+        }
+        catch (Exception)
+        {
+            this.Warn();
+            this.RecordUndrained();
+            this.queue.Retire(expired: false);
         }
     }
 
@@ -72,10 +78,10 @@ public sealed class OperationProfilingWriterService : BackgroundService
             return;
         }
 
-        using var boundary = this.profiler.BeginExecutionBoundary();
-        using var suppression = this.profiler.Suppress();
         try
         {
+            using var boundary = this.profiler.BeginExecutionBoundary();
+            using var suppression = this.profiler.Suppress();
             var started = this.clock.GetTimestamp();
             if (this.queue.Watermark().Lease is null && !await this.OpenAsync(cancellationToken).ConfigureAwait(false))
             {
@@ -360,13 +366,23 @@ public sealed class OperationProfilingWriterService : BackgroundService
     private void Warn()
     {
         Interlocked.Increment(ref this.health.Faults);
-        var now = this.clock.GetTimestamp();
-        if (this.lastWarning is null || this.clock.GetElapsedTime(this.lastWarning.Value, now) >= TimeSpan.FromMinutes(1))
+        try
         {
-            this.lastWarning = now;
-            try { this.logger?.LogWarning("[Profiling] background persistence unavailable; inspect profiling health"); }
-            catch (Exception) { Interlocked.Increment(ref this.health.Faults); }
+            var now = this.clock.GetTimestamp();
+            if (this.lastWarning is null || this.clock.GetElapsedTime(this.lastWarning.Value, now) >= TimeSpan.FromMinutes(1))
+            {
+                this.lastWarning = now;
+                this.logger?.LogWarning("[Profiling] background persistence unavailable; inspect profiling health");
+            }
         }
+        catch (Exception) { Interlocked.Increment(ref this.health.Faults); }
+    }
+
+    private void RecordUndrained()
+    {
+        var pending = this.queue.Snapshot();
+        Interlocked.Add(ref this.health.Unknown, pending.PendingUnknownCount);
+        Interlocked.Add(ref this.health.Lost, pending.Count - pending.PendingUnknownCount);
     }
 
     /// <summary>Closes capture then attempts the configured bounded shutdown drain.</summary>
@@ -375,10 +391,12 @@ public sealed class OperationProfilingWriterService : BackgroundService
     {
         (this.profiler as OperationProfiler)?.CloseForHost();
         this.draining = true;
-        using var deadline = new CancellationTokenSource(this.options.ShutdownDrainTimeout, this.clock);
-        using var linked = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token, cancellationToken);
+        var drainToken = cancellationToken;
         try
         {
+            using var deadline = new CancellationTokenSource(this.options.ShutdownDrainTimeout, this.clock);
+            using var linked = CancellationTokenSource.CreateLinkedTokenSource(deadline.Token, cancellationToken);
+            drainToken = linked.Token;
             await base.StopAsync(linked.Token).ConfigureAwait(false);
             while (this.queue.Snapshot().Count > 0 && !linked.IsCancellationRequested)
             {
@@ -395,12 +413,18 @@ public sealed class OperationProfilingWriterService : BackgroundService
                 await this.store.CloseWriterAsync(lease, linked.Token).WaitAsync(linked.Token).ConfigureAwait(false);
             }
         }
-        catch (OperationCanceledException) when (linked.IsCancellationRequested)
+        catch (OperationCanceledException) when (drainToken.IsCancellationRequested)
         {
-            // A still-running provider retains uncertainty; do not settle or start a replacement.
-            var pending = this.queue.Snapshot();
-            Interlocked.Add(ref this.health.Unknown, pending.InFlightCount);
-            Interlocked.Add(ref this.health.Lost, pending.Count - pending.InFlightCount);
+            this.RecordUndrained();
+        }
+        catch (Exception)
+        {
+            // Host cancellation and diagnostic faults both end the bounded drain. A still-running
+            // provider retains uncertainty; do not settle or start a replacement.
+            this.Warn();
+            this.RecordUndrained();
+            try { await base.StopAsync(cancellationToken).ConfigureAwait(false); }
+            catch (Exception) { this.Warn(); }
         }
         finally
         {

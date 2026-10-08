@@ -448,6 +448,10 @@ public sealed record OperationProfilingHealth
     /// <example><code>var value = health.QueueOldestAge;</code></example>
     public TimeSpan QueueOldestAge { get; init; }
 
+    /// <summary>Indicates that the queue clock could not supply its oldest-record age; the duration must not be interpreted.</summary>
+    /// <example><code>if (health.QueueOldestAgeUnavailable) { ShowUnavailable(); }</code></example>
+    public bool QueueOldestAgeUnavailable { get; init; }
+
     /// <summary>Gets the node-local WriterStalled observation.</summary>
     /// <example><code>var value = health.WriterStalled;</code></example>
     public bool WriterStalled { get; init; }

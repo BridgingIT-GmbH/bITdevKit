@@ -146,7 +146,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
     {
         try
         {
-            var state = await context.ProfilingStoreStates.AsNoTracking().SingleOrDefaultAsync(state => state.Id == 1, token).ConfigureAwait(false);
+            var state = await context.Set<ProfilingStoreStateEntity>().AsNoTracking().SingleOrDefaultAsync(state => state.Id == 1, token).ConfigureAwait(false);
             var codec = new ProfilingOperationQueryCodec(this.options, this.queryOptions, this.clock, state?.QuerySecret ?? new byte[32]);
             if (state is null)
             {
@@ -156,7 +156,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
                 }
 
                 var emptyQuery = codec.Normalize(query, null);
-                return await context.ProfilingOperations.AnyAsync(token).ConfigureAwait(false)
+                return await context.Set<OperationProfilingEntity>().AnyAsync(token).ConfigureAwait(false)
                     ? Result<QuerySelection>.Failure(new ProfilingUnavailableError("The original profiling coordination state is absent."))
                     : Result<QuerySelection>.Success(new(emptyQuery, null, null, codec, null, true));
             }
@@ -171,7 +171,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
             var fingerprint = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(normalized with { Boundary = null, Cursor = null, PageSize = 0, MaximumAnalysisCount = 0 }))));
             var boundary = cursor?.Boundary ?? query.Boundary;
             var utc = await EntityFrameworkProfilingUnitOfWork<TContext>.ProviderUtcAsync(context, token).ConfigureAwait(false);
-            var revision = checked(state.DeletionRevision + await context.ProfilingRuntimeGates.AsNoTracking().Where(gate => gate.Id == 1).Select(gate => gate.DeletionRevision).SingleOrDefaultAsync(token).ConfigureAwait(false));
+            var revision = checked(state.DeletionRevision + await context.Set<ProfilingRuntimeGateEntity>().AsNoTracking().Where(gate => gate.Id == 1).Select(gate => gate.DeletionRevision).SingleOrDefaultAsync(token).ConfigureAwait(false));
             if (boundary is null)
             {
                 boundary = new()
@@ -210,7 +210,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
     {
         if (ids.Length == 0) { return Array.Empty<OperationProfilingRecord>(); }
 
-        var entities = await context.ProfilingOperations.AsNoTracking().Where(root => ids.Contains(root.Id)).ToArrayAsync(token).ConfigureAwait(false);
+        var entities = await context.Set<OperationProfilingEntity>().AsNoTracking().Where(root => ids.Contains(root.Id)).ToArrayAsync(token).ConfigureAwait(false);
         var index = entities.ToDictionary(entity => entity.Id);
         // Missing graphs are reported by the final deletion-revision check, never filled with placeholders.
         return Array.AsReadOnly(ids.Where(index.ContainsKey).Select(id => ProfilingEntityMapper.ToOperationModel(index[id], this.options)).ToArray());
@@ -218,8 +218,8 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
 
     private static async Task<bool> ValidRevisionAsync(TContext context, ProfilingQueryBoundary boundary, CancellationToken token)
     {
-        var state = await context.ProfilingStoreStates.AsNoTracking().Where(state => state.Id == 1).Select(state => new { state.StoreEpoch, state.DeletionRevision }).SingleOrDefaultAsync(token).ConfigureAwait(false);
-        var runtime = await context.ProfilingRuntimeGates.AsNoTracking().Where(gate => gate.Id == 1).Select(gate => gate.DeletionRevision).SingleOrDefaultAsync(token).ConfigureAwait(false);
+        var state = await context.Set<ProfilingStoreStateEntity>().AsNoTracking().Where(state => state.Id == 1).Select(state => new { state.StoreEpoch, state.DeletionRevision }).SingleOrDefaultAsync(token).ConfigureAwait(false);
+        var runtime = await context.Set<ProfilingRuntimeGateEntity>().AsNoTracking().Where(gate => gate.Id == 1).Select(gate => gate.DeletionRevision).SingleOrDefaultAsync(token).ConfigureAwait(false);
         return state is not null && state.StoreEpoch == boundary.StoreEpoch && checked(state.DeletionRevision + runtime) == boundary.DeletionRevision;
     }
 

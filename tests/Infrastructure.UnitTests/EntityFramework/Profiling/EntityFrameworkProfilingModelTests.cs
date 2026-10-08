@@ -46,7 +46,6 @@ public sealed class EntityFrameworkProfilingModelTests
                     "__Profiling_Clears",
                     "__Profiling_Nodes",
                     "__Profiling_OperationDimensions",
-                    "__Profiling_OperationMeasurements",
                     "__Profiling_OperationSegments",
                     "__Profiling_Operations",
                     "__Profiling_RuntimeGate",

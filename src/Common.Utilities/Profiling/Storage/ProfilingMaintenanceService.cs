@@ -41,11 +41,11 @@ public sealed class ProfilingMaintenanceService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var boundary = this.profiler?.BeginExecutionBoundary();
-        using var suppression = this.profiler?.Suppress();
-        using var timer = new PeriodicTimer(this.interval, this.clock);
         try
         {
+            using var boundary = this.profiler?.BeginExecutionBoundary();
+            using var suppression = this.profiler?.Suppress();
+            using var timer = new ProfilingPeriodicTimer(this.interval, this.clock);
             do
             {
                 using var deadline = new CancellationTokenSource(this.timeout, this.clock);
@@ -75,6 +75,10 @@ public sealed class ProfilingMaintenanceService : BackgroundService
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // No application execution is canceled by maintenance shutdown.
+        }
+        catch (Exception)
+        {
+            Interlocked.Increment(ref this.health.Faults);
         }
     }
 }

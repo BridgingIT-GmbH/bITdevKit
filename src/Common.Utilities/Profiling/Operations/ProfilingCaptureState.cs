@@ -64,16 +64,16 @@ internal sealed class ProfilingCaptureState
 
     public void Observe(Action observation)
     {
-        try
+        lock (this.sync)
         {
-            lock (this.sync)
+            if (this.closed)
             {
-                if (this.closed)
-                {
-                    Interlocked.Increment(ref this.profiler.Counters.LateObservations);
-                    return;
-                }
+                Interlocked.Increment(ref this.profiler.Counters.LateObservations);
+                return;
+            }
 
+            try
+            {
                 var now = this.profiler.Clock.GetTimestamp();
                 if (this.profiler.Clock.GetElapsedTime(this.started, now) >= this.options.MaxRecordingDuration)
                 {
@@ -84,15 +84,15 @@ internal sealed class ProfilingCaptureState
 
                 observation();
             }
-        }
-        catch (Exception)
-        {
-            lock (this.sync)
+            catch (Exception)
             {
-                this.partial = true;
+                // Discard inconsistent state while still holding its lock. A parallel finalizer
+                // must never publish a partially updated summary or retain its admission budget.
+                Interlocked.Increment(ref this.profiler.Counters.CaptureFaults);
+                Interlocked.Increment(ref this.profiler.Counters.DiscardedCaptures);
+                this.profiler.Release(this);
+                this.Abandon();
             }
-
-            Interlocked.Increment(ref this.profiler.Counters.CaptureFaults);
         }
     }
 
@@ -379,6 +379,7 @@ internal sealed class ProfilingCaptureState
         catch (Exception)
         {
             Interlocked.Increment(ref this.profiler.Counters.CaptureFaults);
+            Interlocked.Increment(ref this.profiler.Counters.DiscardedCaptures);
             this.profiler.Release(this);
             this.Abandon();
         }

@@ -11,6 +11,24 @@ using Microsoft.EntityFrameworkCore;
 
 public sealed class EntityFrameworkOperationProfilingModelTests
 {
+    /// <summary>The model is complete without any host DbSet properties or convention-based entity discovery.</summary>
+    [Fact]
+    public void Model_GenericContextContract_RegistersEveryRetainedEntityExplicitly()
+    {
+        using var sut = Create();
+        Type[] entities =
+        [
+            typeof(RuntimeProfilingSessionEntity), typeof(RuntimeProfilingInvalidSessionEntity), typeof(ProfilingNodeEntity),
+            typeof(RuntimeProfilingParticipationEntity), typeof(RuntimeProfilingSnapshotEntity), typeof(RuntimeProfilingMetricObservationEntity),
+            typeof(OperationProfilingEntity), typeof(OperationProfilingSegmentEntity), typeof(OperationProfilingDimensionEntity),
+            typeof(ProfilingStoreStateEntity), typeof(ProfilingWriterEntity), typeof(ProfilingClearEntity), typeof(ProfilingRuntimeGateEntity),
+        ];
+        foreach (var entity in entities) { sut.Model.FindEntityType(entity).ShouldNotBeNull(); }
+
+        typeof(ProfilingTestDbContext).GetProperties().ShouldNotContain(property => property.PropertyType.IsGenericType
+            && property.PropertyType.GetGenericTypeDefinition() == typeof(DbSet<>));
+    }
+
     [Fact]
     public void Model_Operations_HavePortableIdentityAndPublicationIndexes()
     {
@@ -69,6 +87,7 @@ public sealed class EntityFrameworkOperationProfilingModelTests
         script.ShouldContain("__Profiling_StoreState");
         script.ShouldContain("__Profiling_RuntimeSessions");
         script.ShouldNotContain("__Profiling_Sessions");
+        script.ShouldNotContain("__Profiling_OperationMeasurements");
     }
 
     [Fact]
@@ -88,20 +107,18 @@ public sealed class EntityFrameworkOperationProfilingModelTests
         var segment = new OperationProfilingSegmentEntity { Id = Guid.NewGuid(), Key = "Read", KeyBytes = [1], KeyHash = new byte[32], PathBytes = [1], PathHash = new byte[32], SummaryJson = "{}" };
         root.Segments.Add(segment);
         root.Dimensions.Add(new() { Id = Guid.NewGuid(), Key = "tenant", KeyBytes = [1], KeyHash = new byte[32], ScopeHash = new byte[32], Segment = segment });
-        root.Measurements.Add(new() { Id = Guid.NewGuid(), Key = "items", KeyBytes = [1], KeyHash = new byte[32], ScopeHash = new byte[32], UnitBytes = [1], OutcomesJson = "[]", Segment = segment });
-        sut.ProfilingOperations.Add(root);
+        sut.Set<OperationProfilingEntity>().Add(root);
         await sut.SaveChangesAsync();
         sut.ChangeTracker.Clear();
 
         // Act
-        var deleted = await sut.ProfilingOperations.Where(operation => operation.Id == root.Id).ExecuteDeleteAsync();
+        var deleted = await sut.Set<OperationProfilingEntity>().Where(operation => operation.Id == root.Id).ExecuteDeleteAsync();
 
         // Assert
         deleted.ShouldBe(1);
-        (await sut.ProfilingOperationSegments.CountAsync()).ShouldBe(0);
-        (await sut.ProfilingOperationDimensions.CountAsync()).ShouldBe(0);
-        (await sut.ProfilingOperationMeasurements.CountAsync()).ShouldBe(0);
-        (await sut.ProfilingNodes.CountAsync()).ShouldBe(1);
+        (await sut.Set<OperationProfilingSegmentEntity>().CountAsync()).ShouldBe(0);
+        (await sut.Set<OperationProfilingDimensionEntity>().CountAsync()).ShouldBe(0);
+        (await sut.Set<ProfilingNodeEntity>().CountAsync()).ShouldBe(1);
     }
 
     private static ProfilingTestDbContext Create() => new(new DbContextOptionsBuilder<ProfilingTestDbContext>().UseSqlite("Data Source=:memory:").Options);

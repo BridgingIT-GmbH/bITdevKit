@@ -25,7 +25,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
         var includesRuntime = request.DataSet != ProfilingDataSet.Operations;
         var prepared = await this.unitOfWork.WriteAsync(async (context, frame, gate, utc, token) =>
         {
-            var active = includesRuntime && await context.ProfilingSessions.AnyAsync(session => session.State == RuntimeProfilingSessionState.Running, token).ConfigureAwait(false);
+            var active = includesRuntime && await context.Set<RuntimeProfilingSessionEntity>().AnyAsync(session => session.State == RuntimeProfilingSessionState.Running, token).ConfigureAwait(false);
             var result = frame.Clears.Prepare(request, frame.Writers, utc, active);
             if (result.IsFailure)
             {
@@ -197,7 +197,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
         var runtimeRemain = false;
         if (clear.Selection.DataSet != ProfilingDataSet.Operations)
         {
-            var sessions = context.ProfilingSessions.Where(session => session.State != RuntimeProfilingSessionState.Running);
+            var sessions = context.Set<RuntimeProfilingSessionEntity>().Where(session => session.State != RuntimeProfilingSessionState.Running);
             if (clear.Selection.FromUtc.HasValue)
             {
                 var lower = clear.Selection.FromUtc.Value.UtcTicks;
@@ -211,10 +211,10 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
                 if (selected.Length > 0)
                 {
                     var ids = selected.Select(session => session.Id).ToArray();
-                    var snapshots = await context.ProfilingSnapshots.LongCountAsync(snapshot => ids.Contains(snapshot.SessionId), token).ConfigureAwait(false);
-                    var known = await context.ProfilingInvalidSessions.Where(session => ids.Contains(session.Id)).Select(session => session.Id).ToArrayAsync(token).ConfigureAwait(false);
-                    context.ProfilingInvalidSessions.AddRange(selected.Where(session => !known.Contains(session.Id)).Select(session => new RuntimeProfilingInvalidSessionEntity { Id = session.Id, Key = session.Key }));
-                    context.ProfilingSessions.RemoveRange(selected);
+                    var snapshots = await context.Set<RuntimeProfilingSnapshotEntity>().LongCountAsync(snapshot => ids.Contains(snapshot.SessionId), token).ConfigureAwait(false);
+                    var known = await context.Set<RuntimeProfilingInvalidSessionEntity>().Where(session => ids.Contains(session.Id)).Select(session => session.Id).ToArrayAsync(token).ConfigureAwait(false);
+                    context.Set<RuntimeProfilingInvalidSessionEntity>().AddRange(selected.Where(session => !known.Contains(session.Id)).Select(session => new RuntimeProfilingInvalidSessionEntity { Id = session.Id, Key = session.Key }));
+                    context.Set<RuntimeProfilingSessionEntity>().RemoveRange(selected);
                     await context.SaveChangesAsync(token).ConfigureAwait(false);
                     clear.RemovedRuntimeSessions += selected.Length;
                     clear.RemovedSnapshots += snapshots;
@@ -235,7 +235,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
 
     private static IQueryable<OperationProfilingEntity> ClearRoots(TContext context, ProfilingClearCoordinator.Clear clear)
     {
-        var query = context.ProfilingOperations.Where(root => root.WriterGeneration <= clear.Generation);
+        var query = context.Set<OperationProfilingEntity>().Where(root => root.WriterGeneration <= clear.Generation);
         if (clear.Selection.FromUtc.HasValue)
         {
             var lower = clear.Selection.FromUtc.Value.UtcTicks;
@@ -262,7 +262,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
             return 0;
         }
 
-        var query = context.ProfilingOperations.AsNoTracking();
+        var query = context.Set<OperationProfilingEntity>().AsNoTracking();
         foreach (var writer in frame.Writers.Snapshot().Where(writer => !writer.Retired && writer.Lease.ExpiresUtc > utc))
         {
             var id = writer.Lease.WriterId;
@@ -299,7 +299,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
     {
         var ids = selected.Select(root => root.Id).ToArray();
         // Root-owned foreign keys delete the entire graph in the same transaction.
-        var count = await context.ProfilingOperations.Where(root => ids.Contains(root.Id)).ExecuteDeleteAsync(token).ConfigureAwait(false);
+        var count = await context.Set<OperationProfilingEntity>().Where(root => ids.Contains(root.Id)).ExecuteDeleteAsync(token).ConfigureAwait(false);
         if (count != selected.Count)
         {
             throw new ArgumentException("The serialized profiling deletion count changed unexpectedly.");
@@ -312,17 +312,17 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
 
     private static async Task PruneNodesAsync(TContext context, int maximum, CancellationToken token)
     {
-        var unused = await context.ProfilingNodes.Where(node => !context.ProfilingOperations.Any(root => root.NodeId == node.Id)
-            && !context.ProfilingWriters.Any(writer => writer.NodeId == node.Id)
-            && !context.ProfilingParticipations.Any(participation => participation.NodeId == node.Id)
-            && !context.ProfilingSnapshots.Any(snapshot => snapshot.NodeId == node.Id)
-            && !context.ProfilingMetricObservations.Any(observation => observation.NodeId == node.Id)
-            && !context.ProfilingSessions.Any(session => session.RuntimeContexts.Any(runtime => runtime.NodeId == node.Id)
+        var unused = await context.Set<ProfilingNodeEntity>().Where(node => !context.Set<OperationProfilingEntity>().Any(root => root.NodeId == node.Id)
+            && !context.Set<ProfilingWriterEntity>().Any(writer => writer.NodeId == node.Id)
+            && !context.Set<RuntimeProfilingParticipationEntity>().Any(participation => participation.NodeId == node.Id)
+            && !context.Set<RuntimeProfilingSnapshotEntity>().Any(snapshot => snapshot.NodeId == node.Id)
+            && !context.Set<RuntimeProfilingMetricObservationEntity>().Any(observation => observation.NodeId == node.Id)
+            && !context.Set<RuntimeProfilingSessionEntity>().Any(session => session.RuntimeContexts.Any(runtime => runtime.NodeId == node.Id)
                 || session.Markers.Any(marker => marker.NodeId == node.Id) || session.Segments.Any(segment => segment.NodeId == node.Id)))
             .Select(node => node.Id).Take(maximum).ToArrayAsync(token).ConfigureAwait(false);
         if (unused.Length > 0)
         {
-            await context.ProfilingNodes.Where(node => unused.Contains(node.Id)).ExecuteDeleteAsync(token).ConfigureAwait(false);
+            await context.Set<ProfilingNodeEntity>().Where(node => unused.Contains(node.Id)).ExecuteDeleteAsync(token).ConfigureAwait(false);
         }
     }
 

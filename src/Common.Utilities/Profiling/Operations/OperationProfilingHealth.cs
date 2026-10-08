@@ -41,6 +41,9 @@ public sealed class OperationProfilingHealthState : IOperationProfilingHealthSou
     /// <summary>Exposes the Faults profiling observation or lifecycle value.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long Faults;
+    /// <summary>Counts recoverable adapter observation failures, independently from application outcomes.</summary>
+    /// <example><code>Interlocked.Increment(ref health.ObservationFaults);</code></example>
+    public long ObservationFaults;
     /// <summary>Exposes the LastFlushTicks profiling observation or lifecycle value.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long LastFlushTicks;
@@ -111,19 +114,22 @@ public sealed class OperationProfilingHealthState : IOperationProfilingHealthSou
             CompletedOperations = counters is null ? 0 : Interlocked.Read(ref counters.Completed),
             ActiveOperations = recorder?.ActiveCount ?? 0, ActivePayloadBytes = recorder?.ActiveBytes ?? 0,
             QueueRecords = queued.Count, QueuePayloadBytes = queued.Bytes, InFlightRecords = queued.InFlightCount, InFlightPayloadBytes = queued.InFlightBytes, QueueOldestAge = queued.OldestAge,
+            QueueOldestAgeUnavailable = queued.OldestAgeUnavailable,
             PersistedOperations = Interlocked.Read(ref this.Persisted),
-            DroppedOperations = Interlocked.Read(ref this.Lost) + Interlocked.Read(ref this.queue.CapacityDiscards)
+            DroppedOperations = (counters is null ? 0 : Interlocked.Read(ref counters.DiscardedCaptures))
+                + Interlocked.Read(ref this.Lost) + Interlocked.Read(ref this.queue.CapacityDiscards)
                 + Interlocked.Read(ref this.queue.WriterUnavailableDiscards) + Interlocked.Read(ref this.queue.ExpiredLeaseDiscards),
             AdministrativeDiscards = Interlocked.Read(ref this.Administrative), UnknownCommits = Interlocked.Read(ref this.Unknown),
             WriterUnavailableDiscards = Interlocked.Read(ref this.queue.WriterUnavailableDiscards), ExpiredLeaseDiscards = Interlocked.Read(ref this.queue.ExpiredLeaseDiscards),
-            CaptureFaults = counters is null ? 0 : Interlocked.Read(ref counters.CaptureFaults) + Interlocked.Read(ref counters.LoggingFaults),
+            CaptureFaults = (counters is null ? 0 : Interlocked.Read(ref counters.CaptureFaults) + Interlocked.Read(ref counters.LoggingFaults))
+                + Interlocked.Read(ref this.ObservationFaults),
             LastSuccessfulFlushUtc = new(Interlocked.Read(ref this.LastFlushTicks), TimeSpan.Zero),
             LastAttemptUtc = new(Interlocked.Read(ref this.LastAttemptTicks), TimeSpan.Zero),
             ProviderScope = this.provider.Capabilities.Scope, ProviderShared = this.provider.Capabilities.Shared,
             CountersNodeId = this.nodes.GetNode().Identity.Id, CaptureEnabled = this.enabled,
             WriterActive = queued.Active, WriterStalled = this.Stalled,
             PreparingClears = Interlocked.Read(ref this.PreparingClears), ApplyingClears = Interlocked.Read(ref this.ApplyingClears),
-            PersistenceFaults = Interlocked.Read(ref this.Faults), RetryAttempts = Interlocked.Read(ref this.Retries), RetentionRemovals = Interlocked.Read(ref this.RetentionRemovals),
+            PersistenceFaults = Interlocked.Read(ref this.Faults) + Interlocked.Read(ref this.queue.ObservationFaults), RetryAttempts = Interlocked.Read(ref this.Retries), RetentionRemovals = Interlocked.Read(ref this.RetentionRemovals),
             EligibleRequests = eligible, SelectedRequests = selected, SamplingErrors = errors,
             BlacklistedRequests = Interlocked.Read(ref this.BlacklistedRequests),
             SamplingSkippedRequests = Math.Max(0, eligible - selected - errors),

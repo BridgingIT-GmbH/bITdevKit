@@ -93,6 +93,9 @@ internal sealed class OperationProfilingCaptureCounters
     /// <summary>Exposes the CaptureFaults profiling observation or lifecycle value.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long CaptureFaults;
+    /// <summary>Counts admitted captures discarded after an inconsistent observation or finalization fault.</summary>
+    /// <example>Included once in node-local diagnostic loss, separately from queue rejection.</example>
+    public long DiscardedCaptures;
     /// <summary>Exposes the CompletionRejected profiling observation or lifecycle value.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long CompletionRejected;

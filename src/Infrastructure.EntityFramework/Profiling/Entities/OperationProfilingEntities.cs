@@ -156,9 +156,6 @@ public sealed class OperationProfilingEntity
     /// <example><code>var value = entity.Segments;</code></example>
     public ICollection<OperationProfilingSegmentEntity> Segments { get; set; } = [];
 
-    /// <summary>Gets or sets the independently stored root and aggregate measurements.</summary>
-    /// <example><code>var value = entity.Measurements;</code></example>
-    public ICollection<OperationProfilingMeasurementEntity> Measurements { get; set; } = [];
 }
 
 /// <summary>Persists one aggregate per complete operation segment path.</summary>
@@ -321,93 +318,4 @@ public sealed class OperationProfilingDimensionEntity
     /// <summary>Gets or sets whether the value was missing from some invocations.</summary>
     /// <example><code>var value = entity.Partial;</code></example>
     public bool Partial { get; set; }
-}
-
-/// <summary>Persists one root measurement or weighted aggregate reducer.</summary>
-/// <example><code>var entity = new OperationProfilingMeasurementEntity();</code></example>
-public sealed class OperationProfilingMeasurementEntity
-{
-    /// <summary>Gets or sets the owned measurement identity.</summary>
-    /// <example><code>var value = entity.Id;</code></example>
-    public Guid Id { get; set; }
-
-    /// <summary>Gets or sets the root owner identity.</summary>
-    /// <example><code>var value = entity.OperationId;</code></example>
-    public Guid OperationId { get; set; }
-
-    /// <summary>Gets or sets the root owner.</summary>
-    /// <example><code>var value = entity.Operation;</code></example>
-    public OperationProfilingEntity Operation { get; set; }
-
-    /// <summary>Gets or sets the summary owner identity when aggregated.</summary>
-    /// <example><code>var value = entity.SegmentId;</code></example>
-    public Guid? SegmentId { get; set; }
-
-    /// <summary>Gets or sets the non-null root or segment scope digest for unique metadata ownership.</summary>
-    /// <example><code>var value = entity.ScopeHash;</code></example>
-    public byte[] ScopeHash { get; set; }
-
-    /// <summary>Gets or sets the optional summary owner.</summary>
-    /// <example><code>var value = entity.Segment;</code></example>
-    public OperationProfilingSegmentEntity Segment { get; set; }
-
-    /// <summary>Gets or sets the supplied measurement name.</summary>
-    /// <example><code>var value = entity.Key;</code></example>
-    public string Key { get; set; }
-
-    /// <summary>Gets or sets the canonical measurement name.</summary>
-    /// <example><code>var value = entity.KeyBytes;</code></example>
-    public byte[] KeyBytes { get; set; }
-
-    /// <summary>Gets or sets the indexed canonical measurement name digest.</summary>
-    /// <example><code>var value = entity.KeyHash;</code></example>
-    public byte[] KeyHash { get; set; }
-
-    /// <summary>Gets or sets the case-sensitive unit representation.</summary>
-    /// <example><code>var value = entity.UnitBytes;</code></example>
-    public byte[] UnitBytes { get; set; }
-
-    /// <summary>Gets or sets the declared invocation reducer.</summary>
-    /// <example><code>var value = entity.Aggregation;</code></example>
-    public MeasurementAggregation Aggregation { get; set; }
-
-    /// <summary>Gets or sets the exact resulting numeric type.</summary>
-    /// <example><code>var value = entity.ValueType;</code></example>
-    public ProfilingValueType? ValueType { get; set; }
-
-    /// <summary>Gets or sets the lossless resulting numeric representation.</summary>
-    /// <example><code>var value = entity.ValueScalar;</code></example>
-    public string ValueScalar { get; set; }
-
-    /// <summary>Gets or sets the exact weighted-average sum type.</summary>
-    /// <example><code>var value = entity.SumType;</code></example>
-    public ProfilingValueType? SumType { get; set; }
-
-    /// <summary>Gets or sets the lossless contributing sum.</summary>
-    /// <example><code>var value = entity.SumScalar;</code></example>
-    public string SumScalar { get; set; }
-
-    /// <summary>Gets or sets the contributing observation count.</summary>
-    /// <example><code>var value = entity.SampleCount;</code></example>
-    public long SampleCount { get; set; }
-
-    /// <summary>Gets or sets the operation-local observed last completion order.</summary>
-    /// <example><code>var value = entity.LastCompletionSequence;</code></example>
-    public long LastCompletionSequence { get; set; }
-
-    /// <summary>Gets or sets the observed last contributing completion UTC.</summary>
-    /// <example><code>var value = entity.LastCompletedUtcTicks;</code></example>
-    public long LastCompletedUtcTicks { get; set; }
-
-    /// <summary>Gets or sets whether compatible arithmetic is unavailable.</summary>
-    /// <example><code>var value = entity.Unavailable;</code></example>
-    public bool Unavailable { get; set; }
-
-    /// <summary>Gets or sets whether units or reduction rules conflict.</summary>
-    /// <example><code>var value = entity.Conflicting;</code></example>
-    public bool Conflicting { get; set; }
-
-    /// <summary>Gets or sets the bounded outcome-specific typed reducer summaries.</summary>
-    /// <example><code>var value = entity.OutcomesJson;</code></example>
-    public string OutcomesJson { get; set; }
 }

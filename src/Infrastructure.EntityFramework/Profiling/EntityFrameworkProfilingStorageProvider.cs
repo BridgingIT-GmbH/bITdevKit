@@ -136,7 +136,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
             var ids = inputs.Where(input => input.Envelope?.Record is not null).Select(input => input.Envelope.Record.Id).Distinct().ToArray();
             var writerIds = inputs.Where(input => input.Envelope?.Lease is not null).Select(input => input.Envelope.Lease.WriterId).Distinct().ToArray();
             var sequenceIds = inputs.Where(input => input.Envelope is not null).Select(input => input.Envelope.CompletionSequence).Distinct().ToArray();
-            var stored = await context.ProfilingOperations.AsNoTracking()
+            var stored = await context.Set<OperationProfilingEntity>().AsNoTracking()
                 .Where(root => ids.Contains(root.Id) || writerIds.Contains(root.WriterId) && sequenceIds.Contains(root.CompletionSequence))
                 .Select(root => new StoredIdentity(root.Id, root.WriterId, root.CompletionSequence, root.CommitWatermark))
                 .ToListAsync(token).ConfigureAwait(false);
@@ -145,7 +145,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
             var nodes = new Dictionary<Guid, ProfilingNodeEntity>();
             var nodeIds = inputs.Where(input => input.Frozen is not null).Select(input => input.Frozen.NodeId).Distinct().ToArray();
             var nodeKeys = inputs.Where(input => input.Frozen is not null).Select(input => input.Frozen.NodeKey).Distinct().ToArray();
-            foreach (var node in await context.ProfilingNodes.Where(node => nodeIds.Contains(node.Id) || nodeKeys.Contains(node.Key)).ToListAsync(token).ConfigureAwait(false))
+            foreach (var node in await context.Set<ProfilingNodeEntity>().Where(node => nodeIds.Contains(node.Id) || nodeKeys.Contains(node.Key)).ToListAsync(token).ConfigureAwait(false))
             {
                 nodes.Add(node.Id, node);
             }
@@ -258,14 +258,14 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
                 var nodeEntity = nodeResult.Value;
                 if (!nodes.ContainsKey(nodeEntity.Id))
                 {
-                    context.ProfilingNodes.Add(nodeEntity);
+                    context.Set<ProfilingNodeEntity>().Add(nodeEntity);
                     nodes.Add(nodeEntity.Id, nodeEntity);
                 }
 
                 record = record with { Node = ProfilingEntityMapper.ToModel(nodeEntity) };
                 var publication = checked(++frame.State.PublicationWatermark);
                 var entity = ProfilingEntityMapper.ToOperationEntity(envelope with { Record = record }, publication);
-                context.ProfilingOperations.Add(entity);
+                context.Set<OperationProfilingEntity>().Add(entity);
                 frame.State.RetainedOperationCount++;
                 frame.State.RetainedOperationBytes = checked(frame.State.RetainedOperationBytes + record.EstimatedPayloadBytes);
                 var accepted = new StoredIdentity(record.Id, envelope.Lease.WriterId, envelope.CompletionSequence, publication);
@@ -283,7 +283,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
     public Task<IResult<OperationProfilingRecord>> FindAsync(Guid id, CancellationToken cancellationToken = default) =>
         this.unitOfWork.ReadAsync(async (context, token) =>
         {
-            var root = await context.ProfilingOperations.AsNoTracking().SingleOrDefaultAsync(root => root.Id == id, token).ConfigureAwait(false);
+            var root = await context.Set<OperationProfilingEntity>().AsNoTracking().SingleOrDefaultAsync(root => root.Id == id, token).ConfigureAwait(false);
             return Result<OperationProfilingRecord>.Success(root is null ? null : ProfilingEntityMapper.ToOperationModel(root, this.options));
         }, cancellationToken);
 
@@ -312,11 +312,11 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
 
     private static async Task<Result<ProfilingNodeEntity>> UpsertNodeAsync(TContext context, ProfilingNode node, CancellationToken token)
     {
-        var candidates = await context.ProfilingNodes.Where(candidate => candidate.Id == node.Identity.Id || candidate.Key == node.Identity.Key).ToListAsync(token).ConfigureAwait(false);
+        var candidates = await context.Set<ProfilingNodeEntity>().Where(candidate => candidate.Id == node.Identity.Id || candidate.Key == node.Identity.Key).ToListAsync(token).ConfigureAwait(false);
         var result = ResolveNode(node, candidates);
         if (result.IsSuccess && candidates.Count == 0)
         {
-            context.ProfilingNodes.Add(result.Value);
+            context.Set<ProfilingNodeEntity>().Add(result.Value);
         }
 
         return result;

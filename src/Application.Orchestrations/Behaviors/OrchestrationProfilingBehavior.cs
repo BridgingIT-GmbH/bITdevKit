@@ -33,13 +33,14 @@ public sealed class OrchestrationProfilingBehavior(IOperationProfiler profiling 
         profiling.RunSegmentAsync("state:" + context.StateName, (_, _) =>
             profiling.RunSegmentAsync("action:" + context.Kind + ":" + context.ActivityName, async (scope, _) =>
             {
-                if (!scope.IsRecording) { return await next().ConfigureAwait(false); }
-
                 try
                 {
-                    scope.SetDimension("orchestration.attempt", context.Attempt);
-                    scope.SetDimension("orchestration.kind", context.Kind.ToString());
-                    scope.SetDimension("orchestration.instanceId", context.InstanceId.ToString("D"));
+                    if (scope.IsRecording)
+                    {
+                        scope.SetDimension("orchestration.attempt", context.Attempt);
+                        scope.SetDimension("orchestration.kind", context.Kind.ToString());
+                        scope.SetDimension("orchestration.instanceId", context.InstanceId.ToString("D"));
+                    }
                 }
                 catch (Exception) { /* Diagnostic metadata cannot stop an action. */ }
 

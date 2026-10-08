@@ -41,8 +41,7 @@ public sealed class OrchestrationProfilingExecutionScope(IOperationProfiler prof
     /// <example><code>using var boundary = adapter.BeginIndependentExecutionBoundary();</code></example>
     public IDisposable BeginIndependentExecutionBoundary()
     {
-        try { return profiling?.BeginExecutionBoundary(); }
-        catch (Exception) { return null; }
+        return profiling.BeginSafeExecutionBoundary();
     }
 
     private static void Enrich<TData>(IProfilingRecordingScope scope, OrchestrationContext<TData> context)

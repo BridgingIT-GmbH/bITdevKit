@@ -20,6 +20,94 @@ using Microsoft.Extensions.Hosting;
 /// <example>Runs against a real ASP.NET Core TestServer, not just an isolated throwing delegate.</example>
 public sealed class RequestProfilingMiddlewareTests
 {
+    /// <summary>Recording setup, metadata, ID and cleanup faults cannot change business execution or exceptions.</summary>
+    [Theory]
+    [InlineData("clock", false)]
+    [InlineData("clock", true)]
+    [InlineData("start", false)]
+    [InlineData("start", true)]
+    [InlineData("metadata", false)]
+    [InlineData("metadata", true)]
+    [InlineData("id", false)]
+    [InlineData("id", true)]
+    [InlineData("dispose", false)]
+    [InlineData("dispose", true)]
+    public async Task ObservationFaults_PreserveBusinessResponseAndException(string stage, bool failBusiness)
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddProfiling(options => options.Enabled()).WithOperationProfiling().WithRequestProfiling();
+        using var provider = services.BuildServiceProvider();
+        var profiling = Substitute.For<IOperationProfiler>();
+        var operation = Substitute.For<IProfilingOperationScope>();
+        operation.Id.Returns(Guid.NewGuid());
+        operation.IsRecording.Returns(true);
+        profiling.BeginOperation(Arg.Any<OperationProfilingStartRequest>()).Returns(operation);
+        if (stage == "start") { profiling.BeginOperation(Arg.Any<OperationProfilingStartRequest>()).Returns(_ => throw new InvalidOperationException("start")); }
+
+        if (stage == "id") { operation.Id.Returns(_ => throw new InvalidOperationException("id")); }
+
+        if (stage == "metadata") { operation.When(scope => scope.SetHttpMetadata(Arg.Any<HttpRequestProfilingMetadata>())).Do(_ => throw new InvalidOperationException("metadata")); }
+
+        if (stage == "dispose") { operation.When(scope => scope.Dispose()).Do(_ => throw new InvalidOperationException("dispose")); }
+
+        var context = new DefaultHttpContext();
+        context.Response.Body = new MemoryStream();
+        var expected = new InvalidOperationException("business");
+        var calls = 0;
+        var sut = new RequestProfilingMiddleware(async http =>
+        {
+            calls++;
+            if (failBusiness) { throw expected; }
+
+            await http.Response.WriteAsync("business response");
+        }, provider.GetRequiredService<RequestProfilingRuntime>(), profiling, provider.GetRequiredService<IProfilingNodeIdentityProvider>(),
+            stage == "clock" ? new FailedEntryClock() : TimeProvider.System);
+
+        // Act/Assert
+        if (failBusiness)
+        {
+            var actual = await Should.ThrowAsync<InvalidOperationException>(() => sut.InvokeAsync(context));
+            actual.ShouldBeSameAs(expected);
+        }
+        else
+        {
+            await sut.InvokeAsync(context);
+            if (context.Features.Get<IRequestProfilingFeature>() is RequestProfilingFeature feature) { await feature.CompleteAsync(); }
+
+            context.Response.Body.Position = 0;
+            using var reader = new StreamReader(context.Response.Body);
+            (await reader.ReadToEndAsync()).ShouldBe("business response");
+        }
+
+        calls.ShouldBe(1);
+        provider.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().CaptureFaults.ShouldBeGreaterThan(0);
+    }
+
+    /// <summary>A replacement exception-reporting feature cannot replace the original downstream exception.</summary>
+    [Fact]
+    public async Task ExceptionObserver_ThrowingFeature_PreservesOriginalBusinessException()
+    {
+        var feature = Substitute.For<IRequestProfilingFeature>();
+        feature.When(value => value.ReportException(Arg.Any<Exception>())).Do(_ => throw new InvalidOperationException("observer"));
+        var context = new DefaultHttpContext();
+        context.Features.Set(feature);
+        var expected = new InvalidOperationException("business");
+        var calls = 0;
+        var sut = new RequestProfilingExceptionObserverMiddleware(_ => { calls++; throw expected; });
+
+        var actual = await Should.ThrowAsync<InvalidOperationException>(() => sut.InvokeAsync(context));
+
+        actual.ShouldBeSameAs(expected);
+        calls.ShouldBe(1);
+    }
+
+    private sealed class FailedEntryClock : TimeProvider
+    {
+        /// <inheritdoc />
+        public override long GetTimestamp() => throw new InvalidOperationException("entry clock");
+    }
+
     /// <summary>Checks selected GUIDs, path-based keys, query omission, injection and terminal response bytes.</summary>
     [Fact]
     public async Task Capture_FullHttpPipeline_RecordsInjectedSegmentsAndMatchingHeader()

@@ -98,6 +98,19 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
         };
         var appended = await h.Store.AppendAsync([h.Envelope(record, 1)]);
         appended.Value.Records.Single().Outcome.ShouldBe(ProfilingWriteOutcome.Accepted);
+        var found = await this.peer.FindAsync(record.Id);
+        found.Value.Measurements.ShouldHaveSingleItem().Value.ShouldBe(value);
+        found.Value.Segments.ShouldHaveSingleItem().Measurements.ShouldHaveSingleItem().Value.ShouldBe(value);
+        await using (var readScope = this.first.CreateAsyncScope())
+        {
+            var readContext = readScope.ServiceProvider.GetRequiredService<ProfilingProviderDbContext>();
+            var stored = await readContext.Set<OperationProfilingEntity>().AsNoTracking().SingleAsync();
+            var summary = await readContext.Set<OperationProfilingSegmentEntity>().AsNoTracking().SingleAsync();
+            stored.RecordJson.ShouldContain("items");
+            summary.SummaryJson.ShouldContain("items");
+            readContext.Model.GetEntityTypes().ShouldNotContain(entity => entity.GetTableName() == "__Profiling_OperationMeasurements");
+        }
+
         await h.Store.CloseWriterAsync(h.Lease);
 
         var cleared = await this.peer.ClearAsync(new() { DataSet = ProfilingDataSet.Operations });
@@ -107,10 +120,9 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
         cleared.Value.RemovedSegmentSummaryCount.ShouldBe(1);
         await using var scope = this.first.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<ProfilingProviderDbContext>();
-        (await context.ProfilingOperations.CountAsync()).ShouldBe(0);
-        (await context.ProfilingOperationSegments.CountAsync()).ShouldBe(0);
-        (await context.ProfilingOperationDimensions.CountAsync()).ShouldBe(0);
-        (await context.ProfilingOperationMeasurements.CountAsync()).ShouldBe(0);
+        (await context.Set<OperationProfilingEntity>().CountAsync()).ShouldBe(0);
+        (await context.Set<OperationProfilingSegmentEntity>().CountAsync()).ShouldBe(0);
+        (await context.Set<OperationProfilingDimensionEntity>().CountAsync()).ShouldBe(0);
     }
 
     [Fact]
@@ -180,6 +192,7 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
         script.ShouldContain("__Profiling_RuntimeGate");
         script.ShouldContain("__Profiling_OperationSegments");
         script.ShouldNotContain("__Profiling_Sessions");
+        script.ShouldNotContain("__Profiling_OperationMeasurements");
         var model = context.GetService<IDesignTimeModel>().Model;
         var operations = context.GetService<IMigrationsModelDiffer>().GetDifferences(null, model.GetRelationalModel());
         var commands = context.GetService<IMigrationsSqlGenerator>().Generate(operations, model);
@@ -284,20 +297,7 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
 
 public sealed class ProfilingProviderDbContext(DbContextOptions<ProfilingProviderDbContext> options) : DbContext(options), IProfilingDbContext
 {
-    public DbSet<OperationProfilingEntity> ProfilingOperations { get; set; }
-    public DbSet<OperationProfilingSegmentEntity> ProfilingOperationSegments { get; set; }
-    public DbSet<OperationProfilingDimensionEntity> ProfilingOperationDimensions { get; set; }
-    public DbSet<OperationProfilingMeasurementEntity> ProfilingOperationMeasurements { get; set; }
-    public DbSet<ProfilingStoreStateEntity> ProfilingStoreStates { get; set; }
-    public DbSet<ProfilingRuntimeGateEntity> ProfilingRuntimeGates { get; set; }
-    public DbSet<ProfilingWriterEntity> ProfilingWriters { get; set; }
-    public DbSet<ProfilingClearEntity> ProfilingClears { get; set; }
-    public DbSet<RuntimeProfilingSessionEntity> ProfilingSessions { get; set; }
-    public DbSet<RuntimeProfilingInvalidSessionEntity> ProfilingInvalidSessions { get; set; }
-    public DbSet<ProfilingNodeEntity> ProfilingNodes { get; set; }
-    public DbSet<RuntimeProfilingParticipationEntity> ProfilingParticipations { get; set; }
-    public DbSet<RuntimeProfilingSnapshotEntity> ProfilingSnapshots { get; set; }
-    public DbSet<RuntimeProfilingMetricObservationEntity> ProfilingMetricObservations { get; set; }
+
     public DbSet<ProfilingHostRow> HostRows { get; set; }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

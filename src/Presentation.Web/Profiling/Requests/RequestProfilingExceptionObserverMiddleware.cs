@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Http;
 
 /// <summary>Reports exceptions before the host handler consumes or re-executes them, preserving original routing.</summary>
 /// <example><code>app.UseExceptionHandler(); app.UseRequestProfilingExceptionObserver(); app.UseRouting();</code></example>
-public sealed class RequestProfilingExceptionObserverMiddleware(RequestDelegate next)
+public sealed class RequestProfilingExceptionObserverMiddleware(RequestDelegate next, RequestProfilingRuntime runtime = null)
 {
     /// <summary>Invokes downstream exactly once and rethrows the original exception with its stack unchanged.</summary>
     /// <example>Registered immediately inside the host's exception handler.</example>
@@ -18,7 +18,9 @@ public sealed class RequestProfilingExceptionObserverMiddleware(RequestDelegate 
         try { await next(context).ConfigureAwait(false); }
         catch (Exception exception)
         {
-            context.Features.Get<IRequestProfilingFeature>()?.ReportException(exception);
+            try { context.Features.Get<IRequestProfilingFeature>()?.ReportException(exception); }
+            catch (Exception) { runtime?.RecordObservationFailure(); }
+
             throw;
         }
     }

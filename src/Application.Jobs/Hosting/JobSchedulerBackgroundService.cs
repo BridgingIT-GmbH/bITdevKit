@@ -274,8 +274,7 @@ public partial class JobSchedulerBackgroundService : BackgroundService
 
     private IDisposable BeginProfilingBoundary()
     {
-        try { return this.profiling?.BeginExecutionBoundary(); }
-        catch (Exception) { return null; }
+        return this.profiling.BeginSafeExecutionBoundary();
     }
 
     private static partial class TypedLogger

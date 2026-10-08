@@ -20,15 +20,15 @@ internal static class EntityFrameworkProfilingRuntimeGate
         }
 
         var version = Guid.NewGuid();
-        var changed = await context.ProfilingRuntimeGates.Where(gate => gate.Id == 1)
+        var changed = await context.Set<ProfilingRuntimeGateEntity>().Where(gate => gate.Id == 1)
             .ExecuteUpdateAsync(setters => setters.SetProperty(gate => gate.ConcurrencyVersion, version), cancellationToken).ConfigureAwait(false);
         if (changed == 0)
         {
-            context.ProfilingRuntimeGates.Add(new() { Id = 1, ConcurrencyVersion = version });
+            context.Set<ProfilingRuntimeGateEntity>().Add(new() { Id = 1, ConcurrencyVersion = version });
             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        var gate = await context.ProfilingRuntimeGates.SingleAsync(entity => entity.Id == 1, cancellationToken).ConfigureAwait(false);
+        var gate = await context.Set<ProfilingRuntimeGateEntity>().SingleAsync(entity => entity.Id == 1, cancellationToken).ConfigureAwait(false);
         if (gate.DeletionRevision < 0)
         {
             throw new ArgumentException("Runtime profiling deletion state is invalid.");

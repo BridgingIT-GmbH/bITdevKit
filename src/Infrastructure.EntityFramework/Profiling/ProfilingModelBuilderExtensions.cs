@@ -30,6 +30,13 @@ public static class ProfilingModelBuilderExtensions
     {
         ArgumentNullException.ThrowIfNull(modelBuilder);
 
+        // The host's generic Set<TEntity> contract deliberately supplies no DbSet properties.
+        // Register every independently queried Runtime entity explicitly, including tombstones.
+        modelBuilder.Entity<RuntimeProfilingInvalidSessionEntity>();
+        modelBuilder.Entity<ProfilingNodeEntity>();
+        modelBuilder.Entity<RuntimeProfilingParticipationEntity>();
+        modelBuilder.Entity<RuntimeProfilingSnapshotEntity>();
+        modelBuilder.Entity<RuntimeProfilingMetricObservationEntity>();
         var session = modelBuilder.Entity<RuntimeProfilingSessionEntity>();
         session.HasIndex(entity => new { entity.State, entity.CompletionUtcTicks });
 
@@ -128,19 +135,6 @@ public static class ProfilingModelBuilderExtensions
         dimension.HasIndex(entity => new { entity.OperationId, entity.ScopeHash, entity.KeyHash }).IsUnique();
         dimension.HasIndex(entity => new { entity.KeyHash, entity.ValueType, entity.OperationId });
         dimension.HasIndex(entity => new { entity.SegmentId, entity.KeyHash, entity.ValueType });
-
-        var measurement = modelBuilder.Entity<OperationProfilingMeasurementEntity>();
-        measurement.ToTable("__Profiling_OperationMeasurements");
-        measurement.HasKey(entity => entity.Id);
-        measurement.Property(entity => entity.Key).IsRequired();
-        measurement.Property(entity => entity.KeyBytes).IsRequired();
-        measurement.Property(entity => entity.KeyHash).IsRequired().HasMaxLength(32);
-        measurement.Property(entity => entity.ScopeHash).IsRequired().HasMaxLength(32);
-        measurement.Property(entity => entity.UnitBytes).IsRequired();
-        measurement.Property(entity => entity.OutcomesJson).IsRequired();
-        measurement.HasOne(entity => entity.Operation).WithMany(entity => entity.Measurements).HasForeignKey(entity => entity.OperationId).OnDelete(DeleteBehavior.Cascade);
-        measurement.HasOne(entity => entity.Segment).WithMany().HasForeignKey(entity => entity.SegmentId).OnDelete(DeleteBehavior.NoAction);
-        measurement.HasIndex(entity => new { entity.OperationId, entity.ScopeHash, entity.KeyHash }).IsUnique();
     }
 
     private static void ConfigureCoordination(ModelBuilder modelBuilder)

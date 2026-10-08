@@ -12,6 +12,33 @@ using Microsoft.Extensions.DependencyInjection;
 /// <example>Uses the real executor and public in-memory provider, with no Runtime session.</example>
 public sealed class OrchestrationProfilingBehaviorTests
 {
+    /// <summary>Faulty instrumentation status and disposal preserve the action result and run it once.</summary>
+    [Fact]
+    public async Task Behavior_ThrowingScopeStatus_PreservesActionAndOriginalException()
+    {
+        // Arrange
+        var profiling = Substitute.For<IOperationProfiler>();
+        profiling.Current.Returns(Substitute.For<IProfilingOperationScope>());
+        var scope = Substitute.For<IProfilingSegmentScope>();
+        scope.IsRecording.Returns(_ => throw new InvalidOperationException("status"));
+        scope.When(value => value.Dispose()).Do(_ => throw new InvalidOperationException("dispose"));
+        profiling.BeginSegment(Arg.Any<string>(), Arg.Any<string>()).Returns(scope);
+        var sut = new OrchestrationProfilingBehavior(profiling);
+        var context = new OrchestrationActivityExecutionContext(Guid.NewGuid(), "Test", "correlation", "Start", "Work", OrchestrationActivityExecutionKind.Activity, 1, Substitute.For<IServiceProvider>(), new object());
+        var expected = OrchestrationOutcome.Complete();
+        var calls = 0;
+
+        // Act
+        var result = await sut.ExecuteAsync(context, default, () => { calls++; return Task.FromResult(expected); });
+
+        // Assert
+        result.ShouldBeSameAs(expected);
+        calls.ShouldBe(1);
+        var failure = new InvalidOperationException("business");
+        var actual = await Should.ThrowAsync<InvalidOperationException>(() => sut.ExecuteAsync(context, default, () => throw failure));
+        actual.ShouldBeSameAs(failure);
+    }
+
     /// <summary>Checks paired registration remains optional and does not install Profiling or duplicate behaviors.</summary>
     [Fact]
     public async Task Registration_OmittedProfiler_PreservesRealWorkflowExecution()

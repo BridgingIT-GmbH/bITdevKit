@@ -23,30 +23,30 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
         }
 
         var version = Guid.NewGuid();
-        var changed = await context.ProfilingStoreStates.Where(state => state.Id == 1)
+        var changed = await context.Set<ProfilingStoreStateEntity>().Where(state => state.Id == 1)
             .ExecuteUpdateAsync(setters => setters.SetProperty(state => state.ConcurrencyVersion, version), cancellationToken).ConfigureAwait(false);
         if (changed == 0)
         {
-            if (await context.ProfilingOperations.AnyAsync(cancellationToken).ConfigureAwait(false))
+            if (await context.Set<OperationProfilingEntity>().AnyAsync(cancellationToken).ConfigureAwait(false))
             {
                 throw new ArgumentException("An existing operation dataset requires its original durable coordination state.");
             }
 
-            context.ProfilingStoreStates.Add(new() { Id = 1, StoreEpoch = Guid.NewGuid(), QuerySecret = RandomNumberGenerator.GetBytes(32), ConcurrencyVersion = version });
+            context.Set<ProfilingStoreStateEntity>().Add(new() { Id = 1, StoreEpoch = Guid.NewGuid(), QuerySecret = RandomNumberGenerator.GetBytes(32), ConcurrencyVersion = version });
             await context.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
         }
 
-        var state = await context.ProfilingStoreStates.SingleAsync(entity => entity.Id == 1, cancellationToken).ConfigureAwait(false);
+        var state = await context.Set<ProfilingStoreStateEntity>().SingleAsync(entity => entity.Id == 1, cancellationToken).ConfigureAwait(false);
         if (state.StoreEpoch == Guid.Empty || state.QuerySecret?.Length != 32 || state.PublicationWatermark < 0 || state.DeletionRevision < 0
             || state.RetainedOperationCount < 0 || state.RetainedOperationBytes < 0)
         {
             throw new ArgumentException("The durable profiling store state is invalid.");
         }
 
-        var writerRows = await context.ProfilingWriters.Take(options.MaximumWriterLeases == int.MaxValue ? int.MaxValue : options.MaximumWriterLeases + 1).ToListAsync(cancellationToken).ConfigureAwait(false);
+        var writerRows = await context.Set<ProfilingWriterEntity>().Take(options.MaximumWriterLeases == int.MaxValue ? int.MaxValue : options.MaximumWriterLeases + 1).ToListAsync(cancellationToken).ConfigureAwait(false);
         var registry = new ProfilingWriterRegistry(state.StoreEpoch, options.MaximumWriterLeases);
         registry.Restore(state.RegistrationGeneration, writerRows.Select(row => new ProfilingWriterRegistrationState(row.AttemptId, Lease(row), row.Retired)).ToArray());
-        var clearRows = await context.ProfilingClears.Take(options.MaximumClearFences == int.MaxValue ? int.MaxValue : options.MaximumClearFences + 1).ToListAsync(cancellationToken).ConfigureAwait(false);
+        var clearRows = await context.Set<ProfilingClearEntity>().Take(options.MaximumClearFences == int.MaxValue ? int.MaxValue : options.MaximumClearFences + 1).ToListAsync(cancellationToken).ConfigureAwait(false);
         var clears = new ProfilingClearCoordinator(options, providerScope);
         clears.Restore(clearRows.Select(row => ReadClear(row, options)).ToArray());
         return new(state, registry, clears, writerRows, clearRows);
@@ -57,14 +57,14 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
         frame.State.RegistrationGeneration = frame.Writers.Generation;
         var writers = frame.Writers.Snapshot();
         var ids = writers.Select(writer => writer.Lease.WriterId).ToHashSet();
-        context.ProfilingWriters.RemoveRange(frame.WriterRows.Where(row => !ids.Contains(row.Id)));
+        context.Set<ProfilingWriterEntity>().RemoveRange(frame.WriterRows.Where(row => !ids.Contains(row.Id)));
         foreach (var writer in writers)
         {
             var row = frame.WriterRows.SingleOrDefault(entity => entity.Id == writer.Lease.WriterId);
             if (row is null)
             {
                 row = new() { Id = writer.Lease.WriterId };
-                context.ProfilingWriters.Add(row);
+                context.Set<ProfilingWriterEntity>().Add(row);
             }
 
             row.AttemptId = writer.AttemptId;
@@ -78,14 +78,14 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
         }
 
         var clearIds = frame.Clears.Clears.Select(clear => clear.Id).ToHashSet();
-        context.ProfilingClears.RemoveRange(frame.ClearRows.Where(row => !clearIds.Contains(row.Id)));
+        context.Set<ProfilingClearEntity>().RemoveRange(frame.ClearRows.Where(row => !clearIds.Contains(row.Id)));
         foreach (var clear in frame.Clears.Clears)
         {
             var row = frame.ClearRows.SingleOrDefault(entity => entity.Id == clear.Id);
             if (row is null)
             {
                 row = new() { Id = clear.Id };
-                context.ProfilingClears.Add(row);
+                context.Set<ProfilingClearEntity>().Add(row);
             }
 
             row.DataSet = clear.Selection.DataSet;

@@ -63,7 +63,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         }
 
                         var active = await context
-                            .ProfilingSessions.SingleOrDefaultAsync(
+                            .Set<RuntimeProfilingSessionEntity>().SingleOrDefaultAsync(
                                 x =>
                                     x.LifecycleKey
                                     == EntityFrameworkProfilingStoreConstants.ActiveLifecycleKey,
@@ -82,7 +82,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
 
                         if (
                             await context
-                                .ProfilingInvalidSessions.AnyAsync(
+                                .Set<RuntimeProfilingInvalidSessionEntity>().AnyAsync(
                                     x =>
                                         x.Id == request.Identity.Id
                                         || x.Key == request.Identity.Key,
@@ -100,7 +100,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
 
                         if (
                             await context
-                                .ProfilingSessions.AnyAsync(
+                                .Set<RuntimeProfilingSessionEntity>().AnyAsync(
                                     x =>
                                         x.Id == request.Identity.Id
                                         || x.Key == request.Identity.Key,
@@ -117,7 +117,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         }
 
                         var entity = ProfilingEntityMapper.ToEntity(request);
-                        context.ProfilingSessions.Add(entity);
+                        context.Set<RuntimeProfilingSessionEntity>().Add(entity);
                         await context.SaveChangesAsync(token).ConfigureAwait(false);
                         return Success(
                             new RuntimeProfilingSessionResolution(
@@ -145,7 +145,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         await using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         var entity = await context
-            .ProfilingSessions.AsNoTracking()
+            .Set<RuntimeProfilingSessionEntity>().AsNoTracking()
             .SingleOrDefaultAsync(
                 x => x.LifecycleKey == EntityFrameworkProfilingStoreConstants.ActiveLifecycleKey,
                 cancellationToken
@@ -172,7 +172,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         await using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         var entity = await context
-            .ProfilingSessions.AsNoTracking()
+            .Set<RuntimeProfilingSessionEntity>().AsNoTracking()
             .SingleOrDefaultAsync(x => x.Key == sessionKey, cancellationToken)
             .ConfigureAwait(false);
         return entity is null
@@ -190,7 +190,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         await using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         var entities = await context
-            .ProfilingSessions.AsNoTracking()
+            .Set<RuntimeProfilingSessionEntity>().AsNoTracking()
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
         return Success<IReadOnlyList<RuntimeProfilingSession>>(
@@ -221,7 +221,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
             async (context, token) =>
             {
                 var entity = await context
-                    .ProfilingSessions.SingleOrDefaultAsync(x => x.Key == sessionKey, token)
+                    .Set<RuntimeProfilingSessionEntity>().SingleOrDefaultAsync(x => x.Key == sessionKey, token)
                     .ConfigureAwait(false);
                 if (entity is null)
                 {
@@ -262,7 +262,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                     async (context, token) =>
                     {
                         var entity = await context
-                            .ProfilingSessions.SingleOrDefaultAsync(x => x.Id == sessionId, token)
+                            .Set<RuntimeProfilingSessionEntity>().SingleOrDefaultAsync(x => x.Id == sessionId, token)
                             .ConfigureAwait(false);
                         if (entity is null)
                         {
@@ -323,7 +323,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         var identity = correlation?.BroadcastNodeIdentity?.Trim();
         var processStart = correlation?.ProcessStartedUtc.ToUniversalTime();
-        var entity = await context.ProfilingNodes.AsNoTracking().SingleOrDefaultAsync(
+        var entity = await context.Set<ProfilingNodeEntity>().AsNoTracking().SingleOrDefaultAsync(
             node => node.BroadcastNodeIdentity == identity && node.ProcessStartedUtc == processStart,
             cancellationToken).ConfigureAwait(false);
         return Success(entity is null ? null : ProfilingEntityMapper.ToModel(entity));
@@ -350,7 +350,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                     {
                         var identity = correlation.BroadcastNodeIdentity.Trim();
                         var entity = await context
-                            .ProfilingNodes.SingleOrDefaultAsync(
+                            .Set<ProfilingNodeEntity>().SingleOrDefaultAsync(
                                 x =>
                                     x.BroadcastNodeIdentity == identity
                                     && x.ProcessStartedUtc == correlation.ProcessStartedUtc,
@@ -362,7 +362,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                             return Success(ProfilingEntityMapper.ToModel(entity));
                         }
 
-                        var shared = await context.ProfilingNodes.SingleOrDefaultAsync(node => node.Id == proposedNode.Identity.Id || node.Key == proposedNode.Identity.Key, token).ConfigureAwait(false);
+                        var shared = await context.Set<ProfilingNodeEntity>().SingleOrDefaultAsync(node => node.Id == proposedNode.Identity.Id || node.Key == proposedNode.Identity.Key, token).ConfigureAwait(false);
                         if (shared is not null)
                         {
                             if (shared.Id != proposedNode.Identity.Id || shared.Key != proposedNode.Identity.Key || shared.BroadcastNodeIdentity is not null
@@ -379,7 +379,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         }
 
                         entity = ProfilingEntityMapper.ToEntity(correlation, proposedNode);
-                        context.ProfilingNodes.Add(entity);
+                        context.Set<ProfilingNodeEntity>().Add(entity);
                         await context.SaveChangesAsync(token).ConfigureAwait(false);
                         return Success(ProfilingEntityMapper.ToModel(entity));
                     },
@@ -430,7 +430,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                 }
 
                 var entity = await context
-                    .ProfilingParticipations.SingleOrDefaultAsync(
+                    .Set<RuntimeProfilingParticipationEntity>().SingleOrDefaultAsync(
                         x =>
                             x.SessionId == participation.SessionId
                             && x.NodeId == participation.NodeId,
@@ -440,7 +440,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                 if (entity is null)
                 {
                     entity = ProfilingEntityMapper.ToEntity(participation);
-                    context.ProfilingParticipations.Add(entity);
+                    context.Set<RuntimeProfilingParticipationEntity>().Add(entity);
                 }
                 else
                 {
@@ -572,7 +572,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                 }
 
                 var existing = await context
-                    .ProfilingSnapshots.AsNoTracking()
+                    .Set<RuntimeProfilingSnapshotEntity>().AsNoTracking()
                     .SingleOrDefaultAsync(x => x.Id == snapshot.Identity.Id, token)
                     .ConfigureAwait(false);
                 if (existing is not null)
@@ -591,7 +591,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
 
                 if (
                     await context
-                        .ProfilingSnapshots.AnyAsync(
+                        .Set<RuntimeProfilingSnapshotEntity>().AnyAsync(
                             x =>
                                 x.Key == snapshot.Identity.Key
                                 || x.SessionId == snapshot.SessionId
@@ -609,7 +609,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                     );
                 }
 
-                context.ProfilingSnapshots.Add(ProfilingEntityMapper.ToEntity(snapshot));
+                context.Set<RuntimeProfilingSnapshotEntity>().Add(ProfilingEntityMapper.ToEntity(snapshot));
                 await context.SaveChangesAsync(token).ConfigureAwait(false);
                 return Success(snapshot);
             },
@@ -631,7 +631,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         var session = marker is null
                             ? null
                             : await context
-                                .ProfilingSessions.SingleOrDefaultAsync(
+                                .Set<RuntimeProfilingSessionEntity>().SingleOrDefaultAsync(
                                     x => x.Id == marker.SessionId && x.Key == marker.SessionKey,
                                     token
                                 )
@@ -884,7 +884,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                 if (observation.SegmentId is { } segmentId)
                 {
                     var sessionAggregate = await context
-                        .ProfilingSessions.AsNoTracking()
+                        .Set<RuntimeProfilingSessionEntity>().AsNoTracking()
                         .SingleAsync(x => x.Id == observation.SessionId, token)
                         .ConfigureAwait(false);
                     var segment = sessionAggregate.Segments.SingleOrDefault(x => x.Id == segmentId);
@@ -908,7 +908,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                     Unit = NormalizeOptional(observation.Unit),
                 };
                 var existing = await context
-                    .ProfilingMetricObservations.AsNoTracking()
+                    .Set<RuntimeProfilingMetricObservationEntity>().AsNoTracking()
                     .SingleOrDefaultAsync(x => x.Id == observation.Id, token)
                     .ConfigureAwait(false);
                 if (existing is not null)
@@ -927,7 +927,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         );
                 }
 
-                context.ProfilingMetricObservations.Add(ProfilingEntityMapper.ToEntity(normalized));
+                context.Set<RuntimeProfilingMetricObservationEntity>().Add(ProfilingEntityMapper.ToEntity(normalized));
                 await context.SaveChangesAsync(token).ConfigureAwait(false);
                 return Success(normalized);
             },
@@ -950,7 +950,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         await using var scope = scopeFactory.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         var session = await context
-            .ProfilingSessions.AsNoTracking()
+            .Set<RuntimeProfilingSessionEntity>().AsNoTracking()
             .SingleOrDefaultAsync(x => x.Key == sessionKey, cancellationToken)
             .ConfigureAwait(false);
         if (session is null)
@@ -961,17 +961,17 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         }
 
         var participations = await context
-            .ProfilingParticipations.AsNoTracking()
+            .Set<RuntimeProfilingParticipationEntity>().AsNoTracking()
             .Where(x => x.SessionId == session.Id)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
         var snapshots = await context
-            .ProfilingSnapshots.AsNoTracking()
+            .Set<RuntimeProfilingSnapshotEntity>().AsNoTracking()
             .Where(x => x.SessionId == session.Id)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
         var observations = await context
-            .ProfilingMetricObservations.AsNoTracking()
+            .Set<RuntimeProfilingMetricObservationEntity>().AsNoTracking()
             .Where(x => x.SessionId == session.Id)
             .ToListAsync(cancellationToken)
             .ConfigureAwait(false);
@@ -985,7 +985,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
             .Distinct()
             .ToArray();
         var nodes = await context
-            .ProfilingNodes.AsNoTracking()
+            .Set<ProfilingNodeEntity>().AsNoTracking()
             .Where(x => nodeIds.Contains(x.Id))
             .OrderBy(x => x.Key)
             .ToListAsync(cancellationToken)
@@ -1104,21 +1104,21 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                             .ToArray();
 
                         var collision =
-                            await context.ProfilingSessions.AnyAsync(
+                            await context.Set<RuntimeProfilingSessionEntity>().AnyAsync(
                                 item => item.Id == sessionId || item.Key == sessionKey,
                                 token
                             ).ConfigureAwait(false)
-                            || await context.ProfilingInvalidSessions.AnyAsync(
+                            || await context.Set<RuntimeProfilingInvalidSessionEntity>().AnyAsync(
                                 item => item.Id == sessionId || item.Key == sessionKey,
                                 token
                             ).ConfigureAwait(false)
-                            || await context.ProfilingNodes.AnyAsync(
+                            || await context.Set<ProfilingNodeEntity>().AnyAsync(
                                 item =>
                                     nodeIds.Contains(item.Id)
                                     || nodeKeys.Contains(item.Key),
                                 token
                             ).ConfigureAwait(false)
-                            || await context.ProfilingSnapshots.AnyAsync(
+                            || await context.Set<RuntimeProfilingSnapshotEntity>().AnyAsync(
                                 item =>
                                     snapshotIds.Contains(item.Id)
                                     || snapshotKeys.Contains(item.Key),
@@ -1128,7 +1128,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         {
                             foreach (var correlation in correlations)
                             {
-                                collision = await context.ProfilingNodes.AnyAsync(
+                                collision = await context.Set<ProfilingNodeEntity>().AnyAsync(
                                     item =>
                                         item.BroadcastNodeIdentity
                                             == correlation.BroadcastNodeIdentity
@@ -1160,19 +1160,19 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                             .Select(ProfilingEntityMapper.ToEntity)
                             .ToArray();
 
-                        context.ProfilingNodes.AddRange(
+                        context.Set<ProfilingNodeEntity>().AddRange(
                             data.Nodes.Select(item =>
                                 ProfilingEntityMapper.ToEntity(item.Correlation, item)
                             )
                         );
-                        context.ProfilingSessions.Add(session);
-                        context.ProfilingParticipations.AddRange(
+                        context.Set<RuntimeProfilingSessionEntity>().Add(session);
+                        context.Set<RuntimeProfilingParticipationEntity>().AddRange(
                             data.Participations.Select(ProfilingEntityMapper.ToEntity)
                         );
-                        context.ProfilingSnapshots.AddRange(
+                        context.Set<RuntimeProfilingSnapshotEntity>().AddRange(
                             data.Snapshots.Select(ProfilingEntityMapper.ToEntity)
                         );
-                        context.ProfilingMetricObservations.AddRange(
+                        context.Set<RuntimeProfilingMetricObservationEntity>().AddRange(
                             data.MetricObservations.Select(ProfilingEntityMapper.ToEntity)
                         );
                         await context.SaveChangesAsync(token).ConfigureAwait(false);
@@ -1202,7 +1202,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                     async (context, token) =>
                     {
                         var entity = await context
-                            .ProfilingSessions.SingleOrDefaultAsync(x => x.Key == sessionKey, token)
+                            .Set<RuntimeProfilingSessionEntity>().SingleOrDefaultAsync(x => x.Key == sessionKey, token)
                             .ConfigureAwait(false);
                         if (entity is null)
                         {
@@ -1223,7 +1223,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         }
 
                         await AddTombstoneAsync(context, entity, token).ConfigureAwait(false);
-                        context.ProfilingSessions.Remove(entity);
+                        context.Set<RuntimeProfilingSessionEntity>().Remove(entity);
                         await context.SaveChangesAsync(token).ConfigureAwait(false);
                         return Success(true);
                     },
@@ -1248,7 +1248,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         {
             return await this.DeleteSessionsAsync(
                     context =>
-                        context.ProfilingSessions.Where(x =>
+                        context.Set<RuntimeProfilingSessionEntity>().Where(x =>
                             x.State != RuntimeProfilingSessionState.Running && !x.IsPinned
                         ),
                     cancellationToken
@@ -1279,7 +1279,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                     {
                         if (
                             await context
-                                .ProfilingSessions.AnyAsync(
+                                .Set<RuntimeProfilingSessionEntity>().AnyAsync(
                                     x => x.State == RuntimeProfilingSessionState.Running,
                                     token
                                 )
@@ -1294,23 +1294,23 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         }
 
                         var sessions = await context
-                            .ProfilingSessions.ToListAsync(token)
+                            .Set<RuntimeProfilingSessionEntity>().ToListAsync(token)
                             .ConfigureAwait(false);
                         var snapshotCount = await context
-                            .ProfilingSnapshots.LongCountAsync(token)
+                            .Set<RuntimeProfilingSnapshotEntity>().LongCountAsync(token)
                             .ConfigureAwait(false);
                         foreach (var session in sessions)
                         {
                             await AddTombstoneAsync(context, session, token).ConfigureAwait(false);
                         }
 
-                        context.ProfilingSessions.RemoveRange(sessions);
+                        context.Set<RuntimeProfilingSessionEntity>().RemoveRange(sessions);
                         await context.SaveChangesAsync(token).ConfigureAwait(false);
 
                         var nodes = await context
-                            .ProfilingNodes.ToListAsync(token)
+                            .Set<ProfilingNodeEntity>().ToListAsync(token)
                             .ConfigureAwait(false);
-                        context.ProfilingNodes.RemoveRange(nodes);
+                        context.Set<ProfilingNodeEntity>().RemoveRange(nodes);
                         await context.SaveChangesAsync(token).ConfigureAwait(false);
                         return Success(new ProfilingClearResult(sessions.Count, snapshotCount));
                     },
@@ -1349,7 +1349,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                     async (context, token) =>
                     {
                         var terminal = await context
-                            .ProfilingSessions.Where(x =>
+                            .Set<RuntimeProfilingSessionEntity>().Where(x =>
                                 x.State != RuntimeProfilingSessionState.Running && !x.IsPinned
                             )
                             .ToListAsync(token)
@@ -1369,7 +1369,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                             await AddTombstoneAsync(context, session, token).ConfigureAwait(false);
                         }
 
-                        context.ProfilingSessions.RemoveRange(candidates);
+                        context.Set<RuntimeProfilingSessionEntity>().RemoveRange(candidates);
                         await context.SaveChangesAsync(token).ConfigureAwait(false);
                         return Success(candidates.Length);
                     },
@@ -1397,7 +1397,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
                         await AddTombstoneAsync(context, session, token).ConfigureAwait(false);
                     }
 
-                    context.ProfilingSessions.RemoveRange(sessions);
+                    context.Set<RuntimeProfilingSessionEntity>().RemoveRange(sessions);
                     await context.SaveChangesAsync(token).ConfigureAwait(false);
                     return Success(sessions.Count);
                 },
@@ -1645,19 +1645,19 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         CancellationToken cancellationToken
     )
     {
-        var gate = context.ProfilingRuntimeGates.Local.SingleOrDefault(row => row.Id == 1)
+        var gate = context.Set<ProfilingRuntimeGateEntity>().Local.SingleOrDefault(row => row.Id == 1)
             ?? await EntityFrameworkProfilingRuntimeGate.AcquireAsync(context, cancellationToken).ConfigureAwait(false);
         gate.DeletionRevision = checked(gate.DeletionRevision + 1);
         if (
             !await context
-                .ProfilingInvalidSessions.AnyAsync(
+                .Set<RuntimeProfilingInvalidSessionEntity>().AnyAsync(
                     x => x.Id == session.Id || x.Key == session.Key,
                     cancellationToken
                 )
                 .ConfigureAwait(false)
         )
         {
-            context.ProfilingInvalidSessions.Add(
+            context.Set<RuntimeProfilingInvalidSessionEntity>().Add(
                 new RuntimeProfilingInvalidSessionEntity { Id = session.Id, Key = session.Key }
             );
         }
@@ -1673,7 +1673,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
     )
     {
         var session = await context
-            .ProfilingSessions.SingleOrDefaultAsync(
+            .Set<RuntimeProfilingSessionEntity>().SingleOrDefaultAsync(
                 x => x.Id == sessionId && x.Key == sessionKey,
                 cancellationToken
             )
@@ -1688,7 +1688,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         }
 
         var node = await context
-            .ProfilingNodes.SingleOrDefaultAsync(
+            .Set<ProfilingNodeEntity>().SingleOrDefaultAsync(
                 x => x.Id == nodeId && x.Key == nodeKey,
                 cancellationToken
             )
@@ -1712,7 +1712,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
     )
     {
         var session = await context
-            .ProfilingSessions.AsNoTracking()
+            .Set<RuntimeProfilingSessionEntity>().AsNoTracking()
             .Where(x => x.Id == sessionId && x.Key == sessionKey)
             .Select(x => new SessionReference(x.Id, x.Key, x.StartedUtc, x.EndsUtc))
             .SingleOrDefaultAsync(cancellationToken)
@@ -1727,7 +1727,7 @@ internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceSco
         }
 
         var node = await context
-            .ProfilingNodes.AsNoTracking()
+            .Set<ProfilingNodeEntity>().AsNoTracking()
             .Where(x => x.Id == nodeId && x.Key == nodeKey)
             .Select(x => new NodeReference(x.Id, x.Key))
             .SingleOrDefaultAsync(cancellationToken)

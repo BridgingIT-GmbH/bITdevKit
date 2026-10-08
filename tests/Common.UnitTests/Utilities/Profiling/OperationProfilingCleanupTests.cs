@@ -198,6 +198,40 @@ public sealed class OperationProfilingCleanupTests
         record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
     }
 
+    /// <summary>Unexpected observation faults discard inconsistent state and immediately free recording capacity.</summary>
+    [Fact]
+    public void ClockFailureDuringObservation_ReleasesState_AndPreservesBusinessException()
+    {
+        // Arrange
+        var options = new ProfilingOptions { Enabled = true, Operations = new() { Enabled = true } };
+        var clock = new ControlledClock();
+        var sink = new OperationProfilerTests.CaptureSink();
+        var sut = new OperationProfiler(options, new ProfilingNodeIdentityProvider(), sink, clock);
+        var expected = new InvalidOperationException("business");
+        var calls = 0;
+
+        // Act
+        var actual = Should.Throw<InvalidOperationException>(() => sut.RunOperation<int>("root", root =>
+        {
+            calls++;
+            using var segment = root.BeginSegment("Read");
+            clock.ThrowTimestamp = true;
+            segment.SetDimension("size", 5);
+            sut.ActiveCount.ShouldBe(0);
+            sut.ActiveBytes.ShouldBe(0);
+            root.IsRecording.ShouldBeFalse();
+            throw expected;
+        }));
+
+        // Assert
+        actual.ShouldBeSameAs(expected);
+        calls.ShouldBe(1);
+        sink.Records.ShouldBeEmpty();
+        sut.Counters.CaptureFaults.ShouldBeGreaterThan(0);
+        sut.Counters.DiscardedCaptures.ShouldBe(1);
+        sut.Current.ShouldBeNull();
+    }
+
     private static async Task WaitUntil(Func<bool> condition)
     {
         using var timeout = new CancellationTokenSource(TimeSpan.FromSeconds(5));
@@ -215,10 +249,11 @@ public sealed class OperationProfilingCleanupTests
     private sealed class ControlledClock : TimeProvider
     {
         public bool ThrowUtc { get; set; }
+        public bool ThrowTimestamp { get; set; }
         public long Timestamp { get; set; }
         public DateTimeOffset Utc { get; set; } = new(2026, 10, 7, 10, 0, 0, TimeSpan.Zero);
         public override long TimestampFrequency => TimeSpan.TicksPerSecond;
-        public override long GetTimestamp() => this.Timestamp;
+        public override long GetTimestamp() => this.ThrowTimestamp ? throw new InvalidOperationException("timestamp") : this.Timestamp;
         public override DateTimeOffset GetUtcNow() => this.ThrowUtc ? throw new InvalidOperationException("clock") : this.Utc;
     }
 }

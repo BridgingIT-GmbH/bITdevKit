@@ -27,60 +27,79 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
             return;
         }
 
-        var clock = timeProvider ?? TimeProvider.System;
-        var entry = clock.GetTimestamp();
-        var utc = clock.GetUtcNow();
         RequestProfilingFeature feature = null;
-        context.Response.OnStarting(() =>
+        IProfilingOperationScope operation = null;
+        IDisposable boundary = null;
+        IDisposable suppression = null;
+        var entered = false;
+        try
         {
-            feature?.ResponseStarting();
-            if (feature?.Selected == true && feature.Id != Guid.Empty) { context.Response.Headers[HeaderName] = feature.Id.ToString("D"); }
-            else { context.Response.Headers.Remove(HeaderName); }
+            context.Response.OnStarting(() =>
+            {
+                try
+                {
+                    feature?.ResponseStarting();
+                    if (feature?.Selected == true && feature.Id != Guid.Empty) { context.Response.Headers[HeaderName] = feature.Id.ToString("D"); }
+                    else { context.Response.Headers.Remove(HeaderName); }
+                }
+                catch (Exception) { runtime?.RecordObservationFailure(); }
 
-            return Task.CompletedTask;
-        });
-        if (runtime?.Enabled != true || profiler is null)
+                return Task.CompletedTask;
+            });
+            if (runtime?.Enabled == true && profiler is not null)
+            {
+                var clock = timeProvider ?? TimeProvider.System;
+                var entry = clock.GetTimestamp();
+                var utc = clock.GetUtcNow();
+                var path = context.Request.PathBase.Add(context.Request.Path).Value;
+                path = string.IsNullOrEmpty(path) ? "/" : path;
+                var blacklisted = runtime.Matcher.IsMatch(path);
+                var (key, shortened) = blacklisted ? ((string)null, false) : RequestProfilingPathMatcher.CreateKey(path, runtime.Options.StripPathPrefix, runtime.MaximumKeyLength);
+                var decision = blacklisted ? new RequestProfilingSamplingDecision(false, "Blacklisted")
+                    : runtime.Decide(new(context.Request.Method, path, key, nodes.GetNode(), utc));
+                if (blacklisted) { runtime.Exclude(); }
+
+                var selected = decision.Capture;
+                boundary = profiler.BeginExecutionBoundary();
+                suppression = selected ? null : profiler.Suppress();
+                var activeSelected = selected ? runtime.EnterSelected() : (int?)null;
+                entered = selected;
+                operation = selected ? profiler.BeginOperation(new OperationProfilingStartRequest
+                {
+                    Key = key, Kind = OperationProfilingKind.HttpRequest.ToString(), CorrelationId = context.TraceIdentifier,
+                    EntryTimestamp = entry, EntryUtc = utc,
+                }) : null;
+                feature = new(context, operation, runtime, new HttpRequestProfilingMetadata
+                {
+                    ApplicationRequestId = context.TraceIdentifier, Method = context.Request.Method, Path = path,
+                    DeclaredRequestBytes = context.Request.ContentLength, PathKeyShortened = shortened,
+                    ActiveSelectedRequestsAtEntry = activeSelected,
+                    SamplingStrategyKey = runtime.Options.StrategyKey, SamplingConfigurationKey = runtime.Options.ConfigurationKey,
+                    SamplingInclusionProbability = decision.InclusionProbability,
+                }, selected, key);
+                context.Features.Set<IRequestProfilingFeature>(feature);
+                if (selected)
+                {
+                    var response = new ProfilingResponseBodyFeature(context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(), feature.ObserveResponse);
+                    context.Features.Set<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(response);
+                    var request = runtime.Options.ObserveRequestBodyBytes ? new ProfilingRequestBodyObserver(context, feature.ObserveRequest) : null;
+                    feature.Attach(response, request);
+                }
+
+                context.Response.OnCompleted(feature.CompleteAsync);
+            }
+        }
+        catch (Exception)
         {
-            await next(context).ConfigureAwait(false);
-            return;
+            runtime?.RecordObservationFailure();
+            if (feature is not null) { feature.PipelineUnwound(true); }
+            else
+            {
+                Safe(() => operation?.Dispose());
+                if (entered) { runtime.LeaveSelected(); }
+            }
         }
 
-        var path = context.Request.PathBase.Add(context.Request.Path).Value;
-        path = string.IsNullOrEmpty(path) ? "/" : path;
-        var blacklisted = runtime.Matcher.IsMatch(path);
-        var (key, shortened) = blacklisted ? ((string)null, false) : RequestProfilingPathMatcher.CreateKey(path, runtime.Options.StripPathPrefix, runtime.MaximumKeyLength);
-        var decision = blacklisted ? new RequestProfilingSamplingDecision(false, "Blacklisted")
-            : runtime.Decide(new(context.Request.Method, path, key, nodes.GetNode(), utc));
-        if (blacklisted) { runtime.Exclude(); }
-
-        var selected = decision.Capture;
-        using var boundary = profiler.BeginExecutionBoundary();
-        using var suppression = selected ? null : profiler.Suppress();
-        var activeSelected = selected ? runtime.EnterSelected() : (int?)null;
-        var operation = selected ? profiler.BeginOperation(new OperationProfilingStartRequest
-        {
-            Key = key, Kind = OperationProfilingKind.HttpRequest.ToString(), CorrelationId = context.TraceIdentifier,
-            EntryTimestamp = entry, EntryUtc = utc,
-        }) : null;
-        feature = new(context, operation, runtime, new HttpRequestProfilingMetadata
-        {
-            ApplicationRequestId = context.TraceIdentifier, Method = context.Request.Method, Path = path,
-            DeclaredRequestBytes = context.Request.ContentLength, PathKeyShortened = shortened,
-            ActiveSelectedRequestsAtEntry = activeSelected,
-            SamplingStrategyKey = runtime.Options.StrategyKey, SamplingConfigurationKey = runtime.Options.ConfigurationKey,
-            SamplingInclusionProbability = decision.InclusionProbability,
-        }, selected, key);
-        // Preserve the exact sampling decision metadata, without a second policy invocation.
-        context.Features.Set<IRequestProfilingFeature>(feature);
-        if (selected)
-        {
-            var response = new ProfilingResponseBodyFeature(context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(), feature.ObserveResponse);
-            context.Features.Set<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(response);
-            var request = runtime.Options.ObserveRequestBodyBytes ? new ProfilingRequestBodyObserver(context, feature.ObserveRequest) : null;
-            feature.Attach(response, request);
-        }
-
-        context.Response.OnCompleted(feature.CompleteAsync);
         var escaped = true;
         try
         {
@@ -89,12 +108,20 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
         }
         catch (Exception exception)
         {
-            feature.ReportException(exception);
+            feature?.ReportException(exception);
             throw;
         }
         finally
         {
-            feature.PipelineUnwound(escaped);
+            feature?.PipelineUnwound(escaped);
+            Safe(() => suppression?.Dispose());
+            Safe(() => boundary?.Dispose());
         }
+    }
+
+    private void Safe(Action observation)
+    {
+        try { observation(); }
+        catch (Exception) { runtime?.RecordObservationFailure(); }
     }
 }

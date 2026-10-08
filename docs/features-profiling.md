@@ -346,19 +346,12 @@ Profiling rejects start and snapshot operations before creating a session or pub
 
 ### Entity Framework context
 
-The consuming application owns its `DbContext` and implements `IProfilingContext`:
+The consuming application owns its `DbContext`, implements `IProfilingDbContext`, and explicitly configures the profiling model. `DbContext.Set<TEntity>()` already supplies the interface contract; individual profiling `DbSet` properties are unnecessary.
 
 ```csharp
 public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
-    : DbContext(options), IProfilingContext
+    : DbContext(options), IProfilingDbContext
 {
-    public DbSet<ProfilingSessionEntity> ProfilingSessions { get; set; }
-    public DbSet<ProfilingInvalidSessionEntity> ProfilingInvalidSessions { get; set; }
-    public DbSet<ProfilingNodeEntity> ProfilingNodes { get; set; }
-    public DbSet<ProfilingParticipationEntity> ProfilingParticipations { get; set; }
-    public DbSet<ProfilingSnapshotEntity> ProfilingSnapshots { get; set; }
-    public DbSet<ProfilingMetricObservationEntity> ProfilingMetricObservations { get; set; }
-
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -367,9 +360,11 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options)
 }
 ```
 
-`ConfigureProfiling()` keeps high-volume or independently addressable data in tables and maps session-owned runtime context, markers, segments, and tags into JSON columns.
+`ConfigureProfiling()` keeps independently queried data and coordination in tables. Runtime context, markers, segments, and tags use parent JSON columns. Operations contain their complete bounded immutable payload in `RecordJson`; indexed segment projections contain `SummaryJson`. Measurements and their outcome/reducer details are retained in that JSON, with no additional measurement table. Typed dimension and segment projections remain relational for portable bounded filtering and grouping across SQLite, SQL Server, and PostgreSQL.
 
-The bITdevKit repository does not provide a Profiling migration. After implementing `IProfilingContext`, the consuming application creates, reviews, and deploys its own EF migration using its normal migration workflow.
+The consuming application creates, reviews, and deploys its own EF migration using its normal workflow. `WithEntityFrameworkProvider<AppDbContext>()` does not create or migrate tables at startup. An upgrade from the intermediate model removes the redundant operation-measurement table explicitly through the host's migration; unrelated application data is preserved.
+
+Recoverable operation-observation failures are isolated from application execution, including clocks, metadata, logging, middleware callbacks, and background worker setup/shutdown. Helpers invoke business delegates once and preserve their return value, exception, and cancellation. Unexpected inconsistent capture is discarded and its recording budget released; diagnostic failures remain visible in health counters. Process-fatal failures and application code used to compute metadata remain outside this guarantee.
 
 ## Session and node semantics
 

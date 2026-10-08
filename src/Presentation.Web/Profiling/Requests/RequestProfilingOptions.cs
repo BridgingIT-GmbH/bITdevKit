@@ -244,6 +244,10 @@ public sealed class RequestProfilingRuntime
         }
     }
 
+    /// <summary>Counts an HTTP observation fault without changing application response or execution.</summary>
+    /// <example><code>runtime.RecordObservationFailure();</code></example>
+    public void RecordObservationFailure() => Interlocked.Increment(ref this.health.ObservationFaults);
+
     /// <summary>Counts an intentional blacklist exclusion without storing the excluded path.</summary>
     /// <example><code>runtime.Exclude();</code></example>
     public void Exclude() => Interlocked.Increment(ref this.health.BlacklistedRequests);

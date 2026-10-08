@@ -39,11 +39,6 @@ public static partial class ProfilingEntityMapper
             entity.Dimensions.Add(Dimension(entity.Id, null, new byte[32], dimension.Key, dimension.Value, 1, false, false));
         }
 
-        foreach (var measurement in record.Measurements)
-        {
-            entity.Measurements.Add(Measurement(entity.Id, null, new byte[32], measurement.Key, measurement.Unit, measurement.Aggregation, measurement.Value, null, 1, 0, record.CompletedUtc, false, false, []));
-        }
-
         foreach (var summary in record.Segments)
         {
             var path = ProfilingOperationComparisons.Exact(summary.Path.ComparisonKey);
@@ -65,12 +60,6 @@ public static partial class ProfilingEntityMapper
             foreach (var dimension in summary.Dimensions)
             {
                 entity.Dimensions.Add(Dimension(entity.Id, segment.Id, pathHash, dimension.Key, dimension.Value, dimension.SampleCount, dimension.Mixed, dimension.Partial));
-            }
-
-            foreach (var measurement in summary.Measurements)
-            {
-                entity.Measurements.Add(Measurement(entity.Id, segment.Id, pathHash, measurement.Key, measurement.Unit, measurement.Aggregation, measurement.Value, measurement.Sum,
-                    measurement.SampleCount, measurement.LastCompletionSequence, measurement.LastCompletedUtc, measurement.Unavailable, measurement.Conflicting, measurement.Outcomes));
             }
         }
 
@@ -112,19 +101,6 @@ public static partial class ProfilingEntityMapper
             Id = Guid.NewGuid(), OperationId = operation, SegmentId = segment, ScopeHash = scope.ToArray(), Key = key, KeyBytes = name, KeyHash = ProfilingOperationComparisons.Hash(name),
             ValueType = value?.Type, ValueScalar = value?.Scalar, ValueBytes = ProfilingOperationComparisons.Exact(value?.Scalar), GroupPartBytes = ProfilingOperationComparisons.ValuePart(value),
             SampleCount = count, Mixed = mixed, Partial = partial,
-        };
-    }
-
-    private static OperationProfilingMeasurementEntity Measurement(Guid operation, Guid? segment, byte[] scope, string key, string unit, MeasurementAggregation aggregation,
-        ProfilingValue value, ProfilingValue sum, long count, long lastSequence, DateTimeOffset lastUtc, bool unavailable, bool conflicting, IReadOnlyList<ProfilingOutcomeMeasurementSummary> outcomes)
-    {
-        var name = ProfilingOperationComparisons.Canonical(key);
-        return new()
-        {
-            Id = Guid.NewGuid(), OperationId = operation, SegmentId = segment, ScopeHash = scope.ToArray(), Key = key, KeyBytes = name, KeyHash = ProfilingOperationComparisons.Hash(name),
-            UnitBytes = ProfilingOperationComparisons.Exact(unit), Aggregation = aggregation, ValueType = value?.Type, ValueScalar = value?.Scalar,
-            SumType = sum?.Type, SumScalar = sum?.Scalar, SampleCount = count, LastCompletionSequence = lastSequence, LastCompletedUtcTicks = lastUtc.UtcTicks,
-            Unavailable = unavailable, Conflicting = conflicting, OutcomesJson = JsonSerializer.Serialize(outcomes),
         };
     }
 }

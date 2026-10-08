@@ -29,8 +29,7 @@ public class PipelineRuntime(
 
     private IDisposable BeginProfilingBoundary()
     {
-        try { return profiling?.BeginExecutionBoundary(); }
-        catch (Exception) { return null; }
+        return profiling.BeginSafeExecutionBoundary();
     }
 
     /// <inheritdoc />

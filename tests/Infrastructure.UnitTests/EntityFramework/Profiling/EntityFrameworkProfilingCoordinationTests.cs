@@ -31,7 +31,7 @@ public sealed class EntityFrameworkProfilingCoordinationTests
             var frame = await sut.AcquireAsync(first, default);
             original = frame.Writers.Open(new() { AttemptId = attempt, Node = node }, utc, TimeSpan.FromSeconds(30)).Value;
             frame.Writers.Synchronize(new() { Lease = original, SettledThrough = 10 }, utc, []);
-            first.ProfilingNodes.Add(ProfilingEntityMapper.ToEntity(null, node));
+            first.Set<ProfilingNodeEntity>().Add(ProfilingEntityMapper.ToEntity(null, node));
             await EntityFrameworkProfilingCoordination<ProfilingTestDbContext>.SaveAsync(first, frame, default);
             epoch = frame.State.StoreEpoch;
             await transaction.CommitAsync();
@@ -48,7 +48,7 @@ public sealed class EntityFrameworkProfilingCoordinationTests
         retry.Value.WriterId.ShouldBe(original.WriterId);
         retry.Value.Token.ShouldBe(original.Token);
         retry.Value.SettledThrough.ShouldBe(10);
-        (await second.ProfilingWriters.CountAsync()).ShouldBe(1);
+        (await second.Set<ProfilingWriterEntity>().CountAsync()).ShouldBe(1);
         await nextTransaction.CommitAsync();
     }
 
@@ -70,7 +70,7 @@ public sealed class EntityFrameworkProfilingCoordinationTests
         {
             var frame = await sut.AcquireAsync(first, default);
             lease = frame.Writers.Open(new() { AttemptId = Guid.NewGuid(), Node = node }, utc, TimeSpan.FromSeconds(30)).Value;
-            first.ProfilingNodes.Add(ProfilingEntityMapper.ToEntity(null, node));
+            first.Set<ProfilingNodeEntity>().Add(ProfilingEntityMapper.ToEntity(null, node));
             var clear = frame.Clears.Prepare(new() { DataSet = ProfilingDataSet.Operations }, frame.Writers, utc, false).Value;
             id = clear.Id;
             frame.Clears.Acknowledge(new() { ClearId = id, Lease = lease, CompletionCutoff = 40 }, frame.Writers, utc);

@@ -16,7 +16,7 @@ internal static class EntityFrameworkOperationProfilingFilters
     {
         var lower = query.FromUtc.Value.UtcTicks;
         var upper = query.ToUtc.Value.UtcTicks;
-        var roots = context.ProfilingOperations.AsNoTracking().Where(root => root.CommitWatermark <= watermark);
+        var roots = context.Set<OperationProfilingEntity>().AsNoTracking().Where(root => root.CommitWatermark <= watermark);
         roots = query.IntervalOverlap ? roots.Where(root => root.StartedUtcTicks < upper && root.CompletedUtcTicks >= lower)
             : roots.Where(root => root.CompletedUtcTicks >= lower && root.CompletedUtcTicks < upper);
         if (query.Id.HasValue) { roots = roots.Where(root => root.Id == query.Id.Value); }
@@ -105,7 +105,7 @@ internal static class EntityFrameworkOperationProfilingFilters
                 var dimension = match.Parameters[0];
                 var owner = Expression.Equal(Expression.Property(dimension, nameof(OperationProfilingDimensionEntity.SegmentId)), Expression.Convert(Expression.Property(summary, nameof(OperationProfilingSegmentEntity.Id)), typeof(Guid?)));
                 var scoped = Expression.Lambda<Func<OperationProfilingDimensionEntity, bool>>(Expression.AndAlso(owner, match.Body), dimension);
-                var any = Expression.Call(typeof(Queryable), nameof(Queryable.Any), [typeof(OperationProfilingDimensionEntity)], ((IQueryable<OperationProfilingDimensionEntity>)context.ProfilingOperationDimensions).Expression, scoped);
+                var any = Expression.Call(typeof(Queryable), nameof(Queryable.Any), [typeof(OperationProfilingDimensionEntity)], ((IQueryable<OperationProfilingDimensionEntity>)context.Set<OperationProfilingDimensionEntity>()).Expression, scoped);
                 segment = And(segment, Expression.Lambda<Func<OperationProfilingSegmentEntity, bool>>(predicate.Operator == ProfilingDimensionOperator.Missing ? Expression.Not(any) : any, summary));
             }
 

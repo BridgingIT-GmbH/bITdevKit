@@ -25,12 +25,12 @@ internal sealed class OperationProfilingCleanupService : BackgroundService
 
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
-        using var boundary = this.profiler.BeginExecutionBoundary();
-        using var suppression = this.profiler.Suppress();
-        using var timer = new PeriodicTimer(this.interval, this.clock);
-        this.ready.TrySetResult();
         try
         {
+            using var boundary = this.profiler.BeginExecutionBoundary();
+            using var suppression = this.profiler.Suppress();
+            using var timer = new ProfilingPeriodicTimer(this.interval, this.clock);
+            this.ready.TrySetResult();
             while (await timer.WaitForNextTickAsync(stoppingToken).ConfigureAwait(false))
             {
                 this.profiler.ExpireAbandoned();
@@ -39,6 +39,15 @@ internal sealed class OperationProfilingCleanupService : BackgroundService
         catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
         {
             // Host cancellation ends observation without changing application cancellation.
+        }
+        catch (Exception)
+        {
+            Interlocked.Increment(ref this.profiler.Counters.CaptureFaults);
+            this.profiler.CloseForHost();
+        }
+        finally
+        {
+            this.ready.TrySetResult();
         }
     }
 

@@ -17,6 +17,9 @@ public sealed class OperationProfilingCompletionQueue : IOperationProfilingCompl
     private ProfilingWriterLease lease;
     private long sequence;
     private long bytes;
+    /// <summary>Counts failed queue-clock observations without affecting business execution.</summary>
+    /// <example><code>var faults = queue.ObservationFaults;</code></example>
+    public long ObservationFaults;
     /// <summary>Exposes the CapacityDiscards profiling observation or lifecycle value.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long CapacityDiscards;
@@ -162,11 +165,16 @@ public sealed class OperationProfilingCompletionQueue : IOperationProfilingCompl
 
     /// <summary>Reads queue and in-flight payload accounting without triggering persistence.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
-    public (int Count, long Bytes, TimeSpan OldestAge, bool Active, int InFlightCount, long InFlightBytes) Snapshot()
+    public (int Count, long Bytes, TimeSpan OldestAge, bool Active, int InFlightCount, long InFlightBytes, bool OldestAgeUnavailable, int PendingUnknownCount) Snapshot()
     {
         lock (this.sync)
         {
-            return (this.pending.Count, this.bytes, this.pending.First is { } first ? this.clock.GetElapsedTime(first.Value.EnqueuedAt) : TimeSpan.Zero, this.lease is not null, this.pending.Count(e => e.InFlight), this.pending.Where(e => e.InFlight).Sum(e => e.Envelope.Record.EstimatedPayloadBytes));
+            var age = TimeSpan.Zero;
+            var unavailable = false;
+            try { if (this.pending.First is { } first) { age = this.clock.GetElapsedTime(first.Value.EnqueuedAt); } }
+            catch (Exception) { unavailable = true; this.ObservationFaults++; }
+
+            return (this.pending.Count, this.bytes, age, this.lease is not null, this.pending.Count(e => e.InFlight), this.pending.Where(e => e.InFlight).Sum(e => e.Envelope.Record.EstimatedPayloadBytes), unavailable, this.pending.Count(e => e.InFlight || e.Uncertain));
         }
     }
 

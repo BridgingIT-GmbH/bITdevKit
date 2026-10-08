@@ -41,6 +41,7 @@ public interface IRequestProfilingFeature
 public sealed class RequestProfilingFeature : IRequestProfilingFeature
 {
     private readonly object sync = new();
+    private readonly Guid id;
     private HttpContext context;
     private readonly RequestProfilingRuntime runtime;
     private HttpRequestProfilingMetadata metadata;
@@ -68,11 +69,14 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
         this.metadata = metadata;
         this.Selected = selected;
         this.InitialKey = initialKey;
+        try { this.id = operation?.Id ?? Guid.Empty; }
+        catch (Exception) { runtime.RecordObservationFailure(); }
+
         this.Publish();
     }
 
     /// <inheritdoc />
-    public Guid Id => this.Operation?.Id ?? Guid.Empty;
+    public Guid Id => this.id;
     /// <inheritdoc />
     public bool Selected { get; }
     /// <inheritdoc />
@@ -84,15 +88,15 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
 
     /// <summary>Attaches observers and an abort notification without changing transport ownership.</summary>
     /// <example>Called once after installing the response and optional request adapters.</example>
-    public void Attach(ProfilingResponseBodyFeature response, ProfilingRequestBodyObserver request)
+    public void Attach(ProfilingResponseBodyFeature response, ProfilingRequestBodyObserver request) => this.Safe(() =>
     {
         this.responseObserver = response;
         this.requestObserver = request;
         this.abortRegistration = this.context.RequestAborted.Register(this.MarkAborted);
-    }
+    });
 
     /// <inheritdoc />
-    public void CaptureOriginalRoute()
+    public void CaptureOriginalRoute() => this.Safe(() =>
     {
         lock (this.sync)
         {
@@ -102,7 +106,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
             this.metadata = this.metadata with { Route = (this.context.GetEndpoint() as RouteEndpoint)?.RoutePattern.RawText };
             this.Publish();
         }
-    }
+    });
 
     /// <inheritdoc />
     public void ReportException(Exception exception)
@@ -161,7 +165,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
 
     /// <summary>Restores pipeline ownership externally, retaining only the explicit handle for completion.</summary>
     /// <example>Called in the outer middleware finally block after downstream unwinds.</example>
-    public void PipelineUnwound(bool escaped)
+    public void PipelineUnwound(bool escaped) => this.Safe(() =>
     {
         lock (this.sync)
         {
@@ -169,20 +173,20 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
             this.CaptureOriginalRoute();
             if (escaped || this.aborted) { this.Finish(false); }
         }
-    }
+    });
 
     /// <summary>Finalizes normal response processing once, including final status and quality.</summary>
     /// <example>Registered with HttpResponse.OnCompleted by the outer middleware.</example>
     public Task CompleteAsync()
     {
-        lock (this.sync) { this.Finish(true); }
+        this.Safe(() => { lock (this.sync) { this.Finish(true); } });
 
         return Task.CompletedTask;
     }
 
     /// <summary>Updates header-time metadata before the transport begins sending the selected response.</summary>
     /// <example>Called by the outer OnStarting callback after inner cache callbacks.</example>
-    public void ResponseStarting()
+    public void ResponseStarting() => this.Safe(() =>
     {
         lock (this.sync)
         {
@@ -192,31 +196,31 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
             this.metadata = this.metadata with { StatusCode = this.context.Response.StatusCode, DeclaredResponseBytes = this.context.Response.ContentLength };
             this.Publish();
         }
-    }
+    });
 
-    private void MarkAborted()
+    private void MarkAborted() => this.Safe(() =>
     {
         lock (this.sync)
         {
             if (this.finalized) { return; }
 
             this.aborted = true;
-            Safe(() => this.Operation?.Abort());
+            this.Safe(() => this.Operation?.Abort());
             this.metadata = this.metadata with { TransportAborted = true };
             this.Publish();
             if (this.unwound) { this.Finish(false); }
         }
-    }
+    });
 
-    private static void Safe(Action action)
+    private void Safe(Action action)
     {
         try { action(); }
-        catch (Exception) { /* Instrumentation never replaces application or transport behavior. */ }
+        catch (Exception) { this.runtime.RecordObservationFailure(); }
     }
 
     private void Publish()
     {
-        Safe(() => this.Operation?.SetHttpMetadata(this.metadata with
+        this.Safe(() => this.Operation?.SetHttpMetadata(this.metadata with
         {
             ResponseBytes = this.Selected ? this.responseBytes : null,
             ResponseBytesQuality = this.Selected ? ProfilingObservationQuality.Partial : ProfilingObservationQuality.Unavailable,
@@ -235,7 +239,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
         {
             var coveredResponse = this.responseObserver?.IsInstalled(http) == true;
             var coveredRequest = this.requestObserver?.IsInstalled(http) == true;
-            Safe(() => this.Operation?.SetHttpMetadata(this.metadata with
+            this.Safe(() => this.Operation?.SetHttpMetadata(this.metadata with
             {
                 StatusCode = normal || http.Response.HasStarted ? http.Response.StatusCode : this.metadata.StatusCode,
                 DeclaredResponseBytes = http.Response.ContentLength,
@@ -246,20 +250,20 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
                 RequestBytesQuality = !this.runtime.Options.ObserveRequestBodyBytes ? ProfilingObservationQuality.Unavailable
                     : normal && !this.aborted && !this.requestPartial && coveredRequest ? ProfilingObservationQuality.Complete : ProfilingObservationQuality.Partial,
             }));
-            if (this.aborted) { Safe(() => this.Operation?.Abort()); }
-            else if (http.Response.StatusCode >= 500 && !this.applicationCanceled) { Safe(() => this.Operation?.Fail(new ProfilingFailureDescriptor { Source = "Http", Code = "ServerError" })); }
-            else if (normal) { Safe(() => this.Operation?.Complete()); }
+            if (this.aborted) { this.Safe(() => this.Operation?.Abort()); }
+            else if (http.Response.StatusCode >= 500 && !this.applicationCanceled) { this.Safe(() => this.Operation?.Fail(new ProfilingFailureDescriptor { Source = "Http", Code = "ServerError" })); }
+            else if (normal) { this.Safe(() => this.Operation?.Complete()); }
         }
         finally
         {
-            Safe(() => this.Operation?.Dispose());
+            this.Safe(() => this.Operation?.Dispose());
             // Release diagnostic callbacks, never dispose the live transport.
-            this.responseObserver?.Detach();
-            this.requestObserver?.Detach();
+            this.Safe(() => this.responseObserver?.Detach());
+            this.Safe(() => this.requestObserver?.Detach());
             this.responseObserver = null;
             this.requestObserver = null;
             this.context = null;
-            this.abortRegistration.Unregister();
+            this.Safe(() => this.abortRegistration.Unregister());
             if (this.Selected) { this.runtime.LeaveSelected(); }
         }
     }

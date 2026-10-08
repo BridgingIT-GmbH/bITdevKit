@@ -31,8 +31,8 @@ public sealed class EntityFrameworkOperationProfilingWriterTests
         found.Value.Dimensions.Single().Value.ShouldBe(new ProfilingValue(ProfilingValueType.Int64, "42"));
         await using var scope = fixture.Services.CreateAsyncScope();
         var context = scope.ServiceProvider.GetRequiredService<ProfilingTestDbContext>();
-        (await context.ProfilingOperations.CountAsync()).ShouldBe(1);
-        (await context.ProfilingOperationDimensions.CountAsync()).ShouldBe(1);
+        (await context.Set<OperationProfilingEntity>().CountAsync()).ShouldBe(1);
+        (await context.Set<OperationProfilingDimensionEntity>().CountAsync()).ShouldBe(1);
     }
 
     [Fact]

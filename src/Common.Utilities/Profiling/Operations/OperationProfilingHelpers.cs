@@ -9,6 +9,18 @@ namespace BridgingIT.DevKit.Common;
 /// <example><code>var value = await profiling.RunOperationAsync("Refresh", OperationProfilingKind.Service, (_, ct) => service.RefreshAsync(ct), cancellationToken);</code></example>
 public static class OperationProfilingHelpers
 {
+    /// <summary>Begins an independent execution boundary with recoverable startup and restoration faults isolated.</summary>
+    /// <example><code>using var boundary = profiling.BeginSafeExecutionBoundary(); await ExecuteAsync(token);</code></example>
+    public static IDisposable BeginSafeExecutionBoundary(this IOperationProfiler profiling)
+    {
+        try
+        {
+            var restoration = profiling?.BeginExecutionBoundary();
+            return restoration is null ? null : new SafeRestoration(restoration);
+        }
+        catch (Exception) { return null; }
+    }
+
     /// <summary>Runs one synchronous delegate in its own operation and returns the original value.</summary>
     /// <example><code>var value = profiling.RunOperation("Read", OperationProfilingKind.Service, scope => Read(), classify: null);</code></example>
     public static T RunOperation<T>(this IOperationProfiler profiling, string key, OperationProfilingKind kind, Func<IProfilingOperationScope, T> work, Func<T, ProfilingResultClassification> classify = null)
@@ -374,6 +386,17 @@ public static class OperationProfilingHelpers
     {
         try { observation(); }
         catch (Exception) { /* Observation never replaces a business result or exception. */ }
+    }
+
+    private sealed class SafeRestoration(IDisposable restoration) : IDisposable
+    {
+        private IDisposable current = restoration;
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            var previous = Interlocked.Exchange(ref this.current, null);
+            if (previous is not null) { Safe(previous.Dispose); }
+        }
     }
 
     private sealed class NoOperation : IProfilingOperationScope

@@ -46,7 +46,7 @@
   Presentation.Web.Jobs -> /home/vip32/Projects/bITdevKit/src/Presentation.Web.Jobs/bin/Debug/net10.0/BridgingIT.DevKit.Presentation.Web.Jobs.dll
   Presentation.Web.Orchestrations -> /home/vip32/Projects/bITdevKit/src/Presentation.Web.Orchestrations/bin/Debug/net10.0/BridgingIT.DevKit.Presentation.Web.Orchestrations.dll
   WeatherFiesta.Presentation.Web.Server -> /home/vip32/Projects/bITdevKit/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.dll
-  
+
   GenerateOpenApiDocuments:
     dotnet "/home/vip32/.nuget/packages/microsoft.extensions.apidescription.server/10.0.11/build/../tools/dotnet-getdocument.dll" --assembly "/home/vip32/Projects/bITdevKit/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/bin/Debug/net10.0/BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.dll" --file-list "obj/WeatherFiesta.Presentation.Web.Server.OpenApiFiles.cache" --framework ".NETCoreApp,Version=v10.0" --output "/home/vip32/Projects/bITdevKit/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/wwwroot" --project "WeatherFiesta.Presentation.Web.Server" --assets-file "/home/vip32/Projects/bITdevKit/examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/obj/project.assets.json" --platform "AnyCPU" --file-name openapi
   info: Microsoft.AspNetCore.Mvc.Infrastructure.DefaultActionDescriptorCollectionProvider[1]

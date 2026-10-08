@@ -37,6 +37,10 @@ public sealed class ProfilingOptions
     /// <example><code>var value = options.Queries;</code></example>
     public ProfilingQueryOptions Queries { get; set; } = new();
 
+    /// <summary>Gets or sets bounded storage coordination and maintenance settings.</summary>
+    /// <example><code>var timeout = options.Storage.ClearPreparationTimeout;</code></example>
+    public ProfilingStorageOptions Storage { get; set; } = new();
+
     /// <summary>Gets the effective Runtime capture state.</summary>
     /// <example><code>if (options.RuntimeEnabled) StartRuntime();</code></example>
     public bool RuntimeEnabled => this.Enabled && this.Runtime.Enabled;
@@ -49,7 +53,7 @@ public sealed class ProfilingOptions
     /// <example><code>options.Validate();</code></example>
     public void Validate()
     {
-        if (this.Runtime is null || this.Operations is null || this.Requests is null || this.Queries is null)
+        if (this.Runtime is null || this.Operations is null || this.Requests is null || this.Queries is null || this.Storage is null)
         {
             throw new InvalidOperationException("Profiling capability options cannot be null.");
         }
@@ -72,6 +76,7 @@ public sealed class ProfilingOptions
         this.Runtime.Validate();
         this.Operations.Validate();
         this.Queries.Validate();
+        this.Storage.Validate();
     }
 }
 

@@ -44,3 +44,15 @@ public sealed class ProfilingArchiveError(string message) : ResultErrorBase(mess
 /// <param name="message">A safe trace-export failure description.</param>
 /// <example><code>var error = new ProfilingTraceExportError("A writable destination is required.");</code></example>
 public sealed class ProfilingTraceExportError(string message) : ResultErrorBase(message);
+
+/// <summary>Reports bounded query capacity or concurrent maintenance contention.</summary>
+/// <example><code>var error = new ProfilingBusyError("A clear is already applying.");</code></example>
+public sealed class ProfilingBusyError(string message) : ResultErrorBase(message);
+
+/// <summary>Reports a cursor invalidated by deletion, reset, expiry or changed filters.</summary>
+/// <example><code>var error = new ProfilingQueryBoundaryError();</code></example>
+public sealed class ProfilingQueryBoundaryError() : ResultErrorBase("The profiling query boundary expired or no longer matches this selection. Refresh the view.");
+
+/// <summary>Requires a narrower selection instead of silently truncating exact analysis.</summary>
+/// <example><code>var error = new ProfilingQueryLimitError();</code></example>
+public sealed class ProfilingQueryLimitError() : ResultErrorBase("The profiling selection exceeds its exact analysis bound. Narrow the filters.");

@@ -240,6 +240,38 @@ public sealed record ProfilingAdapterMetadata
 /// <example><code>var value = new HttpRequestProfilingMetadata();</code></example>
 public sealed record HttpRequestProfilingMetadata
 {
+    /// <summary>Gets the lookup-only application request identifier.</summary>
+    /// <example><code>var value = record.ApplicationRequestId;</code></example>
+    public string ApplicationRequestId { get; init; }
+
+    /// <summary>Gets declared request length separately from observed bytes.</summary>
+    /// <example><code>var value = record.DeclaredRequestBytes;</code></example>
+    public long? DeclaredRequestBytes { get; init; }
+
+    /// <summary>Gets declared response length separately from observed bytes.</summary>
+    /// <example><code>var value = record.DeclaredResponseBytes;</code></example>
+    public long? DeclaredResponseBytes { get; init; }
+
+    /// <summary>Gets sampling-selected request concurrency before admission.</summary>
+    /// <example><code>var value = record.ActiveSelectedRequestsAtEntry;</code></example>
+    public int? ActiveSelectedRequestsAtEntry { get; init; }
+
+    /// <summary>Gets the immutable strategy selected at entry.</summary>
+    /// <example><code>var value = record.SamplingStrategyKey;</code></example>
+    public string SamplingStrategyKey { get; init; }
+
+    /// <summary>Gets the immutable effective policy identifier.</summary>
+    /// <example><code>var value = record.SamplingConfigurationKey;</code></example>
+    public string SamplingConfigurationKey { get; init; }
+
+    /// <summary>Gets known selection probability, without implying persistence probability.</summary>
+    /// <example><code>var value = record.SamplingInclusionProbability;</code></example>
+    public double? SamplingInclusionProbability { get; init; }
+
+    /// <summary>Gets whether the path key uses a bounded prefix and stable hash.</summary>
+    /// <example><code>var value = record.PathKeyShortened;</code></example>
+    public bool PathKeyShortened { get; init; }
+
     /// <summary>Gets the HTTP method.</summary>
     /// <example><code>var value = record.Method;</code></example>
     public string Method { get; init; }
@@ -254,7 +286,7 @@ public sealed record HttpRequestProfilingMetadata
 
     /// <summary>Gets the terminal HTTP status.</summary>
     /// <example><code>var value = record.StatusCode;</code></example>
-    public int StatusCode { get; init; }
+    public int? StatusCode { get; init; }
 
     /// <summary>Gets observed request-body bytes when enabled.</summary>
     /// <example><code>var value = record.RequestBytes;</code></example>

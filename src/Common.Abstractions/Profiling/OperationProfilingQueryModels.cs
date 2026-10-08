@@ -20,6 +20,24 @@ public enum OperationProfilingView
     ByCount,
 }
 
+/// <summary>Defines bounded scalar predicates; Mixed applies to segment summaries only.</summary>
+/// <example><code>var selection = ProfilingDimensionOperator.Equal;</code></example>
+public enum ProfilingDimensionOperator
+{
+    /// <summary>Matches the exact type and canonical scalar value.</summary>
+    /// <example><code>var selection = ProfilingDimensionOperator.Equal;</code></example>
+    Equal,
+    /// <summary>Matches observed presence without claiming every invocation supplied the value.</summary>
+    /// <example><code>var selection = ProfilingDimensionOperator.Present;</code></example>
+    Present,
+    /// <summary>Matches absence from the retained metadata.</summary>
+    /// <example><code>var selection = ProfilingDimensionOperator.Missing;</code></example>
+    Missing,
+    /// <summary>Matches differing values within the selected summary.</summary>
+    /// <example><code>var selection = ProfilingDimensionOperator.Mixed;</code></example>
+    Mixed,
+}
+
 /// <summary>Matches a canonical dimension name and exact scalar type/value.</summary>
 /// <example><code>var value = new ProfilingDimensionPredicate();</code></example>
 public sealed record ProfilingDimensionPredicate
@@ -32,9 +50,9 @@ public sealed record ProfilingDimensionPredicate
     /// <example><code>var value = record.Value;</code></example>
     public ProfilingValue Value { get; init; }
 
-    /// <summary>Gets whether absence should match.</summary>
-    /// <example><code>var value = record.Missing;</code></example>
-    public bool Missing { get; init; }
+    /// <summary>Gets equality, observed presence, absence or mixed-summary selection.</summary>
+    /// <example><code>var predicate = new ProfilingDimensionPredicate { Key = "category", Operator = ProfilingDimensionOperator.Present };</code></example>
+    public ProfilingDimensionOperator Operator { get; init; } = ProfilingDimensionOperator.Equal;
 
 }
 
@@ -42,6 +60,20 @@ public sealed record ProfilingDimensionPredicate
 /// <example><code>var value = new ProfilingQueryBoundary();</code></example>
 public sealed record ProfilingQueryBoundary
 {
+    /// <summary>Gets the evaluated inclusive UTC lower bound.</summary>
+    /// <example><code>var value = record.FromUtc;</code></example>
+    [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
+    public DateTimeOffset? FromUtc { get; init; }
+
+    /// <summary>Gets the evaluated exclusive UTC upper bound.</summary>
+    /// <example><code>var value = record.ToUtc;</code></example>
+    [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
+    public DateTimeOffset? ToUtc { get; init; }
+
+    /// <summary>Gets the provider authentication tag for immutable boundary values.</summary>
+    /// <example><code>var value = record.Signature;</code></example>
+    public string Signature { get; init; }
+
     /// <summary>Gets persistent store incarnation.</summary>
     /// <example><code>var value = record.StoreEpoch;</code></example>
     public Guid StoreEpoch { get; init; }
@@ -69,6 +101,74 @@ public sealed record ProfilingQueryBoundary
 /// <example><code>var value = new OperationProfilingQuery();</code></example>
 public sealed record OperationProfilingQuery
 {
+    /// <summary>Gets an optional occurrence identifier filter.</summary>
+    /// <example><code>var value = record.Id;</code></example>
+    public Guid? Id { get; init; }
+
+    /// <summary>Gets an optional non-owning parent identifier filter.</summary>
+    /// <example><code>var value = record.ParentOperationId;</code></example>
+    public Guid? ParentOperationId { get; init; }
+
+    /// <summary>Gets an ordinal application version filter.</summary>
+    /// <example><code>var value = record.ApplicationVersion;</code></example>
+    public string ApplicationVersion { get; init; }
+
+    /// <summary>Gets whether the UTC window selects observed interval overlap for Runtime navigation.</summary>
+    /// <example><code>var value = record.IntervalOverlap;</code></example>
+    public bool IntervalOverlap { get; init; }
+
+    /// <summary>Gets an observed failed-segment filter, independent of root outcome.</summary>
+    /// <example><code>var value = record.HasSegmentFailures;</code></example>
+    public bool? HasSegmentFailures { get; init; }
+
+    /// <summary>Gets a case-insensitive leaf key filter.</summary>
+    /// <example><code>var value = record.SegmentKey;</code></example>
+    public string SegmentKey { get; init; }
+
+    /// <summary>Gets an exact structured full-path filter.</summary>
+    /// <example><code>var value = record.SegmentPath;</code></example>
+    public ProfilingSegmentPath SegmentPath { get; init; }
+
+    /// <summary>Gets an HTTP method filter.</summary>
+    /// <example><code>var value = record.HttpMethod;</code></example>
+    public string HttpMethod { get; init; }
+
+    /// <summary>Gets an original endpoint route filter.</summary>
+    /// <example><code>var value = record.Route;</code></example>
+    public string Route { get; init; }
+
+    /// <summary>Gets a final observable HTTP status filter.</summary>
+    /// <example><code>var value = record.HttpStatusCode;</code></example>
+    public int? HttpStatusCode { get; init; }
+
+    /// <summary>Gets the HTTP application request identifier.</summary>
+    /// <example><code>var value = record.ApplicationRequestId;</code></example>
+    public string ApplicationRequestId { get; init; }
+
+    /// <summary>Gets a request sampling strategy filter.</summary>
+    /// <example><code>var value = record.SamplingStrategyKey;</code></example>
+    public string SamplingStrategyKey { get; init; }
+
+    /// <summary>Gets an effective sampling configuration filter.</summary>
+    /// <example><code>var value = record.SamplingConfigurationKey;</code></example>
+    public string SamplingConfigurationKey { get; init; }
+
+    /// <summary>Gets optional method grouping in addition to kind/key.</summary>
+    /// <example><code>var value = record.GroupByHttpMethod;</code></example>
+    public bool GroupByHttpMethod { get; init; }
+
+    /// <summary>Gets an opaque provider-authenticated continuation key.</summary>
+    /// <example><code>var value = record.Cursor;</code></example>
+    public string Cursor { get; init; }
+
+    /// <summary>Gets predicates that must all match the same selected segment summary.</summary>
+    /// <example><code>var predicates = query.SegmentDimensions;</code></example>
+    public IReadOnlyList<ProfilingDimensionPredicate> SegmentDimensions { get; init; } = [];
+
+    /// <summary>Gets selected observed invocation outcomes on the matching segment path.</summary>
+    /// <example><code>var outcomes = query.SegmentOutcomes;</code></example>
+    public IReadOnlyList<ProfilingSegmentOutcome> SegmentOutcomes { get; init; } = [];
+
     /// <summary>Gets inclusive completion UTC; service defaults to fifteen minutes.</summary>
     /// <example><code>var value = record.FromUtc;</code></example>
     [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
@@ -115,10 +215,6 @@ public sealed record OperationProfilingQuery
     /// <example><code>var value = record.PageSize;</code></example>
     public int PageSize { get; init; } = 50;
 
-    /// <summary>Gets stable selection offset.</summary>
-    /// <example><code>var value = record.Offset;</code></example>
-    public int Offset { get; init; }
-
     /// <summary>Gets the exact analysis bound.</summary>
     /// <example><code>var value = record.MaximumAnalysisCount;</code></example>
     public int MaximumAnalysisCount { get; init; } = 10000;
@@ -133,6 +229,10 @@ public sealed record OperationProfilingQuery
 /// <example><code>var value = new OperationProfilingPage();</code></example>
 public sealed record OperationProfilingPage
 {
+    /// <summary>Gets an opaque stable continuation key when more results exist.</summary>
+    /// <example><code>var value = record.NextCursor;</code></example>
+    public string NextCursor { get; init; }
+
     /// <summary>Gets selected operation roots.</summary>
     /// <example><code>var value = record.Records;</code></example>
     public IReadOnlyList<OperationProfilingRecord> Records { get; init; } = [];
@@ -155,6 +255,22 @@ public sealed record OperationProfilingPage
 /// <example><code>var value = new OperationProfilingGroup();</code></example>
 public sealed record OperationProfilingGroup
 {
+    /// <summary>Gets whether cumulative duration exceeded its representation.</summary>
+    /// <example><code>if (group.DurationUnavailable) ShowUnavailable();</code></example>
+    public bool DurationUnavailable { get; init; }
+
+    /// <summary>Gets the selected method group when enabled.</summary>
+    /// <example><code>var value = record.HttpMethod;</code></example>
+    public string HttpMethod { get; init; }
+
+    /// <summary>Gets the unambiguous portable identity of this group.</summary>
+    /// <example><code>var value = record.ComparisonKey;</code></example>
+    public string ComparisonKey { get; init; }
+
+    /// <summary>Gets selected real occurrences for Slow/Recent, rather than fabricated aggregate bars.</summary>
+    /// <example><code>var rows = group.Occurrences;</code></example>
+    public IReadOnlyList<OperationProfilingRecord> Occurrences { get; init; } = [];
+
     /// <summary>Gets the retained display operation key.</summary>
     /// <example><code>var value = record.Key;</code></example>
     public string Key { get; init; }
@@ -198,6 +314,10 @@ public sealed record OperationProfilingGroup
 /// <example><code>var value = new OperationProfilingGroupPage();</code></example>
 public sealed record OperationProfilingGroupPage
 {
+    /// <summary>Gets an opaque stable continuation key when more results exist.</summary>
+    /// <example><code>var value = record.NextCursor;</code></example>
+    public string NextCursor { get; init; }
+
     /// <summary>Gets selected ranked groups.</summary>
     /// <example><code>var value = record.Groups;</code></example>
     public IReadOnlyList<OperationProfilingGroup> Groups { get; init; } = [];

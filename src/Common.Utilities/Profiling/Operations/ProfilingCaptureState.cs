@@ -224,7 +224,9 @@ internal sealed class ProfilingCaptureState
     public void SetHttp(HttpRequestProfilingMetadata metadata) => this.Observe(() =>
     {
         if (metadata is null || metadata.RequestBytes < 0 || metadata.ResponseBytes < 0
-            || metadata.StatusCode is < 0 or > 599 || !Enum.IsDefined(metadata.RequestBytesQuality) || !Enum.IsDefined(metadata.ResponseBytesQuality))
+            || metadata.DeclaredRequestBytes < 0 || metadata.DeclaredResponseBytes < 0
+            || metadata.ActiveSelectedRequestsAtEntry < 1 || metadata.SamplingInclusionProbability is { } probability && (!double.IsFinite(probability) || probability < 0 || probability > 1)
+            || metadata.StatusCode is < 100 or > 599 || !Enum.IsDefined(metadata.RequestBytesQuality) || !Enum.IsDefined(metadata.ResponseBytesQuality))
         {
             this.RejectMetadata();
             return;
@@ -233,7 +235,15 @@ internal sealed class ProfilingCaptureState
         var method = ProfilingValueValidator.Clip(metadata.Method, this.options.MaxKeyLength, out var m);
         var path = ProfilingValueValidator.Clip(metadata.Path, this.options.MaxStringLength, out var p);
         var route = ProfilingValueValidator.Clip(metadata.Route, this.options.MaxStringLength, out var r);
-        var normalized = metadata with { Method = method, Path = path, Route = route };
+        var applicationRequestId = ProfilingValueValidator.Clip(metadata.ApplicationRequestId, this.options.MaxStringLength, out var a);
+        if (metadata.SamplingStrategyKey is not null && !ProfilingValueValidator.IsKey(metadata.SamplingStrategyKey, this.options.MaxKeyLength)
+            || metadata.SamplingConfigurationKey is not null && !ProfilingValueValidator.IsKey(metadata.SamplingConfigurationKey, this.options.MaxKeyLength))
+        {
+            this.RejectMetadata();
+            return;
+        }
+
+        var normalized = metadata with { Method = method, Path = path, Route = route, ApplicationRequestId = applicationRequestId };
         var delta = HttpCharge(normalized) - (this.http is null ? 0 : HttpCharge(this.http));
         if (!this.Charge(delta))
         {
@@ -241,7 +251,7 @@ internal sealed class ProfilingCaptureState
             return;
         }
 
-        this.truncated |= m || p || r;
+        this.truncated |= m || p || r || a;
         this.http = normalized;
     });
 
@@ -519,7 +529,8 @@ internal sealed class ProfilingCaptureState
     private void RejectSegment(ProfilingInvocation parent) { this.rejectedSegments++; this.partial = true; if (parent is not null) { parent.Summary.Partial = true; } }
     private long DeadlineTimestamp() => checked(this.started + (long)(this.options.MaxRecordingDuration.TotalSeconds * this.profiler.Clock.TimestampFrequency));
     private static int Rank(OperationProfilingOutcome value) => value switch { OperationProfilingOutcome.Aborted => 4, OperationProfilingOutcome.Failed => 3, OperationProfilingOutcome.Canceled => 2, _ => 1 };
-    private static long HttpCharge(HttpRequestProfilingMetadata value) => 256 + ProfilingValueValidator.Charge(value.Method) + ProfilingValueValidator.Charge(value.Path) + ProfilingValueValidator.Charge(value.Route);
+    private static long HttpCharge(HttpRequestProfilingMetadata value) => 384 + ProfilingValueValidator.Charge(value.Method) + ProfilingValueValidator.Charge(value.Path) + ProfilingValueValidator.Charge(value.Route)
+        + ProfilingValueValidator.Charge(value.ApplicationRequestId) + ProfilingValueValidator.Charge(value.SamplingStrategyKey) + ProfilingValueValidator.Charge(value.SamplingConfigurationKey);
     private static long SourceCharge(string kind, IReadOnlyList<ProfilingDimension> fields) => 192 + ProfilingValueValidator.Charge(kind) + fields.Sum(f => 128 + ProfilingValueValidator.Charge(f.Key) + ProfilingValueValidator.Charge(f.Value));
     private static long FailureCharge(ProfilingFailureDescriptor failure) => failure is null ? 0 : 192 + ProfilingValueValidator.Charge(failure.Source) + ProfilingValueValidator.Charge(failure.Code) + ProfilingValueValidator.Charge(failure.ExceptionType) + ProfilingValueValidator.Charge(failure.Message);
 

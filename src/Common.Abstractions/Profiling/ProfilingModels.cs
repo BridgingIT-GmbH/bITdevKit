@@ -779,6 +779,20 @@ public sealed record RuntimeProfilingSessionResolution(RuntimeProfilingSession S
 /// <example><code>var removed = result.RemovedSessionCount;</code></example>
 public sealed record ProfilingClearResult(int RemovedSessionCount = 0, long RemovedSnapshotCount = 0)
 {
+    /// <summary>Gets the selected independent history datasets.</summary>
+    /// <example><code>var value = record.DataSet;</code></example>
+    public ProfilingDataSet DataSet { get; init; }
+
+    /// <summary>Gets the normalized inclusive completion-UTC lower bound.</summary>
+    /// <example><code>var value = record.FromUtc;</code></example>
+    [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
+    public DateTimeOffset? FromUtc { get; init; }
+
+    /// <summary>Gets the normalized exclusive completion-UTC upper bound.</summary>
+    /// <example><code>var value = record.ToUtc;</code></example>
+    [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
+    public DateTimeOffset? ToUtc { get; init; }
+
     /// <summary>Gets the provider-coordinated clear occurrence.</summary>
     /// <example><code>var id = result.ClearId;</code></example>
     public Guid ClearId { get; init; }

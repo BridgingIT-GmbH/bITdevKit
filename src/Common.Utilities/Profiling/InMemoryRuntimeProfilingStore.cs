@@ -15,7 +15,11 @@ namespace BridgingIT.DevKit.Common;
 /// <example><code>IRuntimeProfilingStore store = new InMemoryRuntimeProfilingStore();</code></example>
 internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
 {
-    private readonly object sync = new();
+    private readonly object sync;
+    private Guid? maintenanceGate;
+    internal Func<CancellationToken, Task<IResult<ProfilingClearResult>>> SharedClear { get; set; }
+    internal Func<Guid, bool> OperationNodeReferenced { get; set; }
+    internal Action RootDeleted { get; set; }
     private readonly Dictionary<Guid, RuntimeProfilingSession> sessions = [];
     private readonly Dictionary<string, Guid> sessionKeys = new(StringComparer.Ordinal);
     private readonly HashSet<Guid> invalidSessionIds = [];
@@ -36,6 +40,112 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
     private readonly Dictionary<Guid, ProfilingSegment> segments = [];
     private readonly Dictionary<Guid, ProfilingMetricObservation> metricObservations = [];
 
+    public InMemoryRuntimeProfilingStore() : this(new object())
+    {
+    }
+
+    internal InMemoryRuntimeProfilingStore(object synchronization)
+    {
+        this.sync = synchronization ?? new object();
+    }
+
+    internal Result<ProfilingNode> RegisterOperationNode(ProfilingNode proposed, bool validateOnly = false)
+    {
+        lock (this.sync)
+        {
+            if (this.nodes.TryGetValue(proposed.Identity.Id, out var existing))
+            {
+                return SameProcess(existing, proposed)
+                    ? Result<ProfilingNode>.Success(existing)
+                    : Result<ProfilingNode>.Failure(new ProfilingValidationError("The cached profiling process descriptor conflicts with its identity."));
+            }
+
+            if (this.nodes.Values.Any(node => node.Identity.Key == proposed.Identity.Key))
+            {
+                return Result<ProfilingNode>.Failure(new ProfilingValidationError("The profiling node key is already in use."));
+            }
+
+            if (validateOnly)
+            {
+                return Result<ProfilingNode>.Success(proposed);
+            }
+
+            var node = Clone(proposed);
+            this.nodes.Add(node.Identity.Id, node);
+            return Result<ProfilingNode>.Success(node);
+        }
+    }
+
+    internal void ReleaseSharedNode(Guid id, bool operationReferenced)
+    {
+        lock (this.sync)
+        {
+            if (operationReferenced || this.participations.Values.Any(value => value.NodeId == id)
+                || this.runtimeContexts.Values.Any(value => value.NodeId == id) || this.snapshots.Values.Any(value => value.NodeId == id)
+                || this.segments.Values.Any(value => value.NodeId == id) || this.markers.Values.Any(value => value.NodeId == id)
+                || this.metricObservations.Values.Any(value => value.NodeId == id))
+            {
+                return;
+            }
+
+            this.nodes.Remove(id);
+            RemoveValuesWhere(this.nodeCorrelations, nodeId => nodeId == id);
+        }
+    }
+
+    private static bool SameProcess(ProfilingNode left, ProfilingNode right) => left.Identity == right.Identity
+        && left.HostName == right.HostName && left.ProcessId == right.ProcessId && left.ProcessStartedUtc == right.ProcessStartedUtc
+        && left.ApplicationVersion == right.ApplicationVersion && left.DisplayName == right.DisplayName;
+
+    internal bool HasActiveSession { get { lock (this.sync) { return this.sessions.Values.Any(IsActive); } } }
+
+    internal bool ReserveMaintenance(Guid id)
+    {
+        lock (this.sync)
+        {
+            if (this.maintenanceGate.HasValue || this.sessions.Values.Any(IsActive))
+            {
+                return false;
+            }
+
+            this.maintenanceGate = id;
+            return true;
+        }
+    }
+
+    internal void ReleaseMaintenance(Guid id)
+    {
+        lock (this.sync)
+        {
+            if (this.maintenanceGate == id)
+            {
+                this.maintenanceGate = null;
+            }
+        }
+    }
+
+    internal (int Sessions, long Snapshots, bool Remaining) DeleteForClear(Guid id, ProfilingClearRequest selection, int maximumRoots)
+    {
+        lock (this.sync)
+        {
+            if (this.maintenanceGate != id)
+            {
+                throw new InvalidOperationException("A Runtime clear requires its reserved maintenance gate.");
+            }
+
+            var candidates = this.sessions.Values.Where(s => IsTerminal(s.State) && ProfilingClearCoordinator.InRange(selection, TerminalTimestamp(s)))
+                .OrderBy(s => TerminalTimestamp(s)).ThenBy(s => s.Identity.Id.ToString("N"), StringComparer.Ordinal).Take(maximumRoots + 1).ToArray();
+            long snapshotsRemoved = 0;
+            foreach (var session in candidates.Take(maximumRoots))
+            {
+                snapshotsRemoved += this.snapshots.Values.LongCount(snapshot => snapshot.SessionId == session.Identity.Id);
+                this.DeleteSession(session);
+            }
+
+            return (Math.Min(candidates.Length, maximumRoots), snapshotsRemoved, candidates.Length > maximumRoots);
+        }
+    }
+
     /// <inheritdoc />
     public ProfilingStoreCapabilities Capabilities { get; } = new(false);
 
@@ -49,6 +159,11 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
 
         lock (this.sync)
         {
+            if (this.maintenanceGate.HasValue)
+            {
+                return Failure<RuntimeProfilingSessionResolution>(new ProfilingBusyError("Runtime history maintenance is in progress."));
+            }
+
             var active = this.sessions.Values.SingleOrDefault(IsActive);
             if (active is not null)
             {
@@ -288,6 +403,14 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
             )
             {
                 return Success(Clone(existing));
+            }
+
+            if (this.nodes.TryGetValue(proposedNode.Identity.Id, out var operationNode) && operationNode.Correlation is null && SameProcess(operationNode, proposedNode))
+            {
+                var attached = operationNode with { Correlation = correlation };
+                this.nodes[attached.Identity.Id] = attached;
+                this.nodeCorrelations.Add(correlationKey, attached.Identity.Id);
+                return Success(Clone(attached));
             }
 
             if (
@@ -773,6 +896,11 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
 
         lock (this.sync)
         {
+            if (this.maintenanceGate.HasValue)
+            {
+                return Failure<RuntimeProfilingSession>(new ProfilingBusyError("Runtime history maintenance is in progress."));
+            }
+
             var validation = this.ValidateImportData(data);
             if (validation is not null)
             {
@@ -895,6 +1023,11 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
     {
         cancellationToken.ThrowIfCancellationRequested();
 
+        if (this.SharedClear is not null)
+        {
+            return this.SharedClear(cancellationToken);
+        }
+
         lock (this.sync)
         {
             if (this.sessions.Values.Any(IsActive))
@@ -921,7 +1054,6 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
             this.runtimeContexts.Clear();
             this.snapshots.Clear();
             this.snapshotKeys.Clear();
-            this.markers.Clear();
             this.markers.Clear();
             this.segments.Clear();
             this.metricObservations.Clear();
@@ -1261,6 +1393,12 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
     private void DeleteSession(RuntimeProfilingSession session)
     {
         var sessionId = session.Identity.Id;
+        var referencedNodes = this.participations.Values.Where(value => value.SessionId == sessionId).Select(value => value.NodeId)
+            .Concat(this.runtimeContexts.Values.Where(value => value.SessionId == sessionId).Select(value => value.NodeId))
+            .Concat(this.snapshots.Values.Where(value => value.SessionId == sessionId).Select(value => value.NodeId))
+            .Concat(this.segments.Values.Where(value => value.SessionId == sessionId).Select(value => value.NodeId))
+            .Concat(this.metricObservations.Values.Where(value => value.SessionId == sessionId).Select(value => value.NodeId))
+            .Concat(this.markers.Values.Where(value => value.SessionId == sessionId && value.NodeId.HasValue).Select(value => value.NodeId.Value)).ToHashSet();
         this.invalidSessionIds.Add(sessionId);
         this.invalidSessionKeys.Add(session.Identity.Key);
         this.sessions.Remove(sessionId);
@@ -1268,7 +1406,6 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
 
         RemoveKeysWhere(this.participations, key => key.SessionId == sessionId);
         RemoveKeysWhere(this.runtimeContexts, key => key.SessionId == sessionId);
-        RemoveValuesWhere(this.markers, value => value.SessionId == sessionId);
         RemoveValuesWhere(this.markers, value => value.SessionId == sessionId);
         RemoveValuesWhere(this.segments, value => value.SessionId == sessionId);
         RemoveValuesWhere(this.metricObservations, value => value.SessionId == sessionId);
@@ -1280,6 +1417,13 @@ internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
             this.snapshots.Remove(snapshot.Identity.Id);
             this.snapshotKeys.Remove(snapshot.Identity.Key);
         }
+
+        foreach (var id in referencedNodes)
+        {
+            this.ReleaseSharedNode(id, this.OperationNodeReferenced?.Invoke(id) == true);
+        }
+
+        this.RootDeleted?.Invoke();
     }
 
     private static void RemoveKeysWhere<TKey, TValue>(

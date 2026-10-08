@@ -8,11 +8,31 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Presentation;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using Microsoft.Extensions.Hosting;
 
 /// <summary>Registers profiling Presentation capabilities.</summary>
 /// <example><code>services.AddProfiling().AddConsoleCommands();</code></example>
 public static class ProfilingServiceCollectionExtensions
 {
+    /// <summary>Enables the HTTP adapter over explicitly configured Operation Profiling.</summary>
+    /// <example><code>services.AddProfiling(o => o.Enabled()).WithOperationProfiling().WithRequestProfiling(o => o.Blacklist("/health/**"));</code></example>
+    public static ProfilingBuilderContext WithRequestProfiling(this ProfilingBuilderContext context, Action<RequestProfilingOptionsBuilder> configure = null)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        var options = context.Services.FirstOrDefault(d => d.ServiceType == typeof(RequestProfilingOptions))?.ImplementationInstance as RequestProfilingOptions;
+        if (options is null)
+        {
+            options = new RequestProfilingOptions();
+            context.Options.Requests.Enabled = true;
+            context.Services.AddSingleton(options);
+            context.Services.TryAddSingleton<RequestProfilingRuntime>();
+            context.Services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, RequestProfilingStartupValidator>());
+        }
+
+        configure?.Invoke(new RequestProfilingOptionsBuilder(options, context.Options, context.Services));
+        return context;
+    }
+
     /// <summary>Registers the grouped profiling and prof console commands.</summary>
     /// <param name="context">The shared profiling builder.</param>
     /// <param name="enabled">Whether command registration is enabled.</param>

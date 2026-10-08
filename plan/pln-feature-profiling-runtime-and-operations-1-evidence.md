@@ -382,3 +382,20 @@ TASK-001–TASK-025 are complete. At the user's request, work stops before TASK-
 - Final solution build: `dotnet build bITdevKit.slnx --no-restore --nologo`, **0 warnings / 0 errors**, **1:48.68**. Log: `/tmp/bitdevkit-profiling-phase6-build.log`.
 - Final sequential profiling suites: **Common 300**, **Infrastructure unit 34**, **Presentation 48**, **actual-engine integration 149**; **531 passed, 0 failed, 0 skipped**. Logs: `/tmp/bitdevkit-profiling-phase6-{Common.UnitTests,Infrastructure.UnitTests,Presentation.UnitTests,Infrastructure.IntegrationTests}.log`; TRX: `/tmp/bitdevkit-profiling-contract-results/phase6-*.trx`. Controlled-time tests verify the default eight batches of 512 records (4,096 scheduler ceiling), byte/time limits, fixed arrivals, partial retries, unknown settlement, expiry, clear cutoff retries, host closure and ignored-cancellation deadlines. This ceiling is not a database-throughput claim.
 - TASK-026–TASK-030 complete. Continue with TASK-031–TASK-055. The complete feature and performance acceptance remain unfinished.
+
+
+## Phase 7 — HTTP capture and sampling (2026-10-08)
+
+TASK-031–TASK-035 are implemented. The HTTP adapter requires explicitly enabled Operations and composes independently from Runtime. Its public setup, feature, samplers, matcher and transport adapters have XML documentation; no new HTTP source uses `internal` declarations.
+
+- Prepared original-path blacklist matching precedes prefix removal and canonical overlong-key hashing. Default AllRequests, controlled independent Probability, monotonic node-local RateLimit and validated singleton custom samplers execute once per request. Throwing or invalid decisions preserve application execution and have separate health counters.
+- The outer observer records middleware-entry UTC/monotonic timing, selected-request concurrency before admission, one full-GUID header and explicit root handle. The inner exception observer preserves original routes and failure evidence through handled responses, replacement scopes and re-execution. Skips suppress nested capture; disabling HTTP leaves manual instrumentation available.
+- Stream, BodyWriter, send-file and optionally consumed request Stream/PipeReader bytes are observed without buffering. Successful output, declared lengths and partial coverage stay distinct. Cache hits replace or remove prior profiling IDs. Aborts, normal completion and expiry finalize once while transport ownership and business responses remain unchanged.
+- The real TestServer suite covers compression, output cache, static files, send-file, authorization challenges, unmatched routes, controller/minimal API DI, handled 200/422 errors, cancellation, abort, admission rejection, expiry, detached pipe consumption, entry sampling time and concurrent executions.
+
+Verification:
+
+- `dotnet build bITdevKit.slnx --no-restore --nologo`: **0 warnings, 0 errors**, 1:15.92; `/tmp/bitdevkit-profiling-phase7-solution.log`.
+- Focused HTTP suite: **70 passed, 0 failed, 0 skipped**; `/tmp/bitdevkit-profiling-phase7-http.log` and `phase7-http.trx`.
+- Sequential profiling regressions: Common **300 passed**, Presentation **118 passed**, no failures/skips. Logs `/tmp/bitdevkit-profiling-phase7-{Common.UnitTests,Presentation.UnitTests}.log`, TRX files under `/tmp/bitdevkit-profiling-contract-results`.
+- `git diff --check` passes. Phase 8 and subsequent tasks remain outstanding.

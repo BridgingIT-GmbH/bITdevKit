@@ -196,6 +196,14 @@ public sealed record ProfilingCaptureQuality
 /// <example><code>var value = new OperationProfilingStartRequest();</code></example>
 public sealed record OperationProfilingStartRequest
 {
+    /// <summary>Gets optional adapter entry UTC, paired with EntryTimestamp from the recorder's clock.</summary>
+    /// <example><code>new OperationProfilingStartRequest { EntryUtc = clock.GetUtcNow(), EntryTimestamp = clock.GetTimestamp() };</code></example>
+    public DateTimeOffset? EntryUtc { get; init; }
+
+    /// <summary>Gets optional monotonic entry time from the same TimeProvider used by the recorder.</summary>
+    /// <example><code>var entry = clock.GetTimestamp();</code></example>
+    public long? EntryTimestamp { get; init; }
+
     /// <summary>Gets the logical grouping key.</summary>
     /// <example><code>var value = record.Key;</code></example>
     public string Key { get; init; }

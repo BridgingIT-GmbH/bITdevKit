@@ -69,8 +69,14 @@ internal sealed class OperationProfiler : IOperationProfiler
                     && ProfilingValueValidator.IsKey(request.Kind, this.options.MaxKeyLength)
                     && (request.CorrelationId is null || request.CorrelationId.Length <= this.options.MaxStringLength && ProfilingValueValidator.IsUnicode(request.CorrelationId)))
                 {
-                    var started = this.Clock.GetTimestamp();
-                    var utc = this.Clock.GetUtcNow();
+                    var now = this.Clock.GetTimestamp();
+                    var started = request.EntryTimestamp ?? now;
+                    var utc = request.EntryUtc?.ToUniversalTime() ?? this.Clock.GetUtcNow();
+                    if (request.EntryUtc.HasValue != request.EntryTimestamp.HasValue || this.Clock.GetElapsedTime(started, now) < TimeSpan.Zero)
+                    {
+                        throw new ArgumentException("Adapter entry timestamps must be paired observations from the recorder clock.", nameof(request));
+                    }
+
                     var display = ProfilingValueValidator.Clip(request.DisplayName, this.options.MaxStringLength, out var truncated);
                     var charge = 2048 + ProfilingValueValidator.Charge(request.Key) + ProfilingValueValidator.Charge(request.Kind)
                         + ProfilingValueValidator.Charge(display) + ProfilingValueValidator.Charge(request.CorrelationId);

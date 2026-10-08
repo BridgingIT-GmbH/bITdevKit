@@ -465,6 +465,22 @@ public sealed record OperationProfilingHealth
     [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
     public DateTimeOffset LastAttemptUtc { get; init; }
 
+    /// <summary>Gets intentional node-local path exclusions, outside sampling evaluation.</summary>
+    /// <example><code>var excluded = health.BlacklistedRequests;</code></example>
+    public long BlacklistedRequests { get; init; }
+
+    /// <summary>Gets intentional node-local sampling skips, distinct from sampler errors and recording loss.</summary>
+    /// <example><code>var skipped = health.SamplingSkippedRequests;</code></example>
+    public long SamplingSkippedRequests { get; init; }
+
+    /// <summary>Gets the effective process-local HTTP sampling strategy, absent without the HTTP adapter.</summary>
+    /// <example><code>var strategy = health.SamplingStrategyKey;</code></example>
+    public string SamplingStrategyKey { get; init; }
+
+    /// <summary>Gets the effective process-local HTTP sampling settings identifier.</summary>
+    /// <example><code>var settings = health.SamplingConfigurationKey;</code></example>
+    public string SamplingConfigurationKey { get; init; }
+
     /// <summary>Gets the node-local EligibleRequests observation.</summary>
     /// <example><code>var value = health.EligibleRequests;</code></example>
     public long EligibleRequests { get; init; }

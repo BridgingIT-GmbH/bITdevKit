@@ -56,6 +56,15 @@ public sealed class OperationProfilingHealthState : IOperationProfilingHealthSou
     /// <summary>Exposes the RetentionRemovals profiling observation or lifecycle value.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long RetentionRemovals;
+    /// <summary>Counts intentional HTTP path exclusions outside sampling evaluation.</summary>
+    /// <example><code>Interlocked.Increment(ref health.BlacklistedRequests);</code></example>
+    public long BlacklistedRequests;
+    /// <summary>Gets or sets the startup-selected process-local HTTP sampling strategy.</summary>
+    /// <example><code>health.SamplingStrategyKey = "AllRequests";</code></example>
+    public string SamplingStrategyKey { get; set; }
+    /// <summary>Gets or sets the startup-selected process-local HTTP policy settings identifier.</summary>
+    /// <example><code>health.SamplingConfigurationKey = "p=0.1";</code></example>
+    public string SamplingConfigurationKey { get; set; }
     /// <summary>Exposes the EligibleRequests profiling observation or lifecycle value.</summary>
     /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long EligibleRequests;
@@ -92,6 +101,9 @@ public sealed class OperationProfilingHealthState : IOperationProfilingHealthSou
         var queued = this.queue.Snapshot();
         var recorder = this.profiler as OperationProfiler;
         var counters = recorder?.Counters;
+        var selected = Interlocked.Read(ref this.SelectedRequests);
+        var errors = Interlocked.Read(ref this.SamplingErrors);
+        var eligible = Interlocked.Read(ref this.EligibleRequests);
         return new()
         {
             AdmittedOperations = counters is null ? 0 : Interlocked.Read(ref counters.Admitted),
@@ -112,7 +124,10 @@ public sealed class OperationProfilingHealthState : IOperationProfilingHealthSou
             WriterActive = queued.Active, WriterStalled = this.Stalled,
             PreparingClears = Interlocked.Read(ref this.PreparingClears), ApplyingClears = Interlocked.Read(ref this.ApplyingClears),
             PersistenceFaults = Interlocked.Read(ref this.Faults), RetryAttempts = Interlocked.Read(ref this.Retries), RetentionRemovals = Interlocked.Read(ref this.RetentionRemovals),
-            EligibleRequests = Interlocked.Read(ref this.EligibleRequests), SelectedRequests = Interlocked.Read(ref this.SelectedRequests), SamplingErrors = Interlocked.Read(ref this.SamplingErrors),
+            EligibleRequests = eligible, SelectedRequests = selected, SamplingErrors = errors,
+            BlacklistedRequests = Interlocked.Read(ref this.BlacklistedRequests),
+            SamplingSkippedRequests = Math.Max(0, eligible - selected - errors),
+            SamplingStrategyKey = this.SamplingStrategyKey, SamplingConfigurationKey = this.SamplingConfigurationKey,
         };
     }
 }

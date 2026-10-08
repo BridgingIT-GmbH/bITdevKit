@@ -466,3 +466,22 @@ TASK-040–TASK-043 are implemented and verified. Phase 10–12 remain outstandi
 | Publication-window engine plans | SQLite indexed search; SQL Server index seek; PostgreSQL index scan with range condition | Raw artifacts below |
 
 Actual small-fixture query plans are saved in [SQLite](evidence/profiling-runtime-and-operations-1/phase-9/query-plan-sqlite.txt), [SQL Server](evidence/profiling-runtime-and-operations-1/phase-9/query-plan-sqlserver.xml), and [PostgreSQL](evidence/profiling-runtime-and-operations-1/phase-9/query-plan-postgresql.txt). These establish actual engine compilation and index selection for the representative range query; they do not establish production throughput or guarantee optimizer choices for other distributions. Phase 12 load evidence remains required.
+
+## Phase 10 — retained Operations and Requests dashboard (2026-10-08)
+
+TASK-044–TASK-047 are implemented and verified. Phase 11–12 remain outstanding.
+
+- The shared Profiling landing chooses Runtime or Operations by enabled capture. The navigation provider describes the overarching feature. Disabled subfeature capture retains query access; disabled Runtime controls resolve optionally. All new routes inherit the dashboard prefix and authorization; internal JSON is excluded from API description, with no Operation export or clearing endpoint.
+- Initial render, content refresh and details use the same injected query facade/model builder under one query admission. Queries finish before Razor streaming starts, so validation, Busy, timeout and missing-ID statuses are set cleanly. Requests enforces `HttpRequest` independently of supplied filters. Exact lookup ignores list windows/outcomes. Reads do not flush or expose pending completions.
+- Slow/Recent/By count views show full retained counts, typed grouping, executing node, outcome/quality, HTTP response bytes and sampling metadata. Expanding a bucket preserves general predicates with a separately bounded four-value exact/missing group selector. The memory and all EF providers apply it before ranking/counts and fingerprint it for paging. This resolves expansion of groups with missing values or already-full general predicate sets.
+- Details show complete-path repeated/nested segment aggregates, weighted means, outcome buckets, dimensions, reducers and safe failures. Exclusive root bars distinguish Parallel and Outside, use consistent key colors and keyboard tooltips, and make zero-duration percentages unavailable. Runtime CPU/memory/allocation/GC charts show non-owning process context, actual sample intervals, gaps and operation UTC shading. Both navigation directions preserve node/time selection. Runtime labels/chart timestamps are UTC.
+- The shared refresher maintains one browser fetch at a time, coalesces obsolete refreshes, cancels changed selectors, pauses hidden pages and retains visibly stale content on failure. It preserves group expansion and available scroll position. Paged selections turn off/disable automatic refresh until an explicit new selection or Refresh latest; chart instances are purged on replacement.
+
+| Verification | Result | Evidence |
+| --- | --- | --- |
+| Presentation `Profiling\|Dashboard`, including target build | 165 passed, 0 failed/skipped | [log](evidence/profiling-runtime-and-operations-1/phase-10/presentation-tests.log) |
+| Common `Profiling\|Pipeline`, including target build | 398 passed, 0 failed/skipped | [log](evidence/profiling-runtime-and-operations-1/phase-10/common-tests.log) |
+| Actual SQLite/SQL Server/PostgreSQL profiling tests, including target build | 164 passed, 0 failed/skipped | [log](evidence/profiling-runtime-and-operations-1/phase-10/engine-tests.log) |
+| Visible Chromium browser, desktop/mobile | All 14 checks pass; maximum one active refresh, no script errors | [result](evidence/profiling-runtime-and-operations-1/phase-10/result.json), [reproduction](evidence/profiling-runtime-and-operations-1/phase-10/README.md) |
+
+The browser check caught a discarded chart-layout overlay, which now uses the shared theme plus explicit axes/shading. Endpoint checks caught setting response status after Razor had begun streaming, which is now resolved before rendering. The scroll assertion measures actual available scroll position instead of an unclamped requested offset. These checks do not replace Phase 12 overhead evidence.

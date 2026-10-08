@@ -22,6 +22,7 @@ internal sealed class ProfilingOperationQueryCodec(OperationProfilingOptions opt
             || query.MaximumAnalysisCount <= 0 || query.MaximumAnalysisCount > this.queryOptions.MaximumAnalysisRecords
             || query.Outcomes is null || query.Outcomes.Count > 5 || query.Outcomes.Any(o => !Enum.IsDefined(o))
             || query.SegmentOutcomes is null || query.SegmentOutcomes.Count > 4 || query.SegmentOutcomes.Any(o => !Enum.IsDefined(o))
+            || query.GroupDimensions is null || query.GroupDimensions.Count > this.queryOptions.MaximumGroupingDimensions || query.GroupDimensions.Any(p => p is null || p.Operator is not (ProfilingDimensionOperator.Equal or ProfilingDimensionOperator.Missing)) || query.GroupDimensions.Select(p => ProfilingKeyComparer.Canonicalize(p.Key)).Distinct(StringComparer.Ordinal).Count() != query.GroupDimensions.Count
             || query.Dimensions is null || query.SegmentDimensions is null || query.GroupingDimensions is null
             || query.Dimensions.Count + query.SegmentDimensions.Count > this.queryOptions.MaximumDimensionPredicates
             || query.GroupingDimensions.Count > this.queryOptions.MaximumGroupingDimensions || query.HttpStatusCode is < 100 or > 599
@@ -87,7 +88,7 @@ internal sealed class ProfilingOperationQueryCodec(OperationProfilingOptions opt
             SamplingStrategyKey = Key(query.SamplingStrategyKey), SamplingConfigurationKey = Key(query.SamplingConfigurationKey),
             CorrelationId = Value(query.CorrelationId), ApplicationRequestId = Value(query.ApplicationRequestId), ApplicationVersion = Value(query.ApplicationVersion),
             SegmentPath = query.SegmentPath is null ? null : new ProfilingSegmentPath(query.SegmentPath.Components.Select(c => Key(c)).ToArray()),
-            Dimensions = Predicates(query.Dimensions, false), SegmentDimensions = Predicates(query.SegmentDimensions, true), GroupingDimensions = Array.AsReadOnly(grouping),
+            GroupDimensions = Predicates(query.GroupDimensions, false), Dimensions = Predicates(query.Dimensions, false), SegmentDimensions = Predicates(query.SegmentDimensions, true), GroupingDimensions = Array.AsReadOnly(grouping),
             Outcomes = Array.AsReadOnly(query.Outcomes.Distinct().Order().ToArray()), SegmentOutcomes = Array.AsReadOnly(query.SegmentOutcomes.Distinct().Order().ToArray()),
         };
     }

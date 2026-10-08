@@ -1,0 +1,22 @@
+{
+  "target": "http://localhost:5243",
+  "diagnosticId": "d879dc7d-7e33-45b1-8f23-27c0a73cb86d",
+  "checks": [
+    "initial retained count",
+    "keyboard tooltip",
+    "expansion and scroll preservation",
+    "obsolete filter cancellation",
+    "pinned cursor and refresh latest",
+    "missing-dimension group expansion",
+    "one in-flight refresh",
+    "stale error preservation",
+    "hidden pause",
+    "filters",
+    "Runtime overlay charts",
+    "reverse Runtime navigation",
+    "mobile render",
+    "no script errors"
+  ],
+  "maximumConcurrentRefreshes": 1,
+  "scriptErrors": []
+}

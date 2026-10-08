@@ -203,6 +203,10 @@ public sealed record OperationProfilingQuery
     /// <example><code>var value = record.Dimensions;</code></example>
     public IReadOnlyList<ProfilingDimensionPredicate> Dimensions { get; init; } = [];
 
+    /// <summary>Gets at most four exact or missing dimension values selecting one previously grouped bucket independently of general predicates.</summary>
+    /// <example><code>var query = new OperationProfilingQuery { GroupDimensions = [new() { Key = "region", Value = new ProfilingValue(ProfilingValueType.String, "west"), Operator = ProfilingDimensionOperator.Equal }] };</code></example>
+    public IReadOnlyList<ProfilingDimensionPredicate> GroupDimensions { get; init; } = [];
+
     /// <summary>Gets at most four dimension grouping names.</summary>
     /// <example><code>var value = record.GroupingDimensions;</code></example>
     public IReadOnlyList<string> GroupingDimensions { get; init; } = [];

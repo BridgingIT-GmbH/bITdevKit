@@ -21,8 +21,7 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions dashboardOpt
     {
         if (
             httpContext.RequestServices.GetService<ProfilingOptions>()?.Enabled != true
-            || httpContext.RequestServices.GetService<IRuntimeProfilingControlService>() is null
-            || httpContext.RequestServices.GetService<IRuntimeProfilingQueryService>() is null
+            || (httpContext.RequestServices.GetService<IOperationProfilingQueryService>() is null && httpContext.RequestServices.GetService<IRuntimeProfilingQueryService>() is null)
         )
         {
             yield break;
@@ -32,13 +31,13 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions dashboardOpt
             "profiling",
             "Profiling",
             "speedometer2",
-            DashboardEndpoints.BuildProfilingPath(dashboardOptions)
+            DashboardEndpoints.BuildRootPath(dashboardOptions)
         )
         {
             Group = "bdk",
             GroupOrder = 0,
             Order = 25,
-            Description = "Collect and analyze focused runtime snapshots",
+            Description = "Analyze Runtime snapshots and retained operation timings",
             Card = GetCardAsync,
         };
     }
@@ -47,9 +46,10 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions dashboardOpt
     {
         var options = context.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
         var control = context.RequestServices.GetService<IRuntimeProfilingControlService>();
-        if (control is null)
+        if (context.RequestServices.GetService<ProfilingOptions>()?.RuntimeEnabled != true || control is null)
         {
-            return CreateCard(options, "Unavailable", "Profiling control is not registered.");
+            var health = context.RequestServices.GetService<IOperationProfilingQueryService>()?.GetHealth();
+            return CreateCard(options, health?.CaptureEnabled == true ? "Operations" : "History", $"Retained operation timings; local queue {health?.QueueRecords ?? 0}.");
         }
 
         try
@@ -89,11 +89,11 @@ public sealed class DashboardPageProvider(DashboardEndpointsOptions dashboardOpt
         string value,
         string detail
     ) =>
-        new("Profiling", "Runtime snapshot analysis", value)
+        new("Profiling", "Runtime and Operation analysis", value)
         {
             Detail = detail,
             Icon = "speedometer2",
-            Url = DashboardEndpoints.BuildProfilingPath(options),
+            Url = DashboardEndpoints.BuildRootPath(options),
             Group = "bdk",
             GroupOrder = 0,
             Order = 25,

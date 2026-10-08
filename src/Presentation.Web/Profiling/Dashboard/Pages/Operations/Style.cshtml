@@ -1,0 +1,12 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations
+@using Microsoft.AspNetCore.Http
+@inherits RazorSlice
+<style>
+.operation-wall-bar { height: 1.25rem; border-radius: .2rem; background: #777; min-width: 12rem; }
+.operation-wall-bucket { position: relative; display: block; min-width: 1px; }
+.operation-wall-bucket:focus-visible { outline: 2px solid var(--bs-body-color); outline-offset: 2px; z-index: 2; }
+.operation-wall-tip { display: none; position: fixed; z-index: 2000; padding: .35rem .5rem; border-radius: .25rem; background: var(--bs-body-color); color: var(--bs-body-bg); font-size: .75rem; pointer-events: none; max-width: 30rem; white-space: normal; }
+.operation-wall-bucket:hover .operation-wall-tip,.operation-wall-bucket:focus-visible .operation-wall-tip { display: block; }
+.operation-parallel { background-image: repeating-linear-gradient(45deg,transparent,transparent 4px,#ffffff44 4px,#ffffff44 8px); }
+.operation-runtime-charts > div { min-height: 220px; }
+</style>

@@ -1,0 +1,68 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations
+@using Microsoft.AspNetCore.Http
+@using DashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice<OperationProfilingDashboardModel>
+@{
+    var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var pagePath = DashboardEndpoints.BuildOperationsPath(options, Model.RequestsOnly);
+}
+<section data-operation-view data-refreshed-utc="@OperationProfilingViewModelBuilder.Utc(Model.RefreshedUtc)">
+@if (Model.Error is not null)
+{
+    <div class="alert alert-warning" role="alert">@Model.Error</div>
+}
+else
+{
+    <div class="small text-muted mb-2">Last refresh: @OperationProfilingViewModelBuilder.Utc(Model.RefreshedUtc) · Serving node: @Model.Health?.CountersNodeId · Last successful flush on this node: @OperationProfilingViewModelBuilder.Utc(Model.Health?.LastSuccessfulFlushUtc ?? default)</div>
+    <div class="small mb-3">Provider: @Model.Health?.ProviderScope · @Model.Groups.TotalOperationCount retained matching executions · @Model.Groups.TotalGroupCount groups · @(Model.Query.View == OperationProfilingView.ByCount ? "Showing ranked groups" : "Showing selected occurrences") · Only persisted, retained data is shown.</div>
+    @if (Model.Health?.ProviderShared == true) { <p class="small text-muted">Queue, loss and flush counters belong to the serving node; stored counts cover the shared provider.</p> }
+    <details data-preserve-key="health" class="mb-3"><summary>Capture, persistence and sampling health</summary><dl class="row small mt-2">
+        <dt class="col-sm-4">Local admitted / active / rejected</dt><dd class="col-sm-8">@Model.Health?.AdmittedOperations / @Model.Health?.ActiveOperations / @Model.Health?.RejectedOperations</dd>
+        <dt class="col-sm-4">Local queue / in flight / oldest age</dt><dd class="col-sm-8">@Model.Health?.QueueRecords / @Model.Health?.InFlightRecords / @(Model.Health?.QueueOldestAgeUnavailable == true ? "Unavailable" : OperationProfilingViewModelBuilder.Duration(Model.Health?.QueueOldestAge ?? default))</dd>
+        <dt class="col-sm-4">Local dropped / unknown / administrative discards</dt><dd class="col-sm-8">@Model.Health?.DroppedOperations / @Model.Health?.UnknownCommits / @Model.Health?.AdministrativeDiscards</dd>
+        <dt class="col-sm-4">Local eligible / selected / sampling errors</dt><dd class="col-sm-8">@Model.Health?.EligibleRequests / @Model.Health?.SelectedRequests / @Model.Health?.SamplingErrors</dd>
+        <dt class="col-sm-4">Local policy / configuration</dt><dd class="col-sm-8">@Model.Health?.SamplingStrategyKey / @Model.Health?.SamplingConfigurationKey</dd>
+        <dt class="col-sm-4">Capture / writer / stalled / retention removals</dt><dd class="col-sm-8">@Model.Health?.CaptureEnabled / @Model.Health?.WriterActive / @Model.Health?.WriterStalled / @Model.Health?.RetentionRemovals</dd>
+    </dl></details>
+    @if (Model.Groups.Groups.Count == 0) { <div class="alert alert-secondary">No retained executions match this selection.</div> }
+    @foreach (var group in Model.Groups.Groups)
+    {
+        var rows = Model.Query.View == OperationProfilingView.ByCount ? new[] { group.Representative } : group.Occurrences;
+        <details open data-preserve-key="group-@group.ComparisonKey" class="card mb-3">
+            <summary class="card-header"><strong>@group.Key</strong> · @group.Kind · @group.HttpMethod · @group.Count retained matching executions @foreach (var key in Model.Query.GroupingDimensions) { var dimension = group.Dimensions.FirstOrDefault(value => ProfilingKeyComparer.Instance.Equals(value.Key, key)); <span class="badge text-bg-secondary ms-1">@key = @(dimension?.Value?.Scalar ?? "Missing") @dimension?.Value?.Type</span> }</summary>
+            <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Execution / UTC completion</th><th>Node</th><th>Outcome / quality</th>@if (Model.RequestsOnly) { <th>HTTP / response bytes</th> }<th>Duration</th><th style="min-width:16rem">Exclusive wall-time share</th></tr></thead><tbody>
+            @foreach (var record in rows.Where(value => value is not null))
+            {
+                <tr><td><a href="@(pagePath + "/" + record.Id.ToString("D"))">@record.Id.ToString("D")</a><div class="small text-muted">@OperationProfilingViewModelBuilder.Utc(record.CompletedUtc)</div>@if (Model.Query.View == OperationProfilingView.ByCount) { <a class="small operation-expand-group" href="@Expand(group)">Expand paged occurrences</a> }</td>
+                    <td>@(record.Node.DisplayName ?? record.Node.HostName)<div class="small text-muted">@record.Node.Identity.Key · PID @record.Node.ProcessId · @record.Node.ApplicationVersion</div></td>
+                    <td>@record.Outcome<div class="small text-warning">@OperationProfilingViewModelBuilder.Quality(record)</div>@if (record.Segments.Any(value => value.Outcomes.Any(bucket => bucket.Outcome == ProfilingSegmentOutcome.Failed && bucket.Statistics.Count > 0))) { <span class="badge text-bg-warning">Segment failures</span> }</td>
+                    @if (Model.RequestsOnly) { <td>@record.Http?.Method @record.Http?.StatusCode<div class="small">@(record.Http?.ResponseBytes?.ToString(CultureInfo.InvariantCulture) ?? "Unavailable") bytes · @record.Http?.ResponseBytesQuality</div><div class="small text-muted">@record.Http?.SamplingStrategyKey · @record.Http?.SamplingConfigurationKey · probability @(record.Http?.SamplingInclusionProbability?.ToString("0.####", CultureInfo.InvariantCulture) ?? "Unknown")</div></td> }
+                    <td class="text-nowrap">@OperationProfilingViewModelBuilder.Duration(record.Duration)</td><td>@(await RenderPartialAsync<WallTime, OperationProfilingRecord>(record))</td>
+                </tr>
+            }
+            </tbody></table></div>
+        </details>
+    }
+    @if (Model.Groups.NextCursor is not null) { <a class="btn btn-outline-secondary btn-sm operation-next-page" href="@Next()">Next page at this publication boundary</a> }
+}
+</section>
+@functions {
+    private string Next()
+    {
+        var values = HttpContext.Request.Query.Where(value => value.Key != "cursor" && value.Key != "_").ToDictionary(value => value.Key, value => value.Value.ToString());
+        values["cursor"] = Model.Groups.NextCursor;
+        return (HttpContext.Request.Path.Value.EndsWith("/content", StringComparison.Ordinal) ? HttpContext.Request.Path.Value[..^8] : HttpContext.Request.Path.Value) + QueryString.Create(values);
+    }
+    private string Expand(OperationProfilingGroup group)
+    {
+        var selector = Model.Query with { View = OperationProfilingView.Slow, Key = group.Key, Kind = group.Kind, HttpMethod = group.HttpMethod ?? Model.Query.HttpMethod,
+            GroupDimensions = Model.Query.GroupingDimensions.Select(key => { var value = group.Dimensions.FirstOrDefault(dimension => ProfilingKeyComparer.Instance.Equals(dimension.Key, key))?.Value; return new ProfilingDimensionPredicate { Key = key, Value = value, Operator = value is null ? ProfilingDimensionOperator.Missing : ProfilingDimensionOperator.Equal }; }).ToArray(),
+            GroupingDimensions = [], GroupByHttpMethod = false, Cursor = null, Boundary = null, FromUtc = Model.Groups.Boundary.FromUtc, ToUtc = Model.Groups.Boundary.ToUtc };
+        var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+        return DashboardEndpoints.BuildOperationsPath(options, Model.RequestsOnly) + QueryString.Create("query", System.Text.Json.JsonSerializer.Serialize(selector));
+    }
+}

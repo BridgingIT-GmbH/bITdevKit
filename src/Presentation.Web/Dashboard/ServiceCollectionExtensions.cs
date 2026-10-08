@@ -36,6 +36,7 @@ public static partial class ServiceCollectionExtensions
 
         // Register services for the dashboard endpoints
         services.AddSingleton(options);
+        services.TryAddSingleton<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingViewModelBuilder>();
         services.AddSingleton<IAuthorizationMiddlewareResultHandler, DashboardAuthorizationMiddlewareResultHandler>();
         services.AddSignalR();
         services.AddDashboardAuthentication(options);

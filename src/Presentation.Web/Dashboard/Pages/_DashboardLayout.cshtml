@@ -163,6 +163,9 @@
 
             let timeoutId = null;
             let abortController = null;
+            let inFlight = null;
+            let pendingRefresh = false;
+            let generation = 0;
 
             function getContentElement() {
                 return window.bdkDashboard.resolveElement(settings.contentSelector || settings.contentElement);
@@ -231,71 +234,64 @@
                 timeoutId = window.setTimeout(() => refresh(true), interval);
             }
 
-            async function refresh(scheduleAfter = true) {
+            function cancel() {
                 clearScheduledRefresh();
+                generation++;
+                pendingRefresh = false;
+                abortController?.abort();
+            }
 
-                if (typeof settings.shouldRefresh === 'function' && settings.shouldRefresh() === false) {
-                    if (scheduleAfter) {
-                        scheduleNextRefresh();
-                    }
-
-                    return;
+            function refresh(scheduleAfter = true) {
+                clearScheduledRefresh();
+                if (document.hidden || (typeof settings.shouldRefresh === 'function' && settings.shouldRefresh() === false)) {
+                    if (scheduleAfter) scheduleNextRefresh();
+                    return Promise.resolve();
                 }
-
+                if (inFlight !== null) {
+                    pendingRefresh = true;
+                    generation++;
+                    abortController?.abort();
+                    return inFlight;
+                }
                 const contentElement = getContentElement();
-                if (!contentElement) {
-                    if (scheduleAfter) {
-                        scheduleNextRefresh();
+                if (!contentElement) return Promise.resolve();
+                const ownController = new AbortController();
+                abortController = ownController;
+                const version = ++generation;
+                inFlight = Promise.resolve().then(async () => {
+                    try {
+                        const activeTabTarget = settings.preserveActiveTab
+                            ? contentElement.querySelector('.nav-link.active')?.getAttribute('data-bs-target') : null;
+                        const details = new Map([...contentElement.querySelectorAll('details[data-preserve-key]')].map(value => [value.dataset.preserveKey, value.open]));
+                        const scrollPosition = { x: window.scrollX, y: window.scrollY };
+                        const response = await fetch(buildUrl(), { cache: 'no-store', headers: { 'X-Requested-With': 'fetch' }, signal: ownController.signal });
+                        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+                        const responseText = await response.text();
+                        if (version !== generation || ownController.signal.aborted) return;
+                        if (typeof settings.applyResponse === 'function') await settings.applyResponse(contentElement, responseText);
+                        else contentElement.innerHTML = responseText;
+                        restoreActiveTab(contentElement, activeTabTarget);
+                        contentElement.querySelectorAll('details[data-preserve-key]').forEach(value => { if (details.has(value.dataset.preserveKey)) value.open = details.get(value.dataset.preserveKey); });
+                        window.scrollTo(scrollPosition.x, scrollPosition.y);
+                        if (typeof settings.onSuccess === 'function') await settings.onSuccess(contentElement);
+                        if (version !== generation || ownController.signal.aborted) return;
+                        window.bdkDashboard.clearRefreshError(contentElement);
+                        setStatus(`Updated ${new Date().toISOString()} UTC`, false);
+                    } catch (error) {
+                        if (error.name !== 'AbortError' && version === generation) {
+                            window.bdkDashboard.showRefreshError(contentElement);
+                            setStatus(settings.errorText || 'Refresh failed; displayed data is stale', true);
+                        }
+                    } finally {
+                        if (abortController === ownController) abortController = null;
+                        inFlight = null;
+                        if (pendingRefresh && !document.hidden) {
+                            pendingRefresh = false;
+                            refresh(scheduleAfter);
+                        } else if (scheduleAfter && version === generation) scheduleNextRefresh();
                     }
-
-                    return;
-                }
-
-                if (abortController !== null) {
-                    abortController.abort();
-                }
-
-                abortController = new AbortController();
-
-                try {
-                    const activeTabTarget = settings.preserveActiveTab
-                        ? contentElement.querySelector('.nav-link.active')?.getAttribute('data-bs-target')
-                        : null;
-                    const response = await fetch(buildUrl(), {
-                        cache: 'no-store',
-                        headers: { 'X-Requested-With': 'fetch' },
-                        signal: abortController.signal
-                    });
-
-                    if (!response.ok) {
-                        throw new Error(`HTTP ${response.status}`);
-                    }
-
-                    const responseText = await response.text();
-                    if (typeof settings.applyResponse === 'function') {
-                        await settings.applyResponse(contentElement, responseText);
-                    } else {
-                        contentElement.innerHTML = responseText;
-                    }
-                    restoreActiveTab(contentElement, activeTabTarget);
-
-                    if (typeof settings.onSuccess === 'function') {
-                        settings.onSuccess(contentElement);
-                    }
-
-                    window.bdkDashboard.clearRefreshError(contentElement);
-                    setStatus(`Updated ${new Date().toLocaleTimeString()}`, false);
-                } catch (error) {
-                    if (error.name !== 'AbortError') {
-                        window.bdkDashboard.showRefreshError(contentElement);
-                        setStatus(settings.errorText || 'Refresh failed', true);
-                    }
-                } finally {
-                    abortController = null;
-                    if (scheduleAfter) {
-                        scheduleNextRefresh();
-                    }
-                }
+                });
+                return inFlight;
             }
 
             if (selectElement && settings.storageKey) {
@@ -307,10 +303,7 @@
                 selectElement.addEventListener('change', () => {
                     localStorage.setItem(settings.storageKey, selectElement.value);
 
-                    if (abortController !== null) {
-                        abortController.abort();
-                    }
-
+                    cancel();
                     scheduleNextRefresh();
                 });
             }
@@ -321,7 +314,7 @@
 
             document.addEventListener('visibilitychange', () => {
                 if (document.hidden) {
-                    clearScheduledRefresh();
+                    cancel();
                     return;
                 }
 
@@ -336,6 +329,7 @@
                 refresh,
                 schedule: scheduleNextRefresh,
                 clear: clearScheduledRefresh,
+                cancel,
                 getSelectedInterval
             };
         };

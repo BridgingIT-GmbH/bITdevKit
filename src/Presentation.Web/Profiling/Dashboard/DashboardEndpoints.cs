@@ -19,7 +19,7 @@ using IResult = Microsoft.AspNetCore.Http.IResult;
 /// <summary>Maps the authorized Profiling dashboard and operational endpoints.</summary>
 /// <param name="options">The shared dashboard endpoint options.</param>
 /// <example><code>services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling(); services.AddDashboard(options => options.Enabled());</code></example>
-public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
+public sealed partial class DashboardEndpoints(DashboardEndpointsOptions options)
     : EndpointsBase,
         IDashboardEndpoints
 {
@@ -57,6 +57,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options)
         }
 
         var group = this.MapGroup(app, options).WithTags("_bdk.Dashboard");
+        this.MapOperationRoutes(group);
         group.MapDashboardPage<Pages.Index>(
             ProfilingPath,
             "_bdk.Dashboard.Profiling",

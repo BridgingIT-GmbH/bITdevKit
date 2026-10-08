@@ -1,0 +1,34 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations
+@using Microsoft.AspNetCore.Http
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@inherits RazorSlice<OperationProfilingRecord>
+@if (Model.Duration == TimeSpan.Zero)
+{
+    <span class="small text-muted">Zero-duration observation; percentages unavailable.</span>
+}
+else
+{
+    <div class="operation-wall-bar d-flex" role="group" aria-label="Exclusive wall time, percentages of operation duration">
+    @for (var index = 0; index < Model.WallTime.Count; index++)
+    {
+        var bucket = Model.WallTime[index];
+        var label = bucket.Kind == ProfilingWallTimeKind.Segment ? bucket.Key : bucket.Kind == ProfilingWallTimeKind.Parallel ? "Parallel" : "Outside segments";
+        var percentage = 100d * bucket.Duration.Ticks / Model.Duration.Ticks;
+        var tip = $"{label}: {OperationProfilingViewModelBuilder.Duration(bucket.Duration)} ({percentage.ToString("0.##", CultureInfo.InvariantCulture)}%)";
+        var tipId = $"operation-tip-{Model.Id:N}-{index}";
+        <span tabindex="0" class="operation-wall-bucket @(bucket.Kind == ProfilingWallTimeKind.Parallel ? "operation-parallel" : "")" style="width:@(percentage.ToString("0.#####", CultureInfo.InvariantCulture))%;background-color:@Color(bucket)" aria-label="@tip" aria-describedby="@tipId"><span class="operation-wall-tip" role="tooltip" id="@tipId">@tip</span><span class="visually-hidden">@tip</span></span>
+    }
+    </div>
+    @if (Model.Quality.PartialCoverage || Model.Quality.Truncated || Model.Quality.IncompleteSegmentCount > 0) { <span class="small text-warning">Partial segment coverage</span> }
+}
+@functions {
+    private static string Color(ProfilingWallTimeBucket bucket)
+    {
+        if (bucket.Kind == ProfilingWallTimeKind.OutsideSegments) { return "#777"; }
+        if (bucket.Kind == ProfilingWallTimeKind.Parallel) { return "#a477c4"; }
+        uint hash = 2166136261;
+        foreach (var character in ProfilingKeyComparer.Canonicalize(bucket.Key)) { hash = unchecked((hash ^ character) * 16777619); }
+        return $"hsl({hash % 360} 55% 45%)";
+    }
+}

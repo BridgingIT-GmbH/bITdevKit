@@ -62,7 +62,7 @@ internal static class EntityFrameworkOperationProfilingFilters
         roots = Binary(roots, query.HttpMethod, root => root.HttpMethodBytes);
         roots = Binary(roots, query.SamplingStrategyKey, root => root.SamplingStrategyBytes);
         roots = Binary(roots, query.SamplingConfigurationKey, root => root.SamplingConfigurationBytes);
-        foreach (var predicate in query.Dimensions)
+        foreach (var predicate in query.Dimensions.Concat(query.GroupDimensions))
         {
             var match = Dimension(predicate, root: true);
             var parameter = Expression.Parameter(typeof(OperationProfilingEntity), "root");

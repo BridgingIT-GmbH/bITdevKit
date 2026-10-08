@@ -580,7 +580,7 @@ public sealed class ProfilingDashboardEndpointsTests
         disabledPages.ShouldBeEmpty();
         unavailablePages.ShouldBeEmpty();
         page.Key.ShouldBe("profiling");
-        page.Url.ShouldBe("/_bdk/dashboard/profiling/runtime");
+        page.Url.ShouldBe("/_bdk/dashboard/profiling");
         card.Value.ShouldBe("Running");
         card.Detail.ShouldContain("sess0001");
     }

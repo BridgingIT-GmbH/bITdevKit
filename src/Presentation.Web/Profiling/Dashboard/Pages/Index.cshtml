@@ -1,10 +1,16 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using ProfilingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
+@{ var dashboardOptions = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>(); }
+<nav class="nav nav-pills mb-3" aria-label="Profiling views"><a class="nav-link active" href="@ProfilingDashboardEndpoints.BuildProfilingPath(dashboardOptions)">Runtime</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions)">Operations</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions, true)">Requests</a></nav>
+
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
     <div class="d-flex align-items-center gap-2">
-        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
+        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         <button type="button" id="profiling-stress" class="btn btn-outline-warning btn-sm profiling-tool-button profiling-stress-button" aria-label="Run a 30-second profiling stress workload" title="Stress this process for 30 seconds with high CPU, managed allocations, and retained memory"><i class="bi bi-fire" aria-hidden="true"></i></button>
         <label for="profiling-refresh-interval" class="visually-hidden">Profiling refresh interval</label>
         <select id="profiling-refresh-interval" class="form-select form-select-sm" style="width: 8.5rem">
@@ -413,7 +419,7 @@
             if (value === null || value === undefined || value === '') return 'unavailable';
             if (format === 'timestamp') {
                 const date = new Date(value);
-                return Number.isNaN(date.getTime()) ? 'unavailable' : date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'long' });
+                return Number.isNaN(date.getTime()) ? 'unavailable' : date.toISOString();
             }
             if (format === 'bytes' || format === 'rate') {
                 const bytes = Number(value);
@@ -551,16 +557,15 @@
             return `${dayPrefix}${hours}:${minutes}:${seconds}${fraction}`;
         }
 
-        function formatLocalSnapshotTimestamp(value) {
+        function formatUtcSnapshotTimestamp(value) {
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) return 'invalid date';
-            const pad = (part, length = 2) => String(part).padStart(length, '0');
-            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+            return date.toISOString();
         }
 
-        function localizeSnapshotOptions() {
+        function updateUtcSnapshotOptions() {
             document.querySelectorAll('[data-profiling-snapshot-option]').forEach(option => {
-                option.textContent = `#${option.dataset.sequence} · ${formatLocalSnapshotTimestamp(option.dataset.timestampUtc)} · ${option.dataset.key}`;
+                option.textContent = `#${option.dataset.sequence} · ${formatUtcSnapshotTimestamp(option.dataset.timestampUtc)} · ${option.dataset.key}`;
             });
         }
 
@@ -603,7 +608,7 @@
                 return false;
             }
 
-            subtitle.textContent = `#${snapshot.sequence} · ${formatLocalSnapshotTimestamp(snapshot.timestampUtc)} · ${snapshot.identity?.key || 'unavailable'}`;
+            subtitle.textContent = `#${snapshot.sequence} · ${formatUtcSnapshotTimestamp(snapshot.timestampUtc)} · ${snapshot.identity?.key || 'unavailable'}`;
             content.innerHTML = `<div class="profiling-snapshot-metric-groups">${snapshotMetricGroups.map(group => `
                 <section class="profiling-snapshot-metric-group">
                     <h3>${escapeHtml(group.title)}</h3>
@@ -799,12 +804,11 @@
             catch { return { sessionMarkers: true, nodeMarkers: true, segments: true }; }
         }
 
-        function toPlotlyLocalTime(value) {
+        function toPlotlyUtcTime(value) {
             if (!value) return value;
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) return value;
-            const offsetMilliseconds = date.getTimezoneOffset() * 60 * 1000;
-            return new Date(date.getTime() - offsetMilliseconds).toISOString().replace(/Z$/, '');
+            return date.toISOString();
         }
 
         function annotationLayers(data, selectedSnapshotKey, selectedColor) {
@@ -813,15 +817,15 @@
             const annotations = [];
             if (filters.segments) {
                 (data?.segments || []).forEach((segment, index) => {
-                    const started = toPlotlyLocalTime(segment.startedUtc);
-                    const ended = toPlotlyLocalTime(segment.endedUtc || data?.latestSnapshot?.timestampUtc || segment.startedUtc);
+                    const started = toPlotlyUtcTime(segment.startedUtc);
+                    const ended = toPlotlyUtcTime(segment.endedUtc || data?.latestSnapshot?.timestampUtc || segment.startedUtc);
                     const color = index % 2 ? '#fd971f' : '#66d9ef';
                     shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: started, x1: ended, y0: 0, y1: 1, fillcolor: index % 2 ? 'rgba(253,151,31,.08)' : 'rgba(102,217,239,.08)', line: { width: 1, dash: 'dot', color: 'rgba(165,159,153,.55)' }, layer: 'below' });
                     annotations.push({ x: started, y: 0.98, xref: 'x', yref: 'paper', text: `SEGMENT · ${escapeHtml(segment.name)}`, showarrow: false, xanchor: 'left', yanchor: 'top', font: { size: 9, color }, bgcolor: 'rgba(0,0,0,.58)', borderpad: 2 });
                 });
             }
             const addMarker = (marker, color, dash, prefix) => {
-                const timestamp = toPlotlyLocalTime(marker.timestampUtc);
+                const timestamp = toPlotlyUtcTime(marker.timestampUtc);
                 shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: timestamp, x1: timestamp, y0: 0, y1: 1, line: { color, width: 1.4, dash } });
                 annotations.push({ x: timestamp, y: 1.035, xref: 'x', yref: 'paper', text: `${prefix}${escapeHtml(marker.name)}`, showarrow: false, yanchor: 'bottom', textangle: -35, font: { size: 9, color } });
             };
@@ -831,9 +835,15 @@
                 ? (data?.snapshots || []).find(item => item.identity?.key === selectedSnapshotKey)
                 : null;
             if (selectedSnapshot) {
-                const timestamp = toPlotlyLocalTime(selectedSnapshot.timestampUtc);
+                const timestamp = toPlotlyUtcTime(selectedSnapshot.timestampUtc);
                 shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: timestamp, x1: timestamp, y0: 0, y1: 1, line: { color: selectedColor, width: 2.5 } });
                 annotations.push({ x: timestamp, y: 1.035, xref: 'x', yref: 'paper', text: `SELECTED · #${selectedSnapshot.sequence}`, showarrow: false, yanchor: 'bottom', textangle: -35, font: { size: 10, color: selectedColor } });
+            }
+            const selectedInterval = new URL(location.href).searchParams;
+            const from = selectedInterval.get('fromUtc'), to = selectedInterval.get('toUtc');
+            if (from && to && Number.isFinite(Date.parse(from)) && Number.isFinite(Date.parse(to))) {
+                shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: toPlotlyUtcTime(from), x1: toPlotlyUtcTime(to), y0: 0, y1: 1, fillcolor: '#2478be22', line: { width: 0 }, layer: 'below' });
+                annotations.push({ x: toPlotlyUtcTime(from), y: 1, xref: 'x', yref: 'paper', text: 'Selected operation interval · UTC', showarrow: false });
             }
             return { shapes, annotations };
         }
@@ -867,7 +877,7 @@
                     return;
                 }
                 const points = data.snapshots;
-                const x = points.map(item => toPlotlyLocalTime(item.timestampUtc));
+                const x = points.map(item => toPlotlyUtcTime(item.timestampUtc));
                 const mb = values => values.map(value => value === null || value === undefined ? null : value / 1048576);
                 const trace = (name, values, color, axis = 'y') => ({ name, x, y: values, type: 'scatter', mode: 'lines', connectgaps: false, yaxis: axis, line: { width: 1.7, color }, hovertemplate: `%{y:.2f}<extra>${name}</extra>` });
                 const theme = window.bdkDashboard.getChartTheme();
@@ -1169,6 +1179,7 @@
             const metadataButton = document.querySelector('#profiling-edit-metadata');
 
             if (sessionToggle) {
+                sessionToggle.disabled = (state.root?.dataset.runtimeControlsEnabled || '').toLowerCase() !== 'true';
                 sessionToggle.dataset.sessionAction = running ? 'stop' : 'start';
                 sessionToggle.title = running ? 'Stop the active profiling session' : 'Start a profiling session';
                 sessionToggle.setAttribute('aria-label', running ? 'Stop profiling session' : 'Start profiling session');
@@ -1179,6 +1190,9 @@
                 const icon = sessionToggle.querySelector('i');
                 if (icon) icon.className = `bi ${running ? 'bi-stop-fill' : 'bi-play-fill'}`;
             }
+
+            const stressButton = document.getElementById('profiling-stress');
+            if (stressButton) stressButton.disabled = (state.root?.dataset.runtimeControlsEnabled || '').toLowerCase() !== 'true';
 
             if (markerInput) {
                 markerInput.disabled = !running;
@@ -1222,7 +1236,7 @@
             ['sessionMarkers', 'nodeMarkers', 'segments'].forEach(key => { const input = document.querySelector(`#profiling-filter-${key}`); if (input) input.checked = filters[key] !== false; });
             setSessionsExpanded(localStorage.getItem(storage.sessions) !== 'false');
             setSnapshotDetailsExpanded(localStorage.getItem(storage.snapshotDetails) !== 'false');
-            localizeSnapshotOptions();
+            updateUtcSnapshotOptions();
             activateTab(localStorage.getItem(storage.tab) || 'overview');
             if (state.sessionAnalysis) renderAnalysis('#profiling-session-analysis-result', state.sessionAnalysis);
             if (state.pairAnalysis) renderAnalysis('#profiling-pair-analysis', state.pairAnalysis);

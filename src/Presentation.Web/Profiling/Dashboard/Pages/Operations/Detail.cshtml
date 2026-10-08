@@ -1,0 +1,25 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations
+@using Microsoft.AspNetCore.Http
+@using DashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice<OperationProfilingDashboardModel>
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@{
+    var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var requestsOnly = Model.RequestsOnly;
+    var pagePath = DashboardEndpoints.BuildOperationsPath(options, requestsOnly);
+}
+<nav class="nav nav-pills mb-3" aria-label="Profiling views"><a class="nav-link" href="@DashboardEndpoints.BuildProfilingPath(options)">Runtime</a><a class="nav-link" href="@DashboardEndpoints.BuildOperationsPath(options)">Operations</a><a class="nav-link" href="@DashboardEndpoints.BuildOperationsPath(options, true)">Requests</a></nav>
+<a href="@pagePath" class="btn btn-outline-secondary btn-sm mb-3">Back to retained @(requestsOnly ? "requests" : "operations")</a>
+<div class="d-flex gap-2 align-items-center mb-3"><span id="operation-refresh-status" class="small text-muted" role="status">Showing exact retained details in UTC</span><label for="operation-refresh-interval" class="small">Auto refresh</label><select id="operation-refresh-interval" class="form-select form-select-sm" style="width:7rem"><option value="">Off</option><option value="5000" selected>5 sec</option><option value="10000">10 sec</option><option value="30000">30 sec</option></select><button id="operation-refresh-now" class="btn btn-outline-secondary btn-sm" type="button">Refresh</button></div>
+<div id="operation-content" data-content-url="@(HttpContext.Request.Path + "/content")" data-page-url="@pagePath">@(await RenderPartialAsync<DetailContent, OperationProfilingDashboardModel>(Model))</div>
+@(await RenderPartialAsync<Style>())
+@(await RenderPartialAsync<Script>())
+@functions {
+    /// <summary>Gets layout metadata for one retained operation detail.</summary>
+    /// <example><code>var title = this.LayoutModel.Title;</code></example>
+    public DashboardLayoutModel LayoutModel => new() { Title = "Operation Profiling Details" };
+}

@@ -40,21 +40,21 @@
             ArchiveImportPath = ProfilingDashboardEndpoints.BuildArchiveImportPath(dashboardOptions),
         };
 
-        if (control is null || queries is null)
+        if (queries is null || !profilingOptions.Enabled)
         {
             model.Error = "Profiling services are unavailable in this host.";
             return model;
         }
 
-        var statusResult = await control.GetStatusAsync(HttpContext.RequestAborted);
+        var statusResult = control is null ? null : await control.GetStatusAsync(HttpContext.RequestAborted);
         var sessionsResult = await queries.ListSessionsAsync(HttpContext.RequestAborted);
-        if (!statusResult.IsSuccess || !sessionsResult.IsSuccess)
+        if (!sessionsResult.IsSuccess)
         {
             model.Error = "Profiling data could not be loaded. Verify feature and provider registration.";
             return model;
         }
 
-        model.Status = statusResult.Value;
+        model.Status = statusResult?.IsSuccess == true ? statusResult.Value : new RuntimeProfilingStatus(profilingOptions.RuntimeEnabled, false, null, []);
         model.Sessions = sessionsResult.Value ?? [];
         var sessionKey = model.Sessions.Any(item => item.Identity.Key == requestedSession)
             ? requestedSession

@@ -15,6 +15,29 @@ public abstract partial class ProfilingStorageContractTestsBase
 {
     protected abstract Task<IProfilingStorageProvider> CreateProviderAsync(ProfilingOptions options, TimeProvider clock);
 
+    /// <summary>Preserves all general filters while expanding a grouped bucket, including missing typed values.</summary>
+    [Fact]
+    public async Task GroupExpansion_WithEightPredicatesAndMissingDimension_IsBoundedAndExact()
+    {
+        var h = await this.CreateAsync();
+        var common = Enumerable.Range(0, 8).Select(index => Dimension($"filter{index}", index)).ToArray();
+        var missing = h.Record() with { Dimensions = common };
+        var present = h.Record() with { Dimensions = common.Append(Dimension("region", "west")).ToArray() };
+        (await h.Store.AppendAsync([h.Envelope(missing, 1), h.Envelope(present, 2)])).IsSuccess.ShouldBeTrue();
+        var query = h.Query() with
+        {
+            Dimensions = common.Select(value => new ProfilingDimensionPredicate { Key = value.Key, Value = value.Value }).ToArray(),
+            GroupDimensions = [new() { Key = "REGION", Operator = ProfilingDimensionOperator.Missing }],
+        };
+
+        var result = await h.Store.QueryAsync(query);
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Records.Single().Id.ShouldBe(missing.Id);
+        var groups = await h.Store.GroupAsync(query);
+        groups.Value.TotalOperationCount.ShouldBe(1);
+        (await h.Store.QueryAsync(query with { GroupDimensions = Enumerable.Range(0, 5).Select(index => new ProfilingDimensionPredicate { Key = $"g{index}", Operator = ProfilingDimensionOperator.Missing }).ToArray() })).IsFailure.ShouldBeTrue();
+    }
+
     [Fact]
     public async Task Append_Retry_ReturnsSameCommitAndImmutableWholeGraph()
     {

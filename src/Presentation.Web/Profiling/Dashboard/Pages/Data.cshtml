@@ -1,3 +1,7 @@
+@using Microsoft.Extensions.DependencyInjection
+@using Microsoft.AspNetCore.Http
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using ProfilingDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
 @using System.Text
 @using System.Text.Json
 @using BridgingIT.DevKit.Common
@@ -21,6 +25,7 @@
          data-session-key="@Model.SessionKey"
          data-node-key="@Model.NodeKey"
          data-snapshot-key="@Model.SnapshotKey"
+         data-runtime-controls-enabled="@(Model.Status is { Enabled: true, Available: true })"
          data-session-running="@running.ToString().ToLowerInvariant()"
          data-latest-snapshot-key="@node?.LatestSnapshot?.Identity.Key"
          data-refresh-interval="@Model.RefreshIntervalMilliseconds"
@@ -58,6 +63,13 @@
             <div class="alert alert-warning" role="status">Profiling is enabled but its configured store or runtime services are unavailable.</div>
         }
     </div>
+
+    @if (node?.Node is not null && node.Participation is { } participation)
+    {
+        var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+        var values = new Dictionary<string, string> { ["nodeId"] = node.Node.Identity.Id.ToString("D"), ["fromUtc"] = participation.JoinedUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture), ["toUtc"] = (participation.CompletedUtc ?? DateTimeOffset.UtcNow).ToUniversalTime().ToString("O", CultureInfo.InvariantCulture), ["overlap"] = "true" };
+        <a class="btn btn-outline-secondary btn-sm mb-2" href="@(ProfilingDashboardEndpoints.BuildOperationsPath(options) + QueryString.Create(values))">Operations overlapping this node participation · UTC</a>
+    }
 
     <div id="profiling-action-outcomes" class="mb-2" role="status" aria-live="polite"></div>
 
@@ -198,7 +210,7 @@
                         <option value="" selected="@string.IsNullOrWhiteSpace(Model.SnapshotKey)">Current (latest)</option>
                         @foreach (var item in (node?.Snapshots ?? []).OrderByDescending(item => item.Sequence))
                         {
-                            <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)" selected="@(item.Identity.Key == Model.SnapshotKey)">#@item.Sequence · @item.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) · @item.Identity.Key</option>
+                            <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)" selected="@(item.Identity.Key == Model.SnapshotKey)">#@item.Sequence · @item.TimestampUtc.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) · @item.Identity.Key</option>
                         }
                     </select>
                     <button id="profiling-reset-snapshot" class="btn btn-outline-secondary" type="button" disabled="@(string.IsNullOrWhiteSpace(Model.SnapshotKey) ? "disabled" : null)" title="Reset to the current snapshot" aria-label="Reset to the current snapshot"><i class="bi bi-arrow-counterclockwise" aria-hidden="true"></i></button>
@@ -276,8 +288,8 @@
         <div class="card-header profiling-panel-header"><h2 id="profiling-compare-title" class="h6 mb-0">Snapshot comparison @InfoIcon("Snapshot comparison", "Compares an earlier and later snapshot from the same session and node. Difference is later minus earlier; Change is the percentage difference when the earlier value permits a safe calculation.")</h2></div>
         <div class="card-body p-3">
             <div class="row g-2 align-items-end mb-3">
-                <div class="col-12 col-md-5"><label for="profiling-snapshot-a" class="form-label small">Earlier snapshot A</label><select id="profiling-snapshot-a" class="form-select form-select-sm"><option value="">Select earlier snapshot</option>@foreach (var item in node?.Snapshots ?? []) { <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)">#@item.Sequence · @item.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) · @item.Identity.Key</option> }</select></div>
-                <div class="col-12 col-md-5"><label for="profiling-snapshot-b" class="form-label small">Later snapshot B</label><select id="profiling-snapshot-b" class="form-select form-select-sm"><option value="">Select later snapshot</option>@foreach (var item in node?.Snapshots ?? []) { <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)">#@item.Sequence · @item.TimestampUtc.ToLocalTime().ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture) · @item.Identity.Key</option> }</select></div>
+                <div class="col-12 col-md-5"><label for="profiling-snapshot-a" class="form-label small">Earlier snapshot A</label><select id="profiling-snapshot-a" class="form-select form-select-sm"><option value="">Select earlier snapshot</option>@foreach (var item in node?.Snapshots ?? []) { <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)">#@item.Sequence · @item.TimestampUtc.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) · @item.Identity.Key</option> }</select></div>
+                <div class="col-12 col-md-5"><label for="profiling-snapshot-b" class="form-label small">Later snapshot B</label><select id="profiling-snapshot-b" class="form-select form-select-sm"><option value="">Select later snapshot</option>@foreach (var item in node?.Snapshots ?? []) { <option value="@item.Identity.Key" data-profiling-snapshot-option data-sequence="@item.Sequence" data-key="@item.Identity.Key" data-timestamp-utc="@item.TimestampUtc.ToString("O", CultureInfo.InvariantCulture)">#@item.Sequence · @item.TimestampUtc.ToUniversalTime().ToString("yyyy-MM-dd HH:mm:ss 'UTC'", CultureInfo.InvariantCulture) · @item.Identity.Key</option> }</select></div>
                 <div class="col-12 col-md-2"><button id="profiling-compare" class="btn btn-primary btn-sm w-100" type="button">Analyze pair</button></div>
             </div>
             <div id="profiling-pair-validation" class="small text-danger mb-2" role="alert"></div>
@@ -311,7 +323,7 @@
                                 {
                                     <tr>
                                         <td>@segment.Name</td>
-                                        <td>@segment.StartedUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</td>
+                                        <td>@segment.StartedUtc.ToUniversalTime().ToString("HH:mm:ss.fff 'UTC'", CultureInfo.InvariantCulture)</td>
                                         <td>@FormatSegmentEnd(segment)</td>
                                         <td>@FormatDuration(segment.Elapsed)</td>
                                         <td>@segment.Outcome</td>
@@ -332,7 +344,7 @@
         <div class="col-12 col-xl-5">
             <details class="card profiling-panel h-100">
                 <summary class="card-header profiling-analysis-summary"><span id="profiling-custom-metric-count" data-profiling-live-region>Custom metrics (@(node?.MetricObservations.Count ?? 0)) @InfoIcon("Custom metrics", "Application-defined measurements collected from System.Diagnostics.Metrics. Their exact meaning and unit come from the instrument that emitted them.")</span></summary>
-                <div class="card-body p-0 table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Metric</th><th>Kind</th><th class="text-end">Value</th><th>Captured</th></tr></thead><tbody id="profiling-custom-metric-rows" data-profiling-live-region>@if (node?.MetricObservations.Count > 0) { @foreach (var metric in node.MetricObservations.OrderByDescending(item => item.TimestampUtc).Take(100)) { <tr><td>@metric.MetricIdentifier</td><td>@metric.Kind</td><td class="text-end">@metric.Value.ToString("N2", CultureInfo.InvariantCulture) @metric.Unit</td><td>@metric.TimestampUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)</td></tr> } } else { <tr><td colspan="4" class="text-muted">No custom metric observations.</td></tr> }</tbody></table></div>
+                <div class="card-body p-0 table-responsive"><table class="table table-sm mb-0"><thead><tr><th>Metric</th><th>Kind</th><th class="text-end">Value</th><th>Captured</th></tr></thead><tbody id="profiling-custom-metric-rows" data-profiling-live-region>@if (node?.MetricObservations.Count > 0) { @foreach (var metric in node.MetricObservations.OrderByDescending(item => item.TimestampUtc).Take(100)) { <tr><td>@metric.MetricIdentifier</td><td>@metric.Kind</td><td class="text-end">@metric.Value.ToString("N2", CultureInfo.InvariantCulture) @metric.Unit</td><td>@metric.TimestampUtc.ToUniversalTime().ToString("HH:mm:ss.fff 'UTC'", CultureInfo.InvariantCulture)</td></tr> } } else { <tr><td colspan="4" class="text-muted">No custom metric observations.</td></tr> }</tbody></table></div>
             </details>
         </div>
     </div>
@@ -370,7 +382,7 @@
     {
         var parts = new List<string>
         {
-            session.StartedUtc.ToLocalTime().ToString("yyyy-MM-ddTHH:mm:ss", CultureInfo.InvariantCulture),
+            session.StartedUtc.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss'Z'", CultureInfo.InvariantCulture),
             session.Identity.Key,
         };
         if (!IsGeneratedSessionName(session))
@@ -418,7 +430,7 @@
     private static string FormatRate(double? value) => value is null ? "unavailable" : $"{FormatBytes((long)value.Value)}/s";
     private static string FormatDuration(TimeSpan? value) => value is null ? "unavailable" : value.Value.TotalMilliseconds < 1000 ? $"{value.Value.TotalMilliseconds:N1} ms" : $"{value.Value.TotalSeconds:N2} s";
     private static string FormatSegmentEnd(ProfilingSegment segment) => segment.EndedUtc is { } endedUtc
-        ? endedUtc.ToLocalTime().ToString("HH:mm:ss.fff", CultureInfo.InvariantCulture)
+        ? endedUtc.ToUniversalTime().ToString("HH:mm:ss.fff 'UTC'", CultureInfo.InvariantCulture)
         : segment.Outcome == null ? "open" : "unavailable";
     private static string DisplayParent(ProfilingSegment segment, IReadOnlyList<ProfilingSegment> segments)
     {

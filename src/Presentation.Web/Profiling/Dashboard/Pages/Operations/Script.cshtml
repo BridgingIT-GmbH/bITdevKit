@@ -1,0 +1,116 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations
+@using Microsoft.AspNetCore.Http
+@inherits RazorSlice
+<script>
+(() => {
+    const content = document.getElementById('operation-content');
+    if (!content) return;
+    const form = document.getElementById('operation-filters');
+    const interval = document.getElementById('operation-refresh-interval');
+    const current = new URL(location.href);
+    let pinned = current.searchParams.has('cursor');
+    function unpin() { current.searchParams.delete('cursor'); pinned = false; if (interval) interval.disabled = false; }
+    let comparisonController = null;
+    function selectionUrl() {
+        const url = new URL(content.dataset.contentUrl, location.origin);
+        if (form) new FormData(form).forEach((value, key) => url.searchParams.set(key, value));
+        else current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
+        return url;
+    }
+    function captureState() {
+        return { open: new Set([...content.querySelectorAll('details[open][data-preserve-key]')].map(value => value.dataset.preserveKey)),
+            closed: new Set([...content.querySelectorAll('details:not([open])[data-preserve-key]')].map(value => value.dataset.preserveKey)), x: scrollX, y: scrollY };
+    }
+    function restoreState(state) {
+        content.querySelectorAll('details[data-preserve-key]').forEach(value => {
+            if (state.open.has(value.dataset.preserveKey)) value.open = true;
+            else if (state.closed.has(value.dataset.preserveKey)) value.open = false;
+        });
+        scrollTo(state.x, state.y);
+    }
+    function positionTooltip(target) {
+        const tip = target.querySelector('.operation-wall-tip');
+        if (!tip) return;
+        const rect = target.getBoundingClientRect();
+        tip.style.left = Math.max(8, Math.min(rect.left, innerWidth - Math.min(480, innerWidth - 16))) + 'px';
+        tip.style.top = Math.max(8, rect.top - 45) + 'px';
+    }
+    content.addEventListener('mouseover', event => { const target = event.target.closest('.operation-wall-bucket'); if (target) positionTooltip(target); });
+    content.addEventListener('focusin', event => { const target = event.target.closest('.operation-wall-bucket'); if (target) positionTooltip(target); });
+    async function charts() {
+        const host = content.querySelector('[data-runtime-overlay]');
+        if (!host) return;
+        let overlay;
+        try { overlay = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(host.dataset.runtimeOverlay), value => value.charCodeAt(0)))); }
+        catch { return; }
+        if (!overlay.samples?.length) return;
+        const Plotly = await window.bdkDashboard.loadPlotly();
+        if (!host.isConnected) return;
+        const colors = ['#2478be','#9c57c9','#e8a33e'];
+        const groups = new Map();
+        overlay.samples.forEach(sample => { const key = sample.snapshot.sessionKey; if (!groups.has(key)) groups.set(key, []); groups.get(key).push(sample); });
+        const specifications = [
+            ['.operation-runtime-cpu', 'Process CPU (%) · UTC', [['cpuUsagePercent','CPU',1]]],
+            ['.operation-runtime-memory', 'Process memory (MiB) · UTC', [['workingSetBytes','Working set',1048576],['managedMemoryBytes','Managed',1048576]]],
+            ['.operation-runtime-allocation', 'Process allocation (MiB/s; sample interval) · UTC', [['allocationRateBytesPerSecond','Allocation rate',1048576]]],
+            ['.operation-runtime-gc', 'Process cumulative GC collections · UTC', [['gen0CollectionCount','Gen 0',1],['gen1CollectionCount','Gen 1',1],['gen2CollectionCount','Gen 2',1]]]
+        ];
+        for (const [selector,title,metrics] of specifications) {
+            const traces = [];
+            for (const [session,samples] of groups) for (let metricIndex = 0; metricIndex < metrics.length; metricIndex++) {
+                const [field,label,scale] = metrics[metricIndex];
+                const x = [], y = [], text = [];
+                samples.forEach(sample => {
+                    if (sample.samplingGap || sample.clockDiscontinuity) { x.push(sample.snapshot.timestampUtc); y.push(null); text.push('Sampling gap or clock discontinuity'); }
+                    x.push(sample.snapshot.timestampUtc); y.push(sample.snapshot[field] == null ? null : sample.snapshot[field] / scale);
+                    text.push(`${sample.relation} · ${sample.snapshot.timestampUtc} · actual rate interval ${sample.metricIntervalFromUtc || 'unavailable'} → ${sample.metricIntervalToUtc || 'unavailable'}`);
+                });
+                traces.push({ x, y, text, name: `${label} · ${session}`, mode: 'lines+markers', connectgaps: false, hovertemplate: '%{text}<br>%{y}<extra>%{fullData.name}</extra>', line: { color: colors[metricIndex % colors.length] } });
+            }
+            const baseLayout = window.bdkDashboard.createPlotlyLayout({ margin: { l: 55, r: 20, t: 45, b: 55 } });
+            const layout = { ...baseLayout, title: { text: title }, xaxis: { ...baseLayout.xaxis, title: { text: 'UTC' }, type: 'date' },
+                shapes: [{ type: 'rect', xref: 'x', yref: 'paper', x0: overlay.startedUtc, x1: overlay.completedUtc, y0: 0, y1: 1, fillcolor: '#2478be22', line: { width: 0 }, layer: 'below' }] };
+            if (!host.isConnected) return;
+            await Plotly.react(host.querySelector(selector), traces, layout, { responsive: true, displaylogo: false });
+        }
+    }
+    const refresher = window.bdkDashboard.createRefresher({ contentElement: content, intervalElement: interval, statusSelector: '#operation-refresh-status',
+        storageKey: 'bdk.profiling.operation-refresh', buildUrl: selectionUrl,
+        applyResponse: (element, html) => { const state = captureState(); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); },
+        onSuccess: charts, errorText: 'Refresh failed; displayed profiling data is stale.' });
+    if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); document.getElementById('operation-refresh-status').textContent = 'Paged selection is pinned. Refresh latest to return to the current window.'; }
+    document.getElementById('operation-refresh-now')?.addEventListener('click', () => { unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl; if (form) history.replaceState(null, '', url); refresher.refresh(true); });
+    form?.addEventListener('submit', event => {
+        event.preventDefault(); unpin();
+        const url = selectionUrl(); url.pathname = content.dataset.pageUrl;
+        history.replaceState(null, '', url); comparisonController?.abort(); refresher.refresh(true);
+    });
+    form?.addEventListener('change', () => { comparisonController?.abort(); refresher.cancel(); });
+    document.getElementById('operation-lookup')?.addEventListener('submit', event => {
+        event.preventDefault(); const id = document.getElementById('operation-id').value.trim();
+        if (/^(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/.test(id)) location.assign(content.dataset.pageUrl + '/' + encodeURIComponent(id));
+    });
+    document.getElementById('operation-compare')?.addEventListener('click', async () => {
+        const output = document.getElementById('operation-comparison');
+        comparisonController?.abort(); comparisonController = new AbortController();
+        try {
+            const selection = JSON.parse(document.getElementById('operation-query').value || '{}');
+            selection.cursor = null; selection.boundary = null;
+            selection.key = document.getElementById('operation-baseline-key').value;
+            const parameters = selectionUrl().searchParams;
+            if ((content.dataset.requestsOnly || '').toLowerCase() === 'true') selection.kind = 'HttpRequest';
+            const candidate = { ...selection, key: document.getElementById('operation-candidate-key').value };
+            const url = new URL(content.dataset.apiUrl, location.origin);
+            parameters.forEach((value,key) => { if (!['query','key','cursor'].includes(key)) url.searchParams.set(key,value); });
+            url.searchParams.set('query', JSON.stringify(selection)); url.searchParams.set('candidate', JSON.stringify(candidate));
+            const response = await fetch(url, { signal: comparisonController.signal, cache: 'no-store' });
+            const data = await response.json();
+            if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
+            const describe = (name,value) => `${name}: ${value.count} retained observations; median ${value.durationUnavailable || !value.count ? 'unavailable' : value.p50Milliseconds.toFixed(3) + ' ms'}; p95 ${value.durationUnavailable || !value.count ? 'unavailable' : value.p95Milliseconds.toFixed(3) + ' ms'}; partial owners ${value.partialOperationCount}; sampling ${JSON.stringify(value.sampling)}\n`;
+            const segments = (name,value) => value.segments.map(segment => `${name} ${segment.path.components.join(' > ')}: ${segment.invocationCount} invocations; weighted mean ${segment.unavailable ? 'unavailable' : segment.invocationMeanMilliseconds.toFixed(3) + ' ms'}; per-owner p95 ${segment.totalPerOperation.durationUnavailable ? 'unavailable' : segment.totalPerOperation.p95Milliseconds.toFixed(3) + ' ms'}\n`).join('');
+            output.textContent = describe('Baseline', data.baseline) + describe('Candidate', data.candidate) + segments('Baseline',data.baseline) + segments('Candidate',data.candidate) + `Observed p95 change: ${data.p95ChangePercent == null ? 'unavailable' : data.p95ChangePercent.toFixed(2) + '%'}`;
+        } catch (error) { if (error.name !== 'AbortError') output.textContent = `Comparison unavailable: ${error.message}`; }
+    });
+    charts().catch(() => { document.getElementById('operation-refresh-status').textContent = 'Runtime charts unavailable; retained details are shown.'; });
+})();
+</script>

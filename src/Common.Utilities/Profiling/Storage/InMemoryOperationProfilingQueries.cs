@@ -152,7 +152,7 @@ public sealed partial class InMemoryProfilingStorageProvider
             || query.Kind is not null && ProfilingKeyComparer.Canonicalize(record.Kind) != query.Kind
             || query.CorrelationId is not null && record.CorrelationId != query.CorrelationId || query.ApplicationVersion is not null && record.Node?.ApplicationVersion != query.ApplicationVersion
             || query.Outcomes.Count > 0 && !query.Outcomes.Contains(record.Outcome)
-            || !query.Dimensions.All(p => MatchDimension(record.Dimensions.FirstOrDefault(d => ProfilingKeyComparer.Canonicalize(d.Key) == p.Key)?.Value, p, false, false)))
+            || !query.Dimensions.Concat(query.GroupDimensions).All(p => MatchDimension(record.Dimensions.FirstOrDefault(d => ProfilingKeyComparer.Canonicalize(d.Key) == p.Key)?.Value, p, false, false)))
         {
             return false;
         }

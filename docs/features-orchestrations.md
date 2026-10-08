@@ -1532,3 +1532,18 @@ The examples used in this guide are based on the runnable unit-test orchestratio
 - [TelephoneCallOrchestrationTests.cs](../tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestrationTests.cs)
 
 The original design is documented in [spec-application-orchestration.md](./specs/spec-application-orchestration.md).
+
+## Optional Operation Profiling
+
+Enable general Operations and select the orchestration adapter explicitly:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddOrchestrations().WithProfilingBehavior();
+```
+
+`WithProfilingBehavior` installs the action behavior and bounded executor-slice adapter together. An execution slice joins an active operation or owns a workflow operation. Activity/action attempts contribute nested segments keyed by stable state/name/kind, including signal and compensation work. Wait, pause, completion, failure and cancellation close the slice. Resume starts a new correlated root rather than holding a recording across an unbounded wait. Repeated attempts aggregate without producing a dependency trace.
+
+Both adapters take optional profiling dependencies. They register no Profiling services and work with omitted, disabled or suppressed capture. Independent queue/resume entries restore a fresh execution boundary. Profiling status, metadata and disposal failures do not replace the workflow result or original exception.
+
+The [Profiling guide](features-profiling.md) explains the shared providers, clear fences, outcome/coverage summaries and Runtime overlays. Workflow segments do not own the Runtime session shown near their timestamps.

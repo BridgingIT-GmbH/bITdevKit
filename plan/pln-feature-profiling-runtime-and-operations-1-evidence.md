@@ -485,3 +485,18 @@ TASK-044–TASK-047 are implemented and verified. Phase 11–12 remain outstandi
 | Visible Chromium browser, desktop/mobile | All 14 checks pass; maximum one active refresh, no script errors | [result](evidence/profiling-runtime-and-operations-1/phase-10/result.json), [reproduction](evidence/profiling-runtime-and-operations-1/phase-10/README.md) |
 
 The browser check caught a discarded chart-layout overlay, which now uses the shared theme plus explicit axes/shading. Endpoint checks caught setting response status after Razor had begun streaming, which is now resolved before rendering. The scroll assertion measures actual available scroll position instead of an unclamped requested offset. These checks do not replace Phase 12 overhead evidence.
+
+## Phase 11 — host examples and public API guides (2026-10-08)
+
+TASK-048–TASK-050 are implemented and verified. Phase 12 remains outstanding.
+
+- WeatherFiesta explicitly enables Runtime, Operations and the HTTP adapter with path-prefix stripping and dashboard/health/API-description exclusions. The outer middleware owns the request; the inner observer sees failures inside the host handlers. The compare endpoint enriches the owner and captures its existing requester call as Query. The stress job optionally joins/owns an operation and adds Cpu, Allocate and Retain without changing its Runtime measurements, result or cancellation.
+- The Profiling guide documents final contracts, independent capture, provider selection, safe failure boundaries, loop/nesting/parallel aggregates, sampling, nonblocking persistence, bounded reads/health, clear fences, UTC navigation and the version-2 archive break. Jobs, pipelines and orchestration guides describe optional behaviors and preserve native execution. A stale jobs XML registration example and two stale Runtime interface names were corrected.
+- The new public API examples execute both MVC and minimal API injection, service/Blazor-style scopes, repeated nested segments, default/switched singleton sampling, optional behavior construction and both provider registrations. The EF model check uses relational SQLite, inherited generic Set and actual JSON root mapping; real database I/O remains in the three-engine contract suite. The example fixture activates the writer before capture and accesses the sampler through its prepared singleton runtime.
+
+| Verification | Result | Evidence |
+| --- | --- | --- |
+| Presentation Profiling/Dashboard, including compilation of public examples | 174 passed, 0 failed/skipped | [log](evidence/profiling-runtime-and-operations-1/phase-11/presentation-tests.log) |
+| Weather stress job, including example host build | 6 passed, 0 failed/skipped | [log](evidence/profiling-runtime-and-operations-1/phase-11/weather-tests.log) |
+
+The initial example checks caught incorrect test assumptions about writer activation, sampler DI ownership, nonrelational EF support and owned model counts; those fixtures were repaired and the complete focused suite rerun. No provider capacity claim is made before Phase 12.

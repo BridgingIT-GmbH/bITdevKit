@@ -165,6 +165,11 @@ builder.Services.AddEndpoints<SystemEndpoints>();
 builder.Services.AddProfiling(o => o
         .Enabled(builder.Environment.IsDevelopment()))
     .WithRuntimeProfiling()
+    .WithOperationProfiling()
+    .WithRequestProfiling(o => o
+        .StripPathPrefix("/api")
+        .Blacklist("/_bdk/**", "/healthz", "/swagger/**", "/scalar/**", "/openapi/**"))
+    .WithInMemoryProvider()
     .AddConsoleCommands(builder.Environment.IsDevelopment());
 builder.Services.AddDashboard(o => o
     .Enabled(builder.Environment.IsDevelopment())
@@ -213,6 +218,9 @@ builder.Services.AddAppOpenApi();
 // Configure the HTTP request pipeline
 var app = builder.Build();
 
+app.UseRequestCorrelation();
+app.UseRequestProfiling();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -244,10 +252,11 @@ app.UseResultLogger();
 
 app.UseHttpsRedirection();
 app.UseProblemDetails();
+app.UseRequestProfilingExceptionObserver();
+app.UseRouting();
 //app.UseExceptionHandler();
 
 app.UseStaticFiles();
-app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
 app.UseRequestMetrics();

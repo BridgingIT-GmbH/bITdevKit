@@ -8,7 +8,7 @@ namespace BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Common;
 
 /// <summary>Measures the actual job behavior boundary, joining or owning optional operation capture.</summary>
-/// <example><code>services.AddJobs().WithBehavior&lt;JobProfilingBehavior&gt;();</code></example>
+/// <example><code>services.AddJobScheduler().WithBehavior&lt;JobProfilingBehavior&gt;();</code></example>
 public sealed class JobProfilingBehavior(IOperationProfiler profiling = null) : IJobBehavior
 {
     /// <inheritdoc />

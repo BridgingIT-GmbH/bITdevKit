@@ -54,11 +54,19 @@ public class WeatherEndpoints : EndpointsBase
         // POST /api/core/cities/compare
         group.MapPost("/compare",
             async ([FromServices] IRequester requester,
+                   [FromServices] IOperationProfiler profiling,
                    [FromBody] List<string> cityIds,
-                   CancellationToken ct)
-                => (await requester
-                    .SendAsync(new CityCompareQuery { CityIds = cityIds }, cancellationToken: ct))
-                    .MapHttpOk())
+                   CancellationToken ct) =>
+            {
+                profiling.SetKey("weather:compare");
+                profiling.SetDimension("cityCount", cityIds?.Count ?? 0);
+                var result = await profiling.RunSegmentAsync(
+                    "Query",
+                    (_, token) => requester.SendAsync(new CityCompareQuery { CityIds = cityIds }, cancellationToken: token),
+                    ct,
+                    value => OperationProfilingHelpers.ClassifyResult(value));
+                return result.MapHttpOk();
+            })
             .WithName("Core.Weather.Compare")
             .WithDescription("Compares current weather across multiple subscribed cities.")
             .Produces<CityCompareResponse>()

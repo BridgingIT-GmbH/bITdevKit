@@ -14,6 +14,7 @@ using BridgingIT.DevKit.Common;
 /// </summary>
 /// <param name="logger">The structured logger.</param>
 /// <param name="measurements">The Profiling measurement service.</param>
+/// <param name="profiling">Optional independent operation timing; omitted registration preserves the workload.</param>
 /// <param name="profile">An optional workload profile; the bounded local defaults are used otherwise.</param>
 /// <example>
 /// Register this job with a development-only manual trigger, start Profiling, and dispatch the job
@@ -22,17 +23,26 @@ using BridgingIT.DevKit.Common;
 public sealed class WeatherProfilingStressJob(
     ILogger<WeatherProfilingStressJob> logger,
     IRuntimeProfilingMeasurementService measurements,
-    WeatherProfilingStressProfile profile = null
+    WeatherProfilingStressProfile profile = null,
+    IOperationProfiler profiling = null
 ) : JobBase
 {
     private readonly WeatherProfilingStressProfile profile =
         profile ?? new WeatherProfilingStressProfile();
 
     /// <inheritdoc />
-    public override async Task<Result> ExecuteAsync(
+    public override Task<Result> ExecuteAsync(
         IJobExecutionContext<Unit> context,
         CancellationToken cancellationToken = default
     )
+    {
+        return profiling is null ? this.ExecuteMeasuredAsync(context, cancellationToken)
+            : profiling.JoinOrStartAsync("weather:profiling-stress", OperationProfilingKind.Job,
+                (_, token) => this.ExecuteMeasuredAsync(context, token), cancellationToken,
+                value => OperationProfilingHelpers.ClassifyResult(value));
+    }
+
+    private async Task<Result> ExecuteMeasuredAsync(IJobExecutionContext<Unit> context, CancellationToken cancellationToken)
     {
         Validate(this.profile);
         StressSummary summary = null;
@@ -50,7 +60,7 @@ public sealed class WeatherProfilingStressJob(
                 "WeatherFiesta profiling stress",
                 async token =>
                 {
-                    summary = await RunWorkloadAsync(this.profile, logger, token)
+                    summary = await RunWorkloadAsync(this.profile, logger, token, profiling)
                         .ConfigureAwait(false);
                 },
                 cancellationToken
@@ -81,40 +91,47 @@ public sealed class WeatherProfilingStressJob(
     private static async Task<StressSummary> RunWorkloadAsync(
         WeatherProfilingStressProfile profile,
         ILogger logger,
-        CancellationToken cancellationToken
+        CancellationToken cancellationToken,
+        IOperationProfiler profiling
     )
     {
-        logger.LogInformation("[ProfilingStress] CPU saturation phase started");
-        var workers = Enumerable
-            .Range(0, profile.WorkerCount)
-            .Select(worker =>
-                Task.Factory.StartNew(
-                    () => BurnCpu(worker, profile.CpuDuration, cancellationToken),
-                    cancellationToken,
-                    TaskCreationOptions.LongRunning,
-                    TaskScheduler.Default
-                )
-            )
-            .ToArray();
-        var checksums = await Task.WhenAll(workers).ConfigureAwait(false);
-        var checksum = checksums.Aggregate(0UL, (current, value) => current ^ value);
+        logger.LogInformation("[ProfilingStress] CPU workload started");
+        var checksum = profiling is null ? await RunCpuAsync(profile, cancellationToken).ConfigureAwait(false)
+            : await profiling.RunSegmentAsync("Cpu", (_, token) => RunCpuAsync(profile, token), cancellationToken).ConfigureAwait(false);
 
-        logger.LogInformation("[ProfilingStress] managed allocation phase started");
-        var retained = await AllocateAsync(profile, cancellationToken).ConfigureAwait(false);
+        logger.LogInformation("[ProfilingStress] managed allocation workload started");
+        var retained = profiling is null ? await AllocateAsync(profile, cancellationToken).ConfigureAwait(false)
+            : await profiling.RunSegmentAsync("Allocate", (_, token) => AllocateAsync(profile, token), cancellationToken).ConfigureAwait(false);
 
-        logger.LogInformation(
-            "[ProfilingStress] forced full GC and post-GC retention phase started"
-        );
-        GC.Collect(
-            GC.MaxGeneration,
-            GCCollectionMode.Forced,
-            blocking: true,
-            compacting: false
-        );
-        await Task.Delay(profile.PostGcHoldDuration, cancellationToken).ConfigureAwait(false);
-        GC.KeepAlive(retained);
+        logger.LogInformation("[ProfilingStress] forced full GC and post-GC retention started");
+        if (profiling is null)
+        {
+            await RetainAsync(retained, profile, cancellationToken).ConfigureAwait(false);
+        }
+        else
+        {
+            await profiling.RunSegmentAsync("Retain", (_, token) => RetainAsync(retained, profile, token), cancellationToken).ConfigureAwait(false);
+        }
 
         return new(checksum, profile.AllocationBytes, retained.Sum(buffer => (long)buffer.Length));
+    }
+
+    private static async Task<ulong> RunCpuAsync(WeatherProfilingStressProfile profile, CancellationToken cancellationToken)
+    {
+        var workers = Enumerable.Range(0, profile.WorkerCount)
+            .Select(worker => Task.Factory.StartNew(
+                () => BurnCpu(worker, profile.CpuDuration, cancellationToken), cancellationToken,
+                TaskCreationOptions.LongRunning, TaskScheduler.Default))
+            .ToArray();
+        var checksums = await Task.WhenAll(workers).ConfigureAwait(false);
+        return checksums.Aggregate(0UL, (current, value) => current ^ value);
+    }
+
+    private static async Task RetainAsync(IReadOnlyList<byte[]> retained, WeatherProfilingStressProfile profile, CancellationToken cancellationToken)
+    {
+        GC.Collect(GC.MaxGeneration, GCCollectionMode.Forced, blocking: true, compacting: false);
+        await Task.Delay(profile.PostGcHoldDuration, cancellationToken).ConfigureAwait(false);
+        GC.KeepAlive(retained);
     }
 
     private static ulong BurnCpu(

@@ -1545,3 +1545,18 @@ DELETE /_bdk/api/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&statuses=Archiv
 - [Orchestrations](./features-orchestrations.md)
 - [Messaging](./features-messaging.md)
 - [Queueing](./features-queueing.md)
+
+## Optional Operation Profiling
+
+Register the feature independently, then add the behavior to the scheduler:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddJobScheduler().WithBehavior<JobProfilingBehavior>();
+```
+
+The behavior owns `job:<job-name>` when no operation is active, or records a child segment under an existing owner. Actually executing the job contributes timing and safe job/execution/correlation identifiers, status and Result classification. Queued independent jobs establish a fresh execution boundary; they do not retain an enqueue caller's operation. Retries remain distinct observed attempts.
+
+`JobProfilingBehavior` takes an optional `IOperationProfiler` dependency. It does not register Profiling itself. Omitted, disabled or suppressed capture preserves the original delegate result, exception and cancellation. If a job adds its own segments, inject the same facade and use `RunSegmentAsync` or an explicit completed scope. Observation failures do not replace business outcomes.
+
+The [Profiling guide](features-profiling.md) describes keyed segment aggregation, periodic providers, sampling scope, health and dashboard analysis. Runtime measurements remain separate and are started deliberately through `IRuntimeProfilingMeasurementService`.

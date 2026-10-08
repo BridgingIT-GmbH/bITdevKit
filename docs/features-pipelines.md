@@ -982,3 +982,19 @@ The generator also emits compile-time diagnostics for invalid authoring, includi
 - incompatible hook or behavior types
 
 The source generation acts as a thin authoring convenience layer instead of a second hidden pipeline model.
+
+## Optional Operation Profiling
+
+Register Operations independently and attach the optional behavior to a pipeline definition:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddPipelines().WithPipeline<OrderImportContext>("order-import", definition =>
+    definition.AddStep(() => { }).AddBehavior<PipelineProfilingBehavior>());
+```
+
+A run joins an existing owner or owns `pipeline:<pipeline-name>`. Actually executed steps become child segments; repeated attempts aggregate by step path while retaining completed/failed/canceled outcomes. Disabled or unreachable steps create no fabricated timings. The behavior preserves the pipeline's native ValueTask contract and consumes each delegate result once.
+
+`PipelineProfilingBehavior` uses optional injected profiling building blocks and registers none itself. A definition containing the behavior works when Profiling is omitted, disabled or suppressed. Independent runs establish their own execution boundary. Business results and original exceptions remain unchanged when observation fails.
+
+Read [Profiling](features-profiling.md) for nested/parallel aggregation, typed dimensions, provider buffering/retention and dashboard views. Pipeline timings are Operation evidence; they do not implicitly start a Runtime session.

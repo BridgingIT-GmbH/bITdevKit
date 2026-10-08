@@ -289,3 +289,53 @@ REQ-001 through REQ-024 remain unverified for the new implementation. Baseline t
 - Build: `dotnet build bITdevKit.slnx --no-restore --nologo`, exit 0, zero warnings/errors, 1:32. Log `/tmp/bitdevkit-profiling-phase2-build.log`.
 - Focused tests: Common 149, Infrastructure unit 18, Presentation profiling plus console commands 68, actual SQLite/SQL Server/PostgreSQL integration 20; all passed (255 total). TRX `/tmp/bitdevkit-profiling-contract-results/phase2-*.trx`; logs `/tmp/bitdevkit-profiling-phase2-*.log`.
 - Intermediate build/test failures were repaired: the benchmark assembly needed friend access to the internal Runtime component; two Runtime route/alias expectations still used the old names; the Broadcast coexistence test needed to preserve the pre-existing built-in handler.
+
+### TASK-009 — operation capture core
+
+- Added a singleton-capable recorder with execution-local immutable context frames, explicit ownership, rejected/suppressed boundaries, cached node identity, and snapshotted options. Capture/enrichment perform no provider or Runtime control calls. Optional Runtime hint faults leave admitted operations available.
+- Typed metadata uses canonical case-insensitive names without trimming; invalid replacements preserve accepted values. Count, Unicode, payload and shared admission limits apply before mutation. Completed graphs freeze read-only collections and release live admission. Adapter collections copy a bounded indexed selection instead of trusting arbitrary enumerators.
+- Foundational scope/segment arithmetic types are present to keep this recording slice compilable; helper, concurrency, reduction, expiry and logging acceptance are verified in TASK-010 through TASK-015. Those tasks remain incomplete.
+- Eight new core tests pass alongside existing regression coverage: 157 Common profiling tests, exit 0. Log `/tmp/bitdevkit-profiling-operation-core-tests.log`, TRX `/tmp/bitdevkit-profiling-contract-results/operation-core.trx`.
+
+### TASK-010 — outcome scopes and delegate helpers
+
+- Added synchronous/Task and internal ValueTask helpers, explicit Result classification, matching-token cancellation and optional injection fallback. Business delegates run once; observation failures cannot replace values or exceptions.
+- Async scope creation occurs inside an async execution boundary so caller ownership is restored, including overlapping Blazor actions.
+- Common profiling suite: **170 passed, 0 failed, 0 skipped**. TRX: `/tmp/bitdevkit-profiling-contract-results/operation-helpers.trx`. Initial compilation exposed value-type method-group boxing; examples now use explicit classifier lambdas. Cancellation identity assertions use direct await/catch because the test assertion wrapper substitutes TaskCanceledException.
+
+### TASK-011 — repeated, nested and parallel segments
+
+- Aggregates full structured paths, first labels, count/outcome statistics and parent self-time from direct-child coverage union. Each invocation retains its own live parent; closing a parent forces children incomplete once. Rejected descendants stay suppressed.
+- Tests cover the 100 ms parent with 150 ms overlapping child work, 16 concurrent branches, 10,000 constant-state repetitions, late disposal, recovered failures, and depth/path/live limits.
+- Common profiling suite: **177 passed, 0 failed, 0 skipped**; `/tmp/bitdevkit-profiling-contract-results/operation-segments.trx`.
+
+### TASK-012 — typed metadata, reducers and bounded failures
+
+- Implemented all five reducers with contributing counts, weighted-average sum/count, Last completion order/UTC, and outcome-specific values. Conflicts and integer/decimal/double overflow are unavailable; missing values are not zero.
+- Tested large Int64 losslessness, invariant culture, decimal/double distinctions, mixed/missing/empty dimensions, failure-category limits, Unicode-safe message clipping, rejected category keys, and failed sanitization.
+- Common profiling suite: **194 passed, 0 failed, 0 skipped**; `/tmp/bitdevkit-profiling-contract-results/operation-metadata.trx`.
+
+### TASK-013 — mutually exclusive wall-time coverage
+
+- Online top-level accounting credits one segment, Parallel for multiple live invocations including identical keys, and Outside segments for no active invocation. Nested overlap stays inside its top-level owner. Rounding is reconciled against monotonic root duration.
+- Sequential/repeated, same-key overlap, nested parallel children, partial coverage and zero-duration cases pass. Every breakdown sums to observed root duration.
+- Common profiling suite: **199 passed, 0 failed, 0 skipped**; `/tmp/bitdevkit-profiling-contract-results/operation-wall-time.trx`.
+
+### TASK-014 — independent expiry and shutdown cleanup
+
+- Added a TimeProvider-driven cleanup worker independent of persistence. Abandoned roots end at their logical deadline; open children become incomplete and active payload/admission is released. Closed handles reject late updates and do not start replacement roots. Host shutdown closes active scopes before the registered writer drains.
+- Tests prove deadline clipping, overlapping actions continuing after expiry, shutdown closure, completion-sink rejection/failure, finalization-clock failure and UTC clock discontinuity.
+- Common profiling suite: **206 passed, 0 failed, 0 skipped**; `/tmp/bitdevkit-profiling-contract-results/operation-cleanup.trx`.
+
+### TASK-015 — fault-isolated Trace lifecycle events
+
+- Added independently filterable operation/segment log categories and stable 6101–6104 named events, using source-generated parameterized templates. Logs include bounded identity/path, invocation sequence, outcome and duration, with code/type only for failures.
+- At-most-once stop logging shares finalization, including parent-forced incomplete children. Suppressed, disabled and rejected scopes remain silent. Filter checks precede path formatting and log-only state; 10,000 filtered lifecycle rounds allocate **0 bytes** in the focused check. Filter/sink exceptions increment bounded logging-fault accounting and preserve business outcomes.
+- Common profiling suite: **212 passed, 0 failed, 0 skipped**; `/tmp/bitdevkit-profiling-contract-results/operation-logging.trx`.
+
+### Phase 3 exit verification — 2026-10-08 UTC
+
+- TASK-009 through TASK-015 implemented and checked. Generic operation capture remains internal and will be registered through the final fluent setup in TASK-029; the completion sink remains an internal seam for the real bounded queue in TASK-026. These later tasks are still incomplete.
+- `dotnet build bITdevKit.slnx --no-restore --nologo`: succeeded, **0 warnings / 0 errors**, 1:37. Log: `/tmp/bitdevkit-profiling-phase3-build.log`.
+- Post-build focused Common profiling regression suite: **212 passed, 0 failed, 0 skipped**. TRX: `/tmp/bitdevkit-profiling-contract-results/phase3-common.trx`.
+- Phase changes reviewed for scope, bounds, ownership, exception preservation and rejected/closed-context behavior. No production TODO, placeholder or NotImplementedException introduced.

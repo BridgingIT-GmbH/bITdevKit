@@ -129,6 +129,8 @@ public sealed class OperationProfilingOptions
     /// <example><code>var value = options.MaximumOperationAge;</code></example>
     public TimeSpan MaximumOperationAge { get; set; } = TimeSpan.FromHours(24);
 
+    internal OperationProfilingOptions Snapshot() => (OperationProfilingOptions)this.MemberwiseClone();
+
     /// <summary>Validates enabled capture limits.</summary>
     /// <example><code>options.Validate();</code></example>
     public void Validate()
@@ -138,8 +140,7 @@ public sealed class OperationProfilingOptions
             return;
         }
 
-        if (
-this.MaxActiveOperations <= 0
+        if (this.MaxActiveOperations <= 0
             || this.MaxActiveBytes <= 0
             || this.MaxRecordBytes <= 0
             || this.MaxSegmentPaths <= 0

@@ -286,6 +286,10 @@ public sealed record HttpRequestProfilingMetadata
 /// <example><code>var value = new ProfilingDurationStatistics();</code></example>
 public sealed record ProfilingDurationStatistics
 {
+    /// <summary>Gets whether cumulative duration arithmetic exceeded its representation.</summary>
+    /// <example><code>if (statistics.Unavailable) ShowUnavailable();</code></example>
+    public bool Unavailable { get; init; }
+
     /// <summary>Gets contributing invocation count.</summary>
     /// <example><code>var value = record.Count;</code></example>
     public long Count { get; init; }

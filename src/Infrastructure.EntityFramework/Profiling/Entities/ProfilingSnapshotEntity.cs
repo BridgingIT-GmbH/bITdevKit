@@ -17,6 +17,7 @@ using Microsoft.EntityFrameworkCore;
 [Index(nameof(SessionId), nameof(NodeId), nameof(TimestampUtc))]
 public sealed class RuntimeProfilingSnapshotEntity
 {
+    private DateTimeOffset timestampUtc;
     /// <summary>Gets or sets the snapshot identifier.</summary>
     [Key]
     public Guid Id { get; set; }
@@ -34,7 +35,15 @@ public sealed class RuntimeProfilingSnapshotEntity
 
     /// <summary>Gets or sets the capture timestamp.</summary>
     [Required]
-    public DateTimeOffset TimestampUtc { get; set; }
+    public DateTimeOffset TimestampUtc
+    {
+        get => this.timestampUtc;
+        set { this.timestampUtc = value; this.TimestampUtcTicks = value.UtcTicks; }
+    }
+
+    /// <summary>Gets or sets lossless UTC ticks for portable indexed interval selection.</summary>
+    /// <example><code>var ticks = snapshot.TimestampUtcTicks;</code></example>
+    public long TimestampUtcTicks { get; set; }
 
     /// <summary>Gets or sets hostname metadata.</summary>
     [MaxLength(256)]

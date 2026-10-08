@@ -274,6 +274,7 @@ public static class ProfilingServiceCollectionExtensions
             provider.GetService<ILogger<OperationProfiler>>(), provider.GetService<ILogger<ProfilingSegmentScope>>()));
         services.TryAddSingleton<IOperationProfiler>(provider => provider.GetRequiredService<OperationProfiler>());
         services.TryAddSingleton<OperationProfilingHealthState>();
+        services.TryAddSingleton<IOperationProfilingQueryService, OperationProfilingQueryService>();
         services.TryAddSingleton<IOperationProfilingHealthSource>(provider => provider.GetRequiredService<OperationProfilingHealthState>());
         services.TryAddSingleton<IProfilingNodeIdentityProvider>(provider => new ProfilingNodeIdentityProvider(
             provider.GetService<TimeProvider>() ?? TimeProvider.System, options.NodeDisplayName, options.ApplicationVersion));

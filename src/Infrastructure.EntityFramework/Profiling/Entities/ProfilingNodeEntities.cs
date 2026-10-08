@@ -91,6 +91,8 @@ public sealed class ProfilingNodeEntity
 [Index(nameof(SessionId), nameof(State))]
 public sealed class RuntimeProfilingParticipationEntity
 {
+    private DateTimeOffset joinedUtc;
+    private DateTimeOffset? completedUtc;
     /// <summary>Gets or sets the session identifier.</summary>
     public Guid SessionId { get; set; }
 
@@ -107,10 +109,26 @@ public sealed class RuntimeProfilingParticipationEntity
 
     /// <summary>Gets or sets when the node joined.</summary>
     [Required]
-    public DateTimeOffset JoinedUtc { get; set; }
+    public DateTimeOffset JoinedUtc
+    {
+        get => this.joinedUtc;
+        set { this.joinedUtc = value; this.JoinedUtcTicks = value.UtcTicks; }
+    }
+
+    /// <summary>Gets or sets exact UTC ticks for the actual collection-window start.</summary>
+    /// <example><code>var ticks = participation.JoinedUtcTicks;</code></example>
+    public long JoinedUtcTicks { get; set; }
 
     /// <summary>Gets or sets when local participation ended.</summary>
-    public DateTimeOffset? CompletedUtc { get; set; }
+    public DateTimeOffset? CompletedUtc
+    {
+        get => this.completedUtc;
+        set { this.completedUtc = value; this.CompletedUtcTicks = value?.UtcTicks; }
+    }
+
+    /// <summary>Gets or sets exact UTC ticks for the actual collection-window end.</summary>
+    /// <example><code>var ticks = participation.CompletedUtcTicks;</code></example>
+    public long? CompletedUtcTicks { get; set; }
 
     /// <summary>Gets or sets successful capture count.</summary>
     [Required]

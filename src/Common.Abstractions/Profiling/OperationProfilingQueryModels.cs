@@ -358,6 +358,46 @@ public sealed record OperationProfilingAnalysisSelection
 /// <example><code>var value = new OperationProfilingDistribution();</code></example>
 public sealed record OperationProfilingDistribution
 {
+    /// <summary>Gets the publication boundary used for this exact selection.</summary>
+    /// <example><code>var value = record.Boundary;</code></example>
+    public ProfilingQueryBoundary Boundary { get; init; }
+
+    /// <summary>Gets path-specific, invocation-weighted and per-operation segment analysis.</summary>
+    /// <example><code>var value = record.Segments;</code></example>
+    public IReadOnlyList<OperationProfilingSegmentAnalysis> Segments { get; init; } = [];
+
+    /// <summary>Gets constant, mixed and missing root metadata across retained observations.</summary>
+    /// <example><code>var value = record.Dimensions;</code></example>
+    public IReadOnlyList<ProfilingSegmentDimensionSummary> Dimensions { get; init; } = [];
+
+    /// <summary>Gets compatible reduced root measurements.</summary>
+    /// <example><code>var value = record.Measurements;</code></example>
+    public IReadOnlyList<ProfilingMeasurementSummary> Measurements { get; init; } = [];
+
+    /// <summary>Gets retained sampling policy labels; counts are never extrapolated.</summary>
+    /// <example><code>var value = record.Sampling;</code></example>
+    public IReadOnlyList<OperationProfilingSamplingSummary> Sampling { get; init; } = [];
+
+    /// <summary>Gets the applied root outcome selection; empty means all outcomes.</summary>
+    /// <example><code>var value = record.OutcomeFilter;</code></example>
+    public IReadOnlyList<OperationProfilingOutcome> OutcomeFilter { get; init; } = [];
+
+    /// <summary>Gets the applied invocation outcome selection; empty means all outcomes.</summary>
+    /// <example><code>var value = record.SegmentOutcomeFilter;</code></example>
+    public IReadOnlyList<ProfilingSegmentOutcome> SegmentOutcomeFilter { get; init; } = [];
+
+    /// <summary>Gets retained root counts by outcome.</summary>
+    /// <example><code>var value = record.Outcomes;</code></example>
+    public IReadOnlyDictionary<OperationProfilingOutcome, long> Outcomes { get; init; } = new Dictionary<OperationProfilingOutcome, long>();
+
+    /// <summary>Gets owners with partial or incomplete recorded evidence.</summary>
+    /// <example><code>var value = record.PartialOperationCount;</code></example>
+    public long PartialOperationCount { get; init; }
+
+    /// <summary>Gets whether the latency distribution is unavailable.</summary>
+    /// <example><code>var value = record.DurationUnavailable;</code></example>
+    public bool DurationUnavailable { get; init; }
+
     /// <summary>Gets contributing observation count.</summary>
     /// <example><code>var value = record.Count;</code></example>
     public long Count { get; init; }
@@ -374,7 +414,7 @@ public sealed record OperationProfilingDistribution
     /// <example><code>var value = record.MeanMilliseconds;</code></example>
     public double MeanMilliseconds { get; init; }
 
-    /// <summary>Gets nearest-rank median.</summary>
+    /// <summary>Gets midpoint median.</summary>
     /// <example><code>var value = record.P50Milliseconds;</code></example>
     public double P50Milliseconds { get; init; }
 
@@ -410,6 +450,40 @@ public sealed record OperationProfilingComparison
 /// <example><code>var value = new OperationProfilingRuntimeOverlay();</code></example>
 public sealed record OperationProfilingRuntimeOverlay
 {
+    /// <summary>Gets the exact executing process identity.</summary>
+    /// <example><code>var value = record.NodeId;</code></example>
+    public Guid NodeId { get; init; }
+
+    /// <summary>Gets the inspected operation start in UTC.</summary>
+    /// <example><code>var value = record.StartedUtc;</code></example>
+    [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
+    public DateTimeOffset StartedUtc { get; init; }
+
+    /// <summary>Gets the inspected operation end in UTC.</summary>
+    /// <example><code>var value = record.CompletedUtc;</code></example>
+    [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
+    public DateTimeOffset CompletedUtc { get; init; }
+
+    /// <summary>Gets explicitly labeled interval and surrounding observations.</summary>
+    /// <example><code>var value = record.Samples;</code></example>
+    public IReadOnlyList<OperationProfilingRuntimeSample> Samples { get; init; } = [];
+
+    /// <summary>Gets actual node collection windows.</summary>
+    /// <example><code>var value = record.Participations;</code></example>
+    public IReadOnlyList<RuntimeProfilingNodeParticipation> Participations { get; init; } = [];
+
+    /// <summary>Gets known sampling gaps without interpolation.</summary>
+    /// <example><code>var value = record.Gaps;</code></example>
+    public IReadOnlyList<OperationProfilingRuntimeGap> Gaps { get; init; } = [];
+
+    /// <summary>Gets whether correlation is limited by a discontinuous clock.</summary>
+    /// <example><code>var value = record.ClockDiscontinuity;</code></example>
+    public bool ClockDiscontinuity { get; init; }
+
+    /// <summary>Gets samples actually inside the operation interval.</summary>
+    /// <example><code>var value = record.InsideSnapshotCount;</code></example>
+    public int InsideSnapshotCount { get; init; }
+
     /// <summary>Gets the non-owning selected occurrence.</summary>
     /// <example><code>var value = record.OperationId;</code></example>
     public Guid OperationId { get; init; }
@@ -596,6 +670,10 @@ public sealed record OperationProfilingHealth
 /// <example><code>var groups = await queries.GroupAsync(new OperationProfilingQuery(), cancellationToken);</code></example>
 public interface IOperationProfilingQueryService
 {
+    /// <summary>Builds one view under one non-waiting admission and a shared deadline for all subordinate queries.</summary>
+    /// <example><code>var view = await queries.BuildViewAsync((session, ct) => session.GroupAsync(query, ct), token);</code></example>
+    Task<IResult<T>> BuildViewAsync<T>(Func<IOperationProfilingQueryService, CancellationToken, Task<IResult<T>>> build, CancellationToken cancellationToken = default);
+
     /// <summary>Reads a stable operation page under one non-waiting query admission.</summary>
     /// <example><code>var page = await queries.QueryAsync(query, cancellationToken);</code></example>
     Task<IResult<OperationProfilingPage>> QueryAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default);

@@ -37,6 +37,12 @@ public static class ProfilingModelBuilderExtensions
         modelBuilder.Entity<RuntimeProfilingParticipationEntity>();
         modelBuilder.Entity<RuntimeProfilingSnapshotEntity>();
         modelBuilder.Entity<RuntimeProfilingMetricObservationEntity>();
+        modelBuilder.Entity<RuntimeProfilingSnapshotEntity>().Property(entity => entity.TimestampUtc).HasField("timestampUtc").UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction);
+        modelBuilder.Entity<RuntimeProfilingSnapshotEntity>().HasIndex(entity => new { entity.NodeId, entity.SessionId, entity.TimestampUtcTicks });
+        modelBuilder.Entity<RuntimeProfilingParticipationEntity>().Property(entity => entity.JoinedUtc).HasField("joinedUtc").UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction);
+        modelBuilder.Entity<RuntimeProfilingParticipationEntity>().Property(entity => entity.CompletedUtc).HasField("completedUtc").UsePropertyAccessMode(PropertyAccessMode.FieldDuringConstruction);
+        modelBuilder.Entity<RuntimeProfilingParticipationEntity>().HasIndex(entity => new { entity.NodeId, entity.JoinedUtcTicks, entity.CompletedUtcTicks });
+
         var session = modelBuilder.Entity<RuntimeProfilingSessionEntity>();
         session.HasIndex(entity => new { entity.State, entity.CompletionUtcTicks });
 

@@ -17,7 +17,7 @@ internal static class EntityFrameworkOperationProfilingFilters
         var lower = query.FromUtc.Value.UtcTicks;
         var upper = query.ToUtc.Value.UtcTicks;
         var roots = context.Set<OperationProfilingEntity>().AsNoTracking().Where(root => root.CommitWatermark <= watermark);
-        roots = query.IntervalOverlap ? roots.Where(root => root.StartedUtcTicks < upper && root.CompletedUtcTicks >= lower)
+        roots = query.IntervalOverlap ? roots.Where(root => root.StartedUtcTicks < upper && (root.CompletedUtcTicks > lower || root.StartedUtcTicks == root.CompletedUtcTicks && root.StartedUtcTicks >= lower))
             : roots.Where(root => root.CompletedUtcTicks >= lower && root.CompletedUtcTicks < upper);
         if (query.Id.HasValue) { roots = roots.Where(root => root.Id == query.Id.Value); }
 

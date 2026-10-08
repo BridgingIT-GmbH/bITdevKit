@@ -39,6 +39,45 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
         return new EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext>(this.first.GetRequiredService<IServiceScopeFactory>(), options, clock);
     }
 
+    /// <summary>Records actual engine plans for the indexed publication-window selection without forcing a preferred plan on tiny fixtures.</summary>
+    [Fact]
+    public async Task PublicationWindow_ProducesActualEngineQueryPlan()
+    {
+        var h = await this.CreateAsync();
+        (await h.Store.AppendAsync([h.Envelope(h.Record(), 1)])).IsSuccess.ShouldBeTrue();
+        await using var scope = this.first.CreateAsyncScope();
+        var context = scope.ServiceProvider.GetRequiredService<ProfilingProviderDbContext>();
+        await context.Database.OpenConnectionAsync();
+        var connection = context.Database.GetDbConnection();
+        var engine = context.Database.ProviderName;
+        var sqlServer = engine.Contains("SqlServer", StringComparison.Ordinal);
+        var quoteStart = sqlServer ? "[" : "\"";
+        var quoteEnd = sqlServer ? "]" : "\"";
+        string Quote(string name) => quoteStart + name + quoteEnd;
+        var statement = $"SELECT {Quote("Id")} FROM {Quote("__Profiling_Operations")} WHERE {Quote("CompletedUtcTicks")} >= 0 AND {Quote("CompletedUtcTicks")} < 9223372036854775807 ORDER BY {Quote("CompletedUtcTicks")}, {Quote("CanonicalIdBytes")}";
+        await using var command = connection.CreateCommand();
+        if (sqlServer)
+        {
+            command.CommandText = "SET SHOWPLAN_XML ON";
+            await command.ExecuteNonQueryAsync();
+        }
+
+        try
+        {
+            command.CommandText = (sqlServer ? "" : engine.Contains("Sqlite", StringComparison.Ordinal) ? "EXPLAIN QUERY PLAN " : "EXPLAIN ") + statement;
+            await using var reader = await command.ExecuteReaderAsync();
+            var plan = new List<string>();
+            while (await reader.ReadAsync()) { plan.Add(reader.GetString(sqlServer || !engine.Contains("Sqlite", StringComparison.Ordinal) ? 0 : 3)); }
+
+            plan.ShouldNotBeEmpty();
+            await File.WriteAllLinesAsync(Path.Combine(Path.GetTempPath(), "bitdevkit-phase9-query-plan-" + engine + ".txt"), plan);
+        }
+        finally
+        {
+            if (sqlServer) { command.CommandText = "SET SHOWPLAN_XML OFF"; await command.ExecuteNonQueryAsync(); }
+        }
+    }
+
     [Fact]
     public async Task SeparateProcesses_AppendAndSettle_UseSameDurableEpoch()
     {

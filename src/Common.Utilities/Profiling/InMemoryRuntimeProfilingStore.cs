@@ -13,7 +13,7 @@ namespace BridgingIT.DevKit.Common;
 /// and deliberately reports that it cannot coordinate independent application processes.
 /// </remarks>
 /// <example><code>IRuntimeProfilingStore store = new InMemoryRuntimeProfilingStore();</code></example>
-internal sealed class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore
+internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingStore, IRuntimeProfilingCorrelationStore
 {
     private readonly object sync;
     private Guid? maintenanceGate;

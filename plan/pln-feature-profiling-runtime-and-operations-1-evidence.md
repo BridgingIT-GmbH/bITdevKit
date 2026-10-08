@@ -445,3 +445,24 @@ Final validation was sequential against the final built artifacts:
 | Infrastructure IntegrationTests, `Profiling`, `--no-build` | 149 passed; 0 failed/skipped; actual SQLite/SQL Server/PostgreSQL | `/tmp/bitdevkit-profiling-refinement-engines-final.log` |
 
 Total: **1,121 passing tests**. Docker server verified available (`29.7.2`). No host application database was migrated or reset. No new production package was introduced.
+
+
+## Phase 9 — bounded analysis and Runtime correlation (2026-10-08)
+
+TASK-040–TASK-043 are implemented and verified. Phase 10–12 remain outstanding.
+
+- `OperationProfilingQueryService` owns four non-waiting admissions and one five-second deadline per view build. Sequential subordinate reads share that admission. Timed-out, cancellation-ignoring and unawaited provider work retains its original capacity until actual unwind; escaped sessions cannot start new reads. Provider code runs outside the short bookkeeping lock and outside the caller synchronization context, with inherited execution context suppressed. Reads suppress capture and never flush the writer.
+- Bounded exact analysis computes midpoint median and nearest-rank p95/p99 from retained roots, invocation-weighted segment means, and distributions of each owner's accumulated segment durations. Compatible measurement sums/counts remain weighted, mixed dimensions remain labeled, and HTTP policy counts are never extrapolated. Last-value ties use observed UTC, canonical owner ID, then the owner's local sequence.
+- Optional `IRuntimeProfilingCorrelationStore` is implemented by both built-in Runtime facets. Exact GUID/key/hostname/PID/process-start identity and actual collection windows select at most 2,000 interval plus surrounding snapshots; session/participation metadata is also bounded. EF filters indexed lossless UTC ticks in storage. Restarts/remapped identities, zero-duration observations, half-open reverse overlap, missing evidence, sparse sampling and clock jumps have explicit results. A rate interval is unavailable if its predecessor is absent; process metrics are never attributed to an operation.
+- Shared provider contracts run identical analysis and persisted-operation correlation checks on memory, SQLite, SQL Server and PostgreSQL. Existing provider tests cover publication boundaries during new writes, delayed completion-time inserts, deletion revisions, expiry, stable canonical ties and same-summary predicates.
+- Additional fault proofs cover synchronous blocking providers, cancellation-ignoring calls, fire-and-forget subordinate calls, retained admission, safe provider errors and caller cancellation. The blocking-provider test exposed synchronization-context execution and a bookkeeping lock held over provider code; both were corrected and the regression now passes. An initially invalid synthetic record had inconsistent wall-time totals; the fixture was corrected before the final persisted-record roundtrip checks.
+
+| Verification | Final result | Evidence |
+| --- | --- | --- |
+| `dotnet build bITdevKit.slnx --nologo --no-restore` | 0 warnings, 0 errors; 2:39.29 | `/tmp/bitdevkit-phase9-build-proof.log`; subsequent Common and Infrastructure test builds verify the final deadline/lock corrections |
+| Common `Profiling\|Pipeline` (build and test) | 397 passed, 0 failed/skipped | `/tmp/bitdevkit-phase9-common-proof.log` |
+| Infrastructure unit `Profiling` | 35 passed, 0 failed/skipped | `/tmp/bitdevkit-phase9-infrastructure-final.log` |
+| Actual-engine integration `Profiling` (build and test) | 161 passed, 0 failed/skipped; 1:17 | `/tmp/bitdevkit-phase9-engines-proof.log` |
+| Publication-window engine plans | SQLite indexed search; SQL Server index seek; PostgreSQL index scan with range condition | Raw artifacts below |
+
+Actual small-fixture query plans are saved in [SQLite](evidence/profiling-runtime-and-operations-1/phase-9/query-plan-sqlite.txt), [SQL Server](evidence/profiling-runtime-and-operations-1/phase-9/query-plan-sqlserver.xml), and [PostgreSQL](evidence/profiling-runtime-and-operations-1/phase-9/query-plan-postgresql.txt). These establish actual engine compilation and index selection for the representative range query; they do not establish production throughput or guarantee optimizer choices for other distributions. Phase 12 load evidence remains required.

@@ -69,3 +69,7 @@ public sealed class ProfilingPersistenceError(bool mayHaveCommitted, bool transi
     /// <example><code>var retry = error.Transient;</code></example>
     public bool Transient { get; } = transient;
 }
+
+/// <summary>Reports an exhausted view-build deadline without presenting partial data as a successful view.</summary>
+/// <example><code>if (result.Errors.Any(error => error is ProfilingQueryTimeoutError)) ShowStale();</code></example>
+public sealed class ProfilingQueryTimeoutError() : ResultErrorBase("The profiling view exceeded its query deadline. Narrow the selection or refresh later.");

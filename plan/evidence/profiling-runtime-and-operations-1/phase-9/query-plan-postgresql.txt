@@ -1,0 +1,2 @@
+Index Scan using "IX___Profiling_Operations_CompletedUtcTicks_CanonicalIdBytes" on "__Profiling_Operations"  (cost=0.14..8.16 rows=1 width=56)
+  Index Cond: (("CompletedUtcTicks" >= 0) AND ("CompletedUtcTicks" < '9223372036854775807'::bigint))

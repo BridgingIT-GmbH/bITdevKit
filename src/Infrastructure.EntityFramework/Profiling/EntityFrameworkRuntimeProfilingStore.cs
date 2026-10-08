@@ -28,8 +28,8 @@ using Microsoft.Extensions.DependencyInjection;
 ///     .WithEntityFrameworkProvider&lt;AppDbContext&gt;();
 /// </code>
 /// </example>
-internal sealed class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceScopeFactory scopeFactory)
-    : IRuntimeProfilingStore
+internal sealed partial class EntityFrameworkRuntimeProfilingStore<TContext>(IServiceScopeFactory scopeFactory)
+    : IRuntimeProfilingStore, IRuntimeProfilingCorrelationStore
     where TContext : DbContext, IProfilingDbContext
 {
     private readonly SemaphoreSlim lifecycleGate = new(1, 1);

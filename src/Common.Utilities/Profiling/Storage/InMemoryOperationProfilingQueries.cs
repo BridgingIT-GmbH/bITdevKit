@@ -145,7 +145,7 @@ public sealed partial class InMemoryProfilingStorageProvider
 
     private static bool Matches(OperationProfilingRecord record, OperationProfilingQuery query)
     {
-        var interval = query.IntervalOverlap ? record.StartedUtc < query.ToUtc && record.CompletedUtc >= query.FromUtc
+        var interval = query.IntervalOverlap ? record.StartedUtc < query.ToUtc && (record.CompletedUtc > query.FromUtc || record.StartedUtc == record.CompletedUtc && record.StartedUtc >= query.FromUtc)
             : record.CompletedUtc >= query.FromUtc && record.CompletedUtc < query.ToUtc;
         if (!interval || query.Id.HasValue && record.Id != query.Id.Value || query.ParentOperationId.HasValue && record.ParentOperationId != query.ParentOperationId
             || query.NodeId.HasValue && record.NodeId != query.NodeId || query.Key is not null && ProfilingKeyComparer.Canonicalize(record.Key) != query.Key

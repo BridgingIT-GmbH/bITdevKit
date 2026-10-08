@@ -30,6 +30,7 @@ public static class ProfilingServiceCollectionExtensions
 
         configure?.Invoke(new ProfilingOptionsBuilder(state.Options));
         ConfigureRuntime(services, state);
+        ConfigureOperations(services, state);
         return new ProfilingBuilderContext(services, state.Options);
     }
 
@@ -48,6 +49,91 @@ public static class ProfilingServiceCollectionExtensions
         configure?.Invoke(new RuntimeProfilingOptionsBuilder(context.Options.Runtime));
         ConfigureRuntime(context.Services, state);
         return context;
+    }
+
+    /// <summary>Enables injectable operation capture and the bounded periodic writer.</summary>
+    /// <example><code>services.AddProfiling(o => o.Enabled()).WithOperationProfiling(o => o.BatchSize(256));</code></example>
+    public static ProfilingBuilderContext WithOperationProfiling(this ProfilingBuilderContext context, Action<OperationProfilingOptionsBuilder> configure = null)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        var state = context.Services.GetRegistrationState();
+        if (!state.OperationsConfigured)
+        {
+            state.OperationsConfigured = true;
+            context.Options.Operations.Enabled = true;
+        }
+
+        configure?.Invoke(new OperationProfilingOptionsBuilder(context.Options.Operations));
+        ConfigureOperations(context.Services, state);
+        return context;
+    }
+
+    /// <summary>Selects the process-local provider for both profiling datasets.</summary>
+    /// <example><code>services.AddProfiling().WithInMemoryProvider();</code></example>
+    public static ProfilingBuilderContext WithInMemoryProvider(this ProfilingBuilderContext context) =>
+        context.WithProvider<InMemoryProfilingStorageProvider>(provider => new(provider.GetRequiredService<ProfilingOptions>(), provider.GetService<TimeProvider>()));
+
+    /// <summary>Selects one singleton provider; conflicting explicit selections fail setup.</summary>
+    /// <example><code>services.AddProfiling().WithProvider&lt;CustomProfilingProvider&gt;();</code></example>
+    public static ProfilingBuilderContext WithProvider<TProvider>(this ProfilingBuilderContext context, Func<IServiceProvider, TProvider> factory = null)
+        where TProvider : class, IProfilingStorageProvider
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        var state = context.Services.GetRegistrationState();
+        if (state.ExplicitProvider is not null)
+        {
+            if (state.ExplicitProvider != typeof(TProvider))
+            {
+                throw new InvalidOperationException("Only one explicit Profiling storage provider can be selected.");
+            }
+
+            return context;
+        }
+
+        if (context.Services.Any(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingStore)
+            && (descriptor.ImplementationInstance is not null || descriptor.ImplementationType is not null)))
+        {
+            throw new InvalidOperationException("A different profiling store provider is already registered. Select the shared provider instead of a separate facet.");
+        }
+
+        state.ExplicitProvider = typeof(TProvider);
+        context.Services.RemoveAll<IProfilingStorageProvider>();
+        if (factory is null)
+        {
+            context.Services.TryAddSingleton<TProvider>();
+        }
+        else
+        {
+            context.Services.TryAddSingleton(factory);
+        }
+
+        context.Services.AddSingleton<IProfilingStorageProvider>(provider => provider.GetRequiredService<TProvider>());
+        return context;
+    }
+
+    private static void ConfigureOperations(IServiceCollection services, ProfilingRegistrationState state)
+    {
+        foreach (var descriptor in state.OperationDescriptors)
+        {
+            services.Remove(descriptor);
+        }
+
+        state.OperationDescriptors.Clear();
+        var before = services.ToHashSet();
+        if (state.Options.Enabled)
+        {
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, ProfilingMaintenanceService>());
+        }
+
+        if (state.Options.OperationEnabled)
+        {
+            services.TryAddSingleton<OperationProfilingWriterService>();
+            services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<OperationProfilingWriterService>());
+            // Reverse host stop ordering closes live capture before the writer's bounded drain.
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, OperationProfilingCleanupService>());
+        }
+
+        state.OperationDescriptors.AddRange(services.Where(descriptor => !before.Contains(descriptor)));
     }
 
     private static void ConfigureRuntime(IServiceCollection services, ProfilingRegistrationState state)
@@ -177,7 +263,18 @@ public static class ProfilingServiceCollectionExtensions
 
     private static void RegisterShared(IServiceCollection services, ProfilingOptions options)
     {
-        services.TryAddSingleton<IRuntimeProfilingStore, InMemoryRuntimeProfilingStore>();
+        services.TryAddSingleton<IProfilingStorageProvider>(provider => new InMemoryProfilingStorageProvider(options, provider.GetService<TimeProvider>()));
+        services.TryAddSingleton<IRuntimeProfilingStore>(provider => provider.GetRequiredService<IProfilingStorageProvider>().Runtime);
+        services.TryAddSingleton<IOperationProfilingStore>(provider => provider.GetRequiredService<IProfilingStorageProvider>().Operations);
+        services.TryAddSingleton<OperationProfilingCompletionQueue>();
+        services.TryAddSingleton<IOperationProfilingCompletionSink>(provider => provider.GetRequiredService<OperationProfilingCompletionQueue>());
+        services.TryAddSingleton<OperationProfiler>(provider => new(options, provider.GetRequiredService<IProfilingNodeIdentityProvider>(),
+            provider.GetRequiredService<IOperationProfilingCompletionSink>(), provider.GetService<TimeProvider>(), provider.GetService<IProfilingSafeErrorPolicy>(),
+            () => provider.GetService<RuntimeProfilingActiveSessionContext>()?.Current?.Session,
+            provider.GetService<ILogger<OperationProfiler>>(), provider.GetService<ILogger<ProfilingSegmentScope>>()));
+        services.TryAddSingleton<IOperationProfiler>(provider => provider.GetRequiredService<OperationProfiler>());
+        services.TryAddSingleton<OperationProfilingHealthState>();
+        services.TryAddSingleton<IOperationProfilingHealthSource>(provider => provider.GetRequiredService<OperationProfilingHealthState>());
         services.TryAddSingleton<IProfilingNodeIdentityProvider>(provider => new ProfilingNodeIdentityProvider(
             provider.GetService<TimeProvider>() ?? TimeProvider.System, options.NodeDisplayName, options.ApplicationVersion));
         services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, ProfilingConfigurationValidationService>());
@@ -232,6 +329,9 @@ internal sealed class ProfilingRegistrationState
 {
     public ProfilingOptions Options { get; } = new();
     public bool RuntimeConfigured { get; set; }
+    public bool OperationsConfigured { get; set; }
+    public Type ExplicitProvider { get; set; }
+    public List<ServiceDescriptor> OperationDescriptors { get; } = [];
     public List<ServiceDescriptor> RuntimeDescriptors { get; } = [];
     public List<BroadcastHandlerRegistration> RuntimeHandlers { get; } = [];
 }

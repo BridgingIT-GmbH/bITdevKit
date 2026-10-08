@@ -55,7 +55,7 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
         this.queryOptions.Validate();
         this.clock = clock ?? TimeProvider.System;
         this.queryCodec = new(this.options, this.queryOptions, this.clock, this.querySecret);
-        this.Capabilities = new() { Name = "InMemory", Scope = $"process:{Environment.ProcessId}:{this.epoch:N}", Shared = false };
+        this.Capabilities = new() { Name = "InMemory", Scope = $"process:{Environment.ProcessId}:{this.epoch:N}", Shared = false, OperationRetention = new() { MaximumCount = this.options.MaximumRetainedOperations, MaximumBytes = this.options.MaximumRetainedBytes, MaximumAge = this.options.MaximumOperationAge } };
         this.runtime = new InMemoryRuntimeProfilingStore(this.sync);
         this.runtime.SharedClear = ct => this.ClearAsync(new ProfilingClearRequest { DataSet = ProfilingDataSet.Runtime }, ct);
         this.writers = new(this.epoch, this.storageOptions.MaximumWriterLeases, nodeId => this.runtime.ReleaseSharedNode(nodeId, this.nodeOwners.ContainsKey(nodeId)));
@@ -356,17 +356,19 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
                 runtimeRemoved = clear.RemovedRuntimeSessions - runtimeBefore;
             }
 
+            long retentionRemoved = 0;
             var remaining = request.MaximumRoots - operationsRemoved - runtimeRemoved;
             if (remaining > 0 && this.clock.GetElapsedTime(started) < request.Budget)
             {
-                operationsRemoved += this.Retain(request, (int)remaining, started, cancellationToken);
+                retentionRemoved = this.Retain(request, (int)remaining, started, cancellationToken);
+                operationsRemoved += retentionRemoved;
             }
 
             this.clears.Prune(this.writers, utc);
             this.writers.Prune(utc);
             return Success(new ProfilingMaintenanceResult
             {
-                RemovedOperations = operationsRemoved, RemovedRuntimeSessions = runtimeRemoved, DeletionRevision = this.deletionRevision,
+                RetentionRemovedOperations = retentionRemoved, RemovedOperations = operationsRemoved, RemovedRuntimeSessions = runtimeRemoved, DeletionRevision = this.deletionRevision,
                 RemainingClears = this.clears.Clears.LongCount(c => c.State is ProfilingClearState.Preparing or ProfilingClearState.Applying),
             });
         }

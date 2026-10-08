@@ -9,6 +9,13 @@ namespace BridgingIT.DevKit.Common;
 /// <example><code>services.AddProfiling(o => o.Enabled()).WithOperationProfiling();</code></example>
 public sealed class OperationProfilingOptions
 {
+    private int maximumRetainedOperations = 10000;
+    private long maximumRetainedBytes = 128L * 1024 * 1024;
+    private TimeSpan maximumOperationAge = TimeSpan.FromHours(24);
+    private bool countConfigured;
+    private bool bytesConfigured;
+    private bool ageConfigured;
+
     /// <summary>Gets or sets explicit operation capture enablement.</summary>
     /// <example><code>var value = options.Enabled;</code></example>
     public bool Enabled { get; set; }
@@ -119,17 +126,33 @@ public sealed class OperationProfilingOptions
 
     /// <summary>Gets or sets default in-memory root retention count.</summary>
     /// <example><code>var value = options.MaximumRetainedOperations;</code></example>
-    public int MaximumRetainedOperations { get; set; } = 10000;
+    public int MaximumRetainedOperations { get => this.maximumRetainedOperations; set { this.maximumRetainedOperations = value; this.countConfigured = true; } }
 
     /// <summary>Gets or sets default in-memory charged retention bytes.</summary>
     /// <example><code>var value = options.MaximumRetainedBytes;</code></example>
-    public long MaximumRetainedBytes { get; set; } = 128 * 1024 * 1024;
+    public long MaximumRetainedBytes { get => this.maximumRetainedBytes; set { this.maximumRetainedBytes = value; this.bytesConfigured = true; } }
 
     /// <summary>Gets or sets default in-memory retained age.</summary>
     /// <example><code>var value = options.MaximumOperationAge;</code></example>
-    public TimeSpan MaximumOperationAge { get; set; } = TimeSpan.FromHours(24);
+    public TimeSpan MaximumOperationAge { get => this.maximumOperationAge; set { this.maximumOperationAge = value; this.ageConfigured = true; } }
 
-    internal OperationProfilingOptions Snapshot() => (OperationProfilingOptions)this.MemberwiseClone();
+    /// <summary>Applies provider-specific retention defaults while preserving every explicit setting.</summary>
+    /// <example><code>var effective = options.SnapshotWithRetentionDefaults(100000, null, TimeSpan.FromDays(7));</code></example>
+    public OperationProfilingOptions SnapshotWithRetentionDefaults(int maximumCount, long? maximumBytes, TimeSpan maximumAge)
+    {
+        var copy = this.Snapshot();
+        if (!this.countConfigured) { copy.maximumRetainedOperations = maximumCount; }
+
+        if (!this.bytesConfigured) { copy.maximumRetainedBytes = maximumBytes ?? long.MaxValue; }
+
+        if (!this.ageConfigured) { copy.maximumOperationAge = maximumAge; }
+
+        return copy;
+    }
+
+    /// <summary>Freezes current capture options in an independent copy.</summary>
+    /// <example><code>var effective = options.Snapshot();</code></example>
+    public OperationProfilingOptions Snapshot() => (OperationProfilingOptions)this.MemberwiseClone();
 
     /// <summary>Validates enabled capture limits.</summary>
     /// <example><code>options.Validate();</code></example>

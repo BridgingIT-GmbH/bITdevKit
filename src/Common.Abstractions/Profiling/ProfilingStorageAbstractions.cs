@@ -78,6 +78,10 @@ public enum ProfilingClearState
 /// <example><code>var value = new ProfilingProviderCapabilities();</code></example>
 public sealed record ProfilingProviderCapabilities
 {
+    /// <summary>Gets effective operation retention limits owned by this provider.</summary>
+    /// <example><code>var limits = provider.Capabilities.OperationRetention;</code></example>
+    public ProfilingOperationRetention OperationRetention { get; init; }
+
     /// <summary>Gets the provider identifier.</summary>
     /// <example><code>var value = record.Name;</code></example>
     public string Name { get; init; }
@@ -94,6 +98,23 @@ public sealed record ProfilingProviderCapabilities
     /// <example><code>var value = record.SnapshotConsistentQueries;</code></example>
     public bool SnapshotConsistentQueries { get; init; } = true;
 
+}
+
+/// <summary>Describes effective retention without coupling maintenance to a backend type.</summary>
+/// <example><code>var policy = new ProfilingOperationRetention { MaximumCount = 100000, MaximumAge = TimeSpan.FromDays(7) };</code></example>
+public sealed record ProfilingOperationRetention
+{
+    /// <summary>Gets the maximum number of retained roots.</summary>
+    /// <example><code>var count = policy.MaximumCount;</code></example>
+    public int MaximumCount { get; init; }
+
+    /// <summary>Gets the charged byte bound, or null when count and age provide the bounds.</summary>
+    /// <example><code>var bytes = policy.MaximumBytes;</code></example>
+    public long? MaximumBytes { get; init; }
+
+    /// <summary>Gets the maximum retained completion age measured by provider UTC.</summary>
+    /// <example><code>var age = policy.MaximumAge;</code></example>
+    public TimeSpan MaximumAge { get; init; }
 }
 
 /// <summary>Selects history by dataset and optional half-open completion-UTC interval.</summary>
@@ -331,6 +352,10 @@ public sealed record ProfilingMaintenanceRequest
 /// <example><code>var value = new ProfilingMaintenanceResult();</code></example>
 public sealed record ProfilingMaintenanceResult
 {
+    /// <summary>Gets operation roots removed by retention, excluding explicit clear recovery.</summary>
+    /// <example><code>var evicted = result.RetentionRemovedOperations;</code></example>
+    public long RetentionRemovedOperations { get; init; }
+
     /// <summary>Gets terminal operation roots removed.</summary>
     /// <example><code>var value = record.RemovedOperations;</code></example>
     public long RemovedOperations { get; init; }

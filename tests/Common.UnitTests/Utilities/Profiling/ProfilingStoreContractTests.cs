@@ -261,8 +261,13 @@ public abstract class ProfilingStoreContractTests
 
         // Assert
         result.IsSuccess.ShouldBeTrue();
-        result.Value.ShouldBe(new ProfilingClearResult(1, 1));
-        emptyResult.Value.ShouldBe(new ProfilingClearResult(0, 0));
+        result.Value.RemovedSessionCount.ShouldBe(1);
+        result.Value.RemovedSnapshotCount.ShouldBe(1);
+        result.Value.RemovedOperationCount.ShouldBe(0);
+        result.Value.HasRemainingWork.ShouldBeFalse();
+        emptyResult.Value.RemovedSessionCount.ShouldBe(0);
+        emptyResult.Value.RemovedSnapshotCount.ShouldBe(0);
+        emptyResult.Value.HasRemainingWork.ShouldBeFalse();
         (await store.ListSessionsAsync()).Value.ShouldBeEmpty();
         (await store.GetSessionDataAsync(session.Identity.Key)).IsFailure.ShouldBeTrue();
     }

@@ -31,7 +31,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
         ArgumentNullException.ThrowIfNull(scopes);
         options ??= new ProfilingOptions();
         options.Validate();
-        this.options = options.Operations.Snapshot();
+        this.options = options.Operations.SnapshotWithRetentionDefaults(100000, null, TimeSpan.FromDays(7));
         this.options.Enabled = true;
         this.options.Validate();
         this.storageOptions = options.Storage.Snapshot();
@@ -48,7 +48,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
         var context = scope.ServiceProvider.GetRequiredService<TContext>();
         var connection = context.Database.GetDbConnection();
         var scopeId = Convert.ToHexStringLower(SHA256.HashData(Encoding.UTF8.GetBytes($"{context.Database.ProviderName}\n{connection.DataSource}\n{connection.Database}")));
-        this.Capabilities = new() { Name = "EntityFramework", Scope = "database:" + scopeId, Shared = true };
+        this.Capabilities = new() { Name = "EntityFramework", Scope = "database:" + scopeId, Shared = true, OperationRetention = new() { MaximumCount = this.options.MaximumRetainedOperations, MaximumBytes = this.options.MaximumRetainedBytes == long.MaxValue ? null : this.options.MaximumRetainedBytes, MaximumAge = this.options.MaximumOperationAge } };
         this.runtime = new(scopes);
         this.runtime.SharedClear = token => this.ClearAsync(new() { DataSet = ProfilingDataSet.Runtime }, token);
         this.unitOfWork = new(scopes, new(this.storageOptions, this.Capabilities.Scope));

@@ -153,11 +153,13 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
                 removedRuntime = clear.RemovedRuntimeSessions - beforeRuntime;
             }
 
+            long retentionRemoved = 0;
             var remaining = request.MaximumRoots - removedOperations - removedRuntime;
             if (remaining > 0 && budget.Elapsed < request.Budget)
             {
-                removedOperations += await this.RetainAsync(context, frame, utc, request.MaximumOperationCount, request.MaximumOperationBytes,
+                retentionRemoved = await this.RetainAsync(context, frame, utc, request.MaximumOperationCount, request.MaximumOperationBytes,
                     utc.Subtract(request.MaximumOperationAge).UtcTicks, (int)remaining, budget, request.Budget, token).ConfigureAwait(false);
+                removedOperations += retentionRemoved;
             }
 
             frame.Clears.Prune(frame.Writers, utc);
@@ -165,7 +167,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
             await PruneNodesAsync(context, request.MaximumRoots, token).ConfigureAwait(false);
             return Result<ProfilingMaintenanceResult>.Success(new()
             {
-                RemovedOperations = removedOperations, RemovedRuntimeSessions = removedRuntime,
+                RetentionRemovedOperations = retentionRemoved, RemovedOperations = removedOperations, RemovedRuntimeSessions = removedRuntime,
                 DeletionRevision = checked(frame.State.DeletionRevision + gate.DeletionRevision),
                 RemainingClears = frame.Clears.Clears.LongCount(clear => clear.State is ProfilingClearState.Preparing or ProfilingClearState.Applying),
             });

@@ -16,8 +16,12 @@ internal sealed record OperationProfilingFrame(
 internal sealed class OperationProfilingContext
 {
     private readonly AsyncLocal<OperationProfilingFrame> frame = new();
+    /// <summary>Exposes the Current profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public OperationProfilingFrame Current { get => this.frame.Value; set => this.frame.Value = value; }
 
+    /// <summary>Exposes the Enter profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public IDisposable Enter(OperationProfilingFrame value)
     {
         var previous = this.Current;
@@ -34,6 +38,8 @@ internal sealed class OperationProfilingContext
     {
         private int disposed;
 
+        /// <summary>Exposes the Dispose profiling observation or lifecycle value.</summary>
+        /// <example>Used by the shared profiling writer and its node-local health observations.</example>
         public void Dispose()
         {
             if (Interlocked.Exchange(ref this.disposed, 1) == 0 && (ReferenceEquals(context.Current, entered) || entered?.Invocation is null && entered?.Operation is not null && ReferenceEquals(context.Current?.Operation, entered.Operation)))
@@ -61,20 +67,42 @@ internal sealed class OperationProfilingContext
     }
 }
 
-internal interface IOperationProfilingCompletionSink
+/// <summary>Accepts immutable completed recordings without application-path storage calls.</summary>
+/// <example>Used by the shared profiling writer and its node-local health observations.</example>
+public interface IOperationProfilingCompletionSink
 {
+    /// <summary>Attempts nonblocking acceptance of an immutable completed root.</summary>
+    /// <example><code>var accepted = sink.TryEnqueue(record);</code></example>
     bool TryEnqueue(OperationProfilingRecord record);
 }
 
 internal sealed class OperationProfilingCaptureCounters
 {
+    /// <summary>Exposes the Attempted profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long Attempted;
+    /// <summary>Exposes the Admitted profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long Admitted;
+    /// <summary>Exposes the Rejected profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long Rejected;
+    /// <summary>Exposes the Completed profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long Completed;
+    /// <summary>Exposes the CaptureFaults profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long CaptureFaults;
+    /// <summary>Exposes the CompletionRejected profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long CompletionRejected;
+    /// <summary>Exposes the Expired profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long Expired;
+    /// <summary>Exposes the LateObservations profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long LateObservations;
+    /// <summary>Exposes the LoggingFaults profiling observation or lifecycle value.</summary>
+    /// <example>Used by the shared profiling writer and its node-local health observations.</example>
     public long LoggingFaults;
 }

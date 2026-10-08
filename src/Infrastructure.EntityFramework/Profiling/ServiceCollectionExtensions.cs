@@ -47,33 +47,7 @@ public static class ProfilingEntityFrameworkServiceCollectionExtensions
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        var providerType = typeof(EntityFrameworkRuntimeProfilingStore<TContext>);
-        var registrations = context
-            .Services.Where(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingStore))
-            .ToArray();
-        if (
-            registrations.Any(descriptor =>
-                !IsDefaultStore(descriptor) && !IsSameProvider(descriptor, providerType)
-            )
-        )
-        {
-            throw new InvalidOperationException(
-                "A different profiling store provider is already registered."
-            );
-        }
-
-        context.Services.RemoveAll<IRuntimeProfilingStore>();
-        context.Services.TryAddSingleton<
-            IRuntimeProfilingStore,
-            EntityFrameworkRuntimeProfilingStore<TContext>
-        >();
-
-        return context;
+        return context.WithProvider<EntityFrameworkProfilingStorageProvider<TContext>>(provider =>
+            new(provider.GetRequiredService<IServiceScopeFactory>(), provider.GetRequiredService<ProfilingOptions>(), provider.GetService<TimeProvider>()));
     }
-
-    private static bool IsDefaultStore(ServiceDescriptor descriptor) =>
-        descriptor.ImplementationType?.FullName == "BridgingIT.DevKit.Common.InMemoryRuntimeProfilingStore";
-
-    private static bool IsSameProvider(ServiceDescriptor descriptor, Type providerType) =>
-        descriptor.ImplementationType == providerType;
 }

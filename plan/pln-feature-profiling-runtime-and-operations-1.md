@@ -4,13 +4,13 @@ version: 1.0
 date_created: 2026-10-07
 last_updated: 2026-10-08
 owner: bITdevKit maintainers
-status: Paused
+status: In progress
 tags: [feature, profiling, architecture, persistence, dashboard]
 ---
 
 # Introduction
 
-![Status: Paused](https://img.shields.io/badge/status-Paused-yellow)
+![Status: In progress](https://img.shields.io/badge/status-In_progress-yellow)
 
 Implement [Runtime and Operation Profiling](../docs/specs/spec-profiling-runtime-and-requests.md), including generic operation recording, aggregated segments, periodic provider persistence, the HTTP adapter, feature behaviors, and Runtime/Operations/Requests dashboard views. Preserve Runtime Broadcast behavior. Replace the unused profiling API and storage names without final compatibility aliases.
 
@@ -18,9 +18,11 @@ This is an execution plan, not implementation evidence. All tasks start incomple
 
 ## Execution checkpoint — 2026-10-08 UTC
 
-Paused at the user's request after Implementation Phase 5. TASK-001–TASK-025 are complete and verified; TASK-026–TASK-055 remain incomplete. Phase 6 has not started. Resume with TASK-026, the bounded operation completion queue, then follow the remaining dependencies. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for the verified build and database checks.
+Resumed at the user's request from Implementation Phase 6. TASK-001–TASK-030 are complete and verified; TASK-031–TASK-055 remain incomplete. Continue with Phase 7 (HTTP capture and sampling), then follow the remaining dependencies. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for the verified build and database checks.
 
 ## 1. Requirements & Constraints
+
+Implementation refinement: avoid introducing `internal` modifiers where practical and document every public declaration with XML comments and usage examples. Keep private implementation details private.
 
 The requirement identifiers below match the specification. Task and test identifiers provide implementation traceability.
 
@@ -177,11 +179,11 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 
 | Task | Description | Completed | Date |
 | --- | --- | --- | --- |
-| TASK-026 | Create `src/Common.Utilities/Profiling/Operations/OperationProfilingCompletionQueue.cs`. Transfer payload ownership from live scope to immutable envelope exactly once; assign lease/sequence and publish under one short local boundary. Enforce 8,192-record/64-MiB queue-plus-in-flight limits with explicit reject-incoming results. Drop pre-lease completions as writer-unavailable; preserve active scopes that finish after lease activation. No channel mode may report success while silently dropping data. Depends on: TASK-014, TASK-017. | [ ] | |
-| TASK-027 | Create `src/Common.Utilities/Profiling/Operations/OperationProfilingWriterService.cs`. Synchronize/poll clear state even on idle ticks; capture a lease-qualified queue watermark; flush sequential batches at one-second intervals with 512/4-MiB, eight-start, and 250-ms limits. Apply five-second attempt timeout and two bounded retries after one/two seconds, counting retries against tick budgets. Settle successful members, fence exhausted uncertain commits while reporting Unknown, reject stale leases, coalesce ticks, and never overlap replacement calls with a still-running attempt. Add writer tests using controlled time and fault-injected providers. Depends on: TASK-025, TASK-026. | [ ] | |
-| TASK-028 | Create `src/Common.Utilities/Profiling/Storage/ProfilingMaintenanceService.cs` and `Operations/OperationProfilingHealth.cs`. Resume maintenance independently of enabled capture capabilities; use five-second ticks, 512-root batches, and 250-ms next-batch budget. Report local queue/admission/sample/flush/loss counters separately from shared stored counts/leases. Suppress self-instrumentation, contain worker exceptions, and perform cleanup-before-five-second-drain shutdown ordering. Depends on: TASK-027. | [ ] | |
-| TASK-029 | Finalize `src/Common.Utilities/Profiling/ProfilingServiceCollectionExtensions.cs`, `ProfilingRegistration.cs`, and `ProfilingOptions.cs`, plus `src/Infrastructure.EntityFramework/Profiling/ServiceCollectionExtensions.cs`. Add WithOperationProfiling, WithInMemoryProvider, WithProvider, and WithEntityFrameworkProvider; map both store facets to the same provider façade. Register singleton façade, independent recorder cleanup, operation writer only when enabled, shared retained-history queries/maintenance, and Runtime workers/Broadcast only with Runtime enabled. Validate final composed options regardless of fluent call order and prevent duplicate registrations or conflicting providers. Remove interim Runtime-only wiring superseded by the provider façade. Depends on: TASK-028. | [ ] | |
-| TASK-030 | Add `tests/Common.UnitTests/Utilities/Profiling/ProfilingRegistrationTests.cs` and extend `ProfilingFoundationTests.cs`. Cover omitted AddProfiling, master disabled, each subfeature combination, repeated/reordered fluent calls, invalid limits, two explicit providers, operation-only startup with no Broadcast, initial database outage, disabled façade, and broken explicitly registered DI graphs. Inspect service lifetimes and assert no scoped context is captured. Depends on: TASK-029. | [ ] | |
+| TASK-026 | Create `src/Common.Utilities/Profiling/Operations/OperationProfilingCompletionQueue.cs`. Transfer payload ownership from live scope to immutable envelope exactly once; assign lease/sequence and publish under one short local boundary. Enforce 8,192-record/64-MiB queue-plus-in-flight limits with explicit reject-incoming results. Drop pre-lease completions as writer-unavailable; preserve active scopes that finish after lease activation. No channel mode may report success while silently dropping data. Depends on: TASK-014, TASK-017. | [x] | 2026-10-08 |
+| TASK-027 | Create `src/Common.Utilities/Profiling/Operations/OperationProfilingWriterService.cs`. Synchronize/poll clear state even on idle ticks; capture a lease-qualified queue watermark; flush sequential batches at one-second intervals with 512/4-MiB, eight-start, and 250-ms limits. Apply five-second attempt timeout and two bounded retries after one/two seconds, counting retries against tick budgets. Settle successful members, fence exhausted uncertain commits while reporting Unknown, reject stale leases, coalesce ticks, and never overlap replacement calls with a still-running attempt. Add writer tests using controlled time and fault-injected providers. Depends on: TASK-025, TASK-026. | [x] | 2026-10-08 |
+| TASK-028 | Create `src/Common.Utilities/Profiling/Storage/ProfilingMaintenanceService.cs` and `Operations/OperationProfilingHealth.cs`. Resume maintenance independently of enabled capture capabilities; use five-second ticks, 512-root batches, and 250-ms next-batch budget. Report local queue/admission/sample/flush/loss counters separately from shared stored counts/leases. Suppress self-instrumentation, contain worker exceptions, and perform cleanup-before-five-second-drain shutdown ordering. Depends on: TASK-027. | [x] | 2026-10-08 |
+| TASK-029 | Finalize `src/Common.Utilities/Profiling/ProfilingServiceCollectionExtensions.cs`, `ProfilingRegistration.cs`, and `ProfilingOptions.cs`, plus `src/Infrastructure.EntityFramework/Profiling/ServiceCollectionExtensions.cs`. Add WithOperationProfiling, WithInMemoryProvider, WithProvider, and WithEntityFrameworkProvider; map both store facets to the same provider façade. Register singleton façade, independent recorder cleanup, operation writer only when enabled, shared retained-history queries/maintenance, and Runtime workers/Broadcast only with Runtime enabled. Validate final composed options regardless of fluent call order and prevent duplicate registrations or conflicting providers. Remove interim Runtime-only wiring superseded by the provider façade. Depends on: TASK-028. | [x] | 2026-10-08 |
+| TASK-030 | Add `tests/Common.UnitTests/Utilities/Profiling/ProfilingRegistrationTests.cs` and extend `ProfilingFoundationTests.cs`. Cover omitted AddProfiling, master disabled, each subfeature combination, repeated/reordered fluent calls, invalid limits, two explicit providers, operation-only startup with no Broadcast, initial database outage, disabled façade, and broken explicitly registered DI graphs. Inspect service lifetimes and assert no scoped context is captured. Depends on: TASK-029. | [x] | 2026-10-08 |
 
 ### Implementation Phase 7
 

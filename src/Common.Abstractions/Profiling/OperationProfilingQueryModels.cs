@@ -436,6 +436,63 @@ public sealed record OperationProfilingRuntimeOverlay
 /// <example><code>var value = new OperationProfilingHealth();</code></example>
 public sealed record OperationProfilingHealth
 {
+    /// <summary>Gets queued records currently owned by one active provider attempt.</summary>
+    /// <example><code>var active = health.InFlightRecords;</code></example>
+    public long InFlightRecords { get; init; }
+
+    /// <summary>Gets charged bytes owned by the active provider attempt, included in total queue bytes.</summary>
+    /// <example><code>var bytes = health.InFlightPayloadBytes;</code></example>
+    public long InFlightPayloadBytes { get; init; }
+
+    /// <summary>Gets the node-local QueueOldestAge observation.</summary>
+    /// <example><code>var value = health.QueueOldestAge;</code></example>
+    public TimeSpan QueueOldestAge { get; init; }
+
+    /// <summary>Gets the node-local WriterStalled observation.</summary>
+    /// <example><code>var value = health.WriterStalled;</code></example>
+    public bool WriterStalled { get; init; }
+
+    /// <summary>Gets the node-local PersistenceFaults observation.</summary>
+    /// <example><code>var value = health.PersistenceFaults;</code></example>
+    public long PersistenceFaults { get; init; }
+
+    /// <summary>Gets the node-local RetryAttempts observation.</summary>
+    /// <example><code>var value = health.RetryAttempts;</code></example>
+    public long RetryAttempts { get; init; }
+
+    /// <summary>Gets the node-local LastAttemptUtc observation.</summary>
+    /// <example><code>var value = health.LastAttemptUtc;</code></example>
+    [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
+    public DateTimeOffset LastAttemptUtc { get; init; }
+
+    /// <summary>Gets the node-local EligibleRequests observation.</summary>
+    /// <example><code>var value = health.EligibleRequests;</code></example>
+    public long EligibleRequests { get; init; }
+
+    /// <summary>Gets the node-local SelectedRequests observation.</summary>
+    /// <example><code>var value = health.SelectedRequests;</code></example>
+    public long SelectedRequests { get; init; }
+
+    /// <summary>Gets the node-local SamplingErrors observation.</summary>
+    /// <example><code>var value = health.SamplingErrors;</code></example>
+    public long SamplingErrors { get; init; }
+
+    /// <summary>Gets the node-local RetentionRemovals observation.</summary>
+    /// <example><code>var value = health.RetentionRemovals;</code></example>
+    public long RetentionRemovals { get; init; }
+
+    /// <summary>Gets the node-local CountersNodeId observation.</summary>
+    /// <example><code>var value = health.CountersNodeId;</code></example>
+    public Guid CountersNodeId { get; init; }
+
+    /// <summary>Gets the node-local ProviderShared observation.</summary>
+    /// <example><code>var value = health.ProviderShared;</code></example>
+    public bool ProviderShared { get; init; }
+
+    /// <summary>Gets the node-local CaptureEnabled observation.</summary>
+    /// <example><code>var value = health.CaptureEnabled;</code></example>
+    public bool CaptureEnabled { get; init; }
+
     /// <summary>Gets cumulative admitted roots.</summary>
     /// <example><code>var value = record.AdmittedOperations;</code></example>
     public long AdmittedOperations { get; init; }

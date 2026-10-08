@@ -211,4 +211,3 @@ public sealed record OperationProfilingRuntimeGap
     public string Reason { get; init; }
 
 }
-

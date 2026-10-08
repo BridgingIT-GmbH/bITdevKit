@@ -399,3 +399,24 @@ Verification:
 - Focused HTTP suite: **70 passed, 0 failed, 0 skipped**; `/tmp/bitdevkit-profiling-phase7-http.log` and `phase7-http.trx`.
 - Sequential profiling regressions: Common **300 passed**, Presentation **118 passed**, no failures/skips. Logs `/tmp/bitdevkit-profiling-phase7-{Common.UnitTests,Presentation.UnitTests}.log`, TRX files under `/tmp/bitdevkit-profiling-contract-results`.
 - `git diff --check` passes. Phase 8 and subsequent tasks remain outstanding.
+
+## Phase 8 — optional feature behaviors (2026-10-08 UTC)
+
+TASK-036–TASK-039 are implemented. Jobs and Pipelines use their existing behavior registrations; Orchestrations has an idempotent `WithProfilingBehavior()` pairing action instrumentation with bounded executor slices. Omitted Profiling returns the original delegate Task/ValueTask without installing dependencies. Registered-disabled and suppressed capture execute unchanged. Existing owners receive segments; independent workers clear inherited ownership before starting their own operation. Task-based adapters preserve their native Task contract, and Pipeline ValueTask sources are consumed exactly once.
+
+The integrations record stable job/pipeline/orchestration definition keys, nested action/step paths and bounded metadata. Repeated attempts aggregate, never-invoked pipeline steps produce no samples, and durable orchestration waits close the current slice. Resume creates another correlated slice. Domain failures, timeouts, cancellation, exceptions and compensation retain business behavior and independent root/segment outcomes. Instrumentation cannot dispose an owner's outer scope.
+
+Verification used a stable final solution build followed by sequential `--no-build` tests:
+
+| Check | Result | Evidence |
+| --- | --- | --- |
+| `dotnet build --no-restore` | Zero warnings/errors; 2:30.35 | `/tmp/bitdevkit-profiling-phase8-solution-final.log` |
+| Common Profiling/Pipeline tests | 375 passed, zero failures/skips | `/tmp/bitdevkit-profiling-phase8-common-final.log` |
+| Application Jobs/JobScheduling/Orchestration tests | 425 passed, zero failures/skips | `/tmp/bitdevkit-profiling-phase8-application-final.log` |
+| Presentation Profiling tests | 118 passed, zero failures/skips | `/tmp/bitdevkit-profiling-phase8-presentation-final.log` |
+| New behavior tests | 43 passing cases included above | `JobProfilingBehaviorTests`, `PipelineProfilingBehaviorTests`, `OrchestrationProfilingBehaviorTests` |
+| New public adapter declarations | XML documented; no internal declarations | Source inspection and `git diff --check` |
+
+A cancellation assertion originally used Shouldly's synthetic canceled-task exception; direct-await checks now prove original exception identity and token preservation. A pre-existing lost-clear-ack test had a scheduling-dependent administrative-counter assertion. It now explicitly waits for clear sealing before the append, proving the intended fence rather than relying on scheduling order. The final complete rerun above passes both checks.
+
+The overhaul remains incomplete. Continue with TASK-040–TASK-055; no query/dashboard/performance completion is claimed by this phase.

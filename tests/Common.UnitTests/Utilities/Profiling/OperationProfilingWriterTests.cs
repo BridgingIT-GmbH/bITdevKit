@@ -269,6 +269,7 @@ public sealed class OperationProfilingWriterTests
         var cutoff = h.Queue.Watermark().Sequence;
         var clears = new List<long>();
         var attempt = 0;
+        Task<IResult<ProfilingClearResult>> clearing = null;
         h.Store.AcknowledgeClearAsync(Arg.Any<ProfilingClearAcknowledgement>(), Arg.Any<CancellationToken>()).Returns(async call =>
         {
             var acknowledgement = call.Arg<ProfilingClearAcknowledgement>();
@@ -280,9 +281,11 @@ public sealed class OperationProfilingWriterTests
                 return Result<ProfilingClearAcknowledgement>.Failure(new ProfilingPersistenceError(true, true));
             }
 
+            // Make the append exercise the sealed fence, rather than racing the clear coordinator.
+            await clearing;
             return result;
         });
-        var clearing = h.Real.ClearAsync(new() { DataSet = ProfilingDataSet.Operations });
+        clearing = h.Real.ClearAsync(new() { DataSet = ProfilingDataSet.Operations });
         await h.Writer.TickAsync();
         await h.Writer.TickAsync();
         (await clearing.WaitAsync(TimeSpan.FromSeconds(5))).IsSuccess.ShouldBeTrue();

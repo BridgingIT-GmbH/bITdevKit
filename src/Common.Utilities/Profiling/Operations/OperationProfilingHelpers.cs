@@ -142,6 +142,16 @@ public static class OperationProfilingHelpers
         return await RunAsync(JoinOrStart(profiling, key, kind), work, cancellationToken, classify).ConfigureAwait(false);
     }
 
+    /// <summary>Joins or owns a Task execution with bounded host metadata, preserving Task cancellation exceptions.</summary>
+    /// <example><code>await profiling.JoinOrStartAsync(new OperationProfilingStartRequest { Key = "job:cleanup", Kind = "Job" }, (_, ct) => ExecuteAsync(ct), token);</code></example>
+    public static async Task<T> JoinOrStartAsync<T>(this IOperationProfiler profiling, OperationProfilingStartRequest request,
+        Func<IProfilingRecordingScope, CancellationToken, Task<T>> work, CancellationToken cancellationToken = default,
+        Func<T, ProfilingResultClassification> classify = null)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+        return await RunAsync(JoinOrStart(profiling, request), work, cancellationToken, classify).ConfigureAwait(false);
+    }
+
     /// <summary>Explicitly classifies the devkit's Result contract without storing result payloads or raw messages.</summary>
     /// <example><code>var value = await profiling.RunSegmentAsync("Read", (_, ct) => ReadAsync(ct), cancellationToken, value => ClassifyResult(value));</code></example>
     public static ProfilingResultClassification ClassifyResult(IResult result) => result is null ? null : new()
@@ -158,21 +168,52 @@ public static class OperationProfilingHelpers
         Failure = result.IsFailure ? new ProfilingFailureDescriptor { Source = "Result", Code = "Failure" } : null,
     };
 
-    internal static async ValueTask<T> RunSegmentValueTaskAsync<T>(IOperationProfiler profiling, string key,
+    /// <summary>Runs one ValueTask-producing delegate in a child segment without converting it to Task.</summary>
+    /// <example><code>await profiling.RunSegmentValueTaskAsync("step:read", (_, ct) => ReadAsync(ct), token);</code></example>
+    public static async ValueTask<T> RunSegmentValueTaskAsync<T>(this IOperationProfiler profiling, string key,
         Func<IProfilingSegmentScope, CancellationToken, ValueTask<T>> work, CancellationToken cancellationToken,
-        Func<T, ProfilingResultClassification> classify = null) =>
-        await RunValueTaskAsync(Start(() => profiling.BeginSegment(key), NoSegment.Instance), work, cancellationToken, classify).ConfigureAwait(false);
+        Func<T, ProfilingResultClassification> classify = null)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+        return await RunValueTaskAsync(Start(() => profiling.BeginSegment(key), NoSegment.Instance), work, cancellationToken, classify).ConfigureAwait(false);
+    }
 
-    internal static async ValueTask<T> JoinOrStartValueTaskAsync<T>(IOperationProfiler profiling, string key, OperationProfilingKind kind,
+    /// <summary>Joins the current boundary with a segment or owns a root when no operation exists.</summary>
+    /// <example><code>await profiling.JoinOrStartValueTaskAsync("pipeline:Import", OperationProfilingKind.Pipeline, (_, ct) => RunAsync(ct), token);</code></example>
+    public static async ValueTask<T> JoinOrStartValueTaskAsync<T>(this IOperationProfiler profiling, string key, OperationProfilingKind kind,
         Func<IProfilingRecordingScope, CancellationToken, ValueTask<T>> work, CancellationToken cancellationToken,
-        Func<T, ProfilingResultClassification> classify = null) => await RunValueTaskAsync(JoinOrStart(profiling, key, kind), work, cancellationToken, classify).ConfigureAwait(false);
+        Func<T, ProfilingResultClassification> classify = null)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+        return await RunValueTaskAsync(JoinOrStart(profiling, key, kind), work, cancellationToken, classify).ConfigureAwait(false);
+    }
+
+    /// <summary>Joins or owns a ValueTask execution with bounded host metadata and a non-owning correlation ID.</summary>
+    /// <example><code>await profiling.JoinOrStartValueTaskAsync(new OperationProfilingStartRequest { Key = "job:cleanup", Kind = "Job" }, (_, ct) => ExecuteAsync(ct), token);</code></example>
+    public static async ValueTask<T> JoinOrStartValueTaskAsync<T>(this IOperationProfiler profiling, OperationProfilingStartRequest request,
+        Func<IProfilingRecordingScope, CancellationToken, ValueTask<T>> work, CancellationToken cancellationToken = default,
+        Func<T, ProfilingResultClassification> classify = null)
+    {
+        ArgumentNullException.ThrowIfNull(work);
+        return await RunValueTaskAsync(JoinOrStart(profiling, request), work, cancellationToken, classify).ConfigureAwait(false);
+    }
+
+    private static IProfilingRecordingScope JoinOrStart(IOperationProfiler profiling, OperationProfilingStartRequest request)
+    {
+        try
+        {
+            return (profiling is null ? (IProfilingRecordingScope)NoOperation.Instance : profiling.Current is null
+                ? profiling.BeginOperation(request) : profiling.BeginSegment(request.Key)) ?? NoOperation.Instance;
+        }
+        catch (Exception) { return NoOperation.Instance; }
+    }
 
     private static IProfilingRecordingScope JoinOrStart(IOperationProfiler profiling, string key, OperationProfilingKind kind)
     {
         try
         {
-            return profiling is null ? NoOperation.Instance : profiling.Current is null
-                ? profiling.BeginOperation(key, kind) : profiling.BeginSegment(key);
+            return (profiling is null ? (IProfilingRecordingScope)NoOperation.Instance : profiling.Current is null
+                ? profiling.BeginOperation(key, kind) : profiling.BeginSegment(key)) ?? NoOperation.Instance;
         }
         catch (Exception)
         {
@@ -337,36 +378,63 @@ public static class OperationProfilingHelpers
 
     private sealed class NoOperation : IProfilingOperationScope
     {
+        /// <inheritdoc />
         public static NoOperation Instance { get; } = new();
+        /// <inheritdoc />
         public Guid Id => Guid.Empty;
+        /// <inheritdoc />
         public bool IsRecording => false;
+        /// <inheritdoc />
         public void Complete() { }
+        /// <inheritdoc />
         public void Cancel() { }
+        /// <inheritdoc />
         public void Abort() { }
+        /// <inheritdoc />
         public void Dispose() { }
+        /// <inheritdoc />
         public void Fail(Exception exception) { }
+        /// <inheritdoc />
         public void Fail(ProfilingFailureDescriptor failure) { }
+        /// <inheritdoc />
         public void SetKey(string key) { }
+        /// <inheritdoc />
         public void SetDimension(string key, object value) { }
+        /// <inheritdoc />
         public void SetMeasurement(string key, object value, string unit) { }
+        /// <inheritdoc />
         public void SetSource(ProfilingAdapterMetadata metadata) { }
+        /// <inheritdoc />
         public void SetHttpMetadata(HttpRequestProfilingMetadata metadata) { }
+        /// <inheritdoc />
         public void MarkClassificationFailed() { }
+        /// <inheritdoc />
         public IProfilingSegmentScope BeginSegment(string key, string displayName = null) => NoSegment.Instance;
     }
 
     private sealed class NoSegment : IProfilingSegmentScope
     {
+        /// <inheritdoc />
         public static NoSegment Instance { get; } = new();
+        /// <inheritdoc />
         public bool IsRecording => false;
+        /// <inheritdoc />
         public void Complete() { }
+        /// <inheritdoc />
         public void Cancel() { }
+        /// <inheritdoc />
         public void Dispose() { }
+        /// <inheritdoc />
         public void Fail(Exception exception) { }
+        /// <inheritdoc />
         public void Fail(ProfilingFailureDescriptor failure) { }
+        /// <inheritdoc />
         public void SetDimension(string key, object value) { }
+        /// <inheritdoc />
         public void SetMeasurement(string key, object value, string unit, MeasurementAggregation aggregation = MeasurementAggregation.Sum) { }
+        /// <inheritdoc />
         public void MarkClassificationFailed() { }
+        /// <inheritdoc />
         public IProfilingSegmentScope BeginSegment(string key, string displayName = null) => this;
     }
 }

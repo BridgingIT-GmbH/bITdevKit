@@ -16,6 +16,7 @@ using Microsoft.Extensions.Logging.Abstractions;
 public partial class JobSchedulerBackgroundService : BackgroundService
 {
     private readonly TimeProvider timeProvider;
+    private readonly IOperationProfiler profiling;
     private readonly JobSchedulerService scheduler;
     private readonly IHostApplicationLifetime applicationLifetime;
     private readonly JobSchedulerHostedOptions options;
@@ -28,9 +29,8 @@ public partial class JobSchedulerBackgroundService : BackgroundService
     private Task startupTask;
     private DateTimeOffset schedulerStartedUtc;
 
-    /// <summary>
-    /// Initializes a new instance of the <see cref="JobSchedulerBackgroundService"/> class.
-    /// </summary>
+    /// <summary>Initializes the scheduler worker, optionally isolating profiling ownership at independent job entries.</summary>
+    /// <example>Registered by AddJobs; Profiling registration is optional.</example>
     public JobSchedulerBackgroundService(
         TimeProvider timeProvider,
         JobSchedulerService scheduler,
@@ -38,8 +38,10 @@ public partial class JobSchedulerBackgroundService : BackgroundService
         JobSchedulerHostedOptions options = null,
         IEnumerable<IJobSchedulerExceptionHandler> exceptionHandlers = null,
         ILoggerFactory loggerFactory = null,
-        IMetricsService metricsService = null)
+        IMetricsService metricsService = null,
+        IOperationProfiler profiling = null)
     {
+        this.profiling = profiling;
         this.timeProvider = timeProvider ?? throw new ArgumentNullException(nameof(timeProvider));
         this.scheduler = scheduler ?? throw new ArgumentNullException(nameof(scheduler));
         this.applicationLifetime = applicationLifetime ?? throw new ArgumentNullException(nameof(applicationLifetime));
@@ -254,6 +256,7 @@ public partial class JobSchedulerBackgroundService : BackgroundService
 
     private async Task RunWorkerAsync(Guid occurrenceId, CancellationToken cancellationToken)
     {
+        using var boundary = this.BeginProfilingBoundary();
         await this.concurrencyGate.WaitAsync(cancellationToken).ConfigureAwait(false);
         try
         {
@@ -267,6 +270,12 @@ public partial class JobSchedulerBackgroundService : BackgroundService
         {
             this.concurrencyGate.Release();
         }
+    }
+
+    private IDisposable BeginProfilingBoundary()
+    {
+        try { return this.profiling?.BeginExecutionBoundary(); }
+        catch (Exception) { return null; }
     }
 
     private static partial class TypedLogger

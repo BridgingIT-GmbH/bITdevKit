@@ -82,6 +82,16 @@ public static class ServiceCollectionExtensions
         return context;
     }
 
+    /// <summary>Registers optional action profiling and its paired bounded executor adapter exactly once.</summary>
+    /// <example><code>services.AddOrchestrations().WithProfilingBehavior();</code></example>
+    public static OrchestrationBuilderContext WithProfilingBehavior(this OrchestrationBuilderContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        context.Services.TryAddSingleton<OrchestrationProfilingExecutionScope>();
+        context.Services.TryAddEnumerable(ServiceDescriptor.Scoped<IOrchestrationBehavior, OrchestrationProfilingBehavior>());
+        return context;
+    }
+
     /// <summary>
     /// Adds a behavior that wraps orchestration activity execution by registering a behavior type.
     /// </summary>

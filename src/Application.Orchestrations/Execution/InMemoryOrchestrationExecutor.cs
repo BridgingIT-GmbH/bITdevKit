@@ -36,6 +36,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private readonly OrchestrationExecutionSettings executionSettings;
     private readonly ILogger<InMemoryOrchestrationExecutor> logger;
     private readonly IMetricsService metricsService;
+    private readonly OrchestrationProfilingExecutionScope profiling;
     private readonly ConcurrentDictionary<Guid, byte> scheduledTimerWatchers = new ConcurrentDictionary<Guid, byte>();
     private readonly AsyncLocal<ActivityCheckpointSession> currentCheckpointSession = new();
 
@@ -147,6 +148,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         this.executionSettings = serviceProvider.GetService<OrchestrationExecutionSettings>() ?? new OrchestrationExecutionSettings();
         this.logger = (serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance).CreateLogger<InMemoryOrchestrationExecutor>();
         this.metricsService = serviceProvider.GetService<IMetricsService>();
+        this.profiling = serviceProvider.GetService<OrchestrationProfilingExecutionScope>();
     }
 
     /// <inheritdoc />
@@ -586,7 +588,11 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             instanceId,
             typeof(TOrchestration).Name);
 
-        _ = Task.Run(() => this.ContinueInstanceCoreAsync<TOrchestration, TData>(instanceId, CancellationToken.None));
+        _ = Task.Run(async () =>
+        {
+            using var boundary = this.profiling?.BeginIndependentExecutionBoundary();
+            await this.ContinueInstanceCoreAsync<TOrchestration, TData>(instanceId, CancellationToken.None).ConfigureAwait(false);
+        });
     }
 
     internal async Task ContinueInstanceAsync(Guid instanceId, CancellationToken cancellationToken = default)
@@ -789,7 +795,17 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         }
     }
 
-    private async Task ProcessContextAsync<TData>(
+    private Task ProcessContextAsync<TData>(
+        OrchestrationDefinition<TData> definition,
+        OrchestrationContext<TData> context,
+        OrchestrationInstanceSnapshot snapshot,
+        LeaseHandle lease,
+        CancellationToken cancellationToken)
+        where TData : class, IOrchestrationData =>
+        this.profiling is null ? this.ProcessContextCoreAsync(definition, context, snapshot, lease, cancellationToken)
+            : this.profiling.RunAsync(context, () => this.ProcessContextCoreAsync(definition, context, snapshot, lease, cancellationToken), cancellationToken);
+
+    private async Task ProcessContextCoreAsync<TData>(
         OrchestrationDefinition<TData> definition,
         OrchestrationContext<TData> context,
         OrchestrationInstanceSnapshot snapshot,
@@ -1669,6 +1685,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
         _ = Task.Run(async () =>
         {
+            using var boundary = this.profiling?.BeginIndependentExecutionBoundary();
             try
             {
                 var delay = timer.DueTimeUtc - this.clock.UtcNow;

@@ -14,14 +14,24 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 /// <param name="scopeFactory">The scope factory used to create execution scopes.</param>
 /// <param name="tracker">The in-memory execution tracker.</param>
-/// <param name="loggerFactory">The logger factory used for internal pipeline logging.</param>
+/// <param name="loggerFactory">The logger factory used for pipeline logging.</param>
+/// <param name="validationInvoker">The execution context validator.</param>
+/// <param name="profiling">Optional profiling used only to isolate independently scheduled execution.</param>
+/// <example><code>services.AddPipelines().WithPipeline&lt;ImportPipeline&gt;();</code></example>
 public class PipelineRuntime(
     IServiceScopeFactory scopeFactory,
     InMemoryPipelineExecutionTracker tracker,
     ILoggerFactory loggerFactory,
-    IPipelineContextValidationInvoker validationInvoker) : IPipelineRuntime
+    IPipelineContextValidationInvoker validationInvoker,
+    IOperationProfiler profiling = null) : IPipelineRuntime
 {
     private readonly ILogger logger = loggerFactory.CreateLogger<PipelineRuntime>();
+
+    private IDisposable BeginProfilingBoundary()
+    {
+        try { return profiling?.BeginExecutionBoundary(); }
+        catch (Exception) { return null; }
+    }
 
     /// <inheritdoc />
     public async Task<Result> ExecuteAsync(
@@ -64,6 +74,7 @@ public class PipelineRuntime(
 
         _ = Task.Run(async () =>
         {
+            using var boundary = BeginProfilingBoundary();
             PipelineCompletion completion = null;
 
             try

@@ -131,7 +131,7 @@ Base URL: `https://localhost:5001`
 |---|---|---|
 | GET | `/api/core/cities/alerts` | Weather alerts for all subscribed cities |
 | GET | `/api/core/cities/{cityId}/sun?days={days}` | Sunrise/sunset data |
-| GET | `/api/core/cities/compare` | Compare weather across cities (body: city IDs) |
+| POST | `/api/core/cities/compare` | Compare weather across cities (body: city IDs) |
 | GET | `/api/core/cities/export` | Export all subscribed cities weather as CSV |
 | GET | `/api/core/cities/{cityId}/weather/export?days={days}` | Export forecast for specific city |
 | GET | `/api/core/cities/{cityId}/recommendations` | Weather recommendations |
@@ -235,15 +235,43 @@ Available users: `luke.skywalker`, `leia.organa`, `han.solo`, `darth.vader`, etc
 - OpenAPI spec: `https://localhost:5001/openapi.json`
 - Scalar UI: `https://localhost:5001/scalar/`
 
+### Profiling
+
+Development enables Runtime, Operation and Request Profiling with the in-memory provider. The dashboard keeps its existing OpenID Connect authentication and Administrators role requirement. Profiling and its dashboard are disabled outside Development.
+
+The registration in [Program.cs](WeatherFiesta.Presentation.Web.Server/Program.cs) is:
+
+```csharp
+builder.Services.AddProfiling(o => o.Enabled(builder.Environment.IsDevelopment()))
+    .WithRuntimeProfiling()
+    .WithOperationProfiling()
+    .WithRequestProfiling(o => o
+        .StripPathPrefix("/api")
+        .Blacklist("/_bdk/**", "/healthz", "/swagger/**", "/scalar/**", "/openapi/**"))
+    .WithInMemoryProvider()
+    .AddConsoleCommands(builder.Environment.IsDevelopment());
+```
+
+Eligible API requests are captured by default. The outer middleware follows request correlation; the exception observer runs after exception handling and before routing. The default operation key strips `/api`, while the recorded HTTP path retains it. Completed records become visible after periodic persistence; dashboard reads do not force a flush. In-memory history belongs to this process and is lost when it exits.
+
+1. Sign in to `/_bdk/dashboard` as an administrator. Runtime, Operations and Requests are separate profiling views.
+2. Call `GET /api/core/cities/alerts`, then copy its `X-Request-Profiling-Id` response header into **Find exact ID** on the Requests view. The record includes the default `/core/cities/alerts` key, HTTP status/method, duration and response-byte quality.
+3. With a subscription that allows comparison, call `POST /api/core/cities/compare` with a JSON array of city IDs. [WeatherEndpoints.cs](WeatherFiesta.Presentation.Web.Server/Modules/Core/Endpoints/WeatherEndpoints.cs) sets `weather:compare`, the numeric `cityCount` dimension and a `Query` segment. Group by `cityCount` to compare matching workloads. A rejected comparison also records the failed segment while preserving its business response.
+4. Start a Runtime profiling session and manually dispatch `core_profiling_stress` from the Jobs dashboard. The development-only [WeatherProfilingStressJob](WeatherFiesta.Presentation.Web.Server/Modules/Core/Jobs/WeatherProfilingStressJob.cs) owns or joins `weather:profiling-stress` and records `Cpu`, `Allocate` and `Retain` segments alongside its Runtime measurement. Its operation detail relates Runtime observations by executing-process identity and timestamps. Runtime metrics describe the process, not CPU or memory attributed to that operation.
+
+The workload deliberately generates CPU, allocation and GC pressure; dispatch it only when that load is intended. It is a manual example, not an automatic production job. Shared profiling contracts, defaults and provider configuration are documented in the [application-neutral profiling guide](../../docs/features-profiling.md).
+
 ## Testing
 
 Integration tests in `WeatherFiesta.IntegrationTests` use:
 
-- **InMemory EF Core provider** — each `WebApplicationFactory` instance gets a unique DB name
+- **Isolated SQL Server databases** — Docker-backed fixtures give each application factory its own database; the factory also supports an InMemory fallback
 - **No mocks for internal logic** — real handlers, ActiveEntity, and IRequester pipeline execute
 - **Only external HTTP services mocked** — `IWeatherAgent` and `IWeatherGeocodingClient` via NSubstitute
 - **Test authentication** — `TestAuthenticationHandler` returns a fully authenticated user with `CoreAdmin` role
-- **Seeded test data** — `TestData.SeedAsync` populates the InMemory database
+- **Seeded test data** — `TestData.SeedAsync` populates the isolated database
+
+[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
 
 ```bash
 # Run integration tests

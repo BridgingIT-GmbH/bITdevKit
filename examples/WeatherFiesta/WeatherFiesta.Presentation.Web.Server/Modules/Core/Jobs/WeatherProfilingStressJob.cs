@@ -13,7 +13,7 @@ using BridgingIT.DevKit.Common;
 /// Runs a bounded local workload that produces observable CPU, allocation, heap, and GC pressure.
 /// </summary>
 /// <param name="logger">The structured logger.</param>
-/// <param name="measurements">The Profiling measurement service.</param>
+/// <param name="measurements">The Runtime Profiling measurement service.</param>
 /// <param name="profiling">Optional independent operation timing; omitted registration preserves the workload.</param>
 /// <param name="profile">An optional workload profile; the bounded local defaults are used otherwise.</param>
 /// <example>
@@ -239,15 +239,15 @@ public sealed record WeatherProfilingStressProfile
     /// <example><code>var profile = new WeatherProfilingStressProfile { WorkerCount = 2 };</code></example>
     public int WorkerCount { get; init; } = Math.Max(1, Environment.ProcessorCount - 1);
 
-    /// <summary>Gets how long the CPU saturation phase runs.</summary>
+    /// <summary>Gets how long the CPU saturation segment runs.</summary>
     /// <example><code>var profile = new WeatherProfilingStressProfile { CpuDuration = TimeSpan.FromSeconds(8) };</code></example>
     public TimeSpan CpuDuration { get; init; } = TimeSpan.FromSeconds(8);
 
-    /// <summary>Gets the total managed bytes allocated during the allocation phase.</summary>
+    /// <summary>Gets the total managed bytes allocated during the allocation segment.</summary>
     /// <example><code>var profile = new WeatherProfilingStressProfile { AllocationBytes = 192L * 1024 * 1024 };</code></example>
     public long AllocationBytes { get; init; } = 192L * 1024 * 1024;
 
-    /// <summary>Gets the allocated bytes kept reachable through the post-GC observation phase.</summary>
+    /// <summary>Gets the allocated bytes kept reachable through the post-GC observation segment.</summary>
     /// <example><code>var profile = new WeatherProfilingStressProfile { RetainedBytes = 64L * 1024 * 1024 };</code></example>
     public long RetainedBytes { get; init; } = 64L * 1024 * 1024;
 

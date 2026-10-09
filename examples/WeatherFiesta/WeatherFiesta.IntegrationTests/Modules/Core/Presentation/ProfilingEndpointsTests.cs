@@ -1,0 +1,416 @@
+// MIT-License
+// Copyright BridgingIT GmbH - All Rights Reserved
+// Use of this source code is governed by an MIT-style license that can be
+// found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
+
+namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation;
+
+using System.Text.Json;
+using BridgingIT.DevKit.Application.Jobs;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
+using Microsoft.AspNetCore.Hosting.Server;
+using Microsoft.AspNetCore.Hosting.Server.Features;
+
+/// <summary>Verifies the real WeatherFiesta HTTP, job and authorized profiling dashboard composition.</summary>
+/// <param name="factory">The existing isolated database and external collaborator fixture.</param>
+/// <param name="output">Current test output.</param>
+/// <example><code>dotnet test --filter FullyQualifiedName~ProfilingEndpointsTests</code></example>
+[Trait("Category", "Integration")]
+[Collection(WeatherFiestaTestCollection.Name)]
+public sealed class ProfilingEndpointsTests(
+    WeatherFiestaApplicationFactory factory,
+    ITestOutputHelper output
+) : IAsyncLifetime
+{
+    private WebApplicationFactory<Program> host;
+    private HttpClient client;
+
+    /// <inheritdoc/>
+    public async Task InitializeAsync()
+    {
+        factory.SetOutput(output);
+        Rule.Settings.Logger = new RuleLogger(
+            factory.Services.GetRequiredService<ILogger<RuleLogger>>()
+        );
+        await factory.ResetDatabaseAsync();
+        this.host = CreateProfiledFactory(factory);
+        this.host.UseKestrel(0);
+        var address = this
+            .host.Services.GetRequiredService<IServer>()
+            .Features.Get<IServerAddressesFeature>()
+            .Addresses.Single();
+        this.client = this.host.CreateClient(
+            new() { AllowAutoRedirect = false, BaseAddress = new Uri(address) }
+        );
+        ActiveEntityConfigurator.SetGlobalServiceProvider(this.host.Services);
+        await WaitUntilAsync(() =>
+            Task.FromResult(
+                this.host.Services.GetRequiredService<IOperationProfilingHealthSource>()
+                    .GetSnapshot()
+                    .WriterActive
+            )
+        );
+    }
+
+    /// <inheritdoc/>
+    public async Task DisposeAsync()
+    {
+        this.client?.Dispose();
+        ActiveEntityConfigurator.SetGlobalServiceProvider(factory.Services);
+        Rule.Settings.Logger = new RuleLogger(
+            factory.Services.GetRequiredService<ILogger<RuleLogger>>()
+        );
+        if (this.host is not null)
+        {
+            await this.host.DisposeAsync();
+        }
+    }
+
+    /// <summary>The outer adapter captures default path keys and real response metadata without endpoint opt-in.</summary>
+    [Fact]
+    public async Task DefaultRequest_PeriodicallyPersistsPathAndHttpMetadata()
+    {
+        using var response = await this.client.GetAsync("/api/core/cities/alerts");
+        var body = await response.Content.ReadAsByteArrayAsync();
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var id = GetId(response);
+        var record = await this.WaitForRecordAsync(id);
+
+        record.Key.ShouldBe("/core/cities/alerts");
+        record.Kind.ShouldBe(nameof(OperationProfilingKind.HttpRequest));
+        record.Http.Method.ShouldBe("GET");
+        record.Http.Path.ShouldBe("/api/core/cities/alerts");
+        record.Http.StatusCode.ShouldBe(200);
+        record.Http.ResponseBytes.ShouldBe(body.LongLength);
+        record.Http.ResponseBytesQuality.ShouldBe(ProfilingObservationQuality.Complete);
+        record.Duration.ShouldBeGreaterThan(TimeSpan.Zero);
+        record.StartedUtc.Offset.ShouldBe(TimeSpan.Zero);
+        record.CompletedUtc.ShouldBeGreaterThanOrEqualTo(record.StartedUtc);
+        record.Node.Identity.Id.ShouldNotBe(Guid.Empty);
+    }
+
+    /// <summary>The controller enriches one root while segment classification preserves both rejected and successful business responses.</summary>
+    [Fact]
+    public async Task Compare_EnrichesKeyDimensionAndQuerySegment_ForBothResults()
+    {
+        var cities = new[]
+        {
+            TestData.LondonCityGuid.ToString(),
+            TestData.ParisCityGuid.ToString(),
+        };
+        using var denied = await this.client.PostAsJsonAsync("/api/core/cities/compare", cities);
+        denied.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        var failedRecord = await this.WaitForRecordAsync(GetId(denied));
+        AssertComparison(failedRecord, 400, ProfilingSegmentOutcome.Failed);
+
+        using (var scope = this.host.Services.CreateScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<CoreDbContext>();
+            var subscription = await context.UserSubscriptions.SingleAsync(value =>
+                value.UserId == TestData.TestUserId
+            );
+            subscription.ChangePlan(SubscriptionPlan.Basic, SubscriptionBillingCycle.Monthly);
+            await context.SaveChangesAsync();
+        }
+
+        using var accepted = await this.client.PostAsJsonAsync("/api/core/cities/compare", cities);
+        accepted.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var result = await accepted.Content.ReadFromJsonAsync<CityCompareResponse>();
+        result.Cities.ShouldNotBeEmpty();
+        var record = await this.WaitForRecordAsync(GetId(accepted));
+        AssertComparison(record, 200, ProfilingSegmentOutcome.Completed);
+        record.Id.ShouldNotBe(failedRecord.Id);
+    }
+
+    /// <summary>Full, partial and dashboard-only JSON routes preserve anonymous and role authorization and are excluded from capture.</summary>
+    [Fact]
+    public async Task Dashboard_ProtectsAllViewsAndInternalReads_WithoutProfilingItself()
+    {
+        var routes = new[]
+        {
+            "/profiling/runtime",
+            "/profiling/runtime/content",
+            "/profiling/runtime/status",
+            "/profiling/operations",
+            "/profiling/operations/content",
+            "/profiling/requests",
+            "/profiling/requests/content",
+            "/profiling/operations/api/records",
+            "/profiling/operations/api/groups",
+            "/profiling/operations/api/health",
+        };
+        foreach (var route in routes)
+        {
+            var url = "/_bdk/dashboard" + route;
+            using var anonymous = await this.client.GetAsync(url);
+            anonymous.StatusCode.ShouldBe(HttpStatusCode.Unauthorized, route);
+            using var forbidden = await SendDashboardAsync(this.client, url, "user");
+            forbidden.StatusCode.ShouldBe(HttpStatusCode.Forbidden, route);
+            forbidden.Headers.Contains("X-Request-Profiling-Id").ShouldBeFalse();
+            using var authorized = await SendDashboardAsync(this.client, url, "admin");
+            authorized.StatusCode.ShouldBe(HttpStatusCode.OK, route);
+            authorized.Headers.Contains("X-Request-Profiling-Id").ShouldBeFalse();
+            (await authorized.Content.ReadAsStringAsync()).ShouldNotBeNullOrWhiteSpace();
+        }
+
+        using var health = await this.client.GetAsync("/healthz");
+        health.Headers.Contains("X-Request-Profiling-Id").ShouldBeFalse();
+        this.host.Services.GetRequiredService<IOperationProfilingHealthSource>()
+            .GetSnapshot()
+            .CompletedOperations.ShouldBe(0);
+    }
+
+    /// <summary>The example's default Testing environment disables capture and dashboard mapping without changing its business endpoint.</summary>
+    [Fact]
+    public async Task DisabledHost_PreservesBusinessResponseWithoutCaptureOrDashboard()
+    {
+        using var client = factory.CreateClient(new() { AllowAutoRedirect = false });
+        using var response = await client.GetAsync("/api/core/cities/alerts");
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Headers.Contains("X-Request-Profiling-Id").ShouldBeFalse();
+        using var dashboard = await client.GetAsync("/_bdk/dashboard/profiling/operations");
+        dashboard.StatusCode.ShouldBe(HttpStatusCode.NotFound);
+    }
+
+    /// <summary>The real non-HTTP workload uses independent operation ownership and relates to observed Runtime evidence.</summary>
+    [Fact]
+    public async Task StressJob_RecordsThreeSegmentsAndRuntimeOverlay()
+    {
+        var registry = this.host.Services.GetRequiredService<IBroadcastRegistryStore>();
+        await WaitUntilAsync(async () => (await registry.GetActiveAsync(["default"])).Count == 1);
+        var control = this.host.Services.GetRequiredService<IRuntimeProfilingControlService>();
+        var started = await control.StartAsync(
+            new("WeatherFiesta integration", Duration: TimeSpan.FromSeconds(20))
+        );
+        started.IsSuccess.ShouldBeTrue();
+        try
+        {
+            (await control.SnapshotAsync()).IsSuccess.ShouldBeTrue();
+            var job = ActivatorUtilities.CreateInstance<WeatherProfilingStressJob>(
+                this.host.Services
+            );
+            var context = Substitute.For<IJobExecutionContext<Unit>>();
+            context.Messages.Returns(new List<string>());
+            var result = await job.ExecuteAsync(context);
+            result.IsSuccess.ShouldBeTrue();
+            context.Messages.ShouldHaveSingleItem().ShouldContain("profiling stress completed");
+            (await control.SnapshotAsync()).IsSuccess.ShouldBeTrue();
+            var queries = this.host.Services.GetRequiredService<IOperationProfilingQueryService>();
+            OperationProfilingRecord record = null;
+            await WaitUntilAsync(async () =>
+            {
+                var selection = await queries.QueryAsync(
+                    new()
+                    {
+                        Key = "weather:profiling-stress",
+                        FromUtc = DateTimeOffset.UtcNow.AddMinutes(-1),
+                        ToUtc = DateTimeOffset.UtcNow.AddMinutes(1),
+                    }
+                );
+                selection.IsSuccess.ShouldBeTrue();
+                record = selection.Value.Records.SingleOrDefault();
+                return record is not null;
+            });
+            record.Kind.ShouldBe(nameof(OperationProfilingKind.Job));
+            record.Http.ShouldBeNull();
+            record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
+            record
+                .Segments.Select(value => value.Path.Components.Single())
+                .Order()
+                .ShouldBe(["Allocate", "Cpu", "Retain"]);
+            record.Segments.ShouldAllBe(value => value.Statistics.Count == 1);
+            var overlay = await queries.GetRuntimeOverlayAsync(record.Id);
+            overlay.IsSuccess.ShouldBeTrue();
+            overlay.Value.Available.ShouldBeTrue();
+            overlay.Value.Sessions.ShouldContain(value =>
+                value.Identity.Id == started.Value.Session.Identity.Id
+            );
+            overlay.Value.Snapshots.ShouldAllBe(value => value.NodeId == record.Node.Identity.Id);
+            using var detail = await SendDashboardAsync(
+                this.client,
+                $"/_bdk/dashboard/profiling/operations/{record.Id}",
+                "admin"
+            );
+            detail.StatusCode.ShouldBe(HttpStatusCode.OK);
+            (await detail.Content.ReadAsStringAsync()).ShouldContain("weather:profiling-stress");
+        }
+        finally
+        {
+            (await control.StopAsync()).IsSuccess.ShouldBeTrue();
+        }
+    }
+
+    /// <summary>Creates the full application with only test authentication, bounded workload and explicit profiling enablement overrides.</summary>
+    /// <param name="factory">The existing isolated database and external service fixture.</param>
+    /// <returns>A child host retaining production routes, middleware and business handlers.</returns>
+    /// <example><code>using var host = ProfilingEndpointsTests.CreateProfiledFactory(factory);</code></example>
+    public static WebApplicationFactory<Program> CreateProfiledFactory(
+        WeatherFiestaApplicationFactory factory
+    ) =>
+        factory.WithWebHostBuilder(builder =>
+            builder.ConfigureServices(services =>
+            {
+                services.AddBroadcasting(options =>
+                    options.Enabled().StartupDelay(TimeSpan.Zero).DatabaseReadiness(enabled: false)
+                );
+                services
+                    .AddProfiling(options => options.Enabled())
+                    .WithRuntimeProfiling()
+                    .WithOperationProfiling()
+                    .WithRequestProfiling(options =>
+                        options
+                            .StripPathPrefix("/api")
+                            .Blacklist(
+                                "/_bdk/**",
+                                "/healthz",
+                                "/swagger/**",
+                                "/scalar/**",
+                                "/openapi/**"
+                            )
+                    )
+                    .WithInMemoryProvider();
+                services.AddDashboard(options =>
+                    options
+                        .Enabled()
+                        .Authorize(auth =>
+                            auth.AuthenticationScheme("WeatherProfilingTest")
+                                .RequireRole(Role.Administrators)
+                        )
+                );
+                services
+                    .AddAuthentication()
+                    .AddScheme<
+                        AuthenticationSchemeOptions,
+                        ProfilingDashboardAuthenticationHandler
+                    >("WeatherProfilingTest", _ => { });
+                services.AddSingleton(
+                    new WeatherProfilingStressProfile
+                    {
+                        WorkerCount = 1,
+                        CpuDuration = TimeSpan.FromMilliseconds(20),
+                        AllocationBytes = 1024 * 1024,
+                        RetainedBytes = 256 * 1024,
+                        AllocationBlockBytes = 64 * 1024,
+                        AllocationBatchBytes = 128 * 1024,
+                        AllocationBatchDelay = TimeSpan.Zero,
+                        PostGcHoldDuration = TimeSpan.FromMilliseconds(100),
+                    }
+                );
+            })
+        );
+
+    private static void AssertComparison(
+        OperationProfilingRecord record,
+        int status,
+        ProfilingSegmentOutcome outcome
+    )
+    {
+        record.Key.ShouldBe("weather:compare");
+        var dimension = record.Dimensions.Single(value => value.Key == "cityCount");
+        dimension.Value.ShouldBe(new ProfilingValue(ProfilingValueType.Int64, "2"));
+        record.Http.StatusCode.ShouldBe(status);
+        record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
+        var segment = record.Segments.ShouldHaveSingleItem();
+        segment.Path.Components.ShouldBe(["Query"]);
+        segment.Statistics.Count.ShouldBe(1);
+        segment.Outcomes.ShouldHaveSingleItem().Outcome.ShouldBe(outcome);
+    }
+
+    private static Guid GetId(HttpResponseMessage response) =>
+        Guid.Parse(response.Headers.GetValues("X-Request-Profiling-Id").Single());
+
+    private async Task<OperationProfilingRecord> WaitForRecordAsync(Guid id)
+    {
+        OperationProfilingRecord record = null;
+        var queries = this.host.Services.GetRequiredService<IOperationProfilingQueryService>();
+        await WaitUntilAsync(async () =>
+        {
+            var result = await queries.FindAsync(id);
+            result.IsSuccess.ShouldBeTrue();
+            record = result.Value;
+            return record is not null;
+        });
+        using var response = await SendDashboardAsync(
+            this.client,
+            $"/_bdk/dashboard/profiling/operations/api/records/{id}",
+            "admin"
+        );
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        json.RootElement.GetProperty("id").GetGuid().ShouldBe(id);
+        return record;
+    }
+
+    private static Task<HttpResponseMessage> SendDashboardAsync(
+        HttpClient client,
+        string url,
+        string role
+    )
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get, url);
+        request.Headers.Add("X-Test-Dashboard-Role", role);
+        return SendAsync(client, request);
+    }
+
+    private static async Task<HttpResponseMessage> SendAsync(
+        HttpClient client,
+        HttpRequestMessage request
+    )
+    {
+        using (request)
+        {
+            return await client.SendAsync(request);
+        }
+    }
+
+    private static async Task WaitUntilAsync(Func<Task<bool>> condition)
+    {
+        var deadline = DateTimeOffset.UtcNow.AddSeconds(15);
+        while (DateTimeOffset.UtcNow < deadline)
+        {
+            if (await condition())
+            {
+                return;
+            }
+
+            await Task.Delay(25);
+        }
+
+        throw new TimeoutException("WeatherFiesta profiling did not reach the expected state.");
+    }
+}
+
+/// <summary>Supplies explicit anonymous, member or administrator identities only in the profiling test host.</summary>
+/// <param name="options">Authentication options.</param>
+/// <param name="logger">Test logging.</param>
+/// <param name="encoder">Header encoding.</param>
+/// <example><code>services.AddAuthentication().AddScheme&lt;AuthenticationSchemeOptions, ProfilingDashboardAuthenticationHandler&gt;("WeatherProfilingTest", _ => { });</code></example>
+public sealed class ProfilingDashboardAuthenticationHandler(
+    IOptionsMonitor<AuthenticationSchemeOptions> options,
+    ILoggerFactory logger,
+    UrlEncoder encoder
+) : AuthenticationHandler<AuthenticationSchemeOptions>(options, logger, encoder)
+{
+    /// <inheritdoc/>
+    protected override Task<AuthenticateResult> HandleAuthenticateAsync()
+    {
+        var role = this.Request.Headers["X-Test-Dashboard-Role"].ToString();
+        if (role is not ("admin" or "user"))
+        {
+            return Task.FromResult(AuthenticateResult.NoResult());
+        }
+
+        var identity = new ClaimsIdentity(
+            [
+                new Claim(ClaimTypes.NameIdentifier, TestData.TestUserId),
+                new Claim(ClaimTypes.Role, role == "admin" ? Role.Administrators : "Users"),
+            ],
+            this.Scheme.Name
+        );
+        return Task.FromResult(
+            AuthenticateResult.Success(
+                new AuthenticationTicket(new ClaimsPrincipal(identity), this.Scheme.Name)
+            )
+        );
+    }
+}

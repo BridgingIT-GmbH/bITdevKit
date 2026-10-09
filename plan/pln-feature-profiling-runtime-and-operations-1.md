@@ -4,13 +4,13 @@ version: 1.0
 date_created: 2026-10-07
 last_updated: 2026-10-09
 owner: bITdevKit maintainers
-status: In progress
+status: Completed
 tags: [feature, profiling, architecture, persistence, dashboard]
 ---
 
 # Introduction
 
-![Status: In progress](https://img.shields.io/badge/status-In_progress-yellow)
+![Status: Completed](https://img.shields.io/badge/status-Completed-brightgreen)
 
 Implement [Runtime and Operation Profiling](../docs/specs/spec-profiling-runtime-and-requests.md), including generic operation recording, aggregated segments, periodic provider persistence, the HTTP adapter, feature behaviors, and Runtime/Operations/Requests dashboard views. Preserve Runtime Broadcast behavior. Replace the unused profiling API and storage names without final compatibility aliases.
 
@@ -18,7 +18,7 @@ This is an execution plan, not implementation evidence. All tasks start incomple
 
 ## Execution checkpoint — 2026-10-09 UTC
 
-Resumed at the user's explicit request. TASK-001–TASK-051 and refinement TASK-056–TASK-057 are complete and verified; TASK-052–TASK-053 are verified; TASK-054–TASK-055 are verified; TASK-058–TASK-059 remain incomplete. The 84-trial original matrix and corrected 21-trial memory rerun passed. Feature, workspace and documentation/site acceptance passed. Complete final WeatherFiesta integration next. The historical [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remains as evidence. Complete documentation and the MkDocs site build before the final WeatherFiesta application integration/verification in Phase 13. The basic reference wiring delivered in Phase 11 is retained; Phase 13 verifies it in the complete application. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for passing checks.
+All 59 tasks, including refinements TASK-056–TASK-057 and final application integration TASK-058–TASK-059, are implemented and verified. The accepted 84-trial capacity matrix uses the corrected 21-trial memory rerun and preserved 63 EF trials; original measurements remain historical evidence. The solution build, workspace unit/integration tasks, feature acceptance and documentation/site build passed. Final WeatherFiesta checks passed 55 unit and 109 integration tests, followed by browser verification and another complete MkDocs/API build. The profiling guide and specification remain application-neutral; example setup is documented in the application's README. The historical [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remains as evidence. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for results, existing skips/warnings and measurement limitations. No planned task remains outstanding.
 
 ## 1. Requirements & Constraints
 
@@ -61,6 +61,7 @@ The requirement identifiers below match the specification. Task and test identif
 - **CON-006**: Change only profiling-specific uses of names such as `WithEntityFrameworkStore`. File monitoring and other feature overloads keep their names and behavior. Preserve user changes and run full builds/test commands sequentially.
 - **CON-007**: Use existing .NET 10 projects and centrally managed dependencies. No new production package is required. Reuse `TimeProvider`, BCL synchronization, current logging, RazorSlices, EF, and existing SQL Server/PostgreSQL test fixtures.
 - **CON-008**: Final public APIs have XML documentation and compile-checked examples. Nullable annotations remain disabled. Code examples use tabs; source code follows the repository `.editorconfig`.
+- **CON-009**: Keep `docs/features-profiling.md` and the generic profiling specification application-neutral. Document WeatherFiesta-specific registration, workloads and verification in `examples/WeatherFiesta/WeatherFiesta-README.md` and implementation evidence.
 - **SEC-001**: Never retain bodies, SQL text, arguments/results, raw query strings, exception objects, stack dumps, application scopes, or service providers in completed records. Error messages require a bounded host sanitization policy.
 - **SEC-002**: All profiling views, HTML content, detail, and JSON routes remain under dashboard enablement and authorization. JSON is dashboard-internal. IDs and paging cursors confer no authorization; metadata renders as text.
 - **SEC-003**: Suppress profiling's own writer/query/provider instrumentation. HTTP blacklist and sampling suppression also prevent nested explicit helpers and behaviors from creating replacement roots.
@@ -275,8 +276,8 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 
 | Task | Description | Completed | Date |
 | --- | --- | --- | --- |
-| TASK-058 | Review and finalize the existing Phase 11 wiring in `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs`, `Modules/Core/Endpoints/WeatherEndpoints.cs` and `Modules/Core/Jobs/WeatherProfilingStressJob.cs` against the accepted API. Keep development enablement, in-memory storage, dashboard authorization and middleware ordering. Demonstrate `weather:compare`/`cityCount`/`Query` request enrichment, and owned or joined `weather:profiling-stress` jobs with Cpu/Allocate/Retain segments and existing Runtime measurement. Reuse these paths; add no unrelated endpoints or schema changes. Depends on: TASK-055. | [ ] | |
-| TASK-059 | Add or extend `examples/WeatherFiesta/WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs` using the existing application factory and isolated fixture. Verify profiled request ID lookup, default path and enriched key/dimensions/segments, periodic persistence visibility, blacklist exclusion, enabled Runtime/Operations/Requests views and preserved authorization. Use deterministic fixture data and controlled collaborators instead of external weather calls. Run the WeatherFiesta unit/integration suites sequentially, validate the application dashboard in a browser, and record evidence. Update `docs/features-profiling.md` with the verified WeatherFiesta example, rerun affected site validation, then mark the complete plan finished only after every task passes. Commit/push this application phase separately. Depends on: TASK-058. | [ ] | |
+| TASK-058 | Review and finalize the existing Phase 11 wiring in `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs`, `Modules/Core/Endpoints/WeatherEndpoints.cs` and `Modules/Core/Jobs/WeatherProfilingStressJob.cs` against the accepted API. Keep development enablement, in-memory storage, dashboard authorization and middleware ordering. Demonstrate `weather:compare`/`cityCount`/`Query` request enrichment, and owned or joined `weather:profiling-stress` jobs with Cpu/Allocate/Retain segments and existing Runtime measurement. Reuse these paths; add no unrelated endpoints or schema changes. Depends on: TASK-055. | [x] | 2026-10-09 |
+| TASK-059 | Add or extend `examples/WeatherFiesta/WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs` using the existing application factory and isolated fixture. Verify profiled request ID lookup, default path and enriched key/dimensions/segments, periodic persistence visibility, blacklist exclusion, enabled Runtime/Operations/Requests views and preserved authorization. Use deterministic fixture data and controlled collaborators instead of external weather calls. Run the WeatherFiesta unit/integration suites sequentially, validate the application dashboard in a browser, and record evidence. Keep `docs/features-profiling.md` application-neutral; record verified example setup in `examples/WeatherFiesta/WeatherFiesta-README.md` and implementation evidence, rerun affected site validation, then mark the complete plan finished only after every task passes. Commit/push this application phase separately. Depends on: TASK-058. | [x] | 2026-10-09 |
 
 ## 3. Alternatives
 
@@ -328,6 +329,7 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | FILE-020 | `plan/pln-feature-profiling-runtime-and-operations-1-evidence.md` | New implementation evidence, rename inventory, requirements coverage, commands and performance results. |
 | FILE-021 | `mkdocs.yml`, `docs/site/scripts/sync-docs.ps1`, `docs/site/scripts/build-pages.ps1`, `docs/site/reference/features-profiling.md` | Validate generated documentation and navigation; fix profiling documentation generation if required. |
 | FILE-022 | `examples/WeatherFiesta/WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs` | New complete-application profiling integration checks. |
+| FILE-023 | `examples/WeatherFiesta/WeatherFiesta-README.md` | Application-specific profiling setup and verification workflow; shared profiling documentation remains application-neutral. |
 
 ## 6. Testing
 

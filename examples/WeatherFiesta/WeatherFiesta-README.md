@@ -255,6 +255,8 @@ Core's seven Active Entity registrations include `AddProfilingBehavior()`. Entit
 
 Requester registers `ProfilingRequestBehavior<,>` before its other behaviors. Notifier registers `ProfilingNotificationBehavior<,>` and `ProfilingNotificationHandlerBehavior<,>`. A request such as `requester:CityCompareQuery` contributes a segment beneath `Query`; awaited notifications include individual handler segments. Fire-and-forget notification handlers own independent operations. These registrations remain usable when Profiling is disabled or omitted.
 
+Messaging and Queueing register `MessageHandlerProfilingBehavior` and `QueueHandlerProfilingBehavior` before their other handler behaviors. Hello-world message and queue handlers create independent consumer operations with their executing-node identity. Their nested work contributes segments; producer capture and consumer capture retain separate ownership. Profiling timing excludes queue residence and transport acknowledgement. Use the Operations view's **Exact node GUID** filter for that process's records.
+
 1. Sign in to `/_bdk/dashboard` as an administrator. Runtime, Operations and Requests are separate profiling views.
 2. Call `GET /api/core/cities/alerts`, then copy its `X-Request-Profiling-Id` response header into **Find exact ID** on the Requests view. The record includes the default `/core/cities/alerts` key, HTTP status/method, duration and response-byte quality.
 3. With a subscription that allows comparison, call `POST /api/core/cities/compare` with a JSON array of city IDs. [WeatherEndpoints.cs](WeatherFiesta.Presentation.Web.Server/Modules/Core/Endpoints/WeatherEndpoints.cs) sets `weather:compare`, the numeric `cityCount` dimension and a `Query` segment. Group by `cityCount` to compare matching workloads. A rejected comparison also records the failed segment while preserving its business response.
@@ -272,7 +274,7 @@ Integration tests in `WeatherFiesta.IntegrationTests` use:
 - **Test authentication** — `TestAuthenticationHandler` returns a fully authenticated user with `CoreAdmin` role
 - **Seeded test data** — `TestData.SeedAsync` populates the isolated database
 
-[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
+[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, independent broker handler capture and executing-node filters, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
 
 ```bash
 # Run integration tests

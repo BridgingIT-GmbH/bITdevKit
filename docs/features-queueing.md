@@ -516,6 +516,19 @@ For Entity Framework, the most relevant broker-specific retention options are:
 - `AutoArchiveAfter` to archive terminal messages automatically after a retention period.
 - `AutoArchiveStatuses` to limit auto-archival to specific terminal states such as `Succeeded`, `DeadLettered`, or `Expired`.
 
+## Handler profiling
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddQueueing().WithBehavior<QueueHandlerProfilingBehavior>();
+```
+
+`QueueHandlerProfilingBehavior` is an optional `IQueueHandlerBehavior`. It records `queueing:{message type name}:handler:{handler type name}` with kind `QueueHandler`. Broker handler entry points isolate the consumer's profiling context from the producer. Direct behavior calls join an active operation as segments or start an independent operation. Nested work uses the shared recorder; completed captures enter periodic persistence without storage access during handling.
+
+The measured boundary is the downstream handler pipeline after lookup, deserialization and handler resolution. Enqueue time, queue residence, transport receive and acknowledgement are excluded. Register profiling before a retry behavior to include its policy duration, or inside it to measure exposed attempts. Redelivery starts a new operation. Returned completion, thrown failures and matching requested cancellation are recorded without changing queue status, retry or dead-letter rules. Unregistered, expired or pre-canceled messages that never reach the pipeline produce no handler sample.
+
+Bounded dimensions identify the full message and handler types. An existing string `CorrelationId` of at most 128 characters correlates independent roots; message contents and arbitrary metadata are excluded. Omitted or disabled Profiling is safe, and typed/instance profiling registration is idempotent. Every operation identifies its executing consumer node. See [Profiling](features-profiling.md#messaging-and-queue-handler-behaviors) for capture faults, segment aggregation, storage and per-node analysis.
+
 ## Runtime behavior
 
 - Duplicate handlers fail fast. A second handler for the same queue message type is rejected.

@@ -7,6 +7,8 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation
 
 using System.Text.Json;
 using BridgingIT.DevKit.Application.Jobs;
+using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -182,6 +184,89 @@ public sealed class ProfilingEndpointsTests(
         dashboard.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    /// <summary>The application's real broker pipelines record independent handlers on the executing node through periodic persistence.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task BrokerHandlers_RecordIndependentConsumerAndNodeFilter(bool queue)
+    {
+        using var scope = this.host.Services.CreateScope();
+        var services = scope.ServiceProvider;
+        var profiling = services.GetRequiredService<IOperationProfiler>();
+        using var producer = profiling.BeginOperation("integration:producer");
+        var correlation = Guid.NewGuid().ToString("N");
+        var key = queue
+            ? "queueing:WeatherHelloWorldQueueMessage:handler:WeatherHelloWorldQueueMessageHandler"
+            : "messaging:WeatherHelloWorldMessage:handler:WeatherHelloWorldMessageHandler";
+        if (queue)
+        {
+            services
+                .GetServices<IQueueHandlerBehavior>()
+                .OfType<QueueHandlerProfilingBehavior>()
+                .ShouldHaveSingleItem();
+            var broker = services.GetRequiredService<IQueueBrokerRuntime>();
+            // This fixture removes the hosted queue subscription service; messaging subscribes during broker construction.
+            await broker.Subscribe<
+                WeatherHelloWorldQueueMessage,
+                WeatherHelloWorldQueueMessageHandler
+            >();
+            var message = new WeatherHelloWorldQueueMessage();
+            message.Properties[DevKit.Application.Queueing.Constants.CorrelationIdKey] =
+                correlation;
+            QueueProcessingResult? result = null;
+            await broker.Process(
+                new QueueMessageRequest(message, value => result = value, CancellationToken.None)
+            );
+            result.ShouldBe(QueueProcessingResult.Succeeded);
+        }
+        else
+        {
+            services
+                .GetServices<IMessageHandlerBehavior>()
+                .OfType<MessageHandlerProfilingBehavior>()
+                .ShouldHaveSingleItem();
+            var broker = services.GetRequiredService<IMessageBrokerRuntime>();
+            var message = new WeatherHelloWorldMessage();
+            message.Properties[DevKit.Application.Messaging.Constants.CorrelationIdKey] =
+                correlation;
+            bool? result = null;
+            await broker.Process(
+                new MessageRequest(message, value => result = value, CancellationToken.None)
+            );
+            result.ShouldBe(true);
+        }
+
+        profiling.Current.ShouldBeSameAs(producer);
+        producer.Complete();
+        producer.Dispose();
+        var node = services.GetRequiredService<IProfilingNodeIdentityProvider>().GetNode();
+        var queries = services.GetRequiredService<IOperationProfilingQueryService>();
+        OperationProfilingRecord record = null;
+        await WaitUntilAsync(async () =>
+        {
+            var selected = await queries.QueryAsync(
+                new()
+                {
+                    Key = key,
+                    CorrelationId = correlation,
+                    NodeId = node.Identity.Id,
+                }
+            );
+            selected.IsSuccess.ShouldBeTrue();
+            record = selected.Value.Records.SingleOrDefault();
+            return record is not null;
+        });
+        record.Kind.ShouldBe(queue ? "QueueHandler" : "MessageHandler");
+        record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
+        record.Id.ShouldNotBe(producer.Id);
+        record.Node.Identity.ShouldBe(node.Identity);
+        record.Node.HostName.ShouldBe(node.HostName);
+        record.Node.ProcessId.ShouldBe(node.ProcessId);
+        record.Node.ProcessStartedUtc.ShouldBe(node.ProcessStartedUtc);
+        record.Http.ShouldBeNull();
+        (await this.WaitForRecordAsync(producer.Id)).Segments.ShouldBeEmpty();
+    }
+
     /// <summary>The real non-HTTP workload uses independent operation ownership and relates to observed Runtime evidence.</summary>
     [Fact]
     public async Task StressJob_RecordsThreeSegmentsAndRuntimeOverlay()
@@ -309,7 +394,9 @@ public sealed class ProfilingEndpointsTests(
         dimension.Value.ShouldBe(new ProfilingValue(ProfilingValueType.Int64, "2"));
         record.Http.StatusCode.ShouldBe(status);
         record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
-        var segment = record.Segments.Single(value => value.Key == "Query" && value.Path.Components.Count == 1);
+        var segment = record.Segments.Single(value =>
+            value.Key == "Query" && value.Path.Components.Count == 1
+        );
         segment.Path.Components.ShouldBe(["Query"]);
         segment.Statistics.Count.ShouldBe(1);
         segment.Outcomes.ShouldHaveSingleItem().Outcome.ShouldBe(outcome);

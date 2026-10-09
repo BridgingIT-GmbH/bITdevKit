@@ -497,7 +497,21 @@ Behaviors wrap the publish and handle pipelines to add cross-cutting concerns co
 - Publisher behaviors: implement `IMessagePublisherBehavior` and wrap `Publish(...)`.
 - Handler behaviors: implement `IMessageHandlerBehavior` and wrap `Handle(...)`.
 
-Common built-ins include module scoping, metrics, retry, timeout, and optional chaos injection. Add them through the messaging builder's `.WithBehavior<TBehavior>()` method.
+Common built-ins include module scoping, metrics, optional profiling, retry, timeout, and optional chaos injection. Add them through the messaging builder's `.WithBehavior<TBehavior>()` method.
+
+### Handler profiling
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddMessaging()
+    .WithBehavior<MessageHandlerProfilingBehavior>()
+    .WithBehavior<RetryMessageHandlerBehavior>();
+```
+
+The optional `MessageHandlerProfilingBehavior` records `messaging:{message type name}:handler:{handler type name}` with kind `MessageHandler`. Broker handler pipelines establish a fresh consumer boundary, preserving the producer's context. Direct behavior calls join an active operation or start one independently. Bounded dimensions identify the full message and handler types; message contents are excluded. An existing bounded string `CorrelationId` is retained for independent roots.
+
+Timing covers the downstream handler pipeline. Subscription lookup, deserialization, handler resolution, pre-pipeline semaphore waiting and transport acknowledgement remain outside it. Registration before retry includes the retry policy; inside retry it measures each exposed attempt. Exceptions and matching caller cancellation are recorded without changing the broker's retry/completion rules. Missing or disabled Profiling remains safe. Typed/instance profiling registration is idempotent. See [Profiling](features-profiling.md#messaging-and-queue-handler-behaviors) for nesting, persistence, executing-node filters and worker ownership.
+
 
 ### Creating a custom publisher behavior
 
@@ -578,6 +592,7 @@ Notes:
 | ModuleScopeMessageHandlerBehavior | Handler | Propagate module context into handlers | Multi-module applications that use module context |
 | MetricsMessagePublisherBehavior | Publisher | Emit publish counters/timers | Applications that collect messaging metrics |
 | MetricsMessageHandlerBehavior | Handler | Emit handler counters/timers | Applications that collect messaging metrics |
+| MessageHandlerProfilingBehavior | Handler | Record independent consumer operations and nested work | Optional timing analysis with executing-node attribution |
 | RetryMessageHandlerBehavior | Handler | Retry transient failures in handlers | Use when handlers call unreliable external systems; ensure idempotency |
 | TimeoutMessageHandlerBehavior | Handler | Enforce a time budget for handling | Use to prevent runaway handlers; set sensible defaults |
 | ChaosExceptionMessageHandlerBehavior | Handler | Fault injection for resilience testing | Use only in test/staging to validate recovery |

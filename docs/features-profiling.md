@@ -240,6 +240,31 @@ In fire-and-forget mode, dispatch timing ends after scheduling. Each handler est
 
 All three behaviors accept an optional `IOperationProfiler` and classify `IResult` outcomes through the shared safe helper. They preserve business results, exceptions and cancellation, and perform no storage access. Metadata contains bounded full type names, without message contents, options, request IDs or result payloads. Normal joined execution honors caller suppression. Repeated registration of these behaviors through their respective builders is idempotent; other behavior ordering remains unchanged. Place profiling outside retry to measure the full policy, or inside retry to aggregate executed attempts.
 
+### Messaging and queue handler behaviors
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddMessaging().WithBehavior<MessageHandlerProfilingBehavior>();
+services.AddQueueing().WithBehavior<QueueHandlerProfilingBehavior>();
+```
+
+`MessageHandlerProfilingBehavior` implements `IMessageHandlerBehavior`; `QueueHandlerProfilingBehavior` implements `IQueueHandlerBehavior`. Both accept optional `IOperationProfiler`. Typed and instance registration is idempotent; factory registrations retain the builder's ordinary behavior. Omitted or disabled Profiling leaves handler execution unchanged. The behaviors use the shared completion queue and periodic writer without accessing storage on the handler path.
+
+Keys identify the runtime message and handler types: `messaging:{message type name}:handler:{handler type name}` and `queueing:{message type name}:handler:{handler type name}`. Independent roots use kinds `MessageHandler` and `QueueHandler`. Direct behavior calls join an active operation as segments and honor caller suppression. Repeated calls aggregate by complete segment path. Equal short type names share a key; full type names remain bounded dimensions.
+
+Broker handler entry points use `IProfilingExecutionBoundaryBehavior` to establish a fresh profiling boundary before invoking the pipeline. Every consumer handler therefore owns an independent operation, even when a worker inherited a producer's operation or suppression. The caller's context is restored afterward. This applies to in-process and external transports, including EF workers that process individual stored subscriptions. Nested service, repository or manually timed work becomes segments of the consumer operation. Handler completion can occur after the producer's capture closes.
+
+Timing starts when the profiling behavior runs, after subscription lookup, handler resolution and deserialization. It excludes publishing, queue residence, transport receipt, broker readiness checks, semaphore waiting before the pipeline and acknowledgement afterward. Register profiling before retry/timeout behaviors to include their downstream policy duration; register it inside retry to record each exposed attempt. A later transport redelivery starts another operation. A successfully returned handler is `Completed`; thrown exceptions are `Failed`. Only requested cancellation carrying the supplied handler token is `Canceled`. The existing broker still owns its completion, acknowledgement, retry and dead-letter rules. Profiling does not infer delivery guarantees or record handlers that never ran.
+
+Bounded dimensions contain `messaging.messageType`, `messaging.handlerType`, `queueing.messageType` and `queueing.handlerType`. An existing string `CorrelationId` of at most 128 characters can correlate independent consumer roots with the producer. Arbitrary property values are never stringified. Message bodies, business IDs, headers and result payloads are not retained. Metadata, scope and restoration faults preserve exactly-once business invocation and its original exception.
+
+### Executing nodes and per-node analysis
+
+Every operation stores the cached executing-process `ProfilingNode`: its GUID and readable key, hostname, display name, process ID, process-start UTC and application version. Consumer records describe the node that ran the handler; producer metadata never substitutes for it. Segments belong to their operation's node. Node GUIDs distinguish separate processes on one host and change after a restart; a display name is not a unique identity.
+
+The Operations dashboard's **Exact node GUID** filter selects that node's records, groups and distributions. Runtime navigation uses the same node identity plus UTC interval overlap. Shared EF storage can retain records from several nodes for these views. The default in-memory provider contains only the current process's history. Grouping still uses operation keys and explicitly selected dimensions; node selection is an exact filter, not an implicit grouping dimension.
+
+
 ### Sampling, persistence and limits
 
 All eligible requests are selected by default. Select a built-in strategy fluently, for example `WithSampling(s => s.Probability(0.1))` or `WithSampling(s => s.RateLimit(25, 50))`; the last explicit strategy wins. Strategies are singleton and evaluated once at entry. Stored policy/probability labels describe selection, not the probability of durable retention. Sampled counts/percentiles are not extrapolated to all traffic.
@@ -277,6 +302,7 @@ Runtime overlays require exact process identity and observed UTC interval overla
 Inject `IProfilingStorageProvider` to clear `ProfilingDataSet.Runtime`, `Operations` or `All`, optionally within a UTC interval through `ProfilingClearRequest`. Ranges are inclusive/exclusive. Providers fence delayed writers and uncertain commits before deleting retained history; timeout/cancellation does not pretend a clear completed. Active Runtime sessions retain their control restrictions. Operation dashboard pages expose no clearing HTTP endpoint.
 
 A custom `IProfilingStorageProvider` must supply the documented independent facets, capabilities, idempotency, retention and clear semantics. Use `WithProvider<TProvider>(factory)` for explicit selection. Runtime overlay support is optional through `IRuntimeProfilingCorrelationStore`; missing support produces an unavailable overlay instead of loading all history. Built-in EF uses application-owned scoped contexts and migrations, not a request's DbContext or startup DDL.
+
 
 ## Local development setup
 

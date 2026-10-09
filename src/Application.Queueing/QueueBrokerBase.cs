@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// </summary>
 public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
 {
+    private readonly IProfilingExecutionBoundaryBehavior profilingBoundary;
+
     /// <summary>
     /// Initializes a new instance of the <c>QueueBrokerBase</c> class.
     /// </summary>
@@ -32,6 +34,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         this.Serializer = serializer ?? new SystemTextJsonSerializer();
         this.EnqueuerBehaviors = enqueuerBehaviors ?? [];
         this.HandlerBehaviors = handlerBehaviors ?? [];
+        this.profilingBoundary = this.HandlerBehaviors.OfType<IProfilingExecutionBoundaryBehavior>().FirstOrDefault();
     }
 
     /// <summary>
@@ -316,7 +319,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
     /// <param name="handlerMethod">The handler method used by the operation.</param>
     /// <param name="handledMessage">The handled message used by the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected virtual Task ProcessSubscriptionHandler(
+    protected virtual async Task ProcessSubscriptionHandler(
         QueueMessageRequest messageRequest,
         object handlerInstance,
         System.Reflection.MethodInfo handlerMethod,
@@ -327,6 +330,8 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         ArgumentNullException.ThrowIfNull(handlerMethod);
         ArgumentNullException.ThrowIfNull(handledMessage);
 
+        using var profilingExecutionBoundary = this.profilingBoundary?.BeginExecutionBoundary();
+
         this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
 
         async Task Next()
@@ -334,7 +339,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
             await ((Task)handlerMethod.Invoke(handlerInstance, [handledMessage, messageRequest.CancellationToken])).AnyContext();
         }
 
-        return this.HandlerBehaviors.SafeNull()
+        await this.HandlerBehaviors.SafeNull()
             .Reverse()
             .Aggregate((QueueHandlerDelegate)Next,
                 (next, behavior) => async () =>

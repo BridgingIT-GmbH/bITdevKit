@@ -12,6 +12,8 @@ using FluentValidation;
 /// </summary>
 public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 {
+    private readonly IProfilingExecutionBoundaryBehavior profilingBoundary;
+
     /// <summary>
     /// Initializes a new instance of the <c>MessageBrokerBase</c> class.
     /// </summary>
@@ -35,6 +37,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         this.Serializer = serializer ?? new SystemTextJsonSerializer();
         this.PublisherBehaviors = publisherBehaviors ?? [];
         this.HandlerBehaviors = handlerBehaviors ?? [];
+        this.profilingBoundary = this.HandlerBehaviors.OfType<IProfilingExecutionBoundaryBehavior>().FirstOrDefault();
     }
 
     private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
@@ -347,7 +350,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
     /// <param name="handlerMethod">The reflected handler method to invoke.</param>
     /// <param name="handledMessage">The message instance passed to the handler pipeline.</param>
     /// <returns>A task that completes when the handler pipeline finishes.</returns>
-    protected virtual Task ProcessSubscriptionHandler(
+    protected virtual async Task ProcessSubscriptionHandler(
         MessageRequest messageRequest,
         SubscriptionDetails subscription,
         object handlerInstance,
@@ -360,6 +363,8 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         EnsureArg.IsNotNull(handlerMethod, nameof(handlerMethod));
         EnsureArg.IsNotNull(handledMessage, nameof(handledMessage));
 
+        using var profilingExecutionBoundary = this.profilingBoundary?.BeginExecutionBoundary();
+
         this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
 
         async Task Handler()
@@ -367,7 +372,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             await ((Task)handlerMethod.Invoke(handlerInstance, [handledMessage, messageRequest.CancellationToken])).AnyContext();
         }
 
-        return this.HandlerBehaviors.SafeNull()
+        await this.HandlerBehaviors.SafeNull()
             .Reverse()
             .Aggregate((MessageHandlerDelegate)Handler,
                 (next, pipeline) => async () =>

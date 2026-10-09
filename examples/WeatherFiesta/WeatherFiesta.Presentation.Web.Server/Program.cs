@@ -49,6 +49,7 @@ builder.Services.AddNotifier()
 
 builder.Services.AddMessaging(builder.Configuration, o => o
         .StartupDelay("00:00:30"))
+    .WithBehavior<MessageHandlerProfilingBehavior>()
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -61,6 +62,7 @@ builder.Services.AddMessaging(builder.Configuration, o => o
 
 builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:30"))
+    .WithBehavior<QueueHandlerProfilingBehavior>()
     .WithBehavior<ModuleScopeQueueEnqueuerBehavior>()
     .WithBehavior<ModuleScopeQueueHandlerBehavior>()
     .WithBehavior<MetricsQueueEnqueuerBehavior>()

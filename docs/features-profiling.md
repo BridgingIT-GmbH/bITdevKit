@@ -156,7 +156,9 @@ The default operation key is the request path. Prefix stripping respects path-se
 
 `WithInMemoryProvider()` is optional. Use `WithEntityFrameworkProvider<TContext>()` or `WithProvider<TProvider>()` to replace the shared default provider.
 
-Selected eligible requests receive `X-Request-Profiling-Id`. This ID identifies the occurrence, not a durable-storage receipt: queue limits, loss, pending flush, expiry or clearing can make exact lookup unavailable. It is distinct from the application correlation/request ID. Cached responses do not replay stale profiling IDs. Response bytes distinguish observed, partial/unavailable and declared sizes. Body observation does not read, buffer, or retain payload contents.
+Selected eligible requests receive `X-Request-Profiling-Id`. This ID identifies the occurrence, not a durable-storage receipt: queue limits, loss, pending flush, expiry or clearing can make exact lookup unavailable. It is distinct from the application correlation ID and ASP.NET's transport request ID. Application correlation comes from the request correlation middleware, including when it runs inside the profiling observer. The transport ID remains separate metadata. Cached responses do not replay stale profiling IDs. Response bytes distinguish observed, partial/unavailable and declared sizes. Body observation does not read, buffer, or retain payload contents.
+
+HTTP details include the original path and route template, scheme, host, protocol, content types and query arguments. Query capture defaults to 4,096 characters, preserves argument order and repeated names, and redacts common credential parameters case-insensitively. The details view marks truncated queries. Query arguments never change the operation key. Configure capture with `.WithRequestProfiling(requests => requests.QueryString(enabled: false))`, or set a limit and explicit sensitive-name list through `QueryString(true, maximumLength: 2048, redactedParameters: ["token", "password"])`. An explicit list replaces the default redaction names; bodies and authentication headers remain excluded.
 
 ### Enrichment and segments
 
@@ -262,7 +264,7 @@ Bounded dimensions contain `messaging.messageType`, `messaging.handlerType`, `qu
 
 Every operation stores the cached executing-process `ProfilingNode`: its GUID and readable key, hostname, display name, process ID, process-start UTC and application version. Consumer records describe the node that ran the handler; producer metadata never substitutes for it. Segments belong to their operation's node. Node GUIDs distinguish separate processes on one host and change after a restart; a display name is not a unique identity.
 
-The Operations and Requests dashboards have a **Node** selector showing contributing node names and readable keys. It filters that node's records, groups and distributions. Choices come from retained operations within the selection before applying the node filter, including nodes outside the visible page. Runtime navigation uses the same node identity plus UTC interval overlap. Shared EF storage can retain records from several nodes for these views. The default in-memory provider contains only the current process's history. Grouping still uses operation keys and explicitly selected dimensions; node selection is an exact filter, not an implicit grouping dimension.
+The Operations and Requests dashboards have a **Node** selector showing contributing node names. Node keys, IDs, hostnames and versions appear in tooltips. It filters that node's records, groups and distributions. Choices come from retained operations within the selection before applying the node filter, including nodes outside the visible page. Runtime navigation uses the same node identity plus UTC interval overlap. Shared EF storage can retain records from several nodes for these views. The default in-memory provider contains only the current process's history. Grouping still uses operation keys and explicitly selected dimensions; node selection is an exact filter, not an implicit grouping dimension.
 
 
 ### Sampling, persistence and limits
@@ -289,7 +291,7 @@ The [capacity evidence](../plan/pln-feature-profiling-runtime-and-operations-1-e
 
 ### Operation dashboard and queries
 
-Operations and Requests share Slow, Recent and By count modes, result choices 10/25/50/100, typed filters and full retained group counts. Requests always fixes kind to `HttpRequest`. Rows show the executing node and outcome/coverage; details show aggregated segment paths and safe metadata. Exact ID lookup ignores list windows/outcomes but retains authorization/provider scope.
+Operations and Requests default to Recent and share Slow, Recent and By count modes, result choices 10/25/50/100, typed filters and full retained group counts. Requests always fixes kind to `HttpRequest`. Rows show the executing node and outcome/coverage; details show aggregated segment paths and safe metadata. Exact ID lookup ignores list windows/outcomes but retains authorization/provider scope. Each view remembers its filters, refresh interval, comparison keys and group expansions separately in localStorage. Explicit URL filters take precedence; Reset clears saved filters and restores Recent.
 
 Initial rendering and content refresh call the same DI model builder/query facade. Dashboard JSON uses that facade too, without HTTP loopback, direct EF queries in Razor or queue flushing. Auto refresh pauses in hidden tabs, cancels obsolete selectors, preserves expansion/scroll and keeps visibly stale data after errors. Paged selections retain a publication boundary and disable auto refresh until Refresh latest. Clearing, retention, changed filters or an expired five-minute boundary require a fresh selection.
 
@@ -301,7 +303,7 @@ Runtime overlays require exact process identity and observed UTC interval overla
 
 ### Provider clearing and extension
 
-Inject `IProfilingStorageProvider` to clear `ProfilingDataSet.Runtime`, `Operations` or `All`, optionally within a UTC interval through `ProfilingClearRequest`. Ranges are inclusive/exclusive. Providers fence delayed writers and uncertain commits before deleting retained history; timeout/cancellation does not pretend a clear completed. Active Runtime sessions retain their control restrictions. Operation dashboard pages expose no clearing HTTP endpoint.
+Inject `IProfilingStorageProvider` to clear `ProfilingDataSet.Runtime`, `Operations` or `All`, optionally within a UTC interval through `ProfilingClearRequest`. Ranges are inclusive/exclusive. Providers fence delayed writers and uncertain commits before deleting retained history; timeout/cancellation does not pretend a clear completed. Active Runtime sessions retain their control restrictions. The confirmed **Clear all profiling data** action in Runtime uses `ProfilingDataSet.All`, including Operations and HTTP Requests. A large clear may continue through bounded maintenance batches; the dashboard reports pending work. Work captured after the clear fence can appear again. Operation dashboard pages expose no separate clearing HTTP endpoint.
 
 A custom `IProfilingStorageProvider` must supply the documented independent facets, capabilities, idempotency, retention and clear semantics. Use `WithProvider<TProvider>(factory)` for explicit selection. Runtime overlay support is optional through `IRuntimeProfilingCorrelationStore`; missing support produces an unavailable overlay instead of loading all history. Built-in EF uses application-owned scoped contexts and migrations, not a request's DbContext or startup DDL.
 
@@ -421,19 +423,25 @@ Profiling dashboard routes inherit the dashboard's authentication and authorizat
 
 #### Grouped executions
 
-Use By count to rank retained groups, Slow to inspect the longest executions, or Recent to follow new activity. Counts cover the retained selection, even when the page shows only representative executions. The eye button opens a group's executions in By count, or the selected execution in Slow and Recent. Advanced filters accept a typed selector for dimension grouping, outcomes and other detailed criteria.
+Recent follows new activity by default. Use By count to rank retained groups or Slow to inspect the longest executions. Counts cover the retained selection, even when the page shows only representative executions. The eye button opens a group's executions in By count, or the selected execution in Slow and Recent. The **Key** filter matches a case-insensitive substring. **Kind** is a dropdown. Advanced filters accept a typed selector for dimension grouping, outcomes and other detailed criteria.
 
-[![Operations grouped by logical key, kind, and a typed dimension, with retained counts and a segment timing tooltip](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
+**Compare two keys** takes full exact baseline and candidate keys, keeps the current kind/node/time/advanced filters, and ignores the list's key substring. Its table compares retained counts, median and p95. A positive candidate p95 change means slower.
 
-Rows show the executing node, root outcome, duration and a duration breakdown. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. Expand **Capture health** for persistence and sampling details.
+[![Recent operations grouped by key and kind, with single-line execution times and node names](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
 
-Use the **From UTC** and **To UTC** date/time pickers to bound the selection. Their values always represent UTC, regardless of the browser's timezone. Node names and keys identify where work ran. Correlation IDs link to filtered logs; the adjacent copy action copies the complete ID.
+Rows show the executing node, root outcome, duration and a duration breakdown. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. The **Capture health** toolbar icon opens persistence and sampling details in a dialog.
 
-#### Slow HTTP requests
+Use the **From UTC** and **To UTC** date/time pickers to bound the selection. Their values always represent UTC, regardless of the browser's timezone. Rows show the node name on one line; hover it for the node identity and version. Correlation IDs link to filtered logs; the adjacent copy action copies the complete ID.
 
-Requests fixes the execution kind to `HttpRequest` and adds the method, status and observed response bytes. Sampling details are available from the information icon. Select an execution ID or its eye button to open retained details. The response's `X-Request-Profiling-Id` identifies the execution and can be used in the dashboard detail URL.
+#### HTTP requests
 
-[![Requests in Slow mode with HTTP status, response bytes, sampling policy, and segment duration breakdowns](assets/dashboard/profiling/requests.png)](assets/dashboard/profiling/requests.png)
+Requests fixes the execution kind to `HttpRequest` and adds the method, status and observed response bytes. Sampling details are available from the information icon. Select the eye button beside the UTC completion time to open retained details. The response's `X-Request-Profiling-Id` identifies the execution and can be used in the dashboard detail URL.
+
+[![Recent HTTP requests with compact rows, status and segment duration breakdowns](assets/dashboard/profiling/requests.png)](assets/dashboard/profiling/requests.png)
+
+Request details separate application correlation from the transport request ID. Expand **Request metadata** for the recorded URL, query arguments, route template, protocol and content types.
+
+[![Request details with application correlation, redacted query arguments and transport metadata](assets/dashboard/profiling/request-metadata.png)](assets/dashboard/profiling/request-metadata.png)
 
 The top toolbar provides manual refresh and the auto-refresh interval. Refresh updates persisted history while preserving open groups and details. Pending records appear after the periodic writer persists them; refreshing the page does not force a flush.
 

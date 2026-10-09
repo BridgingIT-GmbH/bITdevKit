@@ -11,6 +11,42 @@ using Xunit;
 
 public abstract partial class ProfilingStorageContractTestsBase
 {
+    /// <summary>Substring selection is canonical, literal and identical for records and aggregate groups across providers.</summary>
+    /// <example><code>await suite.KeyContains_CanonicalLiteralSubstring_FiltersBeforePagingAndGrouping();</code></example>
+    [Fact]
+    public async Task KeyContains_CanonicalLiteralSubstring_FiltersBeforePagingAndGrouping()
+    {
+        var h = await this.CreateAsync();
+        var keys = new[] { "catalog:load", "CATALOG:list", "other", "quote'_%:load", "caf\u00e9:load", "\u4101B" };
+        (await h.Store.AppendAsync(keys.Select((key, index) => h.Envelope(h.Record(key), index + 1)).ToArray())).IsSuccess.ShouldBeTrue();
+
+        var query = h.Query() with { KeyContains = "ALOG:", PageSize = 1 };
+        var first = await h.Store.QueryAsync(query);
+        first.IsSuccess.ShouldBeTrue();
+        first.Value.Records.Count.ShouldBe(1);
+        first.Value.NextCursor.ShouldNotBeNullOrEmpty();
+        var second = await h.Store.QueryAsync(query with { Cursor = first.Value.NextCursor });
+        second.IsSuccess.ShouldBeTrue();
+        second.Value.Records.Count.ShouldBe(1);
+        second.Value.Records.Single().Id.ShouldNotBe(first.Value.Records.Single().Id);
+        (await h.Store.QueryAsync(query with { Cursor = first.Value.NextCursor, KeyContains = "other" })).IsFailure.ShouldBeTrue();
+        var groups = await h.Store.GroupAsync(query);
+        groups.IsSuccess.ShouldBeTrue();
+        groups.Value.TotalOperationCount.ShouldBe(2);
+        groups.Value.TotalGroupCount.ShouldBe(2);
+
+        foreach (var needle in new[] { "'_%", "F\u00c9:" })
+        {
+            var result = await h.Store.QueryAsync(h.Query() with { KeyContains = needle });
+            result.IsSuccess.ShouldBeTrue();
+            result.Value.Records.ShouldHaveSingleItem();
+        }
+
+        (await h.Store.QueryAsync(h.Query() with { Key = "catalog:load" })).Value.Records.ShouldHaveSingleItem();
+        // U+4101 followed by B contains unaligned bytes for U+0100 across the code-unit boundary.
+        (await h.Store.QueryAsync(h.Query() with { KeyContains = "\u0100" })).Value.Records.ShouldBeEmpty();
+    }
+
     /// <summary>Node choices cover retained matches beyond the visible page and remain selectable when one node is filtered.</summary>
     /// <example><code>await suite.Groups_NodeFilter_ReturnsAllContributingNodesWithinPublicationBoundary(OperationProfilingView.Slow);</code></example>
     [Theory]

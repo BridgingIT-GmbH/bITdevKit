@@ -193,7 +193,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
             if (this.finalized) { return; }
 
             this.CaptureOriginalRoute();
-            this.metadata = this.metadata with { StatusCode = this.context.Response.StatusCode, DeclaredResponseBytes = this.context.Response.ContentLength };
+            this.metadata = this.metadata with { StatusCode = this.context.Response.StatusCode, DeclaredResponseBytes = this.context.Response.ContentLength, ResponseContentType = this.context.Response.ContentType };
             this.Publish();
         }
     });
@@ -220,6 +220,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
 
     private void Publish()
     {
+        this.ObserveCorrelation();
         this.Safe(() => this.Operation?.SetHttpMetadata(this.metadata with
         {
             ResponseBytes = this.Selected ? this.responseBytes : null,
@@ -229,6 +230,13 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
         }));
     }
 
+    private void ObserveCorrelation() => this.Safe(() =>
+    {
+        if (this.context is { } http && http.Items.TryGetValue(CorrelationId.HeaderName, out var value)
+            && value is string correlation && CorrelationId.IsValid(correlation))
+        { this.metadata = this.metadata with { CorrelationId = correlation }; }
+    });
+
     private void Finish(bool normal)
     {
         if (this.finalized) { return; }
@@ -237,12 +245,14 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
         var http = this.context;
         try
         {
+            this.ObserveCorrelation();
             var coveredResponse = this.responseObserver?.IsInstalled(http) == true;
             var coveredRequest = this.requestObserver?.IsInstalled(http) == true;
             this.Safe(() => this.Operation?.SetHttpMetadata(this.metadata with
             {
                 StatusCode = normal || http.Response.HasStarted ? http.Response.StatusCode : this.metadata.StatusCode,
                 DeclaredResponseBytes = http.Response.ContentLength,
+                ResponseContentType = http.Response.ContentType,
                 TransportAborted = this.aborted,
                 ResponseBytes = this.Selected ? this.responseBytes : null,
                 ResponseBytesQuality = normal && !this.aborted && !this.responsePartial && coveredResponse ? ProfilingObservationQuality.Complete : ProfilingObservationQuality.Partial,

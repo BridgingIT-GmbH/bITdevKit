@@ -261,7 +261,9 @@ public sealed class ProfilingDashboardEndpointsTests
             );
         await queries.Received(1).DeleteSessionAsync("sess0001", Arg.Any<CancellationToken>());
         await queries.Received(1).DeleteUnpinnedSessionsAsync(Arg.Any<CancellationToken>());
-        await queries.Received(1).ClearAsync(true, Arg.Any<CancellationToken>());
+        await app.Services.GetRequiredService<IProfilingStorageProvider>().Received(1)
+            .ClearAsync(Arg.Is<ProfilingClearRequest>(request => request.DataSet == ProfilingDataSet.All), Arg.Any<CancellationToken>());
+        await queries.DidNotReceive().ClearAsync(Arg.Any<bool>(), Arg.Any<CancellationToken>());
         await queries
             .Received(1)
             .CompareSnapshotsAsync(
@@ -299,6 +301,8 @@ public sealed class ProfilingDashboardEndpointsTests
         // Assert
         response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
         await queries.DidNotReceive().ClearAsync(Arg.Any<bool>(), Arg.Any<CancellationToken>());
+        await app.Services.GetRequiredService<IProfilingStorageProvider>().DidNotReceive()
+            .ClearAsync(Arg.Any<ProfilingClearRequest>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
@@ -306,8 +310,9 @@ public sealed class ProfilingDashboardEndpointsTests
     {
         // Arrange
         var (control, queries) = CreateConfiguredServices();
-        queries
-            .ClearAsync(true, Arg.Any<CancellationToken>())
+        var provider = Substitute.For<IProfilingStorageProvider>();
+        provider
+            .ClearAsync(Arg.Any<ProfilingClearRequest>(), Arg.Any<CancellationToken>())
             .Returns(
                 Result<ProfilingClearResult>
                     .Failure()
@@ -317,7 +322,7 @@ public sealed class ProfilingDashboardEndpointsTests
                         )
                     )
             );
-        await using var app = await StartAppAsync(control, queries);
+        await using var app = await StartAppAsync(control, queries, provider: provider);
 
         // Act
         var response = await app.GetTestClient()
@@ -636,7 +641,8 @@ public sealed class ProfilingDashboardEndpointsTests
         IRuntimeProfilingQueryService queries = null,
         IRuntimeProfilingArchiveService archives = null,
         IRuntimeProfilingStressService stress = null,
-        IRuntimeProfilingPerfettoExportService perfetto = null
+        IRuntimeProfilingPerfettoExportService perfetto = null,
+        IProfilingStorageProvider provider = null
     )
     {
         var builder = WebApplication.CreateBuilder();
@@ -652,6 +658,17 @@ public sealed class ProfilingDashboardEndpointsTests
         if (queries is not null)
         {
             builder.Services.AddSingleton(queries);
+            if (provider is null)
+            {
+                provider = Substitute.For<IProfilingStorageProvider>();
+                provider.ClearAsync(Arg.Any<ProfilingClearRequest>(), Arg.Any<CancellationToken>())
+                    .Returns(Result<ProfilingClearResult>.Success(new ProfilingClearResult(1, 3) { DataSet = ProfilingDataSet.All }));
+            }
+        }
+
+        if (provider is not null)
+        {
+            builder.Services.AddSingleton(provider);
         }
 
         if (archives is not null)

@@ -10,6 +10,31 @@ using BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling;
 
 public sealed class ProfilingOperationEntityMapperTests
 {
+    /// <summary>Bounded HTTP metadata survives the parent JSON projection without confusing application and transport identifiers.</summary>
+    /// <example><code>suite.Mapping_HttpMetadata_PreservesOriginalTargetAndCorrelation();</code></example>
+    [Fact]
+    public void Mapping_HttpMetadata_PreservesOriginalTargetAndCorrelation()
+    {
+        var record = CreateRecord() with
+        {
+            Kind = "HttpRequest", CorrelationId = "application-42",
+            Http = new()
+            {
+                Method = "GET", Path = "/api/products/42", Route = "/api/products/{id}",
+                QueryString = "?page=2&token=%5Bredacted%5D", QueryStringTruncated = true,
+                Scheme = "https", Host = "example.test:443", Protocol = "HTTP/2",
+                CorrelationId = "application-42", ApplicationRequestId = "transport-42",
+                RequestContentType = "application/json", ResponseContentType = "text/plain", StatusCode = 200,
+            },
+        };
+        var entity = ProfilingEntityMapper.ToOperationEntity(new() { Lease = new() { WriterId = Guid.NewGuid() }, CompletionSequence = 1, Record = record }, 1);
+
+        var restored = ProfilingEntityMapper.ToOperationModel(entity, new OperationProfilingOptions());
+
+        restored.CorrelationId.ShouldBe(record.CorrelationId);
+        restored.Http.ShouldBe(record.Http);
+    }
+
     [Fact]
     public void Mapping_ImmutableGraph_RestoresNodeIdentityAndLosslessTypedValues()
     {

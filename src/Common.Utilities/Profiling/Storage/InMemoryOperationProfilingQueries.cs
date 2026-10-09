@@ -156,6 +156,7 @@ public sealed partial class InMemoryProfilingStorageProvider
             : record.CompletedUtc >= query.FromUtc && record.CompletedUtc < query.ToUtc;
         if (!interval || query.Id.HasValue && record.Id != query.Id.Value || query.ParentOperationId.HasValue && record.ParentOperationId != query.ParentOperationId
             || query.NodeId.HasValue && record.NodeId != query.NodeId || query.Key is not null && ProfilingKeyComparer.Canonicalize(record.Key) != query.Key
+            || query.KeyContains is not null && !ProfilingKeyComparer.Canonicalize(record.Key).Contains(query.KeyContains, StringComparison.Ordinal)
             || query.Kind is not null && ProfilingKeyComparer.Canonicalize(record.Kind) != query.Kind
             || query.CorrelationId is not null && record.CorrelationId != query.CorrelationId || query.ApplicationVersion is not null && record.Node?.ApplicationVersion != query.ApplicationVersion
             || query.Outcomes.Count > 0 && !query.Outcomes.Contains(record.Outcome)

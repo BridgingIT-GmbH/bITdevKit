@@ -11,6 +11,7 @@ using System.Text.Json;
 using BridgingIT.DevKit.Presentation.Web;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard;
+using BridgingIT.DevKit.Presentation.Web.Profiling.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -52,6 +53,10 @@ public sealed class OperationProfilingDashboardTests
         content.ShouldContain("Duration breakdown");
         content.ShouldNotContain("Wall time");
         page.ShouldContain("<select id=\"operation-node\"");
+        page.ShouldContain("<select id=\"operation-kind\"");
+        page.ShouldContain("id=\"operation-health-modal\"");
+        page.ShouldContain("aria-label=\"Capture health\"");
+        page.ShouldContain("Compare two keys");
         page.ShouldContain("All nodes");
         page.ShouldNotContain("id=\"operation-outcomes\"");
         page.ShouldNotContain("id=\"operation-group\"");
@@ -149,9 +154,66 @@ public sealed class OperationProfilingDashboardTests
         var sut = OperationProfilingDashboardQuery.Read(input, requestsOnly: true);
         sut.IsSuccess.ShouldBeTrue();
         sut.Value.Key.ShouldBeNull();
+        sut.Value.KeyContains.ShouldBeNull();
         sut.Value.Kind.ShouldBe("HttpRequest");
         sut.Value.GroupingDimensions.ShouldBeEmpty();
         OperationProfilingDashboardQuery.Read(new QueryCollection(new Dictionary<string, StringValues> { ["key"] = new StringValues(["one", "two"]) })).IsFailure.ShouldBeTrue();
+    }
+
+    /// <summary>The initial view is Recent and basic key text selects a substring rather than an exact logical key.</summary>
+    /// <example><code>await suite.Selection_DefaultRecentAndContains_AppliesToBothViews();</code></example>
+    [Fact]
+    public async Task Selection_DefaultRecentAndContains_AppliesToBothViews()
+    {
+        OperationProfilingDashboardQuery.Read(new QueryCollection()).Value.View.ShouldBe(OperationProfilingView.Recent);
+        await using var app = await CreateAsync();
+        Capture(app, "catalog:load", OperationProfilingKind.HttpRequest);
+        Capture(app, "CATALOG:list", OperationProfilingKind.HttpRequest);
+        Capture(app, "other", OperationProfilingKind.HttpRequest);
+        await app.Services.GetRequiredService<OperationProfilingWriterService>().TickAsync();
+        var client = app.GetTestClient();
+
+        var page = await client.GetFromJsonAsync<OperationProfilingGroupPage>("/admin/profiling/operations/api/groups?key=ALOG:");
+        page.TotalOperationCount.ShouldBe(2);
+        foreach (var view in new[] { "operations", "requests" })
+        {
+            var html = await client.GetStringAsync("/admin/profiling/" + view + "?key=ALOG:");
+            html.ShouldContain("catalog:load");
+            html.ShouldContain("CATALOG:list");
+            html.ShouldNotContain(">other<");
+        }
+    }
+
+    /// <summary>The Runtime clear-all action fences and removes retained HTTP and non-HTTP operations while allowing fresh captures.</summary>
+    /// <example><code>await suite.ClearAll_RuntimeAction_RemovesOperationsAndRequests();</code></example>
+    [Fact]
+    public async Task ClearAll_RuntimeAction_RemovesOperationsAndRequests()
+    {
+        await using var app = await CreateAsync();
+        var service = Capture(app, "clear:service", OperationProfilingKind.Service);
+        var request = Capture(app, "clear:http", OperationProfilingKind.HttpRequest);
+        var writer = app.Services.GetRequiredService<OperationProfilingWriterService>();
+        await writer.TickAsync();
+        var pending = Capture(app, "clear:pending", OperationProfilingKind.Service);
+        var responseTask = app.GetTestClient().PostAsJsonAsync("/admin/profiling/runtime/clear", new ProfilingDashboardClearRequest(true));
+        for (var attempt = 0; attempt < 200 && !responseTask.IsCompleted; attempt++)
+        {
+            await writer.TickAsync();
+            await Task.Delay(5);
+        }
+
+        using var response = await responseTask.WaitAsync(TimeSpan.FromSeconds(5));
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var result = await response.Content.ReadFromJsonAsync<ProfilingClearResult>();
+        result.DataSet.ShouldBe(ProfilingDataSet.All);
+        var provider = app.Services.GetRequiredService<IProfilingStorageProvider>();
+        for (var attempt = 0; attempt < 5; attempt++) { await provider.ResumeMaintenanceAsync(new ProfilingMaintenanceRequest()); }
+
+        foreach (var id in new[] { service, request, pending }) { (await provider.Operations.FindAsync(id)).Value.ShouldBeNull(); }
+
+        var fresh = Capture(app, "clear:fresh", OperationProfilingKind.HttpRequest);
+        await writer.TickAsync();
+        (await provider.Operations.FindAsync(fresh)).Value.ShouldNotBeNull();
     }
 
     /// <summary>Host-provided dimension values render encoded and exact details expose aggregate segment paths.</summary>

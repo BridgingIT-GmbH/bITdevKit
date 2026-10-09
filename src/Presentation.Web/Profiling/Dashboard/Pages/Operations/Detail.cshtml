@@ -16,6 +16,7 @@
 <nav class="nav nav-pills mb-2" aria-label="Profiling views"><a class="nav-link" href="@DashboardEndpoints.BuildProfilingPath(options)">Runtime</a><a class="nav-link" href="@DashboardEndpoints.BuildOperationsPath(options)">Operations</a><a class="nav-link" href="@DashboardEndpoints.BuildOperationsPath(options, true)">Requests</a></nav>
 <div id="operation-content" data-content-url="@(HttpContext.Request.Path + "/content")" data-page-url="@pagePath">@(await RenderPartialAsync<DetailContent, OperationProfilingDashboardModel>(Model))</div>
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
+@(await RenderPartialAsync<HealthDialog>())
 @(await RenderPartialAsync<Style>())
 @(await RenderPartialAsync<Script>())
 @functions {

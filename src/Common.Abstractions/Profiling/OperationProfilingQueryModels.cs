@@ -187,6 +187,10 @@ public sealed record OperationProfilingQuery
     /// <example><code>var value = record.Key;</code></example>
     public string Key { get; init; }
 
+    /// <summary>Gets an optional invariant, case-insensitive substring filter on the operation key.</summary>
+    /// <example><code>var query = new OperationProfilingQuery { KeyContains = "catalog" };</code></example>
+    public string KeyContains { get; init; }
+
     /// <summary>Gets an optional executing process filter.</summary>
     /// <example><code>var value = record.NodeId;</code></example>
     public Guid? NodeId { get; init; }

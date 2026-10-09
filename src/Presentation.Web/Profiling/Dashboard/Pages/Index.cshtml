@@ -1077,7 +1077,7 @@
             if (confirmation && !window.confirm(confirmation)) return false;
             try {
                 const result = await request(url, method, body);
-                showOutcome(summarizeControl(result, label), 'success');
+                showOutcome(result?.hasRemainingWork ? 'Clear is applying to Runtime and Operations. Refresh to see the remaining data.' : summarizeControl(result, label), 'success');
                 const resultSession = result?.session?.identity?.key;
                 if (selectResultSession && resultSession && resultSession !== state.root?.dataset.sessionKey) {
                     await selectContext(resultSession, null);
@@ -1332,7 +1332,7 @@
                 if (button.id === 'profiling-add-marker') runAction(state.root.dataset.markerPath, 'POST', { name: document.querySelector('#profiling-marker-name')?.value.trim() }, 'Marker added.');
                 if (button.id === 'profiling-delete-session') runAction(state.root.dataset.deletePath, 'DELETE', undefined, 'Session deleted.', 'Delete the selected terminal profiling session and all of its data?');
                 if (button.id === 'profiling-delete-unpinned') runAction(state.root.dataset.deleteUnpinnedPath, 'DELETE', undefined, 'Unpinned sessions deleted.', 'Delete every unpinned terminal profiling session?');
-                if (button.id === 'profiling-clear') runAction(state.root.dataset.clearPath, 'POST', { confirmed: true }, 'Profiling store cleared.', 'Clear ALL profiling data? This includes pinned sessions, snapshots, markers, segments, custom metrics, node records, and invalidated identities. This cannot be undone.');
+                if (button.id === 'profiling-clear') runAction(state.root.dataset.clearPath, 'POST', { confirmed: true }, 'Runtime and Operation profiling data cleared.', 'Clear ALL Runtime and Operation profiling data, including requests, pinned sessions, snapshots, markers and segments? New captures can still be recorded. This cannot be undone.');
                 if (button.id === 'profiling-analyze-now') analyzeTimeline(false);
                 if (button.id === 'profiling-compare') analyzePair();
                 if (button.id === 'profiling-toggle-snapshot-details') {

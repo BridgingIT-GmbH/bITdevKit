@@ -1,0 +1,14 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@inherits RazorSlice<OperationProfilingDashboardModel>
+<template data-operation-health>
+<dl class="row small mt-2">
+        <dt class="col-sm-4">Provider / serving node</dt><dd class="col-sm-8">@Model.Health?.ProviderScope / @Model.Health?.CountersNodeId</dd>
+        <dt class="col-sm-4">Last local flush UTC</dt><dd class="col-sm-8">@OperationProfilingViewModelBuilder.Utc(Model.Health?.LastSuccessfulFlushUtc ?? default)</dd>
+        <dt class="col-sm-4">Local admitted / active / rejected</dt><dd class="col-sm-8">@Model.Health?.AdmittedOperations / @Model.Health?.ActiveOperations / @Model.Health?.RejectedOperations</dd>
+        <dt class="col-sm-4">Local queue / in flight / oldest age</dt><dd class="col-sm-8">@Model.Health?.QueueRecords / @Model.Health?.InFlightRecords / @(Model.Health?.QueueOldestAgeUnavailable == true ? "Unavailable" : OperationProfilingViewModelBuilder.Duration(Model.Health?.QueueOldestAge ?? default))</dd>
+        <dt class="col-sm-4">Local dropped / unknown / administrative discards</dt><dd class="col-sm-8">@Model.Health?.DroppedOperations / @Model.Health?.UnknownCommits / @Model.Health?.AdministrativeDiscards</dd>
+        <dt class="col-sm-4">Local eligible / selected / sampling errors</dt><dd class="col-sm-8">@Model.Health?.EligibleRequests / @Model.Health?.SelectedRequests / @Model.Health?.SamplingErrors</dd>
+        <dt class="col-sm-4">Local policy / configuration</dt><dd class="col-sm-8">@Model.Health?.SamplingStrategyKey / @Model.Health?.SamplingConfigurationKey</dd>
+        <dt class="col-sm-4">Capture / writer / stalled / retention removals</dt><dd class="col-sm-8">@Model.Health?.CaptureEnabled / @Model.Health?.WriterActive / @Model.Health?.WriterStalled / @Model.Health?.RetentionRemovals</dd>
+    </dl>
+</template>

@@ -248,6 +248,38 @@ public sealed record ProfilingAdapterMetadata
 /// <example><code>var value = new HttpRequestProfilingMetadata();</code></example>
 public sealed record HttpRequestProfilingMetadata
 {
+    /// <summary>Gets the application correlation identifier, independently of the transport request identifier.</summary>
+    /// <example><code>var correlation = record.Http.CorrelationId;</code></example>
+    public string CorrelationId { get; init; }
+
+    /// <summary>Gets the bounded query string, including its leading question mark, with sensitive values redacted.</summary>
+    /// <example><code>var target = record.Http.Path + record.Http.QueryString;</code></example>
+    public string QueryString { get; init; }
+
+    /// <summary>Gets whether the query string exceeded its capture limit.</summary>
+    /// <example><code>if (record.Http.QueryStringTruncated) ShowPartialQuery();</code></example>
+    public bool QueryStringTruncated { get; init; }
+
+    /// <summary>Gets the incoming request scheme.</summary>
+    /// <example><code>var scheme = record.Http.Scheme;</code></example>
+    public string Scheme { get; init; }
+
+    /// <summary>Gets the incoming request host and optional port.</summary>
+    /// <example><code>var host = record.Http.Host;</code></example>
+    public string Host { get; init; }
+
+    /// <summary>Gets the HTTP protocol observed by the application.</summary>
+    /// <example><code>var protocol = record.Http.Protocol;</code></example>
+    public string Protocol { get; init; }
+
+    /// <summary>Gets the request body's declared media type without recording its contents.</summary>
+    /// <example><code>var type = record.Http.RequestContentType;</code></example>
+    public string RequestContentType { get; init; }
+
+    /// <summary>Gets the response's declared media type without recording its contents.</summary>
+    /// <example><code>var type = record.Http.ResponseContentType;</code></example>
+    public string ResponseContentType { get; init; }
+
     /// <summary>Gets the lookup-only application request identifier.</summary>
     /// <example><code>var value = record.ApplicationRequestId;</code></example>
     public string ApplicationRequestId { get; init; }

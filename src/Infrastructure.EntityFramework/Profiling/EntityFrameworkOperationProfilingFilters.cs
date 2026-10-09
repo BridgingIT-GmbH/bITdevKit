@@ -6,8 +6,12 @@
 namespace BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling;
 
 using System.Linq.Expressions;
+using System.Runtime.CompilerServices;
 using BridgingIT.DevKit.Common;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Storage;
 
 internal static class EntityFrameworkOperationProfilingFilters
 {
@@ -16,7 +20,8 @@ internal static class EntityFrameworkOperationProfilingFilters
     {
         var lower = query.FromUtc.Value.UtcTicks;
         var upper = query.ToUtc.Value.UtcTicks;
-        var roots = context.Set<OperationProfilingEntity>().AsNoTracking().Where(root => root.CommitWatermark <= watermark);
+        var roots = (query.KeyContains is null ? context.Set<OperationProfilingEntity>() : ContainsKey(context, query.KeyContains))
+            .AsNoTracking().Where(root => root.CommitWatermark <= watermark);
         roots = query.IntervalOverlap ? roots.Where(root => root.StartedUtcTicks < upper && (root.CompletedUtcTicks > lower || root.StartedUtcTicks == root.CompletedUtcTicks && root.StartedUtcTicks >= lower))
             : roots.Where(root => root.CompletedUtcTicks >= lower && root.CompletedUtcTicks < upper);
         if (query.Id.HasValue) { roots = roots.Where(root => root.Id == query.Id.Value); }
@@ -113,6 +118,27 @@ internal static class EntityFrameworkOperationProfilingFilters
         }
 
         return roots;
+    }
+
+    // Compare canonical UTF-16 code units at aligned offsets. Database text collations cannot
+    // reproduce the shared invariant key contract, particularly for Unicode keys.
+    private static IQueryable<OperationProfilingEntity> ContainsKey<TContext>(TContext context, string value)
+        where TContext : DbContext, IProfilingDbContext
+    {
+        var entity = context.Model.FindEntityType(typeof(OperationProfilingEntity));
+        var table = StoreObjectIdentifier.Table(entity.GetTableName(), entity.GetSchema());
+        var helper = context.GetService<ISqlGenerationHelper>();
+        var bytes = ProfilingOperationComparisons.Exact(value);
+        var column = "pk." + helper.DelimitIdentifier(entity.FindProperty(nameof(OperationProfilingEntity.KeyBytes)).GetColumnName(table));
+        var source = helper.DelimitIdentifier(table.Name, table.Schema);
+        var predicate = context.Database.ProviderName switch
+        {
+            "Microsoft.EntityFrameworkCore.SqlServer" => $"EXISTS (SELECT 1 FROM OPENJSON(CONCAT('[', REPLICATE(CAST('0,' AS varchar(max)), DATALENGTH({column}) / 2 - 1), '0]')) p WHERE SUBSTRING({column}, CONVERT(int, p.[key]) * 2 + 1, {bytes.Length}) = {{0}})",
+            "Microsoft.EntityFrameworkCore.Sqlite" => $"EXISTS (SELECT 1 FROM json_each('[' || rtrim(replace(hex(zeroblob(length({column}) / 2)), '00', '0,'), ',') || ']') p WHERE substr({column}, p.key * 2 + 1, {bytes.Length}) = {{0}})",
+            "Npgsql.EntityFrameworkCore.PostgreSQL" => $"EXISTS (SELECT 1 FROM generate_series(0, octet_length({column}) / 2 - 1) p(i) WHERE substring({column} FROM p.i * 2 + 1 FOR {bytes.Length}) = {{0}})",
+            _ => throw new NotSupportedException("The profiling provider does not support canonical key substring queries."),
+        };
+        return context.Set<OperationProfilingEntity>().FromSqlInterpolated(FormattableStringFactory.Create($"SELECT pk.* FROM {source} pk WHERE {predicate}", bytes));
     }
 
     private static IQueryable<OperationProfilingEntity> Binary(IQueryable<OperationProfilingEntity> query, string text, Expression<Func<OperationProfilingEntity, byte[]>> field)

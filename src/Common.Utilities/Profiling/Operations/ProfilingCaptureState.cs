@@ -236,6 +236,13 @@ internal sealed class ProfilingCaptureState
         var path = ProfilingValueValidator.Clip(metadata.Path, this.options.MaxStringLength, out var p);
         var route = ProfilingValueValidator.Clip(metadata.Route, this.options.MaxStringLength, out var r);
         var applicationRequestId = ProfilingValueValidator.Clip(metadata.ApplicationRequestId, this.options.MaxStringLength, out var a);
+        var correlation = ProfilingValueValidator.Clip(metadata.CorrelationId, 128, out var c);
+        var query = ProfilingValueValidator.Clip(metadata.QueryString, 4096, out var q);
+        var scheme = ProfilingValueValidator.Clip(metadata.Scheme, this.options.MaxKeyLength, out var s);
+        var host = ProfilingValueValidator.Clip(metadata.Host, this.options.MaxStringLength, out var h);
+        var protocol = ProfilingValueValidator.Clip(metadata.Protocol, this.options.MaxKeyLength, out var v);
+        var requestType = ProfilingValueValidator.Clip(metadata.RequestContentType, this.options.MaxStringLength, out var t);
+        var responseType = ProfilingValueValidator.Clip(metadata.ResponseContentType, this.options.MaxStringLength, out var u);
         if (metadata.SamplingStrategyKey is not null && !ProfilingValueValidator.IsKey(metadata.SamplingStrategyKey, this.options.MaxKeyLength)
             || metadata.SamplingConfigurationKey is not null && !ProfilingValueValidator.IsKey(metadata.SamplingConfigurationKey, this.options.MaxKeyLength))
         {
@@ -243,7 +250,9 @@ internal sealed class ProfilingCaptureState
             return;
         }
 
-        var normalized = metadata with { Method = method, Path = path, Route = route, ApplicationRequestId = applicationRequestId };
+        var normalized = metadata with { Method = method, Path = path, Route = route, ApplicationRequestId = applicationRequestId,
+            CorrelationId = correlation, QueryString = query, QueryStringTruncated = metadata.QueryStringTruncated || q,
+            Scheme = scheme, Host = host, Protocol = protocol, RequestContentType = requestType, ResponseContentType = responseType };
         var delta = HttpCharge(normalized) - (this.http is null ? 0 : HttpCharge(this.http));
         if (!this.Charge(delta))
         {
@@ -251,7 +260,7 @@ internal sealed class ProfilingCaptureState
             return;
         }
 
-        this.truncated |= m || p || r || a;
+        this.truncated |= m || p || r || a || c || q || s || h || v || t || u || metadata.QueryStringTruncated;
         this.http = normalized;
     });
 
@@ -432,7 +441,7 @@ internal sealed class ProfilingCaptureState
                 Key = this.key,
                 Kind = this.request.Kind,
                 DisplayName = this.displayName,
-                CorrelationId = this.request.CorrelationId,
+                CorrelationId = this.http?.CorrelationId ?? this.request.CorrelationId,
                 ParentOperationId = this.request.ParentOperationId,
                 Node = this.node,
                 StartedUtc = this.startedUtc,
@@ -531,7 +540,9 @@ internal sealed class ProfilingCaptureState
     private long DeadlineTimestamp() => checked(this.started + (long)(this.options.MaxRecordingDuration.TotalSeconds * this.profiler.Clock.TimestampFrequency));
     private static int Rank(OperationProfilingOutcome value) => value switch { OperationProfilingOutcome.Aborted => 4, OperationProfilingOutcome.Failed => 3, OperationProfilingOutcome.Canceled => 2, _ => 1 };
     private static long HttpCharge(HttpRequestProfilingMetadata value) => 384 + ProfilingValueValidator.Charge(value.Method) + ProfilingValueValidator.Charge(value.Path) + ProfilingValueValidator.Charge(value.Route)
-        + ProfilingValueValidator.Charge(value.ApplicationRequestId) + ProfilingValueValidator.Charge(value.SamplingStrategyKey) + ProfilingValueValidator.Charge(value.SamplingConfigurationKey);
+        + ProfilingValueValidator.Charge(value.ApplicationRequestId) + ProfilingValueValidator.Charge(value.SamplingStrategyKey) + ProfilingValueValidator.Charge(value.SamplingConfigurationKey)
+        + 2 * ProfilingValueValidator.Charge(value.CorrelationId) + ProfilingValueValidator.Charge(value.QueryString) + ProfilingValueValidator.Charge(value.Scheme)
+        + ProfilingValueValidator.Charge(value.Host) + ProfilingValueValidator.Charge(value.Protocol) + ProfilingValueValidator.Charge(value.RequestContentType) + ProfilingValueValidator.Charge(value.ResponseContentType);
     private static long SourceCharge(string kind, IReadOnlyList<ProfilingDimension> fields) => 192 + ProfilingValueValidator.Charge(kind) + fields.Sum(f => 128 + ProfilingValueValidator.Charge(f.Key) + ProfilingValueValidator.Charge(f.Value));
     private static long FailureCharge(ProfilingFailureDescriptor failure) => failure is null ? 0 : 192 + ProfilingValueValidator.Charge(failure.Source) + ProfilingValueValidator.Charge(failure.Code) + ProfilingValueValidator.Charge(failure.ExceptionType) + ProfilingValueValidator.Charge(failure.Message);
 

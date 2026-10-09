@@ -494,7 +494,7 @@ The adapter performs these actions:
 
 For selected requests, elapsed time starts at middleware entry, including eligibility and sampling work, using a captured monotonic entry timestamp. The scope and body observers are allocated only after selection and admission. All paths invoke downstream request handling normally.
 
-The default key is the incoming path after optional prefix stripping, as defined in section 4.4. HTTP method and endpoint route template remain separate metadata. Unmatched paths follow the same rule. The adapter preserves the original path key and route metadata across error re-execution and never overwrites a developer's explicit key. It does not persist the full URL or query string.
+The default key is the incoming path after optional prefix stripping, as defined in section 4.4. HTTP method and endpoint route template remain separate metadata. Unmatched paths follow the same rule. The adapter preserves the original path key and route metadata across error re-execution and never overwrites a developer's explicit key. It records the original path, scheme, host and bounded redacted query string as HTTP metadata, independently of the operation key.
 
 The lifecycle implementation coordinates `OnStarting`, `OnCompleted`, exception handling, cancellation, and abort observations. A missing normal completion callback must not leak an active scope on a terminated response. Status comes from the final observable response rather than an unobserved default value.
 
@@ -502,7 +502,9 @@ Normal HTTP completion below status 500 maps to `Completed`. Status remains avai
 
 ### 4.2 HTTP metadata and response ID
 
-The HTTP metadata projection contains application request ID, method, original route template, final observable status, active selected requests at entry, declared request length, observed request bytes, declared response length, and observed response bytes. The concurrency field counts sampling-selected requests before admission, excludes blacklist/sampling skips and disabled capture, and is labeled accordingly. Each byte observation includes measurement kind and completeness. Optional values remain absent when unavailable.
+The HTTP metadata projection contains application correlation separately from the ASP.NET transport request ID, method, original path, scheme, host, protocol, request/response content types, bounded redacted query arguments, original route template, final observable status, active selected requests at entry, declared request length, observed request bytes, declared response length, and observed response bytes. The concurrency field counts sampling-selected requests before admission, excludes blacklist/sampling skips and disabled capture, and is labeled accordingly. Each byte observation includes measurement kind and completeness. Optional values remain absent when unavailable.
+
+Application correlation comes from the correlation middleware's request-scoped state, even when it executes inside the outer profiling middleware. The transport identifier is never substituted for application correlation. Query capture defaults to enabled with a 4,096-character limit. It preserves ordering and repeated names, redacts `access_token`, `refresh_token`, `id_token`, `token`, `password`, `secret`, `client_secret`, `code`, `api_key`, `apikey`, and `authorization` case-insensitively after decoding parameter names, and records truncation. Fluent setup can disable query capture, reduce the limit to 1–4,096 characters, or replace the redaction-name list. Capture does not read payload bodies or authentication headers.
 
 Selected records also contain the sampling strategy key, configuration key, and inclusion probability when the strategy can state one. These fields describe the policy applied at entry and remain unchanged by controller enrichment. The configuration key identifies the effective policy settings for comparison; it is not an application grouping key.
 
@@ -1410,7 +1412,7 @@ Filters include operation ID, correlation ID, parent operation ID, UTC range, ke
 
 Default grouping is `(Kind, Key)`. Users can add selected dimensions, such as `productType`, to keep distinct workloads separate. Requests can additionally group by HTTP method because the default path key does not include it. Missing dimensions remain a distinct group value. Filters and selected grouping dimensions are visible beside counts and timing summaries.
 
-The default list window is the last 15 minutes by completion time, with completed outcomes selected. Users can choose fixed UTC ranges, other outcomes, or all outcomes. Runtime correlation uses interval overlap instead of this list-window membership rule. The UI labels the active time and outcome policy.
+The default list window is the last 15 minutes by completion time, including all outcomes. Users can choose fixed UTC ranges or restrict outcomes through the advanced selector. Runtime correlation uses interval overlap instead of this list-window membership rule. The UI labels the active time and outcome policy.
 
 ### 9.3 Slow, Recent, and By count
 
@@ -1421,6 +1423,8 @@ The Razor page offers these modes:
 | Slow | Select the N slowest individual matching operations by duration descending, with a deterministic ID tie-breaker. | Group selected occurrences by the chosen grouping fields. Order groups by their slowest selected occurrence. |
 | Recent | Select the N most recently completed matching operations, ordered by completion UTC and ID descending. | Show chronological occurrences, with optional grouping by the same fields. |
 | By count | Select the N groups with the greatest retained matching operation count, with a deterministic group-key tie-breaker. | Expand a group into paged occurrences, sortable by duration or recency. |
+
+Recent is the default dashboard mode. Operations and Requests remember filters, refresh intervals, comparison keys and expanded groups independently in localStorage. Explicit URL selections take precedence; Reset removes saved filters. Key input is a case-insensitive contains filter, while group drill-down and two-key comparison use exact keys. Kind is a dropdown of built-in and observed kinds. Nodes show their name only, with identity/version details in a tooltip. Each execution has one eye button followed by its UTC completion time on one line. Capture health is a toolbar icon opening a modal. Comparison labels explain baseline/candidate full keys and retained count, median and p95, preserve other selection controls, and exclude the contains filter. The confirmed Runtime clear-all action clears Runtime and Operations (including Requests) through the shared provider fence; pending maintenance is reported.
 
 The result limit defaults to 25, with choices 10, 25, 50, and 100. The label reads operations in Slow and Recent, and groups in By count. A group count always covers all retained records matching the current filter window, not just the displayed N rows. For example, a group can show 3 slow rows from 420 matching retained executions. With reduced sampling, those 420 are retained selected executions, not the total number of requests that ran.
 
@@ -1483,7 +1487,7 @@ As an API developer, I can find an entire server request by its response header 
 - With all-request sampling, every non-blacklisted request reaching enabled middleware receives its own ID and capture attempt, including preflights, early downstream responses, and requests with no segments. Disabled, blacklisted, or sampling-skipped requests do not start HTTP operations.
 - Controller key overrides and developer-supplied dimensions appear on that same operation. Error re-execution does not duplicate it.
 - Serialization, compressed streaming, `BodyWriter`, and send-file paths preserve response behavior, record observed bytes with quality, and finalize exactly once on normal completion or abort.
-- Exact lookup handles the flush delay honestly. No body content, raw query string, or cached ID from another server invocation enters the record.
+- Exact lookup handles the flush delay honestly. No body content, credential values from configured sensitive query parameters, or cached ID from another server invocation enters the record. Query metadata is bounded and redacted according to the configured capture policy.
 - A real host using the reference middleware order captures downstream serialization, compression, cache hits, static/authorization short circuits, routing failures, and handled exceptions. A downstream exception handled as 200/4xx remains observed as a failure, while an ordinary 4xx remains Completed. Framework diagnostic suppression does not affect capture.
 - Error-handler re-execution with a replacement DI scope retains the original operation ID, sampling decision, path key, and original route, including an originally unmatched request. Custom exception filters can report through the safe feature hook without changing their response behavior.
 - Cache-hit responses replace an earlier cached profiling ID for a selected request and remove it for disabled, excluded, or sampling-skipped requests. Compression/stream/BodyWriter/send-file and abort cases preserve byte-observation quality and exactly-once cleanup. Completion callbacks use explicit handles after ambient context is restored.

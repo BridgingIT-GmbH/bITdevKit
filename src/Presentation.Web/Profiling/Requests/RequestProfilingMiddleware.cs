@@ -66,10 +66,11 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
                 entered = selected;
                 operation = selected ? profiler.BeginOperation(new OperationProfilingStartRequest
                 {
-                    Key = key, Kind = OperationProfilingKind.HttpRequest.ToString(), CorrelationId = context.TraceIdentifier,
+                    Key = key, Kind = OperationProfilingKind.HttpRequest.ToString(), CorrelationId = CorrelationId.Current,
                     EntryTimestamp = entry, EntryUtc = utc,
                 }) : null;
-                feature = new(context, operation, runtime, new HttpRequestProfilingMetadata
+                var metadata = operation?.IsRecording == true ? RequestProfilingMetadataCapture.Capture(context.Request, runtime.Options) : new HttpRequestProfilingMetadata();
+                feature = new(context, operation, runtime, metadata with
                 {
                     ApplicationRequestId = context.TraceIdentifier, Method = context.Request.Method, Path = path,
                     DeclaredRequestBytes = context.Request.ContentLength, PathKeyShortened = shortened,

@@ -23,6 +23,15 @@ public sealed class RequestProfilingOptions
     /// <summary>Gets or sets whether ordinary application request-body consumption is observed.</summary>
     /// <example><code>options.ObserveRequestBodyBytes = true;</code></example>
     public bool ObserveRequestBodyBytes { get; set; }
+    /// <summary>Gets or sets whether bounded, redacted query arguments are captured.</summary>
+    /// <example><code>options.CaptureQueryString = false;</code></example>
+    public bool CaptureQueryString { get; set; } = true;
+    /// <summary>Gets or sets the query capture limit, from one to 4096 characters.</summary>
+    /// <example><code>options.MaximumQueryStringLength = 2048;</code></example>
+    public int MaximumQueryStringLength { get; set; } = 4096;
+    /// <summary>Gets or sets case-insensitive query parameter names whose values are redacted.</summary>
+    /// <example><code>options.RedactedQueryParameters = ["token", "password", "tenantSecret"];</code></example>
+    public IReadOnlyList<string> RedactedQueryParameters { get; set; } = ["access_token", "refresh_token", "id_token", "token", "password", "secret", "client_secret", "code", "api_key", "apikey", "authorization"];
     /// <summary>Gets the effective bounded strategy identifier.</summary>
     /// <example><code>var policy = options.StrategyKey;</code></example>
     public string StrategyKey { get; private set; } = "AllRequests";
@@ -52,6 +61,8 @@ public sealed class RequestProfilingOptions
         StripPathPrefix = this.StripPathPrefix,
         BlacklistPatterns = this.BlacklistPatterns?.ToArray(),
         ObserveRequestBodyBytes = this.ObserveRequestBodyBytes,
+        CaptureQueryString = this.CaptureQueryString, MaximumQueryStringLength = this.MaximumQueryStringLength,
+        RedactedQueryParameters = this.RedactedQueryParameters?.ToArray(),
         StrategyKey = this.StrategyKey, ConfigurationKey = this.ConfigurationKey, factory = this.factory,
     };
 
@@ -69,6 +80,12 @@ public sealed class RequestProfilingOptions
             || this.StripPathPrefix.Any(c => char.IsControl(c) || c is '?' or '#'))
         {
             throw new InvalidOperationException("The request profiling prefix must be a bounded parsed path.");
+        }
+
+        if (this.MaximumQueryStringLength is < 1 or > 4096 || this.RedactedQueryParameters is null
+            || this.RedactedQueryParameters.Count > 64 || this.RedactedQueryParameters.Any(value => !IsIdentifier(value)))
+        {
+            throw new InvalidOperationException("The request profiling query capture limit and redacted parameter names must be bounded and valid.");
         }
 
         return new(this.BlacklistPatterns);
@@ -96,6 +113,16 @@ public sealed class RequestProfilingOptionsBuilder(RequestProfilingOptions targe
     /// <summary>Enables observation of ordinary consumed request-body bytes without extra reads.</summary>
     /// <example><code>requests.ObserveRequestBodyBytes();</code></example>
     public RequestProfilingOptionsBuilder ObserveRequestBodyBytes(bool value = true) { target.ObserveRequestBodyBytes = value; return this; }
+    /// <summary>Configures bounded query capture and optionally replaces the redacted parameter names.</summary>
+    /// <example><code>requests.QueryString(enabled: true, maximumLength: 2048, redactedParameters: ["token", "password"]);</code></example>
+    public RequestProfilingOptionsBuilder QueryString(bool enabled = true, int maximumLength = 4096, IReadOnlyList<string> redactedParameters = null)
+    {
+        target.CaptureQueryString = enabled;
+        target.MaximumQueryStringLength = maximumLength;
+        if (redactedParameters is not null) { target.RedactedQueryParameters = redactedParameters.ToArray(); }
+
+        return this;
+    }
     /// <summary>Selects one entry sampling policy; the last explicit selection wins.</summary>
     /// <example><code>requests.WithSampling(s => s.RateLimit(25, 50));</code></example>
     public RequestProfilingOptionsBuilder WithSampling(Action<RequestProfilingSamplingBuilder> configure)

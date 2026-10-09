@@ -532,10 +532,10 @@ public sealed partial class DashboardEndpoints(DashboardEndpointsOptions options
             return ValidationProblem("Explicit confirmation is required to remove all profiling data, including pinned sessions.");
         }
 
-        var queries = GetService<IRuntimeProfilingQueryService>(context);
-        return queries is null
+        var provider = GetService<IProfilingStorageProvider>(context);
+        return provider is null
             ? Unavailable("Profiling queries are not registered.")
-            : ToHttpResult(await queries.ClearAsync(true, context.RequestAborted).ConfigureAwait(false));
+            : ToHttpResult(await provider.ClearAsync(new ProfilingClearRequest { DataSet = ProfilingDataSet.All }, context.RequestAborted).ConfigureAwait(false));
     }
 
     private async Task<IResult> CompareAsync(ProfilingDashboardCompareRequest request, HttpContext context)

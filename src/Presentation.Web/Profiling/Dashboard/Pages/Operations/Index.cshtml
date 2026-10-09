@@ -14,6 +14,7 @@
     var requestsOnly = Model.RequestsOnly;
     var query = Model.Query;
     var pagePath = DashboardEndpoints.BuildOperationsPath(options, requestsOnly);
+    var kinds = Enum.GetNames<OperationProfilingKind>().Concat(Model.Groups?.Groups.Select(group => group.Kind) ?? []).Append(query.Kind).Where(kind => !string.IsNullOrEmpty(kind)).Distinct(ProfilingKeyComparer.Instance).Order(StringComparer.OrdinalIgnoreCase).ToArray();
     var advanced = JsonSerializer.Serialize(query with { Cursor = null, Boundary = null });
 }
 @(await RenderPartialAsync<Toolbar, string>(""))
@@ -22,8 +23,8 @@
     <div class="row g-2 align-items-end">
         <div class="col-md-2"><label for="operation-view" class="form-label small">View</label><select id="operation-view" name="view" class="form-select form-select-sm">@foreach (var mode in Enum.GetValues<OperationProfilingView>()) { <option value="@mode" selected="@(query.View == mode)">@(mode == OperationProfilingView.ByCount ? "By count" : mode.ToString())</option> }</select></div>
         <div class="col-md-2"><label for="operation-limit" class="form-label small">Rows</label><select id="operation-limit" name="limit" class="form-select form-select-sm">@foreach (var limit in new[] { 10, 25, 50, 100 }) { <option value="@limit" selected="@(query.PageSize == limit)">@limit</option> }</select></div>
-        <div class="col-md-4"><label for="operation-key" class="form-label small">Key</label><input id="operation-key" name="key" value="@query.Key" class="form-control form-control-sm" maxlength="128" /></div>
-        <div class="col-md-4"><label for="operation-kind" class="form-label small">Kind</label><input id="operation-kind" name="kind" value="@(requestsOnly ? OperationProfilingKind.HttpRequest.ToString() : query.Kind)" readonly="@requestsOnly" class="form-control form-control-sm" maxlength="128" /></div>
+        <div class="col-md-4"><label for="operation-key" class="form-label small">Key</label><input id="operation-key" name="key" value="@(query.KeyContains ?? query.Key)" class="form-control form-control-sm" maxlength="128" placeholder="contains" title="@(query.Key is not null && query.KeyContains is null ? "Exact key from the group selection. Editing it switches to a case-insensitive contains search." : "Case-insensitive contains search on the operation key.")" /></div>
+        <div class="col-md-4"><label for="operation-kind" class="form-label small">Kind</label><select id="operation-kind" name="kind" disabled="@requestsOnly" class="form-select form-select-sm">@if (!requestsOnly) { <option value="">All kinds</option> } @foreach (var kind in requestsOnly ? new[] { OperationProfilingKind.HttpRequest.ToString() } : kinds) { <option value="@kind" selected="@(requestsOnly || ProfilingKeyComparer.Instance.Equals(query.Kind, kind))">@kind</option> }</select></div>
         <div class="col-md-4"><label for="operation-from" class="form-label small">From UTC</label><input id="operation-from" name="fromUtc" type="datetime-local" step="0.001" value="@(query.FromUtc is DateTimeOffset from ? from.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) : "")" title="Inclusive UTC start. Empty uses the last 15 minutes." class="form-control form-control-sm" /></div>
         <div class="col-md-4"><label for="operation-to" class="form-label small">To UTC</label><input id="operation-to" name="toUtc" type="datetime-local" step="0.001" value="@(query.ToUtc is DateTimeOffset to ? to.ToUniversalTime().ToString("yyyy-MM-ddTHH:mm:ss.fff", CultureInfo.InvariantCulture) : "")" title="Exclusive UTC end. Empty uses the current time." class="form-control form-control-sm" /></div>
         <div class="col-md-4"><label for="operation-node" class="form-label small">Node</label><select id="operation-node" name="nodeId" class="form-select form-select-sm" aria-label="Selected profiling node">@(await RenderPartialAsync<Nodes, OperationProfilingDashboardModel>(Model))</select></div>
@@ -31,11 +32,18 @@
     </div>
     <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mt-2">
         <details data-preserve-key="advanced-filters"><summary class="small">Advanced filters</summary><div class="mt-2"><label for="operation-query" class="form-label small">Selector JSON <span title="Basic controls override matching selector fields. Supports HTTP details, segment paths, typed dimensions and sampling policy."><i class="bi bi-info-circle" aria-hidden="true"></i></span></label><textarea id="operation-query" name="query" rows="5" class="form-control font-monospace small" maxlength="16384" aria-label="Advanced profiling selector">@advanced</textarea></div></details>
-        <div class="d-flex gap-2"><button class="btn btn-primary btn-sm" type="submit">Apply</button><a class="btn btn-outline-secondary btn-sm" href="@pagePath">Reset</a></div>
+        <div class="d-flex gap-2"><button class="btn btn-primary btn-sm" type="submit">Apply</button><a id="operation-reset" class="btn btn-outline-secondary btn-sm" href="@pagePath">Reset</a></div>
     </div>
 </form>
 <div id="operation-content" data-content-url="@(pagePath + "/content")" data-page-url="@pagePath" data-requests-only="@requestsOnly" data-api-url="@(DashboardEndpoints.BuildOperationsPath(options) + "/api/analysis")">@(await RenderPartialAsync<Content, OperationProfilingDashboardModel>(Model))</div>
-<details class="card card-body mt-3" data-preserve-key="comparison"><summary>Compare keys</summary><div class="d-flex gap-2 mt-2"><input id="operation-baseline-key" class="form-control form-control-sm" aria-label="Baseline logical key" placeholder="Baseline key" /><input id="operation-candidate-key" class="form-control form-control-sm" aria-label="Candidate logical key" placeholder="Candidate key" /><button type="button" id="operation-compare" class="btn btn-outline-primary btn-sm">Compare</button></div><span class="small text-muted" title="Both keys use the current filters. Medians and percentiles describe retained executions; segment means are weighted by invocation count."><i class="bi bi-info-circle" aria-hidden="true"></i> Current filters</span><pre id="operation-comparison" class="small text-wrap" role="status"></pre></details>
+<details class="card card-body mt-3" data-preserve-key="comparison"><summary>Compare two keys</summary>
+    <p class="small text-muted mt-2 mb-2">Choose two full operation keys to compare their execution counts, median and p95 durations.</p>
+    <div class="row g-2 align-items-end"><div class="col-md-5"><label for="operation-baseline-key" class="form-label small">Baseline key</label><input id="operation-baseline-key" list="operation-comparison-keys" class="form-control form-control-sm" maxlength="128" placeholder="Select or type a full key" /></div><div class="col-md-5"><label for="operation-candidate-key" class="form-label small">Candidate key</label><input id="operation-candidate-key" list="operation-comparison-keys" class="form-control form-control-sm" maxlength="128" placeholder="Select or type a full key" /></div><div class="col-md-2"><button type="button" id="operation-compare" class="btn btn-outline-primary btn-sm">Compare</button></div></div>
+    <datalist id="operation-comparison-keys"></datalist>
+    <p class="small text-muted mt-2 mb-2" title="Kind, node, UTC range and advanced predicates apply to both keys. The list's contains search is ignored. Suggestions come from the current list.">Same filters, exact keys. <i class="bi bi-info-circle" aria-hidden="true"></i></p>
+    <div id="operation-comparison" class="small" role="status" aria-live="polite"></div>
+</details>
+@(await RenderPartialAsync<HealthDialog>())
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
 @(await RenderPartialAsync<Style>())
 @(await RenderPartialAsync<Script>())

@@ -3,7 +3,7 @@
 <option value="">All nodes</option>
 @foreach (var node in Model.Groups?.Nodes ?? [])
 {
-    <option value="@node.Identity.Id" selected="@(Model.Query.NodeId == node.Identity.Id)">@(node.DisplayName ?? node.HostName) · @node.Identity.Key</option>
+    <option value="@node.Identity.Id" selected="@(Model.Query.NodeId == node.Identity.Id)" title="@node.Identity.Id · @node.Identity.Key · @node.ApplicationVersion">@(node.DisplayName ?? node.HostName)</option>
 }
 @if (Model.Query.NodeId is Guid selected && Model.Groups?.Nodes.Any(node => node.Identity.Id == selected) != true)
 {

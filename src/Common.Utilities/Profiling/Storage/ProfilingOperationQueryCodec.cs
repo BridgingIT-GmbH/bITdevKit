@@ -84,7 +84,7 @@ internal sealed class ProfilingOperationQueryCodec(OperationProfilingOptions opt
 
         return query with
         {
-            FromUtc = from, ToUtc = to, Kind = Key(query.Kind), Key = Key(query.Key), SegmentKey = Key(query.SegmentKey), HttpMethod = Key(query.HttpMethod), Route = Key(query.Route, this.options.MaxStringLength),
+            FromUtc = from, ToUtc = to, Kind = Key(query.Kind), Key = Key(query.Key), KeyContains = Key(query.KeyContains), SegmentKey = Key(query.SegmentKey), HttpMethod = Key(query.HttpMethod), Route = Key(query.Route, this.options.MaxStringLength),
             SamplingStrategyKey = Key(query.SamplingStrategyKey), SamplingConfigurationKey = Key(query.SamplingConfigurationKey),
             CorrelationId = Value(query.CorrelationId), ApplicationRequestId = Value(query.ApplicationRequestId), ApplicationVersion = Value(query.ApplicationVersion),
             SegmentPath = query.SegmentPath is null ? null : new ProfilingSegmentPath(query.SegmentPath.Components.Select(c => Key(c)).ToArray()),

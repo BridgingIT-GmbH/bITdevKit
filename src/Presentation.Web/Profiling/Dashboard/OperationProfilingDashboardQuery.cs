@@ -26,13 +26,13 @@ public static class OperationProfilingDashboardQuery
             if (input.Any(pair => pair.Value.Count > 1 || pair.Value.Sum(value => value?.Length ?? 0) > 16384) || input.Count > 48)
             { throw new ArgumentException("Oversized selector."); }
 
-            var query = new OperationProfilingQuery { PageSize = 25 };
+            var query = new OperationProfilingQuery { PageSize = 25, View = OperationProfilingView.Recent };
             if (Value("query") is string document)
             { query = JsonSerializer.Deserialize<OperationProfilingQuery>(document, json) ?? throw new ArgumentException("Empty selector."); }
 
             query = query with
             {
-                Key = String("key", query.Key), Kind = String("kind", query.Kind), Cursor = String("cursor", query.Cursor),
+                Key = input.ContainsKey("key") ? null : query.Key, KeyContains = String("key", query.KeyContains), Kind = String("kind", query.Kind), Cursor = String("cursor", query.Cursor),
                 FromUtc = input.ContainsKey("fromUtc") ? Date("fromUtc") : query.FromUtc, ToUtc = input.ContainsKey("toUtc") ? Date("toUtc") : query.ToUtc,
                 NodeId = input.ContainsKey("nodeId") ? Id("nodeId") : query.NodeId, Id = input.ContainsKey("id") ? Id("id") : query.Id, ParentOperationId = input.ContainsKey("parentOperationId") ? Id("parentOperationId") : query.ParentOperationId,
                 CorrelationId = String("correlationId", query.CorrelationId), ApplicationVersion = String("applicationVersion", query.ApplicationVersion),

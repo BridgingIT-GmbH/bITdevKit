@@ -8,13 +8,67 @@
     const form = document.getElementById('operation-filters');
     const interval = document.getElementById('operation-refresh-interval');
     const current = new URL(location.href);
+    const stateKey = 'bdk.profiling.filters:' + content.dataset.pageUrl;
+    let remembered = {};
+    try { remembered = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch { }
+    const explicitSelection = form && [...form.elements].some(control => control.name && current.searchParams.has(control.name));
+    const restoreFilters = form && !explicitSelection && !current.searchParams.has('cursor') && remembered.filters;
+    if (restoreFilters) {
+        for (const control of form.elements) {
+            const value = remembered.filters[control.name];
+            if (!control.name || typeof value !== 'string' || value.length > 16384) continue;
+            if (control.tagName === 'SELECT' && value && ![...control.options].some(option => option.value === value) && ['nodeId', 'kind'].includes(control.name)) control.add(new Option(value, value));
+            control.value = value;
+        }
+    }
+    function remember() {
+        if (!form) return;
+        try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)),
+            baseline: document.getElementById('operation-baseline-key')?.value, candidate: document.getElementById('operation-candidate-key')?.value,
+            details: remembered.details || {} })); } catch { }
+    }
+    for (const [id, value] of [['operation-baseline-key', remembered.baseline], ['operation-candidate-key', remembered.candidate]]) {
+        const control = document.getElementById(id);
+        if (control && typeof value === 'string' && value.length <= 128) control.value = value;
+        control?.addEventListener('input', remember);
+    }
+    document.addEventListener('toggle', event => {
+        const key = event.target.dataset?.preserveKey;
+        if (!form || !key) return;
+        remembered.details = { ...(remembered.details || {}), [key]: event.target.open };
+        remembered.details = Object.fromEntries(Object.entries(remembered.details).slice(-200));
+        remember();
+    }, true);
+    function restoreDetails() {
+        if (!form) return;
+        document.querySelectorAll('details[data-preserve-key]').forEach(detail => {
+            const value = remembered.details?.[detail.dataset.preserveKey];
+            if (typeof value === 'boolean') detail.open = value;
+        });
+    }
+    form?.addEventListener('input', remember);
+    window.addEventListener('pagehide', remember);
+    document.getElementById('operation-reset')?.addEventListener('click', event => {
+        try { localStorage.removeItem(stateKey); } catch { }
+        // Prevent pagehide from saving the discarded form over the reset state.
+        window.removeEventListener('pagehide', remember);
+        const url = new URL(event.currentTarget.href);
+        if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
+        event.currentTarget.href = url;
+    });
     let pinned = current.searchParams.has('cursor');
     function unpin() { current.searchParams.delete('cursor'); pinned = false; if (interval) interval.disabled = false; document.getElementById('operation-refresh-status').removeAttribute('title'); }
     let comparisonController = null;
     function selectionUrl() {
         const url = new URL(content.dataset.contentUrl, location.origin);
         if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
+        let advanced = {};
+        try { advanced = JSON.parse(document.getElementById('operation-query')?.value || '{}') || {}; } catch { }
+        const exactKey = advanced.key ?? advanced.Key;
         if (form) new FormData(form).forEach((value, key) => {
+            // A group eye link carries an exact selector. Preserve that scope while refreshing
+            // its unchanged control; editing the key deliberately switches to contains matching.
+            if (key === 'key' && value === exactKey && !(advanced.keyContains ?? advanced.KeyContains)) return;
             // datetime-local represents the explicitly labelled UTC clock, not the browser's timezone.
             url.searchParams.set(key, (key === 'fromUtc' || key === 'toUtc') && value ? value + 'Z' : value);
         });
@@ -31,6 +85,12 @@
             select.add(new Option(`Node ${selected.replaceAll('-', '').slice(0, 8)}`, selected));
         }
         select.value = selected;
+    }
+    function synchronizeMetadata() {
+        for (const [selector, targetId] of [['template[data-operation-health]', 'operation-health-content'], ['template[data-operation-comparison-keys]', 'operation-comparison-keys']]) {
+            const source = content.querySelector(selector), target = document.getElementById(targetId);
+            if (source && target) target.replaceChildren(source.content.cloneNode(true));
+        }
     }
     let timingMode = 'duration';
     try { if (localStorage.getItem('bdk.profiling.segment-timing') === 'percentage') timingMode = 'percentage'; } catch { }
@@ -107,39 +167,58 @@
         }
     }
     const refresher = window.bdkDashboard.createRefresher({ contentElement: content, intervalElement: interval, statusSelector: '#operation-refresh-status',
-        storageKey: 'bdk.profiling.operation-refresh', buildUrl: selectionUrl,
-        applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); synchronizeNodes(); applyTimingMode(); window.bdkProfiling.initializeHelp(element); },
+        storageKey: stateKey + ':refresh', buildUrl: selectionUrl,
+        applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); synchronizeNodes(); synchronizeMetadata(); restoreDetails(); applyTimingMode(); window.bdkProfiling.initializeHelp(element); },
         onSuccess: charts, formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
     if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); const status = document.getElementById('operation-refresh-status'); status.textContent = 'Paged view'; status.title = 'Auto refresh is paused. Refresh latest to return to the current window.'; }
     document.getElementById('operation-refresh-now')?.addEventListener('click', () => { unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl; if (form) history.replaceState(null, '', url); refresher.refresh(true); });
     form?.addEventListener('submit', event => {
         event.preventDefault(); unpin();
         const url = selectionUrl(); url.pathname = content.dataset.pageUrl;
-        history.replaceState(null, '', url); comparisonController?.abort(); refresher.refresh(true);
+        history.replaceState(null, '', url); remember(); comparisonController?.abort(); refresher.refresh(true);
     });
-    form?.addEventListener('change', () => { comparisonController?.abort(); refresher.cancel(); });
+    form?.addEventListener('change', () => { remember(); comparisonController?.abort(); refresher.cancel(); });
     document.getElementById('operation-compare')?.addEventListener('click', async () => {
         const output = document.getElementById('operation-comparison');
         comparisonController?.abort(); comparisonController = new AbortController();
         try {
-            const selection = JSON.parse(document.getElementById('operation-query').value || '{}');
+            const raw = JSON.parse(document.getElementById('operation-query').value || '{}');
+            const selection = Object.fromEntries(Object.entries(raw).map(([key, value]) => [key[0].toLowerCase() + key.slice(1), value]));
             selection.cursor = null; selection.boundary = null;
             selection.key = document.getElementById('operation-baseline-key').value;
+            const candidateKey = document.getElementById('operation-candidate-key').value;
+            if (!selection.key || !candidateKey) { output.textContent = 'Choose two full keys. Suggestions come from the current list.'; return; }
+            selection.keyContains = null;
+            remember();
             const parameters = selectionUrl().searchParams;
             if ((content.dataset.requestsOnly || '').toLowerCase() === 'true') selection.kind = 'HttpRequest';
-            const candidate = { ...selection, key: document.getElementById('operation-candidate-key').value };
+            const candidate = { ...selection, key: candidateKey };
             const url = new URL(content.dataset.apiUrl, location.origin);
             parameters.forEach((value,key) => { if (!['query','key','cursor'].includes(key)) url.searchParams.set(key,value); });
             url.searchParams.set('query', JSON.stringify(selection)); url.searchParams.set('candidate', JSON.stringify(candidate));
             const response = await fetch(url, { signal: comparisonController.signal, cache: 'no-store' });
             const data = await response.json();
             if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
-            const describe = (name,value) => `${name}: ${value.count} retained observations; median ${value.durationUnavailable || !value.count ? 'unavailable' : value.p50Milliseconds.toFixed(3) + ' ms'}; p95 ${value.durationUnavailable || !value.count ? 'unavailable' : value.p95Milliseconds.toFixed(3) + ' ms'}; partial owners ${value.partialOperationCount}; sampling ${JSON.stringify(value.sampling)}\n`;
-            const segments = (name,value) => value.segments.map(segment => `${name} ${segment.path.components.join(' > ')}: ${segment.invocationCount} invocations; weighted mean ${segment.unavailable ? 'unavailable' : segment.invocationMeanMilliseconds.toFixed(3) + ' ms'}; per-owner p95 ${segment.totalPerOperation.durationUnavailable ? 'unavailable' : segment.totalPerOperation.p95Milliseconds.toFixed(3) + ' ms'}\n`).join('');
-            output.textContent = describe('Baseline', data.baseline) + describe('Candidate', data.candidate) + segments('Baseline',data.baseline) + segments('Candidate',data.candidate) + `Observed p95 change: ${data.p95ChangePercent == null ? 'unavailable' : data.p95ChangePercent.toFixed(2) + '%'}`;
+            output.replaceChildren();
+            const table = document.createElement('table'); table.className = 'table table-sm mt-2';
+            const row = values => { const tr = table.insertRow(); values.forEach(value => tr.insertCell().textContent = value); };
+            const duration = (value, field) => value.durationUnavailable || !value.count ? 'Unavailable' : value[field].toFixed(3) + ' ms';
+            row(['Metric', 'Baseline', 'Candidate']); row(['Key', selection.key, candidate.key]);
+            row(['Executions', data.baseline.count, data.candidate.count]);
+            row(['Median', duration(data.baseline, 'p50Milliseconds'), duration(data.candidate, 'p50Milliseconds')]);
+            row(['p95', duration(data.baseline, 'p95Milliseconds'), duration(data.candidate, 'p95Milliseconds')]);
+            row(['Partial executions', data.baseline.partialOperationCount, data.candidate.partialOperationCount]);
+            const change = document.createElement('p'); change.textContent = 'Candidate p95 change: ' + (data.p95ChangePercent == null ? 'Unavailable' : data.p95ChangePercent.toFixed(2) + '%'); change.title = 'Compared with the baseline. Positive means slower; negative means faster. These are retained observations, not an estimate of unsampled traffic.';
+            const details = document.createElement('details'), summary = document.createElement('summary'), detailText = document.createElement('pre');
+            summary.textContent = 'Segment comparison'; detailText.className = 'small text-wrap';
+            detailText.textContent = ['baseline', 'candidate'].map(name => data[name].segments.map(segment => `${name}: ${segment.path.components.join(' > ')} · ${segment.invocationCount} invocations · mean ${segment.unavailable ? 'Unavailable' : segment.invocationMeanMilliseconds.toFixed(3) + ' ms'}`).join('\n')).join('\n');
+            details.append(summary, detailText); output.append(table, change, details);
         } catch (error) { if (error.name !== 'AbortError') output.textContent = `Comparison unavailable: ${error.message}`; }
     });
     applyTimingMode();
+    synchronizeMetadata();
+    restoreDetails();
+    if (restoreFilters) { const url = selectionUrl(); url.pathname = content.dataset.pageUrl; history.replaceState(null, '', url); refresher.refresh(true); }
     charts().catch(() => { document.getElementById('operation-refresh-status').textContent = 'Charts unavailable'; });
 })();
 </script>

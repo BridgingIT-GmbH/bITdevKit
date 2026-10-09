@@ -268,6 +268,13 @@ internal static class ProfilingRecordSnapshot
         CheckText(http.Path, options.MaxStringLength);
         CheckText(http.Route, options.MaxStringLength);
         CheckText(http.ApplicationRequestId, options.MaxStringLength);
+        CheckText(http.CorrelationId, 128);
+        CheckText(http.QueryString, 4096);
+        CheckText(http.Scheme, options.MaxKeyLength);
+        CheckText(http.Host, options.MaxStringLength);
+        CheckText(http.Protocol, options.MaxKeyLength);
+        CheckText(http.RequestContentType, options.MaxStringLength);
+        CheckText(http.ResponseContentType, options.MaxStringLength);
         if (http.StatusCode is < 100 or > 599 || http.RequestBytes < 0 || http.ResponseBytes < 0 || http.DeclaredRequestBytes < 0
             || http.DeclaredResponseBytes < 0 || http.ActiveSelectedRequestsAtEntry < 1
             || !Enum.IsDefined(http.RequestBytesQuality) || !Enum.IsDefined(http.ResponseBytesQuality)
@@ -284,7 +291,8 @@ internal static class ProfilingRecordSnapshot
         + root.Dimensions.Sum(d => 128 + Text(d.Key) + ProfilingValueValidator.Charge(d.Value))
         + root.Measurements.Sum(m => 160 + Text(m.Key, m.Unit) + ProfilingValueValidator.Charge(m.Value))
         + root.Sources.Sum(s => 192 + Text(s.Kind) + s.Fields.Sum(d => 128 + Text(d.Key) + ProfilingValueValidator.Charge(d.Value)))
-        + (root.Http is null ? 0 : 384 + Text(root.Http.Method, root.Http.Path, root.Http.Route, root.Http.ApplicationRequestId, root.Http.SamplingStrategyKey, root.Http.SamplingConfigurationKey))
+        + (root.Http is null ? 0 : 384 + Text(root.Http.Method, root.Http.Path, root.Http.Route, root.Http.ApplicationRequestId, root.Http.SamplingStrategyKey, root.Http.SamplingConfigurationKey,
+            root.Http.CorrelationId, root.Http.QueryString, root.Http.Scheme, root.Http.Host, root.Http.Protocol, root.Http.RequestContentType, root.Http.ResponseContentType))
         + FailureCharge(root.Failure)
         + root.Segments.Sum(s => 512 + Text(s.DisplayName) + s.Path.Components.Sum(ProfilingValueValidator.Charge)
             + s.Dimensions.Sum(d => 192 + Text(d.Key) + ProfilingValueValidator.Charge(d.Value))

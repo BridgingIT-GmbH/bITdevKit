@@ -165,7 +165,7 @@ public sealed class RequestProfilingMiddlewareTests
         public override long GetTimestamp() => throw new InvalidOperationException("entry clock");
     }
 
-    /// <summary>Checks selected GUIDs, path-based keys, query omission, injection and terminal response bytes.</summary>
+    /// <summary>Checks selected GUIDs, path-based keys, bounded query metadata, injection and terminal response bytes.</summary>
     [Fact]
     public async Task Capture_FullHttpPipeline_RecordsInjectedSegmentsAndMatchingHeader()
     {
@@ -183,6 +183,7 @@ public sealed class RequestProfilingMiddlewareTests
         record.Key.ShouldBe("/products/42");
         record.Http.Route.ShouldBe("/api/products/{id}");
         record.Http.Path.ShouldBe("/api/products/42");
+        record.Http.QueryString.ShouldBe("?secret=%5Bredacted%5D");
         record.Http.StatusCode.ShouldBe(200);
         record.Http.ResponseBytes.ShouldBe(5);
         record.Http.ResponseBytesQuality.ShouldBe(ProfilingObservationQuality.Complete);
@@ -192,6 +193,77 @@ public sealed class RequestProfilingMiddlewareTests
         record.Segments.ShouldHaveSingleItem().Key.ShouldBe("Load");
         record.StartedUtc.Offset.ShouldBe(TimeSpan.Zero);
         sut.Services.GetRequiredService<IOperationProfiler>().Current.ShouldBeNull();
+    }
+
+    /// <summary>Correlation middleware inside profiling supplies the application identifier independently of the transport identifier.</summary>
+    /// <example><code>await suite.Capture_InnerCorrelationMiddleware_UsesApplicationCorrelation();</code></example>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("application-correlation-42")]
+    public async Task Capture_InnerCorrelationMiddleware_UsesApplicationCorrelation(string supplied)
+    {
+        await using var sut = await Create(configureInner: app => app.UseRequestCorrelation());
+        sut.MapGet("/correlated", () => "ok");
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/correlated");
+        if (supplied is not null) { request.Headers.Add(CorrelationId.HeaderName, supplied); }
+
+        using var response = await (await Client(sut)).SendAsync(request);
+        var record = await Stored(sut, response);
+        var correlation = response.Headers.GetValues(CorrelationId.HeaderName).Single();
+
+        record.CorrelationId.ShouldBe(correlation);
+        record.Http.CorrelationId.ShouldBe(correlation);
+        record.Http.ApplicationRequestId.ShouldNotBeNullOrWhiteSpace();
+        record.CorrelationId.ShouldNotBe(record.Http.ApplicationRequestId);
+        if (supplied is not null) { correlation.ShouldBe(supplied); }
+    }
+
+    /// <summary>Actual request arguments preserve order and duplicates while sensitive values are redacted and capture stays bounded.</summary>
+    /// <example><code>await suite.Capture_RequestMetadata_PreservesArgumentsAndRedactsCredentials();</code></example>
+    [Fact]
+    public async Task Capture_RequestMetadata_PreservesArgumentsAndRedactsCredentials()
+    {
+        await using var sut = await Create();
+        sut.MapPost("/api/products/{id}", () => Microsoft.AspNetCore.Http.Results.Text("ok", "text/plain"));
+        using var response = await (await Client(sut)).PostAsync("/api/products/42?page=2&tag=x&tag=y&ACCESS%5FTOKEN=hidden", new StringContent("ignored body", Encoding.UTF8, "application/json"));
+        var record = await Stored(sut, response);
+
+        record.Http.Path.ShouldBe("/api/products/42");
+        record.Http.Route.ShouldBe("/api/products/{id}");
+        record.Http.QueryString.ShouldBe("?page=2&tag=x&tag=y&ACCESS_TOKEN=%5Bredacted%5D");
+        record.Http.QueryStringTruncated.ShouldBeFalse();
+        record.Http.Host.ShouldBe("localhost");
+        record.Http.Scheme.ShouldBe("http");
+        record.Http.Protocol.ShouldBe("HTTP/1.1");
+        record.Http.RequestContentType.ShouldStartWith("application/json");
+        record.Http.ResponseContentType.ShouldStartWith("text/plain");
+        record.Key.ShouldBe("/products/42");
+    }
+
+    /// <summary>Query recording can be omitted or clipped without changing application behavior.</summary>
+    /// <example><code>await suite.Capture_QueryPolicy_IsOptionalAndBounded(true);</code></example>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Capture_QueryPolicy_IsOptionalAndBounded(bool enabled)
+    {
+        await using var sut = await Create(options => options.QueryString(enabled, maximumLength: 16));
+        sut.MapGet("/bounded", () => "ok");
+        using var response = await (await Client(sut)).GetAsync("/bounded?name=abcdefghijklmnopqrstuvwxyz");
+        var record = await Stored(sut, response);
+
+        if (enabled)
+        {
+            record.Http.QueryString.Length.ShouldBeLessThanOrEqualTo(16);
+            record.Http.QueryStringTruncated.ShouldBeTrue();
+        }
+        else
+        {
+            record.Http.QueryString.ShouldBeNull();
+            record.Http.QueryStringTruncated.ShouldBeFalse();
+        }
+
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
     }
 
     /// <summary>Checks HTTP 4xx completion is not an application failure without exception evidence.</summary>

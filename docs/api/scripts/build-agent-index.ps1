@@ -28,6 +28,8 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
+/// <summary>Builds compact, linked API metadata from local DocFX items.</summary>
+/// <example><code>AgentApiReferenceIndexBuilder.Build(metadataRoot, outputRoot, siteUrl);</code></example>
 public static class AgentApiReferenceIndexBuilder
 {
     private static readonly Regex XrefRegex = new("<xref[^>]*href=\"([^\"]+)\"[^>]*></xref>", RegexOptions.Compiled);
@@ -35,6 +37,12 @@ public static class AgentApiReferenceIndexBuilder
     private static readonly Regex WhitespaceRegex = new("\\s+", RegexOptions.Compiled);
     private static readonly JsonSerializerOptions JsonOptions = new() { WriteIndented = false };
 
+    /// <summary>Writes the symbol index and per-page details without importing external reference metadata.</summary>
+    /// <param name="metadataRoot">The generated ManagedReference YAML directory.</param>
+    /// <param name="outputRoot">The generated API site directory.</param>
+    /// <param name="siteUrl">The API site's absolute public base URL.</param>
+    /// <returns>The number of indexed local symbols.</returns>
+    /// <example><code>var count = AgentApiReferenceIndexBuilder.Build(metadataRoot, outputRoot, siteUrl);</code></example>
     public static int Build(string metadataRoot, string outputRoot, string siteUrl)
     {
         if (!Directory.Exists(metadataRoot))
@@ -65,6 +73,7 @@ public static class AgentApiReferenceIndexBuilder
             var lines = raw.Replace("\r\n", "\n").Replace('\r', '\n').Split('\n');
             var starts = new List<int>();
             var inItems = false;
+            var itemsEnd = lines.Length;
             for (var i = 0; i < lines.Length; i++)
             {
                 if (string.Equals(lines[i], "items:", StringComparison.Ordinal))
@@ -75,6 +84,7 @@ public static class AgentApiReferenceIndexBuilder
 
                 if (string.Equals(lines[i], "references:", StringComparison.Ordinal))
                 {
+                    itemsEnd = i;
                     break;
                 }
 
@@ -97,7 +107,7 @@ public static class AgentApiReferenceIndexBuilder
             for (var i = 0; i < starts.Count; i++)
             {
                 var start = starts[i];
-                var end = i + 1 < starts.Count ? starts[i + 1] : lines.Length;
+                var end = i + 1 < starts.Count ? starts[i + 1] : itemsEnd;
                 var item = ConvertItem(lines, start, end, fileBaseName, detailPath, siteUrlValue);
                 if (item == null)
                 {
@@ -626,7 +636,7 @@ public static class AgentApiReferenceIndexBuilder
     {
         var href = "obj/api/" + fileBaseName + ".html";
         return kind == "Method" || kind == "Property" || kind == "Field" || kind == "Constructor" || kind == "Event" || kind == "Operator"
-            ? href + "#" + Uri.EscapeDataString(uid)
+            ? href + "#" + Regex.Replace(uid, "[^A-Za-z0-9_]", "_")
             : href;
     }
 

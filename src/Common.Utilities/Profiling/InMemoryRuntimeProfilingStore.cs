@@ -21,6 +21,11 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
     internal Func<Guid, bool> OperationNodeReferenced { get; set; }
     internal Action RootDeleted { get; set; }
     private readonly Dictionary<Guid, RuntimeProfilingSession> sessions = [];
+    private readonly SortedSet<(long Timestamp, string Key)> retentionOrder = new(Comparer<(long Timestamp, string Key)>.Create((left, right) =>
+    {
+        var timestamp = left.Timestamp.CompareTo(right.Timestamp);
+        return timestamp == 0 ? StringComparer.Ordinal.Compare(left.Key, right.Key) : timestamp;
+    }));
     private readonly Dictionary<string, Guid> sessionKeys = new(StringComparer.Ordinal);
     private readonly HashSet<Guid> invalidSessionIds = [];
     private readonly HashSet<string> invalidSessionKeys = new(StringComparer.Ordinal);
@@ -212,7 +217,7 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
                 Tags = CloneStrings(request.Tags),
             };
 
-            this.sessions.Add(session.Identity.Id, session);
+            this.StoreSession(session);
             this.sessionKeys.Add(session.Identity.Key, session.Identity.Id);
 
             return Success(new RuntimeProfilingSessionResolution(Clone(session), true));
@@ -307,7 +312,7 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
                 Note = NormalizeOptional(metadata.Note),
                 IsPinned = metadata.IsPinned,
             };
-            this.sessions[session.Identity.Id] = updated;
+            this.StoreSession(updated);
 
             return Success(Clone(updated));
         }
@@ -361,7 +366,7 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
                 State = nextState,
                 CompletedUtc = IsTerminal(nextState) ? transitionedUtc : session.CompletedUtc,
             };
-            this.sessions[sessionId] = updated;
+            this.StoreSession(updated);
 
             return Success(Clone(updated));
         }
@@ -908,7 +913,7 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
             }
 
             var session = Clone(data.Session);
-            this.sessions.Add(session.Identity.Id, session);
+            this.StoreSession(session);
             this.sessionKeys.Add(session.Identity.Key, session.Identity.Id);
 
             foreach (var node in data.Nodes)
@@ -1047,6 +1052,7 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
             }
 
             this.sessions.Clear();
+            this.retentionOrder.Clear();
             this.sessionKeys.Clear();
             this.nodes.Clear();
             this.nodeCorrelations.Clear();
@@ -1083,26 +1089,52 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
                 );
             }
 
-            var terminal = this
-                .sessions.Values.Where(x => IsTerminal(x.State) && !x.IsPinned)
-                .OrderByDescending(TerminalTimestamp)
-                .ToArray();
             var ageThreshold = utcNow.Subtract(maximumSessionAge);
-            var candidates = terminal
-                .Where(
-                    (session, index) =>
-                        TerminalTimestamp(session) < ageThreshold
-                        || index >= maximumRetainedSessions
-                )
-                .DistinctBy(x => x.Identity.Id)
-                .ToArray();
-
-            foreach (var session in candidates)
+            var removed = 0;
+            while (this.retentionOrder.Count > 0
+                && (this.retentionOrder.Count > maximumRetainedSessions || this.retentionOrder.Min.Timestamp < ageThreshold.UtcTicks))
             {
-                this.DeleteSession(session);
+                cancellationToken.ThrowIfCancellationRequested();
+                this.DeleteSession(this.sessions[this.sessionKeys[this.retentionOrder.Min.Key]]);
+                removed++;
             }
 
-            return Success(candidates.Length);
+            return Success(removed);
+        }
+    }
+
+    /// <summary>Deletes the oldest eligible Runtime roots within the shared maintenance scheduling budget.</summary>
+    /// <example><code>var removed = store.DeleteForRetention(request, remainingRoots, utcNow, clock, started, token);</code></example>
+    public int DeleteForRetention(ProfilingMaintenanceRequest request, int maximumRoots, DateTimeOffset utcNow,
+        TimeProvider clock, long started, CancellationToken cancellationToken)
+    {
+        lock (this.sync)
+        {
+            var threshold = utcNow.Subtract(request.MaximumRuntimeSessionAge).UtcTicks;
+            var removed = 0;
+            while (removed < maximumRoots && this.retentionOrder.Count > 0 && clock.GetElapsedTime(started) < request.Budget
+                && (this.retentionOrder.Count > request.MaximumRuntimeSessions || this.retentionOrder.Min.Timestamp < threshold))
+            {
+                cancellationToken.ThrowIfCancellationRequested();
+                this.DeleteSession(this.sessions[this.sessionKeys[this.retentionOrder.Min.Key]]);
+                removed++;
+            }
+
+            return removed;
+        }
+    }
+
+    private void StoreSession(RuntimeProfilingSession session)
+    {
+        if (this.sessions.TryGetValue(session.Identity.Id, out var previous))
+        {
+            this.retentionOrder.Remove((TerminalTimestamp(previous).UtcTicks, previous.Identity.Key));
+        }
+
+        this.sessions[session.Identity.Id] = session;
+        if (IsTerminal(session.State) && !session.IsPinned)
+        {
+            this.retentionOrder.Add((TerminalTimestamp(session).UtcTicks, session.Identity.Key));
         }
     }
 
@@ -1402,6 +1434,7 @@ internal sealed partial class InMemoryRuntimeProfilingStore : IRuntimeProfilingS
         this.invalidSessionIds.Add(sessionId);
         this.invalidSessionKeys.Add(session.Identity.Key);
         this.sessions.Remove(sessionId);
+        this.retentionOrder.Remove((TerminalTimestamp(session).UtcTicks, session.Identity.Key));
         this.sessionKeys.Remove(session.Identity.Key);
 
         RemoveKeysWhere(this.participations, key => key.SessionId == sessionId);

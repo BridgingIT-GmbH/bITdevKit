@@ -293,6 +293,8 @@ Operations and Requests share Slow, Recent and By count modes, result choices 10
 
 Initial rendering and content refresh call the same DI model builder/query facade. Dashboard JSON uses that facade too, without HTTP loopback, direct EF queries in Razor or queue flushing. Auto refresh pauses in hidden tabs, cancels obsolete selectors, preserves expansion/scroll and keeps visibly stale data after errors. Paged selections retain a publication boundary and disable auto refresh until Refresh latest. Clearing, retention, changed filters or an expired five-minute boundary require a fresh selection.
 
+Query settings are configurable through `ProfilingOptions.Queries`. The exact-analysis selection bound applies to both root durations and per-operation segment distributions. EF operation-query commands inherit the configured query timeout, rounded up to at least one whole second; the shared query facade still enforces the precise elapsed deadline and caller cancellation.
+
 Queries allow eight general dimension predicates and four grouping dimensions. Expanding a group uses at most four additional exact/missing group selectors while preserving the general filters. Exact analysis returns midpoint medians and nearest-rank p95/p99 from retained owner observations. Segment means remain invocation-weighted; distributions refer to per-operation aggregates and are not averages of percentiles.
 
 Runtime overlays require exact process identity and observed UTC interval overlap. They show actual collection windows, surrounding samples, sample-rate intervals and gaps. They do not imply ownership, interpolate missing samples or assign process CPU/memory/GC to the operation. Both views provide node/time navigation in the other direction.
@@ -401,26 +403,26 @@ Profiling dashboard routes inherit the dashboard's authentication and authorizat
 
 ## Console commands
 
-Register commands with `.AddConsoleCommands()`. The primary group is `profiling` and the short group alias is `prof`.
+Register commands with `.AddConsoleCommands()`. The primary group is `profiling runtime` and the short group alias is `prof runtime`. These commands control Runtime profiling; Operations and Requests are inspected through the dashboard.
 
 | Command | Purpose |
 | --- | --- |
-| `profiling status` | Show feature availability, the active session, state, and participating-node count. |
-| `profiling start --name warmup --interval 500ms --duration 30s` | Start a session with optional name, sampling interval, and duration overrides. |
-| `profiling stop` | Best-effort stop of the active logical session across the current target snapshot. |
-| `profiling snapshot --name checkpoint` | Capture immediately; when idle, create one terminal standalone snapshot session. |
-| `profiling gc` | Request one normal deployment-wide `GC.Collect()` action. |
-| `profiling mark --name "load started"` | Add a shared instantaneous marker to the active session. |
-| `profiling analyze --session a1b2c3d4 --node e5f6g7h8` | Analyze the complete available timeline for one selected node. |
-| `profiling analyze --session a1b2c3d4 --node e5f6g7h8 --snapshot-a i9j0k1l2 --snapshot-b m3n4o5p6` | Analyze exactly two ordered snapshots. |
-| `profiling analyze --session a1b2c3d4 --node e5f6g7h8 --json` | Write the computed evaluation contract as JSON without persisting it. |
-| `profiling export --session a1b2c3d4 --output run.json` | Export a complete terminal session archive. Add paired `--node` and `--snapshot` to export one snapshot. |
-| `profiling export --session a1b2c3d4 --format perfetto --output run.perfetto.json` | Export a complete terminal session as a one-way Perfetto visualization trace. |
-| `profiling export --session a1b2c3d4 --output run.json --overwrite` | Explicitly replace an existing archive after a successful temporary-file write. |
-| `profiling import --file run.json` | Import an archive as a fresh terminal session and report its new key. |
-| `profiling clear --yes` | Remove every stored session and snapshot, including pinned sessions. |
+| `profiling runtime status` | Show feature availability, the active session, state, and participating-node count. |
+| `profiling runtime start --name warmup --interval 500ms --duration 30s` | Start a session with optional name, sampling interval, and duration overrides. |
+| `profiling runtime stop` | Best-effort stop of the active logical session across the current target snapshot. |
+| `profiling runtime snapshot --name checkpoint` | Capture immediately; when idle, create one terminal standalone snapshot session. |
+| `profiling runtime gc` | Request one normal deployment-wide `GC.Collect()` action. |
+| `profiling runtime mark --name "load started"` | Add a shared instantaneous marker to the active session. |
+| `profiling runtime analyze --session a1b2c3d4 --node e5f6g7h8` | Analyze the complete available timeline for one selected node. |
+| `profiling runtime analyze --session a1b2c3d4 --node e5f6g7h8 --snapshot-a i9j0k1l2 --snapshot-b m3n4o5p6` | Analyze exactly two ordered snapshots. |
+| `profiling runtime analyze --session a1b2c3d4 --node e5f6g7h8 --json` | Write the computed evaluation contract as JSON without persisting it. |
+| `profiling runtime export --session a1b2c3d4 --output run.json` | Export a complete terminal session archive. Add paired `--node` and `--snapshot` to export one snapshot. |
+| `profiling runtime export --session a1b2c3d4 --format perfetto --output run.perfetto.json` | Export a complete terminal session as a one-way Perfetto visualization trace. |
+| `profiling runtime export --session a1b2c3d4 --output run.json --overwrite` | Explicitly replace an existing archive after a successful temporary-file write. |
+| `profiling runtime import --file run.json` | Import an archive as a fresh terminal session and report its new key. |
+| `profiling runtime clear --yes` | Remove every stored session and snapshot, including pinned sessions. |
 
-`profiling clear` without `--yes` changes nothing. Clear is also rejected while a session is active.
+`profiling runtime clear` without `--yes` changes nothing. Clear is also rejected while a session is active.
 
 ## Programmatic usage
 
@@ -561,7 +563,7 @@ Recoverable operation-observation failures are isolated from application executi
 - Automatic finalization after the original end and grace period is idempotent. An expected participant that did not complete, or that recorded a failed capture, produces `CompletedWithWarnings`.
 - Startup reconciliation performs one bounded pass for overdue running sessions. It does not poll the store.
 - Late records cannot recreate a deleted or cleared session.
-- Retention removes old unpinned terminal sessions by age and count. Pinned sessions are retained until explicitly deleted or included in a confirmed clear-all operation.
+- The shared maintenance worker removes old unpinned terminal sessions by completion age and count, including when Runtime capture is disabled. Defaults retain at most 20 unpinned terminal sessions for seven days; configure them with `WithRuntimeProfiling(o => o.Retention(20, TimeSpan.FromDays(7)))`. Active and pinned sessions are preserved. Clear recovery, Runtime retention and operation retention share the configured root and next-batch time budgets, so remaining work continues on later ticks. Pinned sessions are retained until explicitly deleted or included in a confirmed clear-all operation.
 
 ## Deterministic evaluation
 
@@ -599,11 +601,11 @@ Runtime availability differs by operating system and .NET runtime. An unavailabl
 
 Raw JSON export contains normal immutable runtime snapshots only. A selected node export contains that node's snapshots; a complete-session export contains snapshots from expected and ad-hoc contributors. It excludes runtime context, markers, segments, custom metrics, evaluation KPIs, signals, actions, and limitations.
 
-Evaluation JSON produced by `profiling analyze --json` is computed command output, not a persisted or downloadable dashboard artifact.
+Evaluation JSON produced by `profiling runtime analyze --json` is computed command output, not a persisted or downloadable dashboard artifact.
 
 Portable archives are a separate fixed JSON contract for durable local transfer. Format `bitdevkit.profiling.archive`, version `2`, supports complete terminal sessions and individual immutable snapshots up to 25 MiB. Version 1 input is rejected before mutation. Import generates fresh eight-character lowercase session, node, and snapshot keys, validates the complete graph before one atomic provider mutation, and never restores private Broadcast identities. Re-importing creates another independent terminal copy. Archives use the application-owned Runtime model and do not require a dedicated archive table.
 
-Perfetto export is a separate, one-way Trace Event JSON representation for visual investigation. It includes session and runtime context, readable keys, snapshot counters, shared markers, node actions, measured segments, and custom metric counters. It excludes internal GUIDs and computed evaluation results. Perfetto JSON is not accepted by `profiling import`; use the portable archive when a session must be restored to History.
+Perfetto export is a separate, one-way Trace Event JSON representation for visual investigation. It includes session and runtime context, readable keys, snapshot counters, shared markers, node actions, measured segments, and custom metric counters. It excludes internal GUIDs and computed evaluation results. Perfetto JSON is not accepted by `profiling runtime import`; use the portable archive when a session must be restored to History.
 
 ## Security and operational guidance
 

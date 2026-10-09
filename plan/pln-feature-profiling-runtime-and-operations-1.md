@@ -18,9 +18,11 @@ This is an execution plan, not implementation evidence. All tasks start incomple
 
 ## Execution checkpoint — 2026-10-09 UTC
 
-All 76 tasks are implemented and verified, including the original feature, final application integration, optional repository/Active Entity/Requester/Notifier/messaging/queue handler profiling and the WeatherFiesta Profiling Lab. The accepted 84-trial capacity matrix retains the corrected 21-trial memory rerun and 63 EF trials, with its original synthetic-workload limits. Historical phases and the [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remain in the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md).
+All **82 tasks across 18 phases** are implemented and verified. Phase 18 closes the five branch-review gaps in Runtime retention, rejected HTTP observer allocation, configured segment-analysis limits, EF query timeouts and current console documentation. Generated-doc acceptance also exposed and repaired API-index item boundaries/member anchors. The [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) records every phase and the exact current acceptance results. Raw evidence remains outside version control according to the repository ignore rules; earlier pause/restart checkpoints are summarized in that evidence file.
 
-Phase 17 passed 66 application unit, 117 application integration, 2,755 Common unit and 1,298 Application unit tests: 4,236 passed with four existing serializer benchmarks skipped. The complete solution build passed with zero warnings/errors. Visible Chromium checks passed desktop/mobile Lab navigation, four concurrent reviews, repeated/nested segments, actual Runtime observations, start/snapshot/stop and anonymous authorization. The complete MkDocs/API build passed, generating 65 assembly references and 25,730 indexed symbols; 1,523 relative links resolve across 21 generated pages. DocFX reported zero warnings/errors; the Release API compiler retained 36 existing XML-comment warnings outside profiling. Shared profiling documentation remains application-neutral; the showcase workflow is documented only in the application README. No planned work remains outstanding.
+The current complete solution build passed with zero warnings/errors. Ten complete unit/integration/application suites passed **7,513 tests**, with 146 existing or explicitly gated skips and zero failures. All new profiling correctness cases passed on memory, SQLite, SQL Server and PostgreSQL. The explicit four-provider regression smoke passed **24 trials** and all 2,400 measured business requests, with deliberate saturation drops reported and all queues drained. The previously accepted 84-trial capacity matrix remains historical evidence with its original synthetic-workload limits; the current smoke makes no new production-capacity claim.
+
+The complete MkDocs/API pipeline passed, staging 65 assemblies with zero DocFX warnings/errors. Following the targeted index repair, its regression and final generation stage passed; the corrected index contains 29,580 symbols, with all 25,732 member anchors resolving. Across 19 generated guide/API pages, 1,539 relative links and referenced HTML anchors resolve. The Release compiler retains 36 existing XML-comment warnings outside profiling. Shared profiling documentation remains application-neutral. Phase 17's desktop/mobile browser and Runtime controls proof remains recorded; Phase 18 changes no dashboard rendering code.
 
 ## 1. Requirements & Constraints
 
@@ -334,6 +336,21 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 | TASK-075 | Verify real registration and workflows, repeated segment counts, failed reads, absent/disabled capture, validation/cancellation, authorization, natural persistence and Runtime correlation with unit/integration tests. Exercise the rendered page and generated navigation in a browser. | [x] | 2026-10-09 |
 | TASK-076 | Update only the application README with the demonstration workflow; build the solution and documentation site, review the final diff, record evidence, then commit/push Phase 17 on the existing feature branch without the user-owned `.gitignore` change. | [x] | 2026-10-09 |
 
+### Implementation Phase 18
+
+- GOAL-018: Close the five branch-review gaps and verify final behavior against the canonical specification.
+- Dependencies: GOAL-017. TASK-077–TASK-081 are independent except edits to shared files remain serialized; TASK-082 depends on all five.
+- Completion criteria: Hosted maintenance enforces Runtime retention through both providers; rejected HTTP admission installs no body observers; configured analysis and query limits are honored; documentation uses the final CLI; solution, regression suites and MkDocs/API output pass.
+
+| Task | Description | Completed | Date |
+| --- | --- | --- | --- |
+| TASK-077 | Extend `ProfilingMaintenanceRequest`, `ProfilingMaintenanceService`, and both provider maintenance implementations with configured Runtime count/age retention. Share root/time budgets with clear recovery and Operations; preserve active/pinned sessions, tombstones, deletion revisions and referenced nodes. Add hosted-worker and memory/SQLite/SQL Server/PostgreSQL contract tests. | [x] | 2026-10-09 |
+| TASK-078 | Gate body observer allocation in `RequestProfilingMiddleware` on admitted recording while preserving selected-request ID, abort registration and concurrency cleanup. Extend middleware tests for saturated admission, original stream/pipe features and abort handling. | [x] | 2026-10-09 |
+| TASK-079 | Pass `OperationProfilingQuery.MaximumAnalysisCount` to all root and segment distributions in `OperationProfilingAnalysis`. Test more than 10,000 owners under an explicitly larger bound and rejection above the configured bound. | [x] | 2026-10-09 |
+| TASK-080 | Replace the literal five-second EF raw-command timeout with the validated configured profiling query timeout. Test default/nondefault/subsecond budgets and cancellation, including actual provider queries. | [x] | 2026-10-09 |
+| TASK-081 | Correct every current Runtime console example in `docs/features-profiling.md` to `profiling runtime`/`prof runtime`; document verified bounded retention and configured limits in the guide/spec. Repair final-item parsing and DocFX member anchors in `docs/api/scripts/build-agent-index.ps1`; add `test-agent-index.ps1` to the normal site pipeline. Keep the generic documentation application-neutral. | [x] | 2026-10-09 |
+| TASK-082 | Build and run relevant unit/integration/application regressions sequentially; validate affected performance scheduling and complete MkDocs/API generation. Review the final diff and record exact evidence and limitations. Mark this phase/plan complete only after passing checks, then commit/push the repairs to the existing feature branch. | [x] | 2026-10-09 |
+
 ## 3. Alternatives
 
 - **ALT-001**: Reuse Runtime's measurement service for Operations. Rejected because it owns Runtime sessions and durable interval writes, violating execution-independent nonblocking operation capture.
@@ -391,6 +408,8 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | FILE-027 | `tests/Common.UnitTests/Utilities/Requester/RequesterNotifierProfilingBehaviorTests.cs`, `docs/features-requester-notifier.md` | Behavior and real-dispatch proof; feature reference. |
 | FILE-028 | `src/Common.Abstractions/Profiling/IProfilingExecutionBoundaryBehavior.cs`, `src/Application.Messaging/Behaviors/MessageHandlerProfilingBehavior.cs`, `src/Application.Queueing/Behaviors/QueueHandlerProfilingBehavior.cs`, both broker bases and service registration extensions | Optional handler capture and independent consumer boundaries. |
 | FILE-029 | `tests/Application.UnitTests/Profiling/BrokerHandlerProfilingBehaviorTests.cs`, `docs/features-messaging.md`, `docs/features-queueing.md` | Handler/node contracts and feature setup references. |
+| FILE-030 | `tests/Shared/Profiling/ProfilingMaintenanceContractTests.cs`, the existing profiling query/middleware/EF contract suites, and maintenance/query source files referenced by Phase 18 | Regression proof for shared Runtime retention, rejected HTTP observer allocation and configured analysis/query limits. |
+| FILE-031 | `docs/api/scripts/build-agent-index.ps1`, `test-agent-index.ps1`, `docs/site/scripts/build-pages.ps1` | Preserve final local members, link to actual DocFX anchors and execute the index regression during documentation generation. |
 
 ## 6. Testing
 
@@ -421,6 +440,7 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | TEST-023 | Requester and Notifier optional activation, duplicate setup, failed results, exactly-once execution, nesting, repetitions, concurrency, cancellation, observation faults and independent fire-and-forget completion. | TASK-065, TASK-066, TASK-067, TASK-068 |
 | TEST-024 | Messaging and queue handler optional/idempotent registration, exact-once success and exception/cancellation propagation, nested/parallel aggregates, safe worker context isolation/restoration, real broker completion, bounded metadata and executing-node filters. | TASK-069, TASK-070, TASK-071, TASK-072 |
 | TEST-025 | WeatherFiesta Profiling Lab authorization, bounded concurrent reviews, repeated/nested segments, API ID/HTTP enrichment, real job/pipeline/orchestration registration, optional capture and null-Activity background execution; desktop/mobile navigation and Runtime controls. | TASK-073, TASK-074, TASK-075, TASK-076 |
+| TEST-026 | Actual hosted retention with capture disabled on memory/SQLite/SQL Server/PostgreSQL; pinning, owned graphs, tombstones, shared deletion/time budgets and cursor invalidation; rejected HTTP body-feature identity and abort cleanup; configured selections above 10,000; default/custom/subsecond EF command budgets; current console examples, API index item/reference boundaries and real member anchors; complete acceptance checks. | TASK-077, TASK-078, TASK-079, TASK-080, TASK-081, TASK-082 |
 
 Run from the repository root. The workspace tasks are the preferred full checks. These commands are the focused equivalents for implementation work; execute them sequentially and record failures rather than suppressing them:
 

@@ -80,9 +80,16 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
                 context.Features.Set<IRequestProfilingFeature>(feature);
                 if (selected)
                 {
-                    var response = new ProfilingResponseBodyFeature(context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(), feature.ObserveResponse);
-                    context.Features.Set<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(response);
-                    var request = runtime.Options.ObserveRequestBodyBytes ? new ProfilingRequestBodyObserver(context, feature.ObserveRequest) : null;
+                    ProfilingResponseBodyFeature response = null;
+                    ProfilingRequestBodyObserver request = null;
+                    if (operation?.IsRecording == true)
+                    {
+                        response = new(context.Features.Get<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(), feature.ObserveResponse);
+                        context.Features.Set<Microsoft.AspNetCore.Http.Features.IHttpResponseBodyFeature>(response);
+                        request = runtime.Options.ObserveRequestBodyBytes ? new(context, feature.ObserveRequest) : null;
+                    }
+
+                    // Selected but rejected requests still own an ID and abort/concurrency cleanup.
                     feature.Attach(response, request);
                 }
 

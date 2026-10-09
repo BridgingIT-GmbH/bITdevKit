@@ -81,6 +81,8 @@ dotnet docfx $docfxConfig --logLevel Error
 
 & (Join-Path $repoRoot 'docs\api\scripts\fix-namespace-links.ps1') -OutputRoot $apiPagesRoot
 
+& (Join-Path $repoRoot 'docs\api\scripts\test-agent-index.ps1')
+
 & $apiAgentIndexScript `
     -MetadataRoot $apiMetadataRoot `
     -OutputRoot $apiPagesRoot

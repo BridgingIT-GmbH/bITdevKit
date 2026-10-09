@@ -128,7 +128,8 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
     {
         if (request is null || request.MaximumRoots <= 0 || request.MaximumRoots > this.storageOptions.MaximumMaintenanceRoots
             || request.Budget <= TimeSpan.Zero || request.Budget > this.storageOptions.MaintenanceTimeBudget || request.MaximumOperationCount <= 0
-            || request.MaximumOperationBytes <= 0 || request.MaximumOperationAge <= TimeSpan.Zero || request.MaximumOperationAge == TimeSpan.MaxValue)
+            || request.MaximumOperationBytes <= 0 || request.MaximumOperationAge <= TimeSpan.Zero || request.MaximumOperationAge == TimeSpan.MaxValue
+            || request.MaximumRuntimeSessions <= 0 || request.MaximumRuntimeSessionAge <= TimeSpan.Zero || request.MaximumRuntimeSessionAge == TimeSpan.MaxValue)
         {
             return Failure<ProfilingMaintenanceResult>(new ProfilingValidationError("Profiling maintenance requires finite limits within provider scheduling bounds."));
         }
@@ -157,6 +158,12 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
             var remaining = request.MaximumRoots - removedOperations - removedRuntime;
             if (remaining > 0 && budget.Elapsed < request.Budget)
             {
+                removedRuntime += await this.RetainRuntimeAsync(context, gate, utc, request, (int)remaining, budget, token).ConfigureAwait(false);
+                remaining = request.MaximumRoots - removedOperations - removedRuntime;
+            }
+
+            if (remaining > 0 && budget.Elapsed < request.Budget)
+            {
                 retentionRemoved = await this.RetainAsync(context, frame, utc, request.MaximumOperationCount, request.MaximumOperationBytes,
                     utc.Subtract(request.MaximumOperationAge).UtcTicks, (int)remaining, budget, request.Budget, token).ConfigureAwait(false);
                 removedOperations += retentionRemoved;
@@ -164,7 +171,11 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
 
             frame.Clears.Prune(frame.Writers, utc);
             frame.Writers.Prune(utc);
-            await PruneNodesAsync(context, request.MaximumRoots, token).ConfigureAwait(false);
+            if (budget.Elapsed < request.Budget)
+            {
+                await PruneNodesAsync(context, request.MaximumRoots, token).ConfigureAwait(false);
+            }
+
             return Result<ProfilingMaintenanceResult>.Success(new()
             {
                 RetentionRemovedOperations = retentionRemoved, RemovedOperations = removedOperations, RemovedRuntimeSessions = removedRuntime,
@@ -251,6 +262,33 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
         }
 
         return query;
+    }
+
+    private async Task<int> RetainRuntimeAsync(TContext context, ProfilingRuntimeGateEntity gate, DateTimeOffset utc,
+        ProfilingMaintenanceRequest request, int maximum, Stopwatch elapsed, CancellationToken token)
+    {
+        var terminal = context.Set<RuntimeProfilingSessionEntity>()
+            .Where(session => session.State != RuntimeProfilingSessionState.Running && !session.IsPinned);
+        var count = await terminal.LongCountAsync(token).ConfigureAwait(false);
+        if (count == 0 || elapsed.Elapsed >= request.Budget) { return 0; }
+
+        var excess = Math.Max(0, count - request.MaximumRuntimeSessions);
+        var threshold = utc.Subtract(request.MaximumRuntimeSessionAge).UtcTicks;
+        var eligible = excess == 0 ? terminal.Where(session => session.CompletionUtcTicks < threshold) : terminal;
+        var candidates = await eligible.OrderBy(session => session.CompletionUtcTicks).ThenBy(session => session.Key)
+            .Take(maximum).ToArrayAsync(token).ConfigureAwait(false);
+        var selected = candidates.Where((session, index) => index < excess || session.CompletionUtcTicks < threshold).ToArray();
+        if (selected.Length == 0) { return 0; }
+
+        var ids = selected.Select(session => session.Id).ToArray();
+        var known = await context.Set<RuntimeProfilingInvalidSessionEntity>().Where(session => ids.Contains(session.Id))
+            .Select(session => session.Id).ToArrayAsync(token).ConfigureAwait(false);
+        context.Set<RuntimeProfilingInvalidSessionEntity>().AddRange(selected.Where(session => !known.Contains(session.Id))
+            .Select(session => new RuntimeProfilingInvalidSessionEntity { Id = session.Id, Key = session.Key }));
+        context.Set<RuntimeProfilingSessionEntity>().RemoveRange(selected);
+        await context.SaveChangesAsync(token).ConfigureAwait(false);
+        gate.DeletionRevision = checked(gate.DeletionRevision + selected.Length);
+        return selected.Length;
     }
 
     private async Task<int> RetainAsync(TContext context, EntityFrameworkProfilingCoordination<TContext>.Frame frame, DateTimeOffset utc,

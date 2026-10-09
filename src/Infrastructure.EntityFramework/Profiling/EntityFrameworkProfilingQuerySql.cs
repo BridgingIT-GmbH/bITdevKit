@@ -125,15 +125,19 @@ internal static class EntityFrameworkProfilingQuerySql<TContext> where TContext 
         return $"WITH {sql.Quote("Base")} AS ({sql.Base}), {sql.Quote("Grouped")} AS (SELECT b.*, {key} AS {sql.Quote("GroupKey")} FROM {sql.Quote("Base")} b{joins})";
     }
 
-    private static Sql Create(TContext context, IQueryable<OperationProfilingEntity> roots)
+    private static Sql Create(TContext context, IQueryable<OperationProfilingEntity> roots) =>
+        new(CreateCommand(context, roots), context.Database.ProviderName);
+
+    /// <summary>Creates the portable base projection using the query-owned context's configured command timeout.</summary>
+    /// <remarks>The caller owns command disposal. Direct aggregate commands do not use EF execution interceptors.</remarks>
+    /// <example><code>using var command = EntityFrameworkProfilingQuerySql&lt;TContext&gt;.CreateCommand(context, roots);</code></example>
+    public static DbCommand CreateCommand(TContext context, IQueryable<OperationProfilingEntity> roots)
     {
-        var command = roots.Select(root => new Projection
+        return roots.Select(root => new Projection
         {
             Id = root.Id, CanonicalIdBytes = root.CanonicalIdBytes, StartedUtcTicks = root.StartedUtcTicks, CompletedUtcTicks = root.CompletedUtcTicks,
             DurationTicks = root.DurationTicks, BaseGroupBytes = root.BaseGroupBytes, HttpMethodGroupBytes = root.HttpMethodGroupBytes,
         }).CreateDbCommand();
-        command.CommandTimeout = 5;
-        return new(command, context.Database.ProviderName);
     }
 
     private static async Task<DbDataReader> ExecuteAsync(TContext context, DbCommand command, CancellationToken token)

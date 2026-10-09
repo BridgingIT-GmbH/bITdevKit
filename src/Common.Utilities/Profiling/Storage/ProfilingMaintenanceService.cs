@@ -36,6 +36,8 @@ public sealed class ProfilingMaintenanceService : BackgroundService
             MaximumOperationCount = provider.Capabilities.OperationRetention?.MaximumCount ?? options.Operations.MaximumRetainedOperations,
             MaximumOperationBytes = provider.Capabilities.OperationRetention is { } retention ? retention.MaximumBytes : options.Operations.MaximumRetainedBytes,
             MaximumOperationAge = provider.Capabilities.OperationRetention?.MaximumAge ?? options.Operations.MaximumOperationAge,
+            MaximumRuntimeSessions = options.Runtime.MaximumRetainedSessions,
+            MaximumRuntimeSessionAge = options.Runtime.MaximumSessionAge,
         };
     }
 

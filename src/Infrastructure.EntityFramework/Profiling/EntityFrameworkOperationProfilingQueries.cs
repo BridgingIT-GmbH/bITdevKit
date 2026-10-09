@@ -146,6 +146,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
     {
         try
         {
+            this.ConfigureQueryTimeout(context);
             var state = await context.Set<ProfilingStoreStateEntity>().AsNoTracking().SingleOrDefaultAsync(state => state.Id == 1, token).ConfigureAwait(false);
             var codec = new ProfilingOperationQueryCodec(this.options, this.queryOptions, this.clock, state?.QuerySecret ?? new byte[32]);
             if (state is null)

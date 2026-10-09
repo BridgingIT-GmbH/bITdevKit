@@ -283,11 +283,14 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
     public Task<IResult<OperationProfilingRecord>> FindAsync(Guid id, CancellationToken cancellationToken = default) =>
         this.unitOfWork.ReadAsync(async (context, token) =>
         {
+            this.ConfigureQueryTimeout(context);
             var root = await context.Set<OperationProfilingEntity>().AsNoTracking().SingleOrDefaultAsync(root => root.Id == id, token).ConfigureAwait(false);
             return Result<OperationProfilingRecord>.Success(root is null ? null : ProfilingEntityMapper.ToOperationModel(root, this.options));
         }, cancellationToken);
 
     private static Task<IResult<T>> Failure<T>(IResultError error) => Task.FromResult<IResult<T>>(Result<T>.Failure(error));
+    private void ConfigureQueryTimeout(TContext context) =>
+        context.Database.SetCommandTimeout((int)Math.Clamp(Math.Ceiling(this.queryOptions.Timeout.TotalSeconds), 1, int.MaxValue));
     private static bool NeedsRoom(ProfilingStoreStateEntity state, long maximumCount, long? maximumBytes) =>
         state.RetainedOperationCount > maximumCount || maximumBytes.HasValue && state.RetainedOperationBytes > maximumBytes.Value;
 

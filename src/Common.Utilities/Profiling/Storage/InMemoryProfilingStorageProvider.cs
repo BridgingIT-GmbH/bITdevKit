@@ -330,7 +330,8 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
         cancellationToken.ThrowIfCancellationRequested();
         if (request is null || request.MaximumRoots <= 0 || request.MaximumRoots > this.storageOptions.MaximumMaintenanceRoots
             || request.Budget <= TimeSpan.Zero || request.Budget > this.storageOptions.MaintenanceTimeBudget || request.MaximumOperationCount <= 0
-            || request.MaximumOperationBytes <= 0 || request.MaximumOperationAge <= TimeSpan.Zero || request.MaximumOperationAge == TimeSpan.MaxValue)
+            || request.MaximumOperationBytes <= 0 || request.MaximumOperationAge <= TimeSpan.Zero || request.MaximumOperationAge == TimeSpan.MaxValue
+            || request.MaximumRuntimeSessions <= 0 || request.MaximumRuntimeSessionAge <= TimeSpan.Zero || request.MaximumRuntimeSessionAge == TimeSpan.MaxValue)
         {
             return Failure<ProfilingMaintenanceResult>(new ProfilingValidationError("Profiling maintenance requires finite limits within the provider scheduling bounds."));
         }
@@ -359,6 +360,12 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
 
             long retentionRemoved = 0;
             var remaining = request.MaximumRoots - operationsRemoved - runtimeRemoved;
+            if (remaining > 0 && this.clock.GetElapsedTime(started) < request.Budget)
+            {
+                runtimeRemoved += this.runtime.DeleteForRetention(request, (int)remaining, utc, this.clock, started, cancellationToken);
+                remaining = request.MaximumRoots - operationsRemoved - runtimeRemoved;
+            }
+
             if (remaining > 0 && this.clock.GetElapsedTime(started) < request.Budget)
             {
                 retentionRemoved = this.Retain(request, (int)remaining, started, cancellationToken);

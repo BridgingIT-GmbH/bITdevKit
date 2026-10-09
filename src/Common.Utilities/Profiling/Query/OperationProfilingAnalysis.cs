@@ -38,7 +38,7 @@ public static class OperationProfilingAnalysis
         }
 
         var segments = paths.OrderBy(pair => pair.Key.Kind, StringComparer.Ordinal).ThenBy(pair => pair.Key.Key, StringComparer.Ordinal)
-            .ThenBy(pair => pair.Key.Path, StringComparer.Ordinal).Select(pair => AnalyzeSegment(pair.Value, query.SegmentOutcomes, cancellationToken)).ToArray();
+            .ThenBy(pair => pair.Key.Path, StringComparer.Ordinal).Select(pair => AnalyzeSegment(pair.Value, query.SegmentOutcomes, query.MaximumAnalysisCount, cancellationToken)).ToArray();
         return Distribution(records.Select(record => record.Duration), query.MaximumAnalysisCount) with
         {
             Boundary = selection.Boundary, Segments = Array.AsReadOnly(segments),
@@ -93,7 +93,7 @@ public static class OperationProfilingAnalysis
         };
     }
 
-    private static OperationProfilingSegmentAnalysis AnalyzeSegment(List<SegmentOwner> owners, IReadOnlyList<ProfilingSegmentOutcome> selectedOutcomes, CancellationToken token)
+    private static OperationProfilingSegmentAnalysis AnalyzeSegment(List<SegmentOwner> owners, IReadOnlyList<ProfilingSegmentOutcome> selectedOutcomes, int maximumCount, CancellationToken token)
     {
         token.ThrowIfCancellationRequested();
         var label = owners.OrderBy(owner => owner.Record.StartedUtc).ThenBy(owner => owner.Record.Id.ToString("N"), StringComparer.Ordinal).First();
@@ -126,8 +126,8 @@ public static class OperationProfilingAnalysis
             InvocationSelfMeanMilliseconds = unavailable || count == 0 ? 0 : Milliseconds(self / count),
             MinimumInvocationMilliseconds = unavailable ? 0 : owners.Min(owner => owner.Statistics.MinimumDuration.TotalMilliseconds),
             MaximumInvocationMilliseconds = unavailable ? 0 : owners.Max(owner => owner.Statistics.MaximumDuration.TotalMilliseconds),
-            TotalPerOperation = Distribution(owners.Select(owner => owner.Statistics.TotalDuration)) with { DurationUnavailable = unavailable },
-            SelfPerOperation = Distribution(owners.Select(owner => owner.Statistics.TotalSelfDuration)) with { DurationUnavailable = unavailable },
+            TotalPerOperation = Distribution(owners.Select(owner => owner.Statistics.TotalDuration), maximumCount) with { DurationUnavailable = unavailable },
+            SelfPerOperation = Distribution(owners.Select(owner => owner.Statistics.TotalSelfDuration), maximumCount) with { DurationUnavailable = unavailable },
             Outcomes = outcomes, Dimensions = ReduceDimensions(owners.Select(owner => owner.Summary.Dimensions).ToArray()),
             Measurements = ReduceMeasurements(owners.SelectMany(owner => owner.Summary.Measurements.Select(measurement =>
                 new MeasurementOwner(owner.Record.Id, SelectMeasurement(measurement, selectedOutcomes)))).ToArray(), token),

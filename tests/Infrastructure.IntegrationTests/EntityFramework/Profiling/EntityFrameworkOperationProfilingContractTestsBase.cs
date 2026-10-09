@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Infrastructure.IntegrationTests.EntityFramework.Profiling;
 
+using System.Collections.Concurrent;
 using System.Data;
 using System.Data.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling;
@@ -21,6 +22,7 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
 {
     private readonly List<ServiceProvider> services = [];
     private readonly LostCommitAcknowledgement commitFault = new();
+    private readonly QueryTimeoutObserver queryTimeouts = new();
     private ServiceProvider first;
     private ServiceProvider second;
     private EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext> peer;
@@ -409,17 +411,85 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
         grouped.Value.Groups.Single().TotalDuration.Ticks.ShouldBe(18014398509481986L);
     }
 
+    /// <summary>All query commands, including generated aggregate SQL, use the configured budget with whole-second rounding.</summary>
+    /// <example>Run with the Query_ConfiguredTimeout filter on each actual database engine.</example>
+    [Theory]
+    [InlineData(5, 5)]
+    [InlineData(30, 30)]
+    [InlineData(1.2, 2)]
+    [InlineData(0.1, 1)]
+    public async Task Query_ConfiguredTimeout_AppliesToLookupPagingGroupingAndAnalysis(double seconds, int expectedSeconds)
+    {
+        var options = new ProfilingOptions();
+        options.Queries.Timeout = TimeSpan.FromSeconds(seconds);
+        var h = await this.CreateAsync(options);
+        var record = h.Record();
+        (await h.Store.AppendAsync([h.Envelope(record, 1)])).IsSuccess.ShouldBeTrue();
+        this.queryTimeouts.CommandTimeouts.Clear();
+
+        (await h.Store.FindAsync(record.Id)).IsSuccess.ShouldBeTrue();
+        (await h.Store.QueryAsync(h.Query())).IsSuccess.ShouldBeTrue();
+        foreach (var view in Enum.GetValues<OperationProfilingView>())
+        {
+            (await h.Store.GroupAsync(h.Query() with { View = view })).IsSuccess.ShouldBeTrue();
+        }
+
+        (await h.Store.SelectAnalysisAsync(h.Query())).IsSuccess.ShouldBeTrue();
+        this.queryTimeouts.CommandTimeouts.ShouldNotBeEmpty();
+        // EF execution interceptors cover normal reads; the raw-command factory must also preserve the same timeout.
+        this.queryTimeouts.CommandTimeouts.ShouldAllBe(timeout => timeout == expectedSeconds);
+        await using (var scope = this.first.CreateAsyncScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ProfilingProviderDbContext>();
+            context.Database.SetCommandTimeout(expectedSeconds);
+            await using var command = EntityFrameworkProfilingQuerySql<ProfilingProviderDbContext>.CreateCommand(context, context.Set<OperationProfilingEntity>());
+            command.CommandTimeout.ShouldBe(expectedSeconds);
+        }
+
+        using var canceled = new CancellationTokenSource();
+        canceled.Cancel();
+        await Should.ThrowAsync<OperationCanceledException>(() => h.Store.QueryAsync(h.Query(), canceled.Token));
+    }
+
     private ServiceProvider CreateServices(TimeProvider clock)
     {
         var collection = new ServiceCollection();
         collection.AddDbContext<ProfilingProviderDbContext>(builder =>
         {
             this.ConfigureDatabase(builder);
-            builder.AddInterceptors(new DatabaseUtcFixture(clock), this.commitFault);
+            builder.AddInterceptors(new DatabaseUtcFixture(clock), this.commitFault, this.queryTimeouts);
         });
         var provider = collection.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
         this.services.Add(provider);
         return provider;
+    }
+
+    /// <summary>Database latency consumes the next-batch budget before either another root batch or node pruning can begin.</summary>
+    /// <example>Run with the Maintenance_ElapsedBudget filter on each actual database engine.</example>
+    [Fact]
+    public async Task Maintenance_ElapsedBudget_DefersNodePruningAndRetentionToNextCall()
+    {
+        var options = new ProfilingOptions();
+        options.Storage.MaintenanceTimeBudget = TimeSpan.FromSeconds(2);
+        var h = await this.CreateAsync(options);
+        await AddTerminalRuntimeAsync(h, h.Clock.GetUtcNow().AddDays(-30));
+        this.queryTimeouts.Statements.Clear();
+        this.queryTimeouts.RuntimeCountDelay = TimeSpan.FromMilliseconds(100);
+
+        var deferred = await h.Provider.ResumeMaintenanceAsync(new() { Budget = TimeSpan.FromMilliseconds(50) });
+
+        deferred.IsSuccess.ShouldBeTrue();
+        this.queryTimeouts.RuntimeCountDelay.ShouldBe(TimeSpan.Zero);
+        deferred.Value.RemovedRuntimeSessions.ShouldBe(0);
+        this.queryTimeouts.Statements.ShouldNotContain(sql => sql.Contains("__Profiling_Nodes", StringComparison.Ordinal)
+            && sql.Contains("NOT EXISTS", StringComparison.Ordinal));
+        (await h.Provider.Runtime.ListSessionsAsync()).Value.Count.ShouldBe(1);
+        this.queryTimeouts.Statements.Clear();
+        var completed = await h.Provider.ResumeMaintenanceAsync(new() { Budget = options.Storage.MaintenanceTimeBudget });
+        completed.IsSuccess.ShouldBeTrue();
+        completed.Value.RemovedRuntimeSessions.ShouldBe(1);
+        this.queryTimeouts.Statements.ShouldContain(sql => sql.Contains("__Profiling_Nodes", StringComparison.Ordinal)
+            && sql.Contains("NOT EXISTS", StringComparison.Ordinal));
     }
 
     public Task InitializeAsync() => Task.CompletedTask;
@@ -450,6 +520,44 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
     }
 
     private sealed class CommitAcknowledgementException : DbException;
+
+    private sealed class QueryTimeoutObserver : DbCommandInterceptor
+    {
+        /// <summary>Gets initialized command timeout values before provider disposal or pooling resets the commands.</summary>
+        /// <example><code>observer.CommandTimeouts.ShouldAllBe(timeout => timeout == 30);</code></example>
+        public ConcurrentQueue<int> CommandTimeouts { get; } = new();
+
+        /// <summary>Gets generated SQL structure for bounded scheduling assertions without retaining command objects.</summary>
+        /// <example><code>observer.Statements.Clear();</code></example>
+        public ConcurrentQueue<string> Statements { get; } = new();
+
+        /// <summary>Gets or sets a one-shot database delay for the next Runtime retention count.</summary>
+        /// <example><code>observer.RuntimeCountDelay = TimeSpan.FromMilliseconds(100);</code></example>
+        public TimeSpan RuntimeCountDelay { get; set; }
+
+        /// <inheritdoc />
+        public override DbCommand CommandInitialized(CommandEndEventData eventData, DbCommand result)
+        {
+            this.CommandTimeouts.Enqueue(result.CommandTimeout);
+            this.Statements.Enqueue(result.CommandText);
+            return result;
+        }
+
+        /// <inheritdoc />
+        public override async ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(DbCommand command, CommandEventData eventData,
+            InterceptionResult<DbDataReader> result, CancellationToken cancellationToken = default)
+        {
+            if (this.RuntimeCountDelay > TimeSpan.Zero && command.CommandText.Contains("__Profiling_RuntimeSessions", StringComparison.Ordinal)
+                && (command.CommandText.Contains("COUNT(", StringComparison.OrdinalIgnoreCase) || command.CommandText.Contains("COUNT_BIG(", StringComparison.OrdinalIgnoreCase)))
+            {
+                var delay = this.RuntimeCountDelay;
+                this.RuntimeCountDelay = TimeSpan.Zero;
+                await Task.Delay(delay, cancellationToken);
+            }
+
+            return result;
+        }
+    }
 
     // Controlled provider-authoritative time is supplied at the database-command boundary.
     // Recorder/host clocks are not used to issue or renew leases in production code.

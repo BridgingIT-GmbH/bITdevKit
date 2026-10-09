@@ -8,6 +8,52 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Profiling;
 /// <summary>Verifies shared view admission, deadlines and aggregate arithmetic.</summary>
 public sealed class OperationProfilingQueryTests
 {
+    /// <summary>Explicitly larger selections apply the same bound to root and segment distributions.</summary>
+    /// <example>Run with the Analysis_ConfiguredLargerSelection filter.</example>
+    [Fact]
+    public async Task Analysis_ConfiguredLargerSelection_ComputesEveryOwnerAndRejectsOverflow()
+    {
+        var (profiler, sink, clock) = OperationProfilerTests.Create();
+        using (var operation = profiler.BeginOperation("Report"))
+        {
+            operation.RunSegment("Read", _ => clock.Advance(TimeSpan.FromMilliseconds(2)));
+            operation.Complete();
+        }
+
+        var record = sink.Records.Single();
+        var selection = new OperationProfilingAnalysisSelection
+        {
+            Records = Enumerable.Range(0, 10001).Select(_ => record with { Id = Guid.NewGuid() }).ToArray(),
+        };
+        var query = new OperationProfilingQuery { MaximumAnalysisCount = 20000 };
+
+        var sut = OperationProfilingAnalysis.Create(selection, query);
+
+        sut.Count.ShouldBe(10001);
+        var segment = sut.Segments.ShouldHaveSingleItem();
+        segment.OperationCount.ShouldBe(10001);
+        segment.InvocationCount.ShouldBe(10001);
+        segment.TotalPerOperation.Count.ShouldBe(10001);
+        segment.SelfPerOperation.Count.ShouldBe(10001);
+        segment.TotalPerOperation.P50Milliseconds.ShouldBe(2);
+        segment.SelfPerOperation.P95Milliseconds.ShouldBe(2);
+        segment.InvocationMeanMilliseconds.ShouldBe(2);
+        Should.Throw<ArgumentException>(() => OperationProfilingAnalysis.Create(selection, query with { MaximumAnalysisCount = 10000 }));
+
+        var store = Substitute.For<IOperationProfilingStore>();
+        store.SelectAnalysisAsync(Arg.Any<OperationProfilingQuery>(), Arg.Any<CancellationToken>())
+            .Returns(Task.FromResult<IResult<OperationProfilingAnalysisSelection>>(Result<OperationProfilingAnalysisSelection>.Success(selection)));
+        var provider = Substitute.For<IProfilingStorageProvider>();
+        provider.Operations.Returns(store);
+        var options = new ProfilingOptions { Enabled = true };
+        options.Queries.MaximumAnalysisRecords = 20000;
+        var facade = new OperationProfilingQueryService(provider, options, null);
+        var accepted = await facade.AnalyzeAsync(query);
+        accepted.IsSuccess.ShouldBeTrue();
+        accepted.Value.Segments.Single().TotalPerOperation.Count.ShouldBe(10001);
+        (await facade.AnalyzeAsync(query with { MaximumAnalysisCount = 10000 })).Errors.ShouldContain(error => error is ProfilingQueryLimitError);
+    }
+
     /// <summary>Cancellation-ignoring provider calls continue occupying their original admission until unwind.</summary>
     [Fact]
     public async Task TimedOutProvider_RetainsCapacity_AndDiscardsLateResponse()

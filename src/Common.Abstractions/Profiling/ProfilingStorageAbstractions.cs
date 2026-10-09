@@ -346,6 +346,14 @@ public sealed record ProfilingMaintenanceRequest
     /// <example><code>var value = record.MaximumOperationAge;</code></example>
     public TimeSpan MaximumOperationAge { get; init; } = TimeSpan.FromHours(24);
 
+    /// <summary>Gets the maximum number of unpinned terminal Runtime sessions retained independently of Operations.</summary>
+    /// <example><code>var request = new ProfilingMaintenanceRequest { MaximumRuntimeSessions = 20 };</code></example>
+    public int MaximumRuntimeSessions { get; init; } = 20;
+
+    /// <summary>Gets the maximum completion age of unpinned terminal Runtime sessions.</summary>
+    /// <example><code>var request = new ProfilingMaintenanceRequest { MaximumRuntimeSessionAge = TimeSpan.FromDays(7) };</code></example>
+    public TimeSpan MaximumRuntimeSessionAge { get; init; } = TimeSpan.FromDays(7);
+
 }
 
 /// <summary>Reports bounded recovery and retention progress.</summary>

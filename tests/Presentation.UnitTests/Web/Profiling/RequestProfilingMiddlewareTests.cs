@@ -410,6 +410,58 @@ public sealed class RequestProfilingMiddlewareTests
         sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().RejectedOperations.ShouldBe(1);
     }
 
+    /// <summary>Rejected capture preserves the original stream and pipe features while cleaning up selected concurrency on completion or abort.</summary>
+    /// <example>Run with the Capture_AdmissionRejected_KeepsOriginalBodyFeatures filter.</example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Capture_AdmissionRejected_KeepsOriginalBodyFeaturesAndCleansUp(bool abort)
+    {
+        var registrations = new ServiceCollection();
+        registrations.AddProfiling(o => o.Enabled()).WithOperationProfiling(o => o.Configure(options => options.MaxActiveOperations = 1))
+            .WithRequestProfiling(o => o.ObserveRequestBodyBytes());
+        await using var services = registrations.BuildServiceProvider();
+        var profiler = services.GetRequiredService<IOperationProfiler>();
+        var runtime = services.GetRequiredService<RequestProfilingRuntime>();
+        using var held = profiler.BeginOperation("held");
+        using var cancellation = new CancellationTokenSource();
+        var context = new DefaultHttpContext { RequestAborted = cancellation.Token };
+        context.Request.Path = "/rejected";
+        context.Request.Body = new MemoryStream("request"u8.ToArray());
+        var originalRequestBody = context.Request.Body;
+        var originalReader = context.Request.BodyReader;
+        var originalRequestFeature = context.Features.Get<IRequestBodyPipeFeature>();
+        var originalResponse = new StreamResponseBodyFeature(new MemoryStream());
+        context.Features.Set<IHttpResponseBodyFeature>(originalResponse);
+        var calls = 0;
+        var sut = new RequestProfilingMiddleware(async http =>
+        {
+            calls++;
+            var feature = http.Features.Get<IRequestProfilingFeature>();
+            feature.Selected.ShouldBeTrue();
+            feature.Id.ShouldNotBe(Guid.Empty);
+            feature.Operation.IsRecording.ShouldBeFalse();
+            http.Request.Body.ShouldBeSameAs(originalRequestBody);
+            http.Request.BodyReader.ShouldBeSameAs(originalReader);
+            http.Features.Get<IRequestBodyPipeFeature>().ShouldBeSameAs(originalRequestFeature);
+            http.Features.Get<IHttpResponseBodyFeature>().ShouldBeSameAs(originalResponse);
+            await http.Response.WriteAsync("business");
+        }, runtime, profiler, services.GetRequiredService<IProfilingNodeIdentityProvider>());
+
+        await sut.InvokeAsync(context);
+        if (abort) { cancellation.Cancel(); } // Abort after unwind must finish even without OnCompleted.
+        else { await ((RequestProfilingFeature)context.Features.Get<IRequestProfilingFeature>()).CompleteAsync(); }
+
+        // A late completion or duplicate abort cannot release selected concurrency twice.
+        await ((RequestProfilingFeature)context.Features.Get<IRequestProfilingFeature>()).CompleteAsync();
+        calls.ShouldBe(1);
+        runtime.EnterSelected().ShouldBe(1);
+        runtime.LeaveSelected();
+        context.Features.Get<IHttpResponseBodyFeature>().ShouldBeSameAs(originalResponse);
+        Encoding.UTF8.GetString(((MemoryStream)originalResponse.Stream).ToArray()).ShouldBe("business");
+        services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().RejectedOperations.ShouldBe(1);
+    }
+
     /// <summary>Checks the recording deadline does not stop a long-lived response or reopen capture.</summary>
     [Fact]
     public async Task Capture_ExpiredWhileStreaming_ContinuesTransportWithPartialObservation()

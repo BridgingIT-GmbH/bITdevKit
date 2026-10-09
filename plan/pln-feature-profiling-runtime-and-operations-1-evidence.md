@@ -849,3 +849,66 @@ The application README describes the Lab, HTTP adapter, bounds, partial results,
 
 
 TASK-076 and Phase 17 are complete. All 76 tasks are implemented and verified. The complete documentation command was `/tmp/bitdevkit-pwsh/pwsh -NoLogo -NoProfile -File /tmp/bitdevkit-build-pages.ps1`, whose strict wrapper invokes `docs/site/scripts/build-pages.ps1`. The pipeline synced 62 guides, rebuilt MkDocs, generated the API reference, repaired 3,726 namespace pages and rebuilt its 25,730-symbol index. The Release API compiler reported the same 36 existing XML-tag warnings outside profiling; DocFX reported zero warnings/errors. The link check used `python3 plan/evidence/profiling-runtime-and-operations-1/phase-17/verify-generated-links.py`. No site was published. Raw logs/screenshots/scripts remain local in the user-ignored evidence directory; this summary, the updated plan and the application source/tests/README are versioned.
+
+
+## Phase 18 — branch review gaps (2026-10-09 UTC)
+
+The branch review at `9cc68d05c` identified five missing final-state behaviors. TASK-077 through TASK-081 repair them; TASK-082 covers final acceptance. Repairs remain in `feature/profiling-runtime-and-operations`.
+
+| Gap | Final behavior | Regression proof |
+| --- | --- | --- |
+| Runtime retention was configured but never scheduled | The shared maintenance worker maps Runtime count/age limits into `ProfilingMaintenanceRequest`. Both providers delete oldest eligible terminal roots after clear recovery, before Operation retention, under one root/time budget. Active/pinned sessions remain; owned graphs, deletion tombstones/revisions and shared node references remain consistent. Memory maintains an ordered eligible-session index instead of materializing/sorting all history each tick. | Five shared backend cases run on memory, SQLite, SQL Server and PostgreSQL; the actual hosted worker runs with both capture capabilities disabled. Covers age/count, pin changes, Runtime-owned snapshots, shared nodes, clear ordering, late resurrection rejection and cursor invalidation. |
+| HTTP body observers were allocated after rejected recording admission | Selected but rejected requests keep their occurrence ID and abort/concurrency cleanup while preserving original request stream/pipe and response features. Body observers are installed only for an admitted recording scope. | Two saturated-admission cases verify normal completion/late abort, exactly-once business execution, original body features/bytes and idempotent selected-count cleanup; existing real TestServer ID checks remain. |
+| Segment distributions silently used the literal 10,000-owner ceiling | The selected `MaximumAnalysisCount` applies equally to root durations and every segment's total/self distribution. Provider/service ceilings remain enforced. | A 10,001-owner selection passes under a configured 20,000 limit with exact segment counts/statistics; a lower bound returns a limit result through the real query facade. |
+| EF aggregate commands overwrote configured query timeouts with five seconds | Lookup and query preparation configure the isolated context from `ProfilingOptions.Queries.Timeout`; the actual raw command factory inherits that value. Commands round upward to at least one second, while facade deadlines/caller cancellation remain precise. | Twelve real-engine cases cover default 5 s, custom 30 s, fractional 1.2 s and subsecond 0.1 s; lookup, paging, all group modes, exact selection, actual raw command construction and cancellation. |
+| Runtime console documentation used removed groups | Every current guide command uses `profiling runtime` or `prof runtime`. The application-neutral guide and final-state spec also describe configured query limits, disabled-capture Runtime maintenance and shared scheduling versus independent retention limits. | Complete Presentation console regressions plus final MkDocs/API generation and generated-link checks. |
+
+A related maintenance scheduling issue is also fixed: node pruning does not start another bounded metadata batch after prior database work consumes the tick's elapsed budget. Three engine tests deliberately delay the Runtime count, assert that the delay ran, and verify deferred deletion/pruning resumes on a later call.
+
+The final complete solution command was `dotnet build bITdevKit.slnx --no-restore --nologo`: zero warnings/errors, 1 minute 40.84 seconds. All workspace-equivalent unit/integration suites and both application suites then passed. Their common command was `dotnet test <project> --no-build --no-restore --nologo`; the project paths and results below identify the exact checks.
+
+| Project | Passed | Skipped |
+| --- | ---: | ---: |
+| `tests/Application.UnitTests/Application.UnitTests.csproj` | 1,298 | 0 |
+| `tests/Common.UnitTests/Common.UnitTests.csproj` | 2,761 | 4 |
+| `tests/Domain.UnitTests/Domain.UnitTests.csproj` | 593 | 0 |
+| `tests/Infrastructure.UnitTests/Infrastructure.UnitTests.csproj` | 428 | 14 |
+| `tests/Presentation.UnitTests/Presentation.UnitTests.csproj` | 598 | 0 |
+| `tests/Application.IntegrationTests/Application.IntegrationTests.csproj` | 284 | 0 |
+| `tests/Domain.IntegrationTests/Domain.IntegrationTests.csproj` | 43 | 0 |
+| `tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj` | 1,325 | 128 |
+| `examples/WeatherFiesta/WeatherFiesta.UnitTests/WeatherFiesta.UnitTests.csproj` | 66 | 0 |
+| `examples/WeatherFiesta/WeatherFiesta.IntegrationTests/WeatherFiesta.IntegrationTests.csproj` | 117 | 0 |
+
+The ten complete suites passed **7,513** tests with **146** existing or explicitly gated skips and zero failures. Four skips are existing serializer benchmarks; fourteen are Windows-only impersonation/network-storage tests on Linux; 121 require unavailable Cosmos containers; six exercise EF InMemory bulk commands unsupported by that backend; one gates the performance harness, which was executed explicitly below. No new profiling correctness test was skipped. The complete infrastructure retry passed 1,325 tests in 10 minutes 24 seconds, and the complete application integration run passed 117 in 1 minute 47 seconds.
+
+Initial compilation caught an incorrect health-state constructor call and an analyzer-required blank line; both were fixed. Initial timeout-test instrumentation assumed direct aggregate commands would pass through EF execution interceptors and retained pooled Npgsql command objects after disposal. The final tests observe normal command timeout values at initialization and verify the actual raw factory directly before disposal. All twelve cases passed. The first full infrastructure run passed 1,324 tests but failed the new PostgreSQL scheduling test because its delay hook matched only uppercase `COUNT`; Npgsql generated lowercase `count`. Case-insensitive matching and an explicit delay-consumption assertion fixed the hook. The focused three-engine scheduling test and complete suite then passed. Failed logs remain separate from accepted evidence.
+
+### Current performance regression smoke
+
+The explicit command was:
+
+```bash
+BITDEVKIT_PROFILING_PERF=1 \
+BITDEVKIT_PROFILING_PERF_SMOKE=1 \
+BITDEVKIT_PROFILING_PERF_OUTPUT=/tmp/profiling-gap-performance \
+dotnet test tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj \
+  --no-build --no-restore --nologo \
+  --filter 'FullyQualifiedName~ProfilingPerformanceEvidenceTests'
+```
+
+All three performance-harness tests passed. **24 trials** passed: six scenarios each on memory, SQLite, SQL Server and PostgreSQL (`omitted`, `disabled`, `empty`, `nested`, `nested-trace`, `saturated`). Each used seed 1729, 100 offered operations/s, a 0.25-second warm-up and a one-second measurement, with one repetition. Every trial completed all 100 measured business requests: **2,400 completions**, zero failed requests and zero capture faults. Normal capture scenarios lost no diagnostics, reached at most 25 queued records and drained to zero. Deliberate saturation retained an eight-record bound and reported 100 capture drops per provider while all business requests succeeded; every queue drained to zero. No adaptive rerun was necessary. The measured runtime was .NET 10.0.12 with eight processors; engines were SQLite 3.53.3, SQL Server 16.0.4265.3 and PostgreSQL 16.15.
+
+This is a regression/setup smoke on a synthetic loopback workload, not a fresh capacity certification or a universal production-overhead claim. The previously accepted 84-trial matrix remains historical evidence with its original workload and environment limits; it was not rerun in this repair phase.
+
+### Documentation and final review
+
+The complete documentation command was `/tmp/bitdevkit-pwsh/pwsh -NoLogo -NoProfile -File /tmp/bitdevkit-build-pages.ps1`; its strict wrapper invokes `docs/site/scripts/build-pages.ps1` with native-command failures terminating the run. The pipeline synced 62 guides, rebuilt MkDocs, staged 65 Release API assemblies, generated DocFX output with zero warnings/errors and repaired 3,726 namespace pages. The Release compiler reported 36 existing XML-tag warnings outside profiling, with no profiling compiler warnings. No site was published.
+
+Generated-doc acceptance then found a pre-existing `build-agent-index.ps1` boundary bug: the last local item was parsed through the `references` section, allowing external metadata to overwrite/remove it. This hid the new `MaximumRuntimeSessionAge` property despite its correct generated API page. Member index URLs also used escaped UIDs instead of DocFX's actual sanitized anchor IDs. TASK-081 now stops item parsing at `references`, preserves EOF items and emits real member anchors. The new `docs/api/scripts/test-agent-index.ps1` first reproduced the four-versus-five-symbol failure, then passed final-item, reference-exclusion, method/constructor/property anchor and detail-URL assertions. It is included in the normal site pipeline.
+
+After this targeted repair, the regression and final index-generation stages ran together against the unchanged, successfully generated MkDocs/DocFX output. The corrected index contains **29,580 symbols**. All symbol pages/detail files and all **25,732 member anchors** resolve. Across **19 generated guide/API pages**, **1,539 relative links** and their referenced HTML anchors resolve. Both new maintenance properties appear in the index and the profiling guide uses the final console groups. The guide and spec remain application-neutral. The earlier 25,732-symbol count in the initial pipeline log predates the index repair; the final corrected count is 29,580.
+
+Final diff review and `git diff --check` passed. There is no new package, internal declaration, synchronous capture persistence, business-path wait, HTTP payload capture or dashboard rendering change. Newly added public members have XML documentation and examples. The application and its persistent containers were preserved. All raw logs, smoke trials, temporary runners and link checkers remain outside the repository under `/tmp`; the user's removed/ignored evidence artifacts were not restored. Versioned evidence is this summary, the completed plan, source/tests and documentation; the reusable index regression is versioned under `docs/api/scripts`.
+
+Accepted local receipts are `/tmp/profiling-gap-final-build.log`, `/tmp/profiling-gap-accepted-results.json`, `/tmp/profiling-gap-checks`, `/tmp/profiling-gap-final-integration`, `/tmp/profiling-gap-budget-final.log`, `/tmp/profiling-gap-ef-timeouts-final.log`, `/tmp/profiling-gap-performance.log`, `/tmp/profiling-gap-performance`, `/tmp/profiling-gap-site-build.log`, `/tmp/profiling-gap-final-index.log`, `/tmp/profiling-gap-generated-links.log` and `/tmp/profiling-gap-api-index-links.log`. They are ephemeral local receipts, not required external inputs for understanding this tracked summary. Their commands and outcomes are recorded above. No planned implementation work remains: TASK-077 through TASK-082, Phase 18 and all 82 plan tasks are complete.

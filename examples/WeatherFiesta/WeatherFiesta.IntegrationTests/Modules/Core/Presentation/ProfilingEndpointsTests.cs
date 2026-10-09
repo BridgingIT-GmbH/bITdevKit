@@ -120,6 +120,11 @@ public sealed class ProfilingEndpointsTests(
         var record = await this.WaitForRecordAsync(GetId(accepted));
         AssertComparison(record, 200, ProfilingSegmentOutcome.Completed);
         record.Segments.ShouldContain(segment =>
+            segment.Key.StartsWith("requester:", StringComparison.Ordinal)
+            && segment.Path.Components.Count == 2
+            && segment.Path.Components[0] == "Query"
+        );
+        record.Segments.ShouldContain(segment =>
             segment.Key.StartsWith("activeentity:", StringComparison.Ordinal)
             && segment.Path.Components.Count > 1
             && segment.Path.Components[0] == "Query"

@@ -432,6 +432,11 @@ public class RequesterBuilder
             return this;
         }
 
+        if (behaviorType == typeof(ProfilingRequestBehavior<,>) && this.pipelineBehaviorTypes.Contains(behaviorType))
+        {
+            return this;
+        }
+
         if (!behaviorType.IsGenericTypeDefinition)
         {
             throw new ArgumentException($"Behavior type '{behaviorType}' must be an open generic type.", nameof(behaviorType));

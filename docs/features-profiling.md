@@ -217,6 +217,29 @@ Both behaviors accept an optional `IOperationProfiler`. They work when Profiling
 
 `AddProfilingBehavior()` prevents duplicate Active Entity profiling registration. The existing `.WithBehavior<ActiveEntityProfilingBehavior<Customer>>()` API is also available. Optional operation wrappers execute in registration order around the existing lifecycle hooks. The existing two-argument `ActiveEntityContextScope.UseAsync` remains available for custom callers; its default profiling name is `UseContext`. The cancellation-aware overload accepts an explicit operation name and otherwise uses the caller's member name.
 
+### Requester and Notifier behaviors
+
+Register the profiling behaviors before other behaviors to measure their downstream work:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddRequester()
+	.AddHandlers()
+	.WithBehavior(typeof(ProfilingRequestBehavior<,>));
+services.AddNotifier()
+	.AddHandlers()
+	.WithBehavior(typeof(ProfilingNotificationBehavior<,>))
+	.WithBehavior(typeof(ProfilingNotificationHandlerBehavior<,>));
+```
+
+`ProfilingRequestBehavior<TRequest,TResponse>` measures one Requester pipeline, using `requester:{request type name}` and kind `Requester`. `ProfilingNotificationBehavior<TRequest,TResponse>` measures one dispatch with `notifier:{notification type name}` and kind `Notifier`. An independent invocation owns an operation. Within an existing operation, the invocation contributes a segment. These boundaries start when the behavior runs; handler resolution and dispatch setup remain outside their timing.
+
+`ProfilingNotificationHandlerBehavior<TRequest,TResponse>` runs around each resolved handler. Its key is `notifier:{notification type name}:handler:{handler type name}`. Each handler contributes a child segment beneath the dispatch, grouped by its short type name. Full type names remain metadata; equal short names share a group. Repeated calls to the same complete path aggregate. Concurrent durations can overlap and exceed elapsed dispatch time. A sequential dispatch that stops on failure records only the handlers that ran.
+
+In fire-and-forget mode, dispatch timing ends after scheduling. Each handler establishes an independent execution boundary and owns a `NotifierHandler` operation. Handler work can finish after dispatch or HTTP capture closes. Dispatch success confirms scheduling; it does not imply handler success. Independent worker boundaries clear inherited profiling context, including suppression. They still honor the enabled operation capability and capture limits.
+
+All three behaviors accept an optional `IOperationProfiler` and classify `IResult` outcomes through the shared safe helper. They preserve business results, exceptions and cancellation, and perform no storage access. Metadata contains bounded full type names, without message contents, options, request IDs or result payloads. Normal joined execution honors caller suppression. Repeated registration of these behaviors through their respective builders is idempotent; other behavior ordering remains unchanged. Place profiling outside retry to measure the full policy, or inside retry to aggregate executed attempts.
+
 ### Sampling, persistence and limits
 
 All eligible requests are selected by default. Select a built-in strategy fluently, for example `WithSampling(s => s.Probability(0.1))` or `WithSampling(s => s.RateLimit(25, 50))`; the last explicit strategy wins. Strategies are singleton and evaluated once at entry. Stored policy/probability labels describe selection, not the probability of durable retention. Sampled counts/percentiles are not extrapolated to all traffic.

@@ -18,7 +18,7 @@ This is an execution plan, not implementation evidence. All tasks start incomple
 
 ## Execution checkpoint — 2026-10-09 UTC
 
-All 64 tasks are implemented and verified, including the original feature, final application integration and Phase 14 repository/Active Entity profiling behaviors. Phase 14 passed 593 Domain unit, 72 provider integration, 55 application unit and 109 application integration tests, plus the solution and MkDocs/API builds. The accepted 84-trial capacity matrix uses the corrected 21-trial memory rerun and preserved 63 EF trials; original measurements remain historical evidence. The solution build, workspace unit/integration tasks, feature acceptance and documentation/site build passed. Final WeatherFiesta checks passed 55 unit and 109 integration tests, followed by browser verification and another complete MkDocs/API build. The profiling guide and specification remain application-neutral; example setup is documented in the application's README. The historical [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remains as evidence. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for results, existing skips/warnings and measurement limitations. No planned task remains outstanding.
+All 68 tasks are implemented and verified, including the original feature, final application integration and the repository, Active Entity, Requester and Notifier profiling behaviors. Phase 14 passed 593 Domain unit, 72 provider integration, 55 application unit and 109 application integration tests, plus the solution and MkDocs/API builds. The accepted 84-trial capacity matrix uses the corrected 21-trial memory rerun and preserved 63 EF trials; original measurements remain historical evidence. The solution build, workspace unit/integration tasks, feature acceptance and documentation/site build passed. Final WeatherFiesta checks passed 55 unit and 109 integration tests, followed by browser verification and another complete MkDocs/API build. The profiling guide and specification remain application-neutral; example setup is documented in the application's README. The historical [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remains as evidence. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for results, existing skips/warnings and measurement limitations. Phase 15 passed 2,752 Common unit tests (four existing serializer benchmarks skipped), 55 application unit tests and 109 application integration tests. Solution and MkDocs/API builds passed; 1,163 relative links resolve across 15 generated pages. No planned task remains outstanding.
 
 ## 1. Requirements & Constraints
 
@@ -46,8 +46,8 @@ The requirement identifiers below match the specification. Task and test identif
 | REQ-016 | Default HTTP key is incoming path; configured prefix stripping and path blacklist. | TASK-031 | TEST-011 |
 | REQ-017 | Structured operation/segment start and stop logging at Trace/Verbose. | TASK-015 | TEST-007 |
 | REQ-018 | Head sampling: AllRequests, probability, and node-local token bucket. | TASK-031, TASK-032 | TEST-011 |
-| REQ-019 | Jobs, pipeline steps, orchestration actions, repositories and Active Entities participate through optional behaviors. | TASK-036, TASK-037, TASK-038, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063, TASK-064 | TEST-016, TEST-022 |
-| REQ-020 | Optional feature injection works when AddProfiling is omitted; no hidden registrations. | TASK-030, TASK-035, TASK-036, TASK-037, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063 | TEST-001, TEST-016, TEST-022 |
+| REQ-019 | Jobs, pipeline steps, orchestration actions, repositories, Active Entities, Requester and Notifier participate through optional behaviors. | TASK-036, TASK-037, TASK-038, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063, TASK-064, TASK-065, TASK-066, TASK-067, TASK-068 | TEST-016, TEST-022, TEST-023 |
+| REQ-020 | Optional feature injection works when AddProfiling is omitted; no hidden registrations. | TASK-030, TASK-035, TASK-036, TASK-037, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063, TASK-065, TASK-066 | TEST-001, TEST-016, TEST-022, TEST-023 |
 | REQ-021 | Clear Runtime, Operations, or both, fully or by completion-UTC range; fence late writes. | TASK-017, TASK-018, TASK-023, TASK-025, TASK-028 | TEST-006, TEST-008, TEST-009 |
 | REQ-022 | Cached executing-node identity on every operation; Runtime keeps Broadcast control. | TASK-006, TASK-009, TASK-044 | TEST-002, TEST-010 |
 | REQ-023 | Case-insensitive keys/path components, identical across providers, original display casing. | TASK-004, TASK-012, TASK-019, TASK-024 | TEST-004, TEST-008, TEST-013 |
@@ -293,6 +293,19 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 | TASK-063 | Enable `AddProfilingBehavior()` for all seven entity registrations in `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Modules/Core/CoreModuleExtensions.cs`. Extend `ProfilingEndpointsTests.cs` to verify entity segments beneath Query without assuming a single segment. Update the application README, `docs/features-profiling.md`, both Domain feature guides and the final-state spec with registration examples and precise timing/outcome boundaries. Run application integration checks. Depends on: TASK-060, TASK-061. | [x] | 2026-10-09 |
 | TASK-064 | Run the solution build and complete MkDocs/API pipeline sequentially with tests, check generated profiling and Domain guide/API links, and record commands, counts and remaining limitations in the implementation evidence. Mark this phase and plan complete only after successful validation, then commit/push the extension on the existing feature branch. Preserve the user's separate `.gitignore` edit. Depends on: TASK-062, TASK-063. | [x] | 2026-10-09 |
 
+### Implementation Phase 15
+
+- GOAL-015: Profile Requester pipelines, Notifier dispatch and individual notification handlers through optional shared capture.
+- Dependencies: GOAL-003, GOAL-014.
+- Completion criteria: Optional activation and idempotent registration pass; independent/joined scopes, sequential/concurrent dispatch, fire-and-forget ownership, failed results, exception/cancellation identity and observation faults are verified. Build, application regression tests and the documentation pipeline pass.
+
+| Task | Description | Completed | Date |
+| --- | --- | --- | --- |
+| TASK-065 | Add `ProfilingRequestBehavior.cs`, `ProfilingNotificationBehavior.cs` and `ProfilingNotificationHandlerBehavior.cs` in `src/Common.Utilities/Requester/Behaviors/`, implementing existing `IPipelineBehavior<TRequest,TResponse>` with optional `IOperationProfiler`. Use failure-isolated join-or-start helpers, stable type-based keys, bounded type metadata, explicit result classification and matched-token cancellation. Handler-specific fire-and-forget work starts a safe independent execution boundary. Prevent repeated profiling registration in `RequesterBuilder.WithBehavior` and `NotifierBuilder.WithBehavior` without changing other behavior ordering or registration. | [x] | 2026-10-09 |
+| TASK-066 | Add `tests/Common.UnitTests/Utilities/Requester/RequesterNotifierProfilingBehaviorTests.cs`. Verify actual builders and dispatch, omitted/disabled/suppressed capture, exact-once result forwarding, repeated/nested/concurrent segments, sequential stop-on-failure, both result and exception outcomes, matching cancellation, detached completion after publish and injected scope/boundary faults. Run focused tests then the complete Common unit suite. Depends on: TASK-065. | [x] | 2026-10-09 |
+| TASK-067 | Register all three behaviors in `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs`. Update its README and profiling integration assertions. Extend `docs/features-profiling.md`, `docs/features-requester-notifier.md` and the final-state spec with registration, timing boundaries, dispatch modes and payload exclusions. Run the complete application unit/integration suites. Depends on: TASK-065. | [x] | 2026-10-09 |
+| TASK-068 | Build `bITdevKit.slnx`, run `docs/site/scripts/build-pages.ps1`, verify generated guide/new API links and record evidence. Mark all 68 tasks complete after successful verification. Commit/push Phase 15 to the feature branch, excluding the user's `.gitignore` edit. Depends on: TASK-066, TASK-067. | [x] | 2026-10-09 |
+
 ## 3. Alternatives
 
 - **ALT-001**: Reuse Runtime's measurement service for Operations. Rejected because it owns Runtime sessions and durable interval writes, violating execution-independent nonblocking operation capture.
@@ -346,7 +359,8 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | FILE-023 | `examples/WeatherFiesta/WeatherFiesta-README.md` | Application-specific profiling setup and verification workflow; shared profiling documentation remains application-neutral. |
 | FILE-024 | `src/Domain/Repositories/Behaviors/RepositoryProfilingBehavior.cs`, `src/Domain/ActiveEntity/Behaviors/ActiveEntityProfilingBehavior.cs`, `IActiveEntityOperationBehavior.cs`, context scope/configurator and operation partials | Optional repository and complete entity boundaries. |
 | FILE-025 | `tests/Domain.UnitTests/Domain/Profiling/DomainProfilingBehaviorTests.cs`, `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Modules/Core/CoreModuleExtensions.cs` | Behavior contract proof and example registration. |
-
+| FILE-026 | `src/Common.Utilities/Requester/Behaviors/ProfilingRequestBehavior.cs`, `ProfilingNotificationBehavior.cs`, `ProfilingNotificationHandlerBehavior.cs`, `RequesterBuilder.cs`, `NotifierBuilder.cs` | Optional request, dispatch and handler boundaries with idempotent setup. |
+| FILE-027 | `tests/Common.UnitTests/Utilities/Requester/RequesterNotifierProfilingBehaviorTests.cs`, `docs/features-requester-notifier.md` | Behavior and real-dispatch proof; feature reference. |
 
 ## 6. Testing
 
@@ -375,6 +389,8 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | TEST-021 | Complete WeatherFiesta HTTP/job/dashboard integration and authorization with deterministic data. | TASK-058, TASK-059 |
 | TEST-022 | Optional repository/entity DI, full boundaries and early failure cleanup, unchanged results/tokens/exceptions, lazy sequences, nested concurrent capture, suppression and observer faults; Domain and Active Entity regression suites. | TASK-060, TASK-061, TASK-062, TASK-063, TASK-064 |
 
+| TEST-023 | Requester and Notifier optional activation, duplicate setup, failed results, exactly-once execution, nesting, repetitions, concurrency, cancellation, observation faults and independent fire-and-forget completion. | TASK-065, TASK-066, TASK-067, TASK-068 |
+
 Run from the repository root. The workspace tasks are the preferred full checks. These commands are the focused equivalents for implementation work; execute them sequentially and record failures rather than suppressing them:
 
 ```bash
@@ -387,7 +403,6 @@ dotnet test tests/Application.UnitTests/Application.UnitTests.csproj --no-build 
 ```
 
 The opt-in performance harness runs only when `BITDEVKIT_PROFILING_PERF=1` is present. Execute `BITDEVKIT_PROFILING_PERF=1 dotnet test tests/Infrastructure.IntegrationTests/Infrastructure.IntegrationTests.csproj --no-build --filter 'FullyQualifiedName~ProfilingPerformanceEvidenceTests'` in TASK-052 with its workload configuration recorded. A skip does not satisfy TEST-019. Existing runtime tests retain their coverage after renaming; new tests are not a replacement for them.
-
 
 ## 7. Risks & Assumptions
 

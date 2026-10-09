@@ -14,7 +14,7 @@ using Microsoft.Extensions.Logging;
 /// <example><code>services.AddProfiling(o => o.Enabled()).WithRuntimeProfiling();</code></example>
 public static class ProfilingServiceCollectionExtensions
 {
-    /// <summary>Registers shared services without implicitly enabling a capture capability.</summary>
+    /// <summary>Registers shared services with the default in-memory provider without implicitly enabling a capture capability.</summary>
     /// <example><code>services.AddProfiling(o => o.Enabled(environment.IsDevelopment()));</code></example>
     public static ProfilingBuilderContext AddProfiling(this IServiceCollection services, Action<ProfilingOptionsBuilder> configure = null)
     {
@@ -68,7 +68,7 @@ public static class ProfilingServiceCollectionExtensions
         return context;
     }
 
-    /// <summary>Selects the process-local provider for both profiling datasets.</summary>
+    /// <summary>Explicitly selects the process-local provider for both profiling datasets; this provider is also the implicit default.</summary>
     /// <example><code>services.AddProfiling().WithInMemoryProvider();</code></example>
     public static ProfilingBuilderContext WithInMemoryProvider(this ProfilingBuilderContext context) =>
         context.WithProvider<InMemoryProfilingStorageProvider>(provider => new(provider.GetRequiredService<ProfilingOptions>(), provider.GetService<TimeProvider>()));

@@ -166,10 +166,7 @@ builder.Services.AddProfiling(o => o
         .Enabled(builder.Environment.IsDevelopment()))
     .WithRuntimeProfiling()
     .WithOperationProfiling()
-    .WithRequestProfiling(o => o
-        .StripPathPrefix("/api")
-        .Blacklist("/_bdk/**", "/healthz", "/swagger/**", "/scalar/**", "/openapi/**"))
-    .WithInMemoryProvider()
+    .WithRequestProfiling(o => o.StripPathPrefix("/api"))
     .AddConsoleCommands(builder.Environment.IsDevelopment());
 builder.Services.AddDashboard(o => o
     .Enabled(builder.Environment.IsDevelopment())

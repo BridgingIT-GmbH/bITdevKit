@@ -30,8 +30,7 @@ public sealed class ProfilingPublicApiExamplesTests
         builder.Services.AddControllers().AddApplicationPart(typeof(ProfilingExampleController).Assembly);
         builder.Services.AddProfiling(options => options.Enabled())
             .WithOperationProfiling()
-            .WithRequestProfiling(options => options.StripPathPrefix("/api").Blacklist("/health/**"))
-            .WithInMemoryProvider();
+            .WithRequestProfiling(options => options.StripPathPrefix("/api"));
         await using var app = builder.Build();
         app.UseRequestProfiling();
         app.UseRequestProfilingExceptionObserver();

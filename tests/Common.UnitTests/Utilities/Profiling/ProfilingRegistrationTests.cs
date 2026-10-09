@@ -40,6 +40,7 @@ public sealed class ProfilingRegistrationTests
 
         using var provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
         var storage = provider.GetRequiredService<IProfilingStorageProvider>();
+        storage.ShouldBeOfType<InMemoryProfilingStorageProvider>();
         provider.GetRequiredService<IRuntimeProfilingStore>().ShouldBeSameAs(storage.Runtime);
         provider.GetRequiredService<IOperationProfilingStore>().ShouldBeSameAs(storage.Operations);
         provider.GetServices<IHostedService>().OfType<OperationProfilingWriterService>().Count().ShouldBe(operations ? 1 : 0);
@@ -104,6 +105,22 @@ public sealed class ProfilingRegistrationTests
         builder.WithInMemoryProvider();
         using var provider = services.BuildServiceProvider();
         provider.GetServices<IProfilingStorageProvider>().ShouldHaveSingleItem().ShouldBeOfType<InMemoryProfilingStorageProvider>();
+    }
+
+    /// <summary>An explicit provider replaces the implicit in-memory fallback and remains selected after repeated setup.</summary>
+    /// <example>Run with the ProfilingRegistrationTests filter.</example>
+    [Fact]
+    public void Provider_ImplicitDefault_AllowsExplicitReplacement()
+    {
+        var services = new ServiceCollection();
+        var builder = services.AddProfiling(o => o.Enabled()).WithOperationProfiling();
+        builder.WithProvider<AlternateProvider>(_ => new());
+        services.AddProfiling().WithOperationProfiling();
+        using var provider = services.BuildServiceProvider();
+        var storage = provider.GetServices<IProfilingStorageProvider>().ShouldHaveSingleItem();
+        storage.ShouldBeOfType<AlternateProvider>();
+        provider.GetRequiredService<IRuntimeProfilingStore>().ShouldBeSameAs(storage.Runtime);
+        provider.GetRequiredService<IOperationProfilingStore>().ShouldBeSameAs(storage.Operations);
     }
 
     /// <summary>Checks a broken explicitly registered dependency is not treated as optional absence.</summary>

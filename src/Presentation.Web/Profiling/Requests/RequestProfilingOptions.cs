@@ -17,9 +17,9 @@ public sealed class RequestProfilingOptions
     /// <summary>Gets or sets a prefix removed once on a path-segment boundary.</summary>
     /// <example><code>options.StripPathPrefix = "/api";</code></example>
     public string StripPathPrefix { get; set; } = string.Empty;
-    /// <summary>Gets or sets anchored exclusion patterns matched against the original incoming path.</summary>
+    /// <summary>Gets or sets anchored exclusion patterns matched against the original incoming path; defaults exclude DevKit, root health and API documentation paths.</summary>
     /// <example><code>options.BlacklistPatterns = ["/_bdk/**", "/health/**"];</code></example>
-    public IReadOnlyList<string> BlacklistPatterns { get; set; } = [];
+    public IReadOnlyList<string> BlacklistPatterns { get; set; } = ["/_bdk/**", "/health*", "/swagger/**", "/scalar/**", "/openapi/**"];
     /// <summary>Gets or sets whether ordinary application request-body consumption is observed.</summary>
     /// <example><code>options.ObserveRequestBodyBytes = true;</code></example>
     public bool ObserveRequestBodyBytes { get; set; }
@@ -90,7 +90,7 @@ public sealed class RequestProfilingOptionsBuilder(RequestProfilingOptions targe
     /// <summary>Sets the one boundary-matched prefix removed from default keys.</summary>
     /// <example><code>requests.StripPathPrefix("/api");</code></example>
     public RequestProfilingOptionsBuilder StripPathPrefix(string value) { target.StripPathPrefix = value; return this; }
-    /// <summary>Replaces the exclusion patterns; there are no implicit exclusions.</summary>
+    /// <summary>Replaces the default exclusion patterns; an empty argument list clears all exclusions.</summary>
     /// <example><code>requests.Blacklist("/health/**", "/swagger/**");</code></example>
     public RequestProfilingOptionsBuilder Blacklist(params string[] patterns) { target.BlacklistPatterns = patterns?.ToArray(); return this; }
     /// <summary>Enables observation of ordinary consumed request-body bytes without extra reads.</summary>

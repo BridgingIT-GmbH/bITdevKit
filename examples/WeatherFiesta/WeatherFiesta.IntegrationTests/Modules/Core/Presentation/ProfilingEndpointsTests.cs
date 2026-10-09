@@ -257,18 +257,7 @@ public sealed class ProfilingEndpointsTests(
                     .AddProfiling(options => options.Enabled())
                     .WithRuntimeProfiling()
                     .WithOperationProfiling()
-                    .WithRequestProfiling(options =>
-                        options
-                            .StripPathPrefix("/api")
-                            .Blacklist(
-                                "/_bdk/**",
-                                "/healthz",
-                                "/swagger/**",
-                                "/scalar/**",
-                                "/openapi/**"
-                            )
-                    )
-                    .WithInMemoryProvider();
+                    .WithRequestProfiling(options => options.StripPathPrefix("/api"));
                 services.AddDashboard(options =>
                     options
                         .Enabled()

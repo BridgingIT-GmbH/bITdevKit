@@ -73,7 +73,7 @@ The following values are the implementation baseline. Larger limits require expl
 | Setting | Baseline |
 | --- | --- |
 | Master / omitted subfeature / explicitly selected subfeature | Disabled / disabled / enabled subject to master and dependency validation |
-| Request sampler / prefix / blacklist | AllRequests / empty / empty; maximum 128 patterns of 256 characters |
+| Request sampler / prefix / blacklist | AllRequests / empty / `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`; maximum 128 patterns of 256 characters |
 | Request body observation / lifecycle logging | Off / Trace through Microsoft logging, equivalent to Verbose |
 | Active roots / active recording payload / per-root payload | 1,024 / 32 MiB / 64 KiB |
 | Distinct segment paths / live segments per root / depth | 128 / 256 / 32 |

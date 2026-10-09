@@ -127,17 +127,13 @@ Calling `POST /dev/profiling/sample` returns the readable session key and a term
 
 ## Operation and Request setup
 
-Enable each capture capability explicitly. Choose one storage provider for the overarching feature:
+Enable each capture capability explicitly. The overarching feature uses the in-memory provider by default:
 
 ```csharp
 builder.Services.AddProfiling(options => options.Enabled(builder.Environment.IsDevelopment()))
-    .WithRuntimeProfiling(options => options.SamplingInterval(TimeSpan.FromSeconds(1)))
-    .WithOperationProfiling(options => options.FlushInterval(TimeSpan.FromSeconds(1)).BatchSize(512))
-    .WithRequestProfiling(options => options
-        .StripPathPrefix("/api")
-        .Blacklist("/_bdk/**", "/healthz", "/swagger/**")
-        .WithSampling(sampling => sampling.AllRequests()))
-    .WithInMemoryProvider();
+	.WithRuntimeProfiling(options => options.SamplingInterval(TimeSpan.FromSeconds(1)))
+	.WithOperationProfiling(options => options.FlushInterval(TimeSpan.FromSeconds(1)).BatchSize(512))
+	.WithRequestProfiling(options => options.StripPathPrefix("/api"));
 builder.Services.AddDashboard(options => options.Enabled(builder.Environment.IsDevelopment()));
 ```
 
@@ -156,7 +152,9 @@ app.UseAuthorization();
 app.MapEndpoints();
 ```
 
-The default operation key is the request path. Prefix stripping respects path-segment boundaries. Blacklist patterns use `*` within a path segment and `**` across segments; they match the normalized request path before key-prefix stripping. A match suppresses replacement operations in that request flow. Keep dashboard, health and documentation requests excluded when profiling a workload.
+The default operation key is the request path. Prefix stripping respects path-segment boundaries. Request Profiling defaults to AllRequests sampling and the blacklist `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`. `Blacklist(...)` replaces that list; `Blacklist()` clears it. Blacklist patterns use `*` within a path segment and `**` across segments; they match the normalized request path before key-prefix stripping. `/health*` matches `/healthz` but not `/health/live`. A match suppresses replacement operations in that request flow.
+
+`WithInMemoryProvider()` is optional. Use `WithEntityFrameworkProvider<TContext>()` or `WithProvider<TProvider>()` to replace the shared default provider.
 
 Selected eligible requests receive `X-Request-Profiling-Id`. This ID identifies the occurrence, not a durable-storage receipt: queue limits, loss, pending flush, expiry or clearing can make exact lookup unavailable. It is distinct from the application correlation/request ID. Cached responses do not replay stale profiling IDs. Response bytes distinguish observed, partial/unavailable and declared sizes. Body observation does not read, buffer, or retain payload contents.
 
@@ -218,7 +216,7 @@ All eligible requests are selected by default. Select a built-in strategy fluent
 
 Batch and retry work is independent of the caller's request token. Provider attempts are idempotent per writer/sequence and atomic per root. A timed-out attempt that ignores cancellation holds its writer slot until it returns; no overlapping write is launched. Health distinguishes local queue/in-flight/age, persistence failure/loss/unknown commits, administrative discards, retention removals and local sampling counters. Shared-provider counts cover retained shared history; live counters belong to the serving node. The next successful maintenance observation includes in-memory capacity evictions performed during append; these are retention removals, not failed incoming diagnostics, and do not consume that tick's deletion work budget. No universal throughput or overhead percentage is implied by the configured ceilings.
 
-The [capacity evidence](../plan/pln-feature-profiling-runtime-and-operations-1-evidence.md#phase-12-capacity-results) compares omitted, disabled, root-only, nested, Trace-enabled and saturated capture for all four providers. The local raw evidence retains latency distributions; the versioned summary includes a tested explicit 10% sampling configuration. These are synthetic loopback measurements of the general operation core, with a collocated client and four bounded segment invocations; they do not measure production HTTP metadata, remote dependencies or a real logging sink. Use queue age, persisted rate, loss and polling freshness together when tuning a host; endpoint success alone does not establish diagnostic persistence capacity. Defaults remain unchanged.
+The [capacity evidence](../plan/pln-feature-profiling-runtime-and-operations-1-evidence.md#phase-12-capacity-results) compares omitted, disabled, root-only, nested, Trace-enabled and saturated capture for all four providers. The local raw evidence retains latency distributions; the versioned summary includes a tested explicit 10% sampling configuration. These are synthetic loopback measurements of the general operation core, with a collocated client and four bounded segment invocations; they do not measure production HTTP metadata, remote dependencies or a real logging sink. Use queue age, persisted rate, loss and polling freshness together when tuning a host; endpoint success alone does not establish diagnostic persistence capacity. AllRequests remains the default sampling strategy.
 
 ### Operation dashboard and queries
 
@@ -548,7 +546,7 @@ Perfetto export is a separate, one-way Trace Event JSON representation for visua
 
 ## Migration from the unused earlier API
 
-This feature adopts the final names and schema without compatibility aliases. Rename the old `IProfilingControlService`, `IProfilingQueryService`, measurement, archive and related Runtime-only contracts to their `IRuntimeProfiling...` equivalents. Rename old Phase/PhaseMarker APIs to timed Segment and instantaneous Marker APIs. Move Runtime options into `WithRuntimeProfiling` and choose the shared provider through `WithInMemoryProvider` or `WithEntityFrameworkProvider<TContext>`.
+This feature adopts the final names and schema without compatibility aliases. Rename the old `IProfilingControlService`, `IProfilingQueryService`, measurement, archive and related Runtime-only contracts to their `IRuntimeProfiling...` equivalents. Rename old Phase/PhaseMarker APIs to timed Segment and instantaneous Marker APIs. Move Runtime options into `WithRuntimeProfiling`. In-memory storage is the default; select `WithEntityFrameworkProvider<TContext>` for persistent storage.
 
 Runtime archives use version 2. Version 1 input is rejected before any mutation; there is no implicit conversion. JSON snapshot/terminal-session and Perfetto exports remain Runtime features. Operations do not add export endpoints. Review and apply the application-owned EF migration for the final root JSON, indexed segment/dimension projections and coordination schema before enabling the EF provider.
 

@@ -712,3 +712,23 @@ The strict `docs/site/scripts/build-pages.ps1` rerun exercised the integrated na
 Per the user's final documentation refinement, `docs/features-profiling.md` and the generic specification remain application-neutral. WeatherFiesta setup and its verified workflow are in `examples/WeatherFiesta/WeatherFiesta-README.md`; the README's local links resolve and its compare route now correctly says POST. Shared feature docs do not mention that example application.
 
 Final review confirmed all 59 tasks complete, all requirement/test mappings covered, no obsolete active Phase APIs, no new production dependency, and no outstanding implementation task. Workspace build/unit/integration evidence and its existing skips are recorded in TASK-054; capacity results and synthetic-workload limitations remain explicit above. Raw measurements, browser harness/screenshots and logs remain local under the user-ignored evidence directory. The committed report generator, result tables, tests and this summary provide the versioned evidence. The user's `.gitignore` edit is preserved separately.
+
+### Post-acceptance defaults refinement, 2026-10-09 UTC
+
+Request Profiling now defaults to the user-selected blacklist: `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**` and `/openapi/**`. Explicit `Blacklist(...)` calls replace this collection; `Blacklist()` clears it. Existing wildcard semantics remain unchanged: `/health*` matches root health names such as `/healthz`, while `/health/live` requires a separate pattern. Excluded requests suppress nested operation capture without affecting business execution or subsequent eligible requests.
+
+The shared in-memory provider was already the implicit fallback. Registration tests now explicitly verify that fallback across capability combinations and that a custom provider replaces it and remains selected after repeated setup. Default setup examples, the application registration and its integration fixture omit redundant provider and blacklist calls. The guide, specification and plan defaults describe the same contract; the generic guide and specification remain application-neutral.
+
+| Defaults validation | Result | Local evidence |
+| --- | --- | --- |
+| Regression before the default change | Seven default-exclusion cases failed as expected | `defaults/red.log` |
+| Full solution build | Zero warnings/errors | `defaults/build.log` |
+| Common profiling tests | 342 passed, zero failures/skips | `defaults/common.log` |
+| Presentation profiling tests | 159 passed, zero failures/skips | `defaults/presentation.log` |
+| Application profiling integration using implicit defaults | Five passed, zero failures/skips | `defaults/weather.log` |
+| Complete MkDocs/API pipeline | Exit 0; DocFX zero warnings/errors; 65 assemblies and 25,683 indexed symbols | `defaults/site.log` |
+| Generated-page links and updated guide | 313 relative links resolve across five pages; the guide includes all five exclusions and replacement/clearing guidance | `defaults/links.log` |
+
+These checks cover default exclusions, case and trailing-slash matching, replacement and clearing, absence of suppression leakage, normal business request capture, provider replacement and real application dashboard access. Queue, persistence and sampling algorithms are unchanged, so the accepted capacity results above remain applicable to their original workload. The user's separate `.gitignore` edit remains excluded from the feature commit.
+
+The full documentation pipeline rerun includes the namespace-link postprocessor (3,717 pages repaired). The Release API compiler reported the same 36 pre-existing XML-tag warnings in non-profiling code; no profiling warning. The generated guide remains application-neutral. No site was published.

@@ -159,7 +159,6 @@ builder.Services
 	.WithRequestProfiling(options => options
 		.Enabled(builder.Configuration.GetValue("Profiling:Requests:Enabled", true))
 		.StripPathPrefix("/api")
-		.BlacklistPatterns("/health", "/health/**", "/swagger/**", "/_bdk/**")
 		.WithSampling(sampling => sampling.AllRequests()))
 	.WithEntityFrameworkProvider<AppDbContext>();
 
@@ -541,13 +540,14 @@ Path keys obey the configured key-length bound. Overlong defaults use a bounded 
 
 ### 4.5 Request blacklist
 
-`BlacklistPatterns` is an empty-by-default collection of path patterns. Any matching pattern excludes the request; order does not matter. In this setting, route matching means matching the incoming request path, not the endpoint's `{parameter}` template. This permits the skip decision before routing and before a diagnostic scope exists.
+`BlacklistPatterns` defaults to `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, and `/openapi/**`. `Blacklist(...)` replaces the complete collection; `Blacklist()` clears it. Any matching pattern excludes the request; order does not matter. In this setting, route matching means matching the incoming request path, not the endpoint's `{parameter}` template. This permits the skip decision before routing and before a diagnostic scope exists.
 
 Patterns are anchored to the entire incoming path and use ordinal case-insensitive comparison. Literal segments match literally, `*` matches zero or more non-slash characters within one segment, and `**` as a complete segment matches zero or more path segments. `/swagger/**` matches both `/swagger` and descendants. Regex syntax, method filters, query strings, and route-parameter expansion are not part of this matcher. A trailing slash is ignored for matching only, except for the root path.
 
 | Pattern | Examples matched | Example not matched |
 | --- | --- | --- |
 | `/health` | `/health`, `/health/` | `/health/details` |
+| `/health*` | `/health`, `/healthz`, `/health-ready` | `/health/live` |
 | `/health/**` | `/health`, `/health/live` | `/healthcheck` |
 | `/api/internal/*` | `/api/internal/status` | `/api/internal/jobs/42` |
 | `/_bdk/**` | `/_bdk/dashboard/profiling/requests` | `/api/calculations` |
@@ -558,7 +558,7 @@ A blacklist match creates no HTTP operation ID, recording context, segment data,
 
 This differs from `Requests.Enabled(false)`, which disables only the automatic HTTP adapter and leaves explicit operation instrumentation available. Exclusions are intentional coverage policy, not dropped records. Health may expose one aggregate excluded-request count without recording the excluded paths or emitting a log per match.
 
-Validate and prepare patterns once during setup. Invalid patterns fail configuration validation. Use a bounded, non-backtracking matcher; do not compile regexes or access storage on each request. Defaults allow at most 128 patterns of 256 characters each. The blacklist has no built-in entries; the setup example explicitly excludes dashboard, health, and Swagger paths to avoid profiling those requests.
+Validate and prepare patterns once during setup. Invalid patterns fail configuration validation. Use a bounded, non-backtracking matcher; do not compile regexes or access storage on each request. Defaults allow at most 128 patterns of 256 characters each. Built-in entries exclude DevKit, root health endpoints, Swagger, Scalar, and OpenAPI paths. Applications can replace or clear these exclusions.
 
 ### 4.6 Request-sampling strategy
 
@@ -1143,7 +1143,7 @@ The following defaults are configurable and form the specified baseline. Perform
 | Observe request-body bytes | False; declared length only unless normal-read observation is explicitly enabled |
 | Probability/rate parameters | Required only when selecting the corresponding alternative strategy |
 | Request path prefix to strip | Empty |
-| Request blacklist | Empty, with a maximum of 128 patterns of 256 characters each |
+| Request blacklist | `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`; maximum 128 patterns of 256 characters each |
 | Operation and segment lifecycle log level | Verbose; Trace through `Microsoft.Extensions.Logging` |
 | Maximum admitted active operation contexts | 1,024 |
 | Maximum operation recording duration / cleanup interval | 15 minutes / 5 seconds; capture expiry never cancels business execution |

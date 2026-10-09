@@ -243,16 +243,13 @@ The registration in [Program.cs](WeatherFiesta.Presentation.Web.Server/Program.c
 
 ```csharp
 builder.Services.AddProfiling(o => o.Enabled(builder.Environment.IsDevelopment()))
-    .WithRuntimeProfiling()
-    .WithOperationProfiling()
-    .WithRequestProfiling(o => o
-        .StripPathPrefix("/api")
-        .Blacklist("/_bdk/**", "/healthz", "/swagger/**", "/scalar/**", "/openapi/**"))
-    .WithInMemoryProvider()
-    .AddConsoleCommands(builder.Environment.IsDevelopment());
+	.WithRuntimeProfiling()
+	.WithOperationProfiling()
+	.WithRequestProfiling(o => o.StripPathPrefix("/api"))
+	.AddConsoleCommands(builder.Environment.IsDevelopment());
 ```
 
-Eligible API requests are captured by default. The outer middleware follows request correlation; the exception observer runs after exception handling and before routing. The default operation key strips `/api`, while the recorded HTTP path retains it. Completed records become visible after periodic persistence; dashboard reads do not force a flush. In-memory history belongs to this process and is lost when it exits.
+Eligible API requests are captured by default. The shared defaults select in-memory storage and exclude `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**` and `/openapi/**`. The outer middleware follows request correlation; the exception observer runs after exception handling and before routing. The default operation key strips `/api`, while the recorded HTTP path retains it. Completed records become visible after periodic persistence; dashboard reads do not force a flush. In-memory history belongs to this process and is lost when it exits.
 
 1. Sign in to `/_bdk/dashboard` as an administrator. Runtime, Operations and Requests are separate profiling views.
 2. Call `GET /api/core/cities/alerts`, then copy its `X-Request-Profiling-Id` response header into **Find exact ID** on the Requests view. The record includes the default `/core/cities/alerts` key, HTTP status/method, duration and response-byte quality.

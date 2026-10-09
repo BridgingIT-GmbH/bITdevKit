@@ -20,6 +20,63 @@ using Microsoft.Extensions.Hosting;
 /// <example>Runs against a real ASP.NET Core TestServer, not just an isolated throwing delegate.</example>
 public sealed class RequestProfilingMiddlewareTests
 {
+    /// <summary>Default infrastructure exclusions suppress nested capture and leave the next business request eligible.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData("/_bdk/dashboard/profiling/operations")]
+    [InlineData("/health")]
+    [InlineData("/healthz")]
+    [InlineData("/HEALTH-readiness/")]
+    [InlineData("/swagger/index.html")]
+    [InlineData("/scalar/reference")]
+    [InlineData("/openapi/v1.json")]
+    public async Task DefaultBlacklist_InfrastructureRequest_SuppressesNestedCapture(string path)
+    {
+        await using var sut = await Create();
+        var calls = 0;
+        sut.MapGet(path, ([FromServices] IOperationProfiler profiling) =>
+        {
+            calls++;
+            using var operation = profiling.BeginOperation("nested-infrastructure");
+            operation.IsRecording.ShouldBeFalse();
+            using var segment = profiling.BeginSegment("Load");
+            segment.IsRecording.ShouldBeFalse();
+            return Microsoft.AspNetCore.Http.Results.Text("infrastructure");
+        });
+        sut.MapGet("/api/products", () => "business");
+        using var client = await Client(sut);
+        using var excluded = await client.GetAsync(path);
+        excluded.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await excluded.Content.ReadAsStringAsync()).ShouldBe("infrastructure");
+        excluded.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBeFalse();
+        calls.ShouldBe(1);
+        var health = sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot();
+        health.BlacklistedRequests.ShouldBe(1);
+        health.EligibleRequests.ShouldBe(0);
+        health.CompletedOperations.ShouldBe(0);
+
+        using var business = await client.GetAsync("/api/products");
+        business.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await business.Content.ReadAsStringAsync()).ShouldBe("business");
+        (await Stored(sut, business)).Key.ShouldBe("/products");
+    }
+
+    /// <summary>An explicit custom or empty blacklist replaces the defaults, allowing health request capture.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Blacklist_ExplicitReplacement_CapturesPreviouslyExcludedPath(bool empty)
+    {
+        await using var sut = await Create(options => options.Blacklist(empty ? [] : ["/custom/**"]));
+        sut.MapGet("/healthz", () => "healthy");
+        using var response = await (await Client(sut)).GetAsync("/healthz");
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await response.Content.ReadAsStringAsync()).ShouldBe("healthy");
+        (await Stored(sut, response)).Key.ShouldBe("/healthz");
+        sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().BlacklistedRequests.ShouldBe(0);
+    }
+
     /// <summary>Recording setup, metadata, ID and cleanup faults cannot change business execution or exceptions.</summary>
     [Theory]
     [InlineData("clock", false)]

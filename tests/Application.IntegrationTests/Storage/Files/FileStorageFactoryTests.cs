@@ -69,10 +69,17 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
         inMemoryProvider.LocationName.ShouldBe("TestInMemory");
 
         // Act & Assert - Network (Singleton)
-        var networkProvider = factory.CreateProvider("network"); // case insensitive
-        networkProvider.ShouldNotBeNull();
-        //networkProvider.ShouldBeOfType<NetworkFileStorageProvider>();
-        networkProvider.LocationName.ShouldBe("NetworkStorage");
+        if (OperatingSystem.IsWindows())
+        {
+            var networkProvider = factory.CreateProvider("network"); // case insensitive
+            networkProvider.ShouldNotBeNull();
+            //networkProvider.ShouldBeOfType<NetworkFileStorageProvider>();
+            networkProvider.LocationName.ShouldBe("NetworkStorage");
+        }
+        else
+        {
+            Should.Throw<PlatformNotSupportedException>(() => factory.CreateProvider("network"));
+        }
 
         // Act & Assert - Local (Singleton)
         var localProvider = factory.CreateProvider("local"); // case insensitive
@@ -442,6 +449,13 @@ public class FileStorageFactoryTests(ITestOutputHelper output, TestEnvironmentFi
                    .WithRetry(new RetryOptions { MaxRetries = 3 })
                    .WithLifetime(ServiceLifetime.Singleton);
         });
+
+        // Windows impersonation cannot be instantiated on other platforms.
+        if (!OperatingSystem.IsWindows())
+        {
+            Should.Throw<PlatformNotSupportedException>(() => factory.CreateProvider("network"));
+            return;
+        }
 
         // Act
         var provider = factory.CreateProvider("network");

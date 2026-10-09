@@ -110,6 +110,7 @@ function Rewrite-MarkdownLinks {
             if ($relative.StartsWith('src/') -or
                 $relative.StartsWith('tests/') -or
                 $relative.StartsWith('examples/') -or
+                $relative.StartsWith('plan/') -or
                 $relative.StartsWith('.agents/') -or
                 $relative.StartsWith('docs/') -or
                 $relative -in @('README.md', 'CHANGELOG.md', 'CONTRIBUTION.md', 'LICENSE')) {
@@ -124,6 +125,7 @@ function Rewrite-MarkdownLinks {
         if ($normalized.StartsWith('/src/') -or
             $normalized.StartsWith('/tests/') -or
             $normalized.StartsWith('/examples/') -or
+            $normalized.StartsWith('/plan/') -or
             $normalized.StartsWith('/docs/') -or
             $normalized.StartsWith('/README.md') -or
             $normalized.StartsWith('/CHANGELOG.md') -or
@@ -145,6 +147,7 @@ function Rewrite-MarkdownLinks {
         if ($normalized.StartsWith('src/') -or
             $normalized.StartsWith('tests/') -or
             $normalized.StartsWith('examples/') -or
+            $normalized.StartsWith('plan/') -or
             $normalized.StartsWith('.agents/') -or
             $normalized.StartsWith('docs/')) {
             return $match.Groups['prefix'].Value + (Get-GitHubBlobUrl -Path $normalized) + $match.Groups['suffix'].Value

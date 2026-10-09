@@ -2,7 +2,7 @@
 goal: Implement unified Runtime and Operation Profiling with an HTTP Request adapter
 version: 1.0
 date_created: 2026-10-07
-last_updated: 2026-10-08
+last_updated: 2026-10-09
 owner: bITdevKit maintainers
 status: In progress
 tags: [feature, profiling, architecture, persistence, dashboard]
@@ -16,9 +16,9 @@ Implement [Runtime and Operation Profiling](../docs/specs/spec-profiling-runtime
 
 This is an execution plan, not implementation evidence. All tasks start incomplete. Repository paths and extension points were inspected at commit `224904465`. Resolve paths from the repository root. The renamed specification is authoritative; the former `pln-feature-profiling-runtime-and-requests-1.md` is not an input. Here, implementation phases are work packages; the product's timed work is always called a **Segment**.
 
-## Execution checkpoint — 2026-10-08 UTC
+## Execution checkpoint — 2026-10-09 UTC
 
-Resumed at the user's request from Implementation Phase 6. TASK-001–TASK-050 and refinement TASK-056–TASK-057 are complete and verified; TASK-051–TASK-055 remain incomplete. Continue with Phase 12 (correctness, overhead evidence and final verification). See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for the verified build and database checks.
+Resumed at the user's explicit request. TASK-001–TASK-051 and refinement TASK-056–TASK-057 are complete and verified; TASK-052–TASK-053 are verified; TASK-054–TASK-055 are verified; TASK-058–TASK-059 remain incomplete. The 84-trial original matrix and corrected 21-trial memory rerun passed. Feature, workspace and documentation/site acceptance passed. Complete final WeatherFiesta integration next. The historical [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remains as evidence. Complete documentation and the MkDocs site build before the final WeatherFiesta application integration/verification in Phase 13. The basic reference wiring delivered in Phase 11 is retained; Phase 13 verifies it in the complete application. See the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md) for passing checks.
 
 ## 1. Requirements & Constraints
 
@@ -260,11 +260,23 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 
 | Task | Description | Completed | Date |
 | --- | --- | --- | --- |
-| TASK-051 | Run the section 6 focused suites and required SQL Server/PostgreSQL/SQLite integration cases sequentially. Extend race tests with two independent writer hosts/service providers, clock skew, crash-before/after-seal, retained/new work, lease expiry, unknown commits, and concurrent paging. Record commands, counts, engine versions, failures, and repair results in the evidence file. Missing mandatory infrastructure leaves this task incomplete. Depends on: TASK-050. | [ ] | |
-| TASK-052 | Add `tests/Infrastructure.IntegrationTests/EntityFramework/Profiling/ProfilingLoadHarness.cs` and `ProfilingPerformanceEvidenceTests.cs` in the same directory, using existing database fixtures and the project's transitive Presentation.Web reference. Require `BITDEVKIT_PROFILING_PERF=1` to run; otherwise report an explicit skip. Use a local Kestrel host, fixed synthetic data, random seed 1729, and an offered rate of 1,000 operations/second with measured achieved completions, four sequential/nested segments, and at most 4 KiB charged payload, for 60 seconds after 10 seconds warm-up, with three measured repetitions per case. Compare omitted registration with installed behaviors, disabled capture, empty capture, nested/parallel capture, and saturated queues for memory and each EF engine. Include polling, persistence, and filtered/enabled lifecycle-log cases. Save raw measurements and environment metadata under the evidence path; do not add operation export functionality. Depends on: TASK-051. | [ ] | |
-| TASK-053 | Report p50/p95 endpoint latency, throughput, allocation, retained memory, queue age/depth, persisted rate, loss/unknown outcomes, retention removals, and profiler on/off deltas from TASK-052. Prove scheduler ceilings with controlled-time tests independently of database speed. If an engine cannot sustain the baseline, record its measured limit and a tested explicit sampling/configuration adjustment; never claim the nominal 4,096-record ceiling as observed throughput. Document limitations instead of inventing a universal overhead percentage. Depends on: TASK-052. | [ ] | |
-| TASK-054 | Run `.vscode/tasks.json` tasks `Solution - build`, `Solution - tests (unit)`, and `Solution - tests (integration)` sequentially after focused checks. Validate Runtime Broadcast, probes, measurement ownership, restart/reconciliation, pinning, custom metrics, evaluations, archive v2 roundtrips/v1 rejection, and JSON/Perfetto exports. Check source/project dependencies, diagram/link references, and profiling-only rename scope. Depends on: TASK-053. | [ ] | |
-| TASK-055 | Complete the requirement-to-evidence matrix in `plan/pln-feature-profiling-runtime-and-operations-1-evidence.md`. Update this plan's completion cells/dates and status only for verified outcomes; update feature docs to implemented behavior. Keep unresolved tests/performance limitations explicit. No deployment, database reset, commit, or publication is implied by this task. Depends on: TASK-054. | [ ] | |
+| TASK-051 | Run the section 6 focused suites and required SQL Server/PostgreSQL/SQLite integration cases sequentially. Extend race tests with two independent writer hosts/service providers, clock skew, crash-before/after-seal, retained/new work, lease expiry, unknown commits, and concurrent paging. Record commands, counts, engine versions, failures, and repair results in the evidence file. Missing mandatory infrastructure leaves this task incomplete. Depends on: TASK-050. | [x] | 2026-10-08 |
+| TASK-052 | Add `tests/Infrastructure.IntegrationTests/EntityFramework/Profiling/ProfilingLoadHarness.cs` and `ProfilingPerformanceEvidenceTests.cs` in the same directory, using existing database fixtures and the project's transitive Presentation.Web reference. Require `BITDEVKIT_PROFILING_PERF=1` to run; otherwise report an explicit skip. Use a local Kestrel host, fixed synthetic data, random seed 1729, and an offered rate of 1,000 operations/second with measured achieved completions, four sequential/nested segments, and at most 4 KiB charged payload, for 60 seconds after 10 seconds warm-up, with three measured repetitions per case. Compare omitted registration with installed behaviors, disabled capture, empty capture, nested/parallel capture, and saturated queues for memory and each EF engine. Include polling, persistence, and filtered/enabled lifecycle-log cases. Save raw measurements and environment metadata under the evidence path; do not add operation export functionality. Depends on: TASK-051. | [x] | 2026-10-09 |
+| TASK-053 | Report p50/p95 endpoint latency, throughput, allocation, retained memory, queue age/depth, persisted rate, loss/unknown outcomes, retention removals, and profiler on/off deltas from TASK-052. Prove scheduler ceilings with controlled-time tests independently of database speed. If an engine cannot sustain the baseline, record its measured limit and a tested explicit sampling/configuration adjustment; never claim the nominal 4,096-record ceiling as observed throughput. Document limitations instead of inventing a universal overhead percentage. Depends on: TASK-052. | [x] | 2026-10-09 |
+| TASK-054 | Run `.vscode/tasks.json` tasks `Solution - build`, `Solution - tests (unit)`, and `Solution - tests (integration)` sequentially after focused checks. Validate Runtime Broadcast, probes, measurement ownership, restart/reconciliation, pinning, custom metrics, evaluations, archive v2 roundtrips/v1 rejection, and JSON/Perfetto exports. Check source/project dependencies, diagram/link references, and profiling-only rename scope. Depends on: TASK-053. | [x] | 2026-10-09 |
+| TASK-055 | Complete the requirement-to-evidence matrix in `plan/pln-feature-profiling-runtime-and-operations-1-evidence.md`. Update this plan's completion cells/dates and status only for verified outcomes; update feature docs to implemented behavior. Run `pwsh -File docs/site/scripts/build-pages.ps1` (or the documented equivalent synchronization plus Docker MkDocs/API build if PowerShell is unavailable), verify generated Profiling guide/navigation/API pages, and fix relevant broken links and documentation warnings. Record commands and outputs; do not publish the site. Keep unresolved tests/performance limitations explicit. No deployment, database reset, commit, or publication is implied by this task. Depends on: TASK-054. | [x] | 2026-10-09 |
+
+
+### Implementation Phase 13
+
+- GOAL-013: Complete and verify WeatherFiesta application integration after feature acceptance and documentation/site validation.
+- Dependencies: GOAL-012, including passing MkDocs validation in TASK-055.
+- Completion criteria: The example application demonstrates Runtime, Operations and Requests with unchanged business behavior; HTTP enrichment and job profiling appear in the authorized dashboard; tests and documentation match the application setup.
+
+| Task | Description | Completed | Date |
+| --- | --- | --- | --- |
+| TASK-058 | Review and finalize the existing Phase 11 wiring in `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs`, `Modules/Core/Endpoints/WeatherEndpoints.cs` and `Modules/Core/Jobs/WeatherProfilingStressJob.cs` against the accepted API. Keep development enablement, in-memory storage, dashboard authorization and middleware ordering. Demonstrate `weather:compare`/`cityCount`/`Query` request enrichment, and owned or joined `weather:profiling-stress` jobs with Cpu/Allocate/Retain segments and existing Runtime measurement. Reuse these paths; add no unrelated endpoints or schema changes. Depends on: TASK-055. | [ ] | |
+| TASK-059 | Add or extend `examples/WeatherFiesta/WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs` using the existing application factory and isolated fixture. Verify profiled request ID lookup, default path and enriched key/dimensions/segments, periodic persistence visibility, blacklist exclusion, enabled Runtime/Operations/Requests views and preserved authorization. Use deterministic fixture data and controlled collaborators instead of external weather calls. Run the WeatherFiesta unit/integration suites sequentially, validate the application dashboard in a browser, and record evidence. Update `docs/features-profiling.md` with the verified WeatherFiesta example, rerun affected site validation, then mark the complete plan finished only after every task passes. Commit/push this application phase separately. Depends on: TASK-058. | [ ] | |
 
 ## 3. Alternatives
 
@@ -286,7 +298,7 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 - **DEP-005**: Existing EF packages, independent DbContext scopes, and SQL engine test fixtures under `tests/Infrastructure.IntegrationTests/EntityFramework/Jobs/`. Use their configured test databases, never production connections.
 - **DEP-006**: Dashboard authorization, RazorSlices, route grouping, and `window.bdkDashboard.createRefresher` already used in `src/Presentation.Web/Profiling/Dashboard/Pages/Index.cshtml`.
 - **DEP-007**: Existing .NET 10 SDK and `.vscode/tasks.json` build/test commands. No background implementation or test run is scheduled by this document.
-- **DEP-008**: Phase graph: GOAL-001 → GOAL-002; GOAL-002 → GOAL-003 and GOAL-004; GOAL-004 → GOAL-005; GOAL-003 plus GOAL-005 → GOAL-006; GOAL-006 → GOAL-007, GOAL-008, and GOAL-009; GOAL-007 plus GOAL-009 → GOAL-010; GOAL-008 plus GOAL-010 → GOAL-011 → GOAL-012. Shared-file edits remain serialized.
+- **DEP-008**: Phase graph: GOAL-001 → GOAL-002; GOAL-002 → GOAL-003 and GOAL-004; GOAL-004 → GOAL-005; GOAL-003 plus GOAL-005 → GOAL-006; GOAL-006 → GOAL-007, GOAL-008, and GOAL-009; GOAL-007 plus GOAL-009 → GOAL-010; GOAL-008 plus GOAL-010 → GOAL-011 → GOAL-012 → GOAL-013. Shared-file edits remain serialized.
 
 ## 5. Files
 
@@ -314,6 +326,8 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | FILE-018 | `examples/WeatherFiesta/WeatherFiesta.Presentation.Web.Server/Program.cs`, `Modules/Core/Endpoints/WeatherEndpoints.cs`, `Modules/Core/Jobs/WeatherProfilingStressJob.cs` beneath that server; `examples/WeatherFiesta/WeatherFiesta.UnitTests/Modules/Core/Application/Jobs/WeatherProfilingStressJobTests.cs` | Reference registration/middleware, HTTP enrichment, non-HTTP workload segments, and example regression tests. |
 | FILE-019 | `docs/features-profiling.md`, `docs/features-jobs.md`, `docs/features-pipelines.md`, `docs/features-orchestrations.md` | Final API usage and integration documentation. |
 | FILE-020 | `plan/pln-feature-profiling-runtime-and-operations-1-evidence.md` | New implementation evidence, rename inventory, requirements coverage, commands and performance results. |
+| FILE-021 | `mkdocs.yml`, `docs/site/scripts/sync-docs.ps1`, `docs/site/scripts/build-pages.ps1`, `docs/site/reference/features-profiling.md` | Validate generated documentation and navigation; fix profiling documentation generation if required. |
+| FILE-022 | `examples/WeatherFiesta/WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs` | New complete-application profiling integration checks. |
 
 ## 6. Testing
 
@@ -338,6 +352,8 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | TEST-017 | Version-2 archive/import remapping, reject version 1 before mutation, final JSON/Perfetto and console behavior. | TASK-007, TASK-054 |
 | TEST-018 | Compile/documentation examples and all requirement IDs covered by reproducible test evidence. | TASK-050, TASK-055 |
 | TEST-019 | On/off/saturation/polling/logging overhead for memory and EF; actual sustainable throughput and bounded memory/loss. | TASK-052, TASK-053 |
+| TEST-020 | MkDocs guide/navigation and API output build; no relevant broken links. | TASK-055, TASK-059 |
+| TEST-021 | Complete WeatherFiesta HTTP/job/dashboard integration and authorization with deterministic data. | TASK-058, TASK-059 |
 
 Run from the repository root. The workspace tasks are the preferred full checks. These commands are the focused equivalents for implementation work; execute them sequentially and record failures rather than suppressing them:
 

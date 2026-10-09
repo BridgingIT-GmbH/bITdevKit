@@ -79,6 +79,8 @@ Write-Host "Staged $($sourceProjects.Count) API reference assemblies to $apiAsse
 
 dotnet docfx $docfxConfig --logLevel Error
 
+& (Join-Path $repoRoot 'docs\api\scripts\fix-namespace-links.ps1') -OutputRoot $apiPagesRoot
+
 & $apiAgentIndexScript `
     -MetadataRoot $apiMetadataRoot `
     -OutputRoot $apiPagesRoot

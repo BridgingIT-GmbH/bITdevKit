@@ -1078,6 +1078,8 @@ The provider composes focused runtime and operation store contracts. Core servic
 | Capabilities and health | Report provider identity, node-local versus shared scope, supported optional functions, and query consistency. |
 | Failures and cancellation | Return typed failures, including transient classification, and honor worker/query cancellation without changing application execution. |
 
+`ProfilingMaintenanceResult.RetentionRemovedOperations` counts retention deletion work performed by that maintenance call. `CapacityEvictedOperations` reports append-time capacity evictions since the previous successful maintenance observation; it is reset once reported and does not consume the current call's root work budget. The node-local `RetentionRemovals` health counter includes both values. An accepted incoming record can evict older retained history without constituting an incoming capture/persistence loss.
+
 The shared provider contract exposes no `DbContext`, `DbSet`, `IQueryable`, SQL, or backend-specific client. EF mapping and query translation belong to the EF provider. The in-memory provider applies the same observable filter, grouping, time, outcome, retention, and idempotency rules. Performance characteristics and supported read consistency may differ and are reported explicitly.
 
 Provider selection is a setup decision. There is exactly one selected provider for Runtime and Operation Profiling. An explicit choice replaces the implicit in-memory default; conflicting explicit choices fail startup validation. Repeating the same registration is idempotent. There is no implicit write fan-out, runtime provider switching, or migration between providers.

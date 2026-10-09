@@ -356,6 +356,11 @@ public sealed record ProfilingMaintenanceResult
     /// <example><code>var evicted = result.RetentionRemovedOperations;</code></example>
     public long RetentionRemovedOperations { get; init; }
 
+    /// <summary>Gets capacity evictions performed during append since the previous successful maintenance observation.</summary>
+    /// <remarks>These removals happened before this maintenance call, so they do not consume its root work budget.</remarks>
+    /// <example><code>var removed = result.RetentionRemovedOperations + result.CapacityEvictedOperations;</code></example>
+    public long CapacityEvictedOperations { get; init; }
+
     /// <summary>Gets terminal operation roots removed.</summary>
     /// <example><code>var value = record.RemovedOperations;</code></example>
     public long RemovedOperations { get; init; }

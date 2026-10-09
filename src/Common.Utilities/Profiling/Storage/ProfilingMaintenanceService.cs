@@ -56,7 +56,7 @@ public sealed class ProfilingMaintenanceService : BackgroundService
                     var result = await this.provider.ResumeMaintenanceAsync(this.request, linked.Token).ConfigureAwait(false);
                     if (result.IsSuccess)
                     {
-                        Interlocked.Add(ref this.health.RetentionRemovals, result.Value.RetentionRemovedOperations);
+                        Interlocked.Add(ref this.health.RetentionRemovals, result.Value.RetentionRemovedOperations + result.Value.CapacityEvictedOperations);
                         Interlocked.Exchange(ref this.health.ApplyingClears, result.Value.RemainingClears);
                     }
                     else

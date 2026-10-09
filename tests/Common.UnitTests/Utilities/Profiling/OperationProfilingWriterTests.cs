@@ -364,6 +364,32 @@ public sealed class OperationProfilingWriterTests
         h.Health.Unknown.ShouldBe(1);
     }
 
+    /// <summary>Checks that the periodic worker publishes append-time evictions into node-local retention health.</summary>
+    /// <example>Executed by the focused Profiling suite.</example>
+    [Fact]
+    public async Task Maintenance_InlineCapacityEviction_PublishesHealthOnce()
+    {
+        var h = Create(options => options.MaximumRetainedOperations = 1);
+        await h.Writer.TickAsync();
+        Capture(h, "first");
+        await h.Writer.TickAsync();
+        Capture(h, "second");
+        await h.Writer.TickAsync();
+        h.Health.RetentionRemovals.ShouldBe(0);
+        using var sut = new ProfilingMaintenanceService(h.Real, h.Options, h.Health, h.Profiler, h.Clock);
+        try
+        {
+            await sut.StartAsync(default);
+            await WaitUntil(() => h.Health.GetSnapshot().RetentionRemovals == 1);
+            (await h.Real.ResumeMaintenanceAsync(new() { MaximumOperationCount = 1 })).Value.CapacityEvictedOperations.ShouldBe(0);
+            h.Health.GetSnapshot().RetentionRemovals.ShouldBe(1);
+        }
+        finally
+        {
+            await sut.StopAsync(default).WaitAsync(TimeSpan.FromSeconds(5));
+        }
+    }
+
     private static Harness Create(Action<OperationProfilingOptions> configure = null)
     {
         var options = new ProfilingOptions { Enabled = true, Operations = new() { Enabled = true } };

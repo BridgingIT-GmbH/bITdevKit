@@ -147,6 +147,41 @@ public sealed class ProfilingClearContractTests
         (await sut.FindAsync(record.Id)).Value.ShouldNotBeNull();
     }
 
+    /// <summary>Checks that append-pressure evictions are reported once without consuming later maintenance work limits.</summary>
+    /// <example>Executed by the focused Profiling suite.</example>
+    [Fact]
+    public async Task Maintenance_AppendCapacityEvictions_ReportsOnceSeparatelyFromWorkBudget()
+    {
+        var options = new ProfilingOptions();
+        options.Operations.MaximumRetainedOperations = 1;
+        options.Storage.MaximumMaintenanceRoots = 1;
+        var (profiler, sink, clock) = OperationProfilerTests.Create();
+        using (var operation = profiler.BeginOperation("root")) { operation.Complete(); }
+
+        var record = sink.Records.Single();
+        var sut = new InMemoryProfilingStorageProvider(options, clock);
+        var lease = (await sut.OpenWriterAsync(new() { AttemptId = Guid.NewGuid(), Node = record.Node })).Value;
+        for (var sequence = 1; sequence <= 3; sequence++)
+        {
+            var appended = await sut.AppendAsync([new() { Lease = lease, CompletionSequence = sequence, Record = record with { Id = Guid.NewGuid() } }]);
+            appended.Value.Records.Single().Outcome.ShouldBe(ProfilingWriteOutcome.Accepted);
+            await sut.SynchronizeWriterAsync(new() { Lease = lease, SettledThrough = sequence });
+        }
+
+        var request = new ProfilingMaintenanceRequest { MaximumRoots = 1, MaximumOperationCount = 1 };
+        var first = (await sut.ResumeMaintenanceAsync(request)).Value;
+        first.CapacityEvictedOperations.ShouldBe(2);
+        first.RetentionRemovedOperations.ShouldBe(0);
+        first.RemovedOperations.ShouldBe(0);
+        (await sut.ResumeMaintenanceAsync(request)).Value.CapacityEvictedOperations.ShouldBe(0);
+
+        clock.Advance(TimeSpan.FromDays(2));
+        var expired = (await sut.ResumeMaintenanceAsync(request)).Value;
+        expired.RetentionRemovedOperations.ShouldBe(1);
+        expired.CapacityEvictedOperations.ShouldBe(0);
+        expired.RemovedOperations.ShouldBe(1);
+    }
+
     private static RuntimeProfilingSessionCreateRequest Request(TimeProvider clock) => new(ProfilingIdentityFactory.CreateRuntimeSession(), "runtime", clock.GetUtcNow(), TimeSpan.FromSeconds(1), TimeSpan.FromMinutes(1), []);
 
     private static async Task<(InMemoryProfilingStorageProvider Provider, FakeTimeProvider Clock, ProfilingWriterLease Lease, OperationProfilingRecord Record)> CreateAsync(Action<ProfilingStorageOptions> configure = null)

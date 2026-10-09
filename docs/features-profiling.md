@@ -216,7 +216,9 @@ All eligible requests are selected by default. Select a built-in strategy fluent
 | Concurrent query views / deadline | 4, without waiting / 5 seconds |
 | Page size / exact analysis / Runtime overlay | at most 200 / 10,000 roots / 2,000 snapshots |
 
-Batch and retry work is independent of the caller's request token. Provider attempts are idempotent per writer/sequence and atomic per root. A timed-out attempt that ignores cancellation holds its writer slot until it returns; no overlapping write is launched. Health distinguishes local queue/in-flight/age, persistence failure/loss/unknown commits, administrative discards, retention removals and local sampling counters. Shared-provider counts cover retained shared history; live counters belong to the serving node. No universal throughput or overhead percentage is implied by the configured ceilings.
+Batch and retry work is independent of the caller's request token. Provider attempts are idempotent per writer/sequence and atomic per root. A timed-out attempt that ignores cancellation holds its writer slot until it returns; no overlapping write is launched. Health distinguishes local queue/in-flight/age, persistence failure/loss/unknown commits, administrative discards, retention removals and local sampling counters. Shared-provider counts cover retained shared history; live counters belong to the serving node. The next successful maintenance observation includes in-memory capacity evictions performed during append; these are retention removals, not failed incoming diagnostics, and do not consume that tick's deletion work budget. No universal throughput or overhead percentage is implied by the configured ceilings.
+
+The [capacity evidence](../plan/pln-feature-profiling-runtime-and-operations-1-evidence.md#phase-12-capacity-results) compares omitted, disabled, root-only, nested, Trace-enabled and saturated capture for all four providers. The local raw evidence retains latency distributions; the versioned summary includes a tested explicit 10% sampling configuration. These are synthetic loopback measurements of the general operation core, with a collocated client and four bounded segment invocations; they do not measure production HTTP metadata, remote dependencies or a real logging sink. Use queue age, persisted rate, loss and polling freshness together when tuning a host; endpoint success alone does not establish diagnostic persistence capacity. Defaults remain unchanged.
 
 ### Operation dashboard and queries
 
@@ -452,7 +454,8 @@ builder.Services
 
 builder.Services
     .AddProfiling(options => options.Enabled(builder.Environment.IsDevelopment()))
-    .WithEntityFrameworkStore<AppDbContext>()
+    .WithRuntimeProfiling()
+    .WithEntityFrameworkProvider<AppDbContext>()
     .AddConsoleCommands(builder.Environment.IsDevelopment());
 ```
 

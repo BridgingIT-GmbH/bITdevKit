@@ -33,6 +33,7 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
     private long retainedBytes;
     private long watermark;
     private long deletionRevision;
+    private long capacityEvictionsToReport;
 
     /// <summary>Creates an isolated ephemeral provider with immutable bounded options.</summary>
     /// <example><code>var provider = new InMemoryProfilingStorageProvider(options, TimeProvider.System);</code></example>
@@ -366,9 +367,12 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
 
             this.clears.Prune(this.writers, utc);
             this.writers.Prune(utc);
+            var capacityEvictions = this.capacityEvictionsToReport;
+            this.capacityEvictionsToReport = 0;
             return Success(new ProfilingMaintenanceResult
             {
-                RetentionRemovedOperations = retentionRemoved, RemovedOperations = operationsRemoved, RemovedRuntimeSessions = runtimeRemoved, DeletionRevision = this.deletionRevision,
+                RetentionRemovedOperations = retentionRemoved, CapacityEvictedOperations = capacityEvictions,
+                RemovedOperations = operationsRemoved, RemovedRuntimeSessions = runtimeRemoved, DeletionRevision = this.deletionRevision,
                 RemainingClears = this.clears.Clears.LongCount(c => c.State is ProfilingClearState.Preparing or ProfilingClearState.Applying),
             });
         }
@@ -434,6 +438,7 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
             }
 
             this.Remove(candidate);
+            this.capacityEvictionsToReport++;
         }
 
         return this.records.Count < this.options.MaximumRetainedOperations && this.retainedBytes <= this.options.MaximumRetainedBytes - incoming;

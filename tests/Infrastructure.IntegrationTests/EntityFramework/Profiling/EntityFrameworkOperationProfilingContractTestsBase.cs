@@ -15,6 +15,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Time.Testing;
 
 public abstract class EntityFrameworkOperationProfilingContractTestsBase : ProfilingStorageContractTestsBase, IAsyncLifetime
 {
@@ -37,6 +38,138 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
 
         this.peer = new(this.second.GetRequiredService<IServiceScopeFactory>(), options, clock);
         return new EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext>(this.first.GetRequiredService<IServiceScopeFactory>(), options, clock);
+    }
+
+    /// <summary>Independent DI writers use database lease time despite skewed recording clocks and preserve post-cutoff work.</summary>
+    [Fact]
+    public async Task IndependentWriterHosts_SkewedClocks_ClearOldWorkAndInvalidateConcurrentPaging()
+    {
+        var h = await this.CreateAsync();
+        var early = new FakeTimeProvider(h.Clock.GetUtcNow().AddHours(-3));
+        var late = new FakeTimeProvider(h.Clock.GetUtcNow().AddHours(3));
+        await using var firstHost = CreateWriterHost((EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext>)h.Provider, early);
+        await using var secondHost = CreateWriterHost(this.peer, late);
+        var firstWriter = firstHost.GetRequiredService<OperationProfilingWriterService>();
+        var secondWriter = secondHost.GetRequiredService<OperationProfilingWriterService>();
+        await firstWriter.TickAsync();
+        await secondWriter.TickAsync();
+        var firstId = Capture(firstHost, early);
+        var secondId = Capture(secondHost, late);
+        await firstWriter.TickAsync();
+        await secondWriter.TickAsync();
+        var firstRecord = (await this.peer.FindAsync(firstId)).Value;
+        var secondRecord = (await h.Store.FindAsync(secondId)).Value;
+        firstRecord.ShouldNotBeNull();
+        secondRecord.ShouldNotBeNull();
+        firstRecord.NodeId.ShouldNotBe(secondRecord.NodeId);
+        firstRecord.Duration.ShouldBe(TimeSpan.FromMilliseconds(1));
+        secondRecord.Duration.ShouldBe(TimeSpan.FromMilliseconds(1));
+        var query = h.Query() with { FromUtc = h.Clock.GetUtcNow().AddHours(-4), ToUtc = h.Clock.GetUtcNow().AddHours(4), PageSize = 1 };
+        var simultaneousPages = await Task.WhenAll(h.Store.QueryAsync(query), this.peer.QueryAsync(query));
+        simultaneousPages.All(page => page.IsSuccess && page.Value.TotalCount == 2).ShouldBeTrue();
+        var cursor = simultaneousPages[0].Value.NextCursor;
+
+        var clearing = h.Provider.ClearAsync(new() { DataSet = ProfilingDataSet.Operations });
+        var pending = await WaitForClearAsync(h);
+        await firstWriter.TickAsync();
+        await secondWriter.TickAsync();
+        var retainedId = Capture(firstHost, early);
+        await firstWriter.TickAsync();
+        (await this.peer.AcknowledgeClearAsync(new() { ClearId = pending.Id, Lease = h.Lease, CompletionCutoff = 0 })).IsSuccess.ShouldBeTrue();
+        var cleared = await clearing.WaitAsync(TimeSpan.FromSeconds(10));
+
+        cleared.IsSuccess.ShouldBeTrue();
+        cleared.Value.RemovedOperationCount.ShouldBe(2);
+        (await h.Store.FindAsync(firstId)).Value.ShouldBeNull();
+        (await this.peer.FindAsync(secondId)).Value.ShouldBeNull();
+        (await this.peer.FindAsync(retainedId)).Value.ShouldNotBeNull();
+        var continued = await this.peer.QueryAsync(query with { Cursor = cursor });
+        continued.IsFailure.ShouldBeTrue();
+        continued.Errors.ShouldContain(error => error is ProfilingQueryBoundaryError);
+        firstHost.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().PersistedOperations.ShouldBe(2);
+        secondHost.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().PersistedOperations.ShouldBe(1);
+    }
+
+    /// <summary>A fresh provider resumes sealed partial deletion and rejects delayed retry after coordinator loss.</summary>
+    [Fact]
+    public async Task Restart_AfterSeal_RecoversAcrossIndependentProviderAndClockSkew()
+    {
+        var options = new ProfilingOptions();
+        options.Storage.MaximumMaintenanceRoots = 1;
+        var h = await this.CreateAsync(options);
+        var firstEnvelope = h.Envelope(h.Record(), 1);
+        var secondEnvelope = h.Envelope(h.Record(), 2);
+        (await h.Store.AppendAsync([firstEnvelope, secondEnvelope])).IsSuccess.ShouldBeTrue();
+        var clearing = h.Provider.ClearAsync(new() { DataSet = ProfilingDataSet.Operations });
+        var pending = await WaitForClearAsync(h);
+        (await this.peer.AcknowledgeClearAsync(new() { ClearId = pending.Id, Lease = h.Lease, CompletionCutoff = 2 })).IsSuccess.ShouldBeTrue();
+        var sealedResult = await clearing.WaitAsync(TimeSpan.FromSeconds(10));
+        sealedResult.Value.State.ShouldBe(ProfilingClearState.Applying);
+        var restartedServices = this.CreateServices(h.Clock);
+        var restarted = new EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext>(restartedServices.GetRequiredService<IServiceScopeFactory>(),
+            options, new FakeTimeProvider(h.Clock.GetUtcNow().AddDays(-2)));
+
+        var recovered = await restarted.ResumeMaintenanceAsync(new() { MaximumRoots = 1 });
+        recovered.IsSuccess.ShouldBeTrue();
+        recovered.Value.RemainingClears.ShouldBe(0);
+        (await restarted.Operations.AppendAsync([firstEnvelope])).Value.Records.Single().Outcome.ShouldBe(ProfilingWriteOutcome.Cleared);
+        (await this.peer.FindAsync(secondEnvelope.Record.Id)).Value.ShouldBeNull();
+    }
+
+    /// <summary>Loss before sealing expires preparation using database time and cannot delete or accept a late acknowledgement.</summary>
+    [Fact]
+    public async Task Restart_BeforeSeal_ExpiresPreparationWithoutDeletingRetainedData()
+    {
+        var options = new ProfilingOptions();
+        options.Storage.ClearPreparationTimeout = TimeSpan.FromSeconds(1);
+        var h = await this.CreateAsync(options);
+        var envelope = h.Envelope(h.Record(), 1);
+        (await h.Store.AppendAsync([envelope])).IsSuccess.ShouldBeTrue();
+        var clearing = h.Provider.ClearAsync(new() { DataSet = ProfilingDataSet.Operations });
+        var pending = await WaitForClearAsync(h);
+        h.Clock.Advance(TimeSpan.FromSeconds(2));
+        var restartedServices = this.CreateServices(h.Clock);
+        var restarted = new EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext>(restartedServices.GetRequiredService<IServiceScopeFactory>(),
+            options, new FakeTimeProvider(h.Clock.GetUtcNow().AddDays(7)));
+
+        (await restarted.ResumeMaintenanceAsync(new() { MaximumRoots = 1 })).IsSuccess.ShouldBeTrue();
+        var result = await clearing.WaitAsync(TimeSpan.FromSeconds(10));
+        result.IsFailure.ShouldBeTrue();
+        if (result.Value is not null) { result.Value.SealedUtc.ShouldBeNull(); }
+
+        (await restarted.Operations.AcknowledgeClearAsync(new() { ClearId = pending.Id, Lease = h.Lease, CompletionCutoff = 1 })).IsFailure.ShouldBeTrue();
+        (await restarted.Operations.FindAsync(envelope.Record.Id)).Value.ShouldNotBeNull();
+        (await restarted.Operations.AppendAsync([envelope])).Value.Records.Single().Outcome.ShouldBe(ProfilingWriteOutcome.AlreadyStored);
+    }
+
+    private static ServiceProvider CreateWriterHost(EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext> provider, TimeProvider clock)
+    {
+        var collection = new ServiceCollection();
+        collection.AddLogging();
+        collection.AddSingleton(clock);
+        collection.AddProfiling(options => options.Enabled()).WithOperationProfiling().WithProvider(_ => provider);
+        return collection.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true });
+    }
+
+    private static Guid Capture(IServiceProvider provider, FakeTimeProvider clock)
+    {
+        using var operation = provider.GetRequiredService<IOperationProfiler>().BeginOperation("writer-host", OperationProfilingKind.Service);
+        clock.Advance(TimeSpan.FromMilliseconds(1));
+        operation.Complete();
+        return operation.Id;
+    }
+
+    private static async Task<ProfilingPendingClear> WaitForClearAsync(Harness h)
+    {
+        using var deadline = new CancellationTokenSource(TimeSpan.FromSeconds(10));
+        while (true)
+        {
+            var state = await h.Store.SynchronizeWriterAsync(new() { Lease = h.Lease }, deadline.Token);
+            state.IsSuccess.ShouldBeTrue();
+            if (state.Value.PendingClears.Count > 0) { return state.Value.PendingClears.Single(); }
+
+            await Task.Delay(10, deadline.Token);
+        }
     }
 
     /// <summary>Records actual engine plans for the indexed publication-window selection without forcing a preferred plan on tiny fixtures.</summary>
@@ -76,6 +209,12 @@ public abstract class EntityFrameworkOperationProfilingContractTestsBase : Profi
         {
             if (sqlServer) { command.CommandText = "SET SHOWPLAN_XML OFF"; await command.ExecuteNonQueryAsync(); }
         }
+
+        command.CommandText = sqlServer ? "SELECT CAST(SERVERPROPERTY('ProductVersion') AS varchar(128))"
+            : engine.Contains("Sqlite", StringComparison.Ordinal) ? "SELECT sqlite_version()" : "SHOW server_version";
+        var version = (await command.ExecuteScalarAsync())?.ToString();
+        version.ShouldNotBeNullOrWhiteSpace();
+        await File.WriteAllTextAsync(Path.Combine(Path.GetTempPath(), "bitdevkit-phase12-engine-version-" + engine + ".txt"), version);
     }
 
     [Fact]

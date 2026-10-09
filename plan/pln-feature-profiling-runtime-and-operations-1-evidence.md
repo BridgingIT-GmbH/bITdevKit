@@ -267,11 +267,11 @@ The following source, test, example, and documentation files contain Profiling r
 - TASK-004: complete. Generic facade/scopes and immutable value/root/summary/HTTP projection contracts added without web dependencies. Common profiling checks: 139 passing, including eight scalar/path/UTC/assembly tests. Runtime terminal outcomes now use the shared vocabulary; open intervals have no terminal outcome. Evidence: `/tmp/bitdevkit-profiling-operation-contract-tests.log`.
 - TASK-005: complete. Provider/runtime/operation facets, writer leases and immutable envelopes, fixed clear acknowledgements, settlement, stable query boundaries, health and typed analysis DTOs defined in Abstractions. Common profiling checks: 140 passing. Backend-independent asynchronous Result contract verified. Evidence: `/tmp/bitdevkit-profiling-storage-contract-tests.log`. Concrete provider conformance remains TASK-020/TASK-025.
 - TASK-006: complete. Cached no-I/O identity moved behind the pure common contract. Runtime Broadcast adapter and best-effort background registration reuse the cached GUID/key; remote targets resolve persisted identities instead of inventing a local identity. Runtime Control/Collector/Scopes implementations renamed. Node display/version/actual-start metadata survives EF roundtrip. Checks: Common 141, Presentation 48, Infrastructure 18, real-engine integration 20 passing. Evidence: `/tmp/bitdevkit-profiling-runtime-identity-*`.
-- TASK-007 through TASK-025: complete; detailed evidence follows. TASK-026 through TASK-055 remain incomplete. Execution is paused before Phase 6 at the user's request.
+- TASK-007 through TASK-051 and refinement TASK-056–TASK-057: complete; detailed phase evidence follows. TASK-052–TASK-055 are complete; Phase 13 remains incomplete. Resumed at the user's request on 2026-10-09; completed capacity measurements are retained before final workspace verification. WeatherFiesta final application integration (TASK-058–TASK-059) follows feature/docs/MkDocs acceptance.
 
 ## Requirement acceptance
 
-REQ-001 through REQ-024 remain unverified for the new implementation. Baseline tests describe existing Runtime behavior only.
+The final requirement-to-evidence matrix will be closed in TASK-055 after capacity measurements and complete workspace verification. The following sections record passing implementation checks; baseline tests describe the original Runtime behavior only.
 
 ### TASK-007 — scoped Runtime markers and version-2 archives
 
@@ -500,3 +500,183 @@ TASK-048–TASK-050 are implemented and verified. Phase 12 remains outstanding.
 | Weather stress job, including example host build | 6 passed, 0 failed/skipped | [log](evidence/profiling-runtime-and-operations-1/phase-11/weather-tests.log) |
 
 The initial example checks caught incorrect test assumptions about writer activation, sampler DI ownership, nonrelational EF support and owned model counts; those fixtures were repaired and the complete focused suite rerun. No provider capacity claim is made before Phase 12.
+
+## Phase 12 — final correctness and measured overhead (in progress)
+
+TASK-051 is verified. TASK-052–TASK-055 remain outstanding.
+
+The user requested a pause on 2026-10-08 UTC. The running benchmark was cancelled and its processes stopped. There are 53 completed canonical trials: memory 21, SQLite 21 and SQL Server 11. SQL Server `nested` repetition 3 was interrupted; no PostgreSQL capacity trials have run. Cancellation is not a passing completion of the performance test. The raw results and [restart checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) are retained locally. Phase 12 changes remain uncommitted on `feature/profiling-runtime-and-operations`; earlier completed phases are already pushed. Do not resume until requested.
+
+The focused suites ran sequentially with `dotnet test tests/<project>/<project>.csproj --filter FullyQualifiedName~Profiling --no-restore --nologo`: Common 339, Infrastructure unit 35, Application 28, Presentation 150, and real-engine Infrastructure integration 173 passed (725 total, zero failures/skips). The source/projection plan check was rerun on each engine to record exact versions. Logs and version files are in [phase-12 evidence](evidence/profiling-runtime-and-operations-1/phase-12/).
+
+The three-engine contract suite now creates two independent DI writer providers with skewed recorder clocks, persists both roots, concurrently acquires pinned pages, fixes clear cutoffs, retains post-cutoff work, and rejects continued paging after deletion. Fresh providers recover sealed partial deletion and expired pre-seal preparation using database time rather than a skewed host clock. Existing shared tests cover lease expiry, new registrations, unknown commit/acknowledgement, retention and delayed retries. Initial assertions were corrected for optional failure payloads; final focused checks pass.
+
+### Resume — 2026-10-09 UTC
+
+The user explicitly requested resuming stress testing and completing feature phases, documentation and MkDocs before final WeatherFiesta application integration. The 53 completed measurements are preserved. Resume validates environment/workload, required raw latency artifacts and previous trial assertions before reuse, records a separate resume environment with preserved-file hashes, and reruns the interrupted trial. The original cancellation remains historical evidence, not a successful performance test. TASK-058–TASK-059 are added after TASK-055; no final application integration completion is claimed yet.
+
+### Capacity run and retention-counter review — 2026-10-09 UTC
+
+The resumed canonical performance test passed (2 tests, zero failures/skips; 40 minutes 3 seconds), bringing the original matrix to 84 complete trials. Reused raw artifacts are hashed in the resume environment file. All original trial application failure/capture-fault assertions pass. Control-case dashboard polls return 503 when profiling is unavailable; enabled-case polling statuses and costs remain recorded rather than hidden.
+
+The final review found that in-memory append-pressure evictions were not included in health retention removals. The provider now reports these once through `ProfilingMaintenanceResult.CapacityEvictedOperations`, independently of actual per-call maintenance removal work/budgets, and the maintenance worker adds both retention sources to node-local health. Focused provider and worker regressions cover reporting, no repeated counting and later age-based removal. The memory matrix is being rerun in a separate evidence directory after this correction; the original matrix remains immutable historical evidence. EF append/query paths are unchanged by this counter correction. TASK-052–TASK-055 remain incomplete until the updated memory evidence and complete acceptance checks pass.
+
+### TASK-052–TASK-053 — completed capacity evidence
+
+The corrected memory run passed (3 tests, zero failures/skips; 25 minutes 15 seconds), completing 21 fresh trials. The accepted 84-trial matrix uses these memory measurements plus the unchanged EF-provider measurements from the original 84-trial matrix. The original artifacts remain retained separately. The focused counter/worker/scheduler suite passes 341 tests; harness resume/provider-selection checks pass 2 tests.
+
+The [capacity report](evidence/profiling-runtime-and-operations-1/phase-12/capacity-report.md) records p50/p95, gross allocation, retained heap, throughput, queue records/bytes/age, persistence, drops/unknowns, retention removals, polling and logging, on/off deltas, recording-session scope and the tested explicit 10% sampling adjustment. `report-capacity.py` validates required trial coverage and regenerates the tables. All accepted trial application failure/shed/capture-fault assertions pass. Scheduler ceilings are separately verified by controlled-time tests, not inferred from database throughput. No HTTP metadata/TLS/production or universal overhead claim is made.
+
+TASK-052 and TASK-053 are complete. TASK-054 (full workspace checks), TASK-055 (final feature/site acceptance), and TASK-058–TASK-059 (final WeatherFiesta app integration) remain incomplete.
+
+### Workspace regression repairs — 2026-10-09 UTC
+
+The first complete integration attempt exposed a queue test publication race: its handler flag became visible before the broker terminal state. The tests now wait for both, preserving their success assertions; all three focused checks pass. The test-only repair is committed separately as `eb43a0c62`.
+
+A later attempt and an isolated scheduler baseline exposed a pre-existing Quartz repeated-execution defect (5 of 10 baseline cases failed). Successful execution writes nullable trigger metadata; the next execution called `.ToString()` on these null values before entering business processing. A focused repeated-execution regression fails with `NullReferenceException` at that conversion before the fix and passes after null-safe conversion. All ten scheduler integration checks then pass, preserving data/non-overlap checks and testing the exact two-second cron schedule separately from bounded execution-count waits. This user-authorized repair is committed separately as `9ed1f8689`. Failed/cancelled attempts remain evidence and are not counted as passing full-suite verification. The complete workspace tasks are rerun after these repairs.
+
+The complete Application integration attempt subsequently passed 264 cases and exposed 20 unrelated storage failures. Eighteen were caused by local path helpers hardcoding Windows separators on Linux; physical nested-directory regressions failed in all four input/root variants before the fix and pass afterward. Native separator normalization and `Path.GetRelativePath` restore portable directories and canonical provider-relative listings. The two Windows factory tests now assert `PlatformNotSupportedException` on unsupported platforms and retain their original Windows checks. All 92 affected storage integration checks pass with zero skips. The separate repair is committed as `04e2ba5be`; full workspace tasks are rerun afterward.
+
+A subsequent full attempt passed all 284 Application and 43 Domain integration tests, then exposed a pre-existing Cosmos conditional-token mismatch. Creation returned the quoted HTTP ETag while emulator query reads returned the same opaque value unquoted, so the provider rejected a fresh update. A focused creation/read assertion reproduced that exact mismatch. The provider now normalizes exposed tokens, accepts both forms in comparisons and formats native conditional headers; stale mutations remain rejected. The real Cosmos document-store suite passes 11 tests (13 pre-existing EF Cosmos skips), and two quoted/unquoted conditional update/stale mutation/fresh delete cases pass with zero skips. The separate repair is committed as `216ec9fc6`. The cancelled full attempt is not a passing integration task; final workspace checks continue afterward.
+
+## Phase 12 capacity results
+
+The accepted matrix contains 84 trials: three repetitions of six baseline cases and the tested 10% sampling adjustment for each of memory, SQLite, SQL Server and PostgreSQL. The original four-provider matrix passed; the 21 memory trials were rerun after correcting append-time retention eviction reporting. The accepted memory rows come from `performance-memory-retention/`; the EF rows come from `performance/`. Both directories retain their raw measurements, environment, gzip latency arrays and incremental summaries. The original memory rows are historical evidence, not the accepted retention-count results.
+
+Each trial offered 1,000 operations/s for 60 measured seconds after 10 seconds warm-up. The workload runs the real optional pipeline behavior, generic operation recorder, four nested/parallel segment invocations (except root-only/control cases), a 4 KiB charged-record bound, periodic writer/retention and dashboard polling. It measures the general operation core through loopback HTTP/1.1, **not** the larger HTTP metadata projection. Trace uses a formatting/counting sink without disk I/O. Endpoint percentiles and allocations include the collocated client, Kestrel and test process; allocation is not recorder-only. GC was workstation, with eight reported processors and .NET 10.0.12. Exact engine versions: SQLite 3.53.3, SQL Server 16.0.4265.3, PostgreSQL 16.15.
+
+The full matrix spans the explicit pause/resume with validated environment/workload and hashes of reused raw artifacts. The memory rerun is a separate recording session after the counter correction. These measurements establish this fixture's behavior; machine load, data volume, queries, real logging sinks, network transport and workload complexity can change results. No universal overhead percentage or production throughput guarantee follows from them.
+
+### Endpoint and persistence results
+
+Values are medians of the three per-trial measurements; p95 columns are medians of trial p95 values, not population percentiles. Drops, unknowns and removals are sums across the three measured windows. Persisted/s is observed before unmeasured draining and can include earlier warm-up backlog. Retention removals are node-local observations, distinct from incoming diagnostic loss.
+
+| Provider | Case | p50 ms | p95 ms | Completed/s | Persisted/s | Diagnostic drops | Unknown commits | Retention removals | p95 delta vs omitted % |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| memory | omitted | 0.092 | 0.172 | 1000.0 | 0.0 | 0 | 0 | 0 | 0.0 |
+| memory | disabled | 0.110 | 0.199 | 1000.0 | 0.0 | 0 | 0 | 0 | 16.0 |
+| memory | empty | 0.112 | 0.209 | 1000.0 | 991.4 | 0 | 0 | 176867 | 21.3 |
+| memory | nested | 0.136 | 0.228 | 1000.0 | 994.9 | 0 | 0 | 176812 | 32.8 |
+| memory | nested-trace | 0.154 | 0.307 | 1000.0 | 995.1 | 0 | 0 | 176796 | 78.5 |
+| memory | saturated | 0.136 | 0.304 | 1000.0 | 0.8 | 179856 | 0 | 0 | 76.7 |
+| memory | nested-p010 | 0.112 | 0.256 | 1000.0 | 101.6 | 0 | 0 | 0 | 49.0 |
+| sqlite | omitted | 0.086 | 0.132 | 1000.0 | 0.0 | 0 | 0 | 0 | 0.0 |
+| sqlite | disabled | 0.101 | 0.150 | 1000.0 | 0.0 | 0 | 0 | 0 | 13.4 |
+| sqlite | empty | 0.107 | 0.170 | 1000.0 | 999.5 | 0 | 0 | 0 | 28.5 |
+| sqlite | nested | 0.138 | 0.262 | 1000.0 | 964.3 | 0 | 0 | 0 | 98.3 |
+| sqlite | nested-trace | 0.158 | 0.298 | 1000.0 | 913.1 | 0 | 0 | 0 | 125.8 |
+| sqlite | saturated | 0.131 | 0.190 | 1000.0 | 0.8 | 179848 | 0 | 0 | 43.6 |
+| sqlite | nested-p010 | 0.108 | 0.178 | 1000.0 | 101.5 | 0 | 0 | 0 | 34.9 |
+| sqlserver | omitted | 0.086 | 0.133 | 1000.0 | 0.0 | 0 | 0 | 0 | 0.0 |
+| sqlserver | disabled | 0.098 | 0.145 | 1000.0 | 0.0 | 0 | 0 | 0 | 9.7 |
+| sqlserver | empty | 0.130 | 0.459 | 1000.0 | 512.0 | 83961 | 0 | 0 | 246.0 |
+| sqlserver | nested | 0.305 | 2.312 | 1000.0 | 290.1 | 119376 | 0 | 0 | 1643.8 |
+| sqlserver | nested-trace | 0.170 | 0.392 | 1000.0 | 452.3 | 93163 | 0 | 0 | 195.7 |
+| sqlserver | saturated | 0.135 | 0.307 | 1000.0 | 0.9 | 179832 | 0 | 0 | 131.5 |
+| sqlserver | nested-p010 | 0.117 | 0.268 | 1000.0 | 101.5 | 0 | 0 | 0 | 102.1 |
+| postgres | omitted | 0.094 | 0.228 | 1000.0 | 0.0 | 0 | 0 | 0 | 0.0 |
+| postgres | disabled | 0.110 | 0.205 | 1000.0 | 0.0 | 0 | 0 | 0 | -10.3 |
+| postgres | empty | 0.114 | 0.236 | 1000.0 | 999.4 | 0 | 0 | 0 | 3.2 |
+| postgres | nested | 0.138 | 0.294 | 1000.0 | 512.0 | 79440 | 0 | 0 | 29.0 |
+| postgres | nested-trace | 0.156 | 0.328 | 1000.0 | 512.0 | 79440 | 0 | 0 | 43.6 |
+| postgres | saturated | 0.139 | 0.229 | 1000.0 | 0.9 | 179837 | 0 | 0 | 0.5 |
+| postgres | nested-p010 | 0.118 | 0.201 | 1000.0 | 103.0 | 0 | 0 | 0 | -11.9 |
+
+### Allocation, heap and queue observations
+
+Allocation per successful completion is gross process allocation during the window. Retained heap change is measured after full collection at the window boundaries; it can be negative and does not identify an individual operation's allocation. Peak queue includes queued and in-flight records. The age metric is the maximum sampled oldest age, not a percentile. Raw samples retain poll durations/statuses and full before/after/post-drain health.
+
+| Provider | Case | Alloc KiB/completion | Alloc delta % | Heap change MiB | Peak queue records | Peak queue MiB | Peak oldest age ms | End queue (median) | Poll failures (sum) |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| memory | omitted | 10.17 | 0.0 | -0.19 | 0 | 0.00 | 0.0 | 0 | 180 |
+| memory | disabled | 16.72 | 64.5 | 0.33 | 0 | 0.00 | 0.0 | 0 | 180 |
+| memory | empty | 39.27 | 286.3 | 0.55 | 889 | 1.82 | 888.9 | 538 | 0 |
+| memory | nested | 54.32 | 434.3 | 0.76 | 1000 | 3.14 | 1000.4 | 554 | 0 |
+| memory | nested-trace | 58.27 | 473.2 | 0.22 | 1000 | 3.14 | 999.6 | 556 | 0 |
+| memory | saturated | 31.88 | 213.6 | -0.28 | 8 | 0.03 | 9091.8 | 8 | 0 |
+| memory | nested-p010 | 25.54 | 151.2 | 9.92 | 45 | 0.14 | 389.9 | 3 | 0 |
+| sqlite | omitted | 10.17 | 0.0 | -1.15 | 0 | 0.00 | 0.0 | 0 | 180 |
+| sqlite | disabled | 16.72 | 64.5 | 0.39 | 0 | 0.00 | 0.0 | 0 | 180 |
+| sqlite | empty | 72.58 | 613.9 | 0.92 | 1058 | 2.16 | 1057.6 | 1041 | 0 |
+| sqlite | nested | 150.17 | 1377.0 | 5.79 | 5460 | 17.15 | 5460.6 | 3163 | 0 |
+| sqlite | nested-trace | 147.53 | 1351.1 | 6.66 | 7514 | 23.60 | 7510.5 | 6629 | 0 |
+| sqlite | saturated | 32.78 | 222.5 | 0.49 | 8 | 0.03 | 9993.5 | 8 | 0 |
+| sqlite | nested-p010 | 34.07 | 235.2 | -1.89 | 124 | 0.39 | 1136.1 | 96 | 0 |
+| sqlserver | omitted | 10.17 | 0.0 | -2.10 | 0 | 0.00 | 0.0 | 0 | 180 |
+| sqlserver | disabled | 16.72 | 64.5 | 0.40 | 0 | 0.00 | 0.0 | 0 | 180 |
+| sqlserver | empty | 47.49 | 367.1 | 0.43 | 8192 | 16.75 | 20558.8 | 8012 | 8 |
+| sqlserver | nested | 65.44 | 543.7 | 2.21 | 8192 | 25.73 | 31056.9 | 8192 | 6 |
+| sqlserver | nested-trace | 87.65 | 762.1 | 6.01 | 8192 | 25.73 | 20612.5 | 7988 | 6 |
+| sqlserver | saturated | 33.12 | 225.8 | -3.52 | 8 | 0.03 | 10002.0 | 8 | 0 |
+| sqlserver | nested-p010 | 33.83 | 232.8 | -1.72 | 154 | 0.48 | 1283.1 | 93 | 0 |
+| postgres | omitted | 10.17 | 0.0 | -4.15 | 0 | 0.00 | 0.0 | 0 | 180 |
+| postgres | disabled | 16.72 | 64.5 | 0.39 | 0 | 0.00 | 0.0 | 0 | 180 |
+| postgres | empty | 73.07 | 618.8 | 10.14 | 1131 | 2.31 | 1128.6 | 1041 | 0 |
+| postgres | nested | 95.37 | 838.1 | 21.51 | 8192 | 25.73 | 15983.0 | 8192 | 0 |
+| postgres | nested-trace | 99.36 | 877.4 | 23.96 | 8192 | 25.73 | 16025.2 | 8192 | 0 |
+| postgres | saturated | 32.44 | 219.1 | -3.39 | 8 | 0.03 | 10009.9 | 8 | 0 |
+| postgres | nested-p010 | 33.98 | 234.2 | -9.55 | 108 | 0.34 | 1064.3 | 5 | 0 |
+
+### Interpretation and explicit adjustment
+
+- All accepted trials preserved application responses: zero failed/shed offers and zero capture faults. Unknown persistence outcomes were zero in these runs; correctness tests separately exercise unknown commits and cancellation-ignoring providers.
+- Default nested memory capture kept up with the offered rate without incoming drops. Its 10,000-root retention cap evicted older history; the corrected counter reports those removals on subsequent successful maintenance observations. An end-of-window queue larger than one batch also triggers the conservative sampling experiment, even when the writer is keeping up.
+- SQLite nested capture produced variable backlog; SQL Server and PostgreSQL nested capture could not sustain 1,000 stored profiles/s with these defaults. Their bounded queues eventually dropped incoming diagnostics while application responses continued. This is an observed persistence limit, not evidence that every workload or deployment has that limit.
+- A **tested explicit** configuration is `WithRequestProfiling(requests => requests.WithSampling(sampling => sampling.Probability(0.1)))`. The fixture exercises that prepared head-sampling policy at generic-owner admission. In all providers' three adjustment trials it recorded no drops or unknown commits and ended below one batch of queued work. Request sampling applies to eligible HTTP requests in applications; manual operations are not automatically HTTP sampled. The feature default remains AllRequests.
+- Saturation cases deliberately used eight queued records, eight-record batches and a ten-second flush interval. They demonstrate bounded overflow and visible loss rather than sustainable throughput.
+- Control-case dashboard polls returned 503 (profiling unavailable). Enabled-case failures, including bounded/too-large analyses, remain visible in raw statuses and the table. At 10% sampling, all adjustment trials had zero polling failures. Dashboard reads do not force a flush.
+- Lifecycle Trace formatting was exercised and counted. Real file/network logging sinks were not measured. SQL request profiling payloads, TLS, remote network latency and application-specific heavy work require their own capacity tests.
+
+Scheduler ceilings are proven independently of database speed by `OperationProfilingWriterTests`, including `DefaultTick_AtMostEight512RecordBatches_LeavesLaterWorkQueued`, fixed arrival watermarks, next-batch time budget, ignored timeout ownership, retries and bounded shutdown. The passing 341-test focused Common log includes these checks and the new retention reporting regressions. Eight starts of 512 records are a scheduling ceiling; this report never treats 4,096 records/s as observed throughput.
+
+Reproduce the tables with `python3 plan/profiling/report-capacity.py` after preserving both output directories under `plan/evidence/profiling-runtime-and-operations-1/phase-12/`. Canonical workloads are opt-in; smoke mode is not acceptance evidence. The benchmark supports explicit validated provider subsets and resume of matching completed artifacts, with interrupted trials run again.
+
+Raw trial files and build/test logs remain local under the user-ignored `plan/evidence/**`; the harness, report generator and this results summary are versioned.
+
+### TASK-054 — final workspace checks
+
+- `Solution - build`: passed at final regression-repair commit `216ec9fc6`, zero warnings/errors (2 minutes 28 seconds).
+- `Solution - tests (unit)`: 5,531 passed, zero failures, 18 existing skips (four opt-in serializer benchmarks and 14 Windows-only checks). The complete task passed after the scheduler/storage repairs; after the isolated Cosmos repair the affected Infrastructure unit suite was repeated: 428 passed, zero failures, 14 Windows-only skips.
+- `Solution - tests (integration)`: 1,622 passed, zero failures: Application 284, Domain 43, Infrastructure 1,295. Infrastructure reports 128 skips: 121 legacy Cosmos checks whose existing shared fixture intentionally does not start its Cosmos container, six existing unsupported InMemory EF cases, and one opt-in capacity test already passed separately. The separate real Cosmos document-store fixture and all three profiling database-engine suites passed.
+- Source/project dependencies retain the Onion boundary. Active profiling APIs use Segment/Marker and final Runtime names; old names occur only in migration documentation. No production package or unrelated feature alias was added. Failed/cancelled attempts are preserved separately.
+
+Final logs remain local as `phase-12/solution-build.log`, `solution-unit.log`, `solution-integration.log` and `infrastructure-unit-final.log`. TASK-054 is complete; TASK-055 and Phase 13 remain pending.
+
+### Final feature acceptance — 2026-10-09 UTC
+
+All requirement rows below are covered by the passing workspace/focused suites and the phase-specific evidence above. The database operation contract and shared analysis suites execute on SQLite, SQL Server and PostgreSQL. The Phase 12 capacity report records the accepted matrix and scope limitations; it does not replace correctness assertions. Phase 13 verifies the final WeatherFiesta host integration separately.
+
+| Requirement | Passing evidence | Accepted behavior |
+| --- | --- | --- |
+| REQ-001 | ProfilingRegistrationTests; OperationProfilingDashboardTests; ProfilingDashboardEndpointsTests | One registration and three dashboard views. |
+| REQ-002 | OperationProfilerTests; OperationProfilingHelpersTests; OperationProfilingFailureIsolationTests | Independent non-HTTP ownership and fault containment. |
+| REQ-003 | ProfilingRegistrationTests; RequestProfilingInjectionTests | Explicit subfeatures, dependency validation and ordering. |
+| REQ-004 | RequestProfilingSamplingTests; RequestProfilingMiddlewareTests | AllRequests admission without endpoint opt-in. |
+| REQ-005 | OperationProfilerTests; OperationProfilingMetadataTests; OperationProfilingSegmentTests | Stable IDs/keys, immutable typed dimensions and structured paths. |
+| REQ-006 | OperationProfilingSegmentTests; OperationProfilingWallTimeTests; OperationProfilingHelpersTests | Repeated/nested/parallel arithmetic and branch restoration. |
+| REQ-007 | RequestProfilingMiddlewareTests; OperationProfilingHttpMetadataTests | Lifecycle/status/header, handled errors, response quality and body adapters. |
+| REQ-008 | OperationProfilingWriterTests; OperationProfilingStoreContractTests; EntityFrameworkOperationProfilingContractTestsBase | Bounded periodic queue, atomic providers, leases and retries. |
+| REQ-009 | OperationProfilingQueryTests; OperationProfilingDashboardTests; Phase 10 browser evidence | Slow/Recent/By count, shared filters and coalesced refresh. |
+| REQ-010 | OperationProfilingWallTimeTests; OperationProfilingDashboardTests; Phase 10 browser evidence | Exclusive wall-time, parallel overlap, partial coverage and bars. |
+| REQ-011 | OperationRuntimeCorrelationTests; ProfilingWorkflowIntegrationTests | Exact process identity and observed interval, bidirectional navigation. |
+| REQ-012 | ProfilingAnalysisContractTests; OperationProfilingQueryTests; OperationProfilingDashboardTests | Exact ID, full counts, weighted statistics and bounded selections. |
+| REQ-013 | OperationProfilingValueTests; OperationProfilerTests; ProfilingAnalysisContractTests | Literal-Z UTC serialization and monotonic elapsed arithmetic. |
+| REQ-014 | OperationProfilingMetadataTests; OperationProfilingValueTests; OperationProfilingHttpMetadataTests | Typed dimensions/reducers and bounded adapter fields. |
+| REQ-015 | OperationProfilingWriterTests; ProfilingClearContractTests; OperationProfilingDashboardTests; Phase 12 capacity report | Drop/unknown/retention/freshness accounting, including inline memory evictions. |
+| REQ-016 | RequestProfilingSamplingTests; RequestProfilingMiddlewareTests | Path default, prefix boundaries and blacklist wildcard rules. |
+| REQ-017 | OperationProfilingLoggingTests; OperationProfilingFailureIsolationTests | Trace lifecycle, filtered allocation and throwing-logger containment. |
+| REQ-018 | RequestProfilingSamplingTests; Phase 12 sampled trials | AllRequests, probability and node-local rate limit. |
+| REQ-019 | JobProfilingBehaviorTests; PipelineProfilingBehaviorTests; OrchestrationProfilingBehaviorTests | Optional feature behavior participation and exactly-once business execution. |
+| REQ-020 | ProfilingRegistrationTests; RequestProfilingInjectionTests; JobProfilingBehaviorTests; PipelineProfilingBehaviorTests; OrchestrationProfilingBehaviorTests | Absent/disabled DI works without hidden registrations. |
+| REQ-021 | ProfilingClearContractTests; ProfilingWriterLeaseTests; EntityFrameworkOperationProfilingContractTestsBase | Bounded fenced clear/ranges, independent writers, skew and restart recovery. |
+| REQ-022 | OperationProfilerTests; ProfilingBroadcastServiceTests; ProfilingControlServiceTests; ProfilingCollectorTests | Cached executing-node identity and retained Runtime Broadcast semantics. |
+| REQ-023 | OperationProfilingSegmentTests; ProfilingAnalysisContractTests; EntityFrameworkOperationProfilingContractTestsBase | Case-insensitive canonical keys with original display casing across providers. |
+| REQ-024 | OperationProfilingCleanupTests; OperationProfilingFailureIsolationTests; RequestProfilingMiddlewareTests | Expiry and shutdown release capture while business work continues. |
+
+TEST-001–TEST-018 are covered by the named correctness/example suites and Phase 10 browser proof. TEST-019 is covered by the accepted 84-trial matrix and controlled-time writer tests. TEST-020 is covered by the complete MkDocs/API build below. TEST-021 remains owned by Phase 13 until complete-application tests and browser verification pass. Runtime archive version 2 roundtrip/remapping, version 1 rejection before mutation, JSON/Perfetto, measurement/evaluation/custom metric/probe and console regressions pass in the workspace unit task. No new production profiling package, compatibility alias, occurrence trace or custom-client endpoint was introduced.
+
+### TASK-055 — documentation and site acceptance
+
+`pwsh -File docs/site/scripts/build-pages.ps1` passed through the strict native-command wrapper. Docker MkDocs synchronized 62 guides and built without warnings. The Release API build staged 65 assemblies and reported five pre-existing unrelated XML-tag warnings (EnumerationValueObject, LocationOptions, ICosmosSqlProvider and CosmosSqlGenericRepository); no profiling warning. DocFX finished with zero warnings/errors and generated 25,683 symbol index entries. The generated site landing, Profiling guide, API landing and IOperationProfiler/ProfilingBuilderContext pages exist; all their relative links resolve. Plan links are rewritten to repository blob links by the documentation synchronization script. Generated namespace parent links without pages are now kept as plain labels by a tested post-generation script integrated into the build. No site was published.
+
+TASK-051–TASK-055 and all feature acceptance requirements are complete. Phase 13 (TASK-058–TASK-059) remains pending for final WeatherFiesta host/browser verification. Raw stress files and logs remain local under the user-ignored evidence path; the versioned report generator and capacity tables preserve reviewable findings.

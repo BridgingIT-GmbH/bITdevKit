@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core.Dashboard;
 
 using System.Globalization;
+using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Models;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Infrastructure;
@@ -50,7 +51,48 @@ public sealed class CoreDashboard(DashboardEndpointsOptions options) : Dashboard
                 .Get("/suggestions", SearchCitySuggestionsAsync)
                     .Name("_bdk.Dashboard.WeatherFiesta.Core.CitySuggestions")
                 .Post("/add", AddCityAsync)
-                    .Name("_bdk.Dashboard.WeatherFiesta.Core.CityAdd");
+                    .Name("_bdk.Dashboard.WeatherFiesta.Core.CityAdd")
+            .Page("core-profiling", "/app/core/profiling")
+                .Title("Profiling Lab")
+                .Icon("speedometer2")
+                .Order(20)
+                .Description("Run stored-weather reviews and relate operations to Runtime observations")
+                .Razor<Pages.ProfilingLab>()
+                .Content<Pages.ProfilingLabContent>()
+                .Post("/review", ReviewCitiesAsync)
+                    .Name("_bdk.Dashboard.WeatherFiesta.Core.ProfilingReview")
+                .Post("/jobs/{scenario}", DispatchProfilingJobAsync)
+                    .Name("_bdk.Dashboard.WeatherFiesta.Core.ProfilingJob");
+    }
+
+    private static async Task<IResult> ReviewCitiesAsync(
+        [FromServices] WeatherCityReviewService reviews,
+        [FromBody] WeatherProfilingReviewRequest request,
+        HttpContext context,
+        CancellationToken cancellationToken)
+    {
+        // This explicit workload is independent of the excluded dashboard HTTP request.
+        using var boundary = context.RequestServices.GetService<IOperationProfiler>().BeginSafeExecutionBoundary();
+        return (await reviews.ReviewAsync(request.CityLimit, request.Repetitions, "dashboard", cancellationToken)).MapHttpOk();
+    }
+
+    private static async Task<IResult> DispatchProfilingJobAsync(
+        [FromServices] IJobSchedulerService scheduler,
+        [FromRoute] string scenario,
+        CancellationToken cancellationToken
+    )
+    {
+        var jobName = scenario switch
+        {
+            "stress" => "core_profiling_stress",
+            "orchestration" => "core_hello_world_orchestration",
+            _ => null,
+        };
+        return jobName is null
+            ? Results.BadRequest("Unknown profiling scenario.")
+            : (
+                await scheduler.DispatchAsync(jobName, cancellationToken: cancellationToken)
+            ).MapHttpOk();
     }
 
     private static async ValueTask<DashboardPageCard> GetOverviewCardAsync(DashboardPageCardContext card)

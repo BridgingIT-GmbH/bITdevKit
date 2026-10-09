@@ -1,0 +1,18 @@
+@using BridgingIT.DevKit.Common
+@using Microsoft.Extensions.Options
+@using ProfilingDashboard = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@inherits DashboardContentSlice
+@{
+    var control = Dashboard.Service<IRuntimeProfilingControlService>();
+    var runtime = control is null ? null : (await control.GetStatusAsync(Dashboard.RequestAborted)).Value;
+    var health = Dashboard.Service<IOperationProfilingHealthSource>()?.GetSnapshot();
+    var node = Dashboard.Service<IProfilingNodeIdentityProvider>()?.GetNode();
+    var options = Dashboard.RequiredService<DashboardEndpointsOptions>();
+    var nodePath = ProfilingDashboard.BuildOperationsPath(options) + "?nodeId=" + node?.Identity.Id;
+}
+<div class="row g-2 mb-2">
+    <div class="col-12 col-lg-4"><div class="card h-100"><div class="card-body py-3"><div class="small text-muted">Runtime session</div><div class="fw-semibold">@(runtime?.Session?.Name ?? (runtime?.Available == true ? "Ready to start" : "Unavailable"))</div><div class="small text-muted">@(runtime?.Session?.State.ToString() ?? "No active session")</div></div></div></div>
+    <div class="col-12 col-lg-4"><div class="card h-100"><div class="card-body py-3"><div class="small text-muted">Operation persistence</div><div class="fw-semibold">@(health?.PersistedOperations ?? 0) persisted · @(health?.QueueRecords ?? 0) pending</div><div class="small text-muted">@(health?.DroppedOperations ?? 0) lost · @(health?.ActiveOperations ?? 0) active</div></div></div></div>
+    <div class="col-12 col-lg-4"><div class="card h-100"><div class="card-body py-3"><div class="small text-muted">Executing node</div><div class="fw-semibold text-break">@(node?.HostName ?? "Unavailable") · PID @(node?.ProcessId.ToString() ?? "-")</div>@if (node is not null) { <a class="small text-break" href="@nodePath">@node.Identity.Id</a> }</div></div></div></div>
+</div>
+<p class="small text-muted">Observed @DateTimeOffset.UtcNow.UtcDateTime.ToString("O", CultureInfo.InvariantCulture). History is process-local and follows the normal periodic writer. Refresh does not flush pending operations.</p>

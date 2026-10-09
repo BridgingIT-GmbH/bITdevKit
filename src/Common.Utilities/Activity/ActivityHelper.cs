@@ -26,6 +26,7 @@ public static class ActivityHelper
     /// <param name="throwException">Whether to throw an exception if the operation fails.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns>A task representing the asynchronous operation.</returns>
+    /// <example><code>await Activity.Current.StartActvity("publish", (_, token) => PublishAsync(token));</code></example>
     public static async Task StartActvity(
         this Activity source,
         string operationName,
@@ -41,6 +42,7 @@ public static class ActivityHelper
         if (source?.Source is null)
         {
             await operation(source, cancellationToken);
+            return;
         }
 
         await source.Source.StartActvity(operationName,

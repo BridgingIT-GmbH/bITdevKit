@@ -8,7 +8,9 @@ namespace BridgingIT.DevKit.Examples.WeatherFiesta.IntegrationTests.Presentation
 using System.Text.Json;
 using BridgingIT.DevKit.Application.Jobs;
 using BridgingIT.DevKit.Application.Messaging;
+using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
+using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
@@ -140,6 +142,8 @@ public sealed class ProfilingEndpointsTests(
     {
         var routes = new[]
         {
+            "/app/core/profiling",
+            "/app/core/profiling/content",
             "/profiling/runtime",
             "/profiling/runtime/content",
             "/profiling/runtime/status",
@@ -333,6 +337,248 @@ public sealed class ProfilingEndpointsTests(
         {
             (await control.StopAsync()).IsSuccess.ShouldBeTrue();
         }
+    }
+
+    /// <summary>The dashboard workload owns non-HTTP operations and bounded concurrent requests use independent database scopes.</summary>
+    [Fact]
+    public async Task ProfilingLab_ReviewsStoredWeather_WithRepeatedNestedSegments()
+    {
+        using var page = await SendDashboardAsync(
+            this.client,
+            "/_bdk/dashboard/app/core/profiling",
+            "admin"
+        );
+        page.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await page.Content.ReadAsStringAsync()).ShouldContain("Run city review");
+        var responses = await Task.WhenAll(
+            Enumerable.Range(0, 4).Select(_ => this.SendReviewAsync(true))
+        );
+        try
+        {
+            var ids = new List<Guid>();
+            foreach (var response in responses)
+            {
+                response.StatusCode.ShouldBe(HttpStatusCode.OK);
+                var summary = await response.Content.ReadFromJsonAsync<WeatherCityReviewSummary>();
+                summary.CityCount.ShouldBe(2);
+                (summary.WeatherReadCount + summary.MissingWeatherCount).ShouldBe(4);
+                var record = await this.WaitForRecordAsync(summary.OperationId.Value);
+                ids.Add(record.Id);
+                record.Key.ShouldBe("weather:city-review");
+                record.Kind.ShouldBe("Service");
+                record.Http.ShouldBeNull();
+                record
+                    .Segments.Single(value => value.Key == "ReadWeather")
+                    .Statistics.Count.ShouldBe(4);
+                record.Segments.ShouldContain(value =>
+                    value.Key.StartsWith("requester:") && value.Path.Components.Count == 2
+                );
+                record.Segments.ShouldContain(value =>
+                    value.Key.StartsWith("activeentity:") && value.Path.Components.Count == 3
+                );
+            }
+
+            ids.Distinct().Count().ShouldBe(4);
+        }
+        finally
+        {
+            foreach (var response in responses)
+            {
+                response.Dispose();
+            }
+        }
+    }
+
+    /// <summary>The API adapter keeps the middleware's ID/HTTP metadata while enriching the same core operation.</summary>
+    [Fact]
+    public async Task ProfilingReview_HttpAdapter_JoinsMiddlewareAndRejectsInvalidLimits()
+    {
+        using var response = await this.SendReviewAsync(false);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var summary = await response.Content.ReadFromJsonAsync<WeatherCityReviewSummary>();
+        summary.OperationId.ShouldBe(GetId(response));
+        var record = await this.WaitForRecordAsync(GetId(response));
+        record.Key.ShouldBe("weather:city-review");
+        record.Kind.ShouldBe("HttpRequest");
+        record.Http.Method.ShouldBe("POST");
+        record.Http.StatusCode.ShouldBe(200);
+        record.Dimensions.ShouldContain(value =>
+            value.Key == "source" && value.Value.Scalar == "api"
+        );
+        record.Segments.Single(value => value.Key == "ReadWeather").Statistics.Count.ShouldBe(4);
+        record
+            .Segments.Single(value => value.Key == "ReadWeather")
+            .Path.Components.ShouldBe(["weather:city-review", "ReadWeather"]);
+
+        using var invalid = await this.client.PostAsJsonAsync(
+            "/api/core/profiling/review",
+            new WeatherProfilingReviewRequest(11, 1)
+        );
+        invalid.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        (await this.WaitForRecordAsync(GetId(invalid))).Segments.ShouldBeEmpty();
+    }
+
+    /// <summary>Dashboard POST actions retain administrator authorization and only accept the named background scenarios.</summary>
+    [Fact]
+    public async Task ProfilingLab_PostActions_AreAuthorizedAndAllowlisted()
+    {
+        foreach (var suffix in new[] { "/review", "/jobs/stress", "/jobs/orchestration" })
+        {
+            foreach (var role in new[] { "", "user" })
+            {
+                using var request = new HttpRequestMessage(
+                    HttpMethod.Post,
+                    "/_bdk/dashboard/app/core/profiling" + suffix
+                );
+                request.Content = JsonContent.Create(new WeatherProfilingReviewRequest());
+                if (role.Length > 0)
+                {
+                    request.Headers.Add("X-Test-Dashboard-Role", role);
+                }
+
+                using var response = await this.client.SendAsync(request);
+                response.StatusCode.ShouldBe(
+                    role.Length == 0 ? HttpStatusCode.Unauthorized : HttpStatusCode.Forbidden
+                );
+            }
+        }
+
+        using var unknown = new HttpRequestMessage(
+            HttpMethod.Post,
+            "/_bdk/dashboard/app/core/profiling/jobs/arbitrary"
+        );
+        unknown.Headers.Add("X-Test-Dashboard-Role", "admin");
+        unknown.Content = JsonContent.Create(new { });
+        using var rejected = await this.client.SendAsync(unknown);
+        rejected.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+    }
+
+    /// <summary>The real ingestion pipeline captures its steps beneath an independent service operation.</summary>
+    [Fact]
+    public async Task WeatherIngestion_ProfilesPipelineSteps()
+    {
+        using var scope = this.host.Services.CreateScope();
+        var profiling = scope.ServiceProvider.GetRequiredService<IOperationProfiler>();
+        using var operation = profiling.BeginOperation(
+            "weather:ingestion-test",
+            OperationProfilingKind.Service
+        );
+        var city = (
+            await City.FindOneAsync(
+                CityId.Create(TestData.LondonCityGuid),
+                cancellationToken: default
+            )
+        ).Value;
+        factory
+            .WeatherAgent.IngestWeatherAsync(
+                Arg.Any<string>(),
+                Arg.Any<double>(),
+                Arg.Any<double>(),
+                Arg.Any<CancellationToken>()
+            )
+            .Returns(
+                Result<WeatherIngestionResult>.Success(
+                    new WeatherIngestionResult
+                    {
+                        ProviderName = "fixture",
+                        ProviderRetrievedAt = DateTimeOffset.UtcNow,
+                        CurrentWeather = new CurrentWeatherData
+                        {
+                            TemperatureCelsius = 12,
+                            RetrievedAt = DateTime.UtcNow,
+                        },
+                        Forecasts = [],
+                    }
+                )
+            );
+        var pipeline = scope
+            .ServiceProvider.GetRequiredService<IPipelineFactory>()
+            .Create<WeatherIngestionPipeline, WeatherIngestionContext>();
+        var result = await pipeline.ExecuteAsync(
+            new WeatherIngestionContext(city),
+            (PipelineExecutionOptions)null
+        );
+        result.IsSuccess.ShouldBeTrue();
+        operation.Complete();
+        operation.Dispose();
+        var record = await this.WaitForRecordAsync(operation.Id);
+        record.Segments.ShouldContain(segment => segment.Key.StartsWith("pipeline:"));
+        record.Segments.ShouldContain(segment => segment.Key.StartsWith("step:"));
+    }
+
+    /// <summary>The Core scheduler's real cleanup job owns operation capture through its registered behavior.</summary>
+    [Fact]
+    public async Task JobScheduler_ProfilesRegisteredJobBehavior()
+    {
+        using var scope = this.host.Services.CreateScope();
+        var result = await scope
+            .ServiceProvider.GetRequiredService<IJobSchedulerService>()
+            .DispatchAndWaitAsync("core_cleanup");
+        result.IsSuccess.ShouldBeTrue();
+        var queries = this.host.Services.GetRequiredService<IOperationProfilingQueryService>();
+        OperationProfilingRecord record = null;
+        await WaitUntilAsync(async () =>
+        {
+            record = (
+                await queries.QueryAsync(new() { Key = "job:core_cleanup" })
+            ).Value.Records.SingleOrDefault();
+            return record is not null;
+        });
+        record.Kind.ShouldBe("Job");
+        record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
+        record.Http.ShouldBeNull();
+    }
+
+    /// <summary>The registered durable hello-world orchestration captures actions without an HTTP owner.</summary>
+    [Fact]
+    public async Task Orchestration_ProfilesActionsThroughRegisteredBehavior()
+    {
+        using var scope = this.host.Services.CreateScope();
+        var result = await scope
+            .ServiceProvider.GetRequiredService<IOrchestrationService>()
+            .ExecuteAsync<WeatherHelloWorldOrchestration, WeatherHelloWorldOrchestrationData>(
+                new()
+                {
+                    Greeting = "Profiling integration",
+                    Source = "integration",
+                    RequestedUtc = DateTimeOffset.UtcNow,
+                }
+            );
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Status.ShouldBe(OrchestrationStatus.Completed.ToString());
+        var queries = this.host.Services.GetRequiredService<IOperationProfilingQueryService>();
+        OperationProfilingRecord record = null;
+        await WaitUntilAsync(async () =>
+        {
+            record = (
+                await queries.QueryAsync(
+                    new()
+                    {
+                        Kind = "Orchestration",
+                        Outcomes = Enum.GetValues<OperationProfilingOutcome>(),
+                    }
+                )
+            ).Value.Records.SingleOrDefault();
+            return record is not null;
+        });
+        record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
+        record.Segments.ShouldNotBeEmpty();
+        record.Http.ShouldBeNull();
+    }
+
+    private Task<HttpResponseMessage> SendReviewAsync(bool dashboard)
+    {
+        var request = new HttpRequestMessage(
+            HttpMethod.Post,
+            dashboard ? "/_bdk/dashboard/app/core/profiling/review" : "/api/core/profiling/review"
+        );
+        request.Content = JsonContent.Create(new WeatherProfilingReviewRequest(2, 2));
+        if (dashboard)
+        {
+            request.Headers.Add("X-Test-Dashboard-Role", "admin");
+        }
+
+        return SendAsync(this.client, request);
     }
 
     /// <summary>Creates the full application with only test authentication, bounded workload and explicit profiling enablement overrides.</summary>

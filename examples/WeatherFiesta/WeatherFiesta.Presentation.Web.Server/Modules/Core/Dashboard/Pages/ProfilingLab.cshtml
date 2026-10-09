@@ -1,0 +1,154 @@
+@using BridgingIT.DevKit.Common
+@using ProfilingDashboard = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@inherits DashboardPageSlice
+@{
+    var options = Dashboard.RequiredService<DashboardEndpointsOptions>();
+    var profiling = Dashboard.Service<ProfilingOptions>() ?? new ProfilingOptions();
+    var pagePath = Dashboard.Url("core-profiling");
+    var contentPath = Dashboard.Url("core-profiling", "content");
+    var runtimePath = ProfilingDashboard.BuildProfilingPath(options);
+    var operationsPath = ProfilingDashboard.BuildOperationsPath(options);
+    var requestsPath = ProfilingDashboard.BuildOperationsPath(options, true);
+    var jobsPath = DashboardPath.Combine(options.GroupPath, "/jobs");
+}
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-3 border-bottom">
+    <div><h1 class="h4 mb-1">Profiling Lab</h1><p class="small text-muted mb-0">Explore stored weather, background work, and the process that runs them.</p></div>
+    <nav class="d-flex flex-wrap gap-2" aria-label="Profiling views">
+        <a class="btn btn-outline-secondary btn-sm" href="@runtimePath">Runtime</a>
+        <a class="btn btn-outline-secondary btn-sm" href="@(operationsPath + "?key=weather%3Acity-review&view=Recent")">City reviews</a>
+        <a class="btn btn-outline-secondary btn-sm" href="@operationsPath">All operations</a>
+        <a class="btn btn-outline-secondary btn-sm" href="@requestsPath">Requests</a>
+    </nav>
+</div>
+@if (!profiling.OperationEnabled)
+{
+    <div class="alert alert-warning">Operation Profiling is disabled. Enable Profiling to capture these workloads.</div>
+}
+<div class="d-flex flex-wrap gap-2 align-items-center mb-2">
+    <span id="profiling-lab-refresh-status" class="small text-muted" aria-live="polite"></span>
+    <label for="profiling-lab-refresh-interval" class="small ms-auto">Status refresh</label>
+    <select id="profiling-lab-refresh-interval" class="form-select form-select-sm" style="width:7rem"><option value="">Off</option><option value="5000" selected>5 sec</option><option value="15000">15 sec</option></select>
+    <button id="profiling-lab-refresh-now" class="btn btn-outline-secondary btn-sm" type="button">Refresh</button>
+</div>
+<div id="profiling-lab-content"></div>
+<div class="row g-3 mt-1">
+    <section class="col-12 col-xl-7" aria-labelledby="review-heading">
+        <div class="card h-100"><div class="card-body">
+            <h2 id="review-heading" class="h5">Review stored city weather</h2>
+            <p class="small text-muted">Read cities and their current weather without an external API call or changing records. Repeated reads aggregate under the same segment key.</p>
+            <form id="profiling-lab-review" class="row g-2">
+                <div class="col-6 col-md-3"><label class="form-label small" for="lab-cities">City limit</label><input id="lab-cities" class="form-control form-control-sm" type="number" min="1" max="10" value="3" required /></div>
+                <div class="col-6 col-md-3"><label class="form-label small" for="lab-repetitions">Read passes</label><input id="lab-repetitions" class="form-control form-control-sm" type="number" min="1" max="5" value="2" required /></div>
+                <div class="col-6 col-md-3"><label class="form-label small" for="lab-count">Operations</label><input id="lab-count" class="form-control form-control-sm" type="number" min="1" max="10" value="1" required /></div>
+                <div class="col-6 col-md-3"><label class="form-label small" for="lab-concurrency">Concurrency</label><input id="lab-concurrency" class="form-control form-control-sm" type="number" min="1" max="4" value="1" required /></div>
+                <div class="col-12 d-flex flex-wrap gap-2 mt-3">
+                    <button id="lab-run" class="btn btn-primary btn-sm" type="submit" disabled="@(!profiling.OperationEnabled)">Run city review</button>
+                    <button id="lab-cancel" class="btn btn-outline-secondary btn-sm" type="button" disabled>Cancel running reviews</button>
+                </div>
+            </form>
+            <p class="small text-muted mt-3 mb-2">Group <code>weather:city-review</code> by <code>cityLimit</code> and <code>repetitions</code>. Start with one operation, then compare a bounded concurrent burst. Each operation has its own database scope.</p>
+            <div id="lab-review-status" class="small" role="status" aria-live="polite"></div>
+            <ol id="lab-results" class="small ps-3 mt-2"></ol>
+            <p class="small text-muted mb-0">Records appear after periodic persistence. Missing weather is counted and marks its read segment as failed. The review can still complete with the available cities.</p>
+        </div></div>
+    </section>
+    <section class="col-12 col-xl-5" aria-labelledby="runtime-heading">
+        <div class="card h-100"><div class="card-body">
+            <h2 id="runtime-heading" class="h5">Observe the Runtime</h2>
+            <p class="small text-muted">Start a two-minute session before a workload. Take a baseline snapshot, run reviews or a background job, then take another snapshot.</p>
+            <div class="d-flex flex-wrap gap-2 mb-3">
+                <button class="btn btn-outline-primary btn-sm lab-runtime" data-action="start" type="button" disabled="@(!profiling.RuntimeEnabled)">Start Runtime session</button>
+                <button class="btn btn-outline-secondary btn-sm lab-runtime" data-action="snapshot" type="button" disabled="@(!profiling.RuntimeEnabled)">Take snapshot</button>
+                <button class="btn btn-outline-secondary btn-sm lab-runtime" data-action="stop" type="button" disabled="@(!profiling.RuntimeEnabled)">Stop session</button>
+            </div>
+            <div id="lab-runtime-status" class="small mb-3" role="status" aria-live="polite"></div>
+            <p class="small text-muted">Open a review's operation detail for overlapping Runtime observations on the same node. Process CPU and memory describe the whole process.</p>
+            <hr />
+            <h3 class="h6">Follow background work</h3>
+            <p class="small text-muted">The hello-world orchestration records actions and publishes a message and a queue message. Each consumer records its own operation and executing node.</p>
+            <button class="btn btn-outline-primary btn-sm lab-job" data-scenario="orchestration" type="button" disabled="@(!profiling.OperationEnabled)">Dispatch orchestration</button>
+            <p class="small text-muted mt-3">The manual stress job generates CPU, allocation, and GC pressure for about 20 seconds. Run it when that load is intended.</p>
+            <button class="btn btn-outline-warning btn-sm lab-job" data-scenario="stress" type="button" disabled="@(!profiling.OperationEnabled)">Dispatch Runtime stress job</button>
+            <a class="btn btn-link btn-sm" href="@jobsPath">Job history</a>
+            <div id="lab-job-status" class="small mt-2" role="status" aria-live="polite"></div>
+        </div></div>
+    </section>
+</div>
+<details class="card card-body mt-3"><summary>Try the HTTP adapter</summary>
+    <p class="small mt-2">With an administrator API token, send <code>POST /api/core/profiling/review</code> with <code>{"cityLimit":3,"repetitions":2}</code>. Find its <code>X-Request-Profiling-Id</code> in Requests for status, response bytes, and the same segments.</p>
+    <p class="small mb-0">Dashboard actions are excluded from automatic HTTP capture and demonstrate independent service operations. Ingestion jobs also capture pipeline steps. Runtime, operation, and request history are separate views.</p>
+</details>
+<script>
+(() => {
+    const pageUrl = @(new HtmlString(System.Text.Json.JsonSerializer.Serialize(pagePath)));
+    const runtimeUrl = @(new HtmlString(System.Text.Json.JsonSerializer.Serialize(runtimePath)));
+    const operationsUrl = @(new HtmlString(System.Text.Json.JsonSerializer.Serialize(operationsPath)));
+    const refresher = window.bdkDashboard.createRefresher({ contentUrl: @(new HtmlString(System.Text.Json.JsonSerializer.Serialize(contentPath))), contentSelector: '#profiling-lab-content', statusSelector: '#profiling-lab-refresh-status', refreshButtonSelector: '#profiling-lab-refresh-now', intervalSelector: '#profiling-lab-refresh-interval' });
+    refresher.refresh(true);
+    async function post(url, body, signal) {
+        const response = await fetch(url, { method: 'POST', cache: 'no-store', headers: {'Content-Type': 'application/json', 'X-Requested-With': 'fetch'}, body: JSON.stringify(body), signal });
+        if (!response.ok) {
+            let message = `HTTP ${response.status}`;
+            try { const error = await response.json(); message = error.detail || error.title || message; } catch {}
+            throw new Error(message);
+        }
+        const text = await response.text();
+        return text ? JSON.parse(text) : null;
+    }
+    let controller;
+    const run = document.getElementById('lab-run');
+    const cancel = document.getElementById('lab-cancel');
+    cancel.addEventListener('click', () => controller?.abort());
+    document.getElementById('profiling-lab-review').addEventListener('submit', async event => {
+        event.preventDefault();
+        if (controller) return;
+        controller = new AbortController();
+        const signal = controller.signal;
+        run.disabled = true; cancel.disabled = false;
+        const status = document.getElementById('lab-review-status');
+        const results = document.getElementById('lab-results');
+        results.replaceChildren();
+        const count = Math.min(10, Math.max(1, Number(document.getElementById('lab-count').value)));
+        const concurrency = Math.min(4, Math.max(1, Number(document.getElementById('lab-concurrency').value)));
+        const body = {cityLimit: Number(document.getElementById('lab-cities').value), repetitions: Number(document.getElementById('lab-repetitions').value)};
+        let next = 0, completed = 0, failed = 0;
+        const update = () => status.textContent = `${completed} completed, ${failed} failed, ${count} requested${signal.aborted ? ' (canceled)' : ''}.`;
+        const worker = async () => {
+            while (next < count && !signal.aborted) {
+                const index = ++next;
+                const item = document.createElement('li'); results.appendChild(item);
+                try {
+                    const value = await post(`${pageUrl}/review`, body, signal);
+                    completed++;
+                    item.textContent = `Review ${index}: ${value.cityCount} cities, ${value.weatherReadCount} successful reads, ${value.missingWeatherCount} missing. `;
+                    if (value.operationId) { const link = document.createElement('a'); link.href = `${operationsUrl}/${encodeURIComponent(value.operationId)}`; link.textContent = 'Operation details'; item.appendChild(link); }
+                    else { item.appendChild(document.createTextNode('Capture unavailable.')); }
+                } catch (error) { failed++; item.textContent = signal.aborted ? `Review ${index} canceled.` : `Review ${index}: ${error.message}`; }
+                update();
+            }
+        };
+        try { update(); await Promise.all(Array.from({length: Math.min(count, concurrency)}, worker)); }
+        finally { controller = null; run.disabled = false; cancel.disabled = true; update(); refresher.refresh(false); }
+    });
+    document.querySelectorAll('.lab-runtime').forEach(button => button.addEventListener('click', async () => {
+        const buttons = document.querySelectorAll('.lab-runtime'); buttons.forEach(item => item.disabled = true);
+        const status = document.getElementById('lab-runtime-status'); status.textContent = 'Updating Runtime session...';
+        try { const body = button.dataset.action === 'start' ? {name: 'WeatherFiesta city review', duration: '00:02:00', samplingInterval: '00:00:01', tags: ['weatherfiesta', 'profiling-lab']} : {};
+            await post(`${runtimeUrl}/${button.dataset.action}`, body); status.textContent = button.dataset.action === 'start' ? 'Runtime session active. Run a workload now.' : button.dataset.action === 'snapshot' ? 'Snapshot captured. Open Runtime to compare observations.' : 'Runtime session stopped.';
+        } catch (error) { status.textContent = error.message; }
+        finally { buttons.forEach(item => item.disabled = false); refresher.refresh(false); }
+    }));
+    document.querySelectorAll('.lab-job').forEach(button => button.addEventListener('click', async () => {
+        button.disabled = true;
+        const status = document.getElementById('lab-job-status'); status.textContent = 'Dispatching background job...';
+        try { await post(`${pageUrl}/jobs/${button.dataset.scenario}`, {}); status.textContent = 'Job queued. Follow its execution in Job history, then inspect Operations.'; }
+        catch (error) { status.textContent = error.message; }
+        finally { button.disabled = false; }
+    }));
+})();
+</script>
+@functions {
+    /// <summary>Gets the profiling lab's dashboard title.</summary>
+    /// <example><code>var title = this.PageTitle;</code></example>
+    public override string PageTitle => "Profiling Lab";
+}

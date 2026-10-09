@@ -237,6 +237,26 @@ Available users: `luke.skywalker`, `leia.organa`, `han.solo`, `darth.vader`, etc
 
 ### Profiling
 
+Open **Core > Profiling Lab** at `/_bdk/dashboard/app/core/profiling` after signing in as an administrator. The page runs stored-weather reviews and links directly to their operation details. It also shows Runtime session status, persistence backlog, and the executing node.
+
+1. Click **Start Runtime session** to observe the process for two minutes. Click **Take snapshot** for a baseline.
+2. Run one city review with two read passes. Inspect `LoadCities`, repeated `ReadWeather`, and `Summarize` segments. Requester and Active Entity segments appear beneath their caller.
+3. Increase **Operations** to four and **Concurrency** to two. Each dashboard action uses its own database scope. The page allows at most ten operations and four concurrent actions per burst. **Cancel running reviews** aborts active calls and stops dispatching the remaining actions.
+4. Open **City reviews** and compare Slow, Recent, and By count. Group by `cityLimit` and `repetitions` to compare matching work. Follow the executing-node link to filter that process.
+5. Take another Runtime snapshot. Open an operation detail to inspect overlapping Runtime observations on the same process. Runtime CPU and memory do not measure the resources attributable to that operation.
+6. Click **Dispatch orchestration**, then follow **Job history**. The scheduler, orchestration actions, and independent message and queue consumers all participate through optional profiling behaviors. The normal weather ingestion job also captures its pipeline steps.
+7. When CPU and allocation pressure is intended, click **Dispatch Runtime stress job**. This manually queues the existing development-only workload. Stop the Runtime session when the comparison is complete.
+
+The review loads the registered city list, then reads stored weather for up to ten selected cities over one to five passes. It does not modify city or weather records or call an external weather API. Missing weather increments `missingWeather` and produces failed `ReadWeather` invocations while the partial review can complete. Completed profiles become visible after the periodic writer runs. The page does not flush the writer.
+
+For the same work through the HTTP adapter, send an administrator-authenticated `POST /api/core/profiling/review` with:
+
+```json
+{"cityLimit":3,"repetitions":2}
+```
+
+The response's `operationId` matches `X-Request-Profiling-Id`. Find that ID in **Requests** to inspect HTTP status, response bytes, and nested work. This example endpoint is mapped when Operation and Request Profiling are enabled. Dashboard review actions instead own `Service` operations because dashboard paths are excluded from HTTP capture. Both use `weather:city-review`, with typed `cityLimit`, `repetitions`, and `source` dimensions and city/read/missing-weather measurements.
+
 Development enables Runtime, Operation and Request Profiling with the in-memory provider. The dashboard keeps its existing OpenID Connect authentication and Administrators role requirement. Profiling and its dashboard are disabled outside Development.
 
 The registration in [Program.cs](WeatherFiesta.Presentation.Web.Server/Program.cs) is:
@@ -251,7 +271,7 @@ builder.Services.AddProfiling(o => o.Enabled(builder.Environment.IsDevelopment()
 
 Eligible API requests are captured by default. The shared defaults select in-memory storage and exclude `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**` and `/openapi/**`. The outer middleware follows request correlation; the exception observer runs after exception handling and before routing. The default operation key strips `/api`, while the recorded HTTP path retains it. Completed records become visible after periodic persistence; dashboard reads do not force a flush. In-memory history belongs to this process and is lost when it exits.
 
-Core's seven Active Entity registrations include `AddProfilingBehavior()`. Entity operations contribute segments such as `activeentity:City:FindAll` to the current HTTP or job operation. The compare endpoint's `Query` segment contains the entity work performed by its handler. Outside an active operation, entity calls own independent operations. Disabled or omitted Profiling registration leaves entity execution unchanged.
+Core's seven Active Entity registrations include `AddProfilingBehavior()`. Entity operations contribute segments such as `activeentity:City:FindAll` to the current HTTP or job operation. The city review nests entity reads beneath `ReadWeather`. The compare endpoint's `Query` segment contains the entity work performed by its handler. Outside an active operation, entity calls own independent operations. Disabled or omitted Profiling registration leaves entity execution unchanged.
 
 Requester registers `ProfilingRequestBehavior<,>` before its other behaviors. Notifier registers `ProfilingNotificationBehavior<,>` and `ProfilingNotificationHandlerBehavior<,>`. A request such as `requester:CityCompareQuery` contributes a segment beneath `Query`; awaited notifications include individual handler segments. Fire-and-forget notification handlers own independent operations. These registrations remain usable when Profiling is disabled or omitted.
 
@@ -260,7 +280,7 @@ Messaging and Queueing register `MessageHandlerProfilingBehavior` and `QueueHand
 1. Sign in to `/_bdk/dashboard` as an administrator. Runtime, Operations and Requests are separate profiling views.
 2. Call `GET /api/core/cities/alerts`, then copy its `X-Request-Profiling-Id` response header into **Find exact ID** on the Requests view. The record includes the default `/core/cities/alerts` key, HTTP status/method, duration and response-byte quality.
 3. With a subscription that allows comparison, call `POST /api/core/cities/compare` with a JSON array of city IDs. [WeatherEndpoints.cs](WeatherFiesta.Presentation.Web.Server/Modules/Core/Endpoints/WeatherEndpoints.cs) sets `weather:compare`, the numeric `cityCount` dimension and a `Query` segment. Group by `cityCount` to compare matching workloads. A rejected comparison also records the failed segment while preserving its business response.
-4. Start a Runtime profiling session and manually dispatch `core_profiling_stress` from the Jobs dashboard. The development-only [WeatherProfilingStressJob](WeatherFiesta.Presentation.Web.Server/Modules/Core/Jobs/WeatherProfilingStressJob.cs) owns or joins `weather:profiling-stress` and records `Cpu`, `Allocate` and `Retain` segments alongside its Runtime measurement. Its operation detail relates Runtime observations by executing-process identity and timestamps. Runtime metrics describe the process, not CPU or memory attributed to that operation.
+4. Start a Runtime profiling session and manually dispatch `core_profiling_stress` from the Jobs dashboard. The development-only [WeatherProfilingStressJob](WeatherFiesta.Presentation.Web.Server/Modules/Core/Jobs/WeatherProfilingStressJob.cs) contributes `weather:profiling-stress` beneath the scheduler's `job:core_profiling_stress` operation and records `Cpu`, `Allocate` and `Retain` segments alongside its Runtime measurement. Its operation detail relates Runtime observations by executing-process identity and timestamps. Runtime metrics describe the process, not CPU or memory attributed to that operation.
 
 The workload deliberately generates CPU, allocation and GC pressure; dispatch it only when that load is intended. It is a manual example, not an automatic production job. Shared profiling contracts, defaults and provider configuration are documented in the [application-neutral profiling guide](../../docs/features-profiling.md).
 
@@ -274,7 +294,7 @@ Integration tests in `WeatherFiesta.IntegrationTests` use:
 - **Test authentication** — `TestAuthenticationHandler` returns a fully authenticated user with `CoreAdmin` role
 - **Seeded test data** — `TestData.SeedAsync` populates the isolated database
 
-[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, independent broker handler capture and executing-node filters, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
+[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies the authorized Profiling Lab, bounded concurrent city reviews, repeated/nested segments, the shared HTTP adapter, job/orchestration/pipeline behaviors, default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, independent broker handler capture and executing-node filters, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
 
 ```bash
 # Run integration tests

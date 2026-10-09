@@ -18,9 +18,9 @@ This is an execution plan, not implementation evidence. All tasks start incomple
 
 ## Execution checkpoint — 2026-10-09 UTC
 
-All 72 tasks are implemented and verified, including the original feature, final application integration and optional repository, Active Entity, Requester, Notifier, messaging and queue handler profiling. The accepted 84-trial capacity matrix retains the corrected 21-trial memory rerun and 63 EF trials, with its original synthetic-workload limits. Historical phases and the [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remain in the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md).
+All 76 tasks are implemented and verified, including the original feature, final application integration, optional repository/Active Entity/Requester/Notifier/messaging/queue handler profiling and the WeatherFiesta Profiling Lab. The accepted 84-trial capacity matrix retains the corrected 21-trial memory rerun and 63 EF trials, with its original synthetic-workload limits. Historical phases and the [pause checkpoint](evidence/profiling-runtime-and-operations-1/phase-12/performance/PAUSED.md) remain in the [implementation evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md).
 
-Phase 16 passed 1,298 Application unit, 70 EF/RabbitMQ broker integration, 55 application unit and 111 application integration tests, including 58 new handler contract cases and two real application broker checks. The complete solution build passed with zero warnings/errors. The complete MkDocs/API build passed, generating 65 assembly references and 25,730 indexed symbols; 1,518 relative links resolve across 20 generated pages. DocFX reported zero warnings/errors; the Release API compiler retained 36 existing XML-comment warnings outside the new profiling code. Generic profiling documentation remains application-neutral. No planned task remains outstanding.
+Phase 17 passed 66 application unit, 117 application integration, 2,755 Common unit and 1,298 Application unit tests: 4,236 passed with four existing serializer benchmarks skipped. The complete solution build passed with zero warnings/errors. Visible Chromium checks passed desktop/mobile Lab navigation, four concurrent reviews, repeated/nested segments, actual Runtime observations, start/snapshot/stop and anonymous authorization. The complete MkDocs/API build passed, generating 65 assembly references and 25,730 indexed symbols; 1,523 relative links resolve across 21 generated pages. DocFX reported zero warnings/errors; the Release API compiler retained 36 existing XML-comment warnings outside profiling. Shared profiling documentation remains application-neutral; the showcase workflow is documented only in the application README. No planned work remains outstanding.
 
 ## 1. Requirements & Constraints
 
@@ -31,16 +31,16 @@ The requirement identifiers below match the specification. Task and test identif
 | Requirement | Required result | Tasks | Tests |
 | --- | --- | --- | --- |
 | REQ-001 | One feature; Runtime, Operations, and HTTP-filtered Requests views. | TASK-008, TASK-029, TASK-044, TASK-045 | TEST-001, TEST-014 |
-| REQ-002 | Operation scopes work without HTTP, Runtime, Broadcast, or a request DI scope. | TASK-009, TASK-010, TASK-014 | TEST-002, TEST-003 |
+| REQ-002 | Operation scopes work without HTTP, Runtime, Broadcast, or a request DI scope. | TASK-009, TASK-010, TASK-014, TASK-073, TASK-075 | TEST-002, TEST-003, TEST-025 |
 | REQ-003 | Explicit fluent subfeatures; Requests requires explicitly enabled Operations. | TASK-008, TASK-029, TASK-030 | TEST-001 |
 | REQ-004 | Every eligible HTTP request is selected by default without endpoint opt-in. | TASK-031, TASK-032 | TEST-011 |
-| REQ-005 | Unique operation IDs, stable keys, dimensions, outcomes, and structured segment paths. | TASK-003, TASK-004, TASK-009, TASK-011 | TEST-002, TEST-004 |
-| REQ-006 | Aggregate repeated, nested, and parallel segments without occurrence traces. | TASK-011, TASK-012, TASK-013 | TEST-003, TEST-004 |
-| REQ-007 | Capture request lifecycle, method, route, status, bytes, and response ID. | TASK-032, TASK-033, TASK-034, TASK-035 | TEST-011, TEST-012 |
+| REQ-005 | Unique operation IDs, stable keys, dimensions, outcomes, and structured segment paths. | TASK-003, TASK-004, TASK-009, TASK-011, TASK-073, TASK-075 | TEST-002, TEST-004, TEST-025 |
+| REQ-006 | Aggregate repeated, nested, and parallel segments without occurrence traces. | TASK-011, TASK-012, TASK-013, TASK-073, TASK-075 | TEST-003, TEST-004, TEST-025 |
+| REQ-007 | Capture request lifecycle, method, route, status, bytes, and response ID. | TASK-032, TASK-033, TASK-034, TASK-035, TASK-074, TASK-075 | TEST-011, TEST-012, TEST-025 |
 | REQ-008 | One replaceable provider; bounded periodic writes for memory and EF. | TASK-016, TASK-021, TASK-026, TASK-027, TASK-029, TASK-056 | TEST-005, TEST-006, TEST-008 |
 | REQ-009 | Slow, Recent, and By count modes with grouping and bounded refresh. | TASK-040, TASK-044, TASK-045 | TEST-013, TEST-014 |
 | REQ-010 | Wall-time bars count overlap once and expose partial coverage. | TASK-013, TASK-046 | TEST-004, TEST-014 |
-| REQ-011 | Correlate Runtime by process identity and observed interval; retain independent ownership. | TASK-006, TASK-042, TASK-046 | TEST-010, TEST-015 |
+| REQ-011 | Correlate Runtime by process identity and observed interval; retain independent ownership. | TASK-006, TASK-042, TASK-046, TASK-074, TASK-075 | TEST-010, TEST-015, TEST-025 |
 | REQ-012 | Exact lookup, distributions, comparisons, sample counts, and capture quality. | TASK-019, TASK-024, TASK-040, TASK-041 | TEST-013 |
 | REQ-013 | UTC datetimes with literal `Z`; elapsed time uses a monotonic clock. | TASK-003, TASK-009, TASK-011, TASK-041 | TEST-002, TEST-004, TEST-013 |
 | REQ-014 | Generic typed dimensions/measurements and bounded adapter metadata. | TASK-004, TASK-009, TASK-012 | TEST-004 |
@@ -48,8 +48,8 @@ The requirement identifiers below match the specification. Task and test identif
 | REQ-016 | Default HTTP key is incoming path; configured prefix stripping and path blacklist. | TASK-031 | TEST-011 |
 | REQ-017 | Structured operation/segment start and stop logging at Trace/Verbose. | TASK-015 | TEST-007 |
 | REQ-018 | Head sampling: AllRequests, probability, and node-local token bucket. | TASK-031, TASK-032 | TEST-011 |
-| REQ-019 | Jobs, pipeline steps, orchestration actions, repositories, Active Entities, Requester, Notifier, messaging and queue handlers participate through optional behaviors. | TASK-036, TASK-037, TASK-038, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063, TASK-064, TASK-065, TASK-066, TASK-067, TASK-068, TASK-069, TASK-070, TASK-071, TASK-072 | TEST-016, TEST-022, TEST-023, TEST-024 |
-| REQ-020 | Optional feature injection works when AddProfiling is omitted; no hidden registrations. | TASK-030, TASK-035, TASK-036, TASK-037, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063, TASK-065, TASK-066, TASK-069, TASK-070 | TEST-001, TEST-016, TEST-022, TEST-023, TEST-024 |
+| REQ-019 | Jobs, pipeline steps, orchestration actions, repositories, Active Entities, Requester, Notifier, messaging and queue handlers participate through optional behaviors. | TASK-036, TASK-037, TASK-038, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063, TASK-064, TASK-065, TASK-066, TASK-067, TASK-068, TASK-069, TASK-070, TASK-071, TASK-072, TASK-073, TASK-075 | TEST-016, TEST-022, TEST-023, TEST-024, TEST-025 |
+| REQ-020 | Optional feature injection works when AddProfiling is omitted; no hidden registrations. | TASK-030, TASK-035, TASK-036, TASK-037, TASK-039, TASK-060, TASK-061, TASK-062, TASK-063, TASK-065, TASK-066, TASK-069, TASK-070, TASK-073, TASK-075 | TEST-001, TEST-016, TEST-022, TEST-023, TEST-024, TEST-025 |
 | REQ-021 | Clear Runtime, Operations, or both, fully or by completion-UTC range; fence late writes. | TASK-017, TASK-018, TASK-023, TASK-025, TASK-028 | TEST-006, TEST-008, TEST-009 |
 | REQ-022 | Cached executing-node identity on every operation; Runtime keeps Broadcast control. | TASK-006, TASK-009, TASK-044, TASK-070 | TEST-002, TEST-010, TEST-024 |
 | REQ-023 | Case-insensitive keys/path components, identical across providers, original display casing. | TASK-004, TASK-012, TASK-019, TASK-024 | TEST-004, TEST-008, TEST-013 |
@@ -321,6 +321,19 @@ Every phase declares its dependencies and exit criteria. A phase starts only aft
 | TASK-071 | Enable both handler behaviors in the example server's `Program.cs`, add actual broker assertions to its profiling integration tests and update its README. Extend `docs/features-profiling.md`, both messaging/queueing guides and the final-state spec with exact ownership, timing, ordering and node-storage semantics. Keep the generic guides application-neutral. Run application unit/integration suites. | [x] | 2026-10-09 |
 | TASK-072 | Build the complete solution, run `docs/site/scripts/build-pages.ps1` and verify generated guide/API links. Record verified evidence, mark all 72 tasks complete, then commit/push Phase 16 on the existing feature branch, excluding the user's `.gitignore` edit. | [x] | 2026-10-09 |
 
+### Implementation Phase 17
+
+- GOAL-017: Make Runtime and Operation Profiling discoverable and repeatable in WeatherFiesta through its real application workflows.
+- Dependencies: GOAL-013, GOAL-016. TASK-074 depends on TASK-073; TASK-075 depends on both; TASK-076 depends on all three.
+- Completion criteria: Optional job/orchestration/pipeline behaviors participate; administrators can run bounded stored-weather reviews and navigate to captured operations and Runtime observations; application unit/integration/browser checks pass; documentation and generated site remain consistent.
+
+| Task | Description | Completed | Date |
+|------|-------------|-----------|------|
+| TASK-073 | Fix the verified null-Activity fallthrough in `src/Common.Utilities/Activity/ActivityHelper.cs` with exact-once regression tests. Enable optional `JobProfilingBehavior`, orchestration `WithProfilingBehavior()` and `PipelineProfilingBehavior` in the Core module and ingestion definition. Add `WeatherCityReviewService` under Application using real Requester/Active Entity reads, bounded repetitions, stable keys/dimensions and classified repeated/nested segments. | [x] | 2026-10-09 |
+| TASK-074 | Add the administrator Core profiling page, bounded burst controls, captured-record links, Runtime start/snapshot/stop through existing dashboard controls, and explicit background-job actions. Reuse the same review service from an administrator-authenticated HTTP endpoint mapped when Operation and Request capture are enabled to demonstrate middleware enrichment. | [x] | 2026-10-09 |
+| TASK-075 | Verify real registration and workflows, repeated segment counts, failed reads, absent/disabled capture, validation/cancellation, authorization, natural persistence and Runtime correlation with unit/integration tests. Exercise the rendered page and generated navigation in a browser. | [x] | 2026-10-09 |
+| TASK-076 | Update only the application README with the demonstration workflow; build the solution and documentation site, review the final diff, record evidence, then commit/push Phase 17 on the existing feature branch without the user-owned `.gitignore` change. | [x] | 2026-10-09 |
+
 ## 3. Alternatives
 
 - **ALT-001**: Reuse Runtime's measurement service for Operations. Rejected because it owns Runtime sessions and durable interval writes, violating execution-independent nonblocking operation capture.
@@ -407,6 +420,7 @@ Paths labeled new are planned targets, not claims that files exist. Directory en
 | TEST-022 | Optional repository/entity DI, full boundaries and early failure cleanup, unchanged results/tokens/exceptions, lazy sequences, nested concurrent capture, suppression and observer faults; Domain and Active Entity regression suites. | TASK-060, TASK-061, TASK-062, TASK-063, TASK-064 |
 | TEST-023 | Requester and Notifier optional activation, duplicate setup, failed results, exactly-once execution, nesting, repetitions, concurrency, cancellation, observation faults and independent fire-and-forget completion. | TASK-065, TASK-066, TASK-067, TASK-068 |
 | TEST-024 | Messaging and queue handler optional/idempotent registration, exact-once success and exception/cancellation propagation, nested/parallel aggregates, safe worker context isolation/restoration, real broker completion, bounded metadata and executing-node filters. | TASK-069, TASK-070, TASK-071, TASK-072 |
+| TEST-025 | WeatherFiesta Profiling Lab authorization, bounded concurrent reviews, repeated/nested segments, API ID/HTTP enrichment, real job/pipeline/orchestration registration, optional capture and null-Activity background execution; desktop/mobile navigation and Runtime controls. | TASK-073, TASK-074, TASK-075, TASK-076 |
 
 Run from the repository root. The workspace tasks are the preferred full checks. These commands are the focused equivalents for implementation work; execute them sequentially and record failures rather than suppressing them:
 

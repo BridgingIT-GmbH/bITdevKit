@@ -14,6 +14,7 @@ public sealed class WeatherIngestionPipeline : PipelineDefinition<WeatherIngesti
     protected override void Configure(IPipelineDefinitionBuilder<WeatherIngestionContext> builder)
     {
         builder
+            .AddBehavior<PipelineProfilingBehavior>()
             .AddStep<IngestWeatherForCityStep>()
             .AddStep<PersistCurrentWeatherStep>()
             .AddStep<PersistWeatherForecastsStep>()

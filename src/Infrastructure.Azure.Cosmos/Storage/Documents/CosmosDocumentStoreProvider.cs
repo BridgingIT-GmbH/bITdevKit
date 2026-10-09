@@ -134,7 +134,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             var storageType = this.StorageType(type);
             var current = (await provider.ReadItemsAsync(x => x.Type == storageType && x.PartitionKey == write.Key.PartitionKey && x.RowKey == write.Key.RowKey, partitionKeyValue: storageType, cancellationToken: cancellationToken)).FirstOrDefault();
             if (write.Options.CreateOnly && current is not null) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("A physical document already exists."));
-            if (!string.IsNullOrWhiteSpace(write.Options.IfMatchETag) && (current is null || ETag(current) != write.Options.IfMatchETag)) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed."));
+            if (!string.IsNullOrWhiteSpace(write.Options.IfMatchETag) && (current is null || ETag(current) != NormalizeETag(write.Options.IfMatchETag))) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed."));
             var now = DateTimeOffset.UtcNow;
             var isNew = current is null;
             current ??= new() { Id = GuidGenerator.Create($"{storageType}-{write.Key.PartitionKey}-{write.Key.RowKey}").ToString(), Type = storageType, PartitionKey = write.Key.PartitionKey, RowKey = write.Key.RowKey, CreatedDate = now };
@@ -145,7 +145,7 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             current.Ttl = ToTtl(current.ExpiresAt, now); current.UpdatedDate = now;
             current = isNew
                 ? await provider.CreateItemAsync(current, storageType, cancellationToken)
-                : await provider.UpsertItemAsync(current, storageType, current.ETag, cancellationToken);
+                : await provider.UpsertItemAsync(current, storageType, HeaderETag(current), cancellationToken);
             return Result<DocumentInfo>.Success(ToInfo(current));
         }
         catch (CosmosException ex) when (ex.StatusCode is System.Net.HttpStatusCode.Conflict or System.Net.HttpStatusCode.PreconditionFailed) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
@@ -161,11 +161,11 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             var storageType = this.StorageType(type);
             var current = (await provider.ReadItemsAsync(x => x.Type == storageType && x.PartitionKey == update.Key.PartitionKey && x.RowKey == update.Key.RowKey, partitionKeyValue: storageType, cancellationToken: cancellationToken)).FirstOrDefault();
             if (current is null) return Result<DocumentInfo>.Failure(new DocumentStoreNotFoundError());
-            if (!string.IsNullOrWhiteSpace(update.IfMatchETag) && ETag(current) != update.IfMatchETag) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed."));
+            if (!string.IsNullOrWhiteSpace(update.IfMatchETag) && ETag(current) != NormalizeETag(update.IfMatchETag)) return Result<DocumentInfo>.Failure(new DocumentStoreConflictError("The document ETag changed."));
             if (update.Properties is not null) current.Properties = update.Properties.ToDictionary(x => x.Key, x => x.Value);
             if (!preserveExpiration) current.ExpiresAt = resolvedExpiresAt;
             current.UpdatedDate = DateTimeOffset.UtcNow; current.Ttl = ToTtl(current.ExpiresAt, current.UpdatedDate.Value);
-            current = await provider.UpsertItemAsync(current, storageType, current.ETag, cancellationToken);
+            current = await provider.UpsertItemAsync(current, storageType, HeaderETag(current), cancellationToken);
             return Result<DocumentInfo>.Success(ToInfo(current));
         }
         catch (CosmosException ex) when (ex.StatusCode == System.Net.HttpStatusCode.PreconditionFailed) { return Result<DocumentInfo>.Failure(new DocumentStoreConflictError(ex.Message)); }
@@ -181,10 +181,10 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
             var storageType = this.StorageType(type);
             var current = (await provider.ReadItemsAsync(x => x.Type == storageType && x.PartitionKey == key.PartitionKey && x.RowKey == key.RowKey, partitionKeyValue: storageType, cancellationToken: cancellationToken)).FirstOrDefault();
             if (current is null) return Result.Success();
-            if (!string.IsNullOrWhiteSpace(options?.IfMatchETag) && ETag(current) != options.IfMatchETag) return Result.Failure(new DocumentStoreConflictError("The document ETag changed."));
+            if (!string.IsNullOrWhiteSpace(options?.IfMatchETag) && ETag(current) != NormalizeETag(options.IfMatchETag)) return Result.Failure(new DocumentStoreConflictError("The document ETag changed."));
             var deleted = string.IsNullOrWhiteSpace(options?.IfMatchETag)
                 ? await provider.DeleteItemAsync(current.Id, storageType, cancellationToken)
-                : await provider.DeleteItemAsync(current.Id, storageType, options.IfMatchETag, cancellationToken);
+                : await provider.DeleteItemAsync(current.Id, storageType, HeaderETag(current), cancellationToken);
             return deleted ? Result.Success() : Result.Failure(new DocumentStoreConflictError("The document ETag changed."));
         }
         catch (OperationCanceledException) { throw; }
@@ -204,7 +204,9 @@ public class CosmosDocumentStoreProvider(ICosmosSqlProvider<CosmosStorageDocumen
 
     private static StoredDocument Map(CosmosStorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), Content = x.Content?.ToArray() ?? [], ContentHash = x.ContentHash, StoredContentHash = x.StoredContentHash, ETag = ETag(x), CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = x.ExpiresAt, Properties = new PropertyBag(x.Properties), TransformMetadata = DecodeBag(x.TransformMetadataJson) };
     private static DocumentInfo ToInfo(CosmosStorageDocument x) => new() { Key = new(x.PartitionKey, x.RowKey), ETag = ETag(x), ContentHash = x.ContentHash, CreatedAt = x.CreatedDate, LastModifiedAt = x.UpdatedDate ?? x.CreatedDate, ExpiresAt = x.ExpiresAt, Properties = new PropertyBag(x.Properties) };
-    private static string ETag(CosmosStorageDocument x) => x.ETag;
+    private static string ETag(CosmosStorageDocument x) => NormalizeETag(x.ETag);
+    private static string NormalizeETag(string value) => value?.Trim('"');
+    private static string HeaderETag(CosmosStorageDocument x) => x.ETag is null ? null : $"\"{ETag(x)}\"";
     private static int ToTtl(DateTimeOffset? expiresAt, DateTimeOffset now) => expiresAt is null ? -1 : Math.Max(1, (int)Math.Ceiling((expiresAt.Value - now).TotalSeconds));
     private static string EncodeBag(PropertyBag bag) => JsonSerializer.Serialize((bag ?? new()).ToDictionary(x => x.Key, x => PropertyBagScalarCodec.Encode(x.Value)));
     private static PropertyBag DecodeBag(string json) { if (string.IsNullOrWhiteSpace(json)) return new(); var values = JsonSerializer.Deserialize<Dictionary<string, string>>(json); return new(values.ToDictionary(x => x.Key, x => PropertyBagScalarCodec.Decode(x.Value))); }

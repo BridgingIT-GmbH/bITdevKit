@@ -431,3 +431,5 @@ _tmp**
 *.lscache
 tools/llama/**
 .DS_Store
+plan/evidence/**
+plan/profiling/**

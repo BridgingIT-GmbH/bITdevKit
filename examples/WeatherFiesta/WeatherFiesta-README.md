@@ -235,6 +235,14 @@ Available users: `luke.skywalker`, `leia.organa`, `han.solo`, `darth.vader`, etc
 - OpenAPI spec: `https://localhost:5001/openapi.json`
 - Scalar UI: `https://localhost:5001/scalar/`
 
+### API requests
+
+**Core > API Requests** at `/_bdk/dashboard/app/core/api-requests` is a separate HTTP workload page. Choose Cities, City weather, or Cities and weather, set 1–100 requests and 1–8 concurrent calls, then select **Send requests**. It calls the backend API directly from the browser and remains usable when Profiling is disabled. **Cancel requests** aborts active calls and stops sending the remaining requests.
+
+The runner uses the API access token saved by your dashboard sign-in. **API access** accepts an optional bearer token override for other authentication setups. Tokens stay in the page and are not saved to browser storage. Weather workloads first make one city lookup request, then rotate across that API user's subscribed cities; the configured count excludes the lookup. Subscribe to a city before running weather requests, or choose Cities to profile city-list reads. The workload does not trigger ingestion or an external weather API.
+
+Results show the HTTP status and browser duration through receipt of the response body. When a response contains `X-Request-Profiling-Id`, its eye button opens the request profile. Profiling records appear after normal periodic persistence. The runner does not flush the writer.
+
 ### Profiling
 
 Open **Core > Profiling Lab** at `/_bdk/dashboard/app/core/profiling` after signing in as an administrator. The page runs stored-weather reviews and links directly to their operation details. It also shows Runtime session status, persistence backlog, and the executing node.
@@ -294,7 +302,7 @@ Integration tests in `WeatherFiesta.IntegrationTests` use:
 - **Test authentication** — `TestAuthenticationHandler` returns a fully authenticated user with `CoreAdmin` role
 - **Seeded test data** — `TestData.SeedAsync` populates the isolated database
 
-[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies the authorized Profiling Lab, bounded concurrent city reviews, repeated/nested segments, the shared HTTP adapter, job/orchestration/pipeline behaviors, default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, independent broker handler capture and executing-node filters, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
+[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies the separate API Requests page and saved-token access, city/weather request profiles, the authorized Profiling Lab, bounded concurrent city reviews, repeated/nested segments, the shared HTTP adapter, job/orchestration/pipeline behaviors, default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, independent broker handler capture and executing-node filters, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
 
 ```bash
 # Run integration tests

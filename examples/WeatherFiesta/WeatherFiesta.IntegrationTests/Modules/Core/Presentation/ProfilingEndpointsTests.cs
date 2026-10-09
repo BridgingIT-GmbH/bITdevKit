@@ -12,6 +12,7 @@ using BridgingIT.DevKit.Application.Orchestrations;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Application.Modules.Core.Orchestrations;
 using BridgingIT.DevKit.Examples.WeatherFiesta.Presentation.Web.Server.Modules.Core;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Hosting.Server;
 using Microsoft.AspNetCore.Hosting.Server.Features;
 
@@ -144,6 +145,8 @@ public sealed class ProfilingEndpointsTests(
         {
             "/app/core/profiling",
             "/app/core/profiling/content",
+            "/app/core/api-requests",
+            "/app/core/api-requests/http-access",
             "/profiling/runtime",
             "/profiling/runtime/content",
             "/profiling/runtime/status",
@@ -387,6 +390,76 @@ public sealed class ProfilingEndpointsTests(
                 response.Dispose();
             }
         }
+    }
+
+    /// <summary>The separate API request runner renders its bounded controls and reads only the current sign-in's saved token.</summary>
+    /// <example><code>await tests.ApiRequests_PageAndAccess_AreIndependentAndDoNotCacheCredentials();</code></example>
+    [Fact]
+    public async Task ApiRequests_PageAndAccess_AreIndependentAndDoNotCacheCredentials()
+    {
+        using var page = await SendDashboardAsync(this.client, "/_bdk/dashboard/app/core/api-requests", "admin");
+        page.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var html = await page.Content.ReadAsStringAsync();
+        html.ShouldContain("API Requests");
+        html.ShouldContain("api-requests-form");
+        html.ShouldContain("Cities and weather");
+        html.ShouldContain("max=\"100\"");
+        html.ShouldContain("max=\"8\"");
+        html.ShouldNotContain("profiling-lab-review");
+
+        using var request = new HttpRequestMessage(HttpMethod.Get, "/_bdk/dashboard/app/core/api-requests/http-access");
+        request.Headers.Add("X-Test-Dashboard-Role", "admin");
+        request.Headers.Add("X-Test-Dashboard-Access-Token", "fixture-api-token");
+        using var response = await this.client.SendAsync(request);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Headers.CacheControl.NoStore.ShouldBeTrue();
+        response.Headers.Contains("X-Request-Profiling-Id").ShouldBeFalse();
+        using var json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+        json.RootElement.GetProperty("accessToken").GetString().ShouldBe("fixture-api-token");
+        html.ShouldNotContain("fixture-api-token");
+        this.host.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().CompletedOperations.ShouldBe(0);
+    }
+
+    /// <summary>Request generation remains available without Request Profiling or a saved API token.</summary>
+    /// <example><code>await tests.ApiRequests_DisabledProfilingAndNoToken_StillRendersTheRunner();</code></example>
+    [Fact]
+    public async Task ApiRequests_DisabledProfilingAndNoToken_StillRendersTheRunner()
+    {
+        using var disabled = CreateProfiledFactory(factory).WithWebHostBuilder(builder =>
+            builder.UseUrls("http://127.0.0.1:0")
+                .ConfigureServices(services => services.AddProfiling(options => options.Enabled(false)))
+        );
+        disabled.UseKestrel(0);
+        var address = disabled.Services.GetRequiredService<IServer>().Features.Get<IServerAddressesFeature>().Addresses.Single();
+        using var client = disabled.CreateClient(new() { AllowAutoRedirect = false, BaseAddress = new Uri(address) });
+        using var page = await SendDashboardAsync(client, "/_bdk/dashboard/app/core/api-requests", "admin");
+        page.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var html = await page.Content.ReadAsStringAsync();
+        html.ShouldContain("id=\"api-request-run\"");
+        html.ShouldNotContain("Request profiles</a>");
+        using var access = await SendDashboardAsync(client, "/_bdk/dashboard/app/core/api-requests/http-access", "admin");
+        access.StatusCode.ShouldBe(HttpStatusCode.OK);
+        using var json = JsonDocument.Parse(await access.Content.ReadAsStringAsync());
+        var hasToken = json.RootElement.TryGetProperty("accessToken", out var token);
+        (hasToken && token.ValueKind != JsonValueKind.Null).ShouldBeFalse();
+    }
+
+    /// <summary>Both real read endpoints used by the runner produce HTTP profiles with requester and entity segments.</summary>
+    /// <example><code>await tests.ApiRequests_ReadEndpoints_RecordRequestProfiles(true);</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ApiRequests_ReadEndpoints_RecordRequestProfiles(bool weather)
+    {
+        var path = weather ? $"/api/core/cities/{TestData.LondonCityGuid}/weather" : "/api/core/cities";
+        using var response = await this.client.GetAsync(path);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var record = await this.WaitForRecordAsync(GetId(response));
+        record.Http.Path.ShouldBe(path);
+        record.Http.Method.ShouldBe("GET");
+        record.Http.StatusCode.ShouldBe(200);
+        record.Segments.ShouldContain(segment => segment.Key.StartsWith("requester:", StringComparison.Ordinal));
+        record.Segments.ShouldContain(segment => segment.Key.StartsWith("activeentity:", StringComparison.Ordinal));
     }
 
     /// <summary>The API adapter keeps the middleware's ID/HTTP metadata while enriching the same core operation.</summary>
@@ -739,9 +812,15 @@ public sealed class ProfilingDashboardAuthenticationHandler(
             ],
             this.Scheme.Name
         );
+        var properties = new AuthenticationProperties();
+        if (this.Request.Headers.TryGetValue("X-Test-Dashboard-Access-Token", out var token))
+        {
+            properties.StoreTokens([new AuthenticationToken { Name = "access_token", Value = token.ToString() }]);
+        }
+
         return Task.FromResult(
             AuthenticateResult.Success(
-                new AuthenticationTicket(new ClaimsPrincipal(identity), this.Scheme.Name)
+                new AuthenticationTicket(new ClaimsPrincipal(identity), properties, this.Scheme.Name)
             )
         );
     }

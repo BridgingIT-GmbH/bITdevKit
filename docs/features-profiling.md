@@ -330,6 +330,8 @@ app.MapEndpoints();
 
 `AddProfiling` registers shared services and uses `InMemoryProfilingStorageProvider` by default. It enables no capture capability implicitly. `WithRuntimeProfiling` adds Runtime collection and Broadcast control; `WithOperationProfiling` adds independent operation recording and the periodic writer. `WithRequestProfiling` requires explicitly enabled Operations and adds the HTTP adapter. The shared master flag gates both capabilities.
 
+Runtime node metadata registration honors Broadcasting's database-readiness configuration through the optional `IDatabaseReadyService`. An Entity Framework Broadcasting registry selects its application's DbContext name automatically; no registry lookup occurs before that database is ready. A readiness fault or timeout skips metadata registration without failing the host. Without a readiness service, registration proceeds normally. Disabled Broadcasting skips this registration worker.
+
 The global `AddDashboard` call discovers Profiling automatically. There is no Profiling-specific dashboard registration call: the navigation item appears when Profiling is enabled and stays hidden when it is disabled.
 
 The built-in defaults are:

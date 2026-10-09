@@ -1,1 +1,0 @@
-SEARCH __Profiling_Operations USING INDEX IX___Profiling_Operations_CompletedUtcTicks_CanonicalIdBytes (CompletedUtcTicks>? AND CompletedUtcTicks<?)

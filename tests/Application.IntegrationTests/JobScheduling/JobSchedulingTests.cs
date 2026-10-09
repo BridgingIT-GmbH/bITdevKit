@@ -62,6 +62,15 @@ public class JobSchedulingTests
         return await schedulerFactory.GetScheduler(cancellationToken);
     }
 
+    private static async Task WaitForExecutionsAsync(Func<bool> condition)
+    {
+        var started = System.Diagnostics.Stopwatch.StartNew();
+        while (!condition() && started.Elapsed < TimeSpan.FromSeconds(15))
+        {
+            await Task.Delay(50);
+        }
+    }
+
     [Fact]
     public async Task BasicScheduler_Runs()
     {
@@ -87,7 +96,7 @@ public class JobSchedulingTests
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(2500);
+        await WaitForExecutionsAsync(() => recorder.Executed.Count >= 2);
         await host.StopAsync();
 
         var executed = recorder.Executed;
@@ -113,7 +122,7 @@ public class JobSchedulingTests
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(2500);
+        await WaitForExecutionsAsync(() => recorder.Executed.Count >= 2);
         await host.StopAsync();
 
         var executed = recorder.Executed;
@@ -165,7 +174,8 @@ public class JobSchedulingTests
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(2500);
+        await WaitForExecutionsAsync(() => recorder.Executed.Count(e => e.Name == "ScopedJob") >= 2 &&
+            recorder.Executed.Count(e => e.Name == "SingletonJob") >= 2);
         await host.StopAsync();
 
         var executed = recorder.Executed;
@@ -217,7 +227,7 @@ public class JobSchedulingTests
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(2500);
+        await WaitForExecutionsAsync(() => recorder.Executed.Count >= 2);
         await host.StopAsync();
 
         var executed = recorder.Executed;
@@ -239,12 +249,17 @@ public class JobSchedulingTests
         });
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
-        _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(5000);
+        var scheduler = await StartAndWaitForSchedulerAsync(host);
+        await WaitForExecutionsAsync(() => recorder.Executed.Count >= 2);
+        var trigger = (await scheduler.GetTriggersOfJob(new JobKey("CronTest"))).Single();
+        var cron = trigger.ShouldBeAssignableTo<ICronTrigger>();
+        cron.CronExpressionString.ShouldBe("0/2 * * * * ?");
+        var firstFire = cron.GetFireTimeAfter(DateTimeOffset.UtcNow).Value;
+        (cron.GetFireTimeAfter(firstFire).Value - firstFire).ShouldBe(TimeSpan.FromSeconds(2));
         await host.StopAsync();
 
         var executed = recorder.Executed;
-        executed.Count.ShouldBeInRange(2, 3);
+        executed.Count.ShouldBeGreaterThanOrEqualTo(2);
         executed.All(e => e.Name == "CronTest").ShouldBeTrue();
     }
 
@@ -269,7 +284,7 @@ public class JobSchedulingTests
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(2500);
+        await WaitForExecutionsAsync(() => recorder.Executed.Count >= 1);
         await host.StopAsync();
 
         var executed = recorder.Executed;
@@ -319,7 +334,7 @@ public class JobSchedulingTests
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(3500); // Allow multiple triggers
+        await WaitForExecutionsAsync(() => recorder.NonConcurrentExecuted.Count >= 2);
         await host.StopAsync();
 
         var executed = recorder.NonConcurrentExecuted;
@@ -350,7 +365,7 @@ public class JobSchedulingTests
 
         var recorder = host.Services.GetRequiredService<TestJobRecorder>();
         _ = await StartAndWaitForSchedulerAsync(host);
-        await Task.Delay(2500); // Allow a couple attempts
+        await WaitForExecutionsAsync(() => recorder.FailingExecuted.Count >= 2);
         await host.StopAsync();
 
         var executed = recorder.FailingExecuted;

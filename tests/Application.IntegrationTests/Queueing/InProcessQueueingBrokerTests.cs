@@ -32,7 +32,8 @@ public class InProcessQueueingBrokerTests
 
         await broker.Subscribe<InProcessQueueMessage, InProcessQueueMessageHandler>();
 
-        var processed = await QueueingBrokerTestSupport.WaitForAsync(() => Task.FromResult(InProcessQueueMessageHandler.Processed));
+        var processed = await QueueingBrokerTestSupport.WaitForAsync(async () =>
+            InProcessQueueMessageHandler.Processed && (await brokerService.GetSummaryAsync()).Succeeded == 1);
         var summary = await brokerService.GetSummaryAsync();
 
         waitingAppeared.ShouldBeTrue();
@@ -79,7 +80,8 @@ public class InProcessQueueingBrokerTests
 
         await brokerService.ResumeQueueAsync(queueName);
 
-        var processed = await QueueingBrokerTestSupport.WaitForAsync(() => Task.FromResult(InProcessQueueMessageHandler.ProcessCount == 1));
+        var processed = await QueueingBrokerTestSupport.WaitForAsync(async () =>
+            InProcessQueueMessageHandler.ProcessCount == 1 && (await brokerService.GetSummaryAsync()).Succeeded == 1);
         var resumedSummary = await brokerService.GetSummaryAsync();
 
         pendingWhilePaused.ShouldBeTrue();
@@ -112,7 +114,8 @@ public class InProcessQueueingBrokerTests
         await broker.Subscribe<InProcessQueueMessage, InProcessQueueMessageHandler>();
         await broker.Enqueue(message);
 
-        var processedInitially = await QueueingBrokerTestSupport.WaitForAsync(() => Task.FromResult(InProcessQueueMessageHandler.ProcessCount == 1));
+        var processedInitially = await QueueingBrokerTestSupport.WaitForAsync(async () =>
+            InProcessQueueMessageHandler.ProcessCount == 1 && (await brokerService.GetSummaryAsync()).Succeeded == 1);
         processedInitially.ShouldBeTrue();
 
         var storedMessage = (await brokerService.GetMessagesAsync(messageId: message.MessageId, isArchived: null)).Single();
@@ -124,7 +127,8 @@ public class InProcessQueueingBrokerTests
 
         await brokerService.RetryMessageAsync(storedMessage.Id);
 
-        var processedAgain = await QueueingBrokerTestSupport.WaitForAsync(() => Task.FromResult(InProcessQueueMessageHandler.ProcessCount == 2));
+        var processedAgain = await QueueingBrokerTestSupport.WaitForAsync(async () =>
+            InProcessQueueMessageHandler.ProcessCount == 2 && (await brokerService.GetSummaryAsync()).Succeeded == 1);
         var retriedMessage = await brokerService.GetMessageAsync(storedMessage.Id);
 
         archivedMessage.ShouldNotBeNull();

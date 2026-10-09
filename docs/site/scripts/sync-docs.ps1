@@ -72,7 +72,8 @@ function Rewrite-MarkdownLinks {
         [hashtable] $ImportedMap
     )
 
-    $pattern = '(?<prefix>!?\[[^\]]*\]\()(?<target>[^)\s]+)(?<suffix>[^)]*\))'
+    # Match the closing bracket so linked images rewrite both the image and its outer link.
+    $pattern = '(?<prefix>\]\()(?<target>[^)\s]+)(?<suffix>[^)]*\))'
 
     return [regex]::Replace($Content, $pattern, {
         param($match)

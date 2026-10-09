@@ -349,7 +349,13 @@ Every session has an automatic maximum duration. A manual stop ends collection e
 
 ## Dashboard
 
-The Profiling landing page is `/_bdk/dashboard/profiling` under the default dashboard prefix. It chooses Runtime when Runtime capture is enabled, otherwise Operations when Operation capture is enabled. The three views are `/profiling/runtime`, `/profiling/operations`, and `/profiling/requests`; retained history remains available when a subfeature stops capturing. The following workflow describes the Runtime view. A selected session and node can be shared with readable eight-character keys:
+The Profiling landing page is `/_bdk/dashboard/profiling` under the default dashboard prefix. It chooses Runtime when Runtime capture is enabled, otherwise Operations when Operation capture is enabled. The three views are `/profiling/runtime`, `/profiling/operations`, and `/profiling/requests`; retained history remains available when a subfeature stops capturing.
+
+The screenshots show recorded sample activity. Select an image to open it at full size. Their timings and resource values illustrate the views rather than benchmark application performance.
+
+### Runtime snapshots and analysis
+
+A selected Runtime session and node can be shared with readable eight-character keys:
 
 ```text
 /_bdk/dashboard/profiling/runtime?session=a1b2c3d4&node=e5f6g7h8
@@ -365,6 +371,14 @@ The dashboard groups the workflow into four tabs:
 | **Info** | Inspect measured segments, custom metric observations, and immutable runtime context. |
 
 Session controls above the tabs start or stop collection, take a manual snapshot, request a normal `GC.Collect()`, add markers, edit metadata, export or import sessions, and remove stored data. Information icons explain metrics and evaluation results in plain language.
+
+[![Runtime Overview with memory and GC-pressure charts, session markers, and a measured workload segment](assets/dashboard/profiling/runtime-overview.png)](assets/dashboard/profiling/runtime-overview.png)
+
+The Overview charts align memory, CPU, allocation and GC observations on a UTC timeline. Markers identify workload transitions; the shaded range identifies a measured Runtime segment. Collapse Sessions and Current Snapshot to give the charts more space.
+
+[![Runtime Analysis with evidence-backed allocation, heap-growth, retention, and GC-pressure signals](assets/dashboard/profiling/runtime-analysis.png)](assets/dashboard/profiling/runtime-analysis.png)
+
+Analysis shows each signal's confidence, supporting measurements and suggested next step. Read the sampling-quality summary alongside the signals before deciding what to investigate.
 
 ### Dashboard usage guide
 
@@ -400,6 +414,38 @@ Chart timelines and snapshot selectors display UTC, matching the stored and expo
 The charts use Plotly's standard interaction controls, including area-selection zoom, pan, autoscale, and reset. Mouse-wheel zoom is disabled so scrolling over a chart does not unexpectedly change its time range. The chart focus action opens both charts together on the same timeline.
 
 Profiling dashboard routes inherit the dashboard's authentication and authorization policy. Do not expose the dashboard anonymously. There is intentionally no evaluation export, copy, or download route.
+
+### Operation and Request views
+
+#### Grouped executions
+
+Use By count to rank retained groups, Slow to inspect the longest executions, or Recent to follow new activity. Group by a developer-defined dimension to compare executions with the same key and different inputs. Counts cover the retained selection, even when the page shows only representative executions.
+
+[![Operations grouped by logical key, kind, and a typed dimension, with retained counts and a segment timing tooltip](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
+
+Rows show the executing node, root outcome, duration and exclusive wall-time share. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately.
+
+#### Slow HTTP requests
+
+Requests fixes the execution kind to `HttpRequest` and adds the method, status, observed response bytes and sampling policy. Select an execution ID, or paste the response's `X-Request-Profiling-Id` into Find exact ID, to open its retained details.
+
+[![Requests in Slow mode with HTTP status, response bytes, sampling policy, durations, and segment wall-time bars](assets/dashboard/profiling/requests.png)](assets/dashboard/profiling/requests.png)
+
+Auto refresh updates persisted history at the selected interval. Pending records appear after the periodic writer persists them; refreshing the page does not force a flush.
+
+#### Repeated and nested segments
+
+Operation details combine typed dimensions and measurements with the aggregated segment tree. Repeated invocations share a row at the same complete path. Nested paths keep parent and child work distinct, with invocation counts, outcomes, total and self durations, weighted means, and minimum and maximum durations.
+
+[![Operation details with typed metadata and repeated, nested segment statistics, including successful and failed invocations](assets/dashboard/profiling/operation-details.png)](assets/dashboard/profiling/operation-details.png)
+
+#### Runtime context around one operation
+
+The Independent Runtime evidence section shows matching process snapshots around the operation's observed UTC interval. The shaded interval identifies the operation; surrounding samples, collection windows and gaps remain visible. Open Runtime for this node and interval to inspect the wider session.
+
+[![Runtime overlay with process CPU, memory, allocation, and GC observations around a selected operation interval](assets/dashboard/profiling/runtime-overlay.png)](assets/dashboard/profiling/runtime-overlay.png)
+
+These counters describe the whole process. They provide context for the operation's segment timings without assigning process CPU, memory or GC activity to that operation.
 
 ## Console commands
 

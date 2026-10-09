@@ -217,6 +217,7 @@ Built-in page keys:
 | System | `dashboard.system` | [System](assets/dashboard/03-system-system.png) |
 | Health | `health` | [Health](assets/dashboard/05-health-health.png) |
 | Metrics | `metrics` | [Metrics](assets/dashboard/04-metrics-metrics.png) |
+| Profiling | `profiling` | [Runtime](assets/dashboard/profiling/runtime-overview.png), [Operations](assets/dashboard/profiling/operations.png), [Requests](assets/dashboard/profiling/requests.png) |
 | Identity | `identity` | [Identity](assets/dashboard/02-identity-identity.png) |
 | Console | `console` | [Console](assets/dashboard/15-console-console.png) |
 | MCP | `mcp` | [MCP](assets/dashboard/16-mcp-mcp.png) |

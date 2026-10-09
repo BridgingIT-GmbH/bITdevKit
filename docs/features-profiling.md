@@ -196,6 +196,27 @@ Segments with the same complete path aggregate invocation counts, total/self dur
 
 Explicitly complete manual scopes. Disposed-but-uncompleted, abandoned or clipped scopes keep incomplete/partial quality. Helpers observe delegate completion automatically. Safe error descriptors contain source/code/type and bounded policy-approved messages; raw stacks and result payloads are excluded. Recoverable observation faults discard inconsistent capture and preserve exactly-once business work. Process-fatal failures, invalid explicit setup and application expressions computing metadata are outside that guarantee.
 
+### Repository and Active Entity behaviors
+
+Register these behaviors through the existing feature APIs:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddInMemoryRepository<Product>()
+	.WithBehavior<RepositoryProfilingBehavior<Product>>();
+services.AddActiveEntity(configuration => configuration.For<Customer, Guid>()
+	.UseInMemoryProvider()
+	.AddProfilingBehavior());
+```
+
+`RepositoryProfilingBehavior<TEntity>` covers all `IGenericRepository<TEntity>` read, write and bulk overloads. A call joins the current operation as a segment, or starts a `Repository` operation when called independently. Keys identify the entity type and operation, such as `repository:Product:FindAll`. The behavior records the awaited repository call. It does not enumerate returned sequences or capture entity values, IDs, predicates or query results.
+
+`ActiveEntityProfilingBehavior<TEntity>` wraps each complete Active Entity operation through `IActiveEntityOperationBehavior<TEntity>`. Its boundary includes before hooks, provider work and after hooks. Keys include the operation name without `Async`, such as `activeentity:Customer:Insert`. Failed `IResult` values and exceptions close the recording even when an operation returns before its after hooks. Bulk convenience operations also contain the individual entity operations as nested segments. The wrapper does not inspect collections of business results. A failed child segment does not automatically change its caller's outcome.
+
+Both behaviors accept an optional `IOperationProfiler`. They work when Profiling registration is omitted, honor disabled capture and suppression, and preserve business results, cancellation tokens and exceptions. Their bounded dimensions record the full entity type name and operation name. They use the shared completion queue and periodic writer; they do not access storage during business execution. A repository called inside an Active Entity provider contributes a nested segment to the same operation.
+
+`AddProfilingBehavior()` prevents duplicate Active Entity profiling registration. The existing `.WithBehavior<ActiveEntityProfilingBehavior<Customer>>()` API is also available. Optional operation wrappers execute in registration order around the existing lifecycle hooks. The existing two-argument `ActiveEntityContextScope.UseAsync` remains available for custom callers; its default profiling name is `UseContext`. The cancellation-aware overload accepts an explicit operation name and otherwise uses the caller's member name.
+
 ### Sampling, persistence and limits
 
 All eligible requests are selected by default. Select a built-in strategy fluently, for example `WithSampling(s => s.Probability(0.1))` or `WithSampling(s => s.RateLimit(25, 50))`; the last explicit strategy wins. Strategies are singleton and evaluated once at entry. Stored policy/probability labels describe selection, not the probability of durable retention. Sampled counts/percentiles are not extrapolated to all traffic.

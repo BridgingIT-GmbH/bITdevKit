@@ -52,7 +52,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Transa
     {
         return ActiveEntityContextScope.UseAsync<TEntity, TId, TResult>(
             null, // always create a fresh context
-            async ctx => await action(ctx));
+            async ctx => await action(ctx), cancellationToken: default);
     }
 
     /// <summary>
@@ -107,7 +107,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Transa
     {
         return ActiveEntityContextScope.UseAsync<TEntity, TId, TResult>(
             null, // always create a fresh context
-            async ctx => await action(ctx.Provider, ctx.Behaviors));
+            async ctx => await action(ctx.Provider, ctx.Behaviors), cancellationToken: default);
     }
 
     /// <summary>
@@ -187,7 +187,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Transa
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -278,6 +278,6 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Transa
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 }

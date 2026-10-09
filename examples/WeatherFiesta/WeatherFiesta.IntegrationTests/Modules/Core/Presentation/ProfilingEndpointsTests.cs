@@ -119,6 +119,11 @@ public sealed class ProfilingEndpointsTests(
         result.Cities.ShouldNotBeEmpty();
         var record = await this.WaitForRecordAsync(GetId(accepted));
         AssertComparison(record, 200, ProfilingSegmentOutcome.Completed);
+        record.Segments.ShouldContain(segment =>
+            segment.Key.StartsWith("activeentity:", StringComparison.Ordinal)
+            && segment.Path.Components.Count > 1
+            && segment.Path.Components[0] == "Query"
+        );
         record.Id.ShouldNotBe(failedRecord.Id);
     }
 
@@ -299,7 +304,7 @@ public sealed class ProfilingEndpointsTests(
         dimension.Value.ShouldBe(new ProfilingValue(ProfilingValueType.Int64, "2"));
         record.Http.StatusCode.ShouldBe(status);
         record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
-        var segment = record.Segments.ShouldHaveSingleItem();
+        var segment = record.Segments.Single(value => value.Key == "Query" && value.Path.Components.Count == 1);
         segment.Path.Components.ShouldBe(["Query"]);
         segment.Statistics.Count.ShouldBe(1);
         segment.Outcomes.ShouldHaveSingleItem().Outcome.ShouldBe(outcome);

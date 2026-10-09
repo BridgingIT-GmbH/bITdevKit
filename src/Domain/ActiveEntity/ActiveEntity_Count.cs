@@ -77,7 +77,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -159,7 +159,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -244,7 +244,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -329,7 +329,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -421,6 +421,6 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Count 
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 }

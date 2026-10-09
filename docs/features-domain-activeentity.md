@@ -678,6 +678,18 @@ services.AddActiveEntity(cfg =>
 });
 ```
 
+### Profiling behavior
+
+`AddProfilingBehavior()` registers `ActiveEntityProfilingBehavior<TEntity>` around complete operations, including their lifecycle hooks. Enable recording with `AddProfiling(options => options.Enabled()).WithOperationProfiling()`. If Profiling registration is omitted, the behavior executes business work without capture.
+
+```csharp
+services.AddActiveEntity(configuration => configuration.For<Customer, CustomerId>()
+	.UseEntityFrameworkProvider<ActiveEntityDbContext>()
+	.AddProfilingBehavior());
+```
+
+Each call joins the current operation as a segment or owns an independent `ActiveEntity` operation. Repeated calls aggregate by their complete segment path. Failed results, early returns, exceptions and caller cancellation close the recording scope. See [Profiling](./features-profiling.md#repository-and-active-entity-behaviors) for metadata, outcomes and nested repository capture.
+
 ### Domain-event publishing behavior
 
 `AddDomainEventPublishingBehavior` publishes registered domain events before or after a successful operation. Set `PublishBefore` to select the position.

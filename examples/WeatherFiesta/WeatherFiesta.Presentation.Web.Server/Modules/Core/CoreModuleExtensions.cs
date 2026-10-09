@@ -1,4 +1,4 @@
-// MIT-License
+﻿// MIT-License
 // Copyright BridgingIT GmbH - All Rights Reserved
 // Use of this source code is governed by an MIT-style license that can be
 // found in the LICENSE file at https://github.com/bridgingit/bitdevkit/license
@@ -71,6 +71,7 @@ public static class CoreModuleExtensions
             cfg.For<City, CityId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddProfilingBehavior()
                 .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
                 .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });
@@ -78,12 +79,14 @@ public static class CoreModuleExtensions
             cfg.For<UserCity, UserCityId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddProfilingBehavior()
                 .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
 
             cfg.For<CurrentWeather, CurrentWeatherId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddProfilingBehavior()
                 .AddMetricsBehavior();
 
             cfg.For<WeatherForecast, WeatherForecastId>()
@@ -91,22 +94,26 @@ public static class CoreModuleExtensions
                     .Context<CoreDbContext>()
                     .Options<CoreDbContext>(options => options.GenericMergeStrategy()))
                 .AddLoggingBehavior()
+                .AddProfilingBehavior()
                 .AddMetricsBehavior();
 
             cfg.For<WeatherReport, WeatherReportId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddProfilingBehavior()
                 .AddMetricsBehavior();
 
             cfg.For<UserProfile, UserProfileId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddProfilingBehavior()
                 .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true);
 
             cfg.For<UserSubscription, UserSubscriptionId>()
                 .UseEntityFrameworkProvider(o => o.Context<CoreDbContext>())
                 .AddLoggingBehavior()
+                .AddProfilingBehavior()
                 .AddMetricsBehavior()
                 .AddAuditStateBehavior(o => o.SoftDeleteEnabled = true)
                 .AddDomainEventPublishingBehavior(new ActiveEntityDomainEventPublishingBehaviorOptions { PublishBefore = false });

@@ -53,6 +53,24 @@ public static class ActiveEntityConfiguratorExtensions
         return configurator;
     }
 
+    /// <summary>Adds optional profiling around complete operations, including their lifecycle hooks.</summary>
+    /// <typeparam name="TEntity">The entity type.</typeparam>
+    /// <typeparam name="TId">The entity identifier type.</typeparam>
+    /// <param name="configurator">The entity configurator.</param>
+    /// <returns>The configurator for fluent chaining.</returns>
+    /// <example><code>configurator.AddProfilingBehavior&lt;Customer, CustomerId&gt;();</code></example>
+    public static ActiveEntityConfigurator<TEntity, TId> AddProfilingBehavior<TEntity, TId>(
+        this ActiveEntityConfigurator<TEntity, TId> configurator)
+        where TEntity : class, IEntity
+    {
+        if (!configurator.HasBehaviorType(typeof(ActiveEntityProfilingBehavior<TEntity>)))
+        {
+            configurator.AddBehaviorType(typeof(ActiveEntityProfilingBehavior<TEntity>));
+        }
+
+        return configurator;
+    }
+
     /// <summary>
     /// Adds a domain event publishing behavior for the entity with optional configuration options.
     /// </summary>

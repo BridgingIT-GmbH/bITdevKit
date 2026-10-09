@@ -91,7 +91,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -173,7 +173,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -258,7 +258,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -343,7 +343,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -435,7 +435,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -511,7 +511,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -593,7 +593,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -678,7 +678,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -763,7 +763,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -855,7 +855,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -939,7 +939,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1024,7 +1024,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1109,7 +1109,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1201,7 +1201,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1273,7 +1273,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1355,7 +1355,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1440,7 +1440,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1525,7 +1525,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1617,7 +1617,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1691,7 +1691,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1775,7 +1775,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1860,7 +1860,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -1945,7 +1945,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -2037,6 +2037,6 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Find m
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 }

@@ -884,6 +884,8 @@ For Pipelines the registration method is `AddBehavior`; Jobs and Orchestrations 
 | Job execution | Own a `Job` operation. | Add a job segment. |
 | Pipeline run | Own a `Pipeline` operation; steps are its segments. | Add a pipeline segment; steps are nested segments. |
 | Orchestration execution slice | Own an `Orchestration` operation; actions are its segments. | Add an orchestration segment; actions are nested segments. |
+| Generic repository call | Own a `Repository` operation. | Add a repository segment. |
+| Complete Active Entity operation | Own an `ActiveEntity` operation. | Add an Active Entity segment, including its lifecycle hooks. |
 
 All entries require an available, enabled recorder and honor capture suppression before creating scopes. Optional dependency resolution follows section 6.7. The term diagnostic session in feature usage refers to this operation scope; it does not require a Runtime Profiling session.
 
@@ -987,6 +989,18 @@ Feature registration must preserve this optional dependency through every constr
 Feature setup registers its behaviors and adapters only. It does not install fallback profiling services, create a separate service provider, or resolve a profiler on every invocation to work around missing registration. If `AddProfiling` is present but Operations is disabled, its injected façade supplies the no-recording behavior; if capture is enabled but the execution is suppressed, the same façade preserves suppression without starting a replacement operation. Intentional absence, disabled capture, and suppression are all silent configurations.
 
 Optional means an unregistered profiler can be absent. An explicitly registered profiler whose factory or dependencies fail to resolve remains a setup error; integrations must not catch DI construction errors and disguise them as omitted registration. Runtime recording failures remain isolated from business execution under the failure-handling contract.
+
+### 6.8 Repositories and Active Entities
+
+`RepositoryProfilingBehavior<TEntity>` implements the complete `IGenericRepository<TEntity>` contract and is registered with `.WithBehavior<RepositoryProfilingBehavior<TEntity>>()`. It uses custom kind `Repository` and keys `repository:{entity type name}:{operation name}`. Each overload forwards the original arguments and cancellation token to the decorated repository exactly once. Absence and disabled profiling preserve business execution. Recording exceptions cannot replace business results or exceptions. Legitimate empty reads, missing entities and no-op writes remain completed calls unless the repository throws. Returned sequences are not enumerated and results are not retained.
+
+`ActiveEntityProfilingBehavior<TEntity>` derives from the existing lifecycle behavior base and implements the optional `IActiveEntityOperationBehavior<TEntity>` wrapper contract. Register it with `.WithBehavior<ActiveEntityProfilingBehavior<TEntity>>()` or `.AddProfilingBehavior()` on the entity configurator. The latter prevents duplicate registration. No new required method is added to the existing `IActiveEntityBehavior<TEntity>` interface.
+
+`ActiveEntityContextScope` invokes registered operation wrappers in registration order around the complete existing business delegate. That delegate includes before hooks, the provider call and after hooks. Early failed-result returns, thrown exceptions and cancellation all unwind the profiling wrapper. The behavior uses kind `ActiveEntity` and keys `activeentity:{entity type name}:{operation name without Async}`. Runtime operation names come from caller member metadata, not stack inspection. Existing Active Entity entry points pass their original cancellation token to the wrapper; scope creation and DI disposal remain owned by the context scope. The original two-argument `UseAsync` overload remains available and uses the stable name `UseContext`; the new cancellation-aware overload captures the calling member name unless explicitly overridden.
+
+Both behaviors follow section 6.1 and use the shared failure-isolated recording helper. They accept only an optional `IOperationProfiler`, make no synchronous storage call and honor execution-local suppression. They record bounded scalar dimensions for the entity's full type name and operation name. Entity values, IDs, query predicates, callbacks and business result payloads are excluded. Active Entity results implementing `IResult`, including paged results, are classified without inspecting their values or raw error messages. Collection-returning convenience operations record their completed delegate boundary and nested individual operations; collections are not enumerated for outcome classification. A failed nested segment does not automatically fail an otherwise completed owner.
+
+The wrapper has no mutable invocation stack. Concurrent calls using the same behavior instance receive independent execution scopes. Repeated calls aggregate by the existing complete-path rules. Nested entity operations and decorated repository calls remain separate segment paths within the caller's operation. With no operation wrapper registered, context execution invokes the original delegate directly.
 
 ## 7. Runtime correlation and timing analysis
 

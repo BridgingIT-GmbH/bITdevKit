@@ -112,6 +112,18 @@ public sealed class CustomerService(IGenericRepository<Customer> repository)
 }
 ```
 
+### Profiling behavior
+
+Register `RepositoryProfilingBehavior<TEntity>` through the repository's existing decorator setup:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddInMemoryRepository<Product>()
+	.WithBehavior<RepositoryProfilingBehavior<Product>>();
+```
+
+The behavior measures awaited read, write and bulk calls. Each call joins an active operation as a segment or owns an independent `Repository` operation. It forwards arguments and cancellation tokens unchanged and does not enumerate returned sequences. If Profiling registration is omitted, the repository remains usable. See [Profiling](./features-profiling.md#repository-and-active-entity-behaviors) for outcomes, optional capture and nested Active Entity operations.
+
 ### Including related entities
 
 Use `IncludeOption` to eagerly load related entities:

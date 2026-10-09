@@ -53,6 +53,9 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
             var selection = prepared.Value;
             if (selection.Empty) { return Result<OperationProfilingGroupPage>.Success(new()); }
 
+            var nodeIds = EntityFrameworkOperationProfilingFilters.Apply(context, selection.Query with { NodeId = null }, selection.Boundary.CommitWatermark).Select(root => root.NodeId).Distinct();
+            var nodes = await context.Set<ProfilingNodeEntity>().AsNoTracking().Where(node => nodeIds.Contains(node.Id))
+                .OrderBy(node => node.HostName).ThenBy(node => node.Key).Take(this.queryOptions.MaximumNodeChoices + 1).ToArrayAsync(token).ConfigureAwait(false);
             var count = await EntityFrameworkProfilingQuerySql<TContext>.CountsAsync(context, selection.Roots, selection.Query, token).ConfigureAwait(false);
             IReadOnlyList<OperationProfilingRecord> visible = [];
             EntityFrameworkProfilingQuerySql<TContext>.GroupRow[] rows;
@@ -109,6 +112,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
             {
                 Groups = Array.AsReadOnly(groups), TotalOperationCount = count.Operations, TotalGroupCount = count.Groups,
                 Boundary = selection.Boundary, HasMore = more, NextCursor = next,
+                Nodes = Array.AsReadOnly(nodes.Take(this.queryOptions.MaximumNodeChoices).Select(ProfilingEntityMapper.ToModel).ToArray()), NodesTruncated = nodes.Length > this.queryOptions.MaximumNodeChoices,
             });
         }, cancellationToken);
 

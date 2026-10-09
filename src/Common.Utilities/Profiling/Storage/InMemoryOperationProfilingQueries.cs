@@ -50,6 +50,12 @@ public sealed partial class InMemoryProfilingStorageProvider
 
             var (normalized, boundary, cursor, matching) = selection.Value;
             var allGroups = matching.GroupBy(r => GroupKey(r, normalized), StringComparer.Ordinal).ToDictionary(g => g.Key, g => g.ToArray(), StringComparer.Ordinal);
+            var nodeSelection = normalized with { NodeId = null };
+            var nodeRecords = normalized.NodeId is null ? matching.AsEnumerable()
+                : this.records.Values.Where(value => value.CommitWatermark <= boundary.CommitWatermark && Matches(value.Envelope.Record, nodeSelection)).Select(value => value.Envelope.Record);
+            var nodes = nodeRecords.Select(record => record.Node).DistinctBy(node => node.Identity.Id)
+                .OrderBy(node => node.HostName, StringComparer.Ordinal).ThenBy(node => node.Identity.Key, StringComparer.Ordinal)
+                .Take(this.queryOptions.MaximumNodeChoices + 1).ToArray();
             OperationProfilingGroup[] groups;
             bool hasMore;
             string next;
@@ -76,6 +82,7 @@ public sealed partial class InMemoryProfilingStorageProvider
             {
                 Groups = Array.AsReadOnly(groups), TotalGroupCount = allGroups.Count, TotalOperationCount = matching.LongLength,
                 Boundary = boundary, HasMore = hasMore, NextCursor = next,
+                Nodes = Array.AsReadOnly(nodes.Take(this.queryOptions.MaximumNodeChoices).ToArray()), NodesTruncated = nodes.Length > this.queryOptions.MaximumNodeChoices,
             });
         }
     }

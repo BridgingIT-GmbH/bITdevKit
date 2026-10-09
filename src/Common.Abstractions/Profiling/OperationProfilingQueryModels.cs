@@ -318,6 +318,14 @@ public sealed record OperationProfilingGroup
 /// <example><code>var value = new OperationProfilingGroupPage();</code></example>
 public sealed record OperationProfilingGroupPage
 {
+    /// <summary>Gets contributing nodes for the selection before applying its node filter, bounded by the provider's node-choice limit.</summary>
+    /// <example><code>var choices = page.Nodes;</code></example>
+    public IReadOnlyList<ProfilingNode> Nodes { get; init; } = [];
+
+    /// <summary>Gets whether additional contributing nodes exceed the node-choice limit.</summary>
+    /// <example><code>var limited = page.NodesTruncated;</code></example>
+    public bool NodesTruncated { get; init; }
+
     /// <summary>Gets an opaque stable continuation key when more results exist.</summary>
     /// <example><code>var value = record.NextCursor;</code></example>
     public string NextCursor { get; init; }

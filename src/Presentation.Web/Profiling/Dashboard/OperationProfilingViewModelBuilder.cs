@@ -8,6 +8,12 @@ namespace BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard;
 using System.Globalization;
 using BridgingIT.DevKit.Common;
 
+/// <summary>Supplies an elapsed segment value and the operation duration used as its percentage denominator.</summary>
+/// <param name="Duration">The observed segment duration.</param>
+/// <param name="OperationDuration">The owning operation duration.</param>
+/// <example><code>var timing = new OperationProfilingTiming(segment.Statistics.TotalDuration, record.Duration);</code></example>
+public sealed record OperationProfilingTiming(TimeSpan Duration, TimeSpan OperationDuration);
+
 /// <summary>Contains one retained-history view and its node-local freshness observation.</summary>
 /// <example><code>var count = model.Groups?.TotalOperationCount;</code></example>
 public sealed record OperationProfilingDashboardModel
@@ -96,6 +102,9 @@ public sealed class OperationProfilingViewModelBuilder(IOperationProfilingQueryS
     /// <summary>Formats observed elapsed time in milliseconds or seconds.</summary>
     /// <example><code>var label = OperationProfilingViewModelBuilder.Duration(record.Duration);</code></example>
     public static string Duration(TimeSpan value) => value.TotalMilliseconds < 1000 ? value.TotalMilliseconds.ToString("0.###", CultureInfo.InvariantCulture) + " ms" : value.TotalSeconds.ToString("0.###", CultureInfo.InvariantCulture) + " s";
+    /// <summary>Formats a segment duration as a percentage of its owner, without clamping repeated or parallel totals.</summary>
+    /// <example><code>var label = OperationProfilingViewModelBuilder.Percentage(segment.Statistics.TotalDuration, record.Duration);</code></example>
+    public static string Percentage(TimeSpan value, TimeSpan operationDuration) => operationDuration <= TimeSpan.Zero ? "—" : ((double)value.Ticks / operationDuration.Ticks * 100).ToString("0.##", CultureInfo.InvariantCulture) + "%";
     /// <summary>Describes partial, truncated or skewed capture independently of business outcome.</summary>
     /// <example><code>var quality = OperationProfilingViewModelBuilder.Quality(record);</code></example>
     public static string Quality(OperationProfilingRecord record) => string.Join(", ", new[]

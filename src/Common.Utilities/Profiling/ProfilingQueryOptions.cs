@@ -17,6 +17,10 @@ public sealed class ProfilingQueryOptions
     /// <example><code>var value = options.MaximumPageSize;</code></example>
     public int MaximumPageSize { get; set; } = 200;
 
+    /// <summary>Gets or sets the maximum contributing-node choices returned with a grouped view.</summary>
+    /// <example><code>options.MaximumNodeChoices = 200;</code></example>
+    public int MaximumNodeChoices { get; set; } = 200;
+
     /// <summary>Gets or sets MaximumConcurrentQueries.</summary>
     /// <example><code>var value = options.MaximumConcurrentQueries;</code></example>
     public int MaximumConcurrentQueries { get; set; } = 4;
@@ -49,7 +53,7 @@ public sealed class ProfilingQueryOptions
     /// <example><code>options.Validate();</code></example>
     public void Validate()
     {
-        if (this.PageSize <= 0 || this.MaximumPageSize < this.PageSize || this.MaximumConcurrentQueries <= 0
+        if (this.PageSize <= 0 || this.MaximumPageSize < this.PageSize || this.MaximumConcurrentQueries <= 0 || this.MaximumNodeChoices is <= 0 or > 10000
             || this.MaximumAnalysisRecords <= 0 || this.MaximumDimensionPredicates <= 0 || this.MaximumGroupingDimensions <= 0
             || this.MaximumOverlaySnapshots <= 0 || this.Timeout <= TimeSpan.Zero || this.Timeout == TimeSpan.MaxValue
             || this.BoundaryLifetime <= TimeSpan.Zero || this.BoundaryLifetime == TimeSpan.MaxValue)

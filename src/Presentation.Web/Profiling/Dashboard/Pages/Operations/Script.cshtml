@@ -13,6 +13,7 @@
     let comparisonController = null;
     function selectionUrl() {
         const url = new URL(content.dataset.contentUrl, location.origin);
+        if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
         if (form) new FormData(form).forEach((value, key) => {
             // datetime-local represents the explicitly labelled UTC clock, not the browser's timezone.
             url.searchParams.set(key, (key === 'fromUtc' || key === 'toUtc') && value ? value + 'Z' : value);
@@ -20,6 +21,34 @@
         else current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
         return url;
     }
+    function synchronizeNodes() {
+        const select = document.getElementById('operation-node');
+        const source = content.querySelector('template[data-operation-node-options]');
+        if (!select || !source) return;
+        const selected = select.value;
+        select.replaceChildren(source.content.cloneNode(true));
+        if (selected && ![...select.options].some(option => option.value === selected)) {
+            select.add(new Option(`Node ${selected.replaceAll('-', '').slice(0, 8)}`, selected));
+        }
+        select.value = selected;
+    }
+    let timingMode = 'duration';
+    try { if (localStorage.getItem('bdk.profiling.segment-timing') === 'percentage') timingMode = 'percentage'; } catch { }
+    function applyTimingMode() {
+        content.querySelectorAll('[data-segment-timing]').forEach(value => { value.textContent = value.dataset[timingMode]; });
+        content.querySelectorAll('[data-segment-timing-mode]').forEach(button => {
+            const active = button.dataset.segmentTimingMode === timingMode;
+            button.classList.toggle('active', active);
+            button.setAttribute('aria-pressed', String(active));
+        });
+    }
+    content.addEventListener('click', event => {
+        const button = event.target.closest('[data-segment-timing-mode]');
+        if (!button) return;
+        timingMode = button.dataset.segmentTimingMode;
+        try { localStorage.setItem('bdk.profiling.segment-timing', timingMode); } catch { }
+        applyTimingMode();
+    });
     function captureState() {
         return { open: new Set([...content.querySelectorAll('details[open][data-preserve-key]')].map(value => value.dataset.preserveKey)),
             closed: new Set([...content.querySelectorAll('details:not([open])[data-preserve-key]')].map(value => value.dataset.preserveKey)), x: scrollX, y: scrollY };
@@ -79,7 +108,7 @@
     }
     const refresher = window.bdkDashboard.createRefresher({ contentElement: content, intervalElement: interval, statusSelector: '#operation-refresh-status',
         storageKey: 'bdk.profiling.operation-refresh', buildUrl: selectionUrl,
-        applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); window.bdkProfiling.initializeHelp(element); },
+        applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); synchronizeNodes(); applyTimingMode(); window.bdkProfiling.initializeHelp(element); },
         onSuccess: charts, formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
     if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); const status = document.getElementById('operation-refresh-status'); status.textContent = 'Paged view'; status.title = 'Auto refresh is paused. Refresh latest to return to the current window.'; }
     document.getElementById('operation-refresh-now')?.addEventListener('click', () => { unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl; if (form) history.replaceState(null, '', url); refresher.refresh(true); });
@@ -89,10 +118,6 @@
         history.replaceState(null, '', url); comparisonController?.abort(); refresher.refresh(true);
     });
     form?.addEventListener('change', () => { comparisonController?.abort(); refresher.cancel(); });
-    document.getElementById('operation-lookup')?.addEventListener('submit', event => {
-        event.preventDefault(); const id = document.getElementById('operation-id').value.trim();
-        if (/^(?:[0-9a-fA-F]{32}|[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12})$/.test(id)) location.assign(content.dataset.pageUrl + '/' + encodeURIComponent(id));
-    });
     document.getElementById('operation-compare')?.addEventListener('click', async () => {
         const output = document.getElementById('operation-comparison');
         comparisonController?.abort(); comparisonController = new AbortController();
@@ -114,6 +139,7 @@
             output.textContent = describe('Baseline', data.baseline) + describe('Candidate', data.candidate) + segments('Baseline',data.baseline) + segments('Candidate',data.candidate) + `Observed p95 change: ${data.p95ChangePercent == null ? 'unavailable' : data.p95ChangePercent.toFixed(2) + '%'}`;
         } catch (error) { if (error.name !== 'AbortError') output.textContent = `Comparison unavailable: ${error.message}`; }
     });
+    applyTimingMode();
     charts().catch(() => { document.getElementById('operation-refresh-status').textContent = 'Charts unavailable'; });
 })();
 </script>

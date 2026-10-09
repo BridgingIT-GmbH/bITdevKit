@@ -48,6 +48,14 @@ public sealed class OperationProfilingDashboardTests
         groups.Groups.Single().Count.ShouldBe(2);
         content.ShouldContain("Percent of operation duration");
         content.ShouldContain("UTC");
+        content.ShouldContain("bi bi-eye");
+        content.ShouldContain("Duration breakdown");
+        content.ShouldNotContain("Wall time");
+        page.ShouldContain("<select id=\"operation-node\"");
+        page.ShouldContain("All nodes");
+        page.ShouldNotContain("id=\"operation-outcomes\"");
+        page.ShouldNotContain("id=\"operation-group\"");
+        page.ShouldNotContain("id=\"operation-id\"");
         page.ShouldContain("/admin/profiling/operations");
         (await client.GetAsync("/admin/profiling/requests/" + service)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
         (await client.GetAsync("/admin/profiling/requests/" + first)).StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -165,6 +173,21 @@ public sealed class OperationProfilingDashboardTests
         html.ShouldContain("data-profiling-copy=\"lookup&amp;&lt;script&gt;&quot;quoted&quot;&lt;/script&gt;\"");
         html.ShouldNotContain(correlationId);
         html.ShouldNotContain("data-runtime-overlay=");
+        html.ShouldContain("aria-label=\"Segment timing display\"");
+        html.ShouldContain("data-segment-timing-mode=\"percentage\"");
+        html.ShouldContain("data-percentage=");
+    }
+
+    /// <summary>Segment shares use the owner duration, retain values above 100%, and avoid division by zero.</summary>
+    /// <example><code>suite.Percentage_OwnerDuration_FormatsObservedShare(25, 100, "25%");</code></example>
+    [Theory]
+    [InlineData(25, 100, "25%")]
+    [InlineData(250, 100, "250%")]
+    [InlineData(0, 100, "0%")]
+    [InlineData(10, 0, "—")]
+    public void Percentage_OwnerDuration_FormatsObservedShare(double segmentMs, double operationMs, string expected)
+    {
+        OperationProfilingViewModelBuilder.Percentage(TimeSpan.FromMilliseconds(segmentMs), TimeSpan.FromMilliseconds(operationMs)).ShouldBe(expected);
     }
 
     /// <summary>One occupied query budget produces the same Busy status in both render paths and JSON.</summary>

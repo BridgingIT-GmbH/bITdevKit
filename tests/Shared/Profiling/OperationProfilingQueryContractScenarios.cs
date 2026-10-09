@@ -11,6 +11,59 @@ using Xunit;
 
 public abstract partial class ProfilingStorageContractTestsBase
 {
+    /// <summary>Node choices cover retained matches beyond the visible page and remain selectable when one node is filtered.</summary>
+    /// <example><code>await suite.Groups_NodeFilter_ReturnsAllContributingNodesWithinPublicationBoundary(OperationProfilingView.Slow);</code></example>
+    [Theory]
+    [InlineData(OperationProfilingView.Slow)]
+    [InlineData(OperationProfilingView.Recent)]
+    [InlineData(OperationProfilingView.ByCount)]
+    public async Task Groups_NodeFilter_ReturnsAllContributingNodesWithinPublicationBoundary(OperationProfilingView view)
+    {
+        var h = await this.CreateAsync();
+        var otherNode = h.Node with { Identity = new(Guid.NewGuid(), "zzzzzzzz"), HostName = "other-node", Correlation = null };
+        var otherLease = await h.Store.OpenWriterAsync(new() { AttemptId = Guid.NewGuid(), Node = otherNode });
+        otherLease.IsSuccess.ShouldBeTrue();
+        (await h.Store.AppendAsync([h.Envelope(h.Record(), 1), h.Envelope(h.Record() with { Node = otherNode }, 1, otherLease.Value)])).IsSuccess.ShouldBeTrue();
+        var query = h.Query() with { View = view, PageSize = 1, NodeId = h.Node.Identity.Id };
+
+        var page = await h.Store.GroupAsync(query);
+
+        page.IsSuccess.ShouldBeTrue();
+        page.Value.TotalOperationCount.ShouldBe(1);
+        page.Value.Nodes.Select(node => node.Identity.Id).Order().ShouldBe(new[] { h.Node.Identity.Id, otherNode.Identity.Id }.Order());
+        page.Value.NodesTruncated.ShouldBeFalse();
+        (await h.Store.AppendAsync([h.Envelope(h.Record("Other") with { Node = otherNode }, 2, otherLease.Value)])).IsSuccess.ShouldBeTrue();
+        var absent = await h.Store.GroupAsync(query with { Key = "Other", NodeId = null });
+        absent.Value.Nodes.Select(node => node.Identity.Id).ShouldBe([otherNode.Identity.Id]);
+        var lateNode = h.Node with { Identity = new(Guid.NewGuid(), "xxxxxxxx"), HostName = "late-node", Correlation = null };
+        var lateLease = await h.Store.OpenWriterAsync(new() { AttemptId = Guid.NewGuid(), Node = lateNode });
+        (await h.Store.AppendAsync([h.Envelope(h.Record() with { Node = lateNode }, 1, lateLease.Value)])).IsSuccess.ShouldBeTrue();
+        (await h.Store.GroupAsync(query)).Value.Nodes.Count.ShouldBe(3);
+        var pinned = await h.Store.GroupAsync(query with { Boundary = page.Value.Boundary });
+        pinned.Value.TotalOperationCount.ShouldBe(1);
+        pinned.Value.Nodes.Count.ShouldBe(2);
+    }
+
+    /// <summary>Node choice limits do not truncate execution counts or the selected node's results.</summary>
+    /// <example><code>await suite.Groups_NodeChoiceLimit_ReportsTruncationWithoutRestrictingResults();</code></example>
+    [Fact]
+    public async Task Groups_NodeChoiceLimit_ReportsTruncationWithoutRestrictingResults()
+    {
+        var options = new ProfilingOptions();
+        options.Queries.MaximumNodeChoices = 1;
+        var h = await this.CreateAsync(options);
+        var otherNode = h.Node with { Identity = new(Guid.NewGuid(), "yyyyyyyy"), HostName = "other-node", Correlation = null };
+        var lease = await h.Store.OpenWriterAsync(new() { AttemptId = Guid.NewGuid(), Node = otherNode });
+        (await h.Store.AppendAsync([h.Envelope(h.Record(), 1), h.Envelope(h.Record() with { Node = otherNode }, 1, lease.Value)])).IsSuccess.ShouldBeTrue();
+
+        var page = await h.Store.GroupAsync(h.Query());
+
+        page.IsSuccess.ShouldBeTrue();
+        page.Value.TotalOperationCount.ShouldBe(2);
+        page.Value.Nodes.Count.ShouldBe(1);
+        page.Value.NodesTruncated.ShouldBeTrue();
+    }
+
     [Theory]
     [InlineData("key")]
     [InlineData("sort")]

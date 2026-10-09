@@ -1,0 +1,7 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@inherits RazorSlice<OperationProfilingTiming>
+@{
+    var duration = OperationProfilingViewModelBuilder.Duration(Model.Duration);
+    var percentage = OperationProfilingViewModelBuilder.Percentage(Model.Duration, Model.OperationDuration);
+}
+<span data-segment-timing data-duration="@duration" data-percentage="@percentage" title="@duration · @percentage of operation duration">@duration</span>

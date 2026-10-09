@@ -38,6 +38,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
         this.queryOptions = new()
         {
             PageSize = options.Queries.PageSize, MaximumPageSize = options.Queries.MaximumPageSize, MaximumConcurrentQueries = options.Queries.MaximumConcurrentQueries,
+            MaximumNodeChoices = options.Queries.MaximumNodeChoices,
             MaximumAnalysisRecords = options.Queries.MaximumAnalysisRecords, MaximumDimensionPredicates = options.Queries.MaximumDimensionPredicates,
             MaximumGroupingDimensions = options.Queries.MaximumGroupingDimensions, MaximumOverlaySnapshots = options.Queries.MaximumOverlaySnapshots,
             Timeout = options.Queries.Timeout, BoundaryLifetime = options.Queries.BoundaryLifetime,

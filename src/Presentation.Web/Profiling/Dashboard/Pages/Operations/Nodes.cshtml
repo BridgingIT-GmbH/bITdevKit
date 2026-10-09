@@ -1,0 +1,15 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@inherits RazorSlice<OperationProfilingDashboardModel>
+<option value="">All nodes</option>
+@foreach (var node in Model.Groups?.Nodes ?? [])
+{
+    <option value="@node.Identity.Id" selected="@(Model.Query.NodeId == node.Identity.Id)">@(node.DisplayName ?? node.HostName) · @node.Identity.Key</option>
+}
+@if (Model.Query.NodeId is Guid selected && Model.Groups?.Nodes.Any(node => node.Identity.Id == selected) != true)
+{
+    <option value="@selected" selected title="@selected">Node @selected.ToString("N")[..8]</option>
+}
+@if (Model.Groups?.NodesTruncated == true)
+{
+    <option disabled>More nodes available; narrow the selection</option>
+}

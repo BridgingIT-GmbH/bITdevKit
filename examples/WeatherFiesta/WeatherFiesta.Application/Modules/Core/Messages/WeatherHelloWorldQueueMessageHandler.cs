@@ -11,25 +11,27 @@ using Microsoft.Extensions.Logging;
 /// <summary>
 /// Handles <see cref="WeatherHelloWorldQueueMessage" /> queue messages.
 /// </summary>
+/// <param name="logger">The application logger.</param>
+/// <param name="profiling">Optional operation profiling for handler segments.</param>
 /// <example>
 /// <code>
 /// services.AddQueueing().WithSubscription&lt;WeatherHelloWorldQueueMessage, WeatherHelloWorldQueueMessageHandler&gt;();
 /// </code>
 /// </example>
-public sealed class WeatherHelloWorldQueueMessageHandler(ILogger<WeatherHelloWorldQueueMessageHandler> logger) : IQueueMessageHandler<WeatherHelloWorldQueueMessage>
+public sealed class WeatherHelloWorldQueueMessageHandler(ILogger<WeatherHelloWorldQueueMessageHandler> logger, IOperationProfiler profiling = null) : IQueueMessageHandler<WeatherHelloWorldQueueMessage>
 {
     /// <inheritdoc />
     public async Task Handle(WeatherHelloWorldQueueMessage message, CancellationToken cancellationToken)
     {
         ArgumentNullException.ThrowIfNull(message);
 
-        await Task.Delay(150, cancellationToken);
+        await profiling.RunSegmentAsync("ProcessGreeting", (_, token) => Task.Delay(150, token), cancellationToken);
 
-        logger.LogInformation(
+        profiling.RunSegment("LogCompletion", _ => logger.LogInformation(
             "[{LogKey}] processed hello-world queue message (messageId={MessageId}, scope={Scope}, steps={StepCount})",
             Constants.LogKey,
             message.MessageId,
             message.Scope,
-            message.Steps?.Count ?? 0);
+            message.Steps?.Count ?? 0));
     }
 }

@@ -262,7 +262,7 @@ Bounded dimensions contain `messaging.messageType`, `messaging.handlerType`, `qu
 
 Every operation stores the cached executing-process `ProfilingNode`: its GUID and readable key, hostname, display name, process ID, process-start UTC and application version. Consumer records describe the node that ran the handler; producer metadata never substitutes for it. Segments belong to their operation's node. Node GUIDs distinguish separate processes on one host and change after a restart; a display name is not a unique identity.
 
-The Operations dashboard's **Exact node GUID** filter selects that node's records, groups and distributions. Runtime navigation uses the same node identity plus UTC interval overlap. Shared EF storage can retain records from several nodes for these views. The default in-memory provider contains only the current process's history. Grouping still uses operation keys and explicitly selected dimensions; node selection is an exact filter, not an implicit grouping dimension.
+The Operations and Requests dashboards have a **Node** selector showing contributing node names and readable keys. It filters that node's records, groups and distributions. Choices come from retained operations within the selection before applying the node filter, including nodes outside the visible page. Runtime navigation uses the same node identity plus UTC interval overlap. Shared EF storage can retain records from several nodes for these views. The default in-memory provider contains only the current process's history. Grouping still uses operation keys and explicitly selected dimensions; node selection is an exact filter, not an implicit grouping dimension.
 
 
 ### Sampling, persistence and limits
@@ -293,7 +293,7 @@ Operations and Requests share Slow, Recent and By count modes, result choices 10
 
 Initial rendering and content refresh call the same DI model builder/query facade. Dashboard JSON uses that facade too, without HTTP loopback, direct EF queries in Razor or queue flushing. Auto refresh pauses in hidden tabs, cancels obsolete selectors, preserves expansion/scroll and keeps visibly stale data after errors. Paged selections retain a publication boundary and disable auto refresh until Refresh latest. Clearing, retention, changed filters or an expired five-minute boundary require a fresh selection.
 
-Query settings are configurable through `ProfilingOptions.Queries`. The exact-analysis selection bound applies to both root durations and per-operation segment distributions. EF operation-query commands inherit the configured query timeout, rounded up to at least one whole second; the shared query facade still enforces the precise elapsed deadline and caller cancellation.
+Query settings are configurable through `ProfilingOptions.Queries`. `MaximumNodeChoices` defaults to 200, accepts 1–10,000, and bounds node choices without reducing execution counts; the selector indicates when more nodes match. The exact-analysis selection bound applies to both root durations and per-operation segment distributions. EF operation-query commands inherit the configured query timeout, rounded up to at least one whole second; the shared query facade still enforces the precise elapsed deadline and caller cancellation.
 
 Queries allow eight general dimension predicates and four grouping dimensions. Expanding a group uses at most four additional exact/missing group selectors while preserving the general filters. Exact analysis returns midpoint medians and nearest-rank p95/p99 from retained owner observations. Segment means remain invocation-weighted; distributions refer to per-operation aggregates and are not averages of percentiles.
 
@@ -421,19 +421,19 @@ Profiling dashboard routes inherit the dashboard's authentication and authorizat
 
 #### Grouped executions
 
-Use By count to rank retained groups, Slow to inspect the longest executions, or Recent to follow new activity. Group by a developer-defined dimension to compare executions with the same key and different inputs. Counts cover the retained selection, even when the page shows only representative executions.
+Use By count to rank retained groups, Slow to inspect the longest executions, or Recent to follow new activity. Counts cover the retained selection, even when the page shows only representative executions. The eye button opens a group's executions in By count, or the selected execution in Slow and Recent. Advanced filters accept a typed selector for dimension grouping, outcomes and other detailed criteria.
 
 [![Operations grouped by logical key, kind, and a typed dimension, with retained counts and a segment timing tooltip](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
 
-Rows show the executing node, root outcome, duration and exclusive wall-time share. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. Expand **Capture health** for persistence and sampling details.
+Rows show the executing node, root outcome, duration and a duration breakdown. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. Expand **Capture health** for persistence and sampling details.
 
 Use the **From UTC** and **To UTC** date/time pickers to bound the selection. Their values always represent UTC, regardless of the browser's timezone. Node names and keys identify where work ran. Correlation IDs link to filtered logs; the adjacent copy action copies the complete ID.
 
 #### Slow HTTP requests
 
-Requests fixes the execution kind to `HttpRequest` and adds the method, status and observed response bytes. Sampling details are available from the information icon. Select an execution ID, or paste the response's `X-Request-Profiling-Id` into **Diagnostics ID** in the top toolbar and select the search action, to open its retained details.
+Requests fixes the execution kind to `HttpRequest` and adds the method, status and observed response bytes. Sampling details are available from the information icon. Select an execution ID or its eye button to open retained details. The response's `X-Request-Profiling-Id` identifies the execution and can be used in the dashboard detail URL.
 
-[![Requests in Slow mode with HTTP status, response bytes, sampling policy, durations, and segment wall-time bars](assets/dashboard/profiling/requests.png)](assets/dashboard/profiling/requests.png)
+[![Requests in Slow mode with HTTP status, response bytes, sampling policy, and segment duration breakdowns](assets/dashboard/profiling/requests.png)](assets/dashboard/profiling/requests.png)
 
 The top toolbar provides manual refresh and the auto-refresh interval. Refresh updates persisted history while preserving open groups and details. Pending records appear after the periodic writer persists them; refreshing the page does not force a flush.
 
@@ -441,7 +441,9 @@ The top toolbar provides manual refresh and the auto-refresh interval. Refresh u
 
 Operation details combine typed dimensions and measurements with the aggregated segment tree. Repeated invocations share a row at the same complete path. Nested paths keep parent and child work distinct, with invocation counts, outcomes, total and self durations, weighted means, and minimum and maximum durations.
 
-**Total** sums every invocation's elapsed time, including child work. **Self** excludes the time covered by its children, subtracting overlapping child intervals once. Nested or parallel totals can exceed the operation's duration; the wall-time bar shows the exclusive duration shares instead. Indented rows show segment names, with the full path in a tooltip. Hover or focus the information icons for timing definitions, and expand **Metadata** or a segment's **Details** for measurements and failure information.
+**Total** sums every invocation's elapsed time, including child work. **Self** excludes the time covered by its children, subtracting overlapping child intervals once. Nested or parallel totals can exceed the operation's duration; the duration breakdown shows the exclusive shares instead. Indented rows show segment names, with the full path in a tooltip. Hover or focus the information icons for timing definitions, and expand **Metadata** or a segment's **Details** for measurements and failure information.
+
+The **Duration / %** control beside **Segments** switches all timing columns, including minimum, maximum and self mean, between elapsed time and percentage of the operation duration. Tooltips retain both values. Percentages can exceed 100% for repeated or parallel work; a zero-duration operation has no percentage denominator. The browser preserves this choice across refreshes and navigation.
 
 [![Operation details with typed metadata and repeated, nested segment statistics, including successful and failed invocations](assets/dashboard/profiling/operation-details.png)](assets/dashboard/profiling/operation-details.png)
 

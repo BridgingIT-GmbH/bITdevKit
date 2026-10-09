@@ -1,0 +1,45 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const selector = '.profiling-help[data-bs-toggle="tooltip"]';
+    window.bdkProfiling = {
+        formatUpdatedAt(value) { return 'Updated ' + value.toISOString().slice(11, 19) + ' UTC'; },
+        initializeHelp(root = document) {
+            if (!window.bootstrap?.Tooltip) return;
+            root.querySelectorAll(selector).forEach(element => bootstrap.Tooltip.getOrCreateInstance(element, { container: 'body' }));
+        },
+        disposeHelp(root) {
+            root.querySelectorAll(selector).forEach(element => window.bootstrap?.Tooltip.getInstance(element)?.dispose());
+        }
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => window.bdkProfiling.initializeHelp(), { once: true });
+    else window.bdkProfiling.initializeHelp();
+    document.addEventListener('click', async event => {
+        const button = event.target.closest('[data-profiling-copy]');
+        if (!button) return;
+        const value = button.dataset.profilingCopy;
+        let copied = false;
+        try {
+            await navigator.clipboard.writeText(value);
+            copied = true;
+        } catch {
+            const input = document.createElement('textarea');
+            input.value = value;
+            input.style.cssText = 'position:fixed;left:-9999px;top:0';
+            document.body.append(input);
+            input.select();
+            try { copied = document.execCommand('copy'); } catch { }
+            input.remove();
+            button.focus();
+        }
+        button.title = copied ? 'Copied' : 'Copy failed';
+        button.setAttribute('aria-label', copied ? 'Correlation ID copied' : 'Copy correlation ID failed');
+        button.querySelector('i').className = copied ? 'bi bi-check2' : 'bi bi-copy';
+        setTimeout(() => {
+            button.title = 'Copy correlation ID';
+            button.setAttribute('aria-label', 'Copy correlation ID');
+            button.querySelector('i').className = 'bi bi-copy';
+        }, 1500);
+    });
+})();
+</script>

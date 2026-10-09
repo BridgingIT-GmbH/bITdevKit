@@ -9,11 +9,14 @@
     const interval = document.getElementById('operation-refresh-interval');
     const current = new URL(location.href);
     let pinned = current.searchParams.has('cursor');
-    function unpin() { current.searchParams.delete('cursor'); pinned = false; if (interval) interval.disabled = false; }
+    function unpin() { current.searchParams.delete('cursor'); pinned = false; if (interval) interval.disabled = false; document.getElementById('operation-refresh-status').removeAttribute('title'); }
     let comparisonController = null;
     function selectionUrl() {
         const url = new URL(content.dataset.contentUrl, location.origin);
-        if (form) new FormData(form).forEach((value, key) => url.searchParams.set(key, value));
+        if (form) new FormData(form).forEach((value, key) => {
+            // datetime-local represents the explicitly labelled UTC clock, not the browser's timezone.
+            url.searchParams.set(key, (key === 'fromUtc' || key === 'toUtc') && value ? value + 'Z' : value);
+        });
         else current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
         return url;
     }
@@ -65,10 +68,10 @@
                     x.push(sample.snapshot.timestampUtc); y.push(sample.snapshot[field] == null ? null : sample.snapshot[field] / scale);
                     text.push(`${sample.relation} · ${sample.snapshot.timestampUtc} · actual rate interval ${sample.metricIntervalFromUtc || 'unavailable'} → ${sample.metricIntervalToUtc || 'unavailable'}`);
                 });
-                traces.push({ x, y, text, name: `${label} · ${session}`, mode: 'lines+markers', connectgaps: false, hovertemplate: '%{text}<br>%{y}<extra>%{fullData.name}</extra>', line: { color: colors[metricIndex % colors.length] } });
+                traces.push({ x, y, text, name: groups.size > 1 ? `${label} · ${session}` : label, mode: 'lines+markers', connectgaps: false, hovertemplate: '%{text}<br>%{y}<extra>%{fullData.name}</extra>', line: { color: colors[metricIndex % colors.length] } });
             }
-            const baseLayout = window.bdkDashboard.createPlotlyLayout({ margin: { l: 55, r: 20, t: 45, b: 55 } });
-            const layout = { ...baseLayout, title: { text: title }, xaxis: { ...baseLayout.xaxis, title: { text: 'UTC' }, type: 'date' },
+            const baseLayout = window.bdkDashboard.createPlotlyLayout({ margin: { l: 55, r: 20, t: 45, b: 85 }, legend: { orientation: 'h', x: 0, y: -0.4 } });
+            const layout = { ...baseLayout, title: { text: title }, xaxis: { ...baseLayout.xaxis, type: 'date' },
                 shapes: [{ type: 'rect', xref: 'x', yref: 'paper', x0: overlay.startedUtc, x1: overlay.completedUtc, y0: 0, y1: 1, fillcolor: '#2478be22', line: { width: 0 }, layer: 'below' }] };
             if (!host.isConnected) return;
             await Plotly.react(host.querySelector(selector), traces, layout, { responsive: true, displaylogo: false });
@@ -76,9 +79,9 @@
     }
     const refresher = window.bdkDashboard.createRefresher({ contentElement: content, intervalElement: interval, statusSelector: '#operation-refresh-status',
         storageKey: 'bdk.profiling.operation-refresh', buildUrl: selectionUrl,
-        applyResponse: (element, html) => { const state = captureState(); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); },
-        onSuccess: charts, errorText: 'Refresh failed; displayed profiling data is stale.' });
-    if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); document.getElementById('operation-refresh-status').textContent = 'Paged selection is pinned. Refresh latest to return to the current window.'; }
+        applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); window.bdkProfiling.initializeHelp(element); },
+        onSuccess: charts, formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
+    if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); const status = document.getElementById('operation-refresh-status'); status.textContent = 'Paged view'; status.title = 'Auto refresh is paused. Refresh latest to return to the current window.'; }
     document.getElementById('operation-refresh-now')?.addEventListener('click', () => { unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl; if (form) history.replaceState(null, '', url); refresher.refresh(true); });
     form?.addEventListener('submit', event => {
         event.preventDefault(); unpin();
@@ -111,6 +114,6 @@
             output.textContent = describe('Baseline', data.baseline) + describe('Candidate', data.candidate) + segments('Baseline',data.baseline) + segments('Candidate',data.candidate) + `Observed p95 change: ${data.p95ChangePercent == null ? 'unavailable' : data.p95ChangePercent.toFixed(2) + '%'}`;
         } catch (error) { if (error.name !== 'AbortError') output.textContent = `Comparison unavailable: ${error.message}`; }
     });
-    charts().catch(() => { document.getElementById('operation-refresh-status').textContent = 'Runtime charts unavailable; retained details are shown.'; });
+    charts().catch(() => { document.getElementById('operation-refresh-status').textContent = 'Charts unavailable'; });
 })();
 </script>

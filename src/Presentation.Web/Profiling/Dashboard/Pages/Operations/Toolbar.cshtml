@@ -1,0 +1,16 @@
+@inherits RazorSlice<string>
+<div class="operation-toolbar d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-2 border-bottom">
+    @if (!string.IsNullOrEmpty(Model))
+    {
+        <a href="@Model" class="btn btn-outline-secondary btn-sm" title="Back to the list" aria-label="Back to the list"><i class="bi bi-arrow-left" aria-hidden="true"></i></a>
+    }
+    else
+    {
+        <form id="operation-lookup" class="input-group input-group-sm operation-lookup"><input id="operation-id" class="form-control" placeholder="Diagnostics ID" title="Find an execution by its X-Request-Profiling-Id response header" aria-label="Diagnostics ID" pattern="[0-9a-fA-F-]{32,36}" required /><button class="btn btn-outline-primary" type="submit" title="Find diagnostics ID" aria-label="Find diagnostics ID"><i class="bi bi-search" aria-hidden="true"></i></button></form>
+    }
+    <div class="d-flex align-items-center gap-2">
+        <span id="operation-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
+        <select id="operation-refresh-interval" class="form-select form-select-sm" style="width:9rem" aria-label="Profiling refresh interval"><option value="">Off</option><option value="1000">1 sec</option><option value="5000" selected>5 sec</option><option value="10000">10 sec</option><option value="15000">15 sec</option><option value="30000">30 sec</option><option value="60000">60 sec</option></select>
+        <button id="operation-refresh-now" class="btn btn-outline-warning btn-sm" type="button" title="Refresh latest" aria-label="Refresh latest"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+    </div>
+</div>

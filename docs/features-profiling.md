@@ -380,7 +380,7 @@ The Overview charts align memory, CPU, allocation and GC observations on a UTC t
 
 [![Runtime Analysis with evidence-backed allocation, heap-growth, retention, and GC-pressure signals](assets/dashboard/profiling/runtime-analysis.png)](assets/dashboard/profiling/runtime-analysis.png)
 
-Analysis shows each signal's confidence, supporting measurements and suggested next step. Read the sampling-quality summary alongside the signals before deciding what to investigate.
+Analysis shows each signal's confidence, supporting measurements and suggested next step. Byte values use readable units; information icons retain the recorded value and explain each metric. Read the sampling-quality summary alongside the signals before deciding what to investigate.
 
 ### Dashboard usage guide
 
@@ -399,7 +399,7 @@ Session and node selection remain visible above the tabs. Metadata is viewed and
 
 ### Optional local stress workload
 
-The flame action immediately left of the refresh interval starts the default stress workload and returns without blocking the dashboard request. It uses dedicated CPU workers, sustains short-lived and large-object allocations, retains a bounded 32–128 MiB based on available memory, and forces one full GC while retained objects remain reachable. The complete background workload is recorded as a named `Profiling stress test` segment so its duration is visible as a labeled range on both charts. A second run is rejected until the current 30-second run finishes. The workload affects only the process hosting the dashboard and stops during application shutdown.
+The flame action in the top toolbar starts the default stress workload and returns without blocking the dashboard request. It uses dedicated CPU workers, sustains short-lived and large-object allocations, retains a bounded 32–128 MiB based on available memory, and forces one full GC while retained objects remain reachable. The complete background workload is recorded as a named `Profiling stress test` segment so its duration is visible as a labeled range on both charts. A second run is rejected until the current 30-second run finishes. The workload affects only the process hosting the dashboard and stops during application shutdown.
 
 Application code can reuse `IRuntimeProfilingStressService` with a `RuntimeProfilingStressRequest` to select the duration, CPU-worker count, and retained-memory size for one run. `RuntimeProfilingStressRequest.Default` provides the same adaptive 30-second settings used by the dashboard; the dashboard intentionally exposes no editable stress profile.
 
@@ -425,25 +425,29 @@ Use By count to rank retained groups, Slow to inspect the longest executions, or
 
 [![Operations grouped by logical key, kind, and a typed dimension, with retained counts and a segment timing tooltip](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
 
-Rows show the executing node, root outcome, duration and exclusive wall-time share. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately.
+Rows show the executing node, root outcome, duration and exclusive wall-time share. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. Expand **Capture health** for persistence and sampling details.
+
+Use the **From UTC** and **To UTC** date/time pickers to bound the selection. Their values always represent UTC, regardless of the browser's timezone. Node names and keys identify where work ran. Correlation IDs link to filtered logs; the adjacent copy action copies the complete ID.
 
 #### Slow HTTP requests
 
-Requests fixes the execution kind to `HttpRequest` and adds the method, status, observed response bytes and sampling policy. Select an execution ID, or paste the response's `X-Request-Profiling-Id` into Find exact ID, to open its retained details.
+Requests fixes the execution kind to `HttpRequest` and adds the method, status and observed response bytes. Sampling details are available from the information icon. Select an execution ID, or paste the response's `X-Request-Profiling-Id` into **Diagnostics ID** in the top toolbar and select the search action, to open its retained details.
 
 [![Requests in Slow mode with HTTP status, response bytes, sampling policy, durations, and segment wall-time bars](assets/dashboard/profiling/requests.png)](assets/dashboard/profiling/requests.png)
 
-Auto refresh updates persisted history at the selected interval. Pending records appear after the periodic writer persists them; refreshing the page does not force a flush.
+The top toolbar provides manual refresh and the auto-refresh interval. Refresh updates persisted history while preserving open groups and details. Pending records appear after the periodic writer persists them; refreshing the page does not force a flush.
 
 #### Repeated and nested segments
 
 Operation details combine typed dimensions and measurements with the aggregated segment tree. Repeated invocations share a row at the same complete path. Nested paths keep parent and child work distinct, with invocation counts, outcomes, total and self durations, weighted means, and minimum and maximum durations.
 
+**Total** sums every invocation's elapsed time, including child work. **Self** excludes the time covered by its children, subtracting overlapping child intervals once. Nested or parallel totals can exceed the operation's duration; the wall-time bar shows the exclusive duration shares instead. Indented rows show segment names, with the full path in a tooltip. Hover or focus the information icons for timing definitions, and expand **Metadata** or a segment's **Details** for measurements and failure information.
+
 [![Operation details with typed metadata and repeated, nested segment statistics, including successful and failed invocations](assets/dashboard/profiling/operation-details.png)](assets/dashboard/profiling/operation-details.png)
 
 #### Runtime context around one operation
 
-The Independent Runtime evidence section shows matching process snapshots around the operation's observed UTC interval. The shaded interval identifies the operation; surrounding samples, collection windows and gaps remain visible. Open Runtime for this node and interval to inspect the wider session.
+The **Runtime overlay** section shows matching process snapshots around the operation's observed UTC interval. The shaded interval identifies the operation; surrounding samples, collection windows and gaps remain visible. Select **Open Runtime** to inspect the wider session for the same node and interval. Expand **Sample coverage** for sampling gaps and collection windows.
 
 [![Runtime overlay with process CPU, memory, allocation, and GC observations around a selected operation interval](assets/dashboard/profiling/runtime-overlay.png)](assets/dashboard/profiling/runtime-overlay.png)
 

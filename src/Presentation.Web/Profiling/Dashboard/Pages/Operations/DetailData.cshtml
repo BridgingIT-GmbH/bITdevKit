@@ -7,12 +7,13 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
 @using Microsoft.Extensions.DependencyInjection
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages
 @inherits RazorSlice<OperationProfilingDashboardModel>
 <section data-operation-detail data-refreshed-utc="@OperationProfilingViewModelBuilder.Utc(Model.RefreshedUtc)">
 @if (Model.Error is not null) { <div class="alert alert-warning" role="alert">@Model.Error</div> }
 else if (Model.Record is null)
 {
-    <div class="alert alert-secondary" role="status">ID @Model.Query.Id is not in this view's retained provider history. It may be pending, unrecorded, lost, cleared, expired, or a different execution kind. Exact lookup ignores list windows and outcome filters.</div>
+    <div class="alert alert-secondary" role="status">Execution @Model.Query.Id is not available. @(await RenderPartialAsync<ProfilingHelp, string>("The execution may be pending, unrecorded, expired or cleared. Exact ID lookup ignores list filters."))</div>
     <p class="small">Provider: @Model.Health?.ProviderScope · Last known flush on serving node: @OperationProfilingViewModelBuilder.Utc(Model.Health?.LastSuccessfulFlushUtc ?? default)</p>
 }
 else
@@ -22,34 +23,40 @@ else
     var runtimePath = DashboardEndpoints.BuildProfilingPath(options);
     var runtimeQuery = QueryString.Create(new Dictionary<string,string> { ["node"] = record.Node.Identity.Key, ["session"] = Model.Overlay?.Sessions.FirstOrDefault()?.Identity.Key,
         ["fromUtc"] = OperationProfilingViewModelBuilder.Utc(record.StartedUtc), ["toUtc"] = OperationProfilingViewModelBuilder.Utc(record.CompletedUtc) });
-    <div class="small text-muted mb-2">Last refresh: @OperationProfilingViewModelBuilder.Utc(Model.RefreshedUtc) · Last successful local flush: @OperationProfilingViewModelBuilder.Utc(Model.Health?.LastSuccessfulFlushUtc ?? default)</div>
     <h2 class="h5">@record.Key <span class="badge text-bg-secondary">@record.Kind</span></h2>
-    <dl class="row small"><dt class="col-sm-3">Diagnostics ID / parent ID</dt><dd class="col-sm-9">@record.Id / @(record.ParentOperationId?.ToString() ?? "None")</dd>
-        <dt class="col-sm-3">Outcome / quality</dt><dd class="col-sm-9">@record.Outcome · @OperationProfilingViewModelBuilder.Quality(record) · @record.Quality.IncompleteReason</dd>
-        <dt class="col-sm-3">Observed UTC interval / elapsed</dt><dd class="col-sm-9">@OperationProfilingViewModelBuilder.Utc(record.StartedUtc) → @OperationProfilingViewModelBuilder.Utc(record.CompletedUtc) · @OperationProfilingViewModelBuilder.Duration(record.Duration)</dd>
-        <dt class="col-sm-3">Executing node / process / version</dt><dd class="col-sm-9">@(record.Node.DisplayName ?? record.Node.HostName) · @record.Node.Identity.Key / @record.NodeId · PID @record.Node.ProcessId · @record.Node.ApplicationVersion · process started @OperationProfilingViewModelBuilder.Utc(record.Node.ProcessStartedUtc)</dd>
-        <dt class="col-sm-3">Correlation</dt><dd class="col-sm-9">@(record.CorrelationId ?? "None")</dd>
-        @if (record.Http is { } http) { <dt class="col-sm-3">HTTP</dt><dd class="col-sm-9">@http.Method @http.Path · route @http.Route · status @http.StatusCode · application ID @http.ApplicationRequestId</dd><dt class="col-sm-3">Observed / declared response bytes</dt><dd class="col-sm-9">@(http.ResponseBytes?.ToString() ?? "Unavailable") (@http.ResponseBytesQuality) / @(http.DeclaredResponseBytes?.ToString() ?? "Unavailable")</dd><dt class="col-sm-3">Observed / declared request bytes</dt><dd class="col-sm-9">@(http.RequestBytes?.ToString() ?? "Unavailable") (@http.RequestBytesQuality) / @(http.DeclaredRequestBytes?.ToString() ?? "Unavailable")</dd><dt class="col-sm-3">Sampling / selected concurrency at entry</dt><dd class="col-sm-9">@http.SamplingStrategyKey · @http.SamplingConfigurationKey · probability @(http.SamplingInclusionProbability?.ToString(CultureInfo.InvariantCulture) ?? "Unknown") · @http.ActiveSelectedRequestsAtEntry</dd> }
-        <dt class="col-sm-3">Failure / rejected metadata / rejected segments</dt><dd class="col-sm-9">@record.Failure?.Source / @record.Failure?.Code / @record.Failure?.ExceptionType · @record.Quality.RejectedMetadataCount / @record.Quality.RejectedSegmentCount</dd>
+    <dl class="row small"><dt class="col-sm-3">Diagnostics ID</dt><dd class="col-sm-9">@record.Id @if (record.ParentOperationId is Guid parentId) { <span class="ms-2 small text-muted">Parent: <a href="@(DashboardEndpoints.BuildOperationsPath(options) + "/" + parentId)">@(parentId.ToString("N")[..8])</a></span> }</dd>
+        <dt class="col-sm-3">Outcome</dt><dd class="col-sm-9">@record.Outcome @if (!string.IsNullOrEmpty(OperationProfilingViewModelBuilder.Quality(record))) { <span class="text-warning" title="@record.Quality.IncompleteReason">· @OperationProfilingViewModelBuilder.Quality(record)</span> }</dd>
+        <dt class="col-sm-3">UTC interval</dt><dd class="col-sm-9">@OperationProfilingViewModelBuilder.Utc(record.StartedUtc) → @OperationProfilingViewModelBuilder.Utc(record.CompletedUtc)</dd>
+        <dt class="col-sm-3">Duration</dt><dd class="col-sm-9">@OperationProfilingViewModelBuilder.Duration(record.Duration)</dd>
+        <dt class="col-sm-3">Node</dt><dd class="col-sm-9">@(record.Node.DisplayName ?? record.Node.HostName) · @record.Node.Identity.Key @if (!string.IsNullOrEmpty(record.Node.ApplicationVersion)) { <span>· @record.Node.ApplicationVersion</span> }</dd>
+        @if (!string.IsNullOrWhiteSpace(record.CorrelationId)) { <dt class="col-sm-3">Correlation</dt><dd class="col-sm-9">@(await RenderPartialAsync<CorrelationLink, string>(record.CorrelationId))</dd> }
+        @if (record.Http is { } http)
+        {
+            <dt class="col-sm-3">HTTP</dt><dd class="col-sm-9">@http.Method @http.Path <span class="badge text-bg-secondary">@http.StatusCode</span> @(await RenderPartialAsync<ProfilingHelp, string>($"Route: {http.Route}; application request ID: {http.ApplicationRequestId ?? "unavailable"}."))</dd>
+            <dt class="col-sm-3">Response / request bytes</dt><dd class="col-sm-9">@(http.ResponseBytes?.ToString() ?? "—") / @(http.RequestBytes?.ToString() ?? "—") @(await RenderPartialAsync<ProfilingHelp, string>($"Response: {http.ResponseBytesQuality}, declared {http.DeclaredResponseBytes?.ToString() ?? "unavailable"}. Request: {http.RequestBytesQuality}, declared {http.DeclaredRequestBytes?.ToString() ?? "unavailable"}."))</dd>
+            <dt class="col-sm-3">Sampling</dt><dd class="col-sm-9">@http.SamplingStrategyKey @(await RenderPartialAsync<ProfilingHelp, string>($"Configuration: {http.SamplingConfigurationKey}; inclusion probability: {http.SamplingInclusionProbability?.ToString(CultureInfo.InvariantCulture) ?? "unknown"}; selected requests active at entry: {http.ActiveSelectedRequestsAtEntry}."))</dd>
+        }
+        @if (record.Failure is not null) { <dt class="col-sm-3">Failure</dt><dd class="col-sm-9 text-warning">@record.Failure.Source / @record.Failure.Code / @record.Failure.ExceptionType</dd> }
     </dl>
-    <h3 class="h6">Exclusive root wall time</h3>@(await RenderPartialAsync<WallTime, OperationProfilingRecord>(record))
-    <p class="small text-muted mt-2">Parallel overlaps and time outside segments are separate buckets. Summed invocation totals may exceed root wall time.</p>
-    <details data-preserve-key="metadata" class="mb-3"><summary>Dimensions, measurements and safe source details</summary><table class="table table-sm"><thead><tr><th>Scope</th><th>Key</th><th>Typed value</th><th>Unit / reducer</th></tr></thead><tbody>
+    <h3 class="h6">Wall time @(await RenderPartialAsync<ProfilingHelp, string>("Percent of operation duration. Parallel segments and time outside segments are separate buckets. Segment totals can exceed operation duration."))</h3>@(await RenderPartialAsync<WallTime, OperationProfilingRecord>(record))
+    <details data-preserve-key="metadata" class="mt-3 mb-3"><summary>Metadata</summary><table class="table table-sm"><thead><tr><th>Scope</th><th>Key</th><th>Typed value</th><th>Unit / reducer</th></tr></thead><tbody>
         @foreach (var dimension in record.Dimensions) { <tr><td>Operation dimension</td><td>@dimension.Key</td><td>@dimension.Value.Type: @dimension.Value.Scalar</td><td></td></tr> }
         @foreach (var measurement in record.Measurements) { <tr><td>Operation measurement</td><td>@measurement.Key</td><td>@measurement.Value?.Type: @measurement.Value?.Scalar</td><td>@measurement.Unit / @measurement.Aggregation</td></tr> }
         @foreach (var source in record.Sources) { @foreach (var field in source.Fields) { <tr><td>@source.Kind v@source.SchemaVersion</td><td>@field.Key</td><td>@field.Value.Type: @field.Value.Scalar</td><td></td></tr> } }
     </tbody></table></details>
-    <h3 class="h6">Aggregated segment tree</h3>
-    <div class="table-responsive"><table class="table table-sm"><thead><tr><th>Structured path</th><th>Invocations / outcomes</th><th>Total / self</th><th>Weighted mean / self mean</th><th>Invocation min / max</th><th>Coverage / metadata / failures</th></tr></thead><tbody>
+    <details class="mb-3" data-preserve-key="capture-details"><summary>Capture details</summary><div class="small mt-2">Rejected metadata: @record.Quality.RejectedMetadataCount · Rejected segments: @record.Quality.RejectedSegmentCount · Last local flush UTC: @OperationProfilingViewModelBuilder.Utc(Model.Health?.LastSuccessfulFlushUtc ?? default)</div><div class="small">Node ID: @record.NodeId</div></details>
+    <h3 class="h6">Segments @(await RenderPartialAsync<ProfilingHelp, string>("Repeated and nested invocations are grouped by their full segment path. These summaries do not contain chronological traces or invocation percentiles."))</h3>
+    <div class="table-responsive"><table class="table table-sm operation-segments"><thead><tr><th>Segment</th><th>Count</th><th>Total @(await RenderPartialAsync<ProfilingHelp, string>("Sum of all invocation durations, including child segments. Repetition and parallel work can make this exceed operation duration."))</th><th>Self @(await RenderPartialAsync<ProfilingHelp, string>("Sum of invocation time excluding time covered by child segments. Each child interval is subtracted once, including overlaps."))</th><th>Mean @(await RenderPartialAsync<ProfilingHelp, string>("Total divided by invocation count. Self mean is available in Details."))</th><th>Min / max</th><th>Details</th></tr></thead><tbody>
     @foreach (var segment in record.Segments.OrderBy(value => value.Path.ComparisonKey, StringComparer.Ordinal))
     {
         var stats = segment.Statistics;
-        <tr><td style="padding-left:@((segment.Path.Components.Count - 1) * 14 + 8)px"><code>@string.Join(" › ", segment.Path.Components)</code><div class="small text-muted">@segment.DisplayName</div></td><td>@(stats.Unavailable ? "Unavailable" : stats.Count.ToString(CultureInfo.InvariantCulture))<div class="small">@string.Join(", ", segment.Outcomes.Select(value => $"{value.Outcome}: {(value.Statistics.Unavailable ? "Unavailable" : value.Statistics.Count.ToString(CultureInfo.InvariantCulture))}"))</div></td>
-            <td>@(stats.Unavailable ? "Unavailable" : OperationProfilingViewModelBuilder.Duration(stats.TotalDuration)) / @(stats.Unavailable ? "Unavailable" : OperationProfilingViewModelBuilder.Duration(stats.TotalSelfDuration))</td>
-            <td>@(stats.Unavailable || stats.Count == 0 ? "Unavailable" : (stats.TotalDuration.TotalMilliseconds / stats.Count).ToString("0.###", CultureInfo.InvariantCulture) + " ms") / @(stats.Unavailable || stats.Count == 0 ? "Unavailable" : (stats.TotalSelfDuration.TotalMilliseconds / stats.Count).ToString("0.###", CultureInfo.InvariantCulture) + " ms")</td>
+        <tr><td style="padding-left:@((segment.Path.Components.Count - 1) * 14 + 8)px"><code title="@string.Join(" › ", segment.Path.Components)">@segment.Path.Components.LastOrDefault()</code>@if (!string.IsNullOrEmpty(segment.DisplayName) && segment.DisplayName != segment.Path.Components.LastOrDefault()) { <div class="small text-muted">@segment.DisplayName</div> }</td><td>@(stats.Unavailable ? "Unavailable" : stats.Count.ToString(CultureInfo.InvariantCulture))@(await RenderPartialAsync<ProfilingHelp, string>(string.Join(", ", segment.Outcomes.Select(value => $"{value.Outcome}: {(value.Statistics.Unavailable ? "unavailable" : value.Statistics.Count.ToString(CultureInfo.InvariantCulture))}")))) @if (segment.Outcomes.Any(value => value.Outcome == ProfilingSegmentOutcome.Failed && value.Statistics.Count > 0)) { <span class="badge text-bg-warning">Failed</span> }</td>
+            <td>@(stats.Unavailable ? "—" : OperationProfilingViewModelBuilder.Duration(stats.TotalDuration))</td><td>@(stats.Unavailable ? "—" : OperationProfilingViewModelBuilder.Duration(stats.TotalSelfDuration))</td>
+            <td>@(stats.Unavailable || stats.Count == 0 ? "—" : OperationProfilingViewModelBuilder.Duration(TimeSpan.FromTicks(stats.TotalDuration.Ticks / stats.Count)))</td>
             <td>@(stats.Unavailable ? "Unavailable" : OperationProfilingViewModelBuilder.Duration(stats.MinimumDuration)) / @(stats.Unavailable ? "Unavailable" : OperationProfilingViewModelBuilder.Duration(stats.MaximumDuration))</td>
-            <td>@(segment.PartialCoverage ? "Partial coverage" : "Observed coverage")
+            <td>@if (segment.PartialCoverage) { <span class="badge text-bg-warning">Partial</span> }
                 <details data-preserve-key="segment-@segment.Path.ComparisonKey"><summary>Details</summary>
+                    <div class="small">Coverage: @(segment.PartialCoverage ? "Partial" : "Observed")</div><div class="small">Self mean: @(stats.Unavailable || stats.Count == 0 ? "—" : OperationProfilingViewModelBuilder.Duration(TimeSpan.FromTicks(stats.TotalSelfDuration.Ticks / stats.Count)))</div>
                     @foreach (var dimension in segment.Dimensions) { <div class="small">@dimension.Key: @(dimension.Mixed ? "Mixed" : dimension.Value?.Scalar ?? "Missing") @(dimension.Partial ? "(partial)" : "") · @dimension.SampleCount samples</div> }
                     @foreach (var measurement in segment.Measurements) { <div class="small">@measurement.Key: @(measurement.Unavailable || measurement.Conflicting ? "Unavailable/conflicting" : measurement.Value?.Scalar ?? "Missing") @measurement.Unit · @measurement.Aggregation · @measurement.SampleCount samples</div> }
                     @foreach (var failure in segment.Failures) { <div class="small text-warning">@failure.Count × @failure.Failure?.Source / @failure.Failure?.Code / @failure.Failure?.ExceptionType</div> }
@@ -59,17 +66,18 @@ else
         </tr>
     }
     </tbody></table></div>
-    <p class="small text-muted">Rows aggregate repeated and nested invocations by full path. Invocation percentiles and chronological traces are not available from these summaries.</p>
-    <h3 class="h6">Independent Runtime evidence</h3>
-    <a class="btn btn-outline-secondary btn-sm mb-2" href="@(runtimePath + runtimeQuery)">Open Runtime for this node and interval</a>
+    <h3 class="h6">Runtime overlay @(await RenderPartialAsync<ProfilingHelp, string>("CPU, memory, allocations and GC describe the process, not this operation. Sample intervals can extend beyond its duration. Surrounding samples provide context; gaps remain visible."))</h3>
+    <a class="btn btn-outline-secondary btn-sm mb-2" href="@(runtimePath + runtimeQuery)">Open Runtime</a>
     @if (Model.OverlayError is not null) { <div class="alert alert-warning">@Model.OverlayError</div> }
     @if (Model.Overlay is { } overlay)
     {
-        var payload = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(overlay, new JsonSerializerOptions(JsonSerializerDefaults.Web))));
-        <div class="small">@OperationProfilingViewModelBuilder.RuntimeCoverage(overlay.Limitation) · @overlay.InsideSnapshotCount inside samples · @overlay.Gaps.Count gaps · Clock discontinuity: @overlay.ClockDiscontinuity</div>
-        <p class="small text-muted">CPU, memory, allocation and GC are process observations. Rate metrics describe their actual sample interval, which can extend beyond this operation. Surrounding samples are context; gaps remain visible.</p>
-        <div class="operation-runtime-charts" data-runtime-overlay="@payload"><div class="operation-runtime-cpu" aria-label="Process CPU percent by UTC"></div><div class="operation-runtime-memory" aria-label="Process memory MiB by UTC"></div><div class="operation-runtime-allocation" aria-label="Process allocation MiB per second by UTC"></div><div class="operation-runtime-gc" aria-label="Process GC collection counts by UTC"></div></div>
-        <details data-preserve-key="runtime-coverage"><summary>Actual collection windows, sample intervals and gaps</summary>
+        <div class="small">@OperationProfilingViewModelBuilder.RuntimeCoverage(overlay.Limitation) · @overlay.InsideSnapshotCount inside samples · @overlay.Gaps.Count gaps @if (overlay.ClockDiscontinuity) { <span class="badge text-bg-warning">Clock changed</span> }</div>
+        @if (overlay.Samples.Count > 0)
+        {
+            var payload = Convert.ToBase64String(Encoding.UTF8.GetBytes(JsonSerializer.Serialize(overlay, new JsonSerializerOptions(JsonSerializerDefaults.Web))));
+            <div class="operation-runtime-charts" data-runtime-overlay="@payload"><div class="operation-runtime-cpu" aria-label="Process CPU percent by UTC"></div><div class="operation-runtime-memory" aria-label="Process memory MiB by UTC"></div><div class="operation-runtime-allocation" aria-label="Process allocation MiB per second by UTC"></div><div class="operation-runtime-gc" aria-label="Process GC collection counts by UTC"></div></div>
+        }
+        <details data-preserve-key="runtime-coverage"><summary>Sample coverage</summary>
         @foreach (var window in overlay.Participations) { <p class="small"><a href="@(runtimePath + QueryString.Create(new Dictionary<string,string> { ["session"] = window.SessionKey, ["node"] = window.NodeKey }))">Session @window.SessionKey</a>: @OperationProfilingViewModelBuilder.Utc(window.JoinedUtc) → @(window.CompletedUtc is DateTimeOffset completed ? OperationProfilingViewModelBuilder.Utc(completed) : "Still collecting") · @window.State</p> }
         <table class="table table-sm"><thead><tr><th>Snapshot</th><th>UTC</th><th>Relation</th><th>Actual rate interval UTC</th><th>Limitations</th></tr></thead><tbody>@foreach (var sample in overlay.Samples) { <tr><td>@sample.Snapshot.Identity.Key</td><td>@OperationProfilingViewModelBuilder.Utc(sample.Snapshot.TimestampUtc)</td><td>@sample.Relation</td><td>@(sample.MetricIntervalFromUtc is DateTimeOffset from ? OperationProfilingViewModelBuilder.Utc(from) : "Unavailable") → @(sample.MetricIntervalToUtc is DateTimeOffset to ? OperationProfilingViewModelBuilder.Utc(to) : "Unavailable")</td><td>@(sample.SamplingGap ? "Sampling gap" : "") @(sample.ClockDiscontinuity ? "Clock discontinuity" : "")</td></tr> }</tbody></table>
         @foreach (var gap in overlay.Gaps) { <p class="small text-warning">@gap.SessionKey: @OperationProfilingViewModelBuilder.Utc(gap.FromUtc) → @OperationProfilingViewModelBuilder.Utc(gap.ToUtc) · @gap.Reason</p> }

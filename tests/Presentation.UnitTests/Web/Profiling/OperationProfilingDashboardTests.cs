@@ -41,12 +41,12 @@ public sealed class OperationProfilingDashboardTests
         var content = await client.GetStringAsync("/admin/profiling/requests/content" + parameters);
         var groups = await client.GetFromJsonAsync<OperationProfilingGroupPage>("/admin/profiling/operations/api/groups?kind=HttpRequest&view=" + mode);
 
-        page.ShouldContain("2 retained matching executions");
-        content.ShouldContain("2 retained matching executions");
+        page.ShouldContain("title=\"Retained executions matching this group\">2</span>");
+        content.ShouldContain("title=\"Retained executions matching this group\">2</span>");
         groups.TotalOperationCount.ShouldBe(2);
         groups.TotalGroupCount.ShouldBe(1);
         groups.Groups.Single().Count.ShouldBe(2);
-        content.ShouldContain("Exclusive wall-time share");
+        content.ShouldContain("Percent of operation duration");
         content.ShouldContain("UTC");
         page.ShouldContain("/admin/profiling/operations");
         (await client.GetAsync("/admin/profiling/requests/" + service)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
@@ -151,7 +151,8 @@ public sealed class OperationProfilingDashboardTests
     public async Task Detail_WithNestedSegments_EncodesMetadataAndShowsAggregates()
     {
         await using var app = await CreateAsync();
-        var id = Capture(app, "catalog", OperationProfilingKind.Service);
+        const string correlationId = "lookup&<script>\"quoted\"</script>";
+        var id = Capture(app, "catalog", OperationProfilingKind.Service, correlationId);
         await app.Services.GetRequiredService<OperationProfilingWriterService>().TickAsync();
         var html = await app.GetTestClient().GetStringAsync("/admin/profiling/operations/" + id);
         html.ShouldContain("&lt;script&gt;");
@@ -160,6 +161,10 @@ public sealed class OperationProfilingDashboardTests
         html.ShouldContain("Compute");
         html.ShouldContain("invocations");
         html.ShouldContain("UTC");
+        html.ShouldContain("/admin/logentries?correlationId=" + Uri.EscapeDataString(correlationId));
+        html.ShouldContain("data-profiling-copy=\"lookup&amp;&lt;script&gt;&quot;quoted&quot;&lt;/script&gt;\"");
+        html.ShouldNotContain(correlationId);
+        html.ShouldNotContain("data-runtime-overlay=");
     }
 
     /// <summary>One occupied query budget produces the same Busy status in both render paths and JSON.</summary>
@@ -208,10 +213,10 @@ public sealed class OperationProfilingDashboardTests
         comparison.Candidate.Count.ShouldBe(1);
     }
 
-    private static Guid Capture(WebApplication app, string key, OperationProfilingKind kind)
+    private static Guid Capture(WebApplication app, string key, OperationProfilingKind kind, string correlationId = null)
     {
         var profiler = app.Services.GetRequiredService<IOperationProfiler>();
-        using var operation = profiler.BeginOperation(key, kind);
+        using var operation = profiler.BeginOperation(new OperationProfilingStartRequest { Key = key, Kind = kind.ToString(), CorrelationId = correlationId });
         operation.SetDimension("category", "<script>metadata</script>");
         if (kind == OperationProfilingKind.HttpRequest) { operation.SetHttpMetadata(new() { Method = "GET", StatusCode = 200 }); }
 

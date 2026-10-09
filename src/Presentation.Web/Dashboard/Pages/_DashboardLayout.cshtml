@@ -276,7 +276,8 @@
                         if (typeof settings.onSuccess === 'function') await settings.onSuccess(contentElement);
                         if (version !== generation || ownController.signal.aborted) return;
                         window.bdkDashboard.clearRefreshError(contentElement);
-                        setStatus(`Updated ${new Date().toISOString()} UTC`, false);
+                        const updatedAt = new Date();
+                        setStatus(typeof settings.formatUpdatedAt === 'function' ? settings.formatUpdatedAt(updatedAt) : `Updated ${updatedAt.toISOString()} UTC`, false);
                     } catch (error) {
                         if (error.name !== 'AbortError' && version === generation) {
                             window.bdkDashboard.showRefreshError(contentElement);

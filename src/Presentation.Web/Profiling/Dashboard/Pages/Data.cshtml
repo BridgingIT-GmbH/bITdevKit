@@ -68,7 +68,7 @@
     {
         var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
         var values = new Dictionary<string, string> { ["nodeId"] = node.Node.Identity.Id.ToString("D"), ["fromUtc"] = participation.JoinedUtc.ToUniversalTime().ToString("O", CultureInfo.InvariantCulture), ["toUtc"] = (participation.CompletedUtc ?? DateTimeOffset.UtcNow).ToUniversalTime().ToString("O", CultureInfo.InvariantCulture), ["overlap"] = "true" };
-        <a class="btn btn-outline-secondary btn-sm mb-2" href="@(ProfilingDashboardEndpoints.BuildOperationsPath(options) + QueryString.Create(values))">Operations overlapping this node participation · UTC</a>
+        <a class="btn btn-outline-secondary btn-sm mb-2" href="@(ProfilingDashboardEndpoints.BuildOperationsPath(options) + QueryString.Create(values))" title="Operations on this node during the selected collection interval">Related operations</a>
     }
 
     <div id="profiling-action-outcomes" class="mb-2" role="status" aria-live="polite"></div>
@@ -154,8 +154,7 @@
                             var storedNode = Model.SelectedSession?.Nodes.FirstOrDefault(item => item.Identity.Key == key);
                             var nodeSnapshot = Model.SelectedSession?.Snapshots.FirstOrDefault(item => item.NodeKey == key);
                             var hostName = storedNode?.HostName ?? nodeSnapshot?.HostName ?? "Unknown node";
-                            var processId = storedNode?.ProcessId ?? nodeSnapshot?.ProcessId;
-                            <option value="@key" selected="@(key == Model.NodeKey)">@hostName · PID @(processId?.ToString(CultureInfo.InvariantCulture) ?? "unknown")</option>
+                            <option value="@key" selected="@(key == Model.NodeKey)">@hostName · @key</option>
                         }
                     </select>
                 </div>
@@ -227,7 +226,7 @@
             else
             {
                 <div class="profiling-vitals-grid">
-                    @MetricCard("CPU", FormatPercent(snapshot.CpuUsagePercent), $"PID {snapshot.ProcessId} · {snapshot.ProcessThreadCount?.ToString(CultureInfo.InvariantCulture) ?? "unavailable"} threads", "Process CPU over the sampling interval.")
+                    @MetricCard("CPU", FormatPercent(snapshot.CpuUsagePercent), $"{snapshot.ProcessThreadCount?.ToString(CultureInfo.InvariantCulture) ?? "unavailable"} threads", "Process CPU over the sampling interval.")
                     @MetricCard("Managed memory", FormatBytes(snapshot.ManagedMemoryBytes), $"heap {FormatBytes(snapshot.ManagedHeapSizeBytes)} · committed {FormatBytes(snapshot.TotalCommittedBytes)}", "Live managed memory, GC heap size, and total committed runtime memory.")
                     @MetricCard("Private memory", FormatBytes(snapshot.PrivateMemoryBytes), $"working set {FormatBytes(snapshot.WorkingSetBytes)}", "Process-private committed memory and resident working set.")
                     @MetricCard("Physical memory", FormatBytes(snapshot.UsedPhysicalMemoryBytes), $"available {FormatBytes(snapshot.AvailablePhysicalMemoryBytes)}", "Machine physical memory usage visible to this process.")
@@ -279,7 +278,7 @@
                 <button id="profiling-analyze-now" class="btn btn-primary btn-sm" type="button">Analyze now</button>
             </div>
         </div>
-        <div class="card-body p-3" id="profiling-session-analysis-result" aria-live="polite"><div class="profiling-empty">Analysis has not been requested. Live analysis is off by default.</div></div>
+        <div class="card-body p-3" id="profiling-session-analysis-result" aria-live="polite"><div class="profiling-empty">Select Analyze now to see signals.</div></div>
     </section>
     </div>
 
@@ -328,7 +327,7 @@
                                         <td>@FormatDuration(segment.Elapsed)</td>
                                         <td>@segment.Outcome</td>
                                         <td>@DisplayParent(segment, node.Segments)</td>
-                                        <td>@Display(segment.CorrelationId)</td>
+                                        <td>@(await RenderPartialAsync<CorrelationLink, string>(segment.CorrelationId))</td>
                                     </tr>
                                 }
                             }

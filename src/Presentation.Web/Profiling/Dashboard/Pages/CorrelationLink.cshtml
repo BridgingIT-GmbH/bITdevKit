@@ -1,0 +1,14 @@
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.DependencyInjection
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@inherits RazorSlice<string>
+@if (!string.IsNullOrWhiteSpace(Model))
+{
+    var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var logsPath = BridgingIT.DevKit.Presentation.Web.Logging.Dashboard.DashboardEndpoints.BuildLogEntriesPath(options);
+    <span class="d-inline-flex align-items-center gap-1 mw-100"><a class="text-break" href="@(logsPath + QueryString.Create("correlationId", Model))" title="Show logs for this correlation">@Model</a><button type="button" class="btn btn-link btn-sm p-0 text-muted flex-shrink-0" data-profiling-copy="@Model" title="Copy correlation ID" aria-label="Copy correlation ID"><i class="bi bi-copy" aria-hidden="true"></i></button></span>
+}
+else
+{
+    <span class="text-muted">—</span>
+}

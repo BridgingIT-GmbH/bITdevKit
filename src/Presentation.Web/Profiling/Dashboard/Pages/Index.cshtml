@@ -6,14 +6,14 @@
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
 @{ var dashboardOptions = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>(); }
-<nav class="nav nav-pills mb-3" aria-label="Profiling views"><a class="nav-link active" href="@ProfilingDashboardEndpoints.BuildProfilingPath(dashboardOptions)">Runtime</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions)">Operations</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions, true)">Requests</a></nav>
+
 
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
     <div class="d-flex align-items-center gap-2">
-        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         <button type="button" id="profiling-stress" class="btn btn-outline-warning btn-sm profiling-tool-button profiling-stress-button" aria-label="Run a 30-second profiling stress workload" title="Stress this process for 30 seconds with high CPU, managed allocations, and retained memory"><i class="bi bi-fire" aria-hidden="true"></i></button>
+        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         <label for="profiling-refresh-interval" class="visually-hidden">Profiling refresh interval</label>
-        <select id="profiling-refresh-interval" class="form-select form-select-sm" style="width: 8.5rem">
+        <select id="profiling-refresh-interval" class="form-select form-select-sm" style="width: 9rem">
             <option value="">Off</option>
             <option value="1000">1 sec</option>
             <option value="5000" selected>5 sec</option>
@@ -22,13 +22,17 @@
             <option value="30000">30 sec</option>
             <option value="60000">60 sec</option>
         </select>
-        <button type="button" id="profiling-refresh-now" class="btn btn-outline-secondary btn-sm" aria-label="Refresh profiling dashboard now" title="Refresh now"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+        <button type="button" id="profiling-refresh-now" class="btn btn-outline-warning btn-sm" aria-label="Refresh profiling dashboard now" title="Refresh now"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
     </div>
 </div>
+
+<nav class="nav nav-pills mb-2" aria-label="Profiling views"><a class="nav-link active" href="@ProfilingDashboardEndpoints.BuildProfilingPath(dashboardOptions)">Runtime</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions)">Operations</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions, true)">Requests</a></nav>
 
 <div id="dashboard-profiling-content">
     @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content>())
 </div>
+
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
 
 <div class="modal fade" id="profiling-chart-focus-modal" tabindex="-1" aria-labelledby="profiling-chart-focus-title" aria-hidden="true">
     <div class="modal-dialog profiling-chart-focus-dialog">
@@ -189,15 +193,25 @@
         const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
         const display = value => value === null || value === undefined || value === '' ? 'unavailable' : String(value);
         const formatNumber = value => value === null || value === undefined ? 'unavailable' : Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
+        const formatMetric = (value, unit) => {
+            if (value === null || value === undefined) return 'unavailable';
+            if (unit === 'bytes' || unit === 'bytes-per-second') {
+                const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+                const exponent = Math.min(units.length - 1, Math.max(0, Math.floor(Math.log2(Math.abs(value) || 1) / 10)));
+                return `${formatNumber(value / Math.pow(1024, exponent))} ${units[exponent]}${unit === 'bytes-per-second' ? '/s' : ''}`;
+            }
+            if (unit === 'percent') return `${formatNumber(value)}%`;
+            if (unit === 'percentage-points') return `${formatNumber(value)} pp`;
+            return `${formatNumber(value)}${unit && unit !== 'count' ? ' ' + unit : ''}`;
+        };
         const enumName = (value, names) => typeof value === 'number' ? (names[value] || String(value)) : display(value);
 
         const profilingGlossary = Object.freeze({
             'snapshot-key': 'Readable identity of this immutable snapshot.',
             'session-key': 'Readable identity of the profiling session that owns this snapshot.',
             'node-key': 'Readable identity of the process node that captured this snapshot.',
-            'timestamp': 'Browser-local date and time at which this snapshot capture began.',
+            'timestamp': 'UTC date and time at which this snapshot capture began.',
             'host-name': 'Machine name reported by the process that captured this snapshot.',
-            'process-id': 'Operating-system process identifier for the captured application instance.',
             'sequence': 'The capture order within this node. A gap can indicate a skipped or failed capture.',
             'scheduled-elapsed': 'Time from session start to when this snapshot was scheduled.',
             'capture-started-elapsed': 'Time from session start to when measurement actually began.',
@@ -321,7 +335,6 @@
                     ['node-key', 'Node key', snapshot => snapshot.nodeKey],
                     ['timestamp', 'Captured', snapshot => snapshot.timestampUtc, 'timestamp'],
                     ['host-name', 'Host', snapshot => snapshot.hostName],
-                    ['process-id', 'Process ID', snapshot => snapshot.processId, 'number'],
                     ['sequence', 'Sequence', snapshot => snapshot.sequence, 'number'],
                     ['scheduled-elapsed', 'Scheduled elapsed', snapshot => snapshot.scheduledElapsed, 'duration'],
                     ['capture-started-elapsed', 'Capture started elapsed', snapshot => snapshot.captureStartedElapsed, 'duration'],
@@ -761,6 +774,7 @@
         }
 
         function applyContentRefresh(contentElement, responseText) {
+            window.bdkProfiling.disposeHelp(contentElement);
             const scrollPosition = { x: window.scrollX, y: window.scrollY };
             const template = document.createElement('template');
             template.innerHTML = responseText.trim();
@@ -999,20 +1013,20 @@
             const kpis = result.kpIs || result.kpis || [];
             const limitations = result.limitations || [];
             const sufficiency = enumName(quality.sufficiency, ['Collecting', 'Sufficient', 'Limited']);
-            const headline = signals.length ? `${signals.length} evidence-backed signal${signals.length === 1 ? '' : 's'}` : (sufficiency === 'Collecting' ? 'Collecting enough data for analysis.' : 'No notable behavior detected.');
+            const headline = signals.length ? `${signals.length} signal${signals.length === 1 ? '' : 's'}` : (sufficiency === 'Collecting' ? 'Collecting data.' : 'No signals.');
             const signalsHtml = signals.map(signal => {
                 const signalName = humanizeIdentifier(signal.identifier);
                 const signalDescription = signal.explanation || descriptionFor(signal.identifier);
                 const confidence = enumName(signal.confidence, ['Low', 'Medium', 'High']);
                 const confidenceDescription = `${confidence} confidence describes how complete and independently supported the required evidence is. It is not a probability or severity score.`;
-                const evidenceHtml = (signal.evidence || []).map(item => `<span class="profiling-evidence"><span>${escapeHtml(humanizeIdentifier(item.identifier))}: <strong>${formatNumber(item.value)} ${escapeHtml(item.unit)}</strong></span>${infoHtml(descriptionFor(item.identifier), humanizeIdentifier(item.identifier))}</span>`).join('');
-                return `<article class="profiling-signal"><div class="d-flex justify-content-between gap-2"><div class="profiling-signal-title"><strong>${escapeHtml(enumName(signal.label, ['Notable', 'Investigate']))} · ${escapeHtml(signalName)}</strong>${infoHtml(signalDescription, signalName)}<code class="profiling-technical-name">${escapeHtml(signal.identifier)}</code></div><span class="badge text-bg-secondary">${escapeHtml(confidence)} confidence ${infoHtml(confidenceDescription, `${confidence} confidence`)}</span></div><p class="mb-1 mt-2">${escapeHtml(signalDescription)}</p><div class="small text-muted"><strong>Suggested next step:</strong> ${escapeHtml(signal.suggestedAction)}</div><div class="small mt-1" aria-label="Signal evidence">${evidenceHtml}</div></article>`;
+                const evidenceHtml = (signal.evidence || []).map(item => `<span class="profiling-evidence"><span>${escapeHtml(humanizeIdentifier(item.identifier))}: <strong>${escapeHtml(formatMetric(item.value, item.unit))}</strong></span>${infoHtml(`${descriptionFor(item.identifier)} Recorded value: ${display(item.value)} ${item.unit || ''}.`, humanizeIdentifier(item.identifier))}</span>`).join('');
+                return `<article class="profiling-signal"><div class="d-flex justify-content-between gap-2"><div class="profiling-signal-title"><strong>${escapeHtml(enumName(signal.label, ['Notable', 'Investigate']))} · ${escapeHtml(signalName)}</strong>${infoHtml(signalDescription, signalName)}</div><span class="badge text-bg-secondary">${escapeHtml(confidence)} confidence ${infoHtml(confidenceDescription, `${confidence} confidence`)}</span></div><div class="small text-muted mt-2">${escapeHtml(signal.suggestedAction)}</div><div class="small mt-1" aria-label="Signal evidence">${evidenceHtml}</div></article>`;
             }).join('');
             const kpiHtml = kpis.map(item => {
                 const label = humanizeIdentifier(item.identifier);
-                return `<div class="profiling-kpi"><span class="profiling-kpi-label">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span><strong>${formatNumber(item.value)} ${escapeHtml(item.unit)}</strong><code class="profiling-technical-name">${escapeHtml(item.identifier)}</code></div>`;
+                return `<div class="profiling-kpi"><span class="profiling-kpi-label">${escapeHtml(label)} ${infoHtml(`${descriptionFor(item.identifier)} Recorded value: ${display(item.value)} ${item.unit || ''}.`, label)}</span><strong>${escapeHtml(formatMetric(item.value, item.unit))}</strong></div>`;
             }).join('');
-            target.innerHTML = `<div class="profiling-analysis-inner"><div class="d-flex flex-wrap justify-content-between gap-2"><strong>${escapeHtml(headline)} ${infoHtml('A signal is emitted only when a fixed rule is supported by the available measurements. Signals remain independent and are never combined.', 'Evidence-backed signals')}</strong><span class="small text-muted">${result.scope?.snapshotCount ?? 0} snapshots · ${result.scope?.provisional ? 'provisional' : 'terminal'} · ${escapeHtml(sufficiency)}</span></div>${signalsHtml}<div class="profiling-kpi-grid" aria-label="Evaluation key performance indicators">${kpiHtml}</div>${limitations.length ? `<div class="small text-muted mt-2"><strong>Limitations:</strong> ${limitations.map(escapeHtml).join(' · ')}</div>` : ''}</div>`;
+            target.innerHTML = `<div class="profiling-analysis-inner"><div class="d-flex flex-wrap justify-content-between gap-2"><strong>${escapeHtml(headline)} ${infoHtml('A signal is emitted only when a fixed rule is supported by the available measurements. Signals remain independent and are never combined.', 'Evidence-backed signals')}</strong><span class="small text-muted">${result.scope?.snapshotCount ?? 0} snapshots · ${result.scope?.provisional ? 'provisional' : 'terminal'} · ${escapeHtml(sufficiency)}</span></div>${signalsHtml}<div class="profiling-kpi-grid" aria-label="Evaluation key performance indicators">${kpiHtml}</div>${limitations.length ? `<details class="small text-muted mt-2"><summary>Limitations (${limitations.length})</summary>${limitations.map(escapeHtml).join(' · ')}</details>` : ''}</div>`;
         }
 
         function renderComparison(result) {
@@ -1021,7 +1035,7 @@
             const metrics = result.metrics || [];
             body.innerHTML = metrics.map(item => {
                 const label = humanizeIdentifier(item.identifier);
-                return `<tr><td><span class="profiling-metric-name">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span><code class="profiling-technical-name">${escapeHtml(item.identifier)}</code></td><td>${escapeHtml(item.unit)}</td><td class="text-end">${formatNumber(item.earlierValue)}</td><td class="text-end">${formatNumber(item.laterValue)}</td><td class="text-end">${formatNumber(item.difference)}</td><td class="text-end">${item.percentageDifference === null || item.percentageDifference === undefined ? 'unavailable' : `${formatNumber(item.percentageDifference)}%`}</td></tr>`;
+                return `<tr><td><span class="profiling-metric-name">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span></td><td>${escapeHtml(item.unit)}</td><td class="text-end">${formatNumber(item.earlierValue)}</td><td class="text-end">${formatNumber(item.laterValue)}</td><td class="text-end">${formatNumber(item.difference)}</td><td class="text-end">${item.percentageDifference === null || item.percentageDifference === undefined ? 'unavailable' : `${formatNumber(item.percentageDifference)}%`}</td></tr>`;
             }).join('') || '<tr><td colspan="6" class="text-muted">No comparable raw metrics were returned.</td></tr>';
         }
 
@@ -1378,7 +1392,8 @@
                 refreshButtonSelector: '#profiling-refresh-now',
                 storageKey: storage.refresh,
                 applyResponse: applyContentRefresh,
-                onSuccess: initializeContent
+                onSuccess: () => { initializeContent(); window.bdkProfiling.initializeHelp(); },
+                formatUpdatedAt: window.bdkProfiling.formatUpdatedAt
             });
 
             const current = new URL(window.location.href);

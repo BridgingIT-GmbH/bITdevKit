@@ -2,11 +2,29 @@
 @using Microsoft.AspNetCore.Http
 @inherits RazorSlice
 <style>
+.operation-lookup { width: min(24rem, 100%); }
+.operation-filters .form-label { margin-bottom: .2rem; color: var(--bs-secondary-color); font-size: .7rem; letter-spacing: .04em; text-transform: uppercase; }
+.operation-filters details[open] { flex-basis: 100%; }
+.operation-metrics { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: .5rem; }
+.operation-metric { padding: .65rem; border: 1px solid var(--bs-border-color); }
+.operation-metric > span { display: block; color: var(--bs-secondary-color); font-size: .75rem; }
+.operation-metric > strong { display: block; font-size: 1.25rem; }
+.profiling-help { font-size: .75rem; line-height: 1; vertical-align: baseline; margin-left: .2rem; }
+.operation-segments td,.operation-segments th { white-space: nowrap; }
+.operation-segments td:first-child { white-space: normal; min-width: 12rem; }
+@@media (max-width: 575.98px) {
+    .operation-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .operation-toolbar > .d-flex { width: 100%; justify-content: flex-end; }
+}
 .operation-wall-bar { height: 1.25rem; border-radius: .2rem; background: #777; min-width: 12rem; }
 .operation-wall-bucket { position: relative; display: block; min-width: 1px; }
 .operation-wall-bucket:focus-visible { outline: 2px solid var(--bs-body-color); outline-offset: 2px; z-index: 2; }
 .operation-wall-tip { display: none; position: fixed; z-index: 2000; padding: .35rem .5rem; border-radius: .25rem; background: var(--bs-body-color); color: var(--bs-body-bg); font-size: .75rem; pointer-events: none; max-width: 30rem; white-space: normal; }
 .operation-wall-bucket:hover .operation-wall-tip,.operation-wall-bucket:focus-visible .operation-wall-tip { display: block; }
 .operation-parallel { background-image: repeating-linear-gradient(45deg,transparent,transparent 4px,#ffffff44 4px,#ffffff44 8px); }
-.operation-runtime-charts > div { min-height: 220px; }
+.operation-runtime-charts { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .75rem; }
+.operation-runtime-charts > div { min-width: 0; height: 260px; }
+@@media (max-width: 767.98px) {
+    .operation-runtime-charts { grid-template-columns: minmax(0, 1fr); }
+}
 </style>

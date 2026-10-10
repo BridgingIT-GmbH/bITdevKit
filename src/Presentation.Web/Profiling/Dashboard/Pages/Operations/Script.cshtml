@@ -5,6 +5,9 @@
 (() => {
     const content = document.getElementById('operation-content');
     if (!content) return;
+    const detailModal = document.getElementById('operation-detail-modal');
+    const detailBody = document.getElementById('operation-detail-content');
+    const timingRoots = [content, detailBody].filter(Boolean);
     const form = document.getElementById('operation-filters');
     const interval = document.getElementById('operation-refresh-interval');
     const current = new URL(location.href);
@@ -29,8 +32,8 @@
     }
     for (const [id, value] of [['operation-baseline-key', remembered.baseline], ['operation-candidate-key', remembered.candidate]]) {
         const control = document.getElementById(id);
-        if (control && typeof value === 'string' && value.length <= 128) control.value = value;
-        control?.addEventListener('input', remember);
+        if (control && typeof value === 'string' && value.length <= 128 && value) { control.add(new Option(value, value)); control.value = value; }
+        control?.addEventListener('change', remember);
     }
     document.addEventListener('toggle', event => {
         const key = event.target.dataset?.preserveKey;
@@ -66,7 +69,7 @@
         try { advanced = JSON.parse(document.getElementById('operation-query')?.value || '{}') || {}; } catch { }
         const exactKey = advanced.key ?? advanced.Key;
         if (form) new FormData(form).forEach((value, key) => {
-            // A group eye link carries an exact selector. Preserve that scope while refreshing
+            // A group count link carries an exact selector. Preserve that scope while refreshing
             // its unchanged control; editing the key deliberately switches to contains matching.
             if (key === 'key' && value === exactKey && !(advanced.keyContains ?? advanced.KeyContains)) return;
             // datetime-local represents the explicitly labelled UTC clock, not the browser's timezone.
@@ -87,28 +90,43 @@
         select.value = selected;
     }
     function synchronizeMetadata() {
-        for (const [selector, targetId] of [['template[data-operation-health]', 'operation-health-content'], ['template[data-operation-comparison-keys]', 'operation-comparison-keys']]) {
+        for (const [selector, targetId] of [['template[data-operation-health]', 'operation-health-content']]) {
             const source = content.querySelector(selector), target = document.getElementById(targetId);
             if (source && target) target.replaceChildren(source.content.cloneNode(true));
         }
+        const source = content.querySelector('template[data-operation-comparison-keys]');
+        if (!source) return;
+        const available = [...source.content.querySelectorAll('option')].map(option => option.value);
+        for (const id of ['operation-baseline-key', 'operation-candidate-key']) {
+            const select = document.getElementById(id);
+            if (!select) continue;
+            const selected = select.value;
+            select.replaceChildren(new Option('Select a recorded key', ''), source.content.cloneNode(true));
+            if (selected && !available.includes(selected)) select.add(new Option(selected + ' (saved selection)', selected));
+            select.value = selected;
+        }
+        const help = document.getElementById('operation-comparison-help');
+        if (help) help.textContent = available.length < 2
+            ? 'Fewer than two keys match the current list. Clear the key filter or widen the UTC range to show more groups.'
+            : 'Full keys are in the group tooltips. The selected filters apply to both operations.';
     }
     let timingMode = 'duration';
     try { if (localStorage.getItem('bdk.profiling.segment-timing') === 'percentage') timingMode = 'percentage'; } catch { }
     function applyTimingMode() {
-        content.querySelectorAll('[data-segment-timing]').forEach(value => { value.textContent = value.dataset[timingMode]; });
-        content.querySelectorAll('[data-segment-timing-mode]').forEach(button => {
+        timingRoots.forEach(root => root.querySelectorAll('[data-segment-timing]').forEach(value => { value.textContent = value.dataset[timingMode]; }));
+        timingRoots.forEach(root => root.querySelectorAll('[data-segment-timing-mode]').forEach(button => {
             const active = button.dataset.segmentTimingMode === timingMode;
             button.classList.toggle('active', active);
             button.setAttribute('aria-pressed', String(active));
-        });
+        }));
     }
-    content.addEventListener('click', event => {
+    timingRoots.forEach(root => root.addEventListener('click', event => {
         const button = event.target.closest('[data-segment-timing-mode]');
         if (!button) return;
         timingMode = button.dataset.segmentTimingMode;
         try { localStorage.setItem('bdk.profiling.segment-timing', timingMode); } catch { }
         applyTimingMode();
-    });
+    }));
     function captureState() {
         return { open: new Set([...content.querySelectorAll('details[open][data-preserve-key]')].map(value => value.dataset.preserveKey)),
             closed: new Set([...content.querySelectorAll('details:not([open])[data-preserve-key]')].map(value => value.dataset.preserveKey)), x: scrollX, y: scrollY };
@@ -127,10 +145,12 @@
         tip.style.left = Math.max(8, Math.min(rect.left, innerWidth - Math.min(480, innerWidth - 16))) + 'px';
         tip.style.top = Math.max(8, rect.top - 45) + 'px';
     }
-    content.addEventListener('mouseover', event => { const target = event.target.closest('.operation-wall-bucket'); if (target) positionTooltip(target); });
-    content.addEventListener('focusin', event => { const target = event.target.closest('.operation-wall-bucket'); if (target) positionTooltip(target); });
-    async function charts() {
-        const host = content.querySelector('[data-runtime-overlay]');
+    timingRoots.forEach(root => {
+        root.addEventListener('mouseover', event => { const target = event.target.closest('.operation-wall-bucket'); if (target) positionTooltip(target); });
+        root.addEventListener('focusin', event => { const target = event.target.closest('.operation-wall-bucket'); if (target) positionTooltip(target); });
+    });
+    async function charts(root = content) {
+        const host = root.querySelector('[data-runtime-overlay]');
         if (!host) return;
         let overlay;
         try { overlay = JSON.parse(new TextDecoder().decode(Uint8Array.from(atob(host.dataset.runtimeOverlay), value => value.charCodeAt(0)))); }
@@ -166,10 +186,64 @@
             await Plotly.react(host.querySelector(selector), traces, layout, { responsive: true, displaylogo: false });
         }
     }
+    let detailController = null;
+    let detailTrigger = null;
+    function clearDetail() {
+        if (!detailBody) return;
+        window.bdkProfiling.disposeHelp(detailBody);
+        detailBody.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart));
+        detailBody.replaceChildren();
+        detailBody.setAttribute('aria-busy', 'false');
+    }
+    document.addEventListener('click', async event => {
+        const button = event.target.closest('[data-operation-detail-url]');
+        if (!button || !detailModal || !window.bootstrap?.Modal) return;
+        event.preventDefault();
+        detailController?.abort();
+        const controller = new AbortController();
+        detailController = controller;
+        detailTrigger = button;
+        clearDetail();
+        const loading = document.createElement('p');
+        loading.className = 'small text-muted'; loading.setAttribute('role', 'status'); loading.textContent = 'Loading execution details…';
+        detailBody.setAttribute('aria-busy', 'true');
+        detailBody.append(loading);
+        bootstrap.Modal.getOrCreateInstance(detailModal).show(button);
+        try {
+            const response = await fetch(button.dataset.operationDetailUrl, { signal: controller.signal, cache: 'no-store' });
+            if (response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Unexpected response');
+            const html = await response.text();
+            if (controller.signal.aborted || controller !== detailController) return;
+            detailBody.innerHTML = html;
+            detailBody.setAttribute('aria-busy', 'false');
+            applyTimingMode(); restoreDetails(); window.bdkProfiling.initializeHelp(detailBody);
+            try { await charts(detailBody); }
+            catch {
+                if (controller.signal.aborted || controller !== detailController) return;
+                const notice = document.createElement('p'); notice.className = 'small text-warning'; notice.textContent = 'Runtime charts unavailable.';
+                detailBody.append(notice);
+            }
+        } catch (error) {
+            if (controller.signal.aborted || controller !== detailController) return;
+            clearDetail();
+            const notice = document.createElement('div'); notice.className = 'alert alert-warning'; notice.setAttribute('role', 'alert');
+            notice.textContent = 'Execution details could not be loaded. Close this dialog and try again.'; detailBody.append(notice);
+        }
+    });
+    detailModal?.addEventListener('hide.bs.modal', () => { detailController?.abort(); });
+    detailModal?.addEventListener('hidden.bs.modal', () => {
+        clearDetail();
+        const trigger = detailTrigger?.isConnected ? detailTrigger
+            : [...content.querySelectorAll('[data-operation-detail-url]')].find(button => button.dataset.operationDetailUrl === detailTrigger?.dataset.operationDetailUrl);
+        (trigger || document.getElementById('operation-refresh-now'))?.focus();
+    });
+    detailModal?.addEventListener('shown.bs.modal', () => {
+        detailBody.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.Plots.resize(chart).catch(() => {}));
+    });
     const refresher = window.bdkDashboard.createRefresher({ contentElement: content, intervalElement: interval, statusSelector: '#operation-refresh-status',
         storageKey: stateKey + ':refresh', buildUrl: selectionUrl,
         applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); synchronizeNodes(); synchronizeMetadata(); restoreDetails(); applyTimingMode(); window.bdkProfiling.initializeHelp(element); },
-        onSuccess: charts, formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
+        onSuccess: () => charts(), formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
     if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); const status = document.getElementById('operation-refresh-status'); status.textContent = 'Paged view'; status.title = 'Auto refresh is paused. Refresh latest to return to the current window.'; }
     document.getElementById('operation-refresh-now')?.addEventListener('click', () => { unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl; if (form) history.replaceState(null, '', url); refresher.refresh(true); });
     form?.addEventListener('submit', event => {
@@ -187,7 +261,7 @@
             selection.cursor = null; selection.boundary = null;
             selection.key = document.getElementById('operation-baseline-key').value;
             const candidateKey = document.getElementById('operation-candidate-key').value;
-            if (!selection.key || !candidateKey) { output.textContent = 'Choose two full keys. Suggestions come from the current list.'; return; }
+            if (!selection.key || !candidateKey) { output.textContent = 'Select two recorded operation keys from the dropdowns.'; return; }
             selection.keyContains = null;
             remember();
             const parameters = selectionUrl().searchParams;

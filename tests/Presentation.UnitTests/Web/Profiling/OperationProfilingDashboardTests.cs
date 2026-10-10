@@ -24,6 +24,40 @@ using ProfilingEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboar
 /// <summary>Verifies the actual retained-history Razor and JSON paths without a provider flush during reads.</summary>
 public sealed class OperationProfilingDashboardTests
 {
+    /// <summary>Checks the execution list displays the observed start time and offers recorded keys for comparison.</summary>
+    /// <example><code>await test.Views_StartTimestampAndComparisonKeys_RenderForBothLists(false);</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Views_StartTimestampAndComparisonKeys_RenderForBothLists(bool requestsOnly)
+    {
+        await using var app = await CreateAsync();
+        Capture(app, "catalog:list", OperationProfilingKind.HttpRequest);
+        Capture(app, "catalog:details", OperationProfilingKind.HttpRequest);
+        await app.Services.GetRequiredService<OperationProfilingWriterService>().TickAsync();
+        var path = requestsOnly ? "/admin/profiling/requests" : "/admin/profiling/operations";
+        var client = app.GetTestClient();
+        var page = await client.GetStringAsync(path);
+        var groups = await client.GetFromJsonAsync<OperationProfilingGroupPage>("/admin/profiling/operations/api/groups");
+
+        page.ShouldContain("id=\"operation-detail-modal\"");
+        page.ShouldContain("data-operation-detail-url=\"" + path + "/");
+        page.ShouldContain("aria-label=\"Execution details\"");
+        page.ShouldContain("Execution / started UTC");
+        page.ShouldNotContain("Execution / completed UTC");
+        foreach (var group in groups.Groups)
+        {
+            page.ShouldContain("datetime=\"" + OperationProfilingViewModelBuilder.Utc(group.Representative.StartedUtc) + "\"");
+        }
+
+        page.ShouldContain("<select id=\"operation-baseline-key\"");
+        page.ShouldContain("<select id=\"operation-candidate-key\"");
+        page.ShouldContain("<option value=\"catalog:list\">catalog:list</option>");
+        page.ShouldContain("<option value=\"catalog:details\">catalog:details</option>");
+        page.ShouldContain("Full keys are in the group tooltips.");
+        page.ShouldContain("col-md-3\"><label for=\"operation-correlation\"");
+    }
+
     /// <summary>Initial rendering, refresh and JSON apply identical selection and HTTP-kind rules.</summary>
     [Theory]
     [InlineData("Slow")]
@@ -42,21 +76,22 @@ public sealed class OperationProfilingDashboardTests
         var content = await client.GetStringAsync("/admin/profiling/requests/content" + parameters);
         var groups = await client.GetFromJsonAsync<OperationProfilingGroupPage>("/admin/profiling/operations/api/groups?kind=HttpRequest&view=" + mode);
 
-        page.ShouldContain("title=\"Retained executions matching this group\">2</span>");
-        content.ShouldContain("title=\"Retained executions matching this group\">2</span>");
+        page.ShouldContain("title=\"View retained executions matching this group\">2 executions</a>");
+        content.ShouldContain("title=\"View retained executions matching this group\">2 executions</a>");
         groups.TotalOperationCount.ShouldBe(2);
         groups.TotalGroupCount.ShouldBe(1);
         groups.Groups.Single().Count.ShouldBe(2);
         content.ShouldContain("Percent of operation duration");
         content.ShouldContain("UTC");
-        content.ShouldContain("bi bi-eye");
+        content.ShouldContain("bi bi-info-circle");
+        content.ShouldNotContain("bi bi-eye");
         content.ShouldContain("Duration breakdown");
         content.ShouldNotContain("Wall time");
         page.ShouldContain("<select id=\"operation-node\"");
         page.ShouldContain("<select id=\"operation-kind\"");
         page.ShouldContain("id=\"operation-health-modal\"");
         page.ShouldContain("aria-label=\"Capture health\"");
-        page.ShouldContain("Compare two keys");
+        page.ShouldContain("Compare operation keys");
         page.ShouldContain("All nodes");
         page.ShouldNotContain("id=\"operation-outcomes\"");
         page.ShouldNotContain("id=\"operation-group\"");
@@ -64,6 +99,11 @@ public sealed class OperationProfilingDashboardTests
         page.ShouldContain("/admin/profiling/operations");
         (await client.GetAsync("/admin/profiling/requests/" + service)).StatusCode.ShouldBe(HttpStatusCode.NotFound);
         (await client.GetAsync("/admin/profiling/requests/" + first)).StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await client.GetAsync("/admin/profiling/requests/" + service + "/content")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        var detail = await client.GetStringAsync("/admin/profiling/requests/" + first + "/content");
+        detail.ShouldContain("Diagnostics ID");
+        detail.ShouldContain("data-operation-detail");
+        detail.ShouldNotContain("<html");
         var exact = await client.GetFromJsonAsync<OperationProfilingRecord>("/admin/profiling/operations/api/records/" + first + "?outcomes=Failed&fromUtc=2000-01-01T00:00:00Z&toUtc=2000-01-02T00:00:00Z");
         exact.Id.ShouldBe(first);
     }
@@ -231,8 +271,9 @@ public sealed class OperationProfilingDashboardTests
         html.ShouldContain("Compute");
         html.ShouldContain("invocations");
         html.ShouldContain("UTC");
-        html.ShouldContain("/admin/logentries?correlationId=" + Uri.EscapeDataString(correlationId));
-        html.ShouldContain("data-profiling-copy=\"lookup&amp;&lt;script&gt;&quot;quoted&quot;&lt;/script&gt;\"");
+        html.ShouldContain("/admin/logentries?");
+        html.ShouldContain("correlationId=" + Uri.EscapeDataString(correlationId));
+        html.ShouldContain("data-dashboard-copy=\"lookup&amp;&lt;script&gt;&quot;quoted&quot;&lt;/script&gt;\"");
         html.ShouldNotContain(correlationId);
         html.ShouldNotContain("data-runtime-overlay=");
         html.ShouldContain("aria-label=\"Segment timing display\"");
@@ -250,6 +291,56 @@ public sealed class OperationProfilingDashboardTests
     public void Percentage_OwnerDuration_FormatsObservedShare(double segmentMs, double operationMs, string expected)
     {
         OperationProfilingViewModelBuilder.Percentage(TimeSpan.FromMilliseconds(segmentMs), TimeSpan.FromMilliseconds(operationMs)).ShouldBe(expected);
+    }
+
+    /// <summary>Group labels remove behavior plumbing, preserve request paths and support custom work names.</summary>
+    /// <example><code>suite.GroupName_RecordedKeys_FormatsDisplayOnly("job:catalog_cleanup", "Job", "catalog cleanup");</code></example>
+    [Theory]
+    [InlineData("messaging:OrderCreated:handler:OrderMessageHandler", "MessageHandler", "OrderMessageHandler")]
+    [InlineData("queueing:OrderCreated:handler:OrderQueueHandler", "QueueHandler", "OrderQueueHandler")]
+    [InlineData("MESSAGING:OrderCreated:HANDLER:OrderMessageHandler", "messagehandler", "OrderMessageHandler")]
+    [InlineData("notifier:OrderCreated:handler:OrderNotificationHandler", "NotifierHandler", "OrderNotificationHandler")]
+    [InlineData("job:catalog_cleanup", "Job", "catalog cleanup")]
+    [InlineData("orchestration:OrderProcessing", "Orchestration", "OrderProcessing")]
+    [InlineData("activeentity:Order:FindAll", "ActiveEntity", "Order / FindAll")]
+    [InlineData("repository:Order:FindAll", "Repository", "Order / FindAll")]
+    [InlineData("catalog:city-review", "Service", "catalog / city review")]
+    [InlineData("/api/order-items/{order_id}", "HttpRequest", "/api/order-items/{order_id}")]
+    [InlineData("custom-request-key", "HttpRequest", "custom-request-key")]
+    public void GroupName_RecordedKeys_FormatsDisplayOnly(string key, string kind, string expected)
+    {
+        OperationProfilingViewModelBuilder.GroupName(key, kind).ShouldBe(expected);
+    }
+
+    /// <summary>Readable headings retain exact keys for lookup and complete counts in every list mode.</summary>
+    /// <example><code>await suite.Views_FriendlyGroupHeadings_PreserveRecordedKeys("Recent");</code></example>
+    [Theory]
+    [InlineData("Recent")]
+    [InlineData("Slow")]
+    [InlineData("ByCount")]
+    public async Task Views_FriendlyGroupHeadings_PreserveRecordedKeys(string mode)
+    {
+        await using var app = await CreateAsync();
+        var profiler = app.Services.GetRequiredService<IOperationProfiler>();
+        var key = "messaging:OrderCreated:handler:OrderMessageHandler";
+        for (var index = 0; index < 2; index++)
+        {
+            using var operation = profiler.BeginOperation(new() { Key = key, Kind = "MessageHandler" });
+            operation.Complete();
+        }
+
+        await app.Services.GetRequiredService<OperationProfilingWriterService>().TickAsync();
+        var client = app.GetTestClient();
+        var page = await client.GetStringAsync("/admin/profiling/operations?view=" + mode);
+        var groups = await client.GetFromJsonAsync<OperationProfilingGroupPage>("/admin/profiling/operations/api/groups?view=" + mode);
+
+        page.ShouldContain("<summary class=\"card-header\" title=\"Key: " + key + "\"><span>Message handler</span> · <strong>OrderMessageHandler</strong>");
+        page.ShouldContain("title=\"View retained executions matching this group\">2 executions</a>");
+        page.ShouldContain("<option value=\"" + key + "\">" + key + "</option>");
+        page.ShouldNotContain("<strong>" + key + "</strong>");
+        groups.Groups.Single().Key.ShouldBe(key);
+        groups.Groups.Single().Kind.ShouldBe("MessageHandler");
+        groups.Groups.Single().Count.ShouldBe(2);
     }
 
     /// <summary>One occupied query budget produces the same Busy status in both render paths and JSON.</summary>

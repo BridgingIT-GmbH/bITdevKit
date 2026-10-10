@@ -173,11 +173,16 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
     {
         EnsureArg.IsNotNull(message, nameof(message));
 
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
+        using var logScope = this.Logger.BeginScope(new Dictionary<string, object> { [Constants.CorrelationIdKey] = correlationId });
+
         var messageType = message.GetType().PrettyName(false);
 
         TypedLogger.LogPublish(this.Logger, Constants.LogKey, messageType, message.MessageId);
         this.Logger.LogDebug("[{LogKey}] publish validating (type={MessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
         this.ValidatePublish(message); // TODO: message validation can also be done with a PublisherBehavior
+        CorrelationId.PropagateTo(message.Properties);
 
         // create a behavior pipeline and run it (publisher > next)
         this.Logger.LogDebug(
@@ -210,7 +215,8 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         EnsureArg.IsNotNull(messageRequest.Message, nameof(messageRequest.Message));
 
         var messageType = messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
         var result = true;
 
@@ -265,7 +271,8 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         EnsureArg.IsNotNull(subscription, nameof(subscription));
 
         messageType ??= messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
 
         using var scope = this.Logger.BeginScope(new Dictionary<string, object>

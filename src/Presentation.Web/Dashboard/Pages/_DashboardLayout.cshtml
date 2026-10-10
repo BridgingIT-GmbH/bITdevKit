@@ -142,6 +142,61 @@
             };
         };
 
+        window.bdkDashboard.appendCorrelationLink = function(container, value, logsPath) {
+            if (!value) { container.textContent = '—'; return; }
+            const identifier = String(value);
+            const url = new URL(logsPath, location.origin);
+            url.searchParams.set('level', 'All');
+            url.searchParams.set('pageSize', '100');
+            url.searchParams.set('from', new Date().toISOString().slice(0, 10));
+            url.searchParams.set('correlationId', identifier);
+            const wrapper = document.createElement('span');
+            wrapper.className = 'd-inline-flex align-items-center gap-1 mw-100';
+            wrapper.setAttribute('data-dashboard-correlation', '');
+            const link = document.createElement('a');
+            link.className = 'text-break text-decoration-none';
+            link.href = url.toString();
+            link.textContent = identifier;
+            link.title = 'Show logs for correlation ' + identifier;
+            const button = document.createElement('button');
+            button.type = 'button';
+            button.className = 'btn btn-link btn-sm p-0 text-muted flex-shrink-0';
+            button.dataset.dashboardCopy = identifier;
+            button.title = 'Copy correlation ID';
+            button.setAttribute('aria-label', button.title);
+            const icon = document.createElement('i');
+            icon.className = 'bi bi-copy';
+            icon.setAttribute('aria-hidden', 'true');
+            button.append(icon);
+            wrapper.append(link, button);
+            container.append(wrapper);
+        };
+        document.addEventListener('click', async event => {
+            const button = event.target.closest('[data-dashboard-copy]');
+            if (!button) return;
+            let copied = false;
+            try { await navigator.clipboard.writeText(button.dataset.dashboardCopy); copied = true; }
+            catch {
+                const input = document.createElement('textarea');
+                input.value = button.dataset.dashboardCopy;
+                input.style.cssText = 'position:fixed;left:-9999px;top:0';
+                document.body.append(input);
+                input.select();
+                try { copied = document.execCommand('copy'); } catch { }
+                input.remove();
+                button.focus();
+            }
+            button.title = copied ? 'Copied' : 'Copy failed';
+            button.setAttribute('aria-label', copied ? 'Correlation ID copied' : 'Copy correlation ID failed');
+            const icon = button.querySelector('i');
+            if (icon) icon.className = copied ? 'bi bi-check2' : 'bi bi-copy';
+            clearTimeout(button.copyFeedbackTimeout);
+            button.copyFeedbackTimeout = setTimeout(() => {
+                button.title = 'Copy correlation ID';
+                button.setAttribute('aria-label', button.title);
+                if (icon) icon.className = 'bi bi-copy';
+            }, 1500);
+        });
         window.bdkDashboard.resolveElement = function(value) {
             if (typeof value === 'function') {
                 return value();

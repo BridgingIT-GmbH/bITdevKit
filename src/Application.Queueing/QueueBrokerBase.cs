@@ -161,11 +161,16 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
     {
         ArgumentNullException.ThrowIfNull(message);
 
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
+        using var logScope = this.Logger.BeginScope(new Dictionary<string, object> { [Constants.CorrelationIdKey] = correlationId });
+
         var messageType = message.GetType().PrettyName(false);
 
         TypedLogger.LogEnqueue(this.Logger, Constants.LogKey, messageType, message.MessageId);
         this.Logger.LogDebug("[{LogKey}] enqueue validating (type={QueueMessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
         this.ValidateEnqueue(message);
+        CorrelationId.PropagateTo(message.Properties);
 
         this.Logger.LogDebug(
             $"{{LogKey}} enqueue behaviors: {this.EnqueuerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Enqueue",
@@ -207,9 +212,8 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         ArgumentNullException.ThrowIfNull(messageRequest.Message);
 
         var messageType = messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message.Properties.TryGetValue(Constants.CorrelationIdKey, out var correlationValue)
-            ? correlationValue?.ToString()
-            : null;
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message.Properties.TryGetValue(Constants.FlowIdKey, out var flowValue)
             ? flowValue?.ToString()
             : null;
@@ -252,7 +256,8 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         ArgumentNullException.ThrowIfNull(subscription);
 
         messageType ??= messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
 
         using var scope = this.Logger.BeginScope(new Dictionary<string, object>

@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.RabbitMQ;
 
-using System.Diagnostics;
 using System.Globalization;
 using Application.Queueing;
 using Common;
@@ -277,7 +276,7 @@ public class RabbitMQQueueBroker : QueueBrokerBase, IDisposable
 
         basicProperties.MessageId = message.MessageId;
         basicProperties.Type = messageTypeName;
-        basicProperties.CorrelationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey);
+        basicProperties.CorrelationId = CorrelationId.ReadFrom(message.Properties);
         basicProperties.Timestamp = new AmqpTimestamp(message.Timestamp.ToUnixTimeSeconds());
         basicProperties.Headers = new Dictionary<string, object>
         {

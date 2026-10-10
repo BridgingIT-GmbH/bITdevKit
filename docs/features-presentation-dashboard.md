@@ -211,26 +211,29 @@ builder.Services.AddDashboard(options => options
 
 Built-in page keys:
 
-| Page | Key | Screenshot |
-| --- | --- | --- |
-| Overview | `dashboard.overview` | [Overview](assets/dashboard/01-overview-overview.png) |
-| System | `dashboard.system` | [System](assets/dashboard/03-system-system.png) |
-| Health | `health` | [Health](assets/dashboard/05-health-health.png) |
-| Metrics | `metrics` | [Metrics](assets/dashboard/04-metrics-metrics.png) |
-| Profiling | `profiling` | [Runtime](assets/dashboard/profiling/runtime-overview.png), [Operations](assets/dashboard/profiling/operations.png), [Requests](assets/dashboard/profiling/requests.png) |
-| Identity | `identity` | [Identity](assets/dashboard/02-identity-identity.png) |
-| Console | `console` | [Console](assets/dashboard/15-console-console.png) |
-| MCP | `mcp` | [MCP](assets/dashboard/16-mcp-mcp.png) |
-| Logs | `logging.logs` | [Logs](assets/dashboard/07-logentries-logs.png) |
-| Errors | `logging.errors` | [Errors](assets/dashboard/08-errors-errors.png) |
-| Logs Stream | `logging.stream` | [Logs Stream](assets/dashboard/09-logentries-stream-logs-stream.png) |
-| Jobs | `jobs` | [Jobs](assets/dashboard/06-jobs-jobs.png) |
-| Messaging | `messaging` | [Messaging](assets/dashboard/10-messaging-messaging.png) |
-| Queueing | `queueing` | [Queueing](assets/dashboard/11-queueing-queueing.png) |
-| Orchestrations | `orchestrations` | [Orchestrations](assets/dashboard/12-orchestrations-orchestrations.png) |
-| Files | `storage.files` | [Files](assets/dashboard/13-storage-files-files.png) |
-| Documents | `storage.documents` | [Documents](assets/dashboard/14-storage-documents-documents.png) |
-| Blobs | `storage.blobs` | Blob Storage explorer |
+| Page | Key | Guide | Screenshot |
+| --- | --- | --- | --- |
+| Overview | `dashboard.overview` | [Overview](#dashboard-index) | [Overview](assets/dashboard/01-overview-overview.png) |
+| System | `dashboard.system` | [System](#system) | [System](assets/dashboard/03-system-system.png) |
+| Health | `health` | [Health](#health) | [Health](assets/dashboard/05-health-health.png) |
+| Metrics | `metrics` | [Metrics](features-metrics.md#dashboard-guide) | [Metrics](assets/dashboard/04-metrics-metrics.png) |
+| Profiling | `profiling` | [Profiling](features-profiling.md#dashboard) | [Runtime](assets/dashboard/profiling/runtime-overview.png), [Operations](assets/dashboard/profiling/operations.png), [Requests](assets/dashboard/profiling/requests.png) |
+| Identity | `identity` | [Authentication](features-presentation-authentication.md#dashboard-identity) | [Identity](assets/dashboard/02-identity-identity.png) |
+| Console | `console` | [Console commands](features-presentation-console-commands.md#dashboard-console) | [Console](assets/dashboard/15-console-console.png) |
+| MCP | `mcp` | [MCP](features-cli-mcp.md#dashboard-inspection) | [MCP](assets/dashboard/16-mcp-mcp.png) |
+| Logs | `logging.logs` | [Log Entries](features-log-entries.md#search-persisted-logs) | [Logs](assets/dashboard/07-logentries-logs.png) |
+| Errors | `logging.errors` | [Log Entries](features-log-entries.md#investigate-errors) | [Errors](assets/dashboard/08-errors-errors.png) |
+| Logs Stream | `logging.stream` | [Log Entries](features-log-entries.md#follow-a-live-stream) | [Logs Stream](assets/dashboard/09-logentries-stream-logs-stream.png) |
+| Jobs | `jobs` | [Jobs](features-jobs.md#dashboard-guide) | [Jobs](assets/dashboard/06-jobs-jobs.png) |
+| Messaging | `messaging` | [Messaging](features-messaging.md#dashboard-guide) | [Messaging](assets/dashboard/10-messaging-messaging.png) |
+| Queueing | `queueing` | [Queueing](features-queueing.md#dashboard-guide) | [Queueing](assets/dashboard/11-queueing-queueing.png) |
+| Broadcasting | `broadcasting` | [Broadcasting](features-broadcasting.md#dashboard-guide) | [Broadcasting](assets/dashboard/21-broadcasting-broadcasting.png) |
+| Orchestrations | `orchestrations` | [Orchestrations](features-orchestrations.md#dashboard-guide) | [Orchestrations](assets/dashboard/12-orchestrations-orchestrations.png) |
+| Files | `storage.files` | [File Storage](features-storage-files.md#dashboard-guide) | [Files](assets/dashboard/13-storage-files-files.png) |
+| Documents | `storage.documents` | [Document Storage](features-storage-documents.md#dashboard-and-diagnostics) | [Documents](assets/dashboard/14-storage-documents-documents.png) |
+| Blobs | `storage.blobs` | [Blob Storage](features-storage-blobs.md#dashboard) | [Blobs](assets/dashboard/19-storage-blobs-blobs.png) |
+| Permalinks | `storage.permalinks` | [Storage Permalinks](features-storage-permalinks.md#dashboard-guide) | [Permalinks](assets/dashboard/20-storage-permalinks-permalinks.png) |
+| Change History | `change-history` | [Change History](features-domain-change-history.md#dashboard-guide) | [Unconfigured state](assets/dashboard/22-change-history-unavailable.png) |
 
 Project-specific pages declared with `DashboardPageSet` use the key passed to `.Page(...)`. For example, a page declared as `.Page("customer-management", "/app/core/customers")` can be hidden with:
 
@@ -435,6 +438,16 @@ The selected interval is stored in `localStorage`. Refresh uses a recursive `set
 
 The index refresh endpoint returns only card HTML. It does not render the full dashboard layout.
 
+[![Dashboard overview with feature cards and current operational summaries](assets/dashboard/01-overview-overview.png)](assets/dashboard/01-overview-overview.png)
+
+The [page index](#getting-started) links each feature's dashboard guide and full-size screenshots. Those guides describe filters, detail dialogs, provider requirements and actions. Open a card to inspect that feature; use a correlation link in a detail dialog to continue into Logs.
+
+### System
+
+System at `/_bdk/dashboard/system` shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement [Profiling](features-profiling.md); they do not attribute resource usage to one operation.
+
+[![System dashboard with process pressure, traffic and runtime trend charts](assets/dashboard/03-system-system.png)](assets/dashboard/03-system-system.png)
+
 ### Metrics
 
 The metrics page is server-rendered and reads in-process snapshot services directly. It does not call the metrics JSON endpoints. The page has its own content fragment endpoint and refresh controls for updating only the metrics body.
@@ -445,7 +458,7 @@ Metrics remain optional. Registering the dashboard does not automatically regist
 
 The health page is server-rendered and invokes the registered ASP.NET Core health checks through `HealthCheckService` from `Microsoft.Extensions.Diagnostics.HealthChecks`. It does not call a `/healthz` endpoint.
 
-The page shows the overall status, number of registered checks, unhealthy count, total duration, and a compact table of health check entries. It has its own content fragment endpoint and refresh controls for updating only the health body.
+The page shows the overall status, number of registered checks, unhealthy count, total duration, and individual check cards. It has its own content fragment endpoint and refresh controls for updating only the health body.
 
 Register health checks in the host application with the standard ASP.NET Core API:
 
@@ -456,15 +469,19 @@ builder.Services.AddHealthChecks()
 
 If `AddHealthChecks()` is not registered, the page and card show an unavailable state instead of failing the dashboard.
 
+[![Health dashboard with overall status and registered check durations](assets/dashboard/05-health-health.png)](assets/dashboard/05-health-health.png)
+
+Inspect individual checks to distinguish a database-readiness issue from a background-service or provider failure. The page reports the registered checks; registering the dashboard does not add feature-specific checks by itself.
+
 ### Identity
 
-The identity page displays current user information using the current user accessor and request principal. When the fake identity provider is registered, the page can show a client credentials login action. If the fake provider is not available, fake-provider-specific UI is hidden.
+The identity page displays the current principal, roles, claims and saved authentication tokens. See the [Identity dashboard guide](features-presentation-authentication.md#dashboard-identity) for inspecting the signed-in user's authentication context.
 
 ### Document Storage
 
 The document storage page is contributed by `Presentation.Web.Storage` and is shown only when `AddDocumentStorage(...)` is active and at least one typed document client is registered. The page is server-rendered and uses the existing `IDocumentStoreClient<T>` instances for the selected document type.
 
-The page lets operators switch between registered document clients on the fly, page through document keys with selectable page sizes of 100, 250, 500, or 1000 items remembered in browser storage, filter by partition and row key, reset filters, create a new document from keyed pasted or written JSON, download a document from the table, open exact documents in a details dialog, edit payload JSON with syntax validation, and delete one or more checked documents after a browser confirmation alert that includes the affected keys. New-document creation checks the selected client first and reports a conflict instead of overwriting an existing key. Paging, filtering, and reset actions clear row selections so stale checked rows are not reused. It does not expose a separate REST admin API; dashboard-local fragment and form-action routes serve the rendered page workflow.
+The page lets operators switch between registered document clients on the fly, page through document keys with selectable page sizes of 25, 50, 100, 250, or 500 items remembered in browser storage, filter by partition and row key, reset filters, create a new document from keyed pasted or written JSON, download a document from the table, open exact documents in a details dialog, edit payload JSON with syntax validation, and delete one or more checked documents after a browser confirmation alert that includes the affected keys. New-document creation checks the selected client first and reports a conflict instead of overwriting an existing key. Paging, filtering, and reset actions clear row selections so stale checked rows are not reused. It does not expose a separate REST admin API; dashboard-local fragment and form-action routes serve the rendered page workflow.
 
 ### Blob Storage
 

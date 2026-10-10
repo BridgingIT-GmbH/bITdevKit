@@ -42,7 +42,7 @@ public class JobWrapper(
 
         var logger = serviceProvider?.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
         context.Trigger.JobDataMap.TryGetString(Constants.CorrelationIdKey, out var triggerCorrelationId);
-        var correlationId = triggerCorrelationId.EmptyToNull() ?? GuidGenerator.CreateSequential().ToString("N");
+        var correlationId = triggerCorrelationId.EmptyToNull() ?? CorrelationIdGenerator.Create();
         var flowId = GuidGenerator.Create(this.GetType().ToString()).ToString("N");
         var jobId = context.JobDetail.JobDataMap.GetString(JobIdKey) ?? context.FireInstanceId;
         var jobTypeName = context.JobDetail.JobType.FullName;

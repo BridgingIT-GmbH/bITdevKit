@@ -205,6 +205,16 @@ Permalink expiration controls the link, not the underlying resource. `IStoragePe
 
 The dashboard contributes a compact **Permalinks** page for filtering, direct downloads, copying links, expiration edits, and deletion. Blob, Document, and File Storage tables include permalink download and copy actions. The registry page refresh interval is off by default and remembered in browser local storage.
 
+## Dashboard guide
+
+Open Permalinks at `/_bdk/dashboard/storage/permalinks` with the permalink registry, `Presentation.Web.Storage` and the [Dashboard](features-presentation-dashboard.md) enabled. Filter links by storage kind, status and row limit, then select Apply.
+
+The table shows each location, creation time, status and expiration. Download or copy a link from its row. Select the information button to inspect the full location and change or clear its expiration. Deleting a permalink revokes the link; it does not delete the stored file, document or blob.
+
+[![Permalink registry with file, document and blob locations, status and expiration actions](assets/dashboard/20-storage-permalinks-permalinks.png)](assets/dashboard/20-storage-permalinks-permalinks.png)
+
+Choose an interval for automatic refresh or refresh manually. The interval is remembered in browser storage. Permalinks appear for storage registrations that opt into synchronization; this page does not scan unrelated storage locations for new links.
+
 ## Metrics
 
 The `BridgingIT.DevKit.Storage.Permalinks` meter emits low-cardinality counters and duration histograms for registry operations, downloads, synchronization events, retries, and queue depth. Tags include operation, outcome, storage kind, and registry provider. Permalink identifiers, keys, paths, containers, and partitions are never metric tags.

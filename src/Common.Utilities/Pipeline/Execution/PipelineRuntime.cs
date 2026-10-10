@@ -134,7 +134,8 @@ public class PipelineRuntime(
         CancellationToken cancellationToken)
     {
         var state = new PipelineRunState(executionId, Result.Success());
-        var correlationId = Activity.Current?.TraceId.ToString() ?? executionId.ToString("N");
+        var correlationId = CorrelationId.Current ?? CorrelationIdGenerator.Create();
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var pipelineStarted = false;
         IReadOnlyList<IPipelineHookInvoker> hooks = Array.Empty<IPipelineHookInvoker>();
         IReadOnlyList<IPipelineBehaviorInvoker> behaviors = Array.Empty<IPipelineBehaviorInvoker>();

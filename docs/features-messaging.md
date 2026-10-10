@@ -281,7 +281,7 @@ The RabbitMQ messaging broker uses a **single fanout exchange** (default name: `
 - **Acknowledgement:** auto-ack (`autoAck: true`). Messages are acknowledged by RabbitMQ as soon as they are delivered to the consumer. **Handler failures do not trigger broker redelivery.** Use handler-level retry behaviors (e.g., `RetryMessageHandlerBehavior`) and design handlers to be idempotent.
 - **Durability:** lower-level broker options use `IsDurable` for exchange durability and the message `Persistent` flag. `ExclusiveQueue` and `AutoDeleteQueue` default to `true`. The current `WithRabbitMQBroker(RabbitMQMessageBrokerConfiguration)` messaging registration does not expose these three flags, so use a custom broker registration if a durable, shared, non-exclusive queue is required.
 - **Expiration:** per-message TTL via AMQP `Expiration` property.
-- **Correlation:** `CorrelationId` populated from Activity baggage when present.
+- **Correlation:** `CorrelationId` propagates from the publisher's application scope, with Activity baggage as a fallback when no scope exists.
 - **ProcessDelay:** artificial delay before invoking handlers (useful for testing or throttling).
 - See [src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs](../src/Infrastructure.RabbitMQ/Messaging/RabbitMQMessageBroker.cs).
 
@@ -320,7 +320,7 @@ flowchart LR
 - Topic per message name with an optional lower-level `TopicScope` suffix; subscription per consumer; topics and subscriptions are created if missing. The current `WithServiceBusBroker(ServiceBusMessageBrokerConfiguration)` overload does not map its `MessageScope` property to `TopicScope`.
 - TTL: defaults to ~60 minutes unless overridden.
 - On success: completes messages. On failure: abandons messages so they can be redelivered.
-- Correlation: `CorrelationId` populated from Activity baggage when present.
+- Correlation: `CorrelationId` propagates from the publisher's application scope, with Activity baggage as a fallback when no scope exists.
 - See [src/Infrastructure.Azure.ServiceBus/ServiceBusMessageBroker.cs](../src/Infrastructure.Azure.ServiceBus/Messaging/ServiceBusMessageBroker.cs).
 
 Service Bus topology (topic/subscriptions):
@@ -342,7 +342,7 @@ Because Azure Queue Storage does not support native topics or subscriptions, thi
 - **Delete on success:** messages are deleted from the queue after `Process` completes successfully.
 - **TTL:** `MessageExpiration` controls the time-to-live for messages in the queue (default: 7 days).
 - **Auto-create:** queues are created automatically at runtime when `AutoCreateQueue` is `true`.
-- **Correlation:** `CorrelationId` populated from Activity baggage when present.
+- **Correlation:** `CorrelationId` propagates from the publisher's application scope, with Activity baggage as a fallback when no scope exists.
 - **See:** [src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs](../src/Infrastructure.Azure.Storage/Messaging/AzureQueueStorageMessageBroker.cs).
 
 Azure Queue Storage topology (one queue per message type, shared by all handlers):
@@ -441,6 +441,20 @@ public class AppDbContext : DbContext, IMessagingContext
 }
 ```
 
+## Dashboard guide
+
+Open Messaging at `/_bdk/dashboard/messaging` to inspect retained broker messages and their handler registrations. Reference `Presentation.Web.Messaging`, register messaging with a broker, and enable the [Dashboard](features-presentation-dashboard.md). The page reads `IMessageBrokerService` directly and uses the dashboard's authorization.
+
+Choose Status and Archive, enter a type or message-ID filter, then select Apply. Archive defaults to Active; select All when a completed message is no longer in that list. The counters show the selected archive working set, while Rows bounds the message table. Subscriptions show the registered message-to-handler mappings. Waiting lists messages that have no handler.
+
+[![Messaging dashboard with succeeded messages, archive filters and registered handlers](assets/dashboard/10-messaging-messaging.png)](assets/dashboard/10-messaging-messaging.png)
+
+Select a row's information button to open its details dialog. Inspect the stored payload, properties, attempts, lease, errors and handler results. The correlation ID links to Logs and has a copy button, so you can follow the same publication through processing.
+
+[![Message details with publication properties, correlation ID and handler outcome](assets/dashboard/messaging/message-details.png)](assets/dashboard/messaging/message-details.png)
+
+The page also provides retry and archive actions for eligible messages, plus pause and resume controls for message types. These act on the broker; retained data and supported operations depend on the broker implementation. The toolbar can publish an alive message when that feature is enabled. Manual refresh and the interval selector update the page; the Message Flow chart collects samples during the browser session.
+
 ## Operational endpoints
 
 When you add `Presentation.Web.Messaging`, the server can expose an operational API for persisted broker messages.
@@ -471,7 +485,7 @@ These endpoints are intended for support and operations workflows. In production
 - Ordering: guaranteed with InProcess; not guaranteed across distributed consumers for RabbitMQ/Service Bus.
 - Expiration/TTL: prevent processing stale data; in-process broker drops expired messages before processing, while the Entity Framework broker expires rows based on `MessageExpiration`.
 - Retries/redelivery: prefer handler retry behaviors; the Entity Framework broker also supports operational retries through stored handler state; Service Bus will redeliver after abandon; RabbitMQ auto-ack means no redelivery on failures.
-- Correlation/tracing: propagate correlation via Activity baggage; instrument via OpenTelemetry.
+- Correlation: brokers propagate `CorrelationId.Current` in message properties and restore it during handling. Valid explicit correlation IDs in messages take precedence. Activity baggage supplies the ID only when no application scope exists.
 - Multi-host EF guidance: prefer SQL Server/PostgreSQL for active-active worker deployments; treat SQLite as a local/lightweight option rather than a distributed broker store.
 - **Runtime pause/resume:** use the operational endpoints to pause processing for specific message types during maintenance or incidents. Paused messages remain in `Pending` state and are automatically eligible for processing once resumed.
 
@@ -508,7 +522,7 @@ services.AddMessaging()
     .WithBehavior<RetryMessageHandlerBehavior>();
 ```
 
-The optional `MessageHandlerProfilingBehavior` records `messaging:{message type name}:handler:{handler type name}` with kind `MessageHandler`. Broker handler pipelines establish a fresh consumer boundary, preserving the producer's context. Direct behavior calls join an active operation or start one independently. Bounded dimensions identify the full message and handler types; message contents are excluded. An existing bounded string `CorrelationId` is retained for independent roots.
+The optional `MessageHandlerProfilingBehavior` records `messaging:{message type name}:handler:{handler type name}` with kind `MessageHandler`. Broker handler pipelines establish a fresh consumer boundary, preserving the producer's context. Direct behavior calls join an active operation or start one independently. Bounded dimensions identify the full message and handler types; message contents are excluded. A valid `CorrelationId` string is retained for independent roots, including JSON strings restored from durable storage. Brokers assign a short ID before publishing when neither metadata nor the caller supplies one. They restore the producer's ID in `CorrelationId.Current` during handling and further publishing. Legacy messages without a valid ID receive a new ID at the consumer boundary, independent of worker context. The worker's previous context returns after completion or failure.
 
 Timing covers the downstream handler pipeline. Subscription lookup, deserialization, handler resolution, pre-pipeline semaphore waiting and transport acknowledgement remain outside it. Registration before retry includes the retry policy; inside retry it measures each exposed attempt. Exceptions and matching caller cancellation are recorded without changing the broker's retry/completion rules. Missing or disabled Profiling remains safe. Typed/instance profiling registration is idempotent. See [Profiling](features-profiling.md#messaging-and-queue-handler-behaviors) for nesting, persistence, executing-node filters and worker ownership.
 

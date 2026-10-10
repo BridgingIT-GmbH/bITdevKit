@@ -270,7 +270,7 @@ public partial class JobService(
         }
 
         jobGroup ??= "DEFAULT";
-        var correlationId = GuidGenerator.CreateSequential().ToString("N");
+        var correlationId = CorrelationIdGenerator.Create();
 
         using (this.logger.BeginScope(new Dictionary<string, object>
         {
@@ -392,7 +392,7 @@ public partial class JobService(
         EnsureArg.IsGte(checkInterval, 100, nameof(checkInterval)); // Minimum reasonable interval
         jobGroup ??= "DEFAULT";
         timeout ??= TimeSpan.FromMinutes(10); // Default timeout of 10 minutes
-        var correlationId = GuidGenerator.CreateSequential().ToString("N");
+        var correlationId = CorrelationIdGenerator.Create();
 
         using (this.logger.BeginScope(new Dictionary<string, object>
         {

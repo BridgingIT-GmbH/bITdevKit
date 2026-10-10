@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System;
-using System.Diagnostics;
 using Application.Messaging;
 using Common;
 using global::Azure.Messaging.ServiceBus;
@@ -117,7 +116,7 @@ public class ServiceBusMessageBroker : MessageBrokerBase, IDisposable, IAsyncDis
         {
             MessageId = message.MessageId,
             Subject = messageName,
-            CorrelationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey),
+            CorrelationId = CorrelationId.ReadFrom(message.Properties),
             TimeToLive = this.options.MessageExpiration ?? new TimeSpan(0, 59, 59),
             ApplicationProperties =
             {

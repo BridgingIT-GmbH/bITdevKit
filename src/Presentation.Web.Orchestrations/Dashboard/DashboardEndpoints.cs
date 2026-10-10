@@ -156,7 +156,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                 var data = new AliveOrchestrationData
                 {
                     Source = "dashboard",
-                    CorrelationId = GuidGenerator.CreateSequential().ToString("N"),
+                    CorrelationId = CorrelationIdGenerator.Create(),
                 };
                 var result = await service.DispatchAsync<AliveOrchestration, AliveOrchestrationData>(data, cancellationToken);
 

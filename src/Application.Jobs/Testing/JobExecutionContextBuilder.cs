@@ -26,7 +26,7 @@ public sealed class JobExecutionContextBuilder<TData>
     private Guid occurrenceId = Guid.NewGuid();
     private Guid executionId = Guid.NewGuid();
     private int attemptNumber = 1;
-    private string correlationId = Guid.NewGuid().ToString("N");
+    private string correlationId = CorrelationIdGenerator.Create();
     private string idempotencyKey = Guid.NewGuid().ToString("N");
     private DateTimeOffset? scheduledUtc;
     private DateTimeOffset dueUtc = new(2026, 05, 26, 09, 00, 00, TimeSpan.Zero);

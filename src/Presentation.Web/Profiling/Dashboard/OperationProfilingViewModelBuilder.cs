@@ -96,6 +96,63 @@ public sealed class OperationProfilingViewModelBuilder(IOperationProfilingQueryS
         return result.IsSuccess ? result.Value : new() { Query = new() { Id = id }, RequestsOnly = requestsOnly, Error = Error(result), StatusCode = ErrorStatus(result), Health = queries.GetHealth(), RefreshedUtc = this.Now() };
     }
 
+    /// <summary>Formats a recorded execution kind for group headings without changing its stored value.</summary>
+    /// <param name="kind">The recorded execution kind, including custom kinds.</param>
+    /// <returns>A display label for a known kind, or the original custom kind.</returns>
+    /// <example><code>var label = OperationProfilingViewModelBuilder.KindLabel("MessageHandler");</code></example>
+    public static string KindLabel(string kind) => kind?.ToUpperInvariant() switch
+    {
+        "HTTPREQUEST" => "HTTP request",
+        "BLAZORINTERACTION" => "Blazor interaction",
+        "MESSAGEHANDLER" => "Message handler",
+        "QUEUEHANDLER" => "Queue handler",
+        "ACTIVEENTITY" => "Active entity",
+        "NOTIFIERHANDLER" => "Notification handler",
+        "NOTIFIER" => "Notification",
+        "REQUESTER" => "Request handler",
+        _ => kind,
+    };
+
+    /// <summary>Shortens behavior-generated keys for display while leaving HTTP paths intact.</summary>
+    /// <param name="key">The full recorded operation key, retained separately for grouping and tooltips.</param>
+    /// <param name="kind">The recorded kind used to recognize behavior prefixes.</param>
+    /// <returns>A readable work name. Its value is only a label, never a grouping or query key.</returns>
+    /// <example><code>var label = OperationProfilingViewModelBuilder.GroupName("job:catalog_cleanup", "Job");</code></example>
+    public static string GroupName(string key, string kind)
+    {
+        if (string.IsNullOrEmpty(key) || key.StartsWith('/') || ProfilingKeyComparer.Instance.Equals(kind, "HttpRequest"))
+        {
+            return key;
+        }
+
+        var prefix = kind?.ToUpperInvariant() switch
+        {
+            "MESSAGEHANDLER" => "messaging:",
+            "QUEUEHANDLER" => "queueing:",
+            "JOB" => "job:",
+            "ORCHESTRATION" => "orchestration:",
+            "PIPELINE" => "pipeline:",
+            "REPOSITORY" => "repository:",
+            "ACTIVEENTITY" => "activeentity:",
+            "REQUESTER" => "requester:",
+            "NOTIFIER" or "NOTIFIERHANDLER" => "notifier:",
+            _ => null,
+        };
+        var name = key;
+        if (prefix is not null && key.StartsWith(prefix, StringComparison.OrdinalIgnoreCase))
+        {
+            name = key[prefix.Length..];
+            var handlerMarker = ":handler:";
+            var handler = name.LastIndexOf(handlerMarker, StringComparison.OrdinalIgnoreCase);
+            if (handler >= 0 && handler + handlerMarker.Length < name.Length)
+            {
+                name = name[(handler + handlerMarker.Length)..];
+            }
+        }
+
+        return name.Replace(":", " / ", StringComparison.Ordinal).Replace('_', ' ').Replace('-', ' ');
+    }
+
     /// <summary>Formats UTC timestamps without converting to machine or browser local time.</summary>
     /// <example><code>var label = OperationProfilingViewModelBuilder.Utc(record.CompletedUtc);</code></example>
     public static string Utc(DateTimeOffset value) => value == default ? "Unavailable" : value.ToUniversalTime().ToString("yyyy-MM-dd'T'HH:mm:ss.fff'Z'", CultureInfo.InvariantCulture);

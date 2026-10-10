@@ -17,6 +17,48 @@ public abstract class EntityFrameworkMessageBrokerTestsBase
 {
     protected abstract EntityFrameworkMessageBrokerTestSupport Support { get; }
 
+    /// <summary>Checks the origin correlation survives EF serialization and overrides the worker context during handling.</summary>
+    [Fact]
+    public virtual async Task ProcessAsync_PublisherCorrelation_RestoresConsumerContext()
+    {
+        string observed = null;
+        var correlation = Guid.NewGuid().ToString("N");
+        var options = this.CreateOptions();
+        options.HandlerBehaviors = [new CorrelationObserver(value => observed = value)];
+        var sut = this.CreateBroker(options);
+        var worker = this.CreateWorker(sut, options);
+        var message = new RelationalBrokerMessage("correlation");
+        await sut.Subscribe<RelationalBrokerMessage, ProcessingRelationalBrokerMessageHandler>();
+        using (CorrelationId.BeginScope(correlation))
+        {
+            await sut.Publish(message);
+        }
+
+        var stored = await this.Support.ExecuteDbContextAsync(context => context.BrokerMessages.SingleAsync());
+        CorrelationId.ReadFrom(stored.Properties).ShouldBe(correlation);
+        using (CorrelationId.BeginScope("worker-correlation"))
+        {
+            await worker.ProcessAsync();
+            CorrelationId.Current.ShouldBe("worker-correlation");
+        }
+
+        observed.ShouldBe(correlation);
+        stored = await this.Support.ExecuteDbContextAsync(context => context.BrokerMessages.SingleAsync());
+        stored.Status.ShouldBe(BrokerMessageStatus.Succeeded);
+    }
+
+    private sealed class CorrelationObserver(Action<string> observe) : IMessageHandlerBehavior
+    {
+        /// <inheritdoc />
+        public async Task Handle<TMessage>(TMessage message, CancellationToken cancellationToken, object handler, MessageHandlerDelegate next)
+            where TMessage : IMessage
+        {
+            await next();
+            await Task.Yield();
+            observe(CorrelationId.Current);
+        }
+    }
+
     [Fact]
     public virtual async Task Publish_WithSubscriptions_PersistsMessageAndHandlerStates()
     {

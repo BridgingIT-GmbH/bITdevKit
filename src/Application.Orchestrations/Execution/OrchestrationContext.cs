@@ -35,7 +35,7 @@ public class OrchestrationContext<TData>
     {
         this.OrchestrationName = orchestrationName;
         this.InstanceId = instanceId ?? Guid.NewGuid();
-        this.CorrelationId = correlationId ?? this.InstanceId.ToString("N");
+        this.CorrelationId = correlationId ?? CorrelationIdGenerator.Create();
         this.Data = data ?? throw new ArgumentNullException(nameof(data));
         this.Services = services ?? throw new ArgumentNullException(nameof(services));
         this.Status = OrchestrationStatus.Created;

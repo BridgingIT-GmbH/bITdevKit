@@ -1409,6 +1409,20 @@ builder.Services.AddJobScheduler()
         .AddTrigger("manual", trigger => trigger.Manual()));
 ```
 
+## Dashboard guide
+
+Open Jobs at `/_bdk/dashboard/jobs` after registering the scheduler and [Dashboard](features-presentation-dashboard.md), with `Presentation.Web.Jobs` referenced. The page uses `IJobSchedulerQueryService` to show registered jobs and recent occurrences.
+
+The job table distinguishes definition state from execution state. A job can be active while having no running occurrences. Check trigger counts, next execution and last execution beside the running and failed counts. The adjacent occurrence table shows the outcome, trigger, creation time and duration of individual runs.
+
+[![Jobs dashboard with registered definitions and completed scheduler occurrences](assets/dashboard/06-jobs-jobs.png)](assets/dashboard/06-jobs-jobs.png)
+
+Select an occurrence's information button to inspect its context, correlation ID, messages and latest execution details. Follow the correlation ID to Logs or copy it for a support lookup.
+
+[![Job occurrence context and execution information in a dashboard dialog](assets/dashboard/jobs/occurrence-details.png)](assets/dashboard/jobs/occurrence-details.png)
+
+Dispatch, pause and disable actions operate on job definitions. Occurrences expose cancel, interrupt or retry actions when their current state permits them. Realtime Graph samples the current browser session; History Graph queries retained scheduler history. Use the toolbar refresh button or interval selector to update the projections.
+
 ## Operational notes
 
 ### Endpoint surface

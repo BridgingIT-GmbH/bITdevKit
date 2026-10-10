@@ -188,6 +188,20 @@ builder.Services.AddQueueing(builder.Configuration)
 
 The exact behavior registration belongs to each feature. See [Messaging](./features-messaging.md), [Queueing](./features-queueing.md), [Jobs](./features-jobs.md), [Orchestrations](./features-orchestrations.md), and [Domain Repositories](./features-domain-repositories.md).
 
+## Dashboard guide
+
+Open Metrics at `/_bdk/dashboard/metrics` with both metrics and the [Dashboard](features-presentation-dashboard.md) enabled. Registering the dashboard alone does not start metric collection. Feature metrics require their recording behaviors; HTTP route measurements require `UseRequestMetrics()`.
+
+The App tab summarizes devkit feature successes, failures, current work and duration series. It lists the busiest and slowest recorded series beside the feature overview. The .NET tab shows process, memory, GC and thread-pool values. ASP.NET summarizes HTTP traffic.
+
+[![Metrics App tab with feature counters, current work and recorded duration series](assets/dashboard/04-metrics-metrics.png)](assets/dashboard/04-metrics-metrics.png)
+
+Select Routes to compare request counts, failures and average latency per HTTP method and route. These are aggregate measurements. Use [Request Profiling](features-profiling.md#dashboard) when you need one execution's segment breakdown.
+
+[![Metrics Routes tab with HTTP request counts and average route latency](assets/dashboard/metrics/routes.png)](assets/dashboard/metrics/routes.png)
+
+The toolbar supports manual and interval refresh. The refresh interval is remembered in browser storage, and a refresh preserves the active tab.
+
 ## HTTP endpoints
 
 The default group path is `/_bdk/api/metrics`. It requires authorization and maps these routes:

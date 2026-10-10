@@ -23,7 +23,7 @@ public sealed class AliveOrchestrationData : IOrchestrationData
     /// <summary>
     /// Gets or sets the correlation identifier assigned to this probe.
     /// </summary>
-    public string CorrelationId { get; set; } = GuidGenerator.CreateSequential().ToString("N");
+    public string CorrelationId { get; set; } = CorrelationIdGenerator.Create();
 }
 
 /// <summary>
@@ -50,7 +50,7 @@ public sealed class AliveOrchestration : Orchestration<AliveOrchestrationData>
                         ? "dashboard"
                         : context.Data.Source.Trim();
                     context.Data.CorrelationId = string.IsNullOrWhiteSpace(context.Data.CorrelationId)
-                        ? GuidGenerator.CreateSequential().ToString("N")
+                        ? CorrelationIdGenerator.Create()
                         : context.Data.CorrelationId.Trim();
 
                     await Task.Delay(600, cancellationToken); // Simulate some work

@@ -5,6 +5,7 @@
 
 namespace BridgingIT.DevKit.Application.UnitTests.Profiling;
 
+using System.Text.Json;
 using BridgingIT.DevKit.Application.Messaging;
 using BridgingIT.DevKit.Application.Queueing;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,6 +16,272 @@ using Constants = BridgingIT.DevKit.Application.Messaging.Constants;
 /// <example>Runs direct behaviors and real messaging/queueing broker pipelines.</example>
 public sealed class BrokerHandlerProfilingBehaviorTests
 {
+    /// <summary>Checks publish metadata survives a durable JSON boundary and scopes nested handler work independently of the worker.</summary>
+    [Theory]
+    [InlineData(false, false)]
+    [InlineData(false, true)]
+    [InlineData(true, false)]
+    [InlineData(true, true)]
+    public async Task Broker_SerializedPublisherCorrelation_ProfilesAndPropagatesThroughHandler(
+        bool queue,
+        bool fail
+    )
+    {
+        using var services = await Services();
+        var profiling = services.GetRequiredService<IOperationProfiler>();
+        var id = Guid.Empty;
+        Func<Task> publishChild = null;
+        IDictionary<string, object> childProperties = null;
+        var handler = new Handler(
+            async (_, _) =>
+            {
+                CorrelationId.Current.ShouldBe("publisher-correlation");
+                id = profiling.Current.Id;
+                await Task.Yield();
+                CorrelationId.Current.ShouldBe("publisher-correlation");
+                await publishChild();
+                if (fail)
+                {
+                    throw new InvalidOperationException("handler failure");
+                }
+            }
+        );
+
+        if (queue)
+        {
+            var factory = Substitute.For<IQueueMessageHandlerFactory>();
+            factory
+                .Create(typeof(Handler))
+                .Returns(_ => new QueueMessageHandlerFactoryResult(handler));
+            var sut = new TestQueueBroker(factory, new QueueHandlerProfilingBehavior(profiling));
+            await sut.Subscribe<TestQueueMessage, Handler>();
+            var message = new TestQueueMessage();
+            using (CorrelationId.BeginScope("publisher-correlation"))
+            {
+                await sut.Enqueue(message);
+            }
+
+            var restored = new TestQueueMessage { Properties = RoundTrip(message.Properties) };
+            publishChild = async () =>
+            {
+                var child = new TestQueueMessage();
+                await sut.Enqueue(child);
+                childProperties = child.Properties;
+            };
+            using (CorrelationId.BeginScope("worker-correlation"))
+            {
+                QueueProcessingResult? result = null;
+                await sut.Process(
+                    new QueueMessageRequest(restored, value => result = value, default)
+                );
+                result.ShouldBe(
+                    fail ? QueueProcessingResult.Failed : QueueProcessingResult.Succeeded
+                );
+                CorrelationId.Current.ShouldBe("worker-correlation");
+            }
+        }
+        else
+        {
+            var factory = Substitute.For<IMessageHandlerFactory>();
+            factory.Create(typeof(Handler)).Returns(_ => new MessageHandlerFactoryResult(handler));
+            var sut = new TestMessageBroker(
+                factory,
+                new MessageHandlerProfilingBehavior(profiling)
+            );
+            await sut.Subscribe<TestMessage, Handler>();
+            var message = new TestMessage();
+            using (CorrelationId.BeginScope("publisher-correlation"))
+            {
+                await sut.Publish(message);
+            }
+
+            var restored = new TestMessage(RoundTrip(message.Properties));
+            publishChild = async () =>
+            {
+                var child = new TestMessage();
+                await sut.Publish(child);
+                childProperties = child.Properties;
+            };
+            using (CorrelationId.BeginScope("worker-correlation"))
+            {
+                bool? result = null;
+                await sut.Process(new MessageRequest(restored, value => result = value, default));
+                result.ShouldBe(!fail);
+                CorrelationId.Current.ShouldBe("worker-correlation");
+            }
+        }
+
+        id.ShouldNotBe(Guid.Empty);
+        var record = await Stored(services, id);
+        record.CorrelationId.ShouldBe("publisher-correlation");
+        record.Outcome.ShouldBe(
+            fail ? OperationProfilingOutcome.Failed : OperationProfilingOutcome.Completed
+        );
+        childProperties[Constants.CorrelationIdKey].ShouldBe("publisher-correlation");
+        profiling.Current.ShouldBeNull();
+    }
+
+    /// <summary>Checks a JSON string in message metadata is accepted without arbitrary object stringification.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Handle_JsonStringCorrelation_RecordsPublisherCorrelation(bool queue)
+    {
+        using var services = await Services();
+        var profiling = services.GetRequiredService<IOperationProfiler>();
+        var properties = RoundTrip(
+            new Dictionary<string, object> { [Constants.CorrelationIdKey] = "json-publisher" }
+        );
+        properties[Constants.CorrelationIdKey].ShouldBeOfType<JsonElement>();
+        object message = queue
+            ? new TestQueueMessage { Properties = properties }
+            : new TestMessage(properties);
+        var id = Guid.Empty;
+        await Handle(
+            queue,
+            profiling,
+            () =>
+            {
+                id = profiling.Current.Id;
+                return Task.CompletedTask;
+            },
+            message: message
+        );
+
+        (await Stored(services, id)).CorrelationId.ShouldBe("json-publisher");
+    }
+
+    /// <summary>Checks publishing without an ambient scope assigns an ID before transport and preserves it for consumers.</summary>
+    /// <example><code>await test.Broker_NewOrigin_AssignsShortCorrelationBeforePublishing(false);</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Broker_NewOrigin_AssignsShortCorrelationBeforePublishing(bool queue)
+    {
+        using var services = await Services();
+        using var origin = CorrelationId.BeginScope(null);
+        var profiling = services.GetRequiredService<IOperationProfiler>();
+        string identifier = null;
+        var id = Guid.Empty;
+        var handler = new Handler(
+            (_, _) =>
+            {
+                CorrelationId.Current.ShouldBe(identifier);
+                id = profiling.Current.Id;
+                return Task.CompletedTask;
+            }
+        );
+        if (queue)
+        {
+            var factory = Substitute.For<IQueueMessageHandlerFactory>();
+            factory
+                .Create(typeof(Handler))
+                .Returns(_ => new QueueMessageHandlerFactoryResult(handler));
+            var broker = new TestQueueBroker(factory, new QueueHandlerProfilingBehavior(profiling));
+            await broker.Subscribe<TestQueueMessage, Handler>();
+            var message = new TestQueueMessage();
+            await broker.Enqueue(message);
+            identifier = CorrelationId.ReadFrom(message.Properties);
+            await broker.Process(
+                new QueueMessageRequest(
+                    new TestQueueMessage { Properties = RoundTrip(message.Properties) },
+                    _ => { },
+                    default
+                )
+            );
+        }
+        else
+        {
+            var factory = Substitute.For<IMessageHandlerFactory>();
+            factory.Create(typeof(Handler)).Returns(_ => new MessageHandlerFactoryResult(handler));
+            var broker = new TestMessageBroker(
+                factory,
+                new MessageHandlerProfilingBehavior(profiling)
+            );
+            await broker.Subscribe<TestMessage, Handler>();
+            var message = new TestMessage();
+            await broker.Publish(message);
+            identifier = CorrelationId.ReadFrom(message.Properties);
+            await broker.Process(
+                new MessageRequest(
+                    new TestMessage(RoundTrip(message.Properties)),
+                    _ => { },
+                    default
+                )
+            );
+        }
+
+        identifier.ShouldNotBeNullOrEmpty();
+        identifier.Length.ShouldBe(12);
+        (await Stored(services, id)).CorrelationId.ShouldBe(identifier);
+        CorrelationId.Current.ShouldBeNull();
+    }
+
+    private static IDictionary<string, object> RoundTrip(IDictionary<string, object> properties) =>
+        JsonSerializer.Deserialize<Dictionary<string, object>>(
+            JsonSerializer.Serialize(properties)
+        );
+
+    /// <summary>Checks uncorrelated messages do not inherit a worker's unrelated Activity or ambient identifier.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Broker_UncorrelatedMessage_DoesNotInheritWorkerCorrelation(bool queue)
+    {
+        using var services = await Services();
+        var profiling = services.GetRequiredService<IOperationProfiler>();
+        using var activity = new System.Diagnostics.Activity("worker").Start();
+        activity.SetBaggage(CorrelationId.ActivityBaggageName, "worker-activity-correlation");
+        using var ambient = CorrelationId.BeginScope("worker-correlation");
+        var id = Guid.Empty;
+        string generatedCorrelation = null;
+        var handler = new Handler(
+            async (_, _) =>
+            {
+                await Task.Yield();
+                generatedCorrelation = CorrelationId.Current;
+                generatedCorrelation.ShouldNotBeNullOrEmpty();
+                generatedCorrelation.Length.ShouldBe(12);
+                generatedCorrelation.ShouldNotBe("worker-correlation");
+                generatedCorrelation.ShouldNotBe("worker-activity-correlation");
+                id = profiling.Current.Id;
+            }
+        );
+        if (queue)
+        {
+            var factory = Substitute.For<IQueueMessageHandlerFactory>();
+            factory
+                .Create(typeof(Handler))
+                .Returns(_ => new QueueMessageHandlerFactoryResult(handler));
+            var sut = new TestQueueBroker(factory, new QueueHandlerProfilingBehavior(profiling));
+            await sut.Subscribe<TestQueueMessage, Handler>();
+            QueueProcessingResult? result = null;
+            await sut.Process(
+                new QueueMessageRequest(new TestQueueMessage(), value => result = value, default)
+            );
+            result.ShouldBe(QueueProcessingResult.Succeeded);
+        }
+        else
+        {
+            var factory = Substitute.For<IMessageHandlerFactory>();
+            factory.Create(typeof(Handler)).Returns(_ => new MessageHandlerFactoryResult(handler));
+            var sut = new TestMessageBroker(
+                factory,
+                new MessageHandlerProfilingBehavior(profiling)
+            );
+            await sut.Subscribe<TestMessage, Handler>();
+            bool? result = null;
+            await sut.Process(
+                new MessageRequest(new TestMessage(), value => result = value, default)
+            );
+            result.ShouldBe(true);
+        }
+
+        id.ShouldNotBe(Guid.Empty);
+        (await Stored(services, id)).CorrelationId.ShouldBe(generatedCorrelation);
+        CorrelationId.Current.ShouldBe("worker-correlation");
+    }
+
     /// <summary>Checks typed/instance registration is idempotent without hidden profiling dependencies.</summary>
     [Theory]
     [InlineData(false)]

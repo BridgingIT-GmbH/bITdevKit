@@ -377,6 +377,18 @@ Additional examples:
 }
 ```
 
+## Dashboard inspection
+
+Open MCP at `/_bdk/dashboard/mcp` with the host MCP runtime and [Dashboard](features-presentation-dashboard.md) registered. The page lists handler registrations and their operation counts, toolsets and features. Its Operations table shows each capability's owner, category, handler and description.
+
+[![MCP dashboard inventory of registered handlers and their exposed features](assets/dashboard/16-mcp-mcp.png)](assets/dashboard/16-mcp-mcp.png)
+
+The operation inventory helps identify the capability to call before inspecting its input schema. Use the braces button to see the arguments accepted by its handler.
+
+[![MCP operation inventory with capability names, categories and argument-schema buttons](assets/dashboard/mcp/operations.png)](assets/dashboard/mcp/operations.png)
+
+The host bridge and MCP server are separate parts of the connection. Registered handlers show what the host can expose. The server-session panel reports heartbeats from running `bdk mcp` processes and their selected runtime. An Offline server with registered handlers means no active server session is publishing a heartbeat; it does not mean the capability registrations are missing. Use the toolbar refresh controls to watch connection changes.
+
 ## Documentation-aware development
 
 `bdk_docs_search`, `bdk_docs_get`, `bdk_api_search` and `bdk_api_get` let an agent consult official DevKit documentation and API reference metadata while it works in a consuming project. This is intentionally owned by the CLI MCP server rather than the selected runtime, so docs and API lookup work even when the app is not running yet.

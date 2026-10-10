@@ -24,7 +24,7 @@ public class ModuleScopeStartupTaskBehavior(
     /// <inheritdoc/>
     public override async Task Execute(IStartupTask task, CancellationToken cancellationToken, TaskDelegate next)
     {
-        var correlationId = GuidGenerator.CreateSequential().ToString("N");
+        var correlationId = CorrelationIdGenerator.Create();
         var flowId = GuidGenerator.Create(task.GetType().ToString()).ToString("N");
         var taskName = task.GetType().PrettyName();
         var module = moduleAccessors.Find(task.GetType());

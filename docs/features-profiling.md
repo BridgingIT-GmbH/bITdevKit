@@ -258,7 +258,11 @@ Broker handler entry points use `IProfilingExecutionBoundaryBehavior` to establi
 
 Timing starts when the profiling behavior runs, after subscription lookup, handler resolution and deserialization. It excludes publishing, queue residence, transport receipt, broker readiness checks, semaphore waiting before the pipeline and acknowledgement afterward. Register profiling before retry/timeout behaviors to include their downstream policy duration; register it inside retry to record each exposed attempt. A later transport redelivery starts another operation. A successfully returned handler is `Completed`; thrown exceptions are `Failed`. Only requested cancellation carrying the supplied handler token is `Canceled`. The existing broker still owns its completion, acknowledgement, retry and dead-letter rules. Profiling does not infer delivery guarantees or record handlers that never ran.
 
-Bounded dimensions contain `messaging.messageType`, `messaging.handlerType`, `queueing.messageType` and `queueing.handlerType`. An existing string `CorrelationId` of at most 128 characters can correlate independent consumer roots with the producer. Arbitrary property values are never stringified. Message bodies, business IDs, headers and result payloads are not retained. Metadata, scope and restoration faults preserve exactly-once business invocation and its original exception.
+Bounded dimensions contain `messaging.messageType`, `messaging.handlerType`, `queueing.messageType` and `queueing.handlerType`.
+
+Brokers copy the origin's application correlation ID into message properties before publishing or enqueueing. A valid explicit correlation ID in the message takes precedence. Consumers restore that ID in `CorrelationId.Current` for the handler, nested calls, and further publishes, then restore the worker's previous context. This applies without Profiling registration or an Activity listener. Job and orchestration executions establish their own correlation scopes.
+
+Profiling accepts valid CLR strings and JSON strings restored from durable storage, up to 128 characters. Arbitrary property values are never stringified. Message bodies, business IDs, headers and result payloads are not retained. Metadata, scope and restoration faults preserve exactly-once business invocation and its original exception.
 
 ### Executing nodes and per-node analysis
 
@@ -423,25 +427,27 @@ Profiling dashboard routes inherit the dashboard's authentication and authorizat
 
 #### Grouped executions
 
-Recent follows new activity by default. Use By count to rank retained groups or Slow to inspect the longest executions. Counts cover the retained selection, even when the page shows only representative executions. The eye button opens a group's executions in By count, or the selected execution in Slow and Recent. The **Key** filter matches a case-insensitive substring. **Kind** is a dropdown. Advanced filters accept a typed selector for dimension grouping, outcomes and other detailed criteria.
+Recent follows new activity by default. Use By count to rank retained groups or Slow to inspect the longest executions. Counts cover the retained selection, even when the page shows only representative executions. Group headings show the kind, a short work name and the retained execution count. Hover over a heading for its full key. These labels do not change grouping or filters. The circled information button opens execution details in a modal without leaving the list. By count shows the representative execution. Select a group's count badge to view its retained executions. The **Key** filter matches a case-insensitive substring. **Kind** is a dropdown. Advanced filters accept a typed selector for dimension grouping, outcomes and other detailed criteria.
 
-**Compare two keys** takes full exact baseline and candidate keys, keeps the current kind/node/time/advanced filters, and ignores the list's key substring. Its table compares retained counts, median and p95. A positive candidate p95 change means slower.
+**Compare operation keys** offers two dropdowns of full keys from the current groups. The same keys are available in the group heading tooltips. A key names the recorded work, such as `catalog:list` or `catalog:details`; HTTP requests use their configured path key. These are not execution or correlation IDs. Clear the key filter or widen the UTC range if fewer than two keys appear. Saved selections survive refresh and navigation. Comparison keeps the current kind/node/time/advanced filters and ignores the list's key substring. Its table compares retained counts, median and p95. A positive candidate p95 change means slower.
 
-[![Recent operations grouped by key and kind, with single-line execution times and node names](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
+[![Comparing recorded operation keys selected from the current groups, with execution counts, median and p95 durations](assets/dashboard/profiling/operation-comparison.png)](assets/dashboard/profiling/operation-comparison.png)
 
-Rows show the executing node, root outcome, duration and a duration breakdown. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. The **Capture health** toolbar icon opens persistence and sampling details in a dialog.
+[![Recent handler and orchestration executions with readable group names, information buttons and single-line rows](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
+
+Rows show the execution's start timestamp in UTC, executing node, root outcome, duration and a duration breakdown. Hover or focus a bar bucket to see its duration and percentage. A completed root can contain failed segments; the list flags those separately. The summary cards show matching executions, groups, queued records and dropped records. The **Capture health** toolbar icon opens persistence and sampling details in a dialog.
 
 Use the **From UTC** and **To UTC** date/time pickers to bound the selection. Their values always represent UTC, regardless of the browser's timezone. Rows show the node name on one line; hover it for the node identity and version. Correlation IDs link to filtered logs; the adjacent copy action copies the complete ID.
 
 #### HTTP requests
 
-Requests fixes the execution kind to `HttpRequest` and adds the method, status and observed response bytes. Sampling details are available from the information icon. Select the eye button beside the UTC completion time to open retained details. The response's `X-Request-Profiling-Id` identifies the execution and can be used in the dashboard detail URL.
+Requests fixes the execution kind to `HttpRequest` and adds the method, status and observed response bytes. Sampling details are available from the information icon. Select the circled information button beside the UTC start time to open retained details in a modal. The response's `X-Request-Profiling-Id` identifies the execution and can be used in the dashboard detail URL.
 
 [![Recent HTTP requests with compact rows, status and segment duration breakdowns](assets/dashboard/profiling/requests.png)](assets/dashboard/profiling/requests.png)
 
 Request details separate application correlation from the transport request ID. Expand **Request metadata** for the recorded URL, query arguments, route template, protocol and content types.
 
-[![Request details with application correlation, redacted query arguments and transport metadata](assets/dashboard/profiling/request-metadata.png)](assets/dashboard/profiling/request-metadata.png)
+[![Request detail modal with application correlation, route and transport metadata](assets/dashboard/profiling/request-metadata.png)](assets/dashboard/profiling/request-metadata.png)
 
 The top toolbar provides manual refresh and the auto-refresh interval. Refresh updates persisted history while preserving open groups and details. Pending records appear after the periodic writer persists them; refreshing the page does not force a flush.
 
@@ -453,7 +459,7 @@ Operation details combine typed dimensions and measurements with the aggregated 
 
 The **Duration / %** control beside **Segments** switches all timing columns, including minimum, maximum and self mean, between elapsed time and percentage of the operation duration. Tooltips retain both values. Percentages can exceed 100% for repeated or parallel work; a zero-duration operation has no percentage denominator. The browser preserves this choice across refreshes and navigation.
 
-[![Operation details with typed metadata and repeated, nested segment statistics, including successful and failed invocations](assets/dashboard/profiling/operation-details.png)](assets/dashboard/profiling/operation-details.png)
+[![Operation detail modal with typed metadata and repeated, nested segment statistics, including successful and failed invocations](assets/dashboard/profiling/operation-details.png)](assets/dashboard/profiling/operation-details.png)
 
 #### Runtime context around one operation
 

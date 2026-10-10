@@ -215,6 +215,20 @@ app.Run();
 
 A successful request returns HTTP 202. The in-process consumer then writes `Processing queued order ...` to the application log. Enqueue validation and cancellation exceptions flow to the application's standard exception handling instead of being reported as accepted.
 
+## Dashboard guide
+
+Open Queueing at `/_bdk/dashboard/queueing` to inspect work items, subscriptions and processing pressure. Reference `Presentation.Web.Queueing`, register queueing with a broker, and enable the [Dashboard](features-presentation-dashboard.md). The page queries `IQueueBrokerService` in process.
+
+Filter by status, archive state, queue and message type, then select Apply. Use All under Archive to include retained completed work. The summary separates pending, waiting-for-handler, processing and failed messages, and reports open circuits. Subscription controls can pause an entire queue, pause a message type, or reset that type's circuit.
+
+[![Queueing dashboard with retained work items, processing counters and queue subscriptions](assets/dashboard/11-queueing-queueing.png)](assets/dashboard/11-queueing-queueing.png)
+
+Select the information button on a work item to inspect its queue, attempt count, expiration, lease, last error, properties and payload. Its correlation ID links to Logs and can be copied. Retry and archive controls appear for eligible items. Their availability and retained history depend on the configured broker.
+
+[![Queue message details with processing metadata and propagated correlation ID](assets/dashboard/queueing/message-details.png)](assets/dashboard/queueing/message-details.png)
+
+Use the refresh button for a current snapshot or select an automatic interval. Queue Pressure shows samples collected during this browser session. The alive-message action is available when queueing alive support is enabled.
+
 ## Operational endpoints
 
 The retained-message operational surface lives in [src/Presentation.Web.Queueing/QueueingEndpoints.cs](../src/Presentation.Web.Queueing/QueueingEndpoints.cs).
@@ -527,7 +541,7 @@ services.AddQueueing().WithBehavior<QueueHandlerProfilingBehavior>();
 
 The measured boundary is the downstream handler pipeline after lookup, deserialization and handler resolution. Enqueue time, queue residence, transport receive and acknowledgement are excluded. Register profiling before a retry behavior to include its policy duration, or inside it to measure exposed attempts. Redelivery starts a new operation. Returned completion, thrown failures and matching requested cancellation are recorded without changing queue status, retry or dead-letter rules. Unregistered, expired or pre-canceled messages that never reach the pipeline produce no handler sample.
 
-Bounded dimensions identify the full message and handler types. An existing string `CorrelationId` of at most 128 characters correlates independent roots; message contents and arbitrary metadata are excluded. Omitted or disabled Profiling is safe, and typed/instance profiling registration is idempotent. Every operation identifies its executing consumer node. See [Profiling](features-profiling.md#messaging-and-queue-handler-behaviors) for capture faults, segment aggregation, storage and per-node analysis.
+Bounded dimensions identify the full message and handler types. Brokers carry the origin's `CorrelationId.Current` in queue message properties and restore it during handling, nested calls, and further enqueueing. A valid explicit correlation ID in the message takes precedence. Enqueueing without an originating scope creates a short ID before transport. Legacy messages without a valid ID receive a new ID at the consumer boundary, independent of worker context. Profiling accepts CLR strings and JSON strings restored from durable storage, up to 128 characters. The worker's previous context returns after completion or failure. Message contents and arbitrary metadata are excluded. Omitted or disabled Profiling is safe, and typed/instance profiling registration is idempotent. Every operation identifies its executing consumer node. See [Profiling](features-profiling.md#messaging-and-queue-handler-behaviors) for capture faults, segment aggregation, storage and per-node analysis.
 
 ## Runtime behavior
 

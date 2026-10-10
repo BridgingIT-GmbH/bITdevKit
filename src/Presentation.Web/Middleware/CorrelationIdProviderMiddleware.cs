@@ -28,7 +28,7 @@ using Microsoft.Extensions.Primitives;
 /// <example><code>app.UseRequestCorrelation();</code></example>
 public class CorrelationIdProviderMiddleware
 {
-    private const int GeneratedIdLength = 12;
+    private const int GeneratedIdLength = CorrelationIdGenerator.GeneratedLength;
     private const string CorrelationKey = CorrelationId.HeaderName;
     private const string FlowKey = "FlowId";
     private const string TraceKey = "TraceId";
@@ -135,7 +135,7 @@ public class CorrelationIdProviderMiddleware
             return correlationId;
         }
 
-        return KeyGenerator.CreateLowercase(GeneratedIdLength);
+        return CorrelationIdGenerator.Create();
     }
 
     private static bool TryGetValidCorrelationId(

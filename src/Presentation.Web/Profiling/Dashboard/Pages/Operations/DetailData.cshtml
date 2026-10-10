@@ -24,7 +24,7 @@ else
     var runtimePath = DashboardEndpoints.BuildProfilingPath(options);
     var runtimeQuery = QueryString.Create(new Dictionary<string,string> { ["node"] = record.Node.Identity.Key, ["session"] = Model.Overlay?.Sessions.FirstOrDefault()?.Identity.Key,
         ["fromUtc"] = OperationProfilingViewModelBuilder.Utc(record.StartedUtc), ["toUtc"] = OperationProfilingViewModelBuilder.Utc(record.CompletedUtc) });
-    <h2 class="h5">@record.Key <span class="badge text-bg-secondary">@record.Kind</span></h2>
+    <h2 class="h5 text-break" title="Key: @record.Key">@OperationProfilingViewModelBuilder.GroupName(record.Key, record.Kind) <span class="badge text-bg-secondary">@OperationProfilingViewModelBuilder.KindLabel(record.Kind)</span></h2>
     <dl class="row small"><dt class="col-sm-3">Diagnostics ID</dt><dd class="col-sm-9">@record.Id @if (record.ParentOperationId is Guid parentId) { <span class="ms-2 small text-muted">Parent: <a href="@(DashboardEndpoints.BuildOperationsPath(options) + "/" + parentId)">@(parentId.ToString("N")[..8])</a></span> }</dd>
         <dt class="col-sm-3">Outcome</dt><dd class="col-sm-9">@record.Outcome @if (!string.IsNullOrEmpty(OperationProfilingViewModelBuilder.Quality(record))) { <span class="text-warning" title="@record.Quality.IncompleteReason">· @OperationProfilingViewModelBuilder.Quality(record)</span> }</dd>
         <dt class="col-sm-3">UTC interval</dt><dd class="col-sm-9">@OperationProfilingViewModelBuilder.Utc(record.StartedUtc) → @OperationProfilingViewModelBuilder.Utc(record.CompletedUtc)</dd>

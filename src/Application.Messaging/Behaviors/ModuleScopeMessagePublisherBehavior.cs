@@ -23,6 +23,9 @@ public class ModuleScopeMessagePublisherBehavior(
         CancellationToken cancellationToken,
         MessagePublisherDelegate next)
     {
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message?.Properties);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
+
         var module = moduleAccessors.Find(message.GetType());
         var moduleName = module?.Name ?? ModuleConstants.UnknownModuleName;
 
@@ -33,7 +36,8 @@ public class ModuleScopeMessagePublisherBehavior(
 
         using (this.Logger.BeginScope(new Dictionary<string, object>
         {
-            [ModuleConstants.ModuleNameKey] = moduleName
+            [ModuleConstants.ModuleNameKey] = moduleName,
+            [Constants.CorrelationIdKey] = correlationId
         }))
         {
             if (module?.Enabled == false)
@@ -80,11 +84,7 @@ public class ModuleScopeMessagePublisherBehavior(
             message.Properties?.Add(ModuleConstants.ModuleNameOriginKey, moduleName);
         }
 
-        if (message?.Properties?.ContainsKey(Constants.CorrelationIdKey) == false)
-        {
-            var correlationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey);
-            message.Properties?.Add(Constants.CorrelationIdKey, correlationId);
-        }
+        CorrelationId.PropagateTo(message?.Properties);
 
         if (message?.Properties?.ContainsKey(Constants.FlowIdKey) == false)
         {

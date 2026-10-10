@@ -13,6 +13,43 @@ using Microsoft.Extensions.DependencyInjection;
 [Collection(ProcessWideStateTestCollection.Name)]
 public class PipelineExecutionTests
 {
+    /// <summary>Checks pipelines reuse application correlation and generate short fallback identifiers independently from tracing.</summary>
+    /// <example><code>await test.ExecuteAsync_ApplicationCorrelation_GeneratesOrPreservesIdentifier(null);</code></example>
+    [Theory]
+    [InlineData(null)]
+    [InlineData("request-correlation")]
+    [InlineData("bb911967768142bf9b717966977da958")]
+    public async Task ExecuteAsync_ApplicationCorrelation_GeneratesOrPreservesIdentifier(string supplied)
+    {
+        // Arrange
+        var services = CreateServices();
+        services.AddPipelines().WithPipeline<ExecutionPipeline>();
+        using var provider = services.BuildServiceProvider();
+        var sut = provider.GetRequiredService<IPipelineFactory>().Create<ExecutionPipeline, TestContext>();
+        var context = new TestContext();
+        using var activity = new Activity("pipeline-origin").SetIdFormat(ActivityIdFormat.W3C).Start();
+        using var caller = CorrelationId.BeginScope(supplied);
+
+        // Act
+        var result = await sut.ExecuteAsync(context);
+
+        // Assert
+        result.IsSuccess.ShouldBeTrue();
+        CorrelationId.Current.ShouldBe(supplied);
+        context.ObservedCorrelationId.ShouldBe(context.Pipeline.CorrelationId);
+        context.Pipeline.CorrelationId.ShouldNotBe(activity.TraceId.ToString());
+        context.Pipeline.CorrelationId.ShouldNotBe(context.Pipeline.ExecutionId.ToString("N"));
+        if (supplied is null)
+        {
+            context.Pipeline.CorrelationId.Length.ShouldBe(12);
+            context.Pipeline.CorrelationId.All(character => character is >= 'a' and <= 'z' or >= '0' and <= '9').ShouldBeTrue();
+        }
+        else
+        {
+            context.Pipeline.CorrelationId.ShouldBe(supplied);
+        }
+    }
+
     [Fact]
     public async Task ExecuteAsync_ClassBasedSteps_CarryResultAndUpdateContextMetrics()
     {
@@ -424,6 +461,10 @@ public class PipelineExecutionTests
 
     public sealed class TestContext : PipelineContextBase
     {
+        /// <summary>Gets or sets the application correlation observed during pipeline execution.</summary>
+        /// <example><code>var identifier = context.ObservedCorrelationId;</code></example>
+        public string ObservedCorrelationId { get; set; }
+
         public bool AsyncStepExecuted { get; set; }
 
         public int RetryAttempts { get; set; }
@@ -517,6 +558,7 @@ public class PipelineExecutionTests
         protected override ValueTask<PipelineControl> ExecuteAsync(TestContext context, Result result, PipelineExecutionOptions options, CancellationToken cancellationToken)
         {
             context.AsyncStepExecuted = true;
+            context.ObservedCorrelationId = CorrelationId.Current;
             return ValueTask.FromResult(PipelineControl.Continue(result.WithMessage("async")));
         }
     }

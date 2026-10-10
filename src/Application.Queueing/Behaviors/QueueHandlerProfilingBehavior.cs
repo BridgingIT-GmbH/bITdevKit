@@ -35,13 +35,7 @@ public sealed class QueueHandlerProfilingBehavior(IOperationProfiler profiling =
         string correlationId = null;
         try
         {
-            if (
-                message.Properties?.TryGetValue(Constants.CorrelationIdKey, out var value) == true
-                && value is string { Length: <= 128 } text
-            )
-            {
-                correlationId = text;
-            }
+            correlationId = CorrelationId.ReadFrom(message.Properties);
         }
         catch (Exception)
         { /* Observation faults cannot change handler execution. */

@@ -22,7 +22,7 @@ public sealed class AliveQueueMessage : QueueMessageBase
     public AliveQueueMessage(string source = "dashboard")
     {
         this.Source = string.IsNullOrWhiteSpace(source) ? "dashboard" : source.Trim();
-        this.CorrelationId = GuidGenerator.CreateSequential().ToString("N");
+        this.CorrelationId = CorrelationIdGenerator.Create();
         this.Properties[Constants.CorrelationIdKey] = this.CorrelationId;
         this.Properties["Alive"] = true;
         this.Properties["Source"] = this.Source;

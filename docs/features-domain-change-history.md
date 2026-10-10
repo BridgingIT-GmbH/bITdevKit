@@ -762,6 +762,16 @@ The query model supports filters such as:
 
 Grouped change-set queries load change-set keys first and then load the rows for the selected page.
 
+## Dashboard guide
+
+Open Change History at `/_bdk/dashboard/change-history` with `Presentation.Web.EntityFramework` and the [Dashboard](features-presentation-dashboard.md) enabled. Register `AddChangeHistoryEndpoints<TEntity, TContext>(...)` for each entity/context pair you want to inspect. The Registration selector comes from those endpoint descriptors; registering capture services alone does not populate it.
+
+Choose a registration and apply entity, property, operation, capture, change-set, user or date filters. Change Sets groups related audit rows. Rows shows individual property changes. Select a change set to inspect its details and the restore controls. Read and restore permissions follow the selected endpoint registration, and displayed values depend on its `IncludeValues` option.
+
+[![Change History dashboard showing the filter controls and missing endpoint registration state](assets/dashboard/22-change-history-unavailable.png)](assets/dashboard/22-change-history-unavailable.png)
+
+This image shows the unconfigured state. When the page reports no ChangeHistory endpoints, register an entity/context endpoint as shown in [HTTP endpoints](#http-endpoints), then map the endpoint pipeline. A database with audit rows cannot supply the dashboard registration selector by itself.
+
 ## HTTP endpoints
 
 `Presentation.Web.EntityFramework` can expose minimal API endpoints for one entity/context pair:

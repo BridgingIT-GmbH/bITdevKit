@@ -411,6 +411,28 @@ var stats = await logs.GetStatisticsAsync(
     cancellationToken: cancellationToken);
 ```
 
+## Dashboard guide
+
+Register `ILogEntryService` over the application's persisted log store and enable the [Dashboard](features-presentation-dashboard.md). The Logs, Errors and Logs Stream pages use that service; adding the dashboard does not configure a persistence sink.
+
+### Search persisted logs
+
+Open Logs at `/_bdk/dashboard/logentries`. Apply a minimum level, text search, date range or a specific correlation, trace, span, log key, module or type filter. The row limit bounds each page. Expand an entry to inspect its exception and structured properties. Correlation IDs link back to the filtered Logs view and can be copied.
+
+[![Filtered persisted logs with timestamps, levels and correlation links](assets/dashboard/07-logentries-logs.png)](assets/dashboard/07-logentries-logs.png)
+
+### Investigate errors
+
+Open Errors at `/_bdk/dashboard/errors` for Error and Fatal entries. Expand an error to see its exception, properties and related logs. Related lookups prefer the application correlation ID, then trace ID, then span ID. Each lookup is bounded to 25 related entries, so it is context for the error rather than a complete execution transcript. Follow a correlation link to search the full retained log set.
+
+[![Expanded error with structured details and related logs from the same execution](assets/dashboard/08-errors-errors.png)](assets/dashboard/08-errors-errors.png)
+
+### Follow a live stream
+
+Open Logs Stream at `/_bdk/dashboard/logentries/stream`, choose a minimum level and optional LogKey, then select Start Stream. The terminal receives entries through the dashboard SignalR hub. The toolbar can stop the stream or clear the displayed terminal. Clearing the terminal does not delete persisted logs.
+
+[![Dashboard log terminal with streamed application entries and level filters](assets/dashboard/09-logentries-stream-logs-stream.png)](assets/dashboard/09-logentries-stream-logs-stream.png)
+
 ## HTTP endpoints
 
 `Presentation.Web` exposes this feature through `LogEntryEndpoints`.

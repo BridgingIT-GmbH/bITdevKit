@@ -1,4 +1,6 @@
 @using ChangeHistoryDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using Microsoft.Extensions.DependencyInjection
 @inherits RazorSlice
 
 @{
@@ -458,7 +460,7 @@
         return string.IsNullOrWhiteSpace(hash) ? string.Empty : $"hash:{hash}";
     }
 
-    private static string RenderRowDetails(ChangeHistoryRecord row)
+    private string RenderRowDetails(ChangeHistoryRecord row)
     {
         var writer = new StringBuilder();
         writer.Append("<details class=\"mt-1\"><summary class=\"small text-muted\">Details</summary><div class=\"change-history-row-details small text-muted mt-1\">");
@@ -469,7 +471,13 @@
         AppendDetail(writer, "Entity id CLR type", row.EntityIdType);
         AppendDetail(writer, "Value CLR type", row.ValueClrType);
         AppendDetail(writer, "Changed date ticks", row.ChangedDateTicks.ToString(CultureInfo.InvariantCulture));
-        AppendDetail(writer, "Correlation id", row.CorrelationId);
+        if (!string.IsNullOrWhiteSpace(row.CorrelationId))
+        {
+            var link = DashboardCorrelationLink.Render(HttpContext.RequestServices.GetService<DashboardEndpointsOptions>(), row.CorrelationId);
+            using var markup = new System.IO.StringWriter(CultureInfo.InvariantCulture);
+            link.WriteTo(markup, System.Text.Encodings.Web.HtmlEncoder.Default);
+            writer.Append("<div><span class=\"fw-semibold\">Correlation id:</span> ").Append(markup).Append("</div>");
+        }
         AppendDetail(writer, "Flow id", row.FlowId);
         AppendDetail(writer, "Module", row.ModuleName);
         AppendDetail(writer, "Activity parent id", row.ActivityParentId);

@@ -191,7 +191,7 @@ public sealed class ProfilingEndpointsTests(
         dashboard.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
-    /// <summary>The application's real broker pipelines record independent handlers on the executing node through periodic persistence.</summary>
+    /// <summary>The application's real broker pipelines retain serialized publisher correlation and record independent handlers through periodic persistence.</summary>
     [Theory]
     [InlineData(false)]
     [InlineData(true)]
@@ -219,7 +219,7 @@ public sealed class ProfilingEndpointsTests(
             >();
             var message = new WeatherHelloWorldQueueMessage();
             message.Properties[DevKit.Application.Queueing.Constants.CorrelationIdKey] =
-                correlation;
+                JsonSerializer.SerializeToElement(correlation);
             QueueProcessingResult? result = null;
             await broker.Process(
                 new QueueMessageRequest(message, value => result = value, CancellationToken.None)
@@ -235,7 +235,7 @@ public sealed class ProfilingEndpointsTests(
             var broker = services.GetRequiredService<IMessageBrokerRuntime>();
             var message = new WeatherHelloWorldMessage();
             message.Properties[DevKit.Application.Messaging.Constants.CorrelationIdKey] =
-                correlation;
+                JsonSerializer.SerializeToElement(correlation);
             bool? result = null;
             await broker.Process(
                 new MessageRequest(message, value => result = value, CancellationToken.None)

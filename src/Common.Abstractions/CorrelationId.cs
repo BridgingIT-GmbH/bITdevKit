@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Common;
 
 using System.Diagnostics;
+using System.Text.Json;
 
 /// <summary>
 /// Provides ambient access to the application correlation identifier for the current execution flow.
@@ -25,10 +26,7 @@ using System.Diagnostics;
 /// </example>
 public static class CorrelationId
 {
-    private static class State
-    {
-        internal static readonly AsyncLocal<string> CurrentValue = new();
-    }
+    private static readonly AsyncLocal<CorrelationIdScope> currentScope = new();
 
     /// <summary>
     /// Gets the maximum supported correlation identifier length.
@@ -57,19 +55,92 @@ public static class CorrelationId
     /// </value>
     /// <example><code>var correlationId = CorrelationId.Current;</code></example>
     public static string Current =>
-        State.CurrentValue.Value ?? Activity.Current?.GetBaggageItem(ActivityBaggageName);
+        currentScope.Value is { } scope
+            ? scope.Value
+            : Activity.Current?.GetBaggageItem(ActivityBaggageName);
+
+    /// <summary>
+    /// Reads a valid correlation identifier from transport metadata.
+    /// </summary>
+    /// <remarks>
+    /// Accepts a CLR string or a JSON string restored by a transport serializer. Other values are
+    /// ignored without calling their <see cref="object.ToString"/> method.
+    /// </remarks>
+    /// <param name="properties">The transport properties, or <see langword="null"/>.</param>
+    /// <returns>The supported correlation identifier, or <see langword="null"/> when absent or invalid.</returns>
+    /// <example><code>var correlationId = CorrelationId.ReadFrom(message.Properties);</code></example>
+    public static string ReadFrom(IDictionary<string, object> properties)
+    {
+        if (properties?.TryGetValue(HeaderName, out var value) != true)
+        {
+            return null;
+        }
+
+        string text;
+        try
+        {
+            text = value switch
+            {
+                string identifier => identifier,
+                JsonElement { ValueKind: JsonValueKind.String } json => json.GetString(),
+                _ => null,
+            };
+        }
+        catch (ObjectDisposedException)
+        {
+            return null;
+        }
+
+        return IsValid(text) ? text : null;
+    }
+
+    /// <summary>
+    /// Copies the current application correlation identifier into transport metadata before publishing.
+    /// </summary>
+    /// <remarks>
+    /// Preserves a valid explicit transport identifier. Does not generate an identifier when the
+    /// origin has none and does not replace it with a tracing identifier. JSON strings are normalized
+    /// to CLR strings so native transport property collections can carry them when republishing.
+    /// </remarks>
+    /// <param name="properties">The mutable transport properties, or <see langword="null"/>.</param>
+    /// <example><code>CorrelationId.PropagateTo(message.Properties);</code></example>
+    public static void PropagateTo(IDictionary<string, object> properties)
+    {
+        if (properties is null)
+        {
+            return;
+        }
+
+        var explicitIdentifier = ReadFrom(properties);
+        if (explicitIdentifier is not null)
+        {
+            if (properties[HeaderName] is JsonElement)
+            {
+                properties[HeaderName] = explicitIdentifier;
+            }
+
+            return;
+        }
+
+        var identifier = Current;
+        if (IsValid(identifier))
+        {
+            properties[HeaderName] = identifier;
+        }
+    }
 
     /// <summary>
     /// Establishes a correlation identifier for the current asynchronous execution flow.
     /// </summary>
+    /// <remarks>A null scope suppresses Activity baggage until the scope is disposed.</remarks>
     /// <param name="value">The correlation identifier, or <see langword="null"/> to clear it in the scope.</param>
     /// <returns>A scope that restores the previous ambient value when disposed.</returns>
-    /// <example><code>using var scope = CorrelationId.BeginScope(message.CorrelationId);</code></example>
+    /// <example><code>using var scope = CorrelationId.BeginScope(CorrelationId.ReadFrom(message.Properties));</code></example>
     public static IDisposable BeginScope(string value)
     {
-        var previous = State.CurrentValue.Value;
-        State.CurrentValue.Value = value;
-        return new CorrelationIdScope(previous);
+        var scope = new CorrelationIdScope(value, currentScope.Value);
+        currentScope.Value = scope;
+        return scope;
     }
 
     /// <summary>
@@ -86,13 +157,18 @@ public static class CorrelationId
         !string.IsNullOrEmpty(value)
         && value.Length <= MaximumLength
         && value.All(character =>
-            char.IsAsciiLetterOrDigit(character)
-            || character is '-' or '_' or '.' or ':');
+            char.IsAsciiLetterOrDigit(character) || character is '-' or '_' or '.' or ':'
+        );
 
-    private sealed class CorrelationIdScope(string previous) : IDisposable
+    private sealed class CorrelationIdScope(string value, CorrelationIdScope previous) : IDisposable
     {
         private bool disposed;
 
+        /// <summary>Gets the explicitly scoped value, including a deliberate empty correlation context.</summary>
+        /// <example><code>var identifier = scope.Value;</code></example>
+        public string Value { get; } = value;
+
+        /// <inheritdoc />
         public void Dispose()
         {
             if (this.disposed)
@@ -100,7 +176,7 @@ public static class CorrelationId
                 return;
             }
 
-            State.CurrentValue.Value = previous;
+            currentScope.Value = previous;
             this.disposed = true;
         }
     }

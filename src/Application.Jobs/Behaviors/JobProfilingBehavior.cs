@@ -18,7 +18,9 @@ public sealed class JobProfilingBehavior(IOperationProfiler profiling = null) : 
 
         return profiling.JoinOrStartAsync(new OperationProfilingStartRequest
         {
-            Key = "job:" + context.JobName, Kind = OperationProfilingKind.Job.ToString(), CorrelationId = context.ExecutionContext.CorrelationId,
+            Key = "job:" + context.JobName,
+            Kind = OperationProfilingKind.Job.ToString(),
+            CorrelationId = context.ExecutionContext.CorrelationId,
         }, async (scope, _) =>
         {
             Enrich(scope, context);

@@ -75,8 +75,8 @@
 
     <section class="card profiling-panel profiling-context-card mb-2" aria-labelledby="profiling-sessions-title">
         <div class="card-header profiling-sessions-header">
-            <div class="d-flex align-items-center gap-2">
-                <button id="profiling-toggle-sessions" class="btn btn-outline-secondary btn-sm profiling-tool-button" type="button" aria-expanded="true" aria-controls="profiling-sessions-body" title="Collapse sessions" aria-label="Collapse sessions"><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
+            <div class="d-flex align-items-center gap-1">
+                <button id="profiling-toggle-sessions" class="profiling-disclosure-toggle" type="button" aria-expanded="true" aria-controls="profiling-sessions-body" title="Collapse sessions" aria-label="Collapse sessions"></button>
                 <h2 id="profiling-sessions-title" class="h6 mb-0">Sessions</h2>
             </div>
             <div class="profiling-session-actions">
@@ -198,8 +198,8 @@
 
     <section id="profiling-current-snapshot" class="card profiling-panel mb-3" aria-labelledby="profiling-current-title" data-profiling-live-region>
         <div class="card-header profiling-panel-header">
-            <div class="d-flex align-items-center gap-2">
-                <button id="profiling-toggle-snapshot-details" class="btn btn-outline-secondary btn-sm profiling-tool-button" type="button" aria-expanded="true" aria-controls="profiling-current-snapshot-body" title="Collapse snapshot details" aria-label="Collapse snapshot details"><i class="bi bi-chevron-up" aria-hidden="true"></i></button>
+            <div class="d-flex align-items-center gap-1">
+                <button id="profiling-toggle-snapshot-details" class="profiling-disclosure-toggle" type="button" aria-expanded="true" aria-controls="profiling-current-snapshot-body" title="Collapse snapshot details" aria-label="Collapse snapshot details"></button>
                 <h2 id="profiling-current-title" class="h6 mb-0">@(string.IsNullOrWhiteSpace(Model.SnapshotKey) ? "Current Snapshot" : "Selected Snapshot") @InfoIcon("Snapshot details", "Shows the immutable metrics for the selected retained snapshot. Reset the selection to resume following the latest snapshot.")</h2>
             </div>
             <div class="profiling-snapshot-controls">

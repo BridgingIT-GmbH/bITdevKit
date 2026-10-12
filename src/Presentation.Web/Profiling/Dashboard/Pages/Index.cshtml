@@ -78,6 +78,10 @@
     .profiling-session-actions { display: flex; align-items: center; justify-content: flex-end; flex: 1 1 auto; flex-wrap: wrap; gap: .35rem; min-width: 0; }
     .profiling-marker-control { flex: 0 1 16rem; width: 16rem; min-width: 11rem; }
     .profiling-sessions-body[hidden] { display: none !important; }
+    .profiling-disclosure-toggle { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; line-height: 1; cursor: pointer; }
+    .profiling-disclosure-toggle::before { content: "▼"; font-size: .75em; }
+    .profiling-disclosure-toggle[aria-expanded="false"]::before { content: "▶"; }
+    .profiling-disclosure-toggle:focus-visible { outline: 2px solid var(--bs-info); outline-offset: 2px; }
     .profiling-tool-button { display: inline-flex; align-items: center; justify-content: center; width: 2.15rem; height: 2rem; padding: 0; }
     .profiling-compact-focus-button { width: 1.8rem; height: 1.8rem; font-size: .76rem; }
     .profiling-session-control { display: flex; align-items: flex-end; }
@@ -136,8 +140,7 @@
     .profiling-snapshot-metric-row dt code { display: block; margin-top: .08rem; color: var(--bs-secondary-color); font-size: .62rem; font-weight: 400; }
     .profiling-snapshot-metric-row dd { margin: 0; overflow-wrap: anywhere; color: var(--bs-body-color); font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; }
     .profiling-chart-filters { padding: .55rem .75rem; border: 1px dashed var(--bs-border-color); font-size: .8rem; }
-    .profiling-analysis-summary { list-style: none; cursor: pointer; user-select: none; }
-    .profiling-analysis-summary::-webkit-details-marker { display: none; }
+    .profiling-analysis-summary { cursor: pointer; user-select: none; }
     .profiling-analysis-result { border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
     .profiling-analysis-result .profiling-analysis-inner { padding: .75rem; background: transparent; }
     .profiling-signal { padding: .65rem .75rem; margin-top: .55rem; border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
@@ -651,8 +654,6 @@
             toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
             toggle.title = expanded ? 'Collapse snapshot details' : 'Expand snapshot details';
             toggle.setAttribute('aria-label', toggle.title);
-            const icon = toggle.querySelector('i');
-            if (icon) icon.className = `bi bi-chevron-${expanded ? 'up' : 'down'}`;
             if (persist) localStorage.setItem(storage.snapshotDetails, expanded ? 'true' : 'false');
         }
 
@@ -664,8 +665,6 @@
             toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
             toggle.title = expanded ? 'Collapse sessions' : 'Expand sessions';
             toggle.setAttribute('aria-label', toggle.title);
-            const icon = toggle.querySelector('i');
-            if (icon) icon.className = `bi bi-chevron-${expanded ? 'up' : 'down'}`;
             if (persist) localStorage.setItem(storage.sessions, expanded ? 'true' : 'false');
         }
 

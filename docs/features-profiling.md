@@ -581,9 +581,19 @@ The **Runtime overlay** section shows matching process snapshots around the oper
 
 These counters describe the whole process. They provide context for the operation's segment timings without assigning process CPU, memory or GC activity to that operation.
 
+## MCP diagnostics
+
+For coding help, call `bdk_guidance_get` with `topic="profiling"` or a query about recordings and segments. This CLI-owned guide works without a running app and includes operation ownership, recording lifecycles, safe helper usage, result classification, correlation metadata, dimensions and C# examples. It links to this guide and the concrete profiling APIs. See [operation profiling guidance](features-cli-mcp.md#operation-profiling-guidance).
+
+The local BDK MCP exposes retained Operations and Requests through `bdk_profiling_query`, `bdk_profiling_details`, `bdk_profiling_insights` and `bdk_profiling_compare`. These read-only tools call the runtime's shared `IOperationProfilingQueryService`, using the same provider, filters, capture suppression, admission limits and deadlines as the dashboard. HTTP requests use `kind="HttpRequest"` and their route-template operation keys.
+
+Query returns compact execution summaries or grouped counts. Details returns one retained execution's dimensions, measurements and aggregate segments. Insights ranks the entire bounded selection before limiting the returned groups. Comparison selects the same key and kind under independent time, node, version or dimension conditions; it defaults to completed outcomes. Reads never force pending recordings to flush or reconstruct exact invocation order.
+
+`bdk_correlation_inspect` and `bdk_investigate_correlation` include matching profiling recordings beside retained logs. Each evidence source reports its own availability and paging continuation, so missing logs do not prevent operation inspection. Capture quality, sample counts and serving-node capture health remain distinct from the selected history. See [DevKit MCP](features-cli-mcp.md#inspect-operation-and-request-recordings) for registration, schemas, limits and example calls.
+
 ## Console commands
 
-Register commands with `.AddConsoleCommands()`. The primary group is `profiling runtime` and the short group alias is `prof runtime`. These commands control Runtime profiling; Operations and Requests are inspected through the dashboard.
+Register commands with `.AddConsoleCommands()`. The primary group is `profiling runtime` and the short group alias is `prof runtime`. These commands control Runtime profiling; Operations and Requests are inspected through the dashboard or MCP diagnostics.
 
 | Command | Purpose |
 | --- | --- |

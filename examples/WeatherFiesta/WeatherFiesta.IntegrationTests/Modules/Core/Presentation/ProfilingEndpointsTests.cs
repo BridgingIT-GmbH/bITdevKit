@@ -71,7 +71,7 @@ public sealed class ProfilingEndpointsTests(
         }
     }
 
-    /// <summary>The outer adapter captures default path keys and real response metadata without endpoint opt-in.</summary>
+    /// <summary>The outer adapter captures default template keys and real response metadata without endpoint opt-in.</summary>
     [Fact]
     public async Task DefaultRequest_PeriodicallyPersistsPathAndHttpMetadata()
     {
@@ -92,6 +92,32 @@ public sealed class ProfilingEndpointsTests(
         record.StartedUtc.Offset.ShouldBe(TimeSpan.Zero);
         record.CompletedUtc.ShouldBeGreaterThanOrEqualTo(record.StartedUtc);
         record.Node.Identity.Id.ShouldNotBe(Guid.Empty);
+    }
+
+    /// <summary>Weather requests for different city IDs share the composed route template while retaining individual request targets.</summary>
+    /// <example><code>dotnet test --filter FullyQualifiedName~CityWeather_DefaultKeys_GroupByRouteTemplate</code></example>
+    [Fact]
+    public async Task CityWeather_DefaultKeys_GroupByRouteTemplate()
+    {
+        var records = new List<OperationProfilingRecord>();
+        var today = DateOnly.FromDateTime(DateTime.UtcNow);
+        var range = new DateOnlyRange(today, today.AddDays(1)).ToIsoRangeString();
+        foreach (var cityId in new[] { TestData.LondonCityGuid, TestData.ParisCityGuid })
+        {
+            var path = $"/api/core/cities/{cityId:D}/weather";
+            using var response = await this.client.GetAsync($"{path}?range={Uri.EscapeDataString(range)}");
+            await response.Content.ReadAsByteArrayAsync();
+            var record = await this.WaitForRecordAsync(GetId(response));
+
+            record.Http.Path.ShouldBe(path);
+            record.Http.Route.ShouldBe("api/core/cities/{cityId}/weather");
+            record.Http.QueryString.ShouldContain("range=");
+            record.Kind.ShouldBe(nameof(OperationProfilingKind.HttpRequest));
+            records.Add(record);
+        }
+
+        records.Select(record => record.Key).Distinct().ShouldHaveSingleItem().ShouldBe("/core/cities/{cityId}/weather");
+        records[0].Id.ShouldNotBe(records[1].Id);
     }
 
     /// <summary>The controller enriches one root while segment classification preserves both rejected and successful business responses.</summary>

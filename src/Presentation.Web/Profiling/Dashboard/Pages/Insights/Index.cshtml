@@ -1,0 +1,59 @@
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Insights
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using System.Text.Json
+@using DashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@{
+    var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var path = DashboardEndpoints.BuildInsightsPath(options);
+    var kinds = Enum.GetNames<OperationProfilingKind>().Concat(new[] { "ActiveEntity", "Repository", "FileStorage", "DocumentStorage", "BlobStorage", "MessageHandler", "NotifierHandler" }).Distinct().Order(StringComparer.OrdinalIgnoreCase);
+}
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("insights"))
+<div class="d-flex flex-wrap align-items-center gap-2 pb-2 mb-2 border-bottom">
+    <span class="small text-muted" id="insights-period"></span>
+    <div class="d-flex flex-wrap align-items-center gap-2 ms-auto"><span id="insights-status" class="small text-muted" role="status">Loading insights</span><select id="insights-refresh" class="form-select form-select-sm w-auto" aria-label="Insights refresh interval"><option value="" selected>Off</option><option value="5000">5 sec</option><option value="15000">15 sec</option><option value="30000">30 sec</option></select><button id="insights-refresh-now" class="btn btn-outline-warning btn-sm" type="button" aria-label="Refresh insights" title="Refresh insights"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button></div>
+</div>
+<form id="insights-filters" class="card card-body p-2 mb-2" action="@path" method="get">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-3"><label class="form-label small" for="insights-rank">Rank by</label><select id="insights-rank" name="rank" class="form-select form-select-sm"><option value="p95">p95 duration</option><option value="elapsed">Completed time</option><option value="count">Frequency</option><option value="failures">Failure rate</option></select></div>
+        <div class="col-md-2"><label class="form-label small" for="insights-limit">Rows</label><select id="insights-limit" name="limit" class="form-select form-select-sm"><option>25</option><option>50</option><option selected>100</option><option>250</option></select></div>
+        <div class="col-md-4"><label class="form-label small" for="insights-key">Key contains</label><input id="insights-key" name="key" class="form-control form-control-sm" maxlength="128" placeholder="contains" /></div>
+        <div class="col-md-3"><label class="form-label small" for="insights-kind">Kind</label><select id="insights-kind" name="kind" class="form-select form-select-sm"><option value="">All kinds</option>@foreach(var kind in kinds) { <option value="@kind">@BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingViewModelBuilder.KindLabel(kind)</option> }</select></div>
+        <div class="col-md-4"><label class="form-label small" for="operation-from">From UTC</label><div class="input-group input-group-sm">@(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("operation-from", "operation-to")))<input id="operation-from" name="fromUtc" type="datetime-local" step="60" class="form-control form-control-sm" /></div></div>
+        <div class="col-md-4"><label class="form-label small" for="operation-to">To UTC</label><input id="operation-to" name="toUtc" type="datetime-local" step="60" class="form-control form-control-sm" /></div>
+        <div class="col-md-4"><label class="form-label small" for="operation-node">Node</label><select id="operation-node" name="nodeId" class="form-select form-select-sm"><option value="">All nodes</option></select></div>
+        <div class="col-12 d-flex justify-content-end gap-2"><button type="submit" class="btn btn-primary btn-sm">Apply</button><button id="insights-reset" class="btn btn-outline-secondary btn-sm" type="button">Reset</button></div>
+    </div>
+</form>
+<div id="insights-error" class="alert alert-warning py-2" role="alert" hidden></div>
+<div id="operation-content" data-insights="true" data-requests-only="false" data-page-url="@path" data-data-url="@(path + "/data")" data-operation-list-url="@DashboardEndpoints.BuildOperationsPath(options)" data-details-url="@DashboardEndpoints.BuildOperationsPath(options)" data-api-url="@(DashboardEndpoints.BuildOperationsPath(options) + "/api/analysis")" data-dimensions-url="@(DashboardEndpoints.BuildOperationsPath(options) + "/api/dimensions")" data-execution-dimension-keys="@JsonSerializer.Serialize(ProfilingDimensionKeys.ExecutionIdentifiers)">
+    <div class="row g-2 mb-2">
+        <div class="col-6 col-lg-3"><div class="card card-body p-2"><span class="small text-muted">Retained executions</span><strong class="h4 mb-0" id="insights-count">—</strong></div></div>
+        <div class="col-6 col-lg-3"><div class="card card-body p-2"><span class="small text-muted">Completed latency samples</span><strong class="h4 mb-0" id="insights-completed">—</strong></div></div>
+        <div class="col-6 col-lg-3"><div class="card card-body p-2"><span class="small text-muted">Root failures</span><strong class="h4 mb-0" id="insights-failures">—</strong></div></div>
+        <div class="col-6 col-lg-3"><div class="card card-body p-2"><span class="small text-muted">Partial captures</span><strong class="h4 mb-0" id="insights-partial">—</strong></div></div>
+    </div>
+    <div class="card"><div class="card-header d-flex flex-wrap justify-content-between gap-2 py-2"><strong class="small">Operation hotspots</strong><span id="insights-groups" class="small text-muted"></span></div>
+        <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Operation</th><th class="text-end">Executions</th><th class="text-end">Samples</th><th class="text-end">Median</th><th class="text-end">p95</th><th class="text-end">Completed time</th><th class="text-end">Failures</th><th aria-label="Actions"></th></tr></thead><tbody id="insights-rows"><tr><td colspan="8" class="small text-muted">Loading retained operations...</td></tr></tbody></table></div>
+    </div>
+    <p class="small text-muted mt-2 mb-0" id="insights-quality" role="status"></p>
+    <details class="small text-muted mt-2"><summary>How to read these insights</summary><p class="mb-1 mt-1">Empty dates select the last 15 minutes up to now. Latency and segment costs use completed executions. Root failure rates use all selected outcomes; failed segments are shown separately. Completed time sums elapsed durations, including waiting and overlapping operations.</p><p class="mb-0">Counts describe retained captures. Sampling and dropped captures can affect representativeness. Results are exact within the configured analysis bound; narrow the filters when that bound is exceeded. Small sample counts remain visible beside the percentiles.</p></details>
+</div>
+<div class="modal fade" id="insights-segments-modal" tabindex="-1" aria-labelledby="insights-segments-heading" aria-hidden="true"><div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content"><div class="modal-header"><h2 id="insights-segments-heading" class="modal-title h5">Segment bottlenecks</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close segment bottlenecks"></button></div><div class="modal-body"><p id="insights-segments-summary" class="small text-muted"></p><div class="table-responsive"><table class="table table-sm align-middle"><thead><tr><th>Segment</th><th class="text-end">Executions</th><th class="text-end">Calls</th><th class="text-end">Calls / execution</th><th class="text-end">Self / call</th><th class="text-end">Self time</th><th class="text-end">Total time</th></tr></thead><tbody id="insights-segments-rows"></tbody></table></div><p class="small text-muted mb-0">Top 10 paths ranked by accumulated self time in completed executions. Calls per execution use executions where that path was recorded. Self time excludes observed child work; nested or parallel totals can overlap.</p></div><div class="modal-footer"><button class="btn btn-outline-secondary btn-sm" type="button" data-bs-dismiss="modal">Close</button></div></div></div></div>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.DetailDialog>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.ComparisonDialog>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.Style>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.DimensionScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.Script>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.ComparisonScript>())
+@(await RenderPartialAsync<Script>())
+@functions {
+    /// <summary>Gets the shared layout metadata for operation insights.</summary>
+    /// <example><code>var title = this.LayoutModel.Title;</code></example>
+    public DashboardLayoutModel LayoutModel => new() { Title = "Profiling Insights" };
+}

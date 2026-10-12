@@ -21,6 +21,28 @@ using BridgingIT.DevKit.Common;
 /// </example>
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>Profiles calls for one document type with named-client and document-type dimensions.</summary>
+    /// <typeparam name="T">The document type.</typeparam>
+    /// <param name="context">The named document-storage builder.</param>
+    /// <returns>The current builder.</returns>
+    /// <example><code>services.AddDocumentStorage().WithProfilingBehavior&lt;Person&gt;();</code></example>
+    public static DocumentStorageBuilderContext WithProfilingBehavior<T>(this DocumentStorageBuilderContext context) where T : class, new()
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return context.WithBehavior<T, ProfilingDocumentStoreClientBehavior<T>>((inner, services) => new(inner, services.GetService<IOperationProfiler>()));
+    }
+
+    /// <summary>Profiles an existing directly registered document client using the optional operation profiler.</summary>
+    /// <typeparam name="T">The document type.</typeparam>
+    /// <param name="context">The direct document-client builder.</param>
+    /// <returns>The current builder.</returns>
+    /// <example><code>builder.WithProfilingBehavior();</code></example>
+    public static DocumentStoreBuilderContext<T> WithProfilingBehavior<T>(this DocumentStoreBuilderContext<T> context) where T : class, new()
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return context.WithBehavior<ProfilingDocumentStoreClientBehavior<T>>((inner, services) => new(inner, services.GetService<IOperationProfiler>()));
+    }
+
     /// <summary>
     /// Registers the metrics document-store client behavior for one document type.
     /// </summary>

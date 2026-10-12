@@ -13,12 +13,15 @@
     var pagePath = DashboardEndpoints.BuildOperationsPath(options, requestsOnly);
 }
 @(await RenderPartialAsync<Toolbar, string>(pagePath))
-<nav class="nav nav-pills mb-2" aria-label="Profiling views"><a class="nav-link" href="@DashboardEndpoints.BuildProfilingPath(options)">Runtime</a><a class="nav-link" href="@DashboardEndpoints.BuildOperationsPath(options)">Operations</a><a class="nav-link" href="@DashboardEndpoints.BuildOperationsPath(options, true)">Requests</a></nav>
-<div id="operation-content" data-content-url="@(HttpContext.Request.Path + "/content")" data-page-url="@pagePath">@(await RenderPartialAsync<DetailContent, OperationProfilingDashboardModel>(Model))</div>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>(requestsOnly ? "requests" : "operations"))
+<div id="operation-content" data-content-url="@(HttpContext.Request.Path + "/content")" data-page-url="@pagePath" data-requests-only="@requestsOnly" data-api-url="@(DashboardEndpoints.BuildOperationsPath(options) + "/api/analysis")" data-dimension-limit="@(HttpContext.RequestServices.GetService<BridgingIT.DevKit.Common.ProfilingOptions>()?.Queries.MaximumDimensionPredicates ?? 8)" data-dimensions-url="@(DashboardEndpoints.BuildOperationsPath(options) + "/api/dimensions")">@(await RenderPartialAsync<DetailContent, OperationProfilingDashboardModel>(Model))</div>
+@(await RenderPartialAsync<ComparisonDialog>())
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
 @(await RenderPartialAsync<HealthDialog>())
 @(await RenderPartialAsync<Style>())
+@(await RenderPartialAsync<DimensionScript>())
 @(await RenderPartialAsync<Script>())
+@(await RenderPartialAsync<ComparisonScript>())
 @functions {
     /// <summary>Gets layout metadata for one retained operation detail.</summary>
     /// <example><code>var title = this.LayoutModel.Title;</code></example>

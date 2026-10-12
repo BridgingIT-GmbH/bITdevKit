@@ -10,6 +10,48 @@ using Microsoft.Extensions.Time.Testing;
 
 public sealed class OperationProfilerTests
 {
+    /// <summary>Adapter defaults can evolve until an accepted application override takes precedence, even with identical text.</summary>
+    /// <example>Run with the OperationProfilerTests filter.</example>
+    [Theory]
+    [InlineData("initial")]
+    [InlineData("custom")]
+    public void DefaultKey_ExplicitOverrideAlwaysWins(string explicitKey)
+    {
+        var (profiler, sink, _) = Create();
+        var operation = profiler.BeginOperation("initial");
+
+        operation.TrySetDefaultKey("/catalog/{id}").ShouldBeTrue();
+        profiler.SetKey(explicitKey);
+        operation.TrySetDefaultKey("/other/{id}").ShouldBeFalse();
+        operation.Complete();
+        operation.Dispose();
+
+        sink.Records.ShouldHaveSingleItem().Key.ShouldBe(explicitKey);
+        operation.TrySetDefaultKey("late").ShouldBeFalse();
+        sink.Records.ShouldHaveSingleItem().Key.ShouldBe(explicitKey);
+    }
+
+    /// <summary>Rejected explicit or default keys preserve the value and do not prevent a later valid default.</summary>
+    /// <example>Run with the OperationProfilerTests filter.</example>
+    [Fact]
+    public void DefaultKey_InvalidValues_PreserveEligibilityAndQuality()
+    {
+        var (profiler, sink, _) = Create();
+        var operation = profiler.BeginOperation("initial");
+
+        operation.SetKey(new string('x', 129));
+        operation.TrySetDefaultKey("").ShouldBeFalse();
+        operation.TrySetDefaultKey("/catalog/{id}").ShouldBeTrue();
+        operation.Complete();
+        operation.Dispose();
+
+        var record = sink.Records.ShouldHaveSingleItem();
+        record.Key.ShouldBe("/catalog/{id}");
+        record.Quality.RejectedMetadataCount.ShouldBe(2);
+        record.Quality.PartialCoverage.ShouldBeTrue();
+        profiler.ActiveBytes.ShouldBe(0);
+    }
+
     [Fact]
     public void BeginOperation_EnrichmentAndCompletion_FreezesUtcMetadataWithoutStorage()
     {

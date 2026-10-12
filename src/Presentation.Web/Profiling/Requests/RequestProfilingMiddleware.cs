@@ -61,7 +61,7 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
 
                 var selected = decision.Capture;
                 boundary = profiler.BeginExecutionBoundary();
-                suppression = selected ? null : profiler.Suppress();
+                suppression = selected || blacklisted && runtime.OperationCaptureMatcher.IsMatch(path) ? null : profiler.Suppress();
                 var activeSelected = selected ? runtime.EnterSelected() : (int?)null;
                 entered = selected;
                 operation = selected ? profiler.BeginOperation(new OperationProfilingStartRequest
@@ -77,7 +77,7 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
                     ActiveSelectedRequestsAtEntry = activeSelected,
                     SamplingStrategyKey = runtime.Options.StrategyKey, SamplingConfigurationKey = runtime.Options.ConfigurationKey,
                     SamplingInclusionProbability = decision.InclusionProbability,
-                }, selected, key);
+                }, selected, key, suppression is not null);
                 context.Features.Set<IRequestProfilingFeature>(feature);
                 if (selected)
                 {

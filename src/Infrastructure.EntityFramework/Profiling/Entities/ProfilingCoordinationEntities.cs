@@ -138,7 +138,7 @@ public sealed class ProfilingClearEntity
     /// <example><code>var value = entity.State;</code></example>
     public ProfilingClearState State { get; set; }
 
-    /// <summary>Gets or sets the bounded original immutable writer eligibility snapshot.</summary>
+    /// <summary>Gets or sets the bounded original writer eligibility and optional operation-selection document; legacy writer arrays remain readable.</summary>
     /// <example><code>var value = entity.EligibleWritersJson;</code></example>
     public string EligibleWritersJson { get; set; }
 

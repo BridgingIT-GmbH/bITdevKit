@@ -422,6 +422,8 @@ public static class OperationProfilingHelpers
         /// <inheritdoc />
         public void SetKey(string key) { }
         /// <inheritdoc />
+        public bool TrySetDefaultKey(string key) => false;
+        /// <inheritdoc />
         public void SetDimension(string key, object value) { }
         /// <inheritdoc />
         public void SetMeasurement(string key, object value, string unit) { }

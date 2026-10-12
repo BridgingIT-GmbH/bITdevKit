@@ -26,7 +26,7 @@ The recorder captures bounded in-memory state, freezes an immutable completion r
 - Typed dimensions, measurements, safe outcome/failure summaries and explicit partial coverage.
 - All-request, probability and token-budget HTTP sampling strategies.
 - Memory or Entity Framework provider selection, bounded retention and fenced all/range clearing.
-- Runtime, Operations and Requests views with shared authorization, UTC and refresh behavior.
+- Runtime, Operations, Requests, Timeline and Insights views with shared authorization and UTC.
 - Bounded time/process correlation, without assigning process resource totals to individual operations.
 - Optional feature behaviors that remain usable when Profiling registration is omitted.
 
@@ -43,7 +43,7 @@ flowchart LR
     Broadcast[Runtime Broadcast control] --> Collector[Runtime collector]
     Collector --> Provider
     Provider --> Queries[DI query services]
-    Queries --> Dashboard[Runtime / Operations / Requests views]
+    Queries --> Dashboard[Runtime / Operations / Requests / Timeline / Insights views]
 ```
 
 ## Use Cases
@@ -152,7 +152,9 @@ app.UseAuthorization();
 app.MapEndpoints();
 ```
 
-The default operation key is the request path. Prefix stripping respects path-segment boundaries. Request Profiling defaults to AllRequests sampling and the blacklist `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`. `Blacklist(...)` replaces that list; `Blacklist()` clears it. Blacklist patterns use `*` within a path segment and `**` across segments; they match the normalized request path before key-prefix stripping. `/health*` matches `/healthz` but not `/health/live`. A match suppresses replacement operations in that request flow.
+The default operation key is the matched route template, including any mount prefix. For example, `/api/orders/42` and `/api/orders/81` both belong to `/api/orders/{id}`, or `/orders/{id}` when stripping `/api`. The actual path and query arguments remain in each request's metadata. Requests without a matched template fall back to their incoming path. A controller's explicit `SetKey(...)` takes precedence; automatic prefix stripping only applies to defaults. Prefix stripping respects path-segment boundaries.
+
+Request Profiling defaults to AllRequests sampling and the blacklist `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`, `/.well-known*`, `/.well-known/**`. `Blacklist(...)` replaces that list; `Blacklist()` clears it. Blacklist patterns use `*` within a path segment and `**` across segments; they match the normalized request path before key-prefix stripping. `/health*` matches `/healthz` but not `/health/live`. The well-known patterns also exclude discovery endpoints such as `/.well-known/openid-configuration`. A match suppresses replacement operations in that request flow by default. `AllowOperationsForBlacklistedPaths(...)` explicitly allows business operations beneath matching excluded URLs without recording their HTTP requests. WeatherFiesta opts in its storage action URLs with `/_bdk/dashboard/storage/*/actions/**`; dashboard reads, polling, and profiling queries remain excluded. Sampling rejections and explicit `Suppress()` scopes remain suppressing. Sampling is decided once at middleware entry using the incoming path; route-template enrichment after routing does not resample the request.
 
 `WithInMemoryProvider()` is optional. Use `WithEntityFrameworkProvider<TContext>()` or `WithProvider<TProvider>()` to replace the shared default provider.
 
@@ -264,6 +266,50 @@ Brokers copy the origin's application correlation ID into message properties bef
 
 Profiling accepts valid CLR strings and JSON strings restored from durable storage, up to 128 characters. Arbitrary property values are never stringified. Message bodies, business IDs, headers and result payloads are not retained. Metadata, scope and restoration faults preserve exactly-once business invocation and its original exception.
 
+### Storage behaviors
+
+Storage actions performed through the dashboard need an HTTP exclusion opt-in when Request Profiling is enabled. The default `/_bdk/**` blacklist otherwise suppresses their storage decorators too:
+
+```csharp
+profiling.WithRequestProfiling(requests => requests
+    .AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"));
+```
+
+Use the configured dashboard prefix in that pattern. This enables storage operation records for actions, while keeping automatic dashboard refreshes excluded.
+
+File, document and blob storage can join the current operation as timed segments or own independent operations. They use these keys and dimensions:
+
+| Behavior | Kind and key | Dimensions |
+| --- | --- | --- |
+| `ProfilingFileStorageBehavior` | `FileStorage` / `filestorage:{operation}` | `filestorage.location`, `filestorage.operation` |
+| `ProfilingDocumentStoreClientBehavior<T>` | `DocumentStorage` / `documentstorage:{type name}:{operation}` | `documentstorage.client`, `documentstorage.documentType`, `documentstorage.operation` |
+| `ProfilingBlobStoreClientBehavior` | `BlobStorage` / `blobstorage:{operation}` | `blobstorage.store`, `blobstorage.container`, `blobstorage.operation` |
+
+Logical locations, configured client names and containers describe storage resources. File paths, blob names and prefixes, document partition/row keys, continuation tokens and payloads are omitted. The key stays the same across resources, so dimension filters and comparisons can compare the same operation in different locations, clients or containers. Joined calls keep their metadata on their segment; standalone calls put it on the operation. Correlation comes from the caller's ambient application correlation scope.
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+
+services.AddFileStorage(factory => factory.RegisterProvider("reports", storage => storage
+    .UseInMemory("reports")
+    .WithMetrics()
+    .WithProfiling()));
+
+services.AddDocumentStorage()
+    .WithProfilingBehavior<Report>()
+    .RegisterProvider<Report>(_ => new InMemoryDocumentStoreProvider(), name: "reports");
+
+services.AddBlobStorage()
+    .WithProfilingBehavior()
+    .WithInMemoryClient("reports");
+```
+
+All 22 file-provider methods, 10 typed document-client methods and seven blob-client methods are covered, including paging, metadata updates and batches. File behaviors wrap in registration order: place `WithProfiling()` last to include other behaviors. Named document and blob clients apply the first registered behavior outermost: register Profiling first to include downstream cache, retry and timeout work. Direct document registration also supports `builder.WithProfilingBehavior()` on `DocumentStoreBuilderContext<T>`. Register each profiling behavior once.
+
+These registrations resolve `IOperationProfiler` optionally and do not install Profiling themselves. Omitted, disabled and suppressed capture preserves storage execution. Failed Results and thrown exceptions are classified without retaining their messages. A document batch with failed items records `PartialBatch` failure while returning the original partial result. Storage profiling does not start Runtime sessions or write to the profiling provider on the storage call path.
+
+Returned streams, lazy enumerables and metadata delegates remain caller/provider-owned. `ReadFile`, `OpenWriteFile` and blob download timings end when the storage method returns; later stream consumption or disposal is outside that timing. Profiling does not inspect, wrap, consume or dispose content streams.
+
 ### Executing nodes and per-node analysis
 
 Every operation stores the cached executing-process `ProfilingNode`: its GUID and readable key, hostname, display name, process ID, process-start UTC and application version. Consumer records describe the node that ran the handler; producer metadata never substitutes for it. Segments belong to their operation's node. Node GUIDs distinguish separate processes on one host and change after a restart; a display name is not a unique identity.
@@ -287,7 +333,7 @@ All eligible requests are selected by default. Select a built-in strategy fluent
 | Memory retention | 10,000 operations / 128 MiB / 24 hours |
 | EF retention | 100,000 operations / 7 days |
 | Concurrent query views / deadline | 4, without waiting / 5 seconds |
-| Page size / exact analysis / Runtime overlay | at most 200 / 10,000 roots / 2,000 snapshots |
+| Page size / exact analysis / Runtime overlay | at most 250 / 10,000 roots / 2,000 snapshots |
 
 Batch and retry work is independent of the caller's request token. Provider attempts are idempotent per writer/sequence and atomic per root. A timed-out attempt that ignores cancellation holds its writer slot until it returns; no overlapping write is launched. Health distinguishes local queue/in-flight/age, persistence failure/loss/unknown commits, administrative discards, retention removals and local sampling counters. Shared-provider counts cover retained shared history; live counters belong to the serving node. The next successful maintenance observation includes in-memory capacity evictions performed during append; these are retention removals, not failed incoming diagnostics, and do not consume that tick's deletion work budget. No universal throughput or overhead percentage is implied by the configured ceilings.
 
@@ -295,19 +341,39 @@ The [capacity evidence](../plan/pln-feature-profiling-runtime-and-operations-1-e
 
 ### Operation dashboard and queries
 
-Operations and Requests default to Recent and share Slow, Recent and By count modes, result choices 10/25/50/100, typed filters and full retained group counts. Requests always fixes kind to `HttpRequest`. Rows show the executing node and outcome/coverage; details show aggregated segment paths and safe metadata. Exact ID lookup ignores list windows/outcomes but retains authorization/provider scope. Each view remembers its filters, refresh interval, comparison keys and group expansions separately in localStorage. Explicit URL filters take precedence; Reset clears saved filters and restores Recent.
+Operations and Requests default to Recent and share Slow, Recent and By count modes, result choices 10/25/50/100/250, typed filters and full retained group counts. Requests always fixes kind to `HttpRequest`. Rows show the executing node and outcome/coverage; details show aggregated segment paths and safe metadata. Exact ID lookup ignores list windows/outcomes but retains authorization/provider scope. Each view remembers its filters, refresh interval, comparison selections and group expansions separately in localStorage. Explicit URL filters take precedence; Reset clears saved filters and restores Recent.
 
 Initial rendering and content refresh call the same DI model builder/query facade. Dashboard JSON uses that facade too, without HTTP loopback, direct EF queries in Razor or queue flushing. Auto refresh pauses in hidden tabs, cancels obsolete selectors, preserves expansion/scroll and keeps visibly stale data after errors. Paged selections retain a publication boundary and disable auto refresh until Refresh latest. Clearing, retention, changed filters or an expired five-minute boundary require a fresh selection.
+
+Operation query bounds are independently optional. An omitted To UTC resolves to the current time for each fresh query; a stored paging boundary keeps its original end. An omitted From UTC resolves to fifteen minutes before the resolved end, including when that end is historical. UTC and start-before-end validation still apply.
 
 Query settings are configurable through `ProfilingOptions.Queries`. `MaximumNodeChoices` defaults to 200, accepts 1–10,000, and bounds node choices without reducing execution counts; the selector indicates when more nodes match. The exact-analysis selection bound applies to both root durations and per-operation segment distributions. EF operation-query commands inherit the configured query timeout, rounded up to at least one whole second; the shared query facade still enforces the precise elapsed deadline and caller cancellation.
 
 Queries allow eight general dimension predicates and four grouping dimensions. Expanding a group uses at most four additional exact/missing group selectors while preserving the general filters. Exact analysis returns midpoint medians and nearest-rank p95/p99 from retained owner observations. Segment means remain invocation-weighted; distributions refer to per-operation aggregates and are not averages of percentiles.
 
+#### Filter and compare dimensions
+
+Open **Dimensions** on Operations or Requests to add operation conditions. Select or type a recorded name, choose **Equal**, **Present**, or **Missing**, then select a recorded typed value or enter one. Conditions must all match. Active conditions appear as removable chips. An empty string is a value, distinct from missing metadata. String values are case-sensitive; dimension names are case-insensitive. Numeric types remain distinct, and integer and UTC values retain their scalar precision.
+
+Use workload dimensions such as status, attempt, cache state or item count for grouping and comparisons. Built-in orchestration instance/correlation IDs and job/pipeline execution IDs are excluded from dimension choices and saved grouping selections, including older profiles. Their legacy metadata remains readable in execution details. Application-defined business identifiers remain available as dimensions.
+
+Choose **Group by operation dimension** to split each operation key and kind into value groups. Each group shows the retained count, median, p95, and partial captures. Operations without the selected dimension are excluded before paging, counts and timing analysis. Empty strings remain valid values. Advanced selectors can group by up to four dimensions; an operation must contain every selected dimension. Clear grouping to include operations without those dimensions, or use an explicit **Missing** condition to find them. The grouped list keeps complete counts when exact duration analysis exceeds its bound and asks you to narrow the selection.
+
+[![One service operation grouped by a numeric workload dimension, with counts, median and p95 timings for each group](assets/dashboard/profiling/operation-dimensions.png)](assets/dashboard/profiling/operation-dimensions.png)
+
+Use a group's comparison action to set the baseline conditions. Choose another **Recorded group** of the same operation in the comparison dialog, or edit the conditions independently. Group conditions appear as removable chips. Dates, node, and application version remain independent on each side. This supports questions such as cache hits versus misses for the same workload, with segment timings showing where duration differs.
+
+Execution details provide dimension actions to filter the list, group by an operation dimension, or use a condition for either comparison side. Segment conditions require a **Segment filter path**, including every parent. They never match a similarly named sibling or an operation dimension. Mixed and partial segment values stay visible; equality suggestions include only complete, uniform values. Segment discovery counts executions owning that path, not repeated invocations.
+
+Discovery reads the selected retained data through `IOperationProfilingQueryService.DiscoverDimensionsAsync`, independently of the visible row limit. Names and values follow the selected key, kind, UTC range, node, and other conditions. Editing a dimension reveals alternatives to its own predicate. Suggestions show counts and support name and value searches. `MaximumDimensionNames` defaults to 32 and `MaximumDimensionValues` to 20 per name; both accept 1–512. Values are ranked by count, then exact type and scalar. Searches cover the bounded selection rather than only the returned suggestions. A selection above `MaximumAnalysisRecords` returns a limit error instead of misleading partial suggestions. Discovery shares admission, cancellation, and timeout limits with other dashboard queries and never flushes queued captures.
+
+Prefer recurring categories such as `cacheState`, `provider`, or `workloadSize` for grouping. Keep exact identifiers in execution details, and record quantities as measurements when you need numerical aggregation. The dashboard remembers dimension conditions and grouping independently for Operations and Requests.
+
 Runtime overlays require exact process identity and observed UTC interval overlap. They show actual collection windows, surrounding samples, sample-rate intervals and gaps. They do not imply ownership, interpolate missing samples or assign process CPU/memory/GC to the operation. Both views provide node/time navigation in the other direction.
 
 ### Provider clearing and extension
 
-Inject `IProfilingStorageProvider` to clear `ProfilingDataSet.Runtime`, `Operations` or `All`, optionally within a UTC interval through `ProfilingClearRequest`. Ranges are inclusive/exclusive. Providers fence delayed writers and uncertain commits before deleting retained history; timeout/cancellation does not pretend a clear completed. Active Runtime sessions retain their control restrictions. The confirmed **Clear all profiling data** action in Runtime uses `ProfilingDataSet.All`, including Operations and HTTP Requests. A large clear may continue through bounded maintenance batches; the dashboard reports pending work. Work captured after the clear fence can appear again. Operation dashboard pages expose no separate clearing HTTP endpoint.
+Inject `IProfilingStorageProvider` to clear `ProfilingDataSet.Runtime`, `Operations` or `All`, optionally within a UTC interval through `ProfilingClearRequest`. Ranges are inclusive/exclusive. Set `OperationSelection` with `DataSet = Operations` to remove an exact operation key and kind within explicit UTC bounds and matching filters; paging and analysis limits do not limit deletion. Providers fence delayed writers and uncertain commits before deleting retained history; timeout/cancellation does not pretend a clear completed. Active Runtime sessions retain their control restrictions. The confirmed **Clear all profiling data** action in Runtime uses `ProfilingDataSet.All`, including Operations and HTTP Requests. A large clear may continue through bounded maintenance batches; the dashboard reports pending work. Work captured after the clear fence can appear again. Operations and Requests offer a dashboard-only group deletion action.
 
 A custom `IProfilingStorageProvider` must supply the documented independent facets, capabilities, idempotency, retention and clear semantics. Use `WithProvider<TProvider>(factory)` for explicit selection. Runtime overlay support is optional through `IRuntimeProfilingCorrelationStore`; missing support produces an unavailable overlay instead of loading all history. Built-in EF uses application-owned scoped contexts and migrations, not a request's DbContext or startup DDL.
 
@@ -388,6 +454,10 @@ The Overview charts align memory, CPU, allocation and GC observations on a UTC t
 
 Analysis shows each signal's confidence, supporting measurements and suggested next step. Byte values use readable units; information icons retain the recorded value and explain each metric. Read the sampling-quality summary alongside the signals before deciding what to investigate.
 
+Returning to Profiling from the dashboard menu or overview card opens your last selected **Runtime**, **Operations**, **Requests**, **Timeline**, or **Insights** view. The selection is saved in browser storage for each dashboard path. Explicit view links still open their named view.
+
+The dashboard overview also has separate **Operations** and **Requests** cards. They show retained executions from the last 15 minutes, across all outcomes, plus matching groups and contributing nodes. Operations includes all kinds; Requests includes HTTP captures. Each card opens its named view and refreshes with the other overview cards. Counts reflect retained captures and any request sampling, rather than total application traffic.
+
 ### Dashboard usage guide
 
 1. **Start a session.** Enter a short **Name**, choose the sampling interval and maximum duration, and select the green start control. The control becomes a red stop control while collection is running. Use **History** when you want to inspect an existing session instead.
@@ -423,15 +493,57 @@ The charts use Plotly's standard interaction controls, including area-selection 
 
 Profiling dashboard routes inherit the dashboard's authentication and authorization policy. Do not expose the dashboard anonymously. There is intentionally no evaluation export, copy, or download route.
 
+### Operation timeline
+
+The **Timeline** tab shows retained operations by their **start time**, with one colored lane per kind. Each box represents one execution or a count of executions close together in time. Select a single-execution box to open the usual execution details dialog. Select a count box to choose an execution from a paged list, then open its details. A red outline indicates that the bucket contains failed, canceled, aborted or incomplete executions.
+
+![Operation timeline with kinds and execution count boxes](assets/dashboard/profiling/operation-timeline.png)
+
+Choose **15 min**, **30 min**, **Hour**, **12 hours**, **Day**, **Week** or **Month (30 days)** for a rolling window. With both date inputs empty, the window continuously advances toward now. Setting From UTC holds that start; leaving To UTC empty keeps the end live. Setting To UTC holds the selected range. Use the clock icon for a quick start or edit the UTC minute inputs directly, then select Apply. Explicit dates take precedence over the window length.
+
+Filter by **Kind**, **Key contains** and **Node**. The timeline remembers its window, filters and refresh interval separately from Operations and Requests. Its active tab is remembered when returning to Profiling. Refresh defaults to five seconds; the time axis keeps advancing in live mode even when network refresh is off. Counts describe the last successful refresh, and failed refreshes preserve the chart with a visible failure message.
+
+Counts include every matching retained operation, regardless of outcome or the list's Rows setting. Time buckets are aggregated by the storage provider; the browser loads individual records only on selection. The view supports up to 64 distinct kinds and 12–256 time buckets. Narrow a filter if that kind limit is exceeded. The timeline shows operations after completion and persistence; active operations and captures that were dropped or expired are not reconstructed.
+
+`IOperationProfilingQueryService.TimelineAsync(...)` provides the same admitted, deadline-bounded view programmatically. Set `StartedWithin = true` on the query. The dashboard-only `/profiling/timeline/data` and `/profiling/timeline/executions` routes inherit the dashboard's authorization and configured prefix.
+
+### Operation insights
+
+The **Insights** tab ranks logical operations by **p95 duration**, **Completed time**, **Frequency** or **Failure rate**. HTTP methods remain separate under the same route template. UTC dates, kind, key-contains and node filters select retained executions by their start time. Empty dates select the last 15 minutes up to now. The clock icon fills the editable minute inputs; leaving To UTC empty keeps the end current on refresh. Filters, ranking, row count and refresh interval are saved separately from the other views. Refresh is off by default.
+
+![Profiling Insights with operation hotspots, completed latency samples and dialog actions](assets/dashboard/profiling/operation-insights.png)
+
+Summary cards show retained executions, completed latency samples, root failures and partial captures. Rows show execution and latency sample counts, median, p95, accumulated completed time and root failure rate. Completed latency excludes unsuccessful and unobserved terminal executions. Cancellation, abortion and incomplete counts remain visible separately. Small sample counts are shown beside the percentiles. Completed time is accumulated elapsed time, including waiting; overlapping operation roots can count the same wall-clock interval.
+
+Select a name to open that operation's filtered executions. The information action opens its slowest completed execution in the usual details dialog, or a retained occurrence when there are no completed samples. The comparison action seeds the existing comparison dialog with the operation and selected conditions. **Segment bottlenecks** opens a dialog with the top ten aggregate paths by self time, observed execution counts, invocation counts, calls per observed execution, self time per call and accumulated total/self time. Missing or unavailable timing is explicit. No execution-order capture is needed.
+
+Rankings analyze the complete selection before applying the Rows limit. They do not silently rank a partial sample: selections exceeding the configured analysis bound must be narrowed. The analysis uses the shared query admission, cancellation, deadline and publication boundary. Counts describe retained captures; sampling, partial coverage and capture loss can affect representativeness. Local capture counters are available in the outcome summary tooltip and are separate from the selected history.
+
+`IOperationProfilingQueryService.InsightsAsync(...)` provides the same bounded analysis programmatically. The dashboard-only `/profiling/insights/data` route shares dashboard authorization and returns summaries rather than complete operation payloads.
+
 ### Operation and Request views
 
 #### Grouped executions
 
+The **Rows** selector defaults to **100** for both Operations and Requests. Previously saved row selections remain in effect.
+
+Use the **Collapse all groups** toolbar action to close every group. Closed groups and the collapsed default for newly arriving groups are remembered separately for Operations and Requests. You can reopen individual groups; those choices are remembered too.
+
 Recent follows new activity by default. Use By count to rank retained groups or Slow to inspect the longest executions. Counts cover the retained selection, even when the page shows only representative executions. Group headings show the kind, a short work name and the retained execution count. Hover over a heading for its full key. These labels do not change grouping or filters. The circled information button opens execution details in a modal without leaving the list. By count shows the representative execution. Select a group's count badge to view its retained executions. The **Key** filter matches a case-insensitive substring. **Kind** is a dropdown. Advanced filters accept a typed selector for dimension grouping, outcomes and other detailed criteria.
 
-**Compare operation keys** offers two dropdowns of full keys from the current groups. The same keys are available in the group heading tooltips. A key names the recorded work, such as `catalog:list` or `catalog:details`; HTTP requests use their configured path key. These are not execution or correlation IDs. Clear the key filter or widen the UTC range if fewer than two keys appear. Saved selections survive refresh and navigation. Comparison keeps the current kind/node/time/advanced filters and ignores the list's key substring. Its table compares retained counts, median and p95. A positive candidate p95 change means slower.
+Use the **Quick range** clock icon before the date inputs to set From UTC to the last minute, hour, 6 hours, day, week or another offered interval and clear To UTC, then select **Apply**. The comparison dialog provides the same presets independently for each side. Inputs remain editable; a preset sets a fixed start and leaves the end open for newer records. Select it again to move the start forward. In comparisons, empty ends resolve to one shared current instant when you select Compare.
 
-[![Comparing recorded operation keys selected from the current groups, with execution counts, median and p95 durations](assets/dashboard/profiling/operation-comparison.png)](assets/dashboard/profiling/operation-comparison.png)
+**Compare executions** opens a dialog from the toolbar or a group's comparison button. Select one operation, then set independent baseline and comparison UTC ranges, nodes, application versions and typed dimension conditions. The operation's kind and exact key stay the same on both sides. Dimension conditions are combined with AND. String values are case-sensitive, and numeric value types remain distinct. The comparison uses only its own controls, initialized from the list's UTC range, node, version and dimension filters.
+
+The **Delete group** trash button opens a compact confirmation with the group name, retained count and a reminder that current filters apply. Deletion honors all current filters and the exact group values, including HTTP method or selected dimensions. It removes every matching retained execution and its segment data, including instances beyond the visible row limit. Other groups and Runtime sessions remain available. The list refreshes after deletion; large deletions report continuing background maintenance. Newly captured executions may appear again.
+
+The initial baseline is the period immediately before the comparison, with equal duration. **Previous period** recalculates that range; **Same period** aligns the dates for a node, version or dimension comparison. Both shortcuts preserve the baseline's other conditions. Operations and Requests save their comparison selections separately in browser storage.
+
+Results remain inside the dialog. The table shows retained execution counts, median, p95, mean and partial counts, with duration differences in milliseconds or seconds and percentages relative to the baseline. Empty selections and unavailable timings are explicit. A zero baseline has no percentage difference. Closing the dialog cancels a pending read; later responses cannot replace a newer selection.
+
+The segment table matches full, case-insensitive paths, including parent segments. Choose mean total or self duration per observed execution, or mean total or self duration per invocation. Each side shows invocation and execution counts so different coverage is visible. A path absent from one side is marked **Not recorded**, rather than treated as zero. Total durations can overlap through nesting or parallelism; self duration excludes observed child work.
+
+[![Comparing executions of the same operation under independently selected conditions in a dashboard dialog](assets/dashboard/profiling/operation-comparison.png)](assets/dashboard/profiling/operation-comparison.png)
 
 [![Recent handler and orchestration executions with readable group names, information buttons and single-line rows](assets/dashboard/profiling/operations.png)](assets/dashboard/profiling/operations.png)
 

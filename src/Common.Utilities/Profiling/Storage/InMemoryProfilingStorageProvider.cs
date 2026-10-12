@@ -61,7 +61,7 @@ public sealed partial class InMemoryProfilingStorageProvider : IProfilingStorage
         this.runtime = new InMemoryRuntimeProfilingStore(this.sync);
         this.runtime.SharedClear = ct => this.ClearAsync(new ProfilingClearRequest { DataSet = ProfilingDataSet.Runtime }, ct);
         this.writers = new(this.epoch, this.storageOptions.MaximumWriterLeases, nodeId => this.runtime.ReleaseSharedNode(nodeId, this.nodeOwners.ContainsKey(nodeId)));
-        this.clears = new(this.storageOptions, this.Capabilities.Scope);
+        this.clears = new(this.storageOptions, this.Capabilities.Scope, query => this.queryCodec.Normalize(query, null));
         this.runtime.OperationNodeReferenced = nodeId => this.nodeOwners.ContainsKey(nodeId) || this.writers.ReferencesNode(nodeId, this.clock.GetUtcNow());
         this.runtime.RootDeleted = () => this.deletionRevision = checked(this.deletionRevision + 1);
     }

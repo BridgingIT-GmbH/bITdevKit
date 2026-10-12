@@ -419,6 +419,8 @@ Register `ILogEntryService` over the application's persisted log store and enabl
 
 Open Logs at `/_bdk/dashboard/logentries`. Apply a minimum level, text search, date range or a specific correlation, trace, span, log key, module or type filter. The row limit bounds each page. Expand an entry to inspect its exception and structured properties. Correlation IDs link back to the filtered Logs view and can be copied.
 
+Use the **Quick range** clock icon before the date inputs in Logs or Errors to set From UTC and clear To UTC, then select **Apply**. An empty end includes newer logs on refresh. You can edit either timestamp before applying. Paging, related-log links and export preserve the selected times. Existing date-only links still cover whole UTC days.
+
 [![Filtered persisted logs with timestamps, levels and correlation links](assets/dashboard/07-logentries-logs.png)](assets/dashboard/07-logentries-logs.png)
 
 ### Investigate errors

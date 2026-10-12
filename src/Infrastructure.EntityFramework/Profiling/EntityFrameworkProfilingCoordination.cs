@@ -12,9 +12,11 @@ using Microsoft.EntityFrameworkCore;
 
 // Every mutation is made inside an operation-owned relational transaction after acquiring
 // the singleton row. Its database lock, rather than a process-local semaphore, is the scope boundary.
-internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingStorageOptions options, string providerScope)
+internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingStorageOptions options, string providerScope,
+    OperationProfilingOptions operationOptions, ProfilingQueryOptions queryOptions, TimeProvider clock)
     where TContext : DbContext, IProfilingDbContext
 {
+    private readonly ProfilingOperationQueryCodec queryCodec = new(operationOptions, queryOptions, clock, []);
     internal async Task<Frame> AcquireAsync(TContext context, CancellationToken cancellationToken)
     {
         if (context.Database.CurrentTransaction is null)
@@ -47,8 +49,8 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
         var registry = new ProfilingWriterRegistry(state.StoreEpoch, options.MaximumWriterLeases);
         registry.Restore(state.RegistrationGeneration, writerRows.Select(row => new ProfilingWriterRegistrationState(row.AttemptId, Lease(row), row.Retired)).ToArray());
         var clearRows = await context.Set<ProfilingClearEntity>().Take(options.MaximumClearFences == int.MaxValue ? int.MaxValue : options.MaximumClearFences + 1).ToListAsync(cancellationToken).ConfigureAwait(false);
-        var clears = new ProfilingClearCoordinator(options, providerScope);
-        clears.Restore(clearRows.Select(row => ReadClear(row, options)).ToArray());
+        var clears = new ProfilingClearCoordinator(options, providerScope, query => this.queryCodec.Normalize(query, null));
+        clears.Restore(clearRows.Select(row => this.ReadClear(row, options)).ToArray());
         return new(state, registry, clears, writerRows, clearRows);
     }
 
@@ -97,7 +99,10 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
             row.CompletedUtcTicks = clear.CompletedUtc?.UtcTicks;
             row.GenerationBoundary = clear.Generation;
             row.State = clear.State;
-            row.EligibleWritersJson = JsonSerializer.Serialize(clear.Eligible.Values);
+            row.EligibleWritersJson = JsonSerializer.Serialize(new ClearEligibility
+            {
+                Writers = clear.Eligible.Values.ToArray(), OperationSelection = clear.Selection.OperationSelection,
+            });
             row.AcknowledgementsJson = JsonSerializer.Serialize(clear.Cutoffs);
             row.RemovedOperationCount = clear.RemovedOperations;
             row.RemovedSummaryCount = clear.RemovedSummaries;
@@ -117,16 +122,27 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
     internal static DateTimeOffset Utc(long ticks) => new(ticks, TimeSpan.Zero);
     private static DateTimeOffset? Utc(long? ticks) => ticks.HasValue ? Utc(ticks.Value) : null;
 
-    private static ProfilingClearCoordinator.Clear ReadClear(ProfilingClearEntity entity, ProfilingStorageOptions limits)
+    private ProfilingClearCoordinator.Clear ReadClear(ProfilingClearEntity entity, ProfilingStorageOptions limits)
     {
         // Coordination documents have explicit entry bounds before they enter the reusable state machine.
-        if (entity.EligibleWritersJson?.Length > (long)limits.MaximumWriterLeases * 1024 || entity.AcknowledgementsJson?.Length > (long)limits.MaximumWriterLeases * 256)
+        if (entity.EligibleWritersJson?.Length > (long)limits.MaximumWriterLeases * 1024 + 65536 || entity.AcknowledgementsJson?.Length > (long)limits.MaximumWriterLeases * 256)
         {
             throw new ArgumentException("The stored profiling clear exceeds its bounded coordination document size.");
         }
 
-        var eligible = JsonSerializer.Deserialize<ProfilingWriterLease[]>(entity.EligibleWritersJson)
-            ?? throw new ArgumentException("Stored clear eligibility is absent.");
+        // Existing stores retain the original array format; selected clears use the same column with an eligibility document.
+        var document = entity.EligibleWritersJson.TrimStart().StartsWith("[", StringComparison.Ordinal)
+            ? new ClearEligibility { Writers = JsonSerializer.Deserialize<ProfilingWriterLease[]>(entity.EligibleWritersJson) }
+            : JsonSerializer.Deserialize<ClearEligibility>(entity.EligibleWritersJson);
+        var eligible = document?.Writers ?? throw new ArgumentException("Stored clear eligibility is absent.");
+        var selection = document.OperationSelection;
+        if (selection is not null)
+        {
+            if (JsonSerializer.Serialize(selection).Length > 65536) { throw new ArgumentException("Stored operation selection is oversized."); }
+
+            selection = this.queryCodec.Normalize(selection, null);
+        }
+
         var acknowledgements = JsonSerializer.Deserialize<Dictionary<Guid, long>>(entity.AcknowledgementsJson)
             ?? throw new ArgumentException("Stored clear acknowledgements are absent.");
         if (eligible.Length > limits.MaximumWriterLeases || acknowledgements.Count > eligible.Length || eligible.Any(lease => lease is null))
@@ -137,6 +153,7 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
         var clear = new ProfilingClearCoordinator.Clear(entity.Id, new()
         {
             DataSet = entity.DataSet, FromUtc = Utc(entity.FromUtcTicks), ToUtc = Utc(entity.ToUtcTicks),
+            OperationSelection = selection,
         }, Utc(entity.PreparedUtcTicks), Utc(entity.DeadlineUtcTicks), entity.GenerationBoundary, eligible)
         {
             State = entity.State, SealedUtc = Utc(entity.SealedUtcTicks), CompletedUtc = Utc(entity.CompletedUtcTicks),
@@ -149,6 +166,16 @@ internal sealed class EntityFrameworkProfilingCoordination<TContext>(ProfilingSt
         }
 
         return clear;
+    }
+
+    private sealed record ClearEligibility
+    {
+        /// <summary>Gets the original eligible writer leases.</summary>
+        /// <example><code>var writers = document.Writers;</code></example>
+        public ProfilingWriterLease[] Writers { get; init; }
+        /// <summary>Gets the optional frozen operation selection for selective deletion.</summary>
+        /// <example><code>var selection = document.OperationSelection;</code></example>
+        public OperationProfilingQuery OperationSelection { get; init; }
     }
 
     internal sealed record Frame(ProfilingStoreStateEntity State, ProfilingWriterRegistry Writers, ProfilingClearCoordinator Clears,

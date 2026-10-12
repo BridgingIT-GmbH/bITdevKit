@@ -21,19 +21,13 @@
             const value = remembered.filters[control.name];
             if (!control.name || typeof value !== 'string' || value.length > 16384) continue;
             if (control.tagName === 'SELECT' && value && ![...control.options].some(option => option.value === value) && ['nodeId', 'kind'].includes(control.name)) control.add(new Option(value, value));
-            control.value = value;
+            control.value = control.type === 'datetime-local' ? value.slice(0, 16) : value;
         }
     }
     function remember() {
         if (!form) return;
         try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)),
-            baseline: document.getElementById('operation-baseline-key')?.value, candidate: document.getElementById('operation-candidate-key')?.value,
-            details: remembered.details || {} })); } catch { }
-    }
-    for (const [id, value] of [['operation-baseline-key', remembered.baseline], ['operation-candidate-key', remembered.candidate]]) {
-        const control = document.getElementById(id);
-        if (control && typeof value === 'string' && value.length <= 128 && value) { control.add(new Option(value, value)); control.value = value; }
-        control?.addEventListener('change', remember);
+            details: remembered.details || {}, groupsCollapsed: remembered.groupsCollapsed === true })); } catch { }
     }
     document.addEventListener('toggle', event => {
         const key = event.target.dataset?.preserveKey;
@@ -47,8 +41,19 @@
         document.querySelectorAll('details[data-preserve-key]').forEach(detail => {
             const value = remembered.details?.[detail.dataset.preserveKey];
             if (typeof value === 'boolean') detail.open = value;
+            else if (detail.hasAttribute('data-operation-group') && remembered.groupsCollapsed === true) detail.open = false;
         });
     }
+    document.getElementById('operation-collapse-all')?.addEventListener('click', () => {
+        remembered.groupsCollapsed = true;
+        remembered.details = Object.fromEntries(Object.entries(remembered.details || {}).map(([key, value]) => [key, key.startsWith('group-') ? false : value]));
+        content.querySelectorAll('details[data-operation-group]').forEach(group => {
+            group.open = false;
+            remembered.details[group.dataset.preserveKey] = false;
+        });
+        remembered.details = Object.fromEntries(Object.entries(remembered.details).slice(-200));
+        remember();
+    });
     form?.addEventListener('input', remember);
     window.addEventListener('pagehide', remember);
     document.getElementById('operation-reset')?.addEventListener('click', event => {
@@ -61,7 +66,6 @@
     });
     let pinned = current.searchParams.has('cursor');
     function unpin() { current.searchParams.delete('cursor'); pinned = false; if (interval) interval.disabled = false; document.getElementById('operation-refresh-status').removeAttribute('title'); }
-    let comparisonController = null;
     function selectionUrl() {
         const url = new URL(content.dataset.contentUrl, location.origin);
         if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
@@ -94,21 +98,8 @@
             const source = content.querySelector(selector), target = document.getElementById(targetId);
             if (source && target) target.replaceChildren(source.content.cloneNode(true));
         }
-        const source = content.querySelector('template[data-operation-comparison-keys]');
-        if (!source) return;
-        const available = [...source.content.querySelectorAll('option')].map(option => option.value);
-        for (const id of ['operation-baseline-key', 'operation-candidate-key']) {
-            const select = document.getElementById(id);
-            if (!select) continue;
-            const selected = select.value;
-            select.replaceChildren(new Option('Select a recorded key', ''), source.content.cloneNode(true));
-            if (selected && !available.includes(selected)) select.add(new Option(selected + ' (saved selection)', selected));
-            select.value = selected;
-        }
-        const help = document.getElementById('operation-comparison-help');
-        if (help) help.textContent = available.length < 2
-            ? 'Fewer than two keys match the current list. Clear the key filter or widen the UTC range to show more groups.'
-            : 'Full keys are in the group tooltips. The selected filters apply to both operations.';
+        window.bdkOperationComparison?.synchronize();
+        window.bdkOperationDimensions?.refreshChoices?.();
     }
     let timingMode = 'duration';
     try { if (localStorage.getItem('bdk.profiling.segment-timing') === 'percentage') timingMode = 'percentage'; } catch { }
@@ -195,10 +186,8 @@
         detailBody.replaceChildren();
         detailBody.setAttribute('aria-busy', 'false');
     }
-    document.addEventListener('click', async event => {
-        const button = event.target.closest('[data-operation-detail-url]');
-        if (!button || !detailModal || !window.bootstrap?.Modal) return;
-        event.preventDefault();
+    async function openDetail(button, url = button?.dataset.operationDetailUrl) {
+        if (!url || !detailModal || !window.bootstrap?.Modal) return;
         detailController?.abort();
         const controller = new AbortController();
         detailController = controller;
@@ -210,7 +199,7 @@
         detailBody.append(loading);
         bootstrap.Modal.getOrCreateInstance(detailModal).show(button);
         try {
-            const response = await fetch(button.dataset.operationDetailUrl, { signal: controller.signal, cache: 'no-store' });
+            const response = await fetch(url, { signal: controller.signal, cache: 'no-store' });
             if (response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) throw new Error('Unexpected response');
             const html = await response.text();
             if (controller.signal.aborted || controller !== detailController) return;
@@ -229,66 +218,52 @@
             const notice = document.createElement('div'); notice.className = 'alert alert-warning'; notice.setAttribute('role', 'alert');
             notice.textContent = 'Execution details could not be loaded. Close this dialog and try again.'; detailBody.append(notice);
         }
+    }
+    window.bdkOperationDetails = { open: (url, trigger) => openDetail(trigger, url) };
+    document.addEventListener('click', event => {
+        const button = event.target.closest('[data-operation-detail-url]');
+        if (!button) return;
+        event.preventDefault(); openDetail(button);
     });
     detailModal?.addEventListener('hide.bs.modal', () => { detailController?.abort(); });
     detailModal?.addEventListener('hidden.bs.modal', () => {
         clearDetail();
         const trigger = detailTrigger?.isConnected ? detailTrigger
             : [...content.querySelectorAll('[data-operation-detail-url]')].find(button => button.dataset.operationDetailUrl === detailTrigger?.dataset.operationDetailUrl);
-        (trigger || document.getElementById('operation-refresh-now'))?.focus();
+        (trigger || document.getElementById('operation-refresh-now') || document.getElementById('timeline-refresh-now'))?.focus();
     });
     detailModal?.addEventListener('shown.bs.modal', () => {
         detailBody.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.Plots.resize(chart).catch(() => {}));
     });
+    if (content.dataset.timeline === "true" || content.dataset.insights === "true") { applyTimingMode(); return; }
     const refresher = window.bdkDashboard.createRefresher({ contentElement: content, intervalElement: interval, statusSelector: '#operation-refresh-status',
         storageKey: stateKey + ':refresh', buildUrl: selectionUrl,
         applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; restoreState(state); synchronizeNodes(); synchronizeMetadata(); restoreDetails(); applyTimingMode(); window.bdkProfiling.initializeHelp(element); },
         onSuccess: () => charts(), formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
     if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); const status = document.getElementById('operation-refresh-status'); status.textContent = 'Paged view'; status.title = 'Auto refresh is paused. Refresh latest to return to the current window.'; }
     document.getElementById('operation-refresh-now')?.addEventListener('click', () => { unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl; if (form) history.replaceState(null, '', url); refresher.refresh(true); });
+    window.addEventListener('bdk:operation-group-deleted', () => {
+        unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl;
+        if (form) history.replaceState(null, '', url);
+        refresher.refresh(true);
+    });
     form?.addEventListener('submit', event => {
         event.preventDefault(); unpin();
         const url = selectionUrl(); url.pathname = content.dataset.pageUrl;
-        history.replaceState(null, '', url); remember(); comparisonController?.abort(); refresher.refresh(true);
+        history.replaceState(null, '', url); remember(); refresher.refresh(true);
     });
-    form?.addEventListener('change', () => { remember(); comparisonController?.abort(); refresher.cancel(); });
-    document.getElementById('operation-compare')?.addEventListener('click', async () => {
-        const output = document.getElementById('operation-comparison');
-        comparisonController?.abort(); comparisonController = new AbortController();
-        try {
-            const raw = JSON.parse(document.getElementById('operation-query').value || '{}');
-            const selection = Object.fromEntries(Object.entries(raw).map(([key, value]) => [key[0].toLowerCase() + key.slice(1), value]));
-            selection.cursor = null; selection.boundary = null;
-            selection.key = document.getElementById('operation-baseline-key').value;
-            const candidateKey = document.getElementById('operation-candidate-key').value;
-            if (!selection.key || !candidateKey) { output.textContent = 'Select two recorded operation keys from the dropdowns.'; return; }
-            selection.keyContains = null;
-            remember();
-            const parameters = selectionUrl().searchParams;
-            if ((content.dataset.requestsOnly || '').toLowerCase() === 'true') selection.kind = 'HttpRequest';
-            const candidate = { ...selection, key: candidateKey };
-            const url = new URL(content.dataset.apiUrl, location.origin);
-            parameters.forEach((value,key) => { if (!['query','key','cursor'].includes(key)) url.searchParams.set(key,value); });
-            url.searchParams.set('query', JSON.stringify(selection)); url.searchParams.set('candidate', JSON.stringify(candidate));
-            const response = await fetch(url, { signal: comparisonController.signal, cache: 'no-store' });
-            const data = await response.json();
-            if (!response.ok) throw new Error(data.detail || `HTTP ${response.status}`);
-            output.replaceChildren();
-            const table = document.createElement('table'); table.className = 'table table-sm mt-2';
-            const row = values => { const tr = table.insertRow(); values.forEach(value => tr.insertCell().textContent = value); };
-            const duration = (value, field) => value.durationUnavailable || !value.count ? 'Unavailable' : value[field].toFixed(3) + ' ms';
-            row(['Metric', 'Baseline', 'Candidate']); row(['Key', selection.key, candidate.key]);
-            row(['Executions', data.baseline.count, data.candidate.count]);
-            row(['Median', duration(data.baseline, 'p50Milliseconds'), duration(data.candidate, 'p50Milliseconds')]);
-            row(['p95', duration(data.baseline, 'p95Milliseconds'), duration(data.candidate, 'p95Milliseconds')]);
-            row(['Partial executions', data.baseline.partialOperationCount, data.candidate.partialOperationCount]);
-            const change = document.createElement('p'); change.textContent = 'Candidate p95 change: ' + (data.p95ChangePercent == null ? 'Unavailable' : data.p95ChangePercent.toFixed(2) + '%'); change.title = 'Compared with the baseline. Positive means slower; negative means faster. These are retained observations, not an estimate of unsampled traffic.';
-            const details = document.createElement('details'), summary = document.createElement('summary'), detailText = document.createElement('pre');
-            summary.textContent = 'Segment comparison'; detailText.className = 'small text-wrap';
-            detailText.textContent = ['baseline', 'candidate'].map(name => data[name].segments.map(segment => `${name}: ${segment.path.components.join(' > ')} · ${segment.invocationCount} invocations · mean ${segment.unavailable ? 'Unavailable' : segment.invocationMeanMilliseconds.toFixed(3) + ' ms'}`).join('\n')).join('\n');
-            details.append(summary, detailText); output.append(table, change, details);
-        } catch (error) { if (error.name !== 'AbortError') output.textContent = `Comparison unavailable: ${error.message}`; }
-    });
+    form?.addEventListener('change', () => { remember(); refresher.cancel(); });
+    function selectionQuery() {
+        const url = selectionUrl();
+        const normalize = window.bdkOperationDimensions.normalize;
+        const query = normalize(JSON.parse(url.searchParams.get('query') || '{}'));
+        for (const name of ['kind', 'correlationId', 'applicationVersion', 'fromUtc', 'toUtc', 'nodeId']) if (url.searchParams.has(name)) query[name] = url.searchParams.get(name) || null;
+        if (content.dataset.requestsOnly?.toLowerCase() === 'true') query.kind = 'HttpRequest';
+        if (url.searchParams.has('key')) { query.keyContains = url.searchParams.get('key') || null; query.key = null; }
+        query.cursor = query.boundary = null;
+        return query;
+    }
+    window.bdkOperationDimensions?.initializeList(selectionQuery);
     applyTimingMode();
     synchronizeMetadata();
     restoreDetails();

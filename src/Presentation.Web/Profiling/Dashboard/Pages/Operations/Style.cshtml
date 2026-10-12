@@ -11,6 +11,25 @@
 .profiling-help { font-size: .75rem; line-height: 1; vertical-align: baseline; margin-left: .2rem; }
 .operation-segments td,.operation-segments th { white-space: nowrap; }
 .operation-segments td:first-child { white-space: normal; min-width: 12rem; }
+.operation-comparison-dimension { display: grid; grid-template-columns: minmax(0, 1fr) 6rem 6rem minmax(0, 1fr) auto; gap: .25rem; margin-bottom: .35rem; }
+.operation-comparison-table th:not(:first-child),.operation-comparison-table td:not(:first-child) { text-align: right; white-space: nowrap; }
+.operation-comparison-table th:first-child,.operation-comparison-table td:first-child { min-width: 12rem; }
+.operation-comparison-summary { white-space: pre-line; overflow-wrap: anywhere; }
+.operation-comparison-selection-header { min-height: 2rem; }
+.operation-dimension-editor .operation-dimension-choices,.operation-dimension-editor .operation-dimension-discovery { grid-column: 1 / -1; }
+.operation-dimension-chip { max-width: 100%; overflow-wrap: anywhere; text-align: left; }
+.operation-group-statistics { border-top: 1px solid var(--bs-border-color); }
+.operation-group-header { position: relative; min-height: 2.75rem; padding-inline-end: 6.5rem; overflow-wrap: anywhere; }
+.operation-group-actions { position: absolute; inset-inline-end: .75rem; top: 50%; transform: translateY(-50%); display: inline-flex; gap: .4rem; }
+.operation-dimension-action { max-width: 100%; white-space: normal; text-align: left; overflow-wrap: anywhere; }
+@@media (max-width: 767.98px) {
+    .operation-comparison-dimension { grid-template-columns: repeat(2, minmax(0, 1fr)) auto; }
+    .operation-comparison-dimension [data-dimension-key] { grid-column: span 2; }
+    .operation-comparison-dimension > button { grid-column: 3; grid-row: 1; }
+    .operation-comparison-dimension [data-dimension-operator] { grid-column: 1; grid-row: 2; }
+    .operation-comparison-dimension [data-dimension-type] { grid-column: 2 / span 2; grid-row: 2; }
+    .operation-comparison-dimension [data-dimension-value] { grid-column: span 3; }
+}
 @@media (max-width: 575.98px) {
     .operation-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .operation-toolbar > .d-flex { width: 100%; justify-content: flex-end; }

@@ -44,8 +44,8 @@ public static class LogEntriesDashboard
             SearchText = EmptyToNull(query["q"].ToString()),
             Level = query.ContainsKey("level") ? ParseLevel(query["level"].ToString()) : DefaultLevel,
             PageSize = ParsePageSize(query["pageSize"].ToString()),
-            StartTime = ParseLocalDateStart(query["from"].ToString()) ?? DateTimeOffset.Now.Date,
-            EndTime = ParseLocalDateEnd(query["to"].ToString()),
+            StartTime = DashboardDateTime.ParseUtc(query["from"].ToString()) ?? new DateTimeOffset(DateTime.UtcNow.Date, TimeSpan.Zero),
+            EndTime = ParseEndUtc(query["to"].ToString()),
             TraceId = EmptyToNull(query["traceId"].ToString()),
             SpanId = EmptyToNull(query["spanId"].ToString()),
             CorrelationId = EmptyToNull(query["correlationId"].ToString()),
@@ -98,8 +98,8 @@ public static class LogEntriesDashboard
             ["q"] = filter.SearchText,
             ["level"] = filter.Level?.ToString() ?? "All",
             ["pageSize"] = filter.PageSize.ToString(CultureInfo.InvariantCulture),
-            ["from"] = FormatDate(filter.StartTime),
-            ["to"] = FormatDate(filter.EndTime),
+            ["from"] = DashboardDateTime.FormatQuery(filter.StartTime),
+            ["to"] = DashboardDateTime.FormatQuery(filter.EndTime),
             ["traceId"] = filter.TraceId,
             ["spanId"] = filter.SpanId,
             ["correlationId"] = filter.CorrelationId,
@@ -137,7 +137,7 @@ public static class LogEntriesDashboard
         {
             Level = null,
             PageSize = DefaultPageSize,
-            StartTime = DateTimeOffset.Now.Date,
+            StartTime = new DateTimeOffset(DateTime.UtcNow.Date, TimeSpan.Zero),
             CorrelationId = correlationId.Trim()
         };
 
@@ -282,25 +282,16 @@ public static class LogEntriesDashboard
         return Enum.TryParse<LogLevel>(value, true, out var parsed) ? parsed : null;
     }
 
-    private static DateTimeOffset? ParseLocalDateStart(string value)
+    private static DateTimeOffset? ParseEndUtc(string value)
     {
-        if (!DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var parsed))
+        // Preserve whole-day end bounds in existing date-only links. New inputs carry exact UTC times.
+        if (DateTime.TryParseExact(value, "yyyy-MM-dd", CultureInfo.InvariantCulture, DateTimeStyles.None, out var date))
         {
-            return null;
+            var end = date == DateTime.MaxValue.Date ? DateTime.MaxValue : date.AddDays(1).AddTicks(-1);
+            return new DateTimeOffset(end, TimeSpan.Zero);
         }
 
-        return new DateTimeOffset(parsed.Date, TimeZoneInfo.Local.GetUtcOffset(parsed.Date));
-    }
-
-    private static DateTimeOffset? ParseLocalDateEnd(string value)
-    {
-        if (!DateTime.TryParse(value, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var parsed))
-        {
-            return null;
-        }
-
-        var end = parsed.Date.AddDays(1).AddTicks(-1);
-        return new DateTimeOffset(end, TimeZoneInfo.Local.GetUtcOffset(end));
+        return DashboardDateTime.ParseUtc(value);
     }
 }
 

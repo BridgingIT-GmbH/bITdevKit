@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Common;
 
 /// <summary>Builds retained-history views under shared non-waiting admission and one deadline.</summary>
 /// <example><code>var page = await queries.QueryAsync(new OperationProfilingQuery(), token);</code></example>
-public sealed class OperationProfilingQueryService : IOperationProfilingQueryService
+public sealed partial class OperationProfilingQueryService : IOperationProfilingQueryService
 {
     private readonly IOperationProfilingStore store;
     private readonly OperationRuntimeCorrelationService correlation;
@@ -94,14 +94,24 @@ public sealed class OperationProfilingQueryService : IOperationProfilingQuerySer
     public Task<IResult<OperationProfilingPage>> QueryAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
         this.BuildViewAsync((session, token) => session.QueryAsync(query, token), cancellationToken);
     /// <inheritdoc />
+    public Task<IResult<OperationProfilingTimeline>> TimelineAsync(OperationProfilingQuery query, int bucketCount = 72, CancellationToken cancellationToken = default) =>
+        this.BuildViewAsync((session, token) => session.TimelineAsync(query, bucketCount, token), cancellationToken);
+    /// <inheritdoc />
     public Task<IResult<OperationProfilingGroupPage>> GroupAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
         this.BuildViewAsync((session, token) => session.GroupAsync(query, token), cancellationToken);
+    /// <inheritdoc />
+    public Task<IResult<OperationProfilingDimensionDiscovery>> DiscoverDimensionsAsync(OperationProfilingQuery query, ProfilingDimensionScope scope = ProfilingDimensionScope.Operation,
+        string dimensionKey = null, string nameSearch = null, string valueSearch = null, CancellationToken cancellationToken = default) =>
+        this.BuildViewAsync((session, token) => session.DiscoverDimensionsAsync(query, scope, dimensionKey, nameSearch, valueSearch, token), cancellationToken);
     /// <inheritdoc />
     public Task<IResult<OperationProfilingRecord>> FindAsync(Guid id, CancellationToken cancellationToken = default) =>
         this.BuildViewAsync((session, token) => session.FindAsync(id, token), cancellationToken);
     /// <inheritdoc />
     public Task<IResult<OperationProfilingDistribution>> AnalyzeAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
         this.BuildViewAsync((session, token) => session.AnalyzeAsync(query, token), cancellationToken);
+    /// <inheritdoc />
+    public Task<IResult<OperationProfilingInsights>> InsightsAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
+        this.BuildViewAsync((session, token) => session.InsightsAsync(query, token), cancellationToken);
     /// <inheritdoc />
     public Task<IResult<OperationProfilingComparison>> CompareAsync(OperationProfilingQuery baseline, OperationProfilingQuery candidate, CancellationToken cancellationToken = default) =>
         this.BuildViewAsync((session, token) => session.CompareAsync(baseline, candidate, token), cancellationToken);
@@ -142,15 +152,25 @@ public sealed class OperationProfilingQueryService : IOperationProfilingQuerySer
         /// <summary>Executes the bounded QueryAsync view-session operation.</summary>
         public Task<IResult<OperationProfilingPage>> QueryAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
             this.ExecuteAsync(token => this.ValidateAsync(query, () => owner.store.QueryAsync(query, token)), cancellationToken);
+        /// <inheritdoc />
+        public Task<IResult<OperationProfilingTimeline>> TimelineAsync(OperationProfilingQuery query, int bucketCount = 72, CancellationToken cancellationToken = default) =>
+            this.ExecuteAsync(token => this.ValidateAsync(query, () => owner.store.TimelineAsync(query, bucketCount, token)), cancellationToken);
         /// <summary>Executes the bounded GroupAsync view-session operation.</summary>
         public Task<IResult<OperationProfilingGroupPage>> GroupAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
-            this.ExecuteAsync(token => this.ValidateAsync(query, () => owner.store.GroupAsync(query, token)), cancellationToken);
+            this.ExecuteAsync(token => this.ValidateAsync(query, () => owner.GroupCoreAsync(query, token)), cancellationToken);
+        /// <inheritdoc />
+        public Task<IResult<OperationProfilingDimensionDiscovery>> DiscoverDimensionsAsync(OperationProfilingQuery query, ProfilingDimensionScope scope = ProfilingDimensionScope.Operation,
+            string dimensionKey = null, string nameSearch = null, string valueSearch = null, CancellationToken cancellationToken = default) =>
+            this.ExecuteAsync(token => owner.DiscoverDimensionsCoreAsync(query, scope, dimensionKey, nameSearch, valueSearch, token), cancellationToken);
         /// <summary>Executes the bounded FindAsync view-session operation.</summary>
         public Task<IResult<OperationProfilingRecord>> FindAsync(Guid id, CancellationToken cancellationToken = default) =>
             this.ExecuteAsync(token => id == Guid.Empty ? Task.FromResult<IResult<OperationProfilingRecord>>(Result<OperationProfilingRecord>.Failure(new ProfilingInvalidKeyError("operation"))) : owner.store.FindAsync(id, token), cancellationToken);
         /// <summary>Executes the bounded AnalyzeAsync view-session operation.</summary>
         public Task<IResult<OperationProfilingDistribution>> AnalyzeAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
             this.ExecuteAsync(token => owner.AnalyzeCoreAsync(query, token), cancellationToken);
+        /// <inheritdoc />
+        public Task<IResult<OperationProfilingInsights>> InsightsAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default) =>
+            this.ExecuteAsync(token => owner.InsightsCoreAsync(query, token), cancellationToken);
         /// <summary>Executes the bounded CompareAsync view-session operation.</summary>
         public Task<IResult<OperationProfilingComparison>> CompareAsync(OperationProfilingQuery baseline, OperationProfilingQuery candidate, CancellationToken cancellationToken = default) =>
             this.ExecuteAsync<OperationProfilingComparison>(async token =>

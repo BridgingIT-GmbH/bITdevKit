@@ -61,10 +61,12 @@ public sealed class PipelineProfilingBehaviorTests
         record.Key.ShouldBe("pipeline:Import");
         record.Kind.ShouldBe("Pipeline");
         record.CorrelationId.ShouldBe("pipeline-correlation");
+        record.Dimensions.ShouldAllBe(dimension => !ProfilingDimensionKeys.IsExecutionIdentifier(dimension.Key));
         var segment = record.Segments.ShouldHaveSingleItem();
         segment.Key.ShouldBe("step:Load");
         segment.Statistics.Count.ShouldBe(3);
         segment.Outcomes.ShouldHaveSingleItem().Outcome.ShouldBe(ProfilingSegmentOutcome.Completed);
+        segment.Dimensions.ShouldContain(dimension => dimension.Key == "pipeline.control");
     }
 
     /// <summary>Checks nested pipeline paths and failed carried results do not close the caller's root.</summary>

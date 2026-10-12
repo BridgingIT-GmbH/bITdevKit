@@ -1,0 +1,226 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const root = document.getElementById('operation-content');
+    if (root?.dataset.timeline !== 'true') return;
+    const form = document.getElementById('timeline-filters');
+    const chart = document.getElementById('timeline-chart');
+    const interval = document.getElementById('timeline-refresh-interval');
+    const status = document.getElementById('timeline-refresh-status');
+    const error = document.getElementById('timeline-error');
+    const cluster = document.getElementById('timeline-cluster-modal');
+    const rows = document.getElementById('timeline-cluster-rows');
+    const clusterStatus = document.getElementById('timeline-cluster-status');
+    const more = document.getElementById('timeline-cluster-more');
+    const stateKey = 'bdk.profiling.timeline:' + root.dataset.pageUrl;
+    const labels = JSON.parse(root.dataset.kindLabels || '{}');
+    const current = new URL(location.href);
+    let saved = {};
+    try { saved = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch { }
+    const explicit = [...form.elements].some(control => control.name && current.searchParams.has(control.name));
+    for (const control of form.elements) {
+        if (!control.name) continue;
+        const value = explicit ? current.searchParams.get(control.name) : saved.filters?.[control.name];
+        if (typeof value !== 'string' || value.length > 128) continue;
+        if (control.tagName === 'SELECT' && value && ['kind', 'nodeId'].includes(control.name) && ![...control.options].some(option => option.value === value)) control.add(new Option(value, value));
+        control.value = control.type === 'datetime-local' ? value.slice(0, 16) : value;
+    }
+    if (![...document.getElementById('timeline-resolution').options].some(option => option.selected)) document.getElementById('timeline-resolution').value = 'hour';
+    if (typeof saved.refresh === 'string' && [...interval.options].some(option => option.value === saved.refresh)) interval.value = saved.refresh;
+    let applied = Object.fromEntries(new FormData(form));
+    let data = null, chartClock = 0, controller = null, refreshTimer = null, clusterController = null, clusterQuery = null, clusterTrigger = null, nextCursor = null;
+    const elements = [];
+    const colors = ['#51b7ca', '#e79c36', '#7977d7', '#66b783', '#ce7d9b', '#5d99d6', '#b7a34d', '#b77ccf'];
+    const label = kind => labels[kind] || labels[kind.toUpperCase()] || kind;
+    const utc = value => new Date(value).toISOString().slice(0, 19).replace('T', ' ');
+    const range = () => {
+        const end = +new Date(data.toUtc) + (!applied.toUtc ? performance.now() - chartClock : 0);
+        const start = !applied.fromUtc ? end - (+new Date(data.toUtc) - +new Date(data.fromUtc)) : +new Date(data.fromUtc);
+        return { start, end };
+    };
+    function remember() {
+        try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)), refresh: interval.value })); } catch { }
+    }
+    function urlFor(path, selection = applied) {
+        const url = new URL(path, location.href);
+        for (const [key, value] of Object.entries(selection)) if (value) url.searchParams.set(key, ['fromUtc', 'toUtc'].includes(key) && !/(Z|[+-]\d{2}:\d{2})$/i.test(value) ? value + 'Z' : value);
+        if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
+        return url;
+    }
+    async function read(url, signal) {
+        const response = await fetch(url, { signal, cache: 'no-store' });
+        if (response.redirected || !(response.headers.get('content-type') || '').includes('json')) throw new Error('Timeline unavailable. Check your connection and dashboard sign-in.');
+        const value = await response.json();
+        if (!response.ok) throw new Error((value.detail || value.title || 'Timeline could not be loaded.').slice(0, 300));
+        return value;
+    }
+    function schedule() {
+        clearTimeout(refreshTimer);
+        if (interval.value) refreshTimer = setTimeout(() => document.hidden ? schedule() : refresh(), Number(interval.value));
+    }
+    function preserveChoice(select, values) {
+        const selected = select.value;
+        select.replaceChildren(...values.map(value => { const option = new Option(value.text, value.value); option.title = value.title || ''; return option; }));
+        if (selected && ![...select.options].some(option => option.value === selected)) select.add(new Option(selected, selected));
+        select.value = selected;
+    }
+    function choices() {
+        for (const [key, value] of Object.entries(data.kindLabels || {})) labels[key.toUpperCase()] = value;
+        preserveChoice(document.getElementById('timeline-node'), [{ value: '', text: 'All nodes' }, ...(data.nodes || []).map(node => ({ value: node.id, text: node.name, title: node.details }))]);
+        let template = root.querySelector('template[data-operation-node-options]');
+        if (!template) { template = document.createElement('template'); template.dataset.operationNodeOptions = ''; root.append(template); }
+        template.content.replaceChildren(...[...document.getElementById('timeline-node').options].map(option => option.cloneNode(true)));
+        window.bdkOperationComparison?.synchronize();
+        const select = document.getElementById('timeline-kind');
+        for (const bucket of data.buckets) if (![...select.options].some(option => option.value.toUpperCase() === bucket.kind.toUpperCase())) select.add(new Option(label(bucket.kind), bucket.kind));
+        document.getElementById('timeline-node').title = data.nodesTruncated ? 'Node choices are limited. Narrow the time range or key filter.' : '';
+    }
+    function render() {
+        elements.length = 0;
+        const lanes = new Map();
+        for (const bucket of data.buckets) {
+            const key = bucket.kind.toUpperCase();
+            if (!lanes.has(key)) lanes.set(key, []);
+            lanes.get(key).push(bucket);
+        }
+        const fragment = document.createDocumentFragment();
+        for (const [kind, buckets] of [...lanes.entries()].sort((a, b) => a[0].localeCompare(b[0]))) {
+            const lane = document.createElement('div'); lane.className = 'timeline-lane';
+            const heading = document.createElement('div'); heading.className = 'timeline-lane-label'; heading.title = buckets[0].kind;
+            const name = document.createElement('span'); name.textContent = label(buckets[0].kind);
+            const count = document.createElement('small'); count.className = 'text-muted'; const total = buckets.reduce((sum, bucket) => sum + bucket.count, 0); count.textContent = total.toLocaleString() + (total === 1 ? ' execution' : ' executions');
+            heading.append(name, count);
+            const events = document.createElement('div'); events.className = 'timeline-lane-events'; events.setAttribute('role', 'list'); events.setAttribute('aria-label', label(buckets[0].kind));
+            let hash = 0; for (const character of kind) hash = ((hash * 31) + character.codePointAt(0)) >>> 0;
+            events.style.setProperty('--lane-color', colors[hash % colors.length]);
+            for (const bucket of buckets) {
+                const button = document.createElement('button'); button.type = 'button'; button.className = 'timeline-box'; button.dataset.count = bucket.count;
+                button.textContent = bucket.count > 999 ? '999+' : bucket.count;
+                const issues = bucket.failedCount + bucket.canceledCount + bucket.abortedCount + bucket.incompleteCount;
+                button.classList.toggle('has-problems', issues > 0);
+                button.title = `${label(bucket.kind)} · ${bucket.count.toLocaleString()} execution${bucket.count === 1 ? '' : 's'}\n${utc(bucket.fromUtc)} → ${utc(bucket.toUtc)} UTC\n${bucket.failedCount} failed · ${bucket.canceledCount} canceled · ${bucket.abortedCount} aborted · ${bucket.incompleteCount} incomplete`;
+                button.setAttribute('aria-label', button.title);
+                button.addEventListener('click', () => openBucket(bucket, button));
+                events.append(button); elements.push({ button, bucket });
+            }
+            lane.append(heading, events); fragment.append(lane);
+        }
+        if (!lanes.size) {
+            const empty = document.createElement('p'); empty.className = 'text-muted small p-3'; empty.textContent = 'No retained operations match these filters.'; fragment.append(empty);
+        }
+        const axis = document.createElement('div'); axis.className = 'timeline-axis';
+        for (let index = 0; index <= 4; index++) {
+            const tick = document.createElement('span'); tick.className = 'timeline-axis-tick'; tick.style.left = (index * 25) + '%'; axis.append(tick);
+        }
+        const caption = document.createElement('span'); caption.className = 'timeline-axis-caption'; caption.textContent = 'UTC · Start time · Red outline: failed, canceled, aborted or incomplete'; axis.append(caption);
+        fragment.append(axis); chart.replaceChildren(fragment);
+        document.getElementById('timeline-count').textContent = data.totalCount.toLocaleString();
+        document.getElementById('timeline-count').title = 'Exact matching retained count at the last successful refresh.';
+        position();
+    }
+    function position() {
+        if (!data) return;
+        const { start, end } = range();
+        for (const { button, bucket } of elements) {
+            const point = (+new Date(bucket.fromUtc) + +new Date(bucket.toUtc)) / 2;
+            const x = (point - start) / (end - start) * 100;
+            button.style.left = `clamp(16px, ${x}%, calc(100% - 16px))`; button.hidden = x < 0 || x > 100;
+        }
+        const ticks = chart.querySelectorAll('.timeline-axis-tick');
+        ticks.forEach((tick, index) => {
+            const date = new Date(start + (end - start) * index / 4);
+            tick.textContent = (end - start > 86400000 ? date.toISOString().slice(5, 10) + ' ' : '') + date.toISOString().slice(11, 16);
+        });
+        document.getElementById('timeline-period').textContent = '· ' + utc(start) + ' → ' + utc(end) + ' UTC';
+        document.getElementById('timeline-mode').textContent = applied.toUtc ? 'History' : 'Live · following now';
+    }
+    async function refresh() {
+        clearTimeout(refreshTimer);
+        controller?.abort();
+        const active = new AbortController(); controller = active;
+        chart.setAttribute('aria-busy', 'true');
+        try {
+            const url = urlFor(root.dataset.dataUrl);
+            const width = chart.querySelector('.timeline-lane-events')?.clientWidth || Math.max(400, chart.clientWidth - 192);
+            url.searchParams.set('buckets', Math.min(256, Math.max(12, Math.floor(width / 30))));
+            const value = await read(url, active.signal);
+            if (controller !== active || active.signal.aborted) return;
+            data = value; chartClock = performance.now(); choices(); render(); error.hidden = true;
+            status.textContent = 'Updated ' + new Date().toISOString().slice(11, 19) + ' UTC'; status.className = 'small text-muted';
+        } catch (failure) {
+            if (active.signal.aborted || controller !== active) return;
+            status.textContent = data ? 'Refresh failed; showing previous data.' : 'Timeline unavailable'; status.className = 'small text-danger';
+            error.textContent = failure.message; error.hidden = false;
+            if (!data) chart.replaceChildren(Object.assign(document.createElement('p'), { className: 'text-muted small p-3', textContent: 'No timeline data available.' }));
+        } finally {
+            if (controller === active) { chart.setAttribute('aria-busy', 'false'); schedule(); }
+        }
+    }
+    function apply() {
+        applied = Object.fromEntries(new FormData(form));
+        data = null; elements.length = 0;
+        const url = urlFor(root.dataset.pageUrl); history.replaceState(null, '', url); remember(); refresh();
+    }
+    form.addEventListener('submit', event => { event.preventDefault(); apply(); });
+    form.addEventListener('input', remember);
+    document.getElementById('timeline-resolution').addEventListener('change', apply);
+    document.getElementById('timeline-reset').addEventListener('click', () => { form.reset(); interval.value = '5000'; apply(); });
+    interval.addEventListener('change', () => { remember(); schedule(); });
+    document.getElementById('timeline-refresh-now').addEventListener('click', refresh);
+    let sizeTimer;
+    new ResizeObserver(() => { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => { if (data) refresh(); }, 200); }).observe(root.parentElement);
+    async function openBucket(bucket, trigger) {
+        clusterController?.abort();
+        clusterQuery = { ...applied, fromUtc: bucket.fromUtc, toUtc: bucket.toUtc, kind: bucket.kind };
+        clusterTrigger = trigger; nextCursor = null; rows.replaceChildren(); more.hidden = true;
+        document.getElementById('timeline-cluster-heading').textContent = label(bucket.kind) + ' executions';
+        document.getElementById('timeline-cluster-summary').textContent = utc(bucket.fromUtc) + ' → ' + utc(bucket.toUtc) + ' UTC';
+        if (bucket.count > 1) bootstrap.Modal.getOrCreateInstance(cluster).show(trigger);
+        trigger.disabled = true;
+        try { await loadExecutions(bucket.count === 1); }
+        finally { trigger.disabled = false; }
+    }
+    async function loadExecutions(single = false) {
+        clusterController?.abort();
+        const active = new AbortController(); clusterController = active;
+        more.disabled = true; clusterStatus.textContent = 'Loading executions...';
+        try {
+            const selection = { ...clusterQuery }; if (nextCursor) selection.cursor = nextCursor;
+            const value = await read(urlFor(root.dataset.executionsUrl, selection), active.signal);
+            if (active.signal.aborted || clusterController !== active) return;
+            if (single && value.totalCount === 1 && value.records.length === 1) {
+                clusterStatus.textContent = ''; window.bdkOperationDetails.open(root.dataset.detailsUrl + '/' + value.records[0].id + '/content', clusterTrigger); return;
+            }
+            if (single) bootstrap.Modal.getOrCreateInstance(cluster).show(clusterTrigger);
+            for (const record of value.records) {
+                const row = document.createElement('tr');
+                for (const text of [utc(record.startedUtc), record.name, record.node, record.outcome, record.durationMilliseconds.toFixed(3) + ' ms']) {
+                    const cell = document.createElement('td'); cell.textContent = text; cell.className = 'text-nowrap'; row.append(cell);
+                }
+                row.children[1].title = record.key; row.children[2].title = record.nodeDetails;
+                const action = document.createElement('td'); const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-outline-warning btn-sm';
+                button.setAttribute('aria-label', 'Execution details for ' + record.name); button.title = 'Execution details';
+                const icon = document.createElement('i'); icon.className = 'bi bi-info-circle'; icon.setAttribute('aria-hidden', 'true'); button.append(icon);
+                button.addEventListener('click', () => {
+                    cluster.addEventListener('hidden.bs.modal', () => window.bdkOperationDetails.open(root.dataset.detailsUrl + '/' + record.id + '/content', clusterTrigger), { once: true });
+                    bootstrap.Modal.getOrCreateInstance(cluster).hide();
+                });
+                action.append(button); row.append(action); rows.append(row);
+            }
+            nextCursor = value.nextCursor; more.hidden = !value.hasMore;
+            clusterStatus.textContent = value.totalCount ? `${rows.children.length} of ${value.totalCount.toLocaleString()} matching retained executions` : 'These executions are no longer retained.';
+        } catch (failure) {
+            if (active.signal.aborted || clusterController !== active) return;
+            if (single) bootstrap.Modal.getOrCreateInstance(cluster).show(clusterTrigger);
+            clusterStatus.textContent = failure.message;
+        } finally { if (clusterController === active) more.disabled = false; }
+    }
+    more.addEventListener('click', () => loadExecutions());
+    cluster.addEventListener('hide.bs.modal', () => clusterController?.abort());
+    cluster.addEventListener('hidden.bs.modal', () => { if (clusterTrigger?.isConnected) clusterTrigger.focus(); });
+    const animationTimer = setInterval(() => { if (!document.hidden) position(); }, 1000);
+    window.addEventListener('pagehide', () => { remember(); controller?.abort(); clusterController?.abort(); clearTimeout(refreshTimer); clearInterval(animationTimer); clearTimeout(sizeTimer); });
+    window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
+    remember(); refresh();
+})();
+</script>

@@ -6,7 +6,7 @@
 namespace BridgingIT.DevKit.Common;
 
 // All state transitions share the provider's append/runtime synchronization boundary.
-internal sealed class ProfilingClearCoordinator(ProfilingStorageOptions options, string scope)
+internal sealed class ProfilingClearCoordinator(ProfilingStorageOptions options, string scope, Func<OperationProfilingQuery, OperationProfilingQuery> normalizeOperationSelection)
 {
     private readonly List<Clear> clears = [];
     public Clear Current => this.clears.FirstOrDefault(c => c.State is ProfilingClearState.Preparing or ProfilingClearState.Applying);
@@ -42,6 +42,25 @@ internal sealed class ProfilingClearCoordinator(ProfilingStorageOptions options,
         if (error is not null)
         {
             return Result<Clear>.Failure(error);
+        }
+
+        try
+        {
+            if (request.OperationSelection is { } selection)
+            {
+                request = request with { OperationSelection = normalizeOperationSelection(selection with
+                {
+                    Cursor = null, Boundary = null, PageSize = 1, MaximumAnalysisCount = 1, View = OperationProfilingView.Recent,
+                }) };
+                if (System.Text.Json.JsonSerializer.Serialize(request.OperationSelection).Length > 65536)
+                {
+                    throw new ArgumentException("The operation selection exceeds its persistence bound.");
+                }
+            }
+        }
+        catch (ArgumentException)
+        {
+            return Result<Clear>.Failure(new ProfilingValidationError("Group deletion requires a bounded, valid exact operation selection."));
         }
 
         this.Prune(writers, utc);
@@ -125,7 +144,11 @@ internal sealed class ProfilingClearCoordinator(ProfilingStorageOptions options,
     public static IResultError Validate(ProfilingClearRequest request) => request is null || !Enum.IsDefined(request.DataSet)
         || request.FromUtc.HasValue != request.ToUtc.HasValue || request.FromUtc?.Offset != null && request.FromUtc.Value.Offset != TimeSpan.Zero
         || request.ToUtc?.Offset != null && request.ToUtc.Value.Offset != TimeSpan.Zero || request.FromUtc >= request.ToUtc
-        ? new ProfilingValidationError("Clear selection requires a valid dataset and both UTC bounds with FromUtc < ToUtc, or neither bound.") : null;
+        || request.OperationSelection is { } selection && (request.DataSet != ProfilingDataSet.Operations || request.FromUtc.HasValue
+            || selection.Key is null || selection.Kind is null || selection.KeyContains is not null || selection.Cursor is not null || selection.Boundary is not null
+            || !selection.FromUtc.HasValue || !selection.ToUtc.HasValue || selection.FromUtc.Value.Offset != TimeSpan.Zero || selection.ToUtc.Value.Offset != TimeSpan.Zero
+            || selection.FromUtc >= selection.ToUtc)
+        ? new ProfilingValidationError("Clear selection requires a valid dataset and UTC range. Group deletion additionally requires Operations, an exact key and kind, and an explicit UTC selection without paging.") : null;
 
     internal sealed class Clear(Guid id, ProfilingClearRequest selection, DateTimeOffset preparedUtc, DateTimeOffset deadlineUtc,
         long generation, IReadOnlyList<ProfilingWriterLease> eligible)
@@ -156,6 +179,7 @@ internal sealed class ProfilingClearCoordinator(ProfilingStorageOptions options,
 
         public bool Matches(ProfilingWriteEnvelope envelope) => this.Selection.DataSet != ProfilingDataSet.Runtime
             && envelope.Lease.Generation <= this.Generation && InRange(this.Selection, envelope.Record.CompletedUtc)
+            && (this.Selection.OperationSelection is null || OperationProfilingQueryMatcher.Matches(envelope.Record, this.Selection.OperationSelection))
             && (!this.Cutoffs.TryGetValue(envelope.Lease.WriterId, out var cutoff) || envelope.CompletionSequence <= cutoff);
     }
 

@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Routing;
+using Microsoft.AspNetCore.Routing.Patterns;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -20,6 +22,45 @@ using Microsoft.Extensions.Hosting;
 /// <example>Runs against a real ASP.NET Core TestServer, not just an isolated throwing delegate.</example>
 public sealed class RequestProfilingMiddlewareTests
 {
+    /// <summary>Explicit storage action opt-ins capture business operations while excluding HTTP and unrelated dashboard traffic.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData("files")]
+    [InlineData("documents")]
+    [InlineData("blobs")]
+    public async Task Blacklist_OperationOptIn_LeavesHttpExcludedAndPollingSuppressed(string storage)
+    {
+        await using var sut = await Create(options => options.AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"));
+        Guid id = default;
+        var path = $"/_bdk/dashboard/storage/{storage}/actions/save";
+        sut.MapPost(path, (HttpContext context, IOperationProfiler profiling) =>
+        {
+            context.Features.Get<IRequestProfilingFeature>().Selected.ShouldBeFalse();
+            context.Features.Get<IRequestProfilingFeature>().Suppressed.ShouldBeFalse();
+            using var operation = profiling.BeginOperation("storage-save");
+            operation.IsRecording.ShouldBeTrue();
+            id = operation.Id;
+            using (profiling.Suppress())
+            using (var suppressed = profiling.BeginOperation("explicit-suppression")) { suppressed.IsRecording.ShouldBeFalse(); }
+
+            return "saved";
+        });
+        sut.MapGet($"/_bdk/dashboard/storage/{storage}/content", (IOperationProfiler profiling) =>
+        {
+            using var operation = profiling.BeginOperation("poll");
+            operation.IsRecording.ShouldBeFalse();
+            return "poll";
+        });
+        using var client = await Client(sut);
+        using var response = await client.PostAsync(path, null);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        response.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBeFalse();
+        (await Stored(sut, id)).Key.ShouldBe("storage-save");
+        using var poll = await client.GetAsync($"/_bdk/dashboard/storage/{storage}/content");
+        poll.EnsureSuccessStatusCode();
+        sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().CompletedOperations.ShouldBe(1);
+    }
+
     /// <summary>Default infrastructure exclusions suppress nested capture and leave the next business request eligible.</summary>
     /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
     [Theory]
@@ -30,6 +71,11 @@ public sealed class RequestProfilingMiddlewareTests
     [InlineData("/swagger/index.html")]
     [InlineData("/scalar/reference")]
     [InlineData("/openapi/v1.json")]
+    [InlineData("/.well-known")]
+    [InlineData("/.well-known-status")]
+    [InlineData("/.well-known/openid-configuration")]
+    [InlineData("/.WELL-KNOWN/JWKS/")]
+    [InlineData("/.well-known/acme-challenge/token")]
     public async Task DefaultBlacklist_InfrastructureRequest_SuppressesNestedCapture(string path)
     {
         await using var sut = await Create();
@@ -85,6 +131,8 @@ public sealed class RequestProfilingMiddlewareTests
     [InlineData("start", true)]
     [InlineData("metadata", false)]
     [InlineData("metadata", true)]
+    [InlineData("key", false)]
+    [InlineData("key", true)]
     [InlineData("id", false)]
     [InlineData("id", true)]
     [InlineData("dispose", false)]
@@ -106,9 +154,12 @@ public sealed class RequestProfilingMiddlewareTests
 
         if (stage == "metadata") { operation.When(scope => scope.SetHttpMetadata(Arg.Any<HttpRequestProfilingMetadata>())).Do(_ => throw new InvalidOperationException("metadata")); }
 
+        if (stage == "key") { operation.TrySetDefaultKey(Arg.Any<string>()).Returns(_ => throw new InvalidOperationException("key")); }
+
         if (stage == "dispose") { operation.When(scope => scope.Dispose()).Do(_ => throw new InvalidOperationException("dispose")); }
 
         var context = new DefaultHttpContext();
+        context.SetEndpoint(new RouteEndpoint(_ => Task.CompletedTask, RoutePatternFactory.Parse("/api/products/{id}"), 0, EndpointMetadataCollection.Empty, "Products"));
         context.Response.Body = new MemoryStream();
         var expected = new InvalidOperationException("business");
         var calls = 0;
@@ -165,7 +216,104 @@ public sealed class RequestProfilingMiddlewareTests
         public override long GetTimestamp() => throw new InvalidOperationException("entry clock");
     }
 
-    /// <summary>Checks selected GUIDs, path-based keys, bounded query metadata, injection and terminal response bytes.</summary>
+    /// <summary>Different route arguments share one template key while their actual URLs remain available.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Fact]
+    public async Task Capture_DifferentRouteArguments_ShareTemplateKey()
+    {
+        await using var sut = await Create();
+        sut.MapGet("/api/cities/{cityId:guid}/weather", () => "weather");
+        using var client = await Client(sut);
+        var firstPath = $"/api/cities/{Guid.NewGuid():D}/weather";
+        var secondPath = $"/api/cities/{Guid.NewGuid():D}/weather";
+        using var firstResponse = await client.GetAsync(firstPath + "?days=1");
+        using var secondResponse = await client.GetAsync(secondPath + "?days=7");
+
+        var first = await Stored(sut, firstResponse);
+        var second = await Stored(sut, secondResponse);
+
+        first.Key.ShouldBe("/cities/{cityId:guid}/weather");
+        second.Key.ShouldBe(first.Key);
+        first.Id.ShouldNotBe(second.Id);
+        first.Http.Route.ShouldBe("/api/cities/{cityId:guid}/weather");
+        second.Http.Route.ShouldBe(first.Http.Route);
+        first.Http.Path.ShouldBe(firstPath);
+        second.Http.Path.ShouldBe(secondPath);
+        first.Http.QueryString.ShouldBe("?days=1");
+        second.Http.QueryString.ShouldBe("?days=7");
+    }
+
+    /// <summary>Late route enrichment preserves accepted explicit keys, including a key equal to the entry path.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData("Products.Weather", "Products.Weather")]
+    [InlineData("/products/42", "/products/42")]
+    [InlineData("", "/products/{id}")]
+    public async Task Capture_ExplicitKeyOverride_TakesPrecedence(string customKey, string expected)
+    {
+        await using var sut = await Create();
+        sut.MapGet("/api/products/{id}", ([FromServices] IOperationProfiler profiling, HttpContext context) =>
+        {
+            context.Features.Get<IRequestProfilingFeature>().InitialKey.ShouldBe("/products/42");
+            profiling.SetKey(customKey);
+            return "ok";
+        });
+        using var response = await (await Client(sut)).GetAsync("/api/products/42");
+        var record = await Stored(sut, response);
+
+        record.Key.ShouldBe(expected);
+        record.Http.Route.ShouldBe("/api/products/{id}");
+        record.Http.Path.ShouldBe("/api/products/42");
+        record.Quality.RejectedMetadataCount.ShouldBe(customKey.Length == 0 ? 1 : 0);
+    }
+
+    /// <summary>Default keys retain route syntax and mount prefixes, normalize the leading slash and strip only boundary prefixes.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData("api/products/{id:int}", "/api/products/42", "", "/api", "/products/{id:int}")]
+    [InlineData("/api/products/{id?}", "/api/products", "", "/api", "/products/{id?}")]
+    [InlineData("/api/files/{**path}", "/mount/api/files/a/b", "/mount", "/mount/api", "/files/{**path}")]
+    [InlineData("/api/files/{**path}", "/mount/api/files/a/b", "/mount", "/api", "/mount/api/files/{**path}")]
+    [InlineData("", "/", "", "/api", "/")]
+    public async Task Capture_TemplateNormalization_PreservesMountsAndParameterSyntax(string template, string path, string mount, string prefix, string expected)
+    {
+        await using var sut = await Create(options => options.StripPathPrefix(prefix), configureBeforeProfiling: app =>
+        {
+            if (mount.Length > 0) { app.UsePathBase(mount); }
+        });
+        sut.MapGet(template, () => "ok");
+        using var response = await (await Client(sut)).GetAsync(path);
+        response.StatusCode.ShouldBe(HttpStatusCode.OK);
+        var record = await Stored(sut, response);
+
+        record.Key.ShouldBe(expected);
+        record.Http.Route.ShouldBe(template);
+        record.Http.Path.ShouldBe(path);
+    }
+
+    /// <summary>Template promotion uses the same bounded hash rules and updates the default-key shortening flag.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData(true)]
+    [InlineData(false)]
+    public async Task Capture_KeyLengthBound_AppliesToTemplate(bool longTemplate)
+    {
+        var template = longTemplate ? "/api/products/{aLongParameterNameThatExceedsTheKeyLengthLimit}" : "/api/products/{id}";
+        var path = longTemplate ? "/api/products/42" : "/api/products/" + new string('a', 100);
+        await using var sut = await Create(configureProfiling: builder => builder.Options.Operations.MaxKeyLength = 32);
+        sut.MapGet(template, () => "ok");
+        using var response = await (await Client(sut)).GetAsync(path);
+        var record = await Stored(sut, response);
+        var expected = RequestProfilingPathMatcher.CreateKey(template, "/api", 32);
+
+        record.Key.ShouldBe(expected.Key);
+        record.Key.Length.ShouldBeLessThanOrEqualTo(32);
+        record.Http.PathKeyShortened.ShouldBe(expected.Shortened);
+        record.Http.Route.ShouldBe(template);
+        record.Http.Path.ShouldBe(path);
+    }
+
+    /// <summary>Checks selected GUIDs, route-template keys, bounded query metadata, injection and terminal response bytes.</summary>
     [Fact]
     public async Task Capture_FullHttpPipeline_RecordsInjectedSegmentsAndMatchingHeader()
     {
@@ -180,7 +328,7 @@ public sealed class RequestProfilingMiddlewareTests
         var response = await (await Client(sut)).GetAsync("/api/products/42?secret=hidden");
         (await response.Content.ReadAsStringAsync()).ShouldBe("hello");
         var record = await Stored(sut, response);
-        record.Key.ShouldBe("/products/42");
+        record.Key.ShouldBe("/products/{id}");
         record.Http.Route.ShouldBe("/api/products/{id}");
         record.Http.Path.ShouldBe("/api/products/42");
         record.Http.QueryString.ShouldBe("?secret=%5Bredacted%5D");
@@ -237,7 +385,7 @@ public sealed class RequestProfilingMiddlewareTests
         record.Http.Protocol.ShouldBe("HTTP/1.1");
         record.Http.RequestContentType.ShouldStartWith("application/json");
         record.Http.ResponseContentType.ShouldStartWith("text/plain");
-        record.Key.ShouldBe("/products/42");
+        record.Key.ShouldBe("/products/{id}");
     }
 
     /// <summary>Query recording can be omitted or clipped without changing application behavior.</summary>
@@ -302,6 +450,7 @@ public sealed class RequestProfilingMiddlewareTests
         var record = await Stored(sut, response);
         record.Outcome.ShouldBe(OperationProfilingOutcome.Failed);
         record.Http.Route.ShouldBe("/original/{id}");
+        record.Key.ShouldBe("/original/{id}");
         record.Http.HandledException.ShouldBeTrue();
         record.Failure.ExceptionType.ShouldBe(typeof(InvalidOperationException).FullName);
         record.Http.ResponseBytes.ShouldBe(7);
@@ -313,15 +462,16 @@ public sealed class RequestProfilingMiddlewareTests
     {
         var ids = new List<Guid>();
         await using var sut = await Create(configurePipeline: app => app.UseExceptionHandler("/error", createScopeForErrors: true));
-        sut.MapGet("/original", (HttpContext context) => { ids.Add(context.Features.Get<IRequestProfilingFeature>().Id); return Throw(); });
+        sut.MapGet("/original/{id}", (HttpContext context) => { ids.Add(context.Features.Get<IRequestProfilingFeature>().Id); return Throw(); });
         sut.MapGet("/error", (HttpContext context) => { ids.Add(context.Features.Get<IRequestProfilingFeature>().Id); return Microsoft.AspNetCore.Http.Results.Text("handled"); });
-        var response = await (await Client(sut)).GetAsync("/original");
+        var response = await (await Client(sut)).GetAsync("/original/42");
         await response.Content.ReadAsByteArrayAsync();
         var record = await Stored(sut, response);
         ids.Count.ShouldBe(2);
         ids.Distinct().ShouldHaveSingleItem().ShouldBe(record.Id);
-        record.Http.Path.ShouldBe("/original");
-        record.Http.Route.ShouldBe("/original");
+        record.Http.Path.ShouldBe("/original/42");
+        record.Http.Route.ShouldBe("/original/{id}");
+        record.Key.ShouldBe("/original/{id}");
         sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().SelectedRequests.ShouldBe(1);
     }
 
@@ -365,6 +515,7 @@ public sealed class RequestProfilingMiddlewareTests
         var response = await (await Client(sut)).GetAsync("/missing");
         var record = await Stored(sut, response);
         record.Http.Route.ShouldBeNull();
+        record.Key.ShouldBe("/missing");
         record.Http.StatusCode.ShouldBe(404);
         record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
     }
@@ -799,7 +950,7 @@ public sealed class RequestProfilingMiddlewareTests
 
     private static Task<WebApplication> Create(Action<RequestProfilingOptionsBuilder> configure = null, Action<WebApplication> configurePipeline = null,
         Action<IServiceCollection> configureServices = null, Action<WebApplication> configureInner = null,
-        Action<ProfilingBuilderContext> configureProfiling = null)
+        Action<ProfilingBuilderContext> configureProfiling = null, Action<WebApplication> configureBeforeProfiling = null)
     {
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
@@ -808,6 +959,7 @@ public sealed class RequestProfilingMiddlewareTests
             .WithRequestProfiling(o => { o.StripPathPrefix("/api"); configure?.Invoke(o); });
         configureProfiling?.Invoke(profiling);
         var app = builder.Build();
+        configureBeforeProfiling?.Invoke(app);
         app.UseRequestProfiling();
         configurePipeline?.Invoke(app);
         app.UseRequestProfilingExceptionObserver();

@@ -1,0 +1,64 @@
+@using System.Text.Json
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Timeline
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@using DashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@inherits RazorSlice
+@implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
+@{
+    var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var path = DashboardEndpoints.BuildTimelinePath(options);
+    var kinds = Enum.GetNames<OperationProfilingKind>().Concat(new[] { "ActiveEntity", "Repository", "FileStorage", "DocumentStorage", "BlobStorage", "MessageHandler", "NotifierHandler" }).Distinct().ToArray();
+    var labels = kinds.ToDictionary(kind => kind, OperationProfilingViewModelBuilder.KindLabel);
+}
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("timeline"))
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pb-2 mb-2 border-bottom">
+    <span id="timeline-mode" class="small text-muted" role="status"><i class="bi bi-broadcast" aria-hidden="true"></i> Live</span>
+    <div class="d-flex align-items-center gap-2 ms-auto">
+        <span id="timeline-refresh-status" class="small text-muted" role="status">Loading timeline</span>
+        <select id="timeline-refresh-interval" class="form-select form-select-sm" style="width:8rem" aria-label="Timeline refresh interval"><option value="">Off</option><option value="1000">1 sec</option><option value="5000" selected>5 sec</option><option value="15000">15 sec</option><option value="30000">30 sec</option></select>
+        <button id="timeline-refresh-now" class="btn btn-outline-warning btn-sm" type="button" title="Refresh latest" aria-label="Refresh latest"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+    </div>
+</div>
+<form id="timeline-filters" class="card card-body p-2 mb-2" action="@path" method="get">
+    <div class="row g-2 align-items-end">
+        <div class="col-md-2"><label for="timeline-resolution" class="form-label small">Window</label><select id="timeline-resolution" name="resolution" class="form-select form-select-sm"><option value="15m">15 min</option><option value="30m">30 min</option><option value="hour" selected>Hour</option><option value="12h">12 hours</option><option value="day">Day</option><option value="week">Week</option><option value="month">Month (30 days)</option></select></div>
+        <div class="col-md-4"><label for="timeline-key" class="form-label small">Key contains</label><input id="timeline-key" name="key" class="form-control form-control-sm" maxlength="128" placeholder="contains" /></div>
+        <div class="col-md-3"><label for="timeline-kind" class="form-label small">Kind</label><select id="timeline-kind" name="kind" class="form-select form-select-sm"><option value="">All kinds</option>@foreach (var kind in kinds.Order(StringComparer.OrdinalIgnoreCase)) { <option value="@kind">@OperationProfilingViewModelBuilder.KindLabel(kind)</option> }</select></div>
+        <div class="col-md-3"><label for="timeline-node" class="form-label small">Node</label><select id="timeline-node" name="nodeId" class="form-select form-select-sm"><option value="">All nodes</option></select></div>
+        <div class="col-md-4"><label for="timeline-from" class="form-label small">From UTC</label><div class="input-group input-group-sm">@(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("timeline-from", "timeline-to")))<input id="timeline-from" name="fromUtc" type="datetime-local" step="60" class="form-control form-control-sm" /></div></div>
+        <div class="col-md-4"><label for="timeline-to" class="form-label small">To UTC</label><input id="timeline-to" name="toUtc" type="datetime-local" step="60" class="form-control form-control-sm" /></div>
+        <div class="col-md-4 d-flex justify-content-end gap-2"><button type="submit" class="btn btn-primary btn-sm">Apply</button><button id="timeline-reset" type="button" class="btn btn-outline-secondary btn-sm">Reset</button></div>
+    </div>
+</form>
+<div id="timeline-error" class="alert alert-warning py-2" role="alert" hidden></div>
+<div id="operation-content" data-timeline="true" data-page-url="@path" data-operation-list-url="@DashboardEndpoints.BuildOperationsPath(options)" data-requests-only="false" data-api-url="@(DashboardEndpoints.BuildOperationsPath(options) + "/api/analysis")" data-dimensions-url="@(DashboardEndpoints.BuildOperationsPath(options) + "/api/dimensions")" data-execution-dimension-keys="@JsonSerializer.Serialize(ProfilingDimensionKeys.ExecutionIdentifiers)" data-data-url="@(path + "/data")" data-executions-url="@(path + "/executions")" data-details-url="@DashboardEndpoints.BuildOperationsPath(options)" data-kind-labels="@JsonSerializer.Serialize(labels)">
+    <div class="card">
+        <div class="card-header d-flex flex-wrap justify-content-between gap-2 align-items-center py-2"><span class="small"><strong id="timeline-count">0</strong> executions <span class="text-muted" id="timeline-period"></span></span><span class="small text-muted">One lane per kind &#183; Select a box for execution details</span></div>
+        <div class="timeline-scroll"><div id="timeline-chart" class="timeline-grid" aria-label="Operation timeline"><p class="text-muted small p-3" role="status">Loading retained operations...</p></div></div>
+    </div>
+</div>
+<div class="modal fade" id="timeline-cluster-modal" tabindex="-1" aria-labelledby="timeline-cluster-heading" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable"><div class="modal-content">
+        <div class="modal-header"><h2 id="timeline-cluster-heading" class="modal-title h5">Executions</h2><button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close execution list"></button></div>
+        <div class="modal-body"><p id="timeline-cluster-summary" class="small text-muted"></p><div id="timeline-cluster-status" class="small" role="status"></div><div class="table-responsive"><table class="table table-sm align-middle"><thead><tr><th>Started UTC</th><th>Operation</th><th>Node</th><th>Outcome</th><th>Duration</th><th aria-label="Details"></th></tr></thead><tbody id="timeline-cluster-rows"></tbody></table></div><button id="timeline-cluster-more" class="btn btn-outline-primary btn-sm" type="button" hidden>Load more</button></div>
+        <div class="modal-footer"><button type="button" class="btn btn-outline-secondary btn-sm" data-bs-dismiss="modal">Close</button></div>
+    </div></div>
+</div>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.DetailDialog>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.ComparisonDialog>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.Style>())
+@(await RenderPartialAsync<Style>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.DimensionScript>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.Script>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations.ComparisonScript>())
+@(await RenderPartialAsync<Script>())
+@functions {
+    /// <summary>Gets the shared dashboard layout metadata for the event timeline.</summary>
+    /// <example><code>var title = this.LayoutModel.Title;</code></example>
+    public DashboardLayoutModel LayoutModel => new() { Title = "Profiling Timeline" };
+}

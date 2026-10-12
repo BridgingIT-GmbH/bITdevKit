@@ -135,6 +135,10 @@ public sealed record ProfilingClearRequest
     [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
     public DateTimeOffset? ToUtc { get; init; }
 
+    /// <summary>Gets an optional exact-key and kind operation selection. Its explicit UTC window and filters select the complete retained group independently of paging.</summary>
+    /// <example><code>var request = new ProfilingClearRequest { DataSet = ProfilingDataSet.Operations, OperationSelection = new() { Key = "catalog:search", Kind = "Service", FromUtc = fromUtc, ToUtc = toUtc } };</code></example>
+    public OperationProfilingQuery OperationSelection { get; init; }
+
 }
 
 /// <summary>Carries original provider-issued identity and authoritative expiry.</summary>
@@ -433,6 +437,9 @@ public interface IOperationProfilingStore
     /// <summary>Filters and pages at a stable published boundary with validated typed predicates.</summary>
     /// <example><code>var page = await store.QueryAsync(query, cancellationToken);</code></example>
     Task<IResult<OperationProfilingPage>> QueryAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default);
+    /// <summary>Aggregates retained starts into bounded time buckets at one published boundary; does not apply the page or analysis record limit.</summary>
+    /// <example><code>var timeline = await store.TimelineAsync(query, 72, cancellationToken);</code></example>
+    Task<IResult<OperationProfilingTimeline>> TimelineAsync(OperationProfilingQuery query, int bucketCount = 72, CancellationToken cancellationToken = default);
     /// <summary>Counts and ranks groups in storage before applying a bounded group selection.</summary>
     /// <example><code>var groups = await store.GroupAsync(query, cancellationToken);</code></example>
     Task<IResult<OperationProfilingGroupPage>> GroupAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default);

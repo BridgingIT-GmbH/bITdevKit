@@ -26,7 +26,7 @@
     </div>
 </div>
 
-<nav class="nav nav-pills mb-2" aria-label="Profiling views"><a class="nav-link active" href="@ProfilingDashboardEndpoints.BuildProfilingPath(dashboardOptions)">Runtime</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions)">Operations</a><a class="nav-link" href="@ProfilingDashboardEndpoints.BuildOperationsPath(dashboardOptions, true)">Requests</a></nav>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("runtime"))
 
 <div id="dashboard-profiling-content">
     @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content>())

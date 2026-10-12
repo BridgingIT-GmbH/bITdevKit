@@ -15,6 +15,98 @@ public abstract partial class ProfilingStorageContractTestsBase
 {
     protected abstract Task<IProfilingStorageProvider> CreateProviderAsync(ProfilingOptions options, TimeProvider clock);
 
+    /// <summary>Every provider supports discovery and exact dimension-group statistics through the shared admitted query service.</summary>
+    /// <example><code>await suite.DimensionQueries_AllProviders_PreserveTypedBucketsAndFullSelection();</code></example>
+    [Fact]
+    public async Task DimensionQueries_AllProviders_PreserveTypedBucketsAndFullSelection()
+    {
+        var options = new ProfilingOptions { Enabled = true };
+        var h = await this.CreateAsync(options);
+        var records = new[]
+        {
+            h.Record(durationMs: 10) with { Dimensions = [Dimension("batch", "20")] },
+            h.Record(durationMs: 30) with { Dimensions = [Dimension("BATCH", "20")] },
+            h.Record(durationMs: 50) with { Dimensions = [Dimension("batch", 20)] },
+            h.Record(durationMs: 70) with { Dimensions = [] },
+        };
+        (await h.Store.AppendAsync(records.Select((record, index) => h.Envelope(record, index + 1)).ToArray())).IsSuccess.ShouldBeTrue();
+        var sut = new OperationProfilingQueryService(h.Provider, options, null, clock: h.Clock);
+
+        var discovery = await sut.DiscoverDimensionsAsync(h.Query() with { PageSize = 1 });
+        discovery.IsSuccess.ShouldBeTrue();
+        discovery.Value.OperationCount.ShouldBe(4);
+        discovery.Value.Dimensions.Single().DistinctValueCount.ShouldBe(2);
+        discovery.Value.Dimensions.Single().MissingCount.ShouldBe(1);
+        var grouped = await sut.GroupAsync(h.Query() with { GroupingDimensions = ["batch"], View = OperationProfilingView.ByCount });
+        grouped.IsSuccess.ShouldBeTrue();
+        grouped.Value.TotalGroupCount.ShouldBe(2);
+        grouped.Value.TotalOperationCount.ShouldBe(3);
+        grouped.Value.Groups.ShouldAllBe(group => group.Dimensions.Count == 1);
+        grouped.Value.Groups.Single(group => group.Count == 2).Distribution.P50Milliseconds.ShouldBe(20);
+        grouped.Value.Groups.Single(group => group.Count == 2).Distribution.P95Milliseconds.ShouldBe(30);
+        var limited = await sut.GroupAsync(h.Query() with { GroupingDimensions = ["batch"], MaximumAnalysisCount = 1 });
+        limited.IsSuccess.ShouldBeTrue();
+        limited.Value.TotalOperationCount.ShouldBe(3);
+        limited.Value.StatisticsLimitation.ShouldNotBeNull();
+        limited.Value.Groups.ShouldAllBe(group => group.Distribution == null);
+    }
+
+    /// <summary>Grouping requires every selected root dimension before paging, counting and analysis, without consuming general predicate capacity.</summary>
+    /// <example><code>await suite.GroupingDimensions_RequireEveryRootDimension(OperationProfilingView.Recent);</code></example>
+    [Theory]
+    [InlineData(OperationProfilingView.Recent)]
+    [InlineData(OperationProfilingView.Slow)]
+    [InlineData(OperationProfilingView.ByCount)]
+    public async Task GroupingDimensions_RequireEveryRootDimension(OperationProfilingView view)
+    {
+        var h = await this.CreateAsync();
+        var common = Enumerable.Range(0, 8).Select(index => Dimension($"filter{index}", index)).ToArray();
+        var regionOnly = h.Record() with { Dimensions = [.. common, Dimension("region", "west")] };
+        var channelOnly = h.Record() with { Dimensions = [.. common, Dimension("channel", "web")] };
+        var empty = h.Record(durationMs: 30) with { Dimensions = [.. common, Dimension("region", ""), Dimension("channel", "web")] };
+        var numeric = h.Record(durationMs: 50) with { Dimensions = [.. common, Dimension("REGION", 20), Dimension("CHANNEL", "web")] };
+        var segmentOnly = h.Record() with { Dimensions = common };
+        segmentOnly = segmentOnly with { Segments = [Summary(segmentOnly, ["Load"]) with { Dimensions = [SegmentDimension("region", "west"), SegmentDimension("channel", "web")] }] };
+        var records = new[] { regionOnly, channelOnly, empty, numeric, segmentOnly };
+        (await h.Store.AppendAsync(records.Select((record, index) => h.Envelope(record, index + 1)).ToArray())).IsSuccess.ShouldBeTrue();
+        var query = h.Query() with
+        {
+            Dimensions = common.Select(dimension => new ProfilingDimensionPredicate { Key = dimension.Key, Value = dimension.Value }).ToArray(),
+            GroupingDimensions = ["REGION", "channel"], PageSize = 1, View = view,
+        };
+
+        var first = await h.Store.QueryAsync(query);
+        first.IsSuccess.ShouldBeTrue();
+        first.Value.TotalCount.ShouldBe(2);
+        first.Value.Records.Count.ShouldBe(1);
+        first.Value.NextCursor.ShouldNotBeNull();
+        var second = await h.Store.QueryAsync(query with { Cursor = first.Value.NextCursor });
+        second.IsSuccess.ShouldBeTrue();
+        second.Value.TotalCount.ShouldBe(2);
+        new[] { first.Value.Records.Single().Id, second.Value.Records.Single().Id }.Order().ShouldBe(new[] { empty.Id, numeric.Id }.Order());
+        second.Value.NextCursor.ShouldBeNull();
+        var grouped = await h.Store.GroupAsync(query);
+        grouped.IsSuccess.ShouldBeTrue();
+        grouped.Value.TotalOperationCount.ShouldBe(2);
+        grouped.Value.TotalGroupCount.ShouldBe(2);
+        grouped.Value.Groups.ShouldAllBe(group => group.Dimensions.Count == 2);
+        var analysis = await h.Store.SelectAnalysisAsync(query with { Boundary = first.Value.Boundary });
+        analysis.IsSuccess.ShouldBeTrue();
+        analysis.Value.Records.Select(record => record.Id).Order().ShouldBe(new[] { empty.Id, numeric.Id }.Order());
+
+        (await h.Store.QueryAsync(query with { GroupingDimensions = [] })).Value.TotalCount.ShouldBe(5);
+        var missing = await h.Store.QueryAsync(query with { GroupingDimensions = [], GroupDimensions = [new() { Key = "region", Operator = ProfilingDimensionOperator.Missing }] });
+        missing.IsSuccess.ShouldBeTrue();
+        missing.Value.TotalCount.ShouldBe(2);
+        var unknown = query with { GroupingDimensions = ["unknown"] };
+        (await h.Store.QueryAsync(unknown)).Value.TotalCount.ShouldBe(0);
+        var noGroups = await h.Store.GroupAsync(unknown);
+        noGroups.IsSuccess.ShouldBeTrue();
+        noGroups.Value.TotalOperationCount.ShouldBe(0);
+        noGroups.Value.TotalGroupCount.ShouldBe(0);
+        noGroups.Value.Groups.ShouldBeEmpty();
+    }
+
     /// <summary>Preserves all general filters while expanding a grouped bucket, including missing typed values.</summary>
     [Fact]
     public async Task GroupExpansion_WithEightPredicatesAndMissingDimension_IsBoundedAndExact()

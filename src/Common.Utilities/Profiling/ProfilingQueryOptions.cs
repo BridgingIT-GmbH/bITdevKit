@@ -15,7 +15,7 @@ public sealed class ProfilingQueryOptions
 
     /// <summary>Gets or sets MaximumPageSize.</summary>
     /// <example><code>var value = options.MaximumPageSize;</code></example>
-    public int MaximumPageSize { get; set; } = 200;
+    public int MaximumPageSize { get; set; } = 250;
 
     /// <summary>Gets or sets the maximum contributing-node choices returned with a grouped view.</summary>
     /// <example><code>options.MaximumNodeChoices = 200;</code></example>
@@ -37,6 +37,14 @@ public sealed class ProfilingQueryOptions
     /// <example><code>var value = options.MaximumGroupingDimensions;</code></example>
     public int MaximumGroupingDimensions { get; set; } = 4;
 
+    /// <summary>Gets or sets the maximum dimension names returned by discovery.</summary>
+    /// <example><code>options.MaximumDimensionNames = 32;</code></example>
+    public int MaximumDimensionNames { get; set; } = 32;
+
+    /// <summary>Gets or sets the maximum typed values returned per discovered dimension.</summary>
+    /// <example><code>options.MaximumDimensionValues = 20;</code></example>
+    public int MaximumDimensionValues { get; set; } = 20;
+
     /// <summary>Gets or sets MaximumOverlaySnapshots.</summary>
     /// <example><code>var value = options.MaximumOverlaySnapshots;</code></example>
     public int MaximumOverlaySnapshots { get; set; } = 2000;
@@ -55,6 +63,7 @@ public sealed class ProfilingQueryOptions
     {
         if (this.PageSize <= 0 || this.MaximumPageSize < this.PageSize || this.MaximumConcurrentQueries <= 0 || this.MaximumNodeChoices is <= 0 or > 10000
             || this.MaximumAnalysisRecords <= 0 || this.MaximumDimensionPredicates <= 0 || this.MaximumGroupingDimensions <= 0
+            || this.MaximumDimensionNames is <= 0 or > 512 || this.MaximumDimensionValues is <= 0 or > 512
             || this.MaximumOverlaySnapshots <= 0 || this.Timeout <= TimeSpan.Zero || this.Timeout == TimeSpan.MaxValue
             || this.BoundaryLifetime <= TimeSpan.Zero || this.BoundaryLifetime == TimeSpan.MaxValue)
         {

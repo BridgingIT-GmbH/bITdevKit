@@ -20,6 +20,62 @@ using Microsoft.Extensions.Time.Testing;
 
 public abstract class EntityFrameworkOperationProfilingContractTestsBase : ProfilingStorageContractTestsBase, IAsyncLifetime
 {
+    /// <summary>Previously stored array-form eligibility documents remain readable and complete without a schema migration.</summary>
+    /// <example><code>await suite.LegacyClearEligibilityArray_RemainsReadable();</code></example>
+    [Fact]
+    public async Task LegacyClearEligibilityArray_RemainsReadable()
+    {
+        var h = await this.CreateAsync();
+        var envelope = h.Envelope(h.Record(), 1);
+        (await h.Store.AppendAsync([envelope])).IsSuccess.ShouldBeTrue();
+        var clearing = h.Provider.ClearAsync(new() { DataSet = ProfilingDataSet.Operations });
+        var pending = await WaitForClearAsync(h);
+        await using (var scope = this.first.CreateAsyncScope())
+        {
+            var context = scope.ServiceProvider.GetRequiredService<ProfilingProviderDbContext>();
+            var row = await context.Set<ProfilingClearEntity>().SingleAsync(entity => entity.Id == pending.Id);
+            using var document = System.Text.Json.JsonDocument.Parse(row.EligibleWritersJson);
+            row.EligibleWritersJson = document.RootElement.GetProperty("Writers").GetRawText();
+            await context.SaveChangesAsync();
+        }
+
+        (await h.Store.AcknowledgeClearAsync(new() { ClearId = pending.Id, Lease = h.Lease, CompletionCutoff = 1 })).IsSuccess.ShouldBeTrue();
+        var result = await clearing.WaitAsync(TimeSpan.FromSeconds(10));
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.RemovedOperationCount.ShouldBe(1);
+        (await h.Store.FindAsync(envelope.Record.Id)).Value.ShouldBeNull();
+    }
+
+    /// <summary>A new provider resumes a persisted filtered clear while preserving other cohorts and retry fences.</summary>
+    /// <example><code>await suite.Restart_SelectedClear_PreservesGroupSelectorAndOtherCohorts();</code></example>
+    [Fact]
+    public async Task Restart_SelectedClear_PreservesGroupSelectorAndOtherCohorts()
+    {
+        var options = new ProfilingOptions();
+        options.Storage.MaximumMaintenanceRoots = 1;
+        var h = await this.CreateAsync(options);
+        var first = h.Envelope(h.Record() with { Dimensions = [Dimension("batch", 1)] }, 1);
+        var second = h.Envelope(h.Record() with { Dimensions = [Dimension("batch", 1)] }, 2);
+        var kept = h.Envelope(h.Record() with { Dimensions = [Dimension("batch", 2)] }, 3);
+        (await h.Store.AppendAsync([first, second, kept])).IsSuccess.ShouldBeTrue();
+        var query = h.Query() with { Key = "report", Kind = "service", GroupDimensions = [new() { Key = "BATCH", Value = Dimension("batch", 1).Value }] };
+        var clearing = h.Provider.ClearAsync(new() { DataSet = ProfilingDataSet.Operations, OperationSelection = query });
+        var pending = await WaitForClearAsync(h);
+        (await h.Store.AcknowledgeClearAsync(new() { ClearId = pending.Id, Lease = h.Lease, CompletionCutoff = 3 })).IsSuccess.ShouldBeTrue();
+        var partial = await clearing.WaitAsync(TimeSpan.FromSeconds(10));
+        partial.IsSuccess.ShouldBeTrue();
+        partial.Value.State.ShouldBe(ProfilingClearState.Applying);
+        var services = this.CreateServices(h.Clock);
+        var restarted = new EntityFrameworkProfilingStorageProvider<ProfilingProviderDbContext>(services.GetRequiredService<IServiceScopeFactory>(), options, h.Clock);
+        var completed = await restarted.ResumeMaintenanceAsync(new() { MaximumRoots = 1 });
+        completed.IsSuccess.ShouldBeTrue();
+        completed.Value.RemainingClears.ShouldBe(0);
+        (await restarted.Operations.FindAsync(first.Record.Id)).Value.ShouldBeNull();
+        (await restarted.Operations.FindAsync(second.Record.Id)).Value.ShouldBeNull();
+        (await restarted.Operations.FindAsync(kept.Record.Id)).Value.ShouldNotBeNull();
+        (await restarted.Operations.AppendAsync([first])).Value.Records.Single().Outcome.ShouldBe(ProfilingWriteOutcome.Cleared);
+    }
+
     private readonly List<ServiceProvider> services = [];
     private readonly LostCommitAcknowledgement commitFault = new();
     private readonly QueryTimeoutObserver queryTimeouts = new();

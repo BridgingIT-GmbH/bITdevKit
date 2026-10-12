@@ -768,6 +768,8 @@ Open Change History at `/_bdk/dashboard/change-history` with `Presentation.Web.E
 
 Choose a registration and apply entity, property, operation, capture, change-set, user or date filters. Change Sets groups related audit rows. Rows shows individual property changes. Select a change set to inspect its details and the restore controls. Read and restore permissions follow the selected endpoint registration, and displayed values depend on its `IncludeValues` option.
 
+Use the **Quick range** clock icon before the date inputs to set **From UTC** and clear **To UTC**, edit either timestamp if needed, then select **Apply**. An empty end includes newer changes on refresh. The filters retain time-of-day precision when paging.
+
 [![Change History dashboard showing the filter controls and missing endpoint registration state](assets/dashboard/22-change-history-unavailable.png)](assets/dashboard/22-change-history-unavailable.png)
 
 This image shows the unconfigured state. When the page reports no ChangeHistory endpoints, register an entity/context endpoint as shown in [HTTP endpoints](#http-endpoints), then map the endpoint pipeline. A database with audit rows cannot supply the dashboard registration selector by itself.

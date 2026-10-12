@@ -75,6 +75,11 @@ public interface IProfilingOperationScope : IProfilingRecordingScope
     /// <summary>Changes this root's logical grouping key.</summary>
     /// <example><code>operation.SetKey("catalog:refresh");</code></example>
     void SetKey(string key);
+    /// <summary>Enriches the default grouping key only while no valid explicit key override has been accepted.</summary>
+    /// <param name="key">The bounded default key discovered by an adapter after capture starts.</param>
+    /// <returns>True when the key was accepted; false for explicit overrides, rejected values or non-recording scopes.</returns>
+    /// <example><code>operation.TrySetDefaultKey("/catalog/{id}");</code></example>
+    bool TrySetDefaultKey(string key);
     /// <summary>Replaces a finite numeric root measurement.</summary>
     /// <example><code>operation.SetMeasurement("items", 42, "count");</code></example>
     void SetMeasurement(string key, object value, string unit);

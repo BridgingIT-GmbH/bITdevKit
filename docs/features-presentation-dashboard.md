@@ -438,9 +438,17 @@ The selected interval is stored in `localStorage`. Refresh uses a recursive `set
 
 The index refresh endpoint returns only card HTML. It does not render the full dashboard layout.
 
+Profiling adds **Operations** and **Requests** cards beside its Profiling status card. Each shows retained execution counts for the last 15 minutes, with matching group and node counts. Operations includes all execution kinds; Requests counts HTTP captures. Both include all recorded outcomes and open their named profiling view. These are retained observations, including any sampling, rather than total application traffic. The cards use the same overview refresh control.
+
 [![Dashboard overview with feature cards and current operational summaries](assets/dashboard/01-overview-overview.png)](assets/dashboard/01-overview-overview.png)
 
 The [page index](#getting-started) links each feature's dashboard guide and full-size screenshots. Those guides describe filters, detail dialogs, provider requirements and actions. Open a card to inspect that feature; use a correlation link in a detail dialog to continue into Logs.
+
+### Quick date/time ranges
+
+Logs, Errors, Change History, Operations and Requests offer a **Quick range** clock icon immediately before the From UTC input. Open its menu to choose a preset. Choose Last minute, Last 5 or 15 minutes, Last hour, Last 6 hours, Last day, Last week or Last 30 days. The control fills **From UTC** with the selected interval before now and clears **To UTC**. An empty end includes new records on refresh. From UTC remains fixed until you edit it or choose a preset again. The pickers show only hours and minutes, with seconds defaulting to `00`; recorded timestamps and timings retain their precision. Select **Apply** to use the range. Day and week mean the previous 24 hours and 7 days, including across daylight-saving changes.
+
+Comparison dialogs have a separate picker for each side; select **Compare** after choosing their ranges. An empty comparison end resolves to one shared current UTC instant when you select Compare. Saved profiling filters retain the fixed start and empty end when you return. To move the start forward, select the preset again.
 
 ### System
 
@@ -453,6 +461,10 @@ System at `/_bdk/dashboard/system` shows process CPU, memory, traffic, thread-po
 The metrics page is server-rendered and reads in-process snapshot services directly. It does not call the metrics JSON endpoints. The page has its own content fragment endpoint and refresh controls for updating only the metrics body.
 
 Metrics remain optional. Registering the dashboard does not automatically register metrics; applications opt into metrics separately.
+
+### Profiling
+
+Runtime, Operations, Requests, Timeline and Insights share the Profiling page. Insights ranks operations by completed p95 latency, accumulated completed time, frequency or root failure rate. It separates latency samples from other outcomes and opens segment bottlenecks, execution details and comparisons in dialogs. Rankings cover the complete bounded selection before applying the row limit. Timeline provides a moving kind-by-time overview with persisted 15-minute/30-minute/hour/12-hour/day/week/month windows, UTC date bounds, kind/key/node filters, count boxes for dense activity, and the existing execution details dialog. Operations and Requests can compare executions of the same operation under different UTC ranges, nodes, application versions or dimension values. A group action opens the comparison dialog with that operation selected; results and segment differences stay inside the dialog. See the [Profiling dashboard guide](features-profiling.md#dashboard) for screenshots and the comparison workflow. Dimension controls discover recorded names and typed values, filter executions, and split operation groups by a dimension. Group counts, median and p95 use the retained selection. A recorded group's conditions can seed either side of the comparison dialog. Execution details also provide dimension actions; segment filters explicitly select their full path.
 
 ### Health
 

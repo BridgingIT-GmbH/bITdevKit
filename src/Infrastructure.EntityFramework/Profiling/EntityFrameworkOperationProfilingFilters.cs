@@ -22,7 +22,8 @@ internal static class EntityFrameworkOperationProfilingFilters
         var upper = query.ToUtc.Value.UtcTicks;
         var roots = (query.KeyContains is null ? context.Set<OperationProfilingEntity>() : ContainsKey(context, query.KeyContains))
             .AsNoTracking().Where(root => root.CommitWatermark <= watermark);
-        roots = query.IntervalOverlap ? roots.Where(root => root.StartedUtcTicks < upper && (root.CompletedUtcTicks > lower || root.StartedUtcTicks == root.CompletedUtcTicks && root.StartedUtcTicks >= lower))
+        roots = query.StartedWithin ? roots.Where(root => root.StartedUtcTicks >= lower && root.StartedUtcTicks < upper)
+            : query.IntervalOverlap ? roots.Where(root => root.StartedUtcTicks < upper && (root.CompletedUtcTicks > lower || root.StartedUtcTicks == root.CompletedUtcTicks && root.StartedUtcTicks >= lower))
             : roots.Where(root => root.CompletedUtcTicks >= lower && root.CompletedUtcTicks < upper);
         if (query.Id.HasValue) { roots = roots.Where(root => root.Id == query.Id.Value); }
 
@@ -67,7 +68,8 @@ internal static class EntityFrameworkOperationProfilingFilters
         roots = Binary(roots, query.HttpMethod, root => root.HttpMethodBytes);
         roots = Binary(roots, query.SamplingStrategyKey, root => root.SamplingStrategyBytes);
         roots = Binary(roots, query.SamplingConfigurationKey, root => root.SamplingConfigurationBytes);
-        foreach (var predicate in query.Dimensions.Concat(query.GroupDimensions))
+        foreach (var predicate in query.Dimensions.Concat(query.GroupDimensions)
+            .Concat(query.GroupingDimensions.Select(key => new ProfilingDimensionPredicate { Key = key, Operator = ProfilingDimensionOperator.Present })))
         {
             var match = Dimension(predicate, root: true);
             var parameter = Expression.Parameter(typeof(OperationProfilingEntity), "root");

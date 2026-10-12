@@ -11,6 +11,80 @@ using Xunit;
 
 public abstract partial class ProfilingStorageContractTestsBase
 {
+    /// <summary>An open end advances for fresh queries while subsequent pages retain the original end and commit boundary.</summary>
+    /// <example><code>await suite.Query_OpenEnd_RefreshesNowAndPreservesPagingBoundary();</code></example>
+    [Fact]
+    public async Task Query_OpenEnd_RefreshesNowAndPreservesPagingBoundary()
+    {
+        var h = await this.CreateAsync();
+        var first = h.Record();
+        var second = h.Record();
+        (await h.Store.AppendAsync([h.Envelope(first, 1), h.Envelope(second, 2)])).IsSuccess.ShouldBeTrue();
+        h.Clock.Advance(TimeSpan.FromSeconds(1));
+        var query = h.Query() with { ToUtc = null, PageSize = 1 };
+
+        var page = await h.Store.QueryAsync(query);
+
+        page.IsSuccess.ShouldBeTrue();
+        page.Value.TotalCount.ShouldBe(2);
+        page.Value.Boundary.ToUtc.ShouldBe(h.Clock.GetUtcNow());
+        h.Clock.Advance(TimeSpan.FromSeconds(1));
+        var later = h.Record();
+        (await h.Store.AppendAsync([h.Envelope(later, 3)])).IsSuccess.ShouldBeTrue();
+        h.Clock.Advance(TimeSpan.FromSeconds(1));
+        var next = await h.Store.QueryAsync(query with { Cursor = page.Value.NextCursor });
+        next.IsSuccess.ShouldBeTrue();
+        next.Value.TotalCount.ShouldBe(2);
+        next.Value.Boundary.ToUtc.ShouldBe(page.Value.Boundary.ToUtc);
+        next.Value.Records.ShouldAllBe(record => record.Id != later.Id);
+        var fresh = await h.Store.QueryAsync(query);
+        fresh.IsSuccess.ShouldBeTrue();
+        fresh.Value.TotalCount.ShouldBe(3);
+        fresh.Value.Boundary.ToUtc.ShouldBe(h.Clock.GetUtcNow());
+        var service = new OperationProfilingQueryService(h.Provider, new ProfilingOptions { Enabled = true }, null, clock: h.Clock);
+        (await service.GroupAsync(query)).Value.TotalOperationCount.ShouldBe(3);
+        (await service.AnalyzeAsync(query)).Value.Count.ShouldBe(3);
+    }
+
+    /// <summary>A historical end alone selects the fifteen minutes preceding that end, rather than the current time.</summary>
+    /// <example><code>await suite.Query_EndOnly_DefaultsStartRelativeToHistoricalEnd();</code></example>
+    [Fact]
+    public async Task Query_EndOnly_DefaultsStartRelativeToHistoricalEnd()
+    {
+        var h = await this.CreateAsync();
+        var end = h.Clock.GetUtcNow().AddHours(-1);
+        OperationProfilingRecord At(DateTimeOffset time) => h.Record() with { StartedUtc = time.AddMilliseconds(-10), CompletedUtc = time };
+        var selected = At(end.AddMinutes(-1));
+        (await h.Store.AppendAsync([h.Envelope(selected, 1), h.Envelope(At(end.AddMinutes(-16)), 2), h.Envelope(At(end), 3)])).IsSuccess.ShouldBeTrue();
+
+        var page = await h.Store.QueryAsync(new() { ToUtc = end });
+
+        page.IsSuccess.ShouldBeTrue();
+        page.Value.TotalCount.ShouldBe(1);
+        page.Value.Records.Single().Id.ShouldBe(selected.Id);
+        page.Value.Boundary.FromUtc.ShouldBe(end.AddMinutes(-15));
+        page.Value.Boundary.ToUtc.ShouldBe(end);
+    }
+
+    /// <summary>Independently optional bounds still reject non-UTC offsets and invalid resolved intervals.</summary>
+    /// <example><code>await suite.Query_OptionalBounds_RejectInvalidOffsetsAndFutureStart();</code></example>
+    [Fact]
+    public async Task Query_OptionalBounds_RejectInvalidOffsetsAndFutureStart()
+    {
+        var h = await this.CreateAsync();
+        foreach (var query in new OperationProfilingQuery[]
+        {
+            new() { FromUtc = h.Clock.GetUtcNow().AddMinutes(1) },
+            new() { FromUtc = h.Clock.GetUtcNow().AddMinutes(-1).ToOffset(TimeSpan.FromHours(2)) },
+            new() { ToUtc = h.Clock.GetUtcNow().ToOffset(TimeSpan.FromHours(2)) },
+        })
+        {
+            var result = await h.Store.QueryAsync(query);
+            result.IsFailure.ShouldBeTrue();
+            result.Errors.ShouldContain(error => error is ProfilingValidationError);
+        }
+    }
+
     /// <summary>Substring selection is canonical, literal and identical for records and aggregate groups across providers.</summary>
     /// <example><code>await suite.KeyContains_CanonicalLiteralSubstring_FiltersBeforePagingAndGrouping();</code></example>
     [Fact]
@@ -234,8 +308,10 @@ public abstract partial class ProfilingStorageContractTestsBase
         mixedSelection.Value.Records.Single().Id.ShouldBe(mixed.Id);
     }
 
+    /// <summary>Grouping preserves scalar types and empty strings while excluding owners with missing dimensions.</summary>
+    /// <example><code>await suite.GroupingDimensions_DistinguishTypesAndExcludeMissingValues();</code></example>
     [Fact]
-    public async Task GroupingDimensions_DistinguishTypesAndMissingValues()
+    public async Task GroupingDimensions_DistinguishTypesAndExcludeMissingValues()
     {
         // Arrange
         var h = await this.CreateAsync();
@@ -250,8 +326,9 @@ public abstract partial class ProfilingStorageContractTestsBase
         var result = await h.Store.GroupAsync(h.Query() with { GroupingDimensions = ["WORKLOAD"], View = OperationProfilingView.ByCount });
 
         // Assert
-        result.Value.TotalGroupCount.ShouldBe(6);
-        result.Value.Groups.Select(group => group.ComparisonKey).Distinct(StringComparer.Ordinal).Count().ShouldBe(6);
+        result.Value.TotalGroupCount.ShouldBe(5);
+        result.Value.TotalOperationCount.ShouldBe(5);
+        result.Value.Groups.Select(group => group.ComparisonKey).Distinct(StringComparer.Ordinal).Count().ShouldBe(5);
         result.Value.Groups.All(group => group.Count == 1).ShouldBeTrue();
     }
 

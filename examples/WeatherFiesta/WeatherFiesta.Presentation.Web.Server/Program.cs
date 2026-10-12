@@ -104,6 +104,7 @@ builder.Services.AddFileStorage(factory => factory
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
             .WithMetrics()
             .WithPermalinks()
+            .WithProfiling()
             .WithLifetime(ServiceLifetime.Singleton))
         .RegisterProvider("attachments", storage => storage
             .UseEntityFramework<CoreDbContext>(
@@ -114,11 +115,13 @@ builder.Services.AddFileStorage(factory => factory
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
             .WithMetrics()
             .WithPermalinks()
+            .WithProfiling()
             .WithLifetime(ServiceLifetime.Singleton)))
         .AddEndpoints(options => options.RequireAuthorization())
         .AddConsoleCommands();
 
 builder.Services.AddDocumentStorage(o => o.Enabled())
+    .WithProfilingBehavior<OpenMeteoWeatherArchiveDocument>()
     .WithBehavior<LoggingDocumentStoreClientBehavior<OpenMeteoWeatherArchiveDocument>>()
     .WithMetricsBehavior<OpenMeteoWeatherArchiveDocument>()
     .WithEntityFrameworkClient<OpenMeteoWeatherArchiveDocument, CoreDbContext>(
@@ -130,6 +133,7 @@ builder.Services.AddDocumentStorage(o => o.Enabled())
     .AddConsoleCommands();
 
 builder.Services.AddBlobStorage(o => o.Enabled())
+    .WithProfilingBehavior()
     .WithLoggingBehavior()
     .WithMetricsBehavior()
     .WithEntityFrameworkClient<CoreDbContext>(o =>
@@ -171,7 +175,8 @@ builder.Services.AddProfiling(o => o
         .Enabled(builder.Environment.IsDevelopment()))
     .WithRuntimeProfiling()
     .WithOperationProfiling()
-    .WithRequestProfiling(o => o.StripPathPrefix("/api"))
+    .WithRequestProfiling(o => o.StripPathPrefix("/api")
+        .AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"))
     .AddConsoleCommands(builder.Environment.IsDevelopment());
 builder.Services.AddDashboard(o => o
     .Enabled(builder.Environment.IsDevelopment())

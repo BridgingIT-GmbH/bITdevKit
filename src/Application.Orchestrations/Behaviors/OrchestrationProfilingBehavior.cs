@@ -39,7 +39,6 @@ public sealed class OrchestrationProfilingBehavior(IOperationProfiler profiling 
                     {
                         scope.SetDimension("orchestration.attempt", context.Attempt);
                         scope.SetDimension("orchestration.kind", context.Kind.ToString());
-                        scope.SetDimension("orchestration.instanceId", context.InstanceId.ToString("D"));
                     }
                 }
                 catch (Exception) { /* Diagnostic metadata cannot stop an action. */ }

@@ -256,6 +256,18 @@ Both `IDocumentStoreProvider` and `IDocumentStoreClient<T>` are keyed by the sam
 
 Behaviors are composed between the provider adapter and the outer validating/serializing client. Invalid input never reaches logging, retry, timeout, cache, chaos, transforms, or providers.
 
+## Operation profiling
+
+Register Profiling before other named-client behaviors to include their downstream work:
+
+```csharp
+services.AddDocumentStorage()
+    .WithProfilingBehavior<Person>()
+    .RegisterProvider<Person>(_ => new InMemoryDocumentStoreProvider(), name: "archive");
+```
+
+Every typed client method is measured, including count, key-only paging, property updates and batch writes/deletes. `DocumentStorage` keys use `documentstorage:{type name}:{operation}`. Dimensions are `documentstorage.client`, `documentstorage.documentType` and `documentstorage.operation`; partition keys, row keys, query tokens and document payloads are omitted. A partially completed batch keeps its original result while profiling records `PartialBatch` failure. Direct `DocumentStoreBuilderContext<T>` registration also offers `.WithProfilingBehavior()`. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for ownership and comparison rules.
+
 ## Behaviors
 
 - Typed logging with raw keys by default. Register `Sha256KeyDisplayStrategy` only where keys are classified as sensitive.

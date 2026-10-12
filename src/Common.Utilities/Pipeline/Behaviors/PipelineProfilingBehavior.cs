@@ -17,13 +17,7 @@ public sealed class PipelineProfilingBehavior(IOperationProfiler profiling = nul
         return profiling.JoinOrStartValueTaskAsync(new OperationProfilingStartRequest
         {
             Key = "pipeline:" + context.Pipeline.Name, Kind = OperationProfilingKind.Pipeline.ToString(), CorrelationId = context.Pipeline.CorrelationId,
-        }, (scope, _) =>
-        {
-            try { if (scope.IsRecording) { scope.SetDimension("pipeline.executionId", context.Pipeline.ExecutionId.ToString("D")); } }
-            catch (Exception) { /* Profiling metadata cannot stop the pipeline. */ }
-
-            return next();
-        }, cancellationToken, result => OperationProfilingHelpers.ClassifyResult(result));
+        }, (_, _) => next(), cancellationToken, result => OperationProfilingHelpers.ClassifyResult(result));
     }
 
     /// <inheritdoc />

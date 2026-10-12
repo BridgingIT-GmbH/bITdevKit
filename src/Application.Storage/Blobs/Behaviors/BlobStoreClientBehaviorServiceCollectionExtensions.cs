@@ -22,6 +22,16 @@ using Microsoft.Extensions.DependencyInjection.Extensions;
 /// </example>
 public static partial class ServiceCollectionExtensions
 {
+    /// <summary>Profiles calls for every named blob client using store, container and operation dimensions.</summary>
+    /// <param name="context">The blob-storage builder.</param>
+    /// <returns>The current builder.</returns>
+    /// <example><code>services.AddBlobStorage().WithProfilingBehavior().WithInMemoryClient("reports");</code></example>
+    public static BlobStorageBuilderContext WithProfilingBehavior(this BlobStorageBuilderContext context)
+    {
+        ArgumentNullException.ThrowIfNull(context);
+        return context.WithBehavior((inner, services, name) => new ProfilingBlobStoreClientBehavior(inner, services.GetService<IOperationProfiler>(), name));
+    }
+
     /// <summary>
     /// Registers the logging blob-store client behavior.
     /// </summary>

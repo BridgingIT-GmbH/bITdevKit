@@ -64,6 +64,9 @@ public sealed class OrchestrationProfilingBehaviorTests
         record.Kind.ShouldBe("Orchestration");
         record.CorrelationId.ShouldBe("retry-correlation");
         record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
+        record.Dimensions.ShouldAllBe(dimension => !ProfilingDimensionKeys.IsExecutionIdentifier(dimension.Key));
+        record.Dimensions.ShouldContain(dimension => dimension.Key == "orchestration.status");
+        record.Segments.SelectMany(segment => segment.Dimensions).ShouldAllBe(dimension => !ProfilingDimensionKeys.IsExecutionIdentifier(dimension.Key));
         var action = record.Segments.Single(s => s.Key == "action:Activity:Work");
         action.Statistics.Count.ShouldBe(2);
         action.Path.Components.ShouldBe(new[] { "state:Start", "action:Activity:Work" });

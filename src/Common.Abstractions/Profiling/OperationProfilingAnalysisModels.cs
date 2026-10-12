@@ -21,6 +21,10 @@ public sealed record OperationProfilingSegmentAnalysis
     /// <example><code>var value = record.Path;</code></example>
     public ProfilingSegmentPath Path { get; init; }
 
+    /// <summary>Gets the server-normalized, boundary-preserving segment path identity for dashboard comparisons.</summary>
+    /// <example><code>var identity = analysis.ComparisonKey;</code></example>
+    public string ComparisonKey => this.Path?.ComparisonKey;
+
     /// <summary>Gets the number of owners with selected invocations.</summary>
     /// <example><code>var value = record.OperationCount;</code></example>
     public long OperationCount { get; init; }

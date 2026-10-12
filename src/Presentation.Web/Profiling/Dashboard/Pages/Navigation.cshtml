@@ -1,0 +1,56 @@
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using DashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice
+@{
+    var options = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
+}
+@if (HttpContext.RequestServices.GetService<ProfilingOptions>()?.Enabled == true)
+{
+    <script data-profiling-root="@DashboardEndpoints.BuildRootPath(options)"
+            data-runtime="@DashboardEndpoints.BuildProfilingPath(options)"
+            data-operations="@DashboardEndpoints.BuildOperationsPath(options)"
+            data-requests="@DashboardEndpoints.BuildOperationsPath(options, true)"
+            data-timeline="@DashboardEndpoints.BuildTimelinePath(options)"
+            data-insights="@DashboardEndpoints.BuildInsightsPath(options)">
+    (() => {
+        const paths = document.currentScript.dataset;
+        const root = new URL(paths.profilingRoot, location.href);
+        const views = ['runtime', 'operations', 'requests', 'timeline', 'insights'].map(key => ({ key, path: new URL(paths[key], location.href).pathname }));
+        const storageKey = 'bdk.profiling.view:' + root.pathname;
+        const normalize = path => path.replace(/\/+$/, '').toLowerCase();
+
+        function updateNavigation(rememberCurrent = true) {
+            const currentPath = normalize(location.pathname);
+            let selected = rememberCurrent ? views.find(view => currentPath === normalize(view.path) || currentPath.startsWith(normalize(view.path) + '/')) : undefined;
+            try {
+                if (selected) localStorage.setItem(storageKey, selected.key);
+                else selected = views.find(view => view.key === localStorage.getItem(storageKey));
+            } catch { }
+
+            document.querySelectorAll('a[href]').forEach(link => {
+                const original = link.dataset.profilingLandingHref || link.getAttribute('href');
+                let destination;
+                try { destination = new URL(original, location.href); } catch { return; }
+                if (destination.origin !== root.origin || normalize(destination.pathname) !== normalize(root.pathname)) return;
+                link.dataset.profilingLandingHref = original;
+                if (selected) destination.pathname = selected.path;
+                link.href = destination.href;
+            });
+        }
+
+        updateNavigation();
+        document.addEventListener('click', event => {
+            const link = event.target.closest?.('a[href]');
+            if (!link) return;
+            const destination = new URL(link.href, location.href);
+            if (destination.origin === root.origin && normalize(destination.pathname) === normalize(root.pathname)) updateNavigation();
+        }, true);
+        window.addEventListener('pageshow', () => updateNavigation());
+        window.addEventListener('storage', event => {
+            if (event.key === storageKey || event.key === null) updateNavigation(false);
+        });
+    })();
+    </script>
+}

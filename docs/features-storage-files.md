@@ -113,6 +113,19 @@ app.Run();
 
 `PUT /files/example.txt` returns `File: example.txt`. The in-memory provider retains files only while its singleton instance remains alive.
 
+## Operation profiling
+
+Add `.WithProfiling()` to a configured file provider, after other behaviors when their work should be included:
+
+```csharp
+services.AddFileStorage(factory => factory.RegisterProvider("reports", storage => storage
+    .UseInMemory("reports")
+    .WithMetrics()
+    .WithProfiling()));
+```
+
+With Operation Profiling enabled, all provider calls join the caller's profile or create a `FileStorage` operation. Keys use `filestorage:{operation}`; dimensions are the logical `filestorage.location` and `filestorage.operation`. Paths and filenames are omitted. Stream-returning methods measure opening the stream and preserve its ownership. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for lifecycle, registration order and dashboard dimension filtering.
+
 ## Architecture details
 
 The `FileStorage` subsystem is built around the `IFileStorageProvider` interface, which defines core file operations. Providers like `LocalFileStorageProvider`, `InMemoryFileStorageProvider`, `EntityFrameworkFileStorageProvider<TContext>`, and others implement this interface. The `IFileStorageProviderFactory` resolves providers by name, and extensions like `FileStorageProviderCompressionExtensions` and `FileStorageProviderCrossExtensions` add advanced functionality such as compression and cross-provider operations. Behaviors can be applied to providers to add cross-cutting concerns like logging or retry logic.

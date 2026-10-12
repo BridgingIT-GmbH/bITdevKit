@@ -38,7 +38,6 @@ public sealed class JobProfilingBehavior(IOperationProfiler profiling = null) : 
 
             scope.SetDimension("job.triggerKind", context.Trigger.TriggerType.ToString());
             scope.SetDimension("job.attempt", context.ExecutionContext.AttemptNumber);
-            scope.SetDimension("job.executionId", context.ExecutionContext.ExecutionId.ToString("D"));
             scope.SetDimension("job.boundary", "BehaviorDelegate");
         }
         catch (Exception) { /* Only bounded extracted scalars participate in diagnostics. */ }

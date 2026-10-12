@@ -11,6 +11,110 @@ using Xunit;
 
 public abstract partial class ProfilingStorageContractTestsBase
 {
+    /// <summary>Selective deletion removes the complete filtered group and graph, preserves other groups and later work, and remains resumable under batching.</summary>
+    /// <example><code>await suite.Clear_OperationGroup_RespectsFiltersAndWriterCutoffs(true);</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task Clear_OperationGroup_RespectsFiltersAndWriterCutoffs(bool bounded)
+    {
+        var options = new ProfilingOptions();
+        if (bounded) { options.Storage.MaximumMaintenanceRoots = 1; }
+
+        var h = await this.CreateAsync(options);
+        (await h.Provider.Runtime.GetOrCreateActiveSessionAsync(RuntimeRequest(h))).IsSuccess.ShouldBeTrue();
+        var targets = Enumerable.Range(0, 5).Select(index =>
+        {
+            var record = h.Record(index % 2 == 0 ? "catalog:load" : "CATALOG:LOAD") with { Dimensions = [Dimension("batch", 1)] };
+            return record with { Segments = [Summary(record, ["Load"])] };
+        }).ToArray();
+        var wrongValue = h.Record("catalog:load") with { Dimensions = [Dimension("batch", "1")] };
+        var wrongKind = h.Record("catalog:load") with { Kind = "HttpRequest", Dimensions = [Dimension("batch", 1)] };
+        var wrongKey = h.Record("catalog:other") with { Dimensions = [Dimension("batch", 1)] };
+        var outside = h.Record("catalog:load") with { Dimensions = [Dimension("batch", 1)], StartedUtc = h.Clock.GetUtcNow().AddMinutes(-16).AddMilliseconds(-10), CompletedUtc = h.Clock.GetUtcNow().AddMinutes(-16) };
+        var kept = new[] { wrongValue, wrongKind, wrongKey, outside };
+        var old = targets.Concat(kept).Select((record, index) => h.Envelope(record, index + 1)).ToArray();
+        var appended = await h.Store.AppendAsync(old);
+        appended.IsSuccess.ShouldBeTrue();
+        appended.Value.Records.ShouldAllBe(record => record.Outcome == ProfilingWriteOutcome.Accepted);
+        var otherNode = h.Node with { Identity = ProfilingIdentityFactory.CreateNode() };
+        var otherLease = (await h.Store.OpenWriterAsync(new() { AttemptId = Guid.NewGuid(), Node = otherNode })).Value;
+        var other = h.Envelope(h.Record("catalog:load") with { Node = otherNode, Dimensions = [Dimension("batch", 1)] }, 1, otherLease);
+        (await h.Store.AppendAsync([other])).IsSuccess.ShouldBeTrue();
+        var selection = h.Query() with
+        {
+            Key = "CATALOG:LOAD", Kind = "service", NodeId = h.Node.Identity.Id, PageSize = 1,
+            GroupDimensions = [new() { Key = "BATCH", Value = Dimension("batch", 1).Value }],
+        };
+        var page = await h.Store.QueryAsync(selection);
+        page.Value.TotalCount.ShouldBe(5);
+        var clearing = h.Provider.ClearAsync(new() { DataSet = ProfilingDataSet.Operations, OperationSelection = selection });
+        var pending = await PendingAsync(h, h.Lease);
+        pending.Selection.OperationSelection.Key.ShouldBe(ProfilingKeyComparer.Canonicalize(selection.Key));
+        var later = h.Envelope(h.Record("catalog:load") with { Dimensions = [Dimension("batch", 1)] }, old.Length + 1);
+        (await h.Store.AppendAsync([later])).IsSuccess.ShouldBeTrue();
+        await AckAsync(h, pending.Id, h.Lease, old.Length);
+        await AckAsync(h, pending.Id, otherLease, 1);
+        var result = await clearing.WaitAsync(TimeSpan.FromSeconds(10));
+        result.IsSuccess.ShouldBeTrue();
+        var removed = result.Value.RemovedOperationCount;
+        var summaries = result.Value.RemovedSegmentSummaryCount;
+        if (bounded)
+        {
+            result.Value.State.ShouldBe(ProfilingClearState.Applying);
+            for (var index = 0; index < 10; index++)
+            {
+                var progress = await h.Provider.ResumeMaintenanceAsync(new() { MaximumRoots = 1 });
+                progress.IsSuccess.ShouldBeTrue();
+                removed += progress.Value.RemovedOperations;
+                if (progress.Value.RemainingClears == 0) break;
+            }
+        }
+
+        removed.ShouldBe(5);
+        summaries.ShouldBe(bounded ? 1 : 5);
+        foreach (var record in targets) { (await h.Store.FindAsync(record.Id)).Value.ShouldBeNull(); }
+
+        foreach (var record in kept) { (await h.Store.FindAsync(record.Id)).Value.ShouldNotBeNull(); }
+
+        (await h.Store.FindAsync(other.Record.Id)).Value.ShouldNotBeNull();
+        (await h.Store.FindAsync(later.Record.Id)).Value.ShouldNotBeNull();
+        (await h.Provider.Runtime.GetActiveSessionAsync()).Value.ShouldNotBeNull();
+        (await h.Store.AppendAsync([old[0]])).Value.Records.Single().Outcome.ShouldBe(ProfilingWriteOutcome.Cleared);
+        (await h.Store.AppendAsync([old[5]])).Value.Records.Single().Outcome.ShouldBe(ProfilingWriteOutcome.AlreadyStored);
+        (await h.Store.QueryAsync(selection with { Cursor = page.Value.NextCursor })).Errors.ShouldContain(error => error is ProfilingQueryBoundaryError);
+    }
+
+    /// <summary>Unsafe or malformed group selections fail before clear coordination changes writer generations or retained history.</summary>
+    /// <example><code>await suite.Clear_OperationGroup_InvalidSelection_ReturnsValidation("key");</code></example>
+    [Theory]
+    [InlineData("key")]
+    [InlineData("kind")]
+    [InlineData("contains")]
+    [InlineData("range")]
+    [InlineData("dataset")]
+    [InlineData("cursor")]
+    [InlineData("dimension")]
+    public async Task Clear_OperationGroup_InvalidSelection_ReturnsValidation(string invalid)
+    {
+        var h = await this.CreateAsync();
+        var record = h.Record();
+        await h.Store.AppendAsync([h.Envelope(record, 1)]);
+        var query = h.Query() with { Key = "Report", Kind = "Service" };
+        query = invalid switch
+        {
+            "key" => query with { Key = null }, "kind" => query with { Kind = null },
+            "contains" => query with { KeyContains = "port" }, "range" => query with { FromUtc = null, ToUtc = null },
+            "cursor" => query with { Cursor = "page" },
+            "dimension" => query with { Dimensions = [new() { Key = "batch", Operator = ProfilingDimensionOperator.Equal }] },
+            _ => query,
+        };
+        var result = await h.Provider.ClearAsync(new() { DataSet = invalid == "dataset" ? ProfilingDataSet.All : ProfilingDataSet.Operations, OperationSelection = query });
+        result.IsFailure.ShouldBeTrue();
+        result.Errors.ShouldContain(error => error is ProfilingValidationError);
+        (await h.Store.FindAsync(record.Id)).Value.ShouldNotBeNull();
+    }
+
     [Fact]
     public async Task Clear_TwoWriters_FixesCutoffsAndPreservesNewRegistrations()
     {

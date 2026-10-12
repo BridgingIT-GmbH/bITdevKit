@@ -246,7 +246,9 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
 
     private static IQueryable<OperationProfilingEntity> ClearRoots(TContext context, ProfilingClearCoordinator.Clear clear)
     {
-        var query = context.Set<OperationProfilingEntity>().Where(root => root.WriterGeneration <= clear.Generation);
+        var query = (clear.Selection.OperationSelection is { } selection
+            ? EntityFrameworkOperationProfilingFilters.Apply(context, selection, long.MaxValue)
+            : context.Set<OperationProfilingEntity>()).Where(root => root.WriterGeneration <= clear.Generation);
         if (clear.Selection.FromUtc.HasValue)
         {
             var lower = clear.Selection.FromUtc.Value.UtcTicks;

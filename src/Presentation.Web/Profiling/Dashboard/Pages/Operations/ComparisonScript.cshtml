@@ -1,0 +1,335 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const modal = document.getElementById('operation-comparison-modal');
+    const content = document.getElementById('operation-content');
+    if (!modal || !content) return;
+    const form = document.getElementById('operation-comparison-form');
+    const operation = document.getElementById('operation-comparison-key');
+    const output = document.getElementById('operation-comparison-results');
+    const submit = document.getElementById('operation-comparison-submit');
+    const storageKey = 'bdk.profiling.comparison:' + content.dataset.pageUrl;
+    const sides = ['baseline', 'candidate'];
+    const types = ['String', 'Int64', 'Decimal', 'Double', 'Boolean', 'UtcDateTime'];
+    let controller = null, trigger = null, resetting = false;
+    const extraFilters = { baseline: {}, candidate: {} };
+    const dimensionTools = window.bdkOperationDimensions;
+    const control = (side, name) => document.getElementById('operation-comparison-' + side + '-' + name);
+    const utcInput = (value, upperBound = false) => {
+        const timestamp = new Date(value).getTime();
+        if (!Number.isFinite(timestamp)) return '';
+        // Round linked ranges outwards so using minute precision keeps their executions in scope.
+        return new Date((upperBound ? Math.ceil(timestamp / 60000) : Math.floor(timestamp / 60000)) * 60000).toISOString().slice(0, 16);
+    };
+    const normalize = value => Object.fromEntries(Object.entries(value || {}).map(([key, item]) => [key[0].toLowerCase() + key.slice(1), item]));
+    const selectedOperation = () => operation.selectedOptions[0]?.dataset;
+    function dimensionRows(side) {
+        return [...control(side, 'dimensions').children].map(row => ({
+            key: row.querySelector('[data-dimension-key]').value,
+            operator: row.querySelector('[data-dimension-operator]').value,
+            value: { type: row.querySelector('[data-dimension-type]').value, scalar: row.querySelector('[data-dimension-value]').value }
+        }));
+    }
+    function state() {
+        const selected = selectedOperation();
+        return { operation: selected?.key ? { key: selected.key, kind: selected.kind, identity: operation.value, label: operation.selectedOptions[0].textContent } : null,
+            ...Object.fromEntries(sides.map(side => [side, { from: control(side, 'from').value, to: control(side, 'to').value,
+                node: control(side, 'node').value, version: control(side, 'version').value, dimensions: dimensionRows(side), group: control(side, 'group').value, filters: extraFilters[side] }])) };
+    }
+    function remember() {
+        if (resetting) return;
+        try { localStorage.setItem(storageKey, JSON.stringify(state())); } catch { }
+    }
+    function invalidate() {
+        controller?.abort(); controller = null;
+        submit.disabled = false; output.setAttribute('aria-busy', 'false'); output.replaceChildren();
+    }
+    function discoverySelection(side) {
+        const selected = selectedOperation();
+        if (!selected?.key) throw new Error('Select an operation first.');
+        const from = control(side, 'from').value, to = control(side, 'to').value;
+        return { ...extraFilters[side], key: selected.key, kind: selected.kind,
+            fromUtc: from ? from + 'Z' : null, toUtc: to ? to + 'Z' : null,
+            nodeId: control(side, 'node').value || null, applicationVersion: control(side, 'version').value || null,
+            dimensions: dimensionRows(side).filter(item => item.key).map(item => item.operator === 'Equal' ? item : { key: item.key, operator: item.operator }) };
+    }
+    function dimension(side, saved = {}) {
+        const host = control(side, 'dimensions');
+        if (host.children.length >= dimensionTools.maximumPredicates) return;
+        const editor = dimensionTools.createEditor(host, { label: side, scope: 'Operation', saved,
+            query: () => discoverySelection(side), changed: () => { control(side, 'group').value = ''; invalidate(); remember(); } });
+        host.closest('details').open = true;
+        return editor.key;
+    }
+    function renderConstraints(side) {
+        const host = control(side, 'constraints'); host.replaceChildren();
+        for (const property of ['groupDimensions', 'segmentDimensions']) for (const raw of extraFilters[side][property] || []) {
+            const item = dimensionTools.predicate(raw), button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-outline-secondary btn-sm small';
+            button.textContent = (property === 'segmentDimensions' ? 'Segment · ' : '') + item.key + ' ' + (item.operator === 'Equal' ? '= ' + (item.value.scalar || '(empty string)') + ' (' + item.value.type + ')' : item.operator) + ' ×';
+            button.title = 'Remove this condition'; button.addEventListener('click', () => {
+                extraFilters[side][property] = extraFilters[side][property].filter(value => value !== raw); control(side, 'group').value = ''; renderConstraints(side); invalidate(); remember();
+            }); host.append(button);
+        }
+        if (extraFilters[side].segmentPath) {
+            const path = document.createElement('span'); path.className = 'small text-muted'; path.textContent = 'Path: ' + dimensionTools.normalize(extraFilters[side].segmentPath).components.join(' › '); host.append(path);
+        }
+    }
+    function synchronizeGroups() {
+        const source = content.querySelector('template[data-operation-comparison-groups]');
+        const selected = selectedOperation();
+        sides.forEach(side => {
+            const select = control(side, 'group'), previous = select.value;
+            select.replaceChildren(new Option('Custom conditions', ''));
+            if (source && selected?.key && selected?.kind) [...source.content.querySelectorAll('option')].filter(option =>
+                option.dataset.key.toUpperCase() === selected.key.toUpperCase() && option.dataset.kind.toUpperCase() === selected.kind.toUpperCase()).forEach(option => select.append(option.cloneNode(true)));
+            select.value = [...select.options].some(option => option.value === previous) ? previous : '';
+        });
+    }
+    function synchronize() {
+        const previous = state();
+        const keys = content.querySelector('template[data-operation-comparison-keys]');
+        operation.replaceChildren(new Option('Select an operation', ''));
+        if (keys) operation.append(keys.content.cloneNode(true));
+        if (previous.operation) selectOperation(previous.operation);
+        synchronizeGroups();
+        const nodes = content.querySelector('template[data-operation-node-options]');
+        sides.forEach(side => {
+            const select = control(side, 'node'), selected = previous[side].node;
+            select.replaceChildren();
+            if (nodes) select.append(nodes.content.cloneNode(true)); else select.add(new Option('All nodes', ''));
+            if (selected && ![...select.options].some(option => option.value === selected)) select.add(new Option('Node ' + selected.replaceAll('-', '').slice(0, 8), selected));
+            select.value = selected;
+        });
+    }
+    function selectOperation(selected) {
+        if (!selected?.key || !selected.kind) return;
+        const existing = [...operation.options].find(option => option.value === selected.identity || option.dataset.key === selected.key && option.dataset.kind === selected.kind);
+        const value = existing?.value || selected.identity || JSON.stringify([selected.kind, selected.key]);
+        if (![...operation.options].some(option => option.value === value)) {
+            const option = new Option(selected.label || selected.kind + ' · ' + selected.key, value);
+            option.dataset.key = selected.key; option.dataset.kind = selected.kind; option.title = selected.key; operation.add(option);
+        }
+        operation.value = value; operation.title = selected.key; synchronizeGroups();
+    }
+    function applySide(side, saved) {
+        if (!saved) return;
+        for (const name of ['from', 'to', 'version']) if (typeof saved[name] === 'string' && saved[name].length <= 128) control(side, name).value = name === 'version' ? saved[name] : utcInput(saved[name] + 'Z', name === 'to');
+        if (typeof saved.node === 'string' && saved.node.length <= 36) {
+            const select = control(side, 'node');
+            if (saved.node && ![...select.options].some(option => option.value === saved.node)) select.add(new Option('Node ' + saved.node.replaceAll('-', '').slice(0, 8), saved.node));
+            select.value = saved.node;
+        }
+        extraFilters[side] = saved.filters && typeof saved.filters === 'object' ? saved.filters : {};
+        control(side, 'group').value = saved.group || '';
+        renderConstraints(side);
+        control(side, 'dimensions').replaceChildren();
+        if (Array.isArray(saved.dimensions)) saved.dimensions.slice(0, dimensionTools.maximumPredicates).forEach(item => dimension(side, normalize(item)));
+    }
+    function setPeriod(previous) {
+        const end = control('candidate', 'to').value;
+        const from = new Date(control('candidate', 'from').value + 'Z'), to = end ? new Date(end + 'Z') : new Date(Date.now());
+        if (!Number.isFinite(+from) || !Number.isFinite(+to) || to <= from) throw new Error('Choose a valid comparison UTC range first.');
+        control('baseline', 'from').value = utcInput(previous ? +from - (to - from) : from);
+        control('baseline', 'to').value = previous ? utcInput(from) : end;
+    }
+    synchronize();
+    try {
+        const raw = normalize(JSON.parse(document.getElementById('operation-query')?.value || '{}'));
+        const end = document.getElementById('operation-to')?.value || '';
+        const start = document.getElementById('operation-from')?.value || utcInput((end ? new Date(end + 'Z').getTime() : Date.now()) - 15 * 60 * 1000);
+        sides.forEach(side => applySide(side, { from: start, to: end, node: document.getElementById('operation-node')?.value || '',
+            version: raw.applicationVersion || '', dimensions: (raw.dimensions || []).map(item => ({ ...normalize(item), value: normalize(item.value || item.Value) })) }));
+        setPeriod(true);
+        const saved = JSON.parse(localStorage.getItem(storageKey) || 'null');
+        if (saved && JSON.stringify(saved).length <= 32768) {
+            if (typeof saved.operation?.key === 'string' && saved.operation.key.length <= 128 && typeof saved.operation.kind === 'string' && saved.operation.kind.length <= 128) selectOperation(saved.operation);
+            sides.forEach(side => applySide(side, saved[side]));
+        }
+    } catch { }
+    function selection(side, now) {
+        const selected = selectedOperation();
+        if (!selected?.key) throw new Error('Select an operation.');
+        const end = control(side, 'to').value;
+        const from = new Date(control(side, 'from').value + 'Z'), to = end ? new Date(end + 'Z') : new Date(now);
+        if (!Number.isFinite(+from) || !Number.isFinite(+to) || to <= from) throw new Error('The ' + (side === 'baseline' ? 'baseline' : 'comparison') + ' UTC range must end after it starts.');
+        const dimensions = dimensionRows(side).map(item => {
+            if (!item.key.trim()) throw new Error('Enter a name for every dimension.');
+            if (item.operator !== 'Equal') return { key: item.key, operator: item.operator };
+            let scalar = item.value.scalar;
+            if (item.value.type === 'UtcDateTime') {
+                const date = new Date(scalar);
+                if (!Number.isFinite(+date) || !/(?:Z|\+00:00)$/.test(scalar)) throw new Error('Enter an explicit UTC timestamp for ' + item.key + '.');
+            }
+            return { ...item, value: { ...item.value, scalar } };
+        });
+        return { ...extraFilters[side], key: selected.key, kind: content.dataset.requestsOnly.toLowerCase() === 'true' ? 'HttpRequest' : selected.kind,
+            fromUtc: from.toISOString(), toUtc: to.toISOString(), nodeId: control(side, 'node').value || null,
+            applicationVersion: control(side, 'version').value || null, dimensions };
+    }
+    function notice(text, tone = 'warning') {
+        const node = document.createElement('div'); node.className = 'alert alert-' + tone + ' py-2 small'; node.textContent = text; output.append(node);
+    }
+    function duration(value) { return Number.isFinite(value) ? (Math.abs(value) >= 1000 ? (value / 1000).toFixed(3) + ' s' : value.toFixed(3) + ' ms') : 'Unavailable'; }
+    function difference(first, second) {
+        if (first == null || second == null) return 'Unavailable';
+        const delta = second - first;
+        return (delta > 0 ? '+' : '') + duration(delta) + (first === 0 ? ' · —' : ' · ' + (delta > 0 ? '+' : '') + (delta / first * 100).toFixed(2) + '%');
+    }
+    function table(headers) {
+        const element = document.createElement('table'); element.className = 'table table-sm align-middle operation-comparison-table';
+        const head = element.createTHead().insertRow();
+        headers.forEach(label => { const cell = document.createElement('th'); cell.scope = 'col'; cell.textContent = label; head.append(cell); });
+        const body = element.createTBody(), wrapper = document.createElement('div'); wrapper.className = 'table-responsive'; wrapper.append(element);
+        return { wrapper, row(values) { const row = body.insertRow(); values.forEach((value, index) => { const cell = index === 0 ? document.createElement('th') : document.createElement('td'); if (index === 0) cell.scope = 'row'; if (value instanceof Node) cell.append(value); else cell.textContent = value; row.append(cell); }); } };
+    }
+    function renderSegments(host, data, metric) {
+        host.replaceChildren();
+        const first = new Map(data.baseline.segments.map(segment => [segment.comparisonKey, segment]));
+        const second = new Map(data.candidate.segments.map(segment => [segment.comparisonKey, segment]));
+        const keys = [...new Set([...first.keys(), ...second.keys()])];
+        if (!keys.length) { host.textContent = 'No segments were recorded for these selections.'; return; }
+        const segmentValue = segment => {
+            if (!segment || segment.unavailable) return null;
+            if (metric === 'invocation') return segment.invocationMeanMilliseconds;
+            if (metric === 'invocationSelf') return segment.invocationSelfMeanMilliseconds;
+            const distribution = metric === 'self' ? segment.selfPerOperation : segment.totalPerOperation;
+            return distribution?.durationUnavailable || !distribution?.count ? null : distribution.meanMilliseconds;
+        };
+        const rows = table(['Segment', 'Baseline', 'Comparison', 'Difference']);
+        keys.sort((a, b) => (first.get(a) || second.get(a)).path.components.join(' / ').localeCompare((first.get(b) || second.get(b)).path.components.join(' / '))).forEach(key => {
+            const a = first.get(key), b = second.get(key);
+            function cell(segment) {
+                const element = document.createElement('div'), timing = document.createElement('div'), count = document.createElement('small');
+                timing.textContent = segment ? duration(segmentValue(segment)) : 'Not recorded';
+                count.className = 'text-muted'; count.textContent = segment ? segment.invocationCount + ' invocations · ' + segment.operationCount + ' executions' : '';
+                if (segment?.partialCoverage) { count.textContent += ' · partial'; }
+                element.append(timing, count); return element;
+            }
+            rows.row([(a || b).path.components.join(' / '), cell(a), cell(b), difference(segmentValue(a), segmentValue(b))]);
+        });
+        host.append(rows.wrapper);
+    }
+    function render(data, baseline, candidate) {
+        output.replaceChildren();
+        const heading = document.createElement('h3'); heading.className = 'h6'; heading.textContent = 'Results'; output.append(heading);
+        const scopes = document.createElement('div'); scopes.className = 'row g-3 mb-2';
+        for (const [label, selection, distribution] of [['Baseline', baseline, data.baseline], ['Comparison', candidate, data.candidate]]) {
+            const text = document.createElement('div'); text.className = 'col-md-6 small text-muted operation-comparison-summary';
+            const node = control(label === 'Baseline' ? 'baseline' : 'candidate', 'node').selectedOptions[0]?.textContent || 'All nodes';
+            text.textContent = label + ': ' + (distribution.boundary?.fromUtc || selection.fromUtc) + ' → ' + (distribution.boundary?.toUtc || selection.toUtc) + '\n' + node +
+                (selection.applicationVersion ? ' · version ' + selection.applicationVersion : '') +
+                (selection.dimensions || []).concat((selection.groupDimensions || []).map(item => dimensionTools.predicate(item))).map(item => '\n' + item.key + ': ' + (item.operator === 'Equal' ? item.value.scalar + ' (' + item.value.type + ')' : item.operator)).join('');
+            scopes.append(text);
+        }
+        output.append(scopes);
+        if (!data.baseline.count || !data.candidate.count) notice('No retained executions match ' + (!data.baseline.count && !data.candidate.count ? 'either selection.' : !data.baseline.count ? 'the baseline.' : 'the comparison.'));
+        if (data.baseline.partialOperationCount || data.candidate.partialOperationCount) notice('Some executions have partial capture. Counts and timings describe the retained observations.');
+        if (JSON.stringify(baseline) === JSON.stringify(candidate)) notice('Both selections use identical conditions.', 'info');
+        const rows = table(['Metric', 'Baseline', 'Comparison', 'Difference']);
+        rows.row(['Executions', data.baseline.count, data.candidate.count, data.candidate.count - data.baseline.count]);
+        for (const [label, field] of [['Median', 'p50Milliseconds'], ['p95', 'p95Milliseconds'], ['Mean', 'meanMilliseconds']]) {
+            const a = data.baseline.durationUnavailable || !data.baseline.count ? null : data.baseline[field], b = data.candidate.durationUnavailable || !data.candidate.count ? null : data.candidate[field];
+            rows.row([label, duration(a), duration(b), difference(a, b)]);
+        }
+        rows.row(['Partial executions', data.baseline.partialOperationCount, data.candidate.partialOperationCount, data.candidate.partialOperationCount - data.baseline.partialOperationCount]); output.append(rows.wrapper);
+        const header = document.createElement('div'); header.className = 'd-flex flex-wrap justify-content-between align-items-center gap-2 mt-3 mb-2';
+        const label = document.createElement('label'); label.className = 'h6 mb-0'; label.htmlFor = 'operation-comparison-segment-metric'; label.textContent = 'Segments';
+        label.title = 'Full paths identify nested segments. Execution means use only executions where the segment was recorded. Total can overlap nested or parallel work; self excludes observed child work. Counts show coverage.';
+        const metric = document.createElement('select'); metric.id = 'operation-comparison-segment-metric'; metric.className = 'form-select form-select-sm w-auto'; metric.setAttribute('aria-label', 'Segment comparison metric');
+        for (const [value, text] of [['total', 'Mean total / execution'], ['self', 'Mean self / execution'], ['invocation', 'Mean / invocation'], ['invocationSelf', 'Mean self / invocation']]) metric.add(new Option(text, value));
+        const segments = document.createElement('div'); header.append(label, metric); output.append(header, segments);
+        metric.addEventListener('change', () => renderSegments(segments, data, metric.value)); renderSegments(segments, data, metric.value);
+        const help = document.createElement('p'); help.className = 'small text-muted mb-0'; help.textContent = 'Difference = comparison − baseline. Percentages use the baseline; — means a zero baseline. Stored samples are not extrapolated.'; output.append(help);
+    }
+    function seed(side, selector, group = '') {
+        const raw = normalize(selector);
+        const filters = { ...raw };
+        for (const key of ['key', 'keyContains', 'kind', 'fromUtc', 'toUtc', 'nodeId', 'applicationVersion', 'dimensions', 'groupingDimensions', 'cursor', 'boundary', 'view', 'pageSize']) delete filters[key];
+        applySide(side, { from: raw.fromUtc ? utcInput(raw.fromUtc) : control(side, 'from').value,
+            to: raw.toUtc ? utcInput(raw.toUtc, true) : control(side, 'to').value, node: raw.nodeId || '', version: raw.applicationVersion || '',
+            dimensions: (raw.dimensions || []).map(item => dimensionTools.predicate(item)), group, filters });
+    }
+    function open(button, supplied = null) {
+        if (!window.bootstrap?.Modal) return;
+        trigger = button; invalidate(); synchronize();
+        if (button?.dataset.operationComparisonKey || supplied?.key) selectOperation(supplied || { key: button.dataset.operationComparisonKey, kind: button.dataset.operationComparisonKind, identity: button.dataset.operationComparisonIdentity });
+        if (button?.dataset.operationComparisonSelector) {
+            const selection = normalize(JSON.parse(button.dataset.operationComparisonSelector));
+            seed('baseline', selection, button.dataset.operationComparisonGroup);
+            seed('candidate', { ...selection, groupDimensions: [] });
+        }
+        remember(); bootstrap.Modal.getOrCreateInstance(modal).show(button);
+    }
+    document.addEventListener('click', event => {
+        const button = event.target.closest('[data-operation-comparison-open]');
+        if (!button) return;
+        event.preventDefault(); event.stopPropagation(); open(button);
+    });
+    sides.forEach(side => control(side, 'group').addEventListener('change', event => {
+        const option = event.target.selectedOptions[0];
+        if (option?.dataset.selector) {
+            const raw = normalize(JSON.parse(option.dataset.selector));
+            // Choosing a group changes its dimension conditions, preserving independently chosen dates/node/version.
+            const from = control(side, 'from').value, to = control(side, 'to').value, node = control(side, 'node').value, version = control(side, 'version').value;
+            seed(side, raw, option.value);
+            for (const [name, value] of [['from', from], ['to', to], ['node', node], ['version', version]]) control(side, name).value = value;
+        } else { extraFilters[side].groupDimensions = []; renderConstraints(side); }
+        invalidate(); remember();
+    }));
+    modal.addEventListener('shown.bs.modal', () => operation.focus());
+    modal.addEventListener('hide.bs.modal', () => { invalidate(); dimensionTools.cancel(); });
+    modal.addEventListener('hidden.bs.modal', () => {
+        const replacement = [...content.querySelectorAll('[data-operation-comparison-open]')].find(button => button.dataset.operationComparisonKey === trigger?.dataset.operationComparisonKey && button.dataset.operationComparisonKind === trigger?.dataset.operationComparisonKind);
+        (trigger?.isConnected ? trigger : replacement || document.querySelector('.operation-toolbar [data-operation-comparison-open]'))?.focus();
+    });
+    form.addEventListener('input', event => { if (event.target.id === 'operation-comparison-segment-metric') return; if (!event.target.closest('.operation-dimension-editor')) dimensionTools.cancel(); invalidate(); remember(); });
+    form.addEventListener('change', event => { if (event.target.id === 'operation-comparison-segment-metric') return; if (!event.target.closest('.operation-dimension-editor')) dimensionTools.cancel(); operation.title = selectedOperation()?.key || ''; if (event.target === operation) { sides.forEach(side => { extraFilters[side] = {}; renderConstraints(side); control(side, 'group').value = ''; control(side, 'dimensions').replaceChildren(); }); synchronizeGroups(); } invalidate(); remember(); });
+    modal.querySelectorAll('[data-comparison-add-dimension]').forEach(button => button.addEventListener('click', () => { dimension(button.dataset.comparisonAddDimension)?.focus(); invalidate(); remember(); }));
+    for (const [id, previous] of [['operation-comparison-previous', true], ['operation-comparison-same-period', false]]) document.getElementById(id).addEventListener('click', () => {
+        invalidate(); try { setPeriod(previous); remember(); } catch (error) { notice(error.message); }
+    });
+    form.addEventListener('submit', async event => {
+        event.preventDefault(); invalidate();
+        let active = null;
+        try {
+            const now = Date.now(); // Both open ends use one instant for this comparison; inputs remain empty.
+            const baseline = selection('baseline', now), candidate = selection('candidate', now);
+            remember(); active = new AbortController(); controller = active;
+            output.setAttribute('aria-busy', 'true'); submit.disabled = true; notice('Loading comparison…', 'secondary'); output.focus({ preventScroll: true });
+            const url = new URL(content.dataset.apiUrl, location.origin);
+            url.searchParams.set('query', JSON.stringify(baseline)); url.searchParams.set('candidate', JSON.stringify(candidate));
+            const response = await fetch(url, { signal: active.signal, cache: 'no-store' });
+            if (response.redirected) throw new Error('Sign in again or refresh the page.');
+            const mediaType = (response.headers.get('content-type') || '').split(';', 1)[0].trim();
+            if (mediaType !== 'application/json' && !mediaType.endsWith('+json')) throw new Error(response.ok ? 'Unexpected response format. Refresh the page.' : 'HTTP ' + response.status);
+            const data = await response.json();
+            if (active.signal.aborted || controller !== active) return;
+            if (!response.ok) throw new Error(data.detail || 'HTTP ' + response.status);
+            render(data, baseline, candidate);
+        } catch (error) {
+            if (error.name === 'AbortError' || active && (active.signal.aborted || controller !== active)) return;
+            output.replaceChildren(); notice('Comparison unavailable: ' + error.message);
+        } finally {
+            if (!active || controller === active) { submit.disabled = false; output.setAttribute('aria-busy', 'false'); }
+        }
+    });
+    window.addEventListener('pagehide', () => { controller?.abort(); remember(); });
+    document.getElementById('operation-reset')?.addEventListener('click', () => { resetting = true; try { localStorage.removeItem(storageKey); } catch { } });
+    window.bdkOperationComparison = { synchronize, open, seed, selectOperation, useDimension(context, item, side, path = null) {
+        const previous = selectedOperation();
+        selectOperation(context);
+        if (!previous?.key || !previous?.kind || previous.key.toUpperCase() !== context.key.toUpperCase() || previous.kind.toUpperCase() !== context.kind.toUpperCase()) {
+            const base = dimensionTools.listQuery?.() || context;
+            sides.forEach(name => seed(name, { ...base, key: context.key, kind: context.kind,
+                fromUtc: base.fromUtc || context.fromUtc, toUtc: base.toUtc || context.toUtc, dimensions: base.dimensions || [] }));
+        }
+        const current = discoverySelection(side);
+        const property = path ? 'segmentDimensions' : 'dimensions';
+        if (path && JSON.stringify(dimensionTools.normalize(current.segmentPath).components) !== JSON.stringify(path.components)) current.segmentDimensions = [];
+        current[property] = (current[property] || []).filter(value => dimensionTools.normalize(value).key.toUpperCase() !== item.key.toUpperCase()).concat(item);
+        if (path) current.segmentPath = path;
+        else current.groupDimensions = (current.groupDimensions || []).filter(value => normalize(value).key.toUpperCase() !== item.key.toUpperCase());
+        seed(side, current); invalidate(); remember(); bootstrap.Modal.getOrCreateInstance(modal).show();
+    } };
+})();
+</script>

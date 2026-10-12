@@ -1538,6 +1538,11 @@
                 color: #111;
             }
 
+        .input-group .dashboard-date-range > .btn {
+            border-top-right-radius: 0;
+            border-bottom-right-radius: 0;
+        }
+
         .btn-outline-secondary {
             color: var(--bs-secondary);
             border-color: var(--bs-secondary);
@@ -1681,6 +1686,11 @@
         .alert {
             border-radius: .1rem;
             padding: .42rem .55rem;
+        }
+
+        .modal.fade .modal-dialog {
+            transform: none;
+            transition: none;
         }
 
         .modal-content,
@@ -1852,6 +1862,9 @@
         </div>
     </div>
 
+    @(await RenderPartialAsync<DateRangeScript>())
+    @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Navigation>())
+
     <script>
         function setupSidebarToggle() {
             const toggle = document.querySelector('.sidebar-toggle');
@@ -2004,7 +2017,7 @@
 
                 const targetId = button.getAttribute('data-dashboard-date-picker-button');
                 const input = (targetId ? document.getElementById(targetId) : null)
-                    || button.closest('.input-group')?.querySelector('input[type="date"]');
+                    || button.closest('.input-group')?.querySelector('input[type="date"], input[type="datetime-local"]');
                 if (!input) {
                     return;
                 }

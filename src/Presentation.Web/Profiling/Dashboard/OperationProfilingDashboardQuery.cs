@@ -26,7 +26,7 @@ public static class OperationProfilingDashboardQuery
             if (input.Any(pair => pair.Value.Count > 1 || pair.Value.Sum(value => value?.Length ?? 0) > 16384) || input.Count > 48)
             { throw new ArgumentException("Oversized selector."); }
 
-            var query = new OperationProfilingQuery { PageSize = 25, View = OperationProfilingView.Recent };
+            var query = new OperationProfilingQuery { PageSize = 100, View = OperationProfilingView.Recent };
             if (Value("query") is string document)
             { query = JsonSerializer.Deserialize<OperationProfilingQuery>(document, json) ?? throw new ArgumentException("Empty selector."); }
 
@@ -41,7 +41,7 @@ public static class OperationProfilingDashboardQuery
                 ApplicationRequestId = String("applicationRequestId", query.ApplicationRequestId),
                 SamplingStrategyKey = String("samplingStrategy", query.SamplingStrategyKey), SamplingConfigurationKey = String("samplingConfiguration", query.SamplingConfigurationKey),
                 SegmentKey = String("segmentKey", query.SegmentKey),
-                SegmentPath = Value("segmentPath") is string path ? new(JsonSerializer.Deserialize<string[]>(path, json)) : query.SegmentPath,
+                SegmentPath = input.ContainsKey("segmentPath") ? Value("segmentPath") is string path ? new(JsonSerializer.Deserialize<string[]>(path, json)) : null : query.SegmentPath,
                 View = Value("view") is string view ? Enum.Parse<OperationProfilingView>(view, true) : query.View,
                 PageSize = Value("limit") is string limit ? int.Parse(limit, CultureInfo.InvariantCulture) : query.PageSize,
                 Outcomes = input.ContainsKey("outcomes") ? Outcomes<OperationProfilingOutcome>("outcomes") : query.Outcomes,
@@ -52,6 +52,11 @@ public static class OperationProfilingDashboardQuery
                 GroupByHttpMethod = Value("groupByMethod") is string groupMethod ? bool.Parse(groupMethod) : query.GroupByHttpMethod,
                 HasSegmentFailures = Value("segmentFailures") is string failures ? bool.Parse(failures) : query.HasSegmentFailures,
                 IntervalOverlap = Value("overlap") is string overlap ? bool.Parse(overlap) : query.IntervalOverlap,
+            };
+            query = query with
+            {
+                GroupingDimensions = query.GroupingDimensions?.Where(key => !ProfilingDimensionKeys.IsExecutionIdentifier(key)).ToArray(),
+                GroupDimensions = query.GroupDimensions?.Where(predicate => !ProfilingDimensionKeys.IsExecutionIdentifier(predicate?.Key)).ToArray(),
             };
             if (requestsOnly) { query = query with { Kind = OperationProfilingKind.HttpRequest.ToString() }; }
 

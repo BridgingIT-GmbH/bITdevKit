@@ -10,7 +10,7 @@ using BridgingIT.DevKit.Common;
 /// <summary>Supplies immutable entry data to a singleton sampler without a live HTTP context.</summary>
 /// <param name="Method">The incoming HTTP method.</param>
 /// <param name="Path">The parsed incoming path, excluding query values.</param>
-/// <param name="InitialKey">The bounded default operation key.</param>
+/// <param name="InitialKey">The bounded provisional path key at entry, before route-template enrichment or explicit overrides.</param>
 /// <param name="Node">The cached executing process descriptor.</param>
 /// <param name="StartedUtc">The UTC middleware entry time.</param>
 /// <example><code>var decision = sampler.Decide(context);</code></example>

@@ -14,6 +14,13 @@ using BridgingIT.DevKit.Common;
 /// <example><code>var timing = new OperationProfilingTiming(segment.Statistics.TotalDuration, record.Duration);</code></example>
 public sealed record OperationProfilingTiming(TimeSpan Duration, TimeSpan OperationDuration);
 
+/// <summary>Supplies one explicitly scoped dimension and its owning operation to dashboard actions.</summary>
+/// <param name="Record">The retained operation owning the metadata.</param>
+/// <param name="Predicate">The exact observed value or a segment presence/mixed predicate.</param>
+/// <param name="SegmentPath">The complete segment path, or null for operation metadata.</param>
+/// <example><code>var action = new OperationProfilingDimensionAction(record, new() { Key = "cache", Value = new(ProfilingValueType.String, "hit") });</code></example>
+public sealed record OperationProfilingDimensionAction(OperationProfilingRecord Record, ProfilingDimensionPredicate Predicate, ProfilingSegmentPath SegmentPath = null);
+
 /// <summary>Contains one retained-history view and its node-local freshness observation.</summary>
 /// <example><code>var count = model.Groups?.TotalOperationCount;</code></example>
 public sealed record OperationProfilingDashboardModel
@@ -110,6 +117,9 @@ public sealed class OperationProfilingViewModelBuilder(IOperationProfilingQueryS
         "NOTIFIERHANDLER" => "Notification handler",
         "NOTIFIER" => "Notification",
         "REQUESTER" => "Request handler",
+        "FILESTORAGE" => "File storage",
+        "DOCUMENTSTORAGE" => "Document storage",
+        "BLOBSTORAGE" => "Blob storage",
         _ => kind,
     };
 
@@ -133,6 +143,9 @@ public sealed class OperationProfilingViewModelBuilder(IOperationProfilingQueryS
             "ORCHESTRATION" => "orchestration:",
             "PIPELINE" => "pipeline:",
             "REPOSITORY" => "repository:",
+            "FILESTORAGE" => "filestorage:",
+            "DOCUMENTSTORAGE" => "documentstorage:",
+            "BLOBSTORAGE" => "blobstorage:",
             "ACTIVEENTITY" => "activeentity:",
             "REQUESTER" => "requester:",
             "NOTIFIER" or "NOTIFIERHANDLER" => "notifier:",
@@ -159,6 +172,9 @@ public sealed class OperationProfilingViewModelBuilder(IOperationProfilingQueryS
     /// <summary>Formats observed elapsed time in milliseconds or seconds.</summary>
     /// <example><code>var label = OperationProfilingViewModelBuilder.Duration(record.Duration);</code></example>
     public static string Duration(TimeSpan value) => value.TotalMilliseconds < 1000 ? value.TotalMilliseconds.ToString("0.###", CultureInfo.InvariantCulture) + " ms" : value.TotalSeconds.ToString("0.###", CultureInfo.InvariantCulture) + " s";
+    /// <summary>Formats analyzed duration without converting rounded doubles back into bounded TimeSpan ticks.</summary>
+    /// <example><code>var label = OperationProfilingViewModelBuilder.DurationMilliseconds(group.Distribution.P95Milliseconds);</code></example>
+    public static string DurationMilliseconds(double value) => value < 1000 ? value.ToString("0.###", CultureInfo.InvariantCulture) + " ms" : (value / 1000).ToString("0.###", CultureInfo.InvariantCulture) + " s";
     /// <summary>Formats a segment duration as a percentage of its owner, without clamping repeated or parallel totals.</summary>
     /// <example><code>var label = OperationProfilingViewModelBuilder.Percentage(segment.Statistics.TotalDuration, record.Duration);</code></example>
     public static string Percentage(TimeSpan value, TimeSpan operationDuration) => operationDuration <= TimeSpan.Zero ? "—" : ((double)value.Ticks / operationDuration.Ticks * 100).ToString("0.##", CultureInfo.InvariantCulture) + "%";

@@ -1,5 +1,6 @@
 @using ChangeHistoryDashboardEndpoints = BridgingIT.DevKit.Presentation.Web.EntityFramework.ChangeHistory.Dashboard.DashboardEndpoints
 @using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @using Microsoft.Extensions.DependencyInjection
 @inherits RazorSlice
 
@@ -123,12 +124,15 @@
                 <input id="change-history-user-id" class="form-control form-control-sm" name="changedByUserId" value="@query.ChangedByUserId" autocomplete="off">
             </div>
             <div class="col-12 col-md-6 col-xl-2">
-                <label class="form-label" for="change-history-date-from">From</label>
-                <input id="change-history-date-from" class="form-control form-control-sm" name="changedDateFrom" value="@FormatDateInput(query.ChangedDateFrom)" autocomplete="off">
+                <label class="form-label" for="change-history-date-from">From UTC</label>
+                <div class="input-group input-group-sm">
+                    @(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("change-history-date-from", "change-history-date-to")))
+                    <input id="change-history-date-from" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateFrom" value="@DashboardDateTime.FormatInput(query.ChangedDateFrom)" autocomplete="off">
+                </div>
             </div>
             <div class="col-12 col-md-6 col-xl-2">
-                <label class="form-label" for="change-history-date-to">To</label>
-                <input id="change-history-date-to" class="form-control form-control-sm" name="changedDateTo" value="@FormatDateInput(query.ChangedDateTo)" autocomplete="off">
+                <label class="form-label" for="change-history-date-to">To UTC</label>
+                <input id="change-history-date-to" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateTo" value="@DashboardDateTime.FormatInput(query.ChangedDateTo)" autocomplete="off">
             </div>
             <div class="col-12 col-md-6 col-xl-2">
                 <div class="form-check mb-1">
@@ -448,7 +452,7 @@
         => value.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
     private static string FormatDateInput(DateTimeOffset? value)
-        => value?.ToString("O", CultureInfo.InvariantCulture);
+        => DashboardDateTime.FormatQuery(value);
 
     private static string FormatValue(string value, string hash)
     {

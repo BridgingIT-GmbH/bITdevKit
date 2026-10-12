@@ -1,0 +1,41 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@inherits RazorSlice
+<div class="modal fade" id="operation-comparison-modal" tabindex="-1" aria-labelledby="operation-comparison-heading" aria-hidden="true">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable"><form id="operation-comparison-form" class="modal-content">
+        <div class="modal-header"><h2 id="operation-comparison-heading" class="modal-title h5">Compare executions</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close comparison"></button></div>
+        <div class="modal-body">
+            <label for="operation-comparison-key" class="form-label small">Operation</label>
+            <select id="operation-comparison-key" class="form-select form-select-sm mb-3" required aria-describedby="operation-comparison-help"><option value="">Select an operation</option></select>
+            <p id="operation-comparison-help" class="small text-muted">Same operation, independent conditions. Times select completed executions in UTC.</p>
+            <div class="row g-3">
+                @foreach (var side in new[] { "baseline", "candidate" })
+                {
+                    var prefix = "operation-comparison-" + side;
+                    <div class="col-md-6"><section class="card card-body p-2 h-100">
+                        <div class="operation-comparison-selection-header d-flex flex-wrap align-items-center justify-content-between gap-1 mb-2">
+                            <h3 class="h6 mb-0">@(side == "baseline" ? "Baseline" : "Comparison")</h3>
+                            @if (side == "baseline")
+                            {
+                                <div class="d-flex gap-1"><button id="operation-comparison-previous" class="btn btn-outline-secondary btn-sm" type="button" title="Use the preceding time range; an empty comparison end is evaluated now">Previous period</button><button id="operation-comparison-same-period" class="btn btn-outline-secondary btn-sm" type="button" title="Use the comparison's time range; keep baseline node and dimension filters">Same period</button></div>
+                            }
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-12"><label for="@(prefix + "-group")" class="form-label small">Recorded group</label><select id="@(prefix + "-group")" class="form-select form-select-sm" title="Use a displayed group's dimension conditions, or choose custom conditions"><option value="">Custom conditions</option></select><div id="@(prefix + "-constraints")" class="d-flex flex-wrap gap-1 mt-1" aria-label="Selected group and segment conditions"></div></div>
+                            <div class="col-12 col-sm-6"><label for="@(prefix + "-from")" class="form-label small">From UTC</label><div class="input-group input-group-sm">@(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new(prefix + "-from", prefix + "-to")))<input id="@(prefix + "-from")" type="datetime-local" step="60" required class="form-control form-control-sm" title="Inclusive completion UTC" /></div></div>
+                            <div class="col-12 col-sm-6"><label for="@(prefix + "-to")" class="form-label small">To UTC</label><input id="@(prefix + "-to")" type="datetime-local" step="60" class="form-control form-control-sm" title="Exclusive completion UTC. Empty uses the current time." /></div>
+                            <div class="col-6"><label for="@(prefix + "-node")" class="form-label small">Node</label><select id="@(prefix + "-node")" class="form-select form-select-sm"><option value="">All nodes</option></select></div>
+                            <div class="col-6"><label for="@(prefix + "-version")" class="form-label small">Application version</label><input id="@(prefix + "-version")" class="form-control form-control-sm" maxlength="128" placeholder="any" /></div>
+                        </div>
+                        <details class="mt-2"><summary class="small">Dimensions <span class="text-muted" title="All dimension conditions must match the operation. String values are case-sensitive; numeric types remain distinct."><i class="bi bi-info-circle" aria-hidden="true"></i></span></summary>
+                            <div id="@(prefix + "-dimensions")" class="mt-2"></div>
+                            <button class="btn btn-outline-primary btn-sm mt-1" type="button" data-comparison-add-dimension="@side"><i class="bi bi-plus" aria-hidden="true"></i> Add dimension</button>
+                        </details>
+                    </section></div>
+                }
+            </div>
+            <div id="operation-comparison-results" class="mt-3" role="status" aria-live="polite" aria-busy="false" tabindex="-1"></div>
+        </div>
+        <div class="modal-footer"><button class="btn btn-outline-secondary btn-sm" type="button" data-bs-dismiss="modal">Close</button><button id="operation-comparison-submit" class="btn btn-primary btn-sm" type="submit">Compare</button></div>
+    </form></div>
+</div>

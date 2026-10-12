@@ -31,7 +31,7 @@ public interface IRequestProfilingFeature
     /// <summary>Safely observes an exception before a consuming handler or filter replaces its response.</summary>
     /// <example><code>feature?.ReportException(exception);</code></example>
     void ReportException(Exception exception);
-    /// <summary>Captures the original selected route once, including an unmatched null route.</summary>
+    /// <summary>Captures the original route once and promotes its template to the default key without replacing explicit overrides.</summary>
     /// <example><code>feature?.CaptureOriginalRoute();</code></example>
     void CaptureOriginalRoute();
 }
@@ -42,6 +42,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
 {
     private readonly object sync = new();
     private readonly Guid id;
+    private readonly PathString originalPathBase;
     private HttpContext context;
     private readonly RequestProfilingRuntime runtime;
     private HttpRequestProfilingMetadata metadata;
@@ -61,13 +62,15 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
     /// <summary>Creates the selected or suppressed request feature from immutable entry metadata.</summary>
     /// <example>Created once at HTTP middleware entry.</example>
     public RequestProfilingFeature(HttpContext context, IProfilingOperationScope operation, RequestProfilingRuntime runtime,
-        HttpRequestProfilingMetadata metadata, bool selected, string initialKey)
+        HttpRequestProfilingMetadata metadata, bool selected, string initialKey, bool? suppressed = null)
     {
         this.context = context;
+        this.originalPathBase = context.Request.PathBase;
         this.Operation = operation;
         this.runtime = runtime;
         this.metadata = metadata;
         this.Selected = selected;
+        this.Suppressed = suppressed ?? !selected;
         this.InitialKey = initialKey;
         try { this.id = operation?.Id ?? Guid.Empty; }
         catch (Exception) { runtime.RecordObservationFailure(); }
@@ -82,7 +85,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
     /// <inheritdoc />
     public string InitialKey { get; }
     /// <inheritdoc />
-    public bool Suppressed => !this.Selected;
+    public bool Suppressed { get; }
     /// <inheritdoc />
     public IProfilingOperationScope Operation { get; }
 
@@ -104,6 +107,19 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
 
             this.routeObserved = true;
             this.metadata = this.metadata with { Route = (this.context.GetEndpoint() as RouteEndpoint)?.RoutePattern.RawText };
+            if (this.metadata.Route is { } template && this.Operation is not null)
+            {
+                this.Safe(() =>
+                {
+                    var path = this.originalPathBase.Add(new PathString(template.StartsWith('/') ? template : "/" + template)).Value;
+                    var (key, shortened) = RequestProfilingPathMatcher.CreateKey(path, this.runtime.Options.StripPathPrefix, this.runtime.MaximumKeyLength);
+                    if (this.Operation.TrySetDefaultKey(key))
+                    {
+                        this.metadata = this.metadata with { PathKeyShortened = shortened };
+                    }
+                });
+            }
+
             this.Publish();
         }
     });

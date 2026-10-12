@@ -18,7 +18,7 @@ internal sealed class ProfilingOperationQueryCodec(OperationProfilingOptions opt
 
     internal OperationProfilingQuery Normalize(OperationProfilingQuery query, ProfilingQueryBoundary boundary)
     {
-        if (query is null || !Enum.IsDefined(query.View) || query.PageSize <= 0 || query.PageSize > this.queryOptions.MaximumPageSize
+        if (query is null || query.StartedWithin && query.IntervalOverlap || !Enum.IsDefined(query.View) || query.PageSize <= 0 || query.PageSize > this.queryOptions.MaximumPageSize
             || query.MaximumAnalysisCount <= 0 || query.MaximumAnalysisCount > this.queryOptions.MaximumAnalysisRecords
             || query.Outcomes is null || query.Outcomes.Count > 5 || query.Outcomes.Any(o => !Enum.IsDefined(o))
             || query.SegmentOutcomes is null || query.SegmentOutcomes.Count > 4 || query.SegmentOutcomes.Any(o => !Enum.IsDefined(o))
@@ -26,14 +26,14 @@ internal sealed class ProfilingOperationQueryCodec(OperationProfilingOptions opt
             || query.Dimensions is null || query.SegmentDimensions is null || query.GroupingDimensions is null
             || query.Dimensions.Count + query.SegmentDimensions.Count > this.queryOptions.MaximumDimensionPredicates
             || query.GroupingDimensions.Count > this.queryOptions.MaximumGroupingDimensions || query.HttpStatusCode is < 100 or > 599
-            || query.FromUtc.HasValue != query.ToUtc.HasValue || query.FromUtc?.Offset != null && query.FromUtc.Value.Offset != TimeSpan.Zero
+            || query.FromUtc?.Offset != null && query.FromUtc.Value.Offset != TimeSpan.Zero
             || query.ToUtc?.Offset != null && query.ToUtc.Value.Offset != TimeSpan.Zero)
         {
             throw new ArgumentException("Invalid profiling query.");
         }
 
-        var from = query.FromUtc ?? boundary?.FromUtc ?? this.clock.GetUtcNow().Subtract(TimeSpan.FromMinutes(15));
         var to = query.ToUtc ?? boundary?.ToUtc ?? this.clock.GetUtcNow();
+        var from = query.FromUtc ?? boundary?.FromUtc ?? to.Subtract(TimeSpan.FromMinutes(15));
         if (from >= to || query.SegmentPath is { } path && (path.Components.Count > this.options.MaxSegmentDepth || path.Components.Any(c => !ProfilingValueValidator.IsKey(c, this.options.MaxKeyLength))))
         {
             throw new ArgumentException("Invalid profiling interval or path.");

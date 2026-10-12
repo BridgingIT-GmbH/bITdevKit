@@ -52,7 +52,7 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext>
         this.Capabilities = new() { Name = "EntityFramework", Scope = "database:" + scopeId, Shared = true, OperationRetention = new() { MaximumCount = this.options.MaximumRetainedOperations, MaximumBytes = this.options.MaximumRetainedBytes == long.MaxValue ? null : this.options.MaximumRetainedBytes, MaximumAge = this.options.MaximumOperationAge } };
         this.runtime = new(scopes);
         this.runtime.SharedClear = token => this.ClearAsync(new() { DataSet = ProfilingDataSet.Runtime }, token);
-        this.unitOfWork = new(scopes, new(this.storageOptions, this.Capabilities.Scope));
+        this.unitOfWork = new(scopes, new(this.storageOptions, this.Capabilities.Scope, this.options, this.queryOptions, this.clock));
     }
 
     /// <summary>Gets the database provider scope without exposing connection credentials.</summary>

@@ -25,6 +25,7 @@ internal sealed class ProfilingCaptureState
     private ProfilingFailureDescriptor failure;
     private OperationProfilingOutcome? outcome;
     private string key;
+    private bool keyOverridden;
     private bool closed;
     private bool truncated;
     private bool partial;
@@ -96,17 +97,38 @@ internal sealed class ProfilingCaptureState
         }
     }
 
+    /// <summary>Applies an explicit key and protects accepted overrides from later adapter defaults.</summary>
+    /// <example><code>capture.SetKey("catalog:refresh");</code></example>
     public void SetKey(string value) => this.Observe(() =>
+    {
+        if (this.ReplaceKey(value)) { this.keyOverridden = true; }
+    });
+
+    /// <summary>Applies a late adapter default without overwriting an accepted application key.</summary>
+    /// <example><code>capture.TrySetDefaultKey("/catalog/{id}");</code></example>
+    public bool TrySetDefaultKey(string value)
+    {
+        var accepted = false;
+        this.Observe(() =>
+        {
+            if (!this.keyOverridden) { accepted = this.ReplaceKey(value); }
+        });
+
+        return accepted;
+    }
+
+    private bool ReplaceKey(string value)
     {
         if (!ProfilingValueValidator.IsKey(value, this.options.MaxKeyLength)
             || !this.Charge(ProfilingValueValidator.Charge(value) - ProfilingValueValidator.Charge(this.key)))
         {
             this.RejectMetadata();
-            return;
+            return false;
         }
 
         this.key = value;
-    });
+        return true;
+    }
 
     public void SetDimension(string name, object value, ProfilingInvocation invocation = null) => this.Observe(() =>
     {

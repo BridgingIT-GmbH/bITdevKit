@@ -1,0 +1,22 @@
+@inherits RazorSlice
+<style>
+.timeline-scroll { overflow: auto; max-height: 65vh; }
+.timeline-grid { width: 100%; min-width: 0; --timeline-label-width: 12rem; }
+.timeline-lane { display: flex; border-bottom: 1px solid var(--bs-border-color); min-height: 64px; }
+.timeline-lane-label { width: var(--timeline-label-width); flex-shrink: 0; padding: .65rem .75rem; display: flex; flex-direction: column; justify-content: center; position: sticky; left: 0; z-index: 2; background: var(--bs-body-bg); border-inline-end: 1px solid var(--bs-border-color); }
+.timeline-lane-label > span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: .8rem; }
+.timeline-lane-label > small { font-size: .7rem; }
+.timeline-lane-events { position: relative; flex: 1; min-width: 0; overflow: hidden; background-image: linear-gradient(to right, var(--bs-border-color) 1px, transparent 1px); background-size: 25% 100%; }
+.timeline-box { position: absolute; top: 50%; transform: translate(-50%, -50%); min-width: 22px; height: 26px; padding: 0 3px; border: 1px solid var(--lane-color); border-radius: 2px; color: var(--bs-body-color); background: color-mix(in srgb, var(--lane-color) 50%, var(--bs-body-bg)); font-size: .7rem; font-weight: 600; transition: left 1s linear; }
+.timeline-box[data-count="1"] { width: 22px; }
+.timeline-box.has-problems { border: 2px solid var(--bs-danger); }
+.timeline-box:hover,.timeline-box:focus-visible { outline: 2px solid var(--bs-body-color); outline-offset: 2px; z-index: 1; }
+.timeline-axis { margin-inline-start: var(--timeline-label-width); position: sticky; bottom: 0; min-height: 3.3rem; padding: 1.7rem 0 .25rem; background: var(--bs-body-bg); z-index: 3; border-top: 1px solid var(--bs-border-color); }
+.timeline-axis-tick { position: absolute; font-size: .7rem; white-space: nowrap; top: .4rem; transform: translateX(-50%); }
+.timeline-axis-tick:first-child { transform: none; }
+.timeline-axis-tick:nth-last-child(2) { transform: translateX(-100%); }
+.timeline-axis-caption { display: block; width: 100%; text-align: center; font-size: .7rem; color: var(--bs-secondary-color); }
+@@media (max-width: 991.98px) { .timeline-grid { --timeline-label-width: 8rem; } .timeline-axis-tick:nth-child(2), .timeline-axis-tick:nth-child(4) { display: none; } }
+@@media (max-width: 767.98px) { .timeline-grid { min-width: 620px; } }
+@@media (prefers-reduced-motion: reduce) { .timeline-box { transition: none; } }
+</style>

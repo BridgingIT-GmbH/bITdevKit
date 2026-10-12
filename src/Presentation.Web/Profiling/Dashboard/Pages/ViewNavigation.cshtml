@@ -1,0 +1,14 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using DashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice<string>
+@{
+    var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+}
+<nav class="nav nav-pills mb-2" aria-label="Profiling views">
+    <a class="nav-link @(Model == "runtime" ? "active" : "")" href="@DashboardEndpoints.BuildProfilingPath(options)">Runtime</a>
+    <a class="nav-link @(Model == "operations" ? "active" : "")" href="@DashboardEndpoints.BuildOperationsPath(options)">Operations</a>
+    <a class="nav-link @(Model == "requests" ? "active" : "")" href="@DashboardEndpoints.BuildOperationsPath(options, true)">Requests</a>
+    <a class="nav-link @(Model == "timeline" ? "active" : "")" href="@DashboardEndpoints.BuildTimelinePath(options)">Timeline</a>
+    <a class="nav-link @(Model == "insights" ? "active" : "")" href="@DashboardEndpoints.BuildInsightsPath(options)">Insights</a>
+</nav>

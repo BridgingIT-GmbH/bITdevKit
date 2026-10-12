@@ -1,0 +1,146 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const root = document.getElementById('operation-content');
+    if (root?.dataset.insights !== 'true') return;
+    const form = document.getElementById('insights-filters'), rows = document.getElementById('insights-rows');
+    const status = document.getElementById('insights-status'), error = document.getElementById('insights-error');
+    const interval = document.getElementById('insights-refresh'), modal = document.getElementById('insights-segments-modal');
+    const stateKey = 'bdk.profiling.insights:' + root.dataset.pageUrl;
+    const current = new URL(location.href);
+    let saved = {}, controller = null, timer = null, segmentTrigger = null;
+    try { saved = JSON.parse(localStorage.getItem(stateKey) || '{}') || {}; } catch { }
+    const explicit = [...form.elements].some(control => control.name && current.searchParams.has(control.name));
+    for (const control of form.elements) {
+        if (!control.name) continue;
+        const value = explicit ? current.searchParams.get(control.name) : saved.filters?.[control.name];
+        if (typeof value !== 'string' || value.length > 128) continue;
+        if (control.tagName === 'SELECT' && value && ['kind', 'nodeId'].includes(control.name) && ![...control.options].some(option => option.value === value)) control.add(new Option(value, value));
+        control.value = control.type === 'datetime-local' ? value.slice(0, 16) : value;
+    }
+    if (typeof saved.refresh === 'string' && [...interval.options].some(option => option.value === saved.refresh)) interval.value = saved.refresh;
+    let applied = Object.fromEntries(new FormData(form));
+    const number = value => Number(value || 0).toLocaleString();
+    const duration = value => value == null ? '—' : value >= 1000 ? (value / 1000).toFixed(3) + ' s' : value.toFixed(3) + ' ms';
+    const utc = value => new Date(value).toISOString().slice(0, 19).replace('T', ' ');
+    const failed = value => value.outcomes?.Failed || 0;
+    const rate = value => value.count ? (failed(value) / value.count * 100).toFixed(1) + '%' : '—';
+    const identity = group => JSON.stringify([group.kind, group.key, group.httpMethod]);
+    function remember() { try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)), refresh: interval.value })); } catch { } }
+    function urlFor(path) {
+        const url = new URL(path, location.href);
+        for (const [key, value] of Object.entries(applied)) if (value) url.searchParams.set(key, ['fromUtc', 'toUtc'].includes(key) ? value + 'Z' : value);
+        if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
+        return url;
+    }
+    function schedule() {
+        clearTimeout(timer);
+        if (interval.value) timer = setTimeout(() => document.hidden ? schedule() : refresh(), Number(interval.value));
+    }
+    function cell(row, text, numeric = true, title = '') {
+        const element = document.createElement('td'); element.textContent = text;
+        if (numeric) element.className = 'text-end text-nowrap';
+        if (title) element.title = title; row.append(element); return element;
+    }
+    function action(row, icon, label, handler) {
+        const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-outline-warning btn-sm';
+        button.title = label; button.setAttribute('aria-label', label);
+        const image = document.createElement('i'); image.className = 'bi bi-' + icon; image.setAttribute('aria-hidden', 'true'); button.append(image);
+        if (handler) button.addEventListener('click', handler); row.append(button); return button;
+    }
+    function template(name, options) {
+        let element = root.querySelector('template[' + name + ']');
+        if (!element) { element = document.createElement('template'); element.setAttribute(name, ''); root.append(element); }
+        element.content.replaceChildren(...options);
+    }
+    function showSegments(group, trigger) {
+        segmentTrigger = trigger;
+        document.getElementById('insights-segments-heading').textContent = group.kindLabel + ' · ' + group.name;
+        document.getElementById('insights-segments-summary').textContent = number(group.completedLatency.count) + ' completed latency samples · ' + number(group.segmentFailureCount) + ' executions with failed segments · ' + number(group.partialCount) + ' partial captures';
+        const body = document.getElementById('insights-segments-rows'); body.replaceChildren();
+        for (const segment of group.segments) {
+            const row = document.createElement('tr');
+            cell(row, segment.path.join(' › ') + (segment.partialCoverage ? ' · Partial' : ''), false);
+            cell(row, number(segment.operationCount)); cell(row, segment.unavailable ? '—' : number(segment.invocationCount));
+            cell(row, segment.unavailable || !segment.operationCount ? '—' : (segment.invocationCount / segment.operationCount).toFixed(2));
+            cell(row, duration(segment.unavailable ? null : segment.meanSelfMilliseconds));
+            cell(row, duration(segment.unavailable ? null : segment.selfMilliseconds)); cell(row, duration(segment.unavailable ? null : segment.totalMilliseconds)); body.append(row);
+        }
+        if (!group.segments.length) { const row = document.createElement('tr'); cell(row, 'No segments were recorded for completed executions.', false).colSpan = 7; body.append(row); }
+        bootstrap.Modal.getOrCreateInstance(modal).show(trigger);
+    }
+    function render(value, selection) {
+        document.getElementById('insights-count').textContent = number(value.count);
+        document.getElementById('insights-completed').textContent = number(value.completedCount);
+        document.getElementById('insights-failures').textContent = number(failed(value)) + ' · ' + rate(value);
+        document.getElementById('insights-partial').textContent = number(value.partialCount);
+        document.getElementById('insights-groups').textContent = number(value.groups.length) + ' of ' + number(value.groupCount) + ' groups';
+        document.getElementById('insights-period').textContent = utc(value.fromUtc) + ' → ' + utc(value.toUtc) + ' UTC';
+        const node = document.getElementById('operation-node'), selected = node.value;
+        node.replaceChildren(new Option('All nodes', ''), ...(value.nodes || []).map(item => { const option = new Option(item.name, item.id); option.title = item.details; return option; }));
+        if (selected && ![...node.options].some(option => option.value === selected)) node.add(new Option(selected, selected)); node.value = selected;
+        node.title = value.nodesTruncated ? 'Node choices are limited. Narrow the selection.' : '';
+        template('data-operation-node-options', [...node.options].map(option => option.cloneNode(true)));
+        const kind = document.getElementById('insights-kind');
+        for (const group of value.groups) if (![...kind.options].some(option => option.value.toUpperCase() === group.kind.toUpperCase())) kind.add(new Option(group.kindLabel, group.kind));
+        const keys = new Map();
+        for (const group of value.groups) {
+            const option = new Option(group.kindLabel + ' · ' + (group.httpMethod ? group.httpMethod + ' ' : '') + group.name, identity(group));
+            option.dataset.key = group.key; option.dataset.kind = group.kind; keys.set(identity(group), option);
+        }
+        template('data-operation-comparison-keys', [...keys.values()]); window.bdkOperationComparison?.synchronize();
+        const fragment = document.createDocumentFragment();
+        for (const group of value.groups) {
+            const row = document.createElement('tr'); row.dataset.insightGroup = identity(group);
+            const heading = cell(row, '', false); heading.style.minWidth = '12rem';
+            const label = document.createElement('span'); label.className = 'small text-muted'; label.textContent = group.kindLabel + ' · ';
+            const link = document.createElement('a'); link.textContent = (group.httpMethod ? group.httpMethod + ' ' : '') + group.name; link.title = group.key;
+            const selector = { fromUtc: value.fromUtc, toUtc: value.toUtc, startedWithin: true, key: group.key, kind: group.kind, nodeId: selection.nodeId || null, httpMethod: group.httpMethod, outcomes: [] };
+            const url = new URL(root.dataset.operationListUrl, location.href); url.searchParams.set('query', JSON.stringify(selector));
+            if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView')); link.href = url; heading.append(label, link);
+            cell(row, number(group.count), true, Object.entries(group.outcomes).map(([key, count]) => key + ': ' + number(count)).join(' · '));
+            cell(row, number(group.completedLatency.count));
+            cell(row, duration(group.completedLatency.durationUnavailable ? null : group.completedLatency.p50Milliseconds));
+            cell(row, duration(group.completedLatency.durationUnavailable ? null : group.completedLatency.p95Milliseconds), true, group.completedLatency.count < 20 ? 'Fewer than 20 completed samples; p95 is the largest observed duration.' : '95th percentile of completed latency samples.');
+            cell(row, duration(group.completedElapsedMilliseconds)); cell(row, number(failed(group)) + ' · ' + rate(group));
+            const actions = cell(row, '', false); actions.className = 'text-end text-nowrap';
+            action(actions, 'bar-chart', 'Segment bottlenecks', event => showSegments(group, event.currentTarget));
+            const compare = action(actions, 'arrow-left-right', 'Compare executions'); compare.classList.add('ms-1');
+            compare.dataset.operationComparisonOpen = ''; compare.dataset.operationComparisonKey = group.key; compare.dataset.operationComparisonKind = group.kind;
+            compare.dataset.operationComparisonSelector = JSON.stringify({ ...selector, outcomes: ['Completed'] });
+            const info = action(actions, 'info-circle', group.completedLatency.count ? 'Slowest completed execution details' : 'Execution details', event => window.bdkOperationDetails.open(root.dataset.detailsUrl + '/' + group.representativeId + '/content', event.currentTarget)); info.classList.add('ms-1');
+            fragment.append(row);
+        }
+        if (!value.groups.length) { const row = document.createElement('tr'); cell(row, 'No retained operations match these filters.', false).colSpan = 8; fragment.append(row); }
+        rows.replaceChildren(fragment);
+        const health = value.health;
+        document.getElementById('insights-quality').textContent = number(value.outcomes.Canceled) + ' canceled · ' + number(value.outcomes.Aborted) + ' aborted · ' + number(value.outcomes.Incomplete) + ' incomplete';
+        document.getElementById('insights-quality').title = 'Local capture counters since process start: ' + number(health.droppedOperations) + ' dropped, ' + number(health.rejectedOperations) + ' rejected, ' + number(health.queueRecords) + ' queued. These counters do not describe this filtered selection.';
+    }
+    async function refresh() {
+        clearTimeout(timer); controller?.abort();
+        const active = new AbortController(); controller = active; const selection = { ...applied };
+        rows.setAttribute('aria-busy', 'true');
+        try {
+            const response = await fetch(urlFor(root.dataset.dataUrl), { signal: active.signal, cache: 'no-store' });
+            if (response.redirected || !(response.headers.get('content-type') || '').includes('json')) throw new Error('Insights unavailable. Check your connection and dashboard sign-in.');
+            const value = await response.json();
+            if (!response.ok) throw new Error((value.detail || value.title || 'Insights could not be loaded.').slice(0, 300));
+            if (controller !== active || active.signal.aborted) return;
+            render(value, selection); error.hidden = true; status.textContent = 'Updated ' + new Date().toISOString().slice(11, 19) + ' UTC'; status.className = 'small text-muted';
+        } catch (failure) {
+            if (controller !== active || active.signal.aborted) return;
+            error.textContent = failure.message; error.hidden = false; status.textContent = 'Refresh failed; showing previous data.'; status.className = 'small text-danger';
+        } finally { if (controller === active) { rows.setAttribute('aria-busy', 'false'); schedule(); } }
+    }
+    function apply() { applied = Object.fromEntries(new FormData(form)); history.replaceState(null, '', urlFor(root.dataset.pageUrl)); remember(); refresh(); }
+    form.addEventListener('submit', event => { event.preventDefault(); apply(); }); form.addEventListener('input', remember);
+    document.getElementById('insights-rank').addEventListener('change', apply); document.getElementById('insights-limit').addEventListener('change', apply);
+    document.getElementById('insights-reset').addEventListener('click', () => { form.reset(); interval.value = ''; apply(); });
+    interval.addEventListener('change', () => { remember(); schedule(); }); document.getElementById('insights-refresh-now').addEventListener('click', refresh);
+    modal.addEventListener('hidden.bs.modal', () => { if (segmentTrigger?.isConnected) segmentTrigger.focus(); else document.getElementById('insights-refresh-now').focus(); });
+    window.addEventListener('pagehide', () => { remember(); controller?.abort(); clearTimeout(timer); });
+    window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
+    remember(); refresh();
+})();
+</script>

@@ -1,0 +1,17 @@
+@using System.Text.Json
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@inherits RazorSlice<OperationProfilingDimensionAction>
+@{
+    var context = JsonSerializer.Serialize(new { Model.Record.Key, Model.Record.Kind, FromUtc = Model.Record.CompletedUtc.Subtract(TimeSpan.FromMinutes(15)), ToUtc = Model.Record.CompletedUtc.AddMilliseconds(1), Model.Record.NodeId, Model.Record.Node.ApplicationVersion });
+    var predicate = JsonSerializer.Serialize(Model.Predicate);
+    var path = Model.SegmentPath is null ? "" : JsonSerializer.Serialize(Model.SegmentPath.Components);
+}
+<div class="dropdown d-inline-block"><button class="btn btn-outline-secondary btn-sm dropdown-toggle operation-dimension-action" type="button" data-bs-toggle="dropdown" aria-expanded="false" title="@(Model.SegmentPath is null ? "Operation dimension" : "Segment dimension: " + string.Join(" › ", Model.SegmentPath.Components))">@(Model.Predicate.Value is { } value ? value.Type + ": " + (value.Scalar.Length == 0 ? "(empty string)" : value.Scalar) : Model.Predicate.Operator.ToString())</button>
+    <ul class="dropdown-menu">
+        @foreach (var action in Model.SegmentPath is null && !ProfilingDimensionKeys.IsExecutionIdentifier(Model.Predicate.Key) ? new[] { "filter", "group", "baseline", "candidate" } : new[] { "filter", "baseline", "candidate" })
+        {
+            <li><button class="dropdown-item" type="button" data-profiling-dimension-action="@action" data-dimension-context="@context" data-dimension-predicate="@predicate" data-dimension-segment-path="@path">@(action switch { "filter" => "Filter by this condition", "group" => "Group by this dimension", "baseline" => "Use as baseline", _ => "Use for comparison" })</button></li>
+        }
+    </ul>
+</div>

@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard;
 
 using BridgingIT.DevKit.Common;
+using System.Text.Json;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
@@ -27,6 +28,8 @@ public sealed partial class DashboardEndpoints
 
     private void MapOperationRoutes(RouteGroupBuilder group)
     {
+        this.MapTimelineRoutes(group);
+        this.MapInsightsRoutes(group);
         group.MapGet("/profiling", (HttpContext context) =>
         {
             var profiling = context.RequestServices.GetService<ProfilingOptions>();
@@ -41,6 +44,8 @@ public sealed partial class DashboardEndpoints
             group.MapGet(path + "/content", (Func<HttpContext, Task<HttpResult>>)(context => RenderOperationListAsync(context, requestsOnly, true))).WithName("_bdk.Dashboard.Profiling" + name + "Content").Produces<string>();
             group.MapGet(path + "/{id:guid}", (HttpContext context, Guid id) => RenderOperationDetailAsync(context, id, requestsOnly, false)).WithName("_bdk.Dashboard.Profiling" + name + "Detail").Produces<string>();
             group.MapGet(path + "/{id:guid}/content", (HttpContext context, Guid id) => RenderOperationDetailAsync(context, id, requestsOnly, true)).WithName("_bdk.Dashboard.Profiling" + name + "DetailContent").Produces<string>();
+            group.MapPost(path + "/groups/delete", (ProfilingDashboardGroupDeleteRequest request, HttpContext context) => DeleteOperationGroupAsync(context, request, requestsOnly))
+                .WithName("_bdk.Dashboard.Profiling" + name + "DeleteGroup").DisableAntiforgery().ExcludeFromDescription();
         }
 
         const string api = "/profiling/operations/api";
@@ -49,6 +54,7 @@ public sealed partial class DashboardEndpoints
         group.MapGet(api + "/records/{id:guid}", (HttpContext context, Guid id) => ReadOperationAsync(context, id)).WithName("_bdk.Dashboard.ProfilingOperationRecord").ExcludeFromDescription();
         group.MapGet(api + "/records/{id:guid}/runtime", (HttpContext context, Guid id) => ReadOperationRuntimeAsync(context, id)).WithName("_bdk.Dashboard.ProfilingOperationRuntime").ExcludeFromDescription();
         group.MapGet(api + "/analysis", (Func<HttpContext, Task<HttpResult>>)AnalyzeOperationsAsync).WithName("_bdk.Dashboard.ProfilingOperationAnalysis").ExcludeFromDescription();
+        group.MapGet(api + "/dimensions", (Func<HttpContext, Task<HttpResult>>)DiscoverOperationDimensionsAsync).WithName("_bdk.Dashboard.ProfilingOperationDimensions").ExcludeFromDescription();
         group.MapGet(api + "/health", (HttpContext context) => OperationQueries(context) is { } queries ? Results.Ok(queries.GetHealth()) : OperationUnavailable()).WithName("_bdk.Dashboard.ProfilingOperationHealth").ExcludeFromDescription();
     }
 
@@ -73,6 +79,26 @@ public sealed partial class DashboardEndpoints
         context.RequestServices.GetService<ProfilingOptions>()?.Enabled == true ? context.RequestServices.GetService<IOperationProfilingQueryService>() : null;
     private static HttpResult OperationUnavailable() => Results.Problem("Profiling history is unavailable.", statusCode: 503);
 
+    private static async Task<HttpResult> DeleteOperationGroupAsync(HttpContext context, ProfilingDashboardGroupDeleteRequest request, bool requestsOnly)
+    {
+        if (request?.Confirmed != true || request.Selection is not { } selection || string.IsNullOrEmpty(selection.Key) || string.IsNullOrEmpty(selection.Kind)
+            || selection.KeyContains is not null || !selection.FromUtc.HasValue || !selection.ToUtc.HasValue || selection.Cursor is not null || selection.Boundary is not null)
+        {
+            return Results.Problem("Confirm deletion of an exact operation key and kind with the current UTC window and filters.", statusCode: 400);
+        }
+
+        var input = new QueryCollection(new Dictionary<string, StringValues> { ["query"] = JsonSerializer.Serialize(selection) });
+        var parsed = OperationProfilingDashboardQuery.Read(input, requestsOnly);
+        if (parsed.IsFailure) { return OperationResponse(parsed); }
+
+        var provider = context.RequestServices.GetService<ProfilingOptions>()?.Enabled == true
+            ? context.RequestServices.GetService<IProfilingStorageProvider>() : null;
+        if (provider is null) { return OperationUnavailable(); }
+
+        var result = await provider.ClearAsync(new ProfilingClearRequest { DataSet = ProfilingDataSet.Operations, OperationSelection = parsed.Value }, context.RequestAborted).ConfigureAwait(false);
+        return result.IsSuccess && result.Value.HasRemainingWork ? Results.Json(result.Value, statusCode: StatusCodes.Status202Accepted) : OperationResponse(result);
+    }
+
     private static async Task<HttpResult> ReadOperationSelectionAsync(HttpContext context, bool groups)
     {
         var queries = OperationQueries(context);
@@ -83,6 +109,21 @@ public sealed partial class DashboardEndpoints
 
         return groups ? OperationResponse(await queries.GroupAsync(query.Value, context.RequestAborted).ConfigureAwait(false))
             : OperationResponse(await queries.QueryAsync(query.Value, context.RequestAborted).ConfigureAwait(false));
+    }
+
+    private static async Task<HttpResult> DiscoverOperationDimensionsAsync(HttpContext context)
+    {
+        var queries = OperationQueries(context);
+        if (queries is null) { return OperationUnavailable(); }
+
+        var query = OperationProfilingDashboardQuery.Read(context.Request.Query);
+        if (query.IsFailure) { return OperationResponse(query); }
+
+        var input = context.Request.Query;
+        var scope = string.IsNullOrEmpty(input["scope"]) ? ProfilingDimensionScope.Operation
+            : Enum.TryParse<ProfilingDimensionScope>(input["scope"], true, out var selected) && Enum.IsDefined(selected) ? selected : (ProfilingDimensionScope)(-1);
+        return OperationResponse(await queries.DiscoverDimensionsAsync(query.Value, scope, input["dimensionKey"].FirstOrDefault(),
+            input["nameSearch"].FirstOrDefault(), input["valueSearch"].FirstOrDefault(), context.RequestAborted).ConfigureAwait(false));
     }
 
     private static async Task<HttpResult> ReadOperationAsync(HttpContext context, Guid id)

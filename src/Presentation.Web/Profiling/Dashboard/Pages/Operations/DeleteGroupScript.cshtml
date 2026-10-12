@@ -1,0 +1,47 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const modal = document.getElementById('operation-delete-group-modal');
+    if (!modal) return;
+    const submit = document.getElementById('operation-delete-group-submit');
+    const status = document.getElementById('operation-delete-group-result');
+    let target = null, busy = false, trigger = null;
+    document.addEventListener('click', event => {
+        const button = event.target.closest?.('[data-operation-delete-group]');
+        if (!button) return;
+        event.preventDefault(); event.stopPropagation();
+        if (busy) return;
+        try { target = { url: button.dataset.deleteUrl, selection: JSON.parse(button.dataset.deleteSelector) }; } catch { return; }
+        trigger = button;
+        document.getElementById('operation-delete-group-name').textContent = button.dataset.deleteName;
+        document.getElementById('operation-delete-group-count').textContent = 'Delete ' + button.dataset.deleteCount + (button.dataset.deleteCount === '1' ? ' execution' : ' executions') + ' and segments?';
+        status.textContent = ''; status.className = '';
+        submit.disabled = false;
+        window.bootstrap?.Modal.getOrCreateInstance(modal).show();
+    });
+    submit.addEventListener('click', async () => {
+        if (!target || busy) return;
+        busy = true; submit.disabled = true;
+        status.className = 'small text-muted'; status.textContent = 'Deleting matching executions…';
+        try {
+            const response = await fetch(target.url, { method: 'POST', headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ confirmed: true, selection: target.selection }) });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok || response.redirected || !response.headers.get('content-type')?.includes('application/json')) throw new Error(result.detail || result.title || 'Group deletion failed.');
+            const pending = result.hasRemainingWork ?? result.HasRemainingWork;
+            const removed = result.removedOperationCount ?? result.RemovedOperationCount ?? 0;
+            status.className = 'small text-success';
+            status.textContent = pending ? 'Removed ' + removed + ' executions. Remaining matches are being deleted by background maintenance.' : 'Removed ' + removed + ' executions.';
+            window.dispatchEvent(new CustomEvent('bdk:operation-group-deleted'));
+            if (!pending) window.bootstrap?.Modal.getInstance(modal)?.hide();
+        } catch (error) {
+            status.className = 'small text-danger'; status.textContent = error.message;
+            submit.disabled = false;
+        } finally { busy = false; }
+    });
+    modal.addEventListener('hidden.bs.modal', () => {
+        if (trigger?.isConnected) trigger.focus();
+        else document.getElementById('operation-refresh-now')?.focus();
+    });
+})();
+</script>

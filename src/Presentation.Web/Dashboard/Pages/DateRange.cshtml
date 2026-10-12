@@ -1,0 +1,17 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@inherits RazorSlice<DashboardDateRangeModel>
+<div class="dropdown dashboard-date-range" data-dashboard-date-range-from="@Model.FromInputId" data-dashboard-date-range-to="@Model.ToInputId">
+    <button type="button" class="btn btn-outline-secondary btn-sm" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Quick UTC range" title="Quick UTC range">
+        <i class="bi bi-clock-history" aria-hidden="true"></i>
+    </button>
+    <ul class="dropdown-menu" aria-label="Quick UTC ranges">
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="60000">Last minute</button></li>
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="300000">Last 5 minutes</button></li>
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="900000">Last 15 minutes</button></li>
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="3600000">Last hour</button></li>
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="21600000">Last 6 hours</button></li>
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="86400000" title="Previous 24 hours">Last day</button></li>
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="604800000" title="Previous 7 days">Last week</button></li>
+        <li><button type="button" class="dropdown-item" data-dashboard-date-range-duration="2592000000">Last 30 days</button></li>
+    </ul>
+</div>

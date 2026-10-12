@@ -23,7 +23,6 @@ public sealed class OrchestrationProfilingExecutionScope(IOperationProfiler prof
             Key = "orchestration:" + context.OrchestrationName, Kind = OperationProfilingKind.Orchestration.ToString(), CorrelationId = context.CorrelationId,
         }, async (scope, _) =>
         {
-            Enrich(scope, context);
             await next().ConfigureAwait(false);
             try { if (scope.IsRecording) { scope.SetDimension("orchestration.status", context.Status.ToString()); } }
             catch (Exception) { /* Executor state is authoritative even if enrichment fails. */ }
@@ -42,18 +41,5 @@ public sealed class OrchestrationProfilingExecutionScope(IOperationProfiler prof
     public IDisposable BeginIndependentExecutionBoundary()
     {
         return profiling.BeginSafeExecutionBoundary();
-    }
-
-    private static void Enrich<TData>(IProfilingRecordingScope scope, OrchestrationContext<TData> context)
-        where TData : class, IOrchestrationData
-    {
-        try
-        {
-            if (!scope.IsRecording) { return; }
-
-            scope.SetDimension("orchestration.instanceId", context.InstanceId.ToString("D"));
-            scope.SetDimension("orchestration.correlationId", context.CorrelationId);
-        }
-        catch (Exception) { /* No services, context, data or reason messages are retained. */ }
     }
 }

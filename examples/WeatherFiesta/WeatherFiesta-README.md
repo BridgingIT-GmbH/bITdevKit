@@ -245,6 +245,12 @@ Results show the HTTP status and browser duration through receipt of the respons
 
 ### Profiling
 
+File locations `documents` and `attachments`, document archive clients and blob clients also enable operation profiling behaviors. Their storage calls appear as segments within existing request/job profiles or as independent storage operations. Use logical location, document client/type and blob store/container dimensions to filter or compare workloads; individual paths and keys are not captured.
+
+Open **BDK > Profiling > Timeline** for a live kind-by-time overview. Choose a 15-minute, 30-minute, hour, 12-hour, day, week or month window, or set UTC bounds. Kind, key-contains and node filters are remembered; boxes open execution details or a paged selection for dense activity. Dashboard storage action URLs allow nested business profiling while their HTTP requests and ordinary polling remain excluded.
+
+Open **BDK > Profiling > Insights** to rank operations by p95, accumulated completed time, frequency or root failure rate. Inspect completed latency sample counts and open segment bottlenecks, execution details or comparisons in dialogs. Filters and ranking are remembered. Empty dates select the last 15 minutes; rankings cover the complete bounded retained selection before applying the row limit.
+
 Open **Core > Profiling Lab** at `/_bdk/dashboard/app/core/profiling` after signing in as an administrator. The page runs stored-weather reviews and links directly to their operation details. It also shows Runtime session status, persistence backlog, and the executing node.
 
 1. Click **Start Runtime session** to observe the process for two minutes. Click **Take snapshot** for a baseline.
@@ -277,7 +283,7 @@ builder.Services.AddProfiling(o => o.Enabled(builder.Environment.IsDevelopment()
 	.AddConsoleCommands(builder.Environment.IsDevelopment());
 ```
 
-Eligible API requests are captured by default. The shared defaults select in-memory storage and exclude `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**` and `/openapi/**`. The outer middleware follows request correlation; the exception observer runs after exception handling and before routing. The default operation key strips `/api`, while the recorded HTTP path retains it. Completed records become visible after periodic persistence; dashboard reads do not force a flush. In-memory history belongs to this process and is lost when it exits.
+Eligible API requests are captured by default. The shared defaults select in-memory storage and exclude `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`, `/.well-known*` and `/.well-known/**`. The outer middleware follows request correlation; the exception observer runs after exception handling and before routing. The default operation key uses the matched route template and strips `/api`, so city IDs share the `/core/cities/{cityId}/weather` group. Unmatched routes fall back to their incoming path. The recorded HTTP path retains `/api` and actual route arguments; explicit handler keys take precedence. Completed records become visible after periodic persistence; dashboard reads do not force a flush. In-memory history belongs to this process and is lost when it exits.
 
 Core's seven Active Entity registrations include `AddProfilingBehavior()`. Entity operations contribute segments such as `activeentity:City:FindAll` to the current HTTP or job operation. The city review nests entity reads beneath `ReadWeather`. The compare endpoint's `Query` segment contains the entity work performed by its handler. Outside an active operation, entity calls own independent operations. Disabled or omitted Profiling registration leaves entity execution unchanged.
 

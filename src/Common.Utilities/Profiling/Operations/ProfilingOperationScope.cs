@@ -29,7 +29,10 @@ internal sealed class ProfilingOperationScope(OperationProfiler profiler, Profil
         capture.Declare(OperationProfilingOutcome.Failed, descriptor, classifierFailed: classifierFailed);
     }
 
+    /// <inheritdoc />
     public void SetKey(string key) => capture?.SetKey(key);
+    /// <inheritdoc />
+    public bool TrySetDefaultKey(string key) => capture?.TrySetDefaultKey(key) == true;
     public void SetDimension(string key, object value) => capture?.SetDimension(key, value);
     public void SetMeasurement(string key, object value, string unit) => capture?.SetMeasurement(key, value, unit);
     public void SetSource(ProfilingAdapterMetadata metadata) => capture?.SetSource(metadata);

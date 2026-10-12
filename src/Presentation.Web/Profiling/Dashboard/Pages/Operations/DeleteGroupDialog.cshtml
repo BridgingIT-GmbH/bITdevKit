@@ -1,0 +1,12 @@
+@inherits RazorSlice
+<div class="modal fade" id="operation-delete-group-modal" tabindex="-1" aria-labelledby="operation-delete-group-heading" aria-describedby="operation-delete-group-count" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header py-2"><h2 id="operation-delete-group-heading" class="modal-title h6">Delete group</h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body py-2 small">
+            <div id="operation-delete-group-name" class="fw-semibold mb-1"></div>
+            <p class="mb-0"><span id="operation-delete-group-count"></span> <span class="text-muted">Current filters apply.</span></p>
+            <div id="operation-delete-group-result" role="status" aria-live="polite"></div>
+        </div>
+        <div class="modal-footer py-2"><button class="btn btn-outline-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancel</button><button id="operation-delete-group-submit" class="btn btn-danger btn-sm" type="button"><i class="bi bi-trash" aria-hidden="true"></i> Delete group</button></div>
+    </div></div>
+</div>

@@ -97,7 +97,7 @@ public sealed record ProfilingQueryBoundary
 
 }
 
-/// <summary>Defines bounded completion-time filters and stable paging.</summary>
+/// <summary>Defines bounded UTC filters, completion/start/overlap selection and stable paging.</summary>
 /// <example><code>var value = new OperationProfilingQuery();</code></example>
 public sealed record OperationProfilingQuery
 {
@@ -116,6 +116,9 @@ public sealed record OperationProfilingQuery
     /// <summary>Gets whether the UTC window selects observed interval overlap for Runtime navigation.</summary>
     /// <example><code>var value = record.IntervalOverlap;</code></example>
     public bool IntervalOverlap { get; init; }
+    /// <summary>Gets whether the UTC window selects operation start times, as used by the event timeline. Mutually exclusive with interval overlap.</summary>
+    /// <example><code>var query = new OperationProfilingQuery { StartedWithin = true };</code></example>
+    public bool StartedWithin { get; init; }
 
     /// <summary>Gets an observed failed-segment filter, independent of root outcome.</summary>
     /// <example><code>var value = record.HasSegmentFailures;</code></example>
@@ -169,12 +172,12 @@ public sealed record OperationProfilingQuery
     /// <example><code>var outcomes = query.SegmentOutcomes;</code></example>
     public IReadOnlyList<ProfilingSegmentOutcome> SegmentOutcomes { get; init; } = [];
 
-    /// <summary>Gets inclusive completion UTC; service defaults to fifteen minutes.</summary>
+    /// <summary>Gets optional inclusive completion UTC; omitted values use the paging boundary or fifteen minutes before the resolved end.</summary>
     /// <example><code>var value = record.FromUtc;</code></example>
     [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
     public DateTimeOffset? FromUtc { get; init; }
 
-    /// <summary>Gets exclusive completion UTC.</summary>
+    /// <summary>Gets optional exclusive completion UTC; omitted values use the paging boundary or the current UTC time on each new query.</summary>
     /// <example><code>var value = record.ToUtc;</code></example>
     [System.Text.Json.Serialization.JsonConverter(typeof(ProfilingUtcJsonConverter))]
     public DateTimeOffset? ToUtc { get; init; }
@@ -211,7 +214,7 @@ public sealed record OperationProfilingQuery
     /// <example><code>var query = new OperationProfilingQuery { GroupDimensions = [new() { Key = "region", Value = new ProfilingValue(ProfilingValueType.String, "west"), Operator = ProfilingDimensionOperator.Equal }] };</code></example>
     public IReadOnlyList<ProfilingDimensionPredicate> GroupDimensions { get; init; } = [];
 
-    /// <summary>Gets at most four dimension grouping names.</summary>
+    /// <summary>Gets at most four dimension grouping names. Only operations containing every selected dimension participate in the selection.</summary>
     /// <example><code>var value = record.GroupingDimensions;</code></example>
     public IReadOnlyList<string> GroupingDimensions { get; init; } = [];
 
@@ -263,6 +266,9 @@ public sealed record OperationProfilingPage
 /// <example><code>var value = new OperationProfilingGroup();</code></example>
 public sealed record OperationProfilingGroup
 {
+    /// <summary>Gets exact duration statistics for dimension grouping, or null when no analysis was requested or its bound was exceeded.</summary>
+    /// <example><code>var median = group.Distribution?.P50Milliseconds;</code></example>
+    public OperationProfilingDistribution Distribution { get; init; }
     /// <summary>Gets whether cumulative duration exceeded its representation.</summary>
     /// <example><code>if (group.DurationUnavailable) ShowUnavailable();</code></example>
     public bool DurationUnavailable { get; init; }
@@ -322,6 +328,9 @@ public sealed record OperationProfilingGroup
 /// <example><code>var value = new OperationProfilingGroupPage();</code></example>
 public sealed record OperationProfilingGroupPage
 {
+    /// <summary>Gets a safe limitation for optional dimension-group statistics; counts and visible executions remain valid.</summary>
+    /// <example><code>var limitation = page.StatisticsLimitation;</code></example>
+    public string StatisticsLimitation { get; init; }
     /// <summary>Gets contributing nodes for the selection before applying its node filter, bounded by the provider's node-choice limit.</summary>
     /// <example><code>var choices = page.Nodes;</code></example>
     public IReadOnlyList<ProfilingNode> Nodes { get; init; } = [];
@@ -686,6 +695,10 @@ public sealed record OperationProfilingHealth
 /// <example><code>var groups = await queries.GroupAsync(new OperationProfilingQuery(), cancellationToken);</code></example>
 public interface IOperationProfilingQueryService
 {
+    /// <summary>Discovers bounded names and exact typed values across retained executions, ignoring row paging. Segment discovery requires an explicit full path.</summary>
+    /// <example><code>var choices = await queries.DiscoverDimensionsAsync(new() { Key = "catalog:search" }, nameSearch: "cache", cancellationToken: token);</code></example>
+    Task<IResult<OperationProfilingDimensionDiscovery>> DiscoverDimensionsAsync(OperationProfilingQuery query, ProfilingDimensionScope scope = ProfilingDimensionScope.Operation,
+        string dimensionKey = null, string nameSearch = null, string valueSearch = null, CancellationToken cancellationToken = default);
     /// <summary>Builds one view under one non-waiting admission and a shared deadline for all subordinate queries.</summary>
     /// <example><code>var view = await queries.BuildViewAsync((session, ct) => session.GroupAsync(query, ct), token);</code></example>
     Task<IResult<T>> BuildViewAsync<T>(Func<IOperationProfilingQueryService, CancellationToken, Task<IResult<T>>> build, CancellationToken cancellationToken = default);
@@ -693,6 +706,9 @@ public interface IOperationProfilingQueryService
     /// <summary>Reads a stable operation page under one non-waiting query admission.</summary>
     /// <example><code>var page = await queries.QueryAsync(query, cancellationToken);</code></example>
     Task<IResult<OperationProfilingPage>> QueryAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default);
+    /// <summary>Aggregates every matching retained operation into bounded kind/time buckets without loading operation graphs.</summary>
+    /// <example><code>var timeline = await queries.TimelineAsync(query, 72, cancellationToken);</code></example>
+    Task<IResult<OperationProfilingTimeline>> TimelineAsync(OperationProfilingQuery query, int bucketCount = 72, CancellationToken cancellationToken = default);
     /// <summary>Reads bounded Slow, Recent or ByCount groups.</summary>
     /// <example><code>var groups = await queries.GroupAsync(query, cancellationToken);</code></example>
     Task<IResult<OperationProfilingGroupPage>> GroupAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default);
@@ -702,6 +718,9 @@ public interface IOperationProfilingQueryService
     /// <summary>Computes exact bounded observed distributions.</summary>
     /// <example><code>var distribution = await queries.AnalyzeAsync(query, cancellationToken);</code></example>
     Task<IResult<OperationProfilingDistribution>> AnalyzeAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default);
+    /// <summary>Analyzes logical-operation hotspots over an exact bounded retained selection, separating completed latency from other outcomes.</summary>
+    /// <example><code>var insights = await queries.InsightsAsync(new() { FromUtc = from, ToUtc = to, Outcomes = [] }, cancellationToken);</code></example>
+    Task<IResult<OperationProfilingInsights>> InsightsAsync(OperationProfilingQuery query, CancellationToken cancellationToken = default);
     /// <summary>Compares independently selected observations and their sample counts.</summary>
     /// <example><code>var comparison = await queries.CompareAsync(baseline, candidate, cancellationToken);</code></example>
     Task<IResult<OperationProfilingComparison>> CompareAsync(OperationProfilingQuery baseline, OperationProfilingQuery candidate, CancellationToken cancellationToken = default);

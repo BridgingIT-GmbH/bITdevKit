@@ -191,6 +191,18 @@ services.AddBlobStorage(options => options
 
 `AddBlobStorage` also registers the provider-neutral `IBlobStorageDiagnosticsService` and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.
 
+## Operation profiling
+
+Register Profiling before other behaviors to measure their downstream work:
+
+```csharp
+services.AddBlobStorage()
+    .WithProfilingBehavior()
+    .WithInMemoryClient("archive");
+```
+
+All seven client methods join an existing operation or create a `BlobStorage` operation with key `blobstorage:{operation}`. Dimensions are `blobstorage.store`, `blobstorage.container` and `blobstorage.operation`. Container names come from the key, upload, property update or listing query; blob names, prefixes, tokens and content are omitted. Returned download streams retain caller ownership, and timing ends when the download method returns. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for optional registration, classification and dimension comparisons.
+
 ## High-volume uploads
 
 Use the optional upload-concurrency behavior when bursts must not open an unbounded number of provider operations, contexts, transactions, or database connections. Admission is shared by every DI scope in one process and isolated by case-insensitive named store.

@@ -14,8 +14,7 @@
     var kinds = Enum.GetNames<OperationProfilingKind>().Concat(new[] { "ActiveEntity", "Repository", "FileStorage", "DocumentStorage", "BlobStorage", "MessageHandler", "NotifierHandler" }).Distinct().ToArray();
     var labels = kinds.ToDictionary(kind => kind, OperationProfilingViewModelBuilder.KindLabel);
 }
-@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("timeline"))
-<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 pb-2 mb-2 border-bottom">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 py-2 mb-2 border-bottom">
     <span id="timeline-mode" class="small text-muted" role="status"><i class="bi bi-broadcast" aria-hidden="true"></i> Live</span>
     <div class="d-flex align-items-center gap-2 ms-auto">
         <span id="timeline-refresh-status" class="small text-muted" role="status">Loading timeline</span>
@@ -23,6 +22,7 @@
         <button id="timeline-refresh-now" class="btn btn-outline-warning btn-sm" type="button" title="Refresh latest" aria-label="Refresh latest"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
     </div>
 </div>
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("timeline"))
 <form id="timeline-filters" class="card card-body p-2 mb-2" action="@path" method="get">
     <div class="row g-2 align-items-end">
         <div class="col-md-2"><label for="timeline-resolution" class="form-label small">Window</label><select id="timeline-resolution" name="resolution" class="form-select form-select-sm"><option value="15m">15 min</option><option value="30m">30 min</option><option value="hour" selected>Hour</option><option value="12h">12 hours</option><option value="day">Day</option><option value="week">Week</option><option value="month">Month (30 days)</option></select></div>

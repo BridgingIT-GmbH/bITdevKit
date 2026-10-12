@@ -113,9 +113,6 @@
         }
         if (!value.groups.length) { const row = document.createElement('tr'); cell(row, 'No retained operations match these filters.', false).colSpan = 8; fragment.append(row); }
         rows.replaceChildren(fragment);
-        const health = value.health;
-        document.getElementById('insights-quality').textContent = number(value.outcomes.Canceled) + ' canceled · ' + number(value.outcomes.Aborted) + ' aborted · ' + number(value.outcomes.Incomplete) + ' incomplete';
-        document.getElementById('insights-quality').title = 'Local capture counters since process start: ' + number(health.droppedOperations) + ' dropped, ' + number(health.rejectedOperations) + ' rejected, ' + number(health.queueRecords) + ' queued. These counters do not describe this filtered selection.';
     }
     async function refresh() {
         clearTimeout(timer); controller?.abort();

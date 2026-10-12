@@ -20,7 +20,7 @@ public sealed class EntityFrameworkProfilingCoordinationTests
         var options = new DbContextOptionsBuilder<ProfilingTestDbContext>().UseSqlite(connection).Options;
         await using var first = new ProfilingTestDbContext(options);
         await first.Database.EnsureCreatedAsync();
-        var sut = new EntityFrameworkProfilingCoordination<ProfilingTestDbContext>(new(), "fixture");
+        var sut = new EntityFrameworkProfilingCoordination<ProfilingTestDbContext>(new(), "fixture", new(), new(), TimeProvider.System);
         var node = new ProfilingNodeIdentityProvider().GetNode();
         var attempt = Guid.NewGuid();
         var utc = DateTimeOffset.UtcNow;
@@ -61,7 +61,7 @@ public sealed class EntityFrameworkProfilingCoordinationTests
         var options = new DbContextOptionsBuilder<ProfilingTestDbContext>().UseSqlite(connection).Options;
         await using var first = new ProfilingTestDbContext(options);
         await first.Database.EnsureCreatedAsync();
-        var sut = new EntityFrameworkProfilingCoordination<ProfilingTestDbContext>(new(), "fixture");
+        var sut = new EntityFrameworkProfilingCoordination<ProfilingTestDbContext>(new(), "fixture", new(), new(), TimeProvider.System);
         var node = new ProfilingNodeIdentityProvider().GetNode();
         var utc = DateTimeOffset.UtcNow;
         ProfilingWriterLease lease;
@@ -99,7 +99,7 @@ public sealed class EntityFrameworkProfilingCoordinationTests
     {
         // Arrange
         await using var context = new ProfilingTestDbContext(new DbContextOptionsBuilder<ProfilingTestDbContext>().UseSqlite("Data Source=:memory:").Options);
-        var sut = new EntityFrameworkProfilingCoordination<ProfilingTestDbContext>(new(), "fixture");
+        var sut = new EntityFrameworkProfilingCoordination<ProfilingTestDbContext>(new(), "fixture", new(), new(), TimeProvider.System);
 
         // Act/Assert
         await Should.ThrowAsync<InvalidOperationException>(() => sut.AcquireAsync(context, default));

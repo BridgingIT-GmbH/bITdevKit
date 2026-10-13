@@ -13,6 +13,7 @@ using System.Threading;
 using BridgingIT.DevKit.Common;
 using SharpCompress.Archives;
 using SharpCompress.Common;
+using SharpCompress.Common.Options;
 using SharpCompress.Readers;
 using SharpCompress.Writers;
 using SharpCompress.Writers.GZip;
@@ -177,7 +178,7 @@ public static class FileStorageProviderCompressionExtensions
         try
         {
             var zipStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(zipStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -523,7 +524,7 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             await using var zipStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(zipStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -697,7 +698,7 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             await using var zipStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(zipStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(zipStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -869,7 +870,7 @@ public static class FileStorageProviderCompressionExtensions
             }
 
             await using var archiveStream = readResult.Value;
-            using var archive = ArchiveFactory.Open(archiveStream, new ReaderOptions { Password = password });
+            using var archive = ArchiveFactory.OpenArchive(archiveStream, new ReaderOptions { Password = password });
 
             // Validate the archive type matches the expected type
             if (!IsArchiveTypeMatch(archive.Type, options.ArchiveType))
@@ -951,11 +952,9 @@ public static class FileStorageProviderCompressionExtensions
         var compressionType = GetCompressionType(archiveType);
         var archiveEncoding = new ArchiveEncoding { Default = options.Encoding };
 
-        var writerOptions = archiveType switch
+        IWriterOptions writerOptions = archiveType switch
         {
-            ArchiveType.Zip => new ZipWriterOptions(
-                compressionType,
-                (SharpCompress.Compressors.Deflate.CompressionLevel)options.CompressionLevel)
+            ArchiveType.Zip => new ZipWriterOptions(compressionType, options.CompressionLevel)
             {
                 ArchiveEncoding = archiveEncoding,
                 LeaveStreamOpen = true,
@@ -964,11 +963,10 @@ public static class FileStorageProviderCompressionExtensions
                 //Password = password,
                 //Encryption = ZipEncryptionMethod.WinZipAes256
             },
-            ArchiveType.GZip => new GZipWriterOptions
+            ArchiveType.GZip => new GZipWriterOptions(options.CompressionLevel)
             {
                 ArchiveEncoding = archiveEncoding,
-                LeaveStreamOpen = true,
-                CompressionLevel = options.CompressionLevel
+                LeaveStreamOpen = true
                 //ArchiveComment = "Compressed using SharpCompress",
                 //Password = password,
                 //Encryption = ZipEncryptionMethod.WinZipAes256
@@ -980,7 +978,7 @@ public static class FileStorageProviderCompressionExtensions
             }
         };
 
-        return WriterFactory.Open(stream, archiveType, writerOptions);
+        return WriterFactory.OpenWriter(stream, archiveType, writerOptions);
     }
 
     private static CompressionType GetCompressionType(ArchiveType archiveType)

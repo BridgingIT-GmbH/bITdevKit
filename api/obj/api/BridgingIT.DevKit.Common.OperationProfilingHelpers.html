@@ -1,0 +1,1309 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class OperationProfilingHelpers | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class OperationProfilingHelpers | bITdevKit API Reference ">
+      
+      <meta name="description" content="Times business delegates once, with explicit result classification and fault-isolated observation.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_OperationProfilingHelpers" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers" class="text-break">
+Class OperationProfilingHelpers  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Times business delegates once, with explicit result classification and fault-isolated observation.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class OperationProfilingHelpers</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">OperationProfilingHelpers</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_examples">Examples</h2>
+  <pre><code class="lang-csharp">var value = await profiling.RunOperationAsync("Refresh", OperationProfilingKind.Service, (_, ct) =&gt; service.RefreshAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_BeginSafeExecutionBoundary_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.BeginSafeExecutionBoundary*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_BeginSafeExecutionBoundary_BridgingIT_DevKit_Common_IOperationProfiler_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.BeginSafeExecutionBoundary(BridgingIT.DevKit.Common.IOperationProfiler)">
+  BeginSafeExecutionBoundary(IOperationProfiler)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Begins an independent execution boundary with recoverable startup and restoration faults isolated.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IDisposable BeginSafeExecutionBoundary(this IOperationProfiler profiling)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IDisposable</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_BeginSafeExecutionBoundary_BridgingIT_DevKit_Common_IOperationProfiler__examples">Examples</h4>
+  <pre><code class="lang-csharp">using var boundary = profiling.BeginSafeExecutionBoundary(); await ExecuteAsync(token);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_ClassifyResult_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.ClassifyResult*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_ClassifyResult_BridgingIT_DevKit_Common_IResult_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.ClassifyResult(BridgingIT.DevKit.Common.IResult)">
+  ClassifyResult(IResult)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Explicitly classifies the devkit's Result contract without storing result payloads or raw messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ProfilingResultClassification ClassifyResult(IResult result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_ClassifyResult_BridgingIT_DevKit_Common_IResult__examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await profiling.RunSegmentAsync("Read", (_, ct) =&gt; ReadAsync(ct), cancellationToken, value =&gt; ClassifyResult(value));</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_ClassifyResult_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.ClassifyResult*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_ClassifyResult__1_BridgingIT_DevKit_Common_IResult___0__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.ClassifyResult``1(BridgingIT.DevKit.Common.IResult{``0})">
+  ClassifyResult&lt;T&gt;(IResult&lt;T&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Explicitly classifies a typed Result without retaining its value or error messages.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ProfilingResultClassification ClassifyResult&lt;T&gt;(IResult&lt;T&gt; result)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_ClassifyResult__1_BridgingIT_DevKit_Common_IResult___0___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await profiling.RunSegmentAsync("Read", (_, ct) =&gt; ReadAsync(ct), cancellationToken, value =&gt; ClassifyResult(value));</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_BridgingIT_DevKit_Common_OperationProfilingStartRequest_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,BridgingIT.DevKit.Common.OperationProfilingStartRequest,System.Func{BridgingIT.DevKit.Common.IProfilingRecordingScope,System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  JoinOrStartAsync&lt;T&gt;(IOperationProfiler, OperationProfilingStartRequest, Func&lt;IProfilingRecordingScope, CancellationToken, Task&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Joins or owns a Task execution with bounded host metadata, preserving Task cancellation exceptions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;T&gt; JoinOrStartAsync&lt;T&gt;(this IOperationProfiler profiling, OperationProfilingStartRequest request, Func&lt;IProfilingRecordingScope, CancellationToken, Task&lt;T&gt;&gt; work, CancellationToken cancellationToken = default, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingStartRequest.html">OperationProfilingStartRequest</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_BridgingIT_DevKit_Common_OperationProfilingStartRequest_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.JoinOrStartAsync(new OperationProfilingStartRequest { Key = "job:cleanup", Kind = "Job" }, (_, ct) =&gt; ExecuteAsync(ct), token);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,BridgingIT.DevKit.Common.OperationProfilingKind,System.Func{BridgingIT.DevKit.Common.IProfilingRecordingScope,System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  JoinOrStartAsync&lt;T&gt;(IOperationProfiler, string, OperationProfilingKind, Func&lt;IProfilingRecordingScope, CancellationToken, Task&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Joins the current boundary or owns one root when no operation exists.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;T&gt; JoinOrStartAsync&lt;T&gt;(this IOperationProfiler profiling, string key, OperationProfilingKind kind, Func&lt;IProfilingRecordingScope, CancellationToken, Task&lt;T&gt;&gt; work, CancellationToken cancellationToken = default, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingKind.html">OperationProfilingKind</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await profiling.JoinOrStartAsync("job:refresh", OperationProfilingKind.Job, (_, ct) =&gt; next(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartValueTaskAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartValueTaskAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartValueTaskAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_BridgingIT_DevKit_Common_OperationProfilingStartRequest_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartValueTaskAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,BridgingIT.DevKit.Common.OperationProfilingStartRequest,System.Func{BridgingIT.DevKit.Common.IProfilingRecordingScope,System.Threading.CancellationToken,System.Threading.Tasks.ValueTask{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  JoinOrStartValueTaskAsync&lt;T&gt;(IOperationProfiler, OperationProfilingStartRequest, Func&lt;IProfilingRecordingScope, CancellationToken, ValueTask&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Joins or owns a ValueTask execution with bounded host metadata and a non-owning correlation ID.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;T&gt; JoinOrStartValueTaskAsync&lt;T&gt;(this IOperationProfiler profiling, OperationProfilingStartRequest request, Func&lt;IProfilingRecordingScope, CancellationToken, ValueTask&lt;T&gt;&gt; work, CancellationToken cancellationToken = default, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingStartRequest.html">OperationProfilingStartRequest</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">ValueTask</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartValueTaskAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_BridgingIT_DevKit_Common_OperationProfilingStartRequest_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.JoinOrStartValueTaskAsync(new OperationProfilingStartRequest { Key = "job:cleanup", Kind = "Job" }, (_, ct) =&gt; ExecuteAsync(ct), token);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartValueTaskAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartValueTaskAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartValueTaskAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.JoinOrStartValueTaskAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,BridgingIT.DevKit.Common.OperationProfilingKind,System.Func{BridgingIT.DevKit.Common.IProfilingRecordingScope,System.Threading.CancellationToken,System.Threading.Tasks.ValueTask{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  JoinOrStartValueTaskAsync&lt;T&gt;(IOperationProfiler, string, OperationProfilingKind, Func&lt;IProfilingRecordingScope, CancellationToken, ValueTask&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Joins the current boundary with a segment or owns a root when no operation exists.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;T&gt; JoinOrStartValueTaskAsync&lt;T&gt;(this IOperationProfiler profiling, string key, OperationProfilingKind kind, Func&lt;IProfilingRecordingScope, CancellationToken, ValueTask&lt;T&gt;&gt; work, CancellationToken cancellationToken, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingKind.html">OperationProfilingKind</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">ValueTask</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_JoinOrStartValueTaskAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.JoinOrStartValueTaskAsync("pipeline:Import", OperationProfilingKind.Pipeline, (_, ct) =&gt; RunAsync(ct), token);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Action_BridgingIT_DevKit_Common_IProfilingOperationScope__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation(BridgingIT.DevKit.Common.IOperationProfiler,System.String,BridgingIT.DevKit.Common.OperationProfilingKind,System.Action{BridgingIT.DevKit.Common.IProfilingOperationScope})">
+  RunOperation(IOperationProfiler, string, OperationProfilingKind, Action&lt;IProfilingOperationScope&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one synchronous delegate and observes its execution outcome.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void RunOperation(this IOperationProfiler profiling, string key, OperationProfilingKind kind, Action&lt;IProfilingOperationScope&gt; work)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingKind.html">OperationProfilingKind</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Action_BridgingIT_DevKit_Common_IProfilingOperationScope___examples">Examples</h4>
+  <pre><code class="lang-csharp">profiling.RunOperation("Read", OperationProfilingKind.Service, scope =&gt; Read());</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Action_BridgingIT_DevKit_Common_IProfilingOperationScope__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Action{BridgingIT.DevKit.Common.IProfilingOperationScope})">
+  RunOperation(IOperationProfiler, string, Action&lt;IProfilingOperationScope&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs a Custom operation with no return value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void RunOperation(this IOperationProfiler profiling, string key, Action&lt;IProfilingOperationScope&gt; work)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Action_BridgingIT_DevKit_Common_IProfilingOperationScope___examples">Examples</h4>
+  <pre><code class="lang-csharp">profiling.RunOperation("Read", _ =&gt; Read());</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync(BridgingIT.DevKit.Common.IOperationProfiler,System.String,BridgingIT.DevKit.Common.OperationProfilingKind,System.Func{BridgingIT.DevKit.Common.IProfilingOperationScope,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  RunOperationAsync(IOperationProfiler, string, OperationProfilingKind, Func&lt;IProfilingOperationScope, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one asynchronous delegate without a return value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task RunOperationAsync(this IOperationProfiler profiling, string key, OperationProfilingKind kind, Func&lt;IProfilingOperationScope, CancellationToken, Task&gt; work, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingKind.html">OperationProfilingKind</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.RunOperationAsync("Read", OperationProfilingKind.Service, (scope, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingOperationScope,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  RunOperationAsync(IOperationProfiler, string, Func&lt;IProfilingOperationScope, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs an asynchronous Custom operation with no return value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task RunOperationAsync(this IOperationProfiler profiling, string key, Func&lt;IProfilingOperationScope, CancellationToken, Task&gt; work, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.RunOperationAsync("Read", (_, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,BridgingIT.DevKit.Common.OperationProfilingKind,System.Func{BridgingIT.DevKit.Common.IProfilingOperationScope,System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunOperationAsync&lt;T&gt;(IOperationProfiler, string, OperationProfilingKind, Func&lt;IProfilingOperationScope, CancellationToken, Task&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one asynchronous delegate, preserving its result, exception and application token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;T&gt; RunOperationAsync&lt;T&gt;(this IOperationProfiler profiling, string key, OperationProfilingKind kind, Func&lt;IProfilingOperationScope, CancellationToken, Task&lt;T&gt;&gt; work, CancellationToken cancellationToken = default, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingKind.html">OperationProfilingKind</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await profiling.RunOperationAsync("Read", OperationProfilingKind.Service, (scope, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperationAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingOperationScope,System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunOperationAsync&lt;T&gt;(IOperationProfiler, string, Func&lt;IProfilingOperationScope, CancellationToken, Task&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs an asynchronous Custom operation and returns the original business value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;T&gt; RunOperationAsync&lt;T&gt;(this IOperationProfiler profiling, string key, Func&lt;IProfilingOperationScope, CancellationToken, Task&lt;T&gt;&gt; work, CancellationToken cancellationToken = default, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperationAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await profiling.RunOperationAsync("Read", (_, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,BridgingIT.DevKit.Common.OperationProfilingKind,System.Func{BridgingIT.DevKit.Common.IProfilingOperationScope,``0},System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunOperation&lt;T&gt;(IOperationProfiler, string, OperationProfilingKind, Func&lt;IProfilingOperationScope, T&gt;, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one synchronous delegate in its own operation and returns the original value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T RunOperation&lt;T&gt;(this IOperationProfiler profiling, string key, OperationProfilingKind kind, Func&lt;IProfilingOperationScope, T&gt; work, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>kind</code> <a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingKind.html">OperationProfilingKind</a></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>, T&gt;</dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_BridgingIT_DevKit_Common_OperationProfilingKind_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = profiling.RunOperation("Read", OperationProfilingKind.Service, scope =&gt; Read(), classify: null);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunOperation``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingOperationScope,``0},System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunOperation&lt;T&gt;(IOperationProfiler, string, Func&lt;IProfilingOperationScope, T&gt;, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs a Custom operation and returns the original business value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T RunOperation&lt;T&gt;(this IOperationProfiler profiling, string key, Func&lt;IProfilingOperationScope, T&gt; work, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a>, T&gt;</dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunOperation__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingOperationScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = profiling.RunOperation("Read", _ =&gt; Read());</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Action_BridgingIT_DevKit_Common_IProfilingSegmentScope__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Action{BridgingIT.DevKit.Common.IProfilingSegmentScope})">
+  RunSegment(IOperationProfiler, string, Action&lt;IProfilingSegmentScope&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one synchronous delegate and observes its execution outcome.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void RunSegment(this IOperationProfiler profiling, string key, Action&lt;IProfilingSegmentScope&gt; work)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Action_BridgingIT_DevKit_Common_IProfilingSegmentScope___examples">Examples</h4>
+  <pre><code class="lang-csharp">profiling.RunSegment("Read", scope =&gt; Read());</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Action_BridgingIT_DevKit_Common_IProfilingSegmentScope__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment(BridgingIT.DevKit.Common.IProfilingRecordingScope,System.String,System.Action{BridgingIT.DevKit.Common.IProfilingSegmentScope})">
+  RunSegment(IProfilingRecordingScope, string, Action&lt;IProfilingSegmentScope&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one synchronous delegate and observes its execution outcome.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void RunSegment(this IProfilingRecordingScope profiling, string key, Action&lt;IProfilingSegmentScope&gt; work)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Action</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Action_BridgingIT_DevKit_Common_IProfilingSegmentScope___examples">Examples</h4>
+  <pre><code class="lang-csharp">profiling.RunSegment("Read", scope =&gt; Read());</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingSegmentScope,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  RunSegmentAsync(IOperationProfiler, string, Func&lt;IProfilingSegmentScope, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one asynchronous delegate without a return value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task RunSegmentAsync(this IOperationProfiler profiling, string key, Func&lt;IProfilingSegmentScope, CancellationToken, Task&gt; work, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.RunSegmentAsync("Read", (scope, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync(BridgingIT.DevKit.Common.IProfilingRecordingScope,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingSegmentScope,System.Threading.CancellationToken,System.Threading.Tasks.Task},System.Threading.CancellationToken)">
+  RunSegmentAsync(IProfilingRecordingScope, string, Func&lt;IProfilingSegmentScope, CancellationToken, Task&gt;, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one asynchronous delegate without a return value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task RunSegmentAsync(this IProfilingRecordingScope profiling, string key, Func&lt;IProfilingSegmentScope, CancellationToken, Task&gt; work, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.RunSegmentAsync("Read", (scope, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingSegmentScope,System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunSegmentAsync&lt;T&gt;(IOperationProfiler, string, Func&lt;IProfilingSegmentScope, CancellationToken, Task&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one asynchronous delegate, preserving its result, exception and application token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;T&gt; RunSegmentAsync&lt;T&gt;(this IOperationProfiler profiling, string key, Func&lt;IProfilingSegmentScope, CancellationToken, Task&lt;T&gt;&gt; work, CancellationToken cancellationToken = default, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await profiling.RunSegmentAsync("Read", (scope, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync__1_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentAsync``1(BridgingIT.DevKit.Common.IProfilingRecordingScope,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingSegmentScope,System.Threading.CancellationToken,System.Threading.Tasks.Task{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunSegmentAsync&lt;T&gt;(IProfilingRecordingScope, string, Func&lt;IProfilingSegmentScope, CancellationToken, Task&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one asynchronous delegate, preserving its result, exception and application token.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;T&gt; RunSegmentAsync&lt;T&gt;(this IProfilingRecordingScope profiling, string key, Func&lt;IProfilingSegmentScope, CancellationToken, Task&lt;T&gt;&gt; work, CancellationToken cancellationToken = default, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">Task</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentAsync__1_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = await profiling.RunSegmentAsync("Read", (scope, ct) =&gt; ReadAsync(ct), cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentValueTaskAsync_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentValueTaskAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentValueTaskAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegmentValueTaskAsync``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingSegmentScope,System.Threading.CancellationToken,System.Threading.Tasks.ValueTask{``0}},System.Threading.CancellationToken,System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunSegmentValueTaskAsync&lt;T&gt;(IOperationProfiler, string, Func&lt;IProfilingSegmentScope, CancellationToken, ValueTask&lt;T&gt;&gt;, CancellationToken, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one ValueTask-producing delegate in a child segment without converting it to Task.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ValueTask&lt;T&gt; RunSegmentValueTaskAsync&lt;T&gt;(this IOperationProfiler profiling, string key, Func&lt;IProfilingSegmentScope, CancellationToken, ValueTask&lt;T&gt;&gt; work, CancellationToken cancellationToken, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>, <span class="xref">CancellationToken</span>, <span class="xref">ValueTask</span>&lt;T&gt;&gt;</dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ValueTask</span>&lt;T&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegmentValueTaskAsync__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope_System_Threading_CancellationToken_System_Threading_Tasks_ValueTask___0___System_Threading_CancellationToken_System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">await profiling.RunSegmentValueTaskAsync("step:read", (_, ct) =&gt; ReadAsync(ct), token);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment``1(BridgingIT.DevKit.Common.IOperationProfiler,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingSegmentScope,``0},System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunSegment&lt;T&gt;(IOperationProfiler, string, Func&lt;IProfilingSegmentScope, T&gt;, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one synchronous delegate in its own segment and returns the original value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T RunSegment&lt;T&gt;(this IOperationProfiler profiling, string key, Func&lt;IProfilingSegmentScope, T&gt; work, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IOperationProfiler.html">IOperationProfiler</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>, T&gt;</dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment__1_BridgingIT_DevKit_Common_IOperationProfiler_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = profiling.RunSegment("Read", scope =&gt; Read(), classify: null);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment_" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment__1_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification__" data-uid="BridgingIT.DevKit.Common.OperationProfilingHelpers.RunSegment``1(BridgingIT.DevKit.Common.IProfilingRecordingScope,System.String,System.Func{BridgingIT.DevKit.Common.IProfilingSegmentScope,``0},System.Func{``0,BridgingIT.DevKit.Common.ProfilingResultClassification})">
+  RunSegment&lt;T&gt;(IProfilingRecordingScope, string, Func&lt;IProfilingSegmentScope, T&gt;, Func&lt;T, ProfilingResultClassification&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Runs one synchronous delegate in its own segment and returns the original value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static T RunSegment&lt;T&gt;(this IProfilingRecordingScope profiling, string key, Func&lt;IProfilingSegmentScope, T&gt; work, Func&lt;T, ProfilingResultClassification&gt; classify = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>profiling</code> <a class="xref" href="BridgingIT.DevKit.Common.IProfilingRecordingScope.html">IProfilingRecordingScope</a></dt>
+    <dd></dd>
+    <dt><code>key</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>work</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IProfilingSegmentScope.html">IProfilingSegmentScope</a>, T&gt;</dt>
+    <dd></dd>
+    <dt><code>classify</code> <span class="xref">Func</span>&lt;T, <a class="xref" href="BridgingIT.DevKit.Common.ProfilingResultClassification.html">ProfilingResultClassification</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">T</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>T</code></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_OperationProfilingHelpers_RunSegment__1_BridgingIT_DevKit_Common_IProfilingRecordingScope_System_String_System_Func_BridgingIT_DevKit_Common_IProfilingSegmentScope___0__System_Func___0_BridgingIT_DevKit_Common_ProfilingResultClassification___examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = profiling.RunSegment("Read", scope =&gt; Read(), classify: null);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

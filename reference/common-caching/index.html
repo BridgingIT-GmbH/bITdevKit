@@ -69,7 +69,7 @@
     
     
     
-    <body dir="ltr" data-md-color-scheme="default" data-md-color-primary="custom" data-md-color-accent="custom">
+    <body dir="ltr" data-md-color-scheme="tokyo-night" data-md-color-primary="custom" data-md-color-accent="custom">
   
     
     <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
@@ -125,6 +125,34 @@
     
       
         
+
+<script>
+  (() => {
+    const schemes = ["tokyo-night", "matte-black", "catppuccin", "lumon", "ethereal", "everforest", "hackerman", "osaka-jade", "kanagawa", "vantablack", "ristretto", "retro-82", "flexoki-light", "catppuccin-latte", "white", "system"];
+    const legacy = {
+      dark: "matte-black", light: "white", tokionights: "tokyo-night",
+      darkforest: "osaka-jade", carbon: "catppuccin", matrix: "hackerman"
+    };
+    try {
+      const saved = __md_get("__palette");
+      if (!saved) return;
+      const color = saved.color || {};
+      const previous = color.media === "(prefers-color-scheme)" ? "system" : color.scheme;
+      const scheme = schemes.includes(previous) ? previous
+        : Object.prototype.hasOwnProperty.call(legacy, previous) ? legacy[previous] : schemes[0];
+      __md_set("__palette", {
+        index: schemes.indexOf(scheme),
+        color: { scheme, primary: "custom", accent: "custom" }
+      });
+    } catch {
+      // Replace malformed saved data before Material reads it again.
+      __md_set("__palette", {
+        index: 0,
+        color: { scheme: schemes[0], primary: "custom", accent: "custom" }
+      });
+    }
+  })();
+</script>
 <form class="md-header__option bdk-theme-picker" data-md-component="palette">
   
     
@@ -132,11 +160,11 @@
     
     <input
       class="md-option"
-      data-md-color-media="(prefers-color-scheme)"
-      data-md-color-scheme="default"
+      data-md-color-media=""
+      data-md-color-scheme="tokyo-night"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use system theme"
+      aria-label="Use Tokyo Night theme"
       type="radio"
       name="__palette"
       id="__palette_0"
@@ -154,11 +182,11 @@
     
     <input
       class="md-option"
-      data-md-color-media="(prefers-color-scheme: light)"
-      data-md-color-scheme="light"
+      data-md-color-media=""
+      data-md-color-scheme="matte-black"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use light theme"
+      aria-label="Use Matte Black theme"
       type="radio"
       name="__palette"
       id="__palette_1"
@@ -176,11 +204,11 @@
     
     <input
       class="md-option"
-      data-md-color-media="(prefers-color-scheme: dark)"
-      data-md-color-scheme="dark"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use dark theme"
+      aria-label="Use Catppuccin theme"
       type="radio"
       name="__palette"
       id="__palette_2"
@@ -199,10 +227,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="catppuccin"
+      data-md-color-scheme="lumon"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Catppuccin theme"
+      aria-label="Use Lumon theme"
       type="radio"
       name="__palette"
       id="__palette_3"
@@ -221,10 +249,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="darkforest"
+      data-md-color-scheme="ethereal"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Darkforest theme"
+      aria-label="Use Ethereal theme"
       type="radio"
       name="__palette"
       id="__palette_4"
@@ -243,10 +271,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="carbon"
+      data-md-color-scheme="everforest"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Carbon theme"
+      aria-label="Use Everforest theme"
       type="radio"
       name="__palette"
       id="__palette_5"
@@ -265,10 +293,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="tokionights"
+      data-md-color-scheme="hackerman"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Tokyo Night theme"
+      aria-label="Use Hackerman theme"
       type="radio"
       name="__palette"
       id="__palette_6"
@@ -287,13 +315,189 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="matrix"
+      data-md-color-scheme="osaka-jade"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Matrix theme"
+      aria-label="Use Osaka Jade theme"
       type="radio"
       name="__palette"
       id="__palette_7"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_8"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="kanagawa"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Kanagawa theme"
+      type="radio"
+      name="__palette"
+      id="__palette_8"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_9"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="vantablack"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Vantablack theme"
+      type="radio"
+      name="__palette"
+      id="__palette_9"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_10"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="ristretto"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Ristretto theme"
+      type="radio"
+      name="__palette"
+      id="__palette_10"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_11"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="retro-82"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Retro 82 theme"
+      type="radio"
+      name="__palette"
+      id="__palette_11"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_12"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="flexoki-light"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Flexoki Light theme"
+      type="radio"
+      name="__palette"
+      id="__palette_12"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_13"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="catppuccin-latte"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use Catppuccin Latte theme"
+      type="radio"
+      name="__palette"
+      id="__palette_13"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_14"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="white"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use White theme"
+      type="radio"
+      name="__palette"
+      id="__palette_14"
+    >
+    
+    <label
+      class="bdk-theme-picker__native"
+      for="__palette_15"
+      hidden
+      aria-hidden="true"
+    ></label>
+  
+    
+    
+    
+    <input
+      class="md-option"
+      data-md-color-media=""
+      data-md-color-scheme="system"
+      data-md-color-primary="custom"
+      data-md-color-accent="custom"
+      aria-label="Use System theme"
+      type="radio"
+      name="__palette"
+      id="__palette_15"
     >
     
     <label
@@ -307,42 +511,91 @@
   <details class="bdk-theme-picker__details" data-bdk-theme-picker>
     <summary class="md-header__button bdk-theme-picker__toggle" aria-label="Select documentation theme" aria-haspopup="true">
       <span class="bdk-theme-picker__terminal" aria-hidden="true">&gt;_</span>
-      <span data-bdk-theme-label>System</span>
+      <span data-bdk-theme-label>Tokyo Night</span>
       <span class="bdk-theme-picker__chevron" aria-hidden="true">⌄</span>
     </summary>
     <div class="bdk-theme-picker__menu" role="radiogroup" aria-label="Documentation theme">
-      <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="dark" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#66d9ef;--theme-accent:#fd971f"></span>
-        <span>Dark</span>
-      </label>
-      <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#11111b;--theme-primary:#89b4fa;--theme-accent:#f5c2e7"></span>
-        <span>Catppuccin</span>
-      </label>
-      <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="darkforest" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#07120d;--theme-primary:#9ece6a;--theme-accent:#e0af68"></span>
-        <span>Darkforest</span>
-      </label>
-      <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="carbon" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#161616;--theme-primary:#78a9ff;--theme-accent:#ff7eb6"></span>
-        <span>Carbon</span>
-      </label>
-      <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="tokionights" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#0f1021;--theme-primary:#7aa2f7;--theme-accent:#bb9af7"></span>
-        <span>Tokyo Night</span>
-      </label>
-      <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="matrix" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#020802;--theme-primary:#00ff66;--theme-accent:#39ff14"></span>
-        <span>Matrix</span>
-      </label>
-      <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="light" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#f7f7f2;--theme-primary:#0f62fe;--theme-accent:#8a3ffc"></span>
-        <span>Light</span>
-      </label>
-      <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="system" role="radio" tabindex="0">
-        <span class="bdk-theme-swatch" style="--theme-bg:#151414;--theme-primary:#a59f99;--theme-accent:#f7f7f2"></span>
-        <span>System</span>
-      </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_0" data-bdk-theme-option="tokyo-night" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-tokyo-night-bg);--theme-primary:var(--bdk-swatch-tokyo-night-primary);--theme-accent:var(--bdk-swatch-tokyo-night-accent)"></span>
+          <span data-bdk-theme-name>Tokyo Night</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="matte-black" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-matte-black-bg);--theme-primary:var(--bdk-swatch-matte-black-primary);--theme-accent:var(--bdk-swatch-matte-black-accent)"></span>
+          <span data-bdk-theme-name>Matte Black</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-catppuccin-bg);--theme-primary:var(--bdk-swatch-catppuccin-primary);--theme-accent:var(--bdk-swatch-catppuccin-accent)"></span>
+          <span data-bdk-theme-name>Catppuccin</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="lumon" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-lumon-bg);--theme-primary:var(--bdk-swatch-lumon-primary);--theme-accent:var(--bdk-swatch-lumon-accent)"></span>
+          <span data-bdk-theme-name>Lumon</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="ethereal" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-ethereal-bg);--theme-primary:var(--bdk-swatch-ethereal-primary);--theme-accent:var(--bdk-swatch-ethereal-accent)"></span>
+          <span data-bdk-theme-name>Ethereal</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="everforest" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-everforest-bg);--theme-primary:var(--bdk-swatch-everforest-primary);--theme-accent:var(--bdk-swatch-everforest-accent)"></span>
+          <span data-bdk-theme-name>Everforest</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="hackerman" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-hackerman-bg);--theme-primary:var(--bdk-swatch-hackerman-primary);--theme-accent:var(--bdk-swatch-hackerman-accent)"></span>
+          <span data-bdk-theme-name>Hackerman</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="osaka-jade" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-osaka-jade-bg);--theme-primary:var(--bdk-swatch-osaka-jade-primary);--theme-accent:var(--bdk-swatch-osaka-jade-accent)"></span>
+          <span data-bdk-theme-name>Osaka Jade</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_8" data-bdk-theme-option="kanagawa" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-kanagawa-bg);--theme-primary:var(--bdk-swatch-kanagawa-primary);--theme-accent:var(--bdk-swatch-kanagawa-accent)"></span>
+          <span data-bdk-theme-name>Kanagawa</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_9" data-bdk-theme-option="vantablack" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-vantablack-bg);--theme-primary:var(--bdk-swatch-vantablack-primary);--theme-accent:var(--bdk-swatch-vantablack-accent)"></span>
+          <span data-bdk-theme-name>Vantablack</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_10" data-bdk-theme-option="ristretto" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-ristretto-bg);--theme-primary:var(--bdk-swatch-ristretto-primary);--theme-accent:var(--bdk-swatch-ristretto-accent)"></span>
+          <span data-bdk-theme-name>Ristretto</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_11" data-bdk-theme-option="retro-82" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-retro-82-bg);--theme-primary:var(--bdk-swatch-retro-82-primary);--theme-accent:var(--bdk-swatch-retro-82-accent)"></span>
+          <span data-bdk-theme-name>Retro 82</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_12" data-bdk-theme-option="flexoki-light" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-flexoki-light-bg);--theme-primary:var(--bdk-swatch-flexoki-light-primary);--theme-accent:var(--bdk-swatch-flexoki-light-accent)"></span>
+          <span data-bdk-theme-name>Flexoki Light</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_13" data-bdk-theme-option="catppuccin-latte" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-catppuccin-latte-bg);--theme-primary:var(--bdk-swatch-catppuccin-latte-primary);--theme-accent:var(--bdk-swatch-catppuccin-latte-accent)"></span>
+          <span data-bdk-theme-name>Catppuccin Latte</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_14" data-bdk-theme-option="white" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-white-bg);--theme-primary:var(--bdk-swatch-white-primary);--theme-accent:var(--bdk-swatch-white-accent)"></span>
+          <span data-bdk-theme-name>White</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_15" data-bdk-theme-option="system" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-system-bg);--theme-primary:var(--bdk-swatch-system-primary);--theme-accent:var(--bdk-swatch-system-accent)"></span>
+          <span data-bdk-theme-name>System</span>
+        </label>
+      
     </div>
   </details>
 </form>
@@ -452,7 +705,7 @@
           
   
   
-  Get Started
+  Quickstart
 
         </a>
       </li>
@@ -475,6 +728,26 @@
   
   
   Docs
+
+        </a>
+      </li>
+    
+  
+
+      
+        
+  
+  
+  
+  
+    
+    
+      <li class="md-tabs__item">
+        <a href="../../decisions/" class="md-tabs__link">
+          
+  
+  
+  Guides
 
         </a>
       </li>
@@ -634,7 +907,7 @@
   <span class="md-ellipsis">
     
   
-    Get Started
+    Quickstart
   
 
     
@@ -650,7 +923,7 @@
             <span class="md-nav__icon md-icon"></span>
             
   
-    Get Started
+    Quickstart
   
 
           </label>
@@ -3445,8 +3718,15 @@
 
               
             
-              
-                
+          </ul>
+        </nav>
+      
+    </li>
+  
+
+    
+      
+      
   
   
   
@@ -3457,28 +3737,25 @@
     
       
       
+        
+      
+    
+    
+    <li class="md-nav__item md-nav__item--nested">
+      
+        
+        
+        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_4" >
         
           
-          
-        
-      
-    
-    
-    <li class="md-nav__item md-nav__item--section md-nav__item--nested">
-      
-        
-        
-        <input class="md-nav__toggle md-toggle " type="checkbox" id="__nav_3_6" >
-        
-          
-          <label class="md-nav__link" for="__nav_3_6" id="__nav_3_6_label" tabindex="">
+          <label class="md-nav__link" for="__nav_4" id="__nav_4_label" tabindex="0">
             
   
   
   <span class="md-ellipsis">
     
   
-    Decision Guides
+    Guides
   
 
     
@@ -3489,12 +3766,12 @@
             <span class="md-nav__icon md-icon"></span>
           </label>
         
-        <nav class="md-nav" data-md-level="2" aria-labelledby="__nav_3_6_label" aria-expanded="false">
-          <label class="md-nav__title" for="__nav_3_6">
+        <nav class="md-nav" data-md-level="1" aria-labelledby="__nav_4_label" aria-expanded="false">
+          <label class="md-nav__title" for="__nav_4">
             <span class="md-nav__icon md-icon"></span>
             
   
-    Decision Guides
+    Guides
   
 
           </label>
@@ -3584,9 +3861,365 @@
 
               
             
-          </ul>
-        </nav>
-      
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-pipeline-vs-orchestration/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Pipeline or Orchestration
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-blob-vs-document-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Blob Storage or Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-jobs-vs-startup-tasks/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Jobs or Startup Tasks
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-business-logic/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Where to Put Business Logic
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-domain-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    When to Use Domain Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-requester-vs-notifier/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Requester or Notifier
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-queueing-vs-jobs/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Queueing or Jobs
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-domain-vs-application-events/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Domain Events or Application Events
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-change-history-vs-event-sourcing/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Change History or Event Sourcing
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-repository-vs-document-storage/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Repository or Document Storage
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-direct-call-vs-requester/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Direct Call or Requester
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-retry-vs-compensation/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Retry or Compensation
+  
+
+    
+  </span>
+  
+  
+
+      </a>
+    </li>
+  
+
+              
+            
+              
+                
+  
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="../../decisions-results/" class="md-nav__link">
+        
+  
+  
+  <span class="md-ellipsis">
+    
+  
+    Result&lt;T&gt; or plain return type
+  
+
+    
+  </span>
+  
+  
+
+      </a>
     </li>
   
 

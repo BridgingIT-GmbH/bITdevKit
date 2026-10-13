@@ -89,7 +89,7 @@ Class ProfilingEntityMapper
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.html">Profiling</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.html">Profiling</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
@@ -129,28 +129,28 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingActionMarker_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingActionMarker)">
-  ToEntity(ProfilingActionMarker)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingMarker_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingMarker)">
+  ToEntity(ProfilingMarker)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Maps an immutable node action marker to a durable row.</p>
+  <div class="markdown level1 summary"><p>Maps an instantaneous marker to its owned document.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingActionMarkerEntity ToEntity(ProfilingActionMarker model)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ProfilingMarkerEntity ToEntity(ProfilingMarker model)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingActionMarker.html">ProfilingActionMarker</a></dt>
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingMarker.html">ProfilingMarker</a></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity.html">ProfilingActionMarkerEntity</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMarkerEntity.html">ProfilingMarkerEntity</a></dt>
     <dd></dd>
   </dl>
 
@@ -159,7 +159,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingActionMarker__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingMarker__examples">Examples</h4>
   <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(marker);</code></pre>
 
 
@@ -179,7 +179,7 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingMetricObservationEntity ToEntity(ProfilingMetricObservation model)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingMetricObservationEntity ToEntity(ProfilingMetricObservation model)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -190,7 +190,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity.html">ProfilingMetricObservationEntity</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingMetricObservationEntity.html">RuntimeProfilingMetricObservationEntity</a></dt>
     <dd></dd>
   </dl>
 
@@ -209,168 +209,6 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingNodeCorrelation_BridgingIT_DevKit_Common_ProfilingNode_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingNodeCorrelation,BridgingIT.DevKit.Common.ProfilingNode)">
-  ToEntity(ProfilingNodeCorrelation, ProfilingNode)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Maps a stable profiling node to a durable row.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingNodeEntity ToEntity(ProfilingNodeCorrelation correlation, ProfilingNode node)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>correlation</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeCorrelation.html">ProfilingNodeCorrelation</a></dt>
-    <dd></dd>
-    <dt><code>node</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.html">ProfilingNodeEntity</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingNodeCorrelation_BridgingIT_DevKit_Common_ProfilingNode__examples">Examples</h4>
-  <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(correlation, node);</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingNodeParticipation_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingNodeParticipation)">
-  ToEntity(ProfilingNodeParticipation)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Maps node participation to a durable row.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingParticipationEntity ToEntity(ProfilingNodeParticipation model)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeParticipation.html">ProfilingNodeParticipation</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity.html">ProfilingParticipationEntity</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingNodeParticipation__examples">Examples</h4>
-  <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(participation);</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingPhaseMarker_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingPhaseMarker)">
-  ToEntity(ProfilingPhaseMarker)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Maps an immutable phase marker to a durable row.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingPhaseMarkerEntity ToEntity(ProfilingPhaseMarker model)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingPhaseMarker.html">ProfilingPhaseMarker</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity.html">ProfilingPhaseMarkerEntity</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingPhaseMarker__examples">Examples</h4>
-  <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(marker);</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingRuntimeContext_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingRuntimeContext)">
-  ToEntity(ProfilingRuntimeContext)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Maps immutable runtime context to a durable row.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingRuntimeContextEntity ToEntity(ProfilingRuntimeContext model)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingRuntimeContext.html">ProfilingRuntimeContext</a></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity.html">ProfilingRuntimeContextEntity</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingRuntimeContext__examples">Examples</h4>
-  <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(runtimeContext);</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
-
   <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingSegment_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingSegment)">
   ToEntity(ProfilingSegment)
   
@@ -381,7 +219,7 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingSegmentEntity ToEntity(ProfilingSegment model)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingSegmentEntity ToEntity(ProfilingSegment model)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -392,7 +230,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity.html">ProfilingSegmentEntity</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSegmentEntity.html">RuntimeProfilingSegmentEntity</a></dt>
     <dd></dd>
   </dl>
 
@@ -411,8 +249,130 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingSession_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingSession)">
-  ToEntity(ProfilingSession)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingContext_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.RuntimeProfilingContext)">
+  ToEntity(RuntimeProfilingContext)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps immutable runtime context to a durable row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingRuntimeContextEntity ToEntity(RuntimeProfilingContext model)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingContext.html">RuntimeProfilingContext</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingRuntimeContextEntity.html">RuntimeProfilingRuntimeContextEntity</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingContext__examples">Examples</h4>
+  <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(runtimeContext);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingNodeCorrelation_BridgingIT_DevKit_Common_ProfilingNode_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.RuntimeProfilingNodeCorrelation,BridgingIT.DevKit.Common.ProfilingNode)">
+  ToEntity(RuntimeProfilingNodeCorrelation, ProfilingNode)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a stable profiling node to a durable row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ProfilingNodeEntity ToEntity(RuntimeProfilingNodeCorrelation correlation, ProfilingNode node)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>correlation</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeCorrelation.html">RuntimeProfilingNodeCorrelation</a></dt>
+    <dd></dd>
+    <dt><code>node</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.html">ProfilingNodeEntity</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingNodeCorrelation_BridgingIT_DevKit_Common_ProfilingNode__examples">Examples</h4>
+  <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(correlation, node);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingNodeParticipation_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.RuntimeProfilingNodeParticipation)">
+  ToEntity(RuntimeProfilingNodeParticipation)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps node participation to a durable row.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingParticipationEntity ToEntity(RuntimeProfilingNodeParticipation model)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeParticipation.html">RuntimeProfilingNodeParticipation</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingParticipationEntity.html">RuntimeProfilingParticipationEntity</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingNodeParticipation__examples">Examples</h4>
+  <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(participation);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingSession_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.RuntimeProfilingSession)">
+  ToEntity(RuntimeProfilingSession)
   
   </h3>
 
@@ -421,18 +381,18 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingSessionEntity ToEntity(ProfilingSession session)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingSessionEntity ToEntity(RuntimeProfilingSession session)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>session</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingSession.html">ProfilingSession</a></dt>
+    <dt><code>session</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity.html">ProfilingSessionEntity</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSessionEntity.html">RuntimeProfilingSessionEntity</a></dt>
     <dd></dd>
   </dl>
 
@@ -441,7 +401,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingSession__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingSession__examples">Examples</h4>
   <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(session);</code></pre>
 
 
@@ -451,8 +411,8 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingSessionCreateRequest_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingSessionCreateRequest)">
-  ToEntity(ProfilingSessionCreateRequest)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingSessionCreateRequest_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.RuntimeProfilingSessionCreateRequest)">
+  ToEntity(RuntimeProfilingSessionCreateRequest)
   
   </h3>
 
@@ -461,18 +421,18 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingSessionEntity ToEntity(ProfilingSessionCreateRequest request)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingSessionEntity ToEntity(RuntimeProfilingSessionCreateRequest request)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionCreateRequest.html">ProfilingSessionCreateRequest</a></dt>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionCreateRequest.html">RuntimeProfilingSessionCreateRequest</a></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity.html">ProfilingSessionEntity</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSessionEntity.html">RuntimeProfilingSessionEntity</a></dt>
     <dd></dd>
   </dl>
 
@@ -481,7 +441,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingSessionCreateRequest__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingSessionCreateRequest__examples">Examples</h4>
   <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(request);</code></pre>
 
 
@@ -491,8 +451,8 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingSnapshot_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.ProfilingSnapshot)">
-  ToEntity(ProfilingSnapshot)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingSnapshot_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToEntity(BridgingIT.DevKit.Common.RuntimeProfilingSnapshot)">
+  ToEntity(RuntimeProfilingSnapshot)
   
   </h3>
 
@@ -501,18 +461,18 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingSnapshotEntity ToEntity(ProfilingSnapshot model)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingSnapshotEntity ToEntity(RuntimeProfilingSnapshot model)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshot.html">ProfilingSnapshot</a></dt>
+    <dt><code>model</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSnapshot.html">RuntimeProfilingSnapshot</a></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity.html">ProfilingSnapshotEntity</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSnapshotEntity.html">RuntimeProfilingSnapshotEntity</a></dt>
     <dd></dd>
   </dl>
 
@@ -521,7 +481,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_ProfilingSnapshot__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToEntity_BridgingIT_DevKit_Common_RuntimeProfilingSnapshot__examples">Examples</h4>
   <pre><code class="lang-csharp">var entity = ProfilingEntityMapper.ToEntity(snapshot);</code></pre>
 
 
@@ -531,22 +491,22 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingActionMarkerEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity,System.String,System.String)">
-  ToModel(ProfilingActionMarkerEntity, string, string)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingMarkerEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMarkerEntity,System.String,System.String)">
+  ToModel(ProfilingMarkerEntity, string, string)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Maps a durable action-marker row and readable keys to its model.</p>
+  <div class="markdown level1 summary"><p>Maps an owned marker to its scoped public record.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingActionMarker ToModel(ProfilingActionMarkerEntity entity, string sessionKey, string nodeKey)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ProfilingMarker ToModel(ProfilingMarkerEntity entity, string sessionKey, string nodeKey = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity.html">ProfilingActionMarkerEntity</a></dt>
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMarkerEntity.html">ProfilingMarkerEntity</a></dt>
     <dd></dd>
     <dt><code>sessionKey</code> <span class="xref">string</span></dt>
     <dd></dd>
@@ -556,7 +516,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingActionMarker.html">ProfilingActionMarker</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingMarker.html">ProfilingMarker</a></dt>
     <dd></dd>
   </dl>
 
@@ -565,52 +525,8 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingActionMarkerEntity_System_String_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingMarkerEntity_System_String_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var marker = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingMetricObservationEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity,System.String,System.String)">
-  ToModel(ProfilingMetricObservationEntity, string, string)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Maps a durable metric-observation row and readable keys to its model.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingMetricObservation ToModel(ProfilingMetricObservationEntity entity, string sessionKey, string nodeKey)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity.html">ProfilingMetricObservationEntity</a></dt>
-    <dd></dd>
-    <dt><code>sessionKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
-    <dt><code>nodeKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingMetricObservation.html">ProfilingMetricObservation</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingMetricObservationEntity_System_String_System_String__examples">Examples</h4>
-  <pre><code class="lang-csharp">var observation = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></pre>
 
 
 
@@ -659,22 +575,22 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingParticipationEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity,System.String,System.String)">
-  ToModel(ProfilingParticipationEntity, string, string)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingMetricObservationEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingMetricObservationEntity,System.String,System.String)">
+  ToModel(RuntimeProfilingMetricObservationEntity, string, string)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Maps a durable participation row and readable keys to its model.</p>
+  <div class="markdown level1 summary"><p>Maps a durable metric-observation row and readable keys to its model.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingNodeParticipation ToModel(ProfilingParticipationEntity entity, string sessionKey, string nodeKey)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ProfilingMetricObservation ToModel(RuntimeProfilingMetricObservationEntity entity, string sessionKey, string nodeKey)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity.html">ProfilingParticipationEntity</a></dt>
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingMetricObservationEntity.html">RuntimeProfilingMetricObservationEntity</a></dt>
     <dd></dd>
     <dt><code>sessionKey</code> <span class="xref">string</span></dt>
     <dd></dd>
@@ -684,7 +600,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeParticipation.html">ProfilingNodeParticipation</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingMetricObservation.html">ProfilingMetricObservation</a></dt>
     <dd></dd>
   </dl>
 
@@ -693,7 +609,51 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingParticipationEntity_System_String_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingMetricObservationEntity_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var observation = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingParticipationEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingParticipationEntity,System.String,System.String)">
+  ToModel(RuntimeProfilingParticipationEntity, string, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Maps a durable participation row and readable keys to its model.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingNodeParticipation ToModel(RuntimeProfilingParticipationEntity entity, string sessionKey, string nodeKey)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingParticipationEntity.html">RuntimeProfilingParticipationEntity</a></dt>
+    <dd></dd>
+    <dt><code>sessionKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>nodeKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeParticipation.html">RuntimeProfilingNodeParticipation</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingParticipationEntity_System_String_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var participation = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></pre>
 
 
@@ -703,50 +663,8 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingPhaseMarkerEntity_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity,System.String)">
-  ToModel(ProfilingPhaseMarkerEntity, string)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Maps a durable phase-marker row and readable session key to its model.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingPhaseMarker ToModel(ProfilingPhaseMarkerEntity entity, string sessionKey)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity.html">ProfilingPhaseMarkerEntity</a></dt>
-    <dd></dd>
-    <dt><code>sessionKey</code> <span class="xref">string</span></dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingPhaseMarker.html">ProfilingPhaseMarker</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingPhaseMarkerEntity_System_String__examples">Examples</h4>
-  <pre><code class="lang-csharp">var marker = ProfilingEntityMapper.ToModel(entity, sessionKey);</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
-
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingRuntimeContextEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity,System.String,System.String)">
-  ToModel(ProfilingRuntimeContextEntity, string, string)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingRuntimeContextEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingRuntimeContextEntity,System.String,System.String)">
+  ToModel(RuntimeProfilingRuntimeContextEntity, string, string)
   
   </h3>
 
@@ -755,12 +673,12 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingRuntimeContext ToModel(ProfilingRuntimeContextEntity entity, string sessionKey, string nodeKey)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingContext ToModel(RuntimeProfilingRuntimeContextEntity entity, string sessionKey, string nodeKey)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity.html">ProfilingRuntimeContextEntity</a></dt>
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingRuntimeContextEntity.html">RuntimeProfilingRuntimeContextEntity</a></dt>
     <dd></dd>
     <dt><code>sessionKey</code> <span class="xref">string</span></dt>
     <dd></dd>
@@ -770,7 +688,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingRuntimeContext.html">ProfilingRuntimeContext</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingContext.html">RuntimeProfilingContext</a></dt>
     <dd></dd>
   </dl>
 
@@ -779,7 +697,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingRuntimeContextEntity_System_String_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingRuntimeContextEntity_System_String_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var context = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></pre>
 
 
@@ -789,8 +707,8 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingSegmentEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity,System.String,System.String)">
-  ToModel(ProfilingSegmentEntity, string, string)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingSegmentEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSegmentEntity,System.String,System.String)">
+  ToModel(RuntimeProfilingSegmentEntity, string, string)
   
   </h3>
 
@@ -799,12 +717,12 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingSegment ToModel(ProfilingSegmentEntity entity, string sessionKey, string nodeKey)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ProfilingSegment ToModel(RuntimeProfilingSegmentEntity entity, string sessionKey, string nodeKey)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity.html">ProfilingSegmentEntity</a></dt>
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSegmentEntity.html">RuntimeProfilingSegmentEntity</a></dt>
     <dd></dd>
     <dt><code>sessionKey</code> <span class="xref">string</span></dt>
     <dd></dd>
@@ -823,7 +741,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingSegmentEntity_System_String_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingSegmentEntity_System_String_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var segment = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></pre>
 
 
@@ -833,8 +751,8 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingSessionEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity)">
-  ToModel(ProfilingSessionEntity)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingSessionEntity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSessionEntity)">
+  ToModel(RuntimeProfilingSessionEntity)
   
   </h3>
 
@@ -843,18 +761,18 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingSession ToModel(ProfilingSessionEntity entity)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingSession ToModel(RuntimeProfilingSessionEntity entity)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity.html">ProfilingSessionEntity</a></dt>
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSessionEntity.html">RuntimeProfilingSessionEntity</a></dt>
     <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSession.html">ProfilingSession</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a></dt>
     <dd></dd>
   </dl>
 
@@ -863,7 +781,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingSessionEntity__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingSessionEntity__examples">Examples</h4>
   <pre><code class="lang-csharp">var session = ProfilingEntityMapper.ToModel(entity);</code></pre>
 
 
@@ -873,8 +791,8 @@ Class ProfilingEntityMapper
 
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel*"></a>
 
-  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingSnapshotEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity,System.String,System.String)">
-  ToModel(ProfilingSnapshotEntity, string, string)
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingSnapshotEntity_System_String_System_String_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingEntityMapper.ToModel(BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSnapshotEntity,System.String,System.String)">
+  ToModel(RuntimeProfilingSnapshotEntity, string, string)
   
   </h3>
 
@@ -883,12 +801,12 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ProfilingSnapshot ToModel(ProfilingSnapshotEntity entity, string sessionKey, string nodeKey)</code></pre>
+    <pre><code class="lang-csharp hljs">public static RuntimeProfilingSnapshot ToModel(RuntimeProfilingSnapshotEntity entity, string sessionKey, string nodeKey)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity.html">ProfilingSnapshotEntity</a></dt>
+    <dt><code>entity</code> <a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSnapshotEntity.html">RuntimeProfilingSnapshotEntity</a></dt>
     <dd></dd>
     <dt><code>sessionKey</code> <span class="xref">string</span></dt>
     <dd></dd>
@@ -898,7 +816,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSnapshot.html">ProfilingSnapshot</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSnapshot.html">RuntimeProfilingSnapshot</a></dt>
     <dd></dd>
   </dl>
 
@@ -907,7 +825,7 @@ Class ProfilingEntityMapper
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingSnapshotEntity_System_String_System_String__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingEntityMapper_ToModel_BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_RuntimeProfilingSnapshotEntity_System_String_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var snapshot = ProfilingEntityMapper.ToModel(entity, sessionKey, nodeKey);</code></pre>
 
 
@@ -927,7 +845,7 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ICollection&lt;ProfilingSegmentTagEntity&gt; ToSegmentTags(Guid segmentId, IEnumerable&lt;string&gt; values)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ICollection&lt;RuntimeProfilingSegmentTagEntity&gt; ToSegmentTags(Guid segmentId, IEnumerable&lt;string&gt; values)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -940,7 +858,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentTagEntity.html">ProfilingSegmentTagEntity</a>&gt;</dt>
+    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSegmentTagEntity.html">RuntimeProfilingSegmentTagEntity</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -969,7 +887,7 @@ Class ProfilingEntityMapper
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static ICollection&lt;ProfilingSessionTagEntity&gt; ToSessionTags(Guid sessionId, IEnumerable&lt;string&gt; values)</code></pre>
+    <pre><code class="lang-csharp hljs">public static ICollection&lt;RuntimeProfilingSessionTagEntity&gt; ToSessionTags(Guid sessionId, IEnumerable&lt;string&gt; values)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -982,7 +900,7 @@ Class ProfilingEntityMapper
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionTagEntity.html">ProfilingSessionTagEntity</a>&gt;</dt>
+    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSessionTagEntity.html">RuntimeProfilingSessionTagEntity</a>&gt;</dt>
     <dd></dd>
   </dl>
 

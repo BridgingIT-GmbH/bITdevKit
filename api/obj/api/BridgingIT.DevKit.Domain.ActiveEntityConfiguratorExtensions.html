@@ -89,7 +89,7 @@ Class ActiveEntityConfiguratorExtensions
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
   </div>
 
@@ -414,6 +414,57 @@ Example entity with DataAnnotations:
 
   <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityConfiguratorExtensions_AddMetricsBehavior__2_BridgingIT_DevKit_Domain_ActiveEntityConfigurator___0___1___examples">Examples</h4>
   <pre><code class="lang-csharp">configurator.AddMetricsBehavior&lt;Customer, CustomerId&gt;();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_ActiveEntityConfiguratorExtensions_AddProfilingBehavior_" data-uid="BridgingIT.DevKit.Domain.ActiveEntityConfiguratorExtensions.AddProfilingBehavior*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_ActiveEntityConfiguratorExtensions_AddProfilingBehavior__2_BridgingIT_DevKit_Domain_ActiveEntityConfigurator___0___1__" data-uid="BridgingIT.DevKit.Domain.ActiveEntityConfiguratorExtensions.AddProfilingBehavior``2(BridgingIT.DevKit.Domain.ActiveEntityConfigurator{``0,``1})">
+  AddProfilingBehavior&lt;TEntity, TId&gt;(ActiveEntityConfigurator&lt;TEntity, TId&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds optional profiling around complete operations, including their lifecycle hooks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static ActiveEntityConfigurator&lt;TEntity, TId&gt; AddProfilingBehavior&lt;TEntity, TId&gt;(this ActiveEntityConfigurator&lt;TEntity, TId&gt; configurator) where TEntity : class, IEntity</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>configurator</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityConfigurator-2.html">ActiveEntityConfigurator</a>&lt;TEntity, TId&gt;</dt>
+    <dd><p>The entity configurator.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityConfigurator-2.html">ActiveEntityConfigurator</a>&lt;TEntity, TId&gt;</dt>
+    <dd><p>The configurator for fluent chaining.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The entity type.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd><p>The entity identifier type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityConfiguratorExtensions_AddProfilingBehavior__2_BridgingIT_DevKit_Domain_ActiveEntityConfigurator___0___1___examples">Examples</h4>
+  <pre><code class="lang-csharp">configurator.AddProfilingBehavior&lt;Customer, CustomerId&gt;();</code></pre>
 
 
 

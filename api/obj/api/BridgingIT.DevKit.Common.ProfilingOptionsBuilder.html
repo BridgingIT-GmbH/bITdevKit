@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ProfilingOptionsBuilder | bITdevKit API Reference ">
       
-      <meta name="description" content="Fluently updates one shared  instance.">
+      <meta name="description" content="Configures master enablement and shared process metadata.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -89,11 +89,11 @@ Class ProfilingOptionsBuilder
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Fluently updates one shared <a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptions.html">ProfilingOptions</a> instance.</p>
+  <div class="markdown summary"><p>Configures master enablement and shared process metadata.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -251,7 +251,7 @@ Class ProfilingOptionsBuilder
 
 
   <h2 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_examples">Examples</h2>
-  <pre><code class="lang-csharp">options.Enabled().Duration(TimeSpan.FromMinutes(1));</code></pre>
+  <pre><code class="lang-csharp">options.Enabled().Node("worker-1");</code></pre>
 
 
 
@@ -267,7 +267,7 @@ Class ProfilingOptionsBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Creates a builder for the supplied options.</p>
+  <div class="markdown level1 summary"><p>Configures master enablement and shared process metadata.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -278,8 +278,7 @@ Class ProfilingOptionsBuilder
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>target</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptions.html">ProfilingOptions</a></dt>
-    <dd><p>The options instance to update.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -289,7 +288,7 @@ Class ProfilingOptionsBuilder
 
 
   <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder__ctor_BridgingIT_DevKit_Common_ProfilingOptions__examples">Examples</h4>
-  <pre><code class="lang-csharp">var builder = new ProfilingOptionsBuilder(options);</code></pre>
+  <pre><code class="lang-csharp">options.Enabled().Node("worker-1");</code></pre>
 
 
 
@@ -300,48 +299,6 @@ Class ProfilingOptionsBuilder
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Duration_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Duration*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Duration_System_TimeSpan_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Duration(System.TimeSpan)">
-  Duration(TimeSpan)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Sets the required maximum collection duration.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder Duration(TimeSpan value)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
-    <dd><p>A positive duration.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
-    <dd><p>This builder.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Duration_System_TimeSpan__examples">Examples</h4>
-  <pre><code class="lang-csharp">options.Duration(TimeSpan.FromSeconds(30));</code></pre>
-
-
-
-
-
-
   <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Enabled_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Enabled*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Enabled_System_Boolean_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Enabled(System.Boolean)">
@@ -349,26 +306,24 @@ Class ProfilingOptionsBuilder
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Enables or disables profiling collection.</p>
+  <div class="markdown level1 summary"><p>Sets the master capture flag.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder Enabled(bool enabled = true)</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder Enabled(bool value = true)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>enabled</code> <span class="xref">bool</span></dt>
-    <dd><p>Whether collection is enabled.</p>
-</dd>
+    <dt><code>value</code> <span class="xref">bool</span></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
-    <dd><p>This builder.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -384,33 +339,33 @@ Class ProfilingOptionsBuilder
 
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_FinalizationGracePeriod_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.FinalizationGracePeriod*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Node_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Node*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_FinalizationGracePeriod_System_TimeSpan_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.FinalizationGracePeriod(System.TimeSpan)">
-  FinalizationGracePeriod(TimeSpan)
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Node_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Node(System.String,System.String)">
+  Node(string, string)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Sets the session finalization grace period.</p>
+  <div class="markdown level1 summary"><p>Sets bounded cached local process metadata.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder FinalizationGracePeriod(TimeSpan value)</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder Node(string displayName, string applicationVersion = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
-    <dd><p>A non-negative grace period.</p>
-</dd>
+    <dt><code>displayName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>applicationVersion</code> <span class="xref">string</span></dt>
+    <dd></dd>
   </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
     <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
-    <dd><p>This builder.</p>
-</dd>
+    <dd></dd>
   </dl>
 
 
@@ -418,179 +373,8 @@ Class ProfilingOptionsBuilder
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_FinalizationGracePeriod_System_TimeSpan__examples">Examples</h4>
-  <pre><code class="lang-csharp">options.FinalizationGracePeriod(TimeSpan.FromSeconds(1));</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_ParticipationDeadline_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.ParticipationDeadline*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_ParticipationDeadline_System_TimeSpan_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.ParticipationDeadline(System.TimeSpan)">
-  ParticipationDeadline(TimeSpan)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Sets the start participation deadline.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder ParticipationDeadline(TimeSpan value)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
-    <dd><p>A positive deadline.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
-    <dd><p>This builder.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_ParticipationDeadline_System_TimeSpan__examples">Examples</h4>
-  <pre><code class="lang-csharp">options.ParticipationDeadline(TimeSpan.FromSeconds(1));</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_RefreshInterval_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.RefreshInterval*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_RefreshInterval_System_TimeSpan_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.RefreshInterval(System.TimeSpan)">
-  RefreshInterval(TimeSpan)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Sets the dashboard refresh interval.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder RefreshInterval(TimeSpan value)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
-    <dd><p>A positive refresh interval.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
-    <dd><p>This builder.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_RefreshInterval_System_TimeSpan__examples">Examples</h4>
-  <pre><code class="lang-csharp">options.RefreshInterval(TimeSpan.FromSeconds(5));</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Retention_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Retention*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Retention_System_Int32_System_TimeSpan_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.Retention(System.Int32,System.TimeSpan)">
-  Retention(int, TimeSpan)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Sets the terminal-session retention limits.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder Retention(int maximumSessions, TimeSpan maximumAge)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>maximumSessions</code> <span class="xref">int</span></dt>
-    <dd><p>The positive maximum retained session count.</p>
-</dd>
-    <dt><code>maximumAge</code> <span class="xref">TimeSpan</span></dt>
-    <dd><p>The positive maximum session age.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
-    <dd><p>This builder.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Retention_System_Int32_System_TimeSpan__examples">Examples</h4>
-  <pre><code class="lang-csharp">options.Retention(20, TimeSpan.FromDays(7));</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_SamplingInterval_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.SamplingInterval*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_SamplingInterval_System_TimeSpan_" data-uid="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.SamplingInterval(System.TimeSpan)">
-  SamplingInterval(TimeSpan)
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Sets the default sampling interval.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingOptionsBuilder SamplingInterval(TimeSpan value)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>value</code> <span class="xref">TimeSpan</span></dt>
-    <dd><p>An interval of at least 500 milliseconds.</p>
-</dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingOptionsBuilder.html">ProfilingOptionsBuilder</a></dt>
-    <dd><p>This builder.</p>
-</dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_SamplingInterval_System_TimeSpan__examples">Examples</h4>
-  <pre><code class="lang-csharp">options.SamplingInterval(TimeSpan.FromSeconds(1));</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptionsBuilder_Node_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">options.Node("worker-1", "2.0.0");</code></pre>
 
 
 

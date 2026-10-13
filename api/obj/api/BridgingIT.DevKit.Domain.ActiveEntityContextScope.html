@@ -89,7 +89,7 @@ Class ActiveEntityContextScope
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
   </div>
 
@@ -132,8 +132,7 @@ when one is not supplied and disposing its DI scope after use.</p>
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Executes an action with an existing or newly created <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContext-2.html">ActiveEntityContext&lt;TEntity, TId&gt;</a>.
-Creates a new DI scope only when <code class="paramref">context</code> is null and disposes it after execution.</p>
+  <div class="markdown level1 summary"><p>Executes work with an existing or newly created context using the default operation name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -144,10 +143,74 @@ Creates a new DI scope only when <code class="paramref">context</code> is null a
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
     <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContext-2.html">ActiveEntityContext</a>&lt;TEntity, TId&gt;</dt>
+    <dd><p>The existing context, or null to create a scoped one.</p>
+</dd>
+    <dt><code>action</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContext-2.html">ActiveEntityContext</a>&lt;TEntity, TId&gt;, <span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
+    <dd><p>The business delegate to execute once.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;TResult&gt;</dt>
+    <dd><p>The delegate's result.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Type Parameters</h4>
+  <dl class="parameters">
+    <dt><code>TEntity</code></dt>
+    <dd><p>The entity type.</p>
+</dd>
+    <dt><code>TId</code></dt>
+    <dd><p>The identifier type.</p>
+</dd>
+    <dt><code>TResult</code></dt>
+    <dd><p>The delegate's result type.</p>
+</dd>
+  </dl>
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2____examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await ActiveEntityContextScope.UseAsync(context, ctx =&gt; ctx.Provider.CountAsync());</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync_" data-uid="BridgingIT.DevKit.Domain.ActiveEntityContextScope.UseAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___System_Threading_CancellationToken_System_String_" data-uid="BridgingIT.DevKit.Domain.ActiveEntityContextScope.UseAsync``3(BridgingIT.DevKit.Domain.ActiveEntityContext{``0,``1},System.Func{BridgingIT.DevKit.Domain.ActiveEntityContext{``0,``1},System.Threading.Tasks.Task{``2}},System.Threading.CancellationToken,System.String)">
+  UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt;, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt;, CancellationToken, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Executes an action with an existing or newly created <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContext-2.html">ActiveEntityContext&lt;TEntity, TId&gt;</a>.
+Creates a new DI scope only when <code class="paramref">context</code> is null and disposes it after execution.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static Task&lt;TResult&gt; UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt; context, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt; action, CancellationToken cancellationToken, string operation = null) where TEntity : ActiveEntity&lt;TEntity, TId&gt;</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContext-2.html">ActiveEntityContext</a>&lt;TEntity, TId&gt;</dt>
     <dd><p>Existing context (reused) or null to create a scoped one.</p>
 </dd>
     <dt><code>action</code> <span class="xref">Func</span>&lt;<a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContext-2.html">ActiveEntityContext</a>&lt;TEntity, TId&gt;, <span class="xref">Task</span>&lt;TResult&gt;&gt;</dt>
     <dd><p>Delegate to execute with the ensured context.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>The application's token, forwarded to optional operation behaviors.</p>
+</dd>
+    <dt><code>operation</code> <span class="xref">string</span></dt>
+    <dd><p>The calling operation name, supplied automatically unless overridden.</p>
 </dd>
   </dl>
 
@@ -174,6 +237,9 @@ Creates a new DI scope only when <code class="paramref">context</code> is null a
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___System_Threading_CancellationToken_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var result = await ActiveEntityContextScope.UseAsync(context, ctx =&gt; ctx.Provider.CountAsync(cancellationToken), cancellationToken);</code></pre>
 
 
 

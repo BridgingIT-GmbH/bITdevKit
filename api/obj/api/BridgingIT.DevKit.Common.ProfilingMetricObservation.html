@@ -89,8 +89,8 @@ Class ProfilingMetricObservation
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
-  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
   <div class="markdown summary"><p>Describes one immutable observation from the existing DevKit meter.</p>
@@ -565,7 +565,8 @@ public Guid SessionId { get; init; }</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public DateTimeOffset TimestampUtc { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ProfilingUtcJsonConverter))]
+public DateTimeOffset TimestampUtc { get; init; }</code></pre>
   </div>
 
 

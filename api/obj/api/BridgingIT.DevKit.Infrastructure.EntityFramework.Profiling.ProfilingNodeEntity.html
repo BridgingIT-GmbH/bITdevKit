@@ -89,7 +89,7 @@ Class ProfilingNodeEntity
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.html">Profiling</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.html">Profiling</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
   </div>
 
@@ -294,6 +294,42 @@ public sealed class ProfilingNodeEntity</code></pre>
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ApplicationVersion_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ApplicationVersion*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ApplicationVersion" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ApplicationVersion">
+  ApplicationVersion
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets bounded application-version metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(128)]
+public string ApplicationVersion { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ApplicationVersion_examples">Examples</h4>
+  <pre><code class="lang-csharp">node.ApplicationVersion = "1.2.3";</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_BroadcastNodeIdentity_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.BroadcastNodeIdentity*"></a>
 
   <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_BroadcastNodeIdentity" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.BroadcastNodeIdentity">
@@ -306,8 +342,7 @@ public sealed class ProfilingNodeEntity</code></pre>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[Required]
-[MaxLength(256)]
+    <pre><code class="lang-csharp hljs">[MaxLength(256)]
 public string BroadcastNodeIdentity { get; set; }</code></pre>
   </div>
 
@@ -322,6 +357,112 @@ public string BroadcastNodeIdentity { get; set; }</code></pre>
   </dl>
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_DisplayName_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.DisplayName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_DisplayName" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.DisplayName">
+  DisplayName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the bounded display name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[MaxLength(128)]
+public string DisplayName { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_DisplayName_examples">Examples</h4>
+  <pre><code class="lang-csharp">node.DisplayName = "worker-a";</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ExecutionStartedUtc_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ExecutionStartedUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ExecutionStartedUtc" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ExecutionStartedUtc">
+  ExecutionStartedUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the cached process-start UTC independently of Broadcast registration time.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public DateTimeOffset ExecutionStartedUtc { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ExecutionStartedUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var utc = node.ExecutionStartedUtc;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ExecutionStartedUtcTicks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ExecutionStartedUtcTicks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ExecutionStartedUtcTicks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ExecutionStartedUtcTicks">
+  ExecutionStartedUtcTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets lossless process identity ticks for cross-provider correlation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long ExecutionStartedUtcTicks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ExecutionStartedUtcTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var ticks = entity.ExecutionStartedUtcTicks;</code></pre>
 
 
 
@@ -488,6 +629,41 @@ public DateTimeOffset ProcessStartedUtc { get; set; }</code></pre>
   </dl>
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ProcessStartedUtcTicks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ProcessStartedUtcTicks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ProcessStartedUtcTicks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.ProcessStartedUtcTicks">
+  ProcessStartedUtcTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the exact cached process-start ticks independent of database timestamp precision.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long ProcessStartedUtcTicks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_ProfilingNodeEntity_ProcessStartedUtcTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var ticks = entity.ProcessStartedUtcTicks;</code></pre>
 
 
 

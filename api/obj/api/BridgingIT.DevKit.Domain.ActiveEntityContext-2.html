@@ -89,7 +89,7 @@ Class ActiveEntityContext&lt;TEntity, TId&gt;
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Domain.html">Domain</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Domain.dll</dd></dl>
   </div>
 
@@ -100,7 +100,7 @@ the same lifetime and dependencies (e.g., DbContext).</p>
 <b>Lifetime Warning:</b> This context is only valid within the DI scope it was created from.
 Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 <span class="xref">System.ObjectDisposedException</span> if the underlying scope (and its services) are disposed.
-Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html#BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___">UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt;, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt;)</a>
+Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html">ActiveEntityContextScope</a>
 or a <code>WithTransactionAsync</code> operation).
 </p>
 <p>
@@ -296,7 +296,7 @@ the same lifetime and dependencies (e.g., DbContext).</p>
 <b>Lifetime Warning:</b> This context is only valid within the DI scope it was created from.
 Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 <span class="xref">System.ObjectDisposedException</span> if the underlying scope (and its services) are disposed.
-Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html#BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___">UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt;, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt;)</a>
+Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html">ActiveEntityContextScope</a>
 or a <code>WithTransactionAsync</code> operation).
 </p>
 <p>

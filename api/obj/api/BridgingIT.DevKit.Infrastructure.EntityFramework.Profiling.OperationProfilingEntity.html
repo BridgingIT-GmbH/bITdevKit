@@ -1,0 +1,1577 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class OperationProfilingEntity | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class OperationProfilingEntity | bITdevKit API Reference ">
+      
+      <meta name="description" content="Persists one immutable operation graph with portable indexed query projections.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity">
+
+
+
+  <h1 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity" class="text-break">
+Class OperationProfilingEntity  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Infrastructure.html">Infrastructure</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.html">EntityFramework</a>.<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.html">Profiling</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Infrastructure.EntityFramework.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Persists one immutable operation graph with portable indexed query projections.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class OperationProfilingEntity</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">OperationProfilingEntity</span></div>
+    </dd>
+  </dl>
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Infrastructure.Azure.AzureTableEntityConverter.html#BridgingIT_DevKit_Infrastructure_Azure_AzureTableEntityConverter_ToTableEntity__1___0_System_String_System_String_System_Text_Json_JsonSerializerOptions_BridgingIT_DevKit_Infrastructure_Azure_PropertyConverters___0__">AzureTableEntityConverter.ToTableEntity&lt;T&gt;(T, string, string, JsonSerializerOptions, PropertyConverters&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_examples">Examples</h2>
+  <pre><code class="lang-csharp">var entity = new OperationProfilingEntity();</code></pre>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity__ctor_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity__ctor" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.#ctor">
+  OperationProfilingEntity()
+  
+  </h3>
+
+  <div class="markdown level1 summary"></div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OperationProfilingEntity()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ApplicationRequestIdBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.ApplicationRequestIdBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ApplicationRequestIdBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.ApplicationRequestIdBytes">
+  ApplicationRequestIdBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the exact application request lookup identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] ApplicationRequestIdBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ApplicationRequestIdBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.ApplicationRequestIdBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ApplicationVersionBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.ApplicationVersionBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ApplicationVersionBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.ApplicationVersionBytes">
+  ApplicationVersionBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the exact cached application version.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] ApplicationVersionBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ApplicationVersionBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.ApplicationVersionBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_BaseGroupBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.BaseGroupBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_BaseGroupBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.BaseGroupBytes">
+  BaseGroupBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the length-prefixed kind and key grouping representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] BaseGroupBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_BaseGroupBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.BaseGroupBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CanonicalIdBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CanonicalIdBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CanonicalIdBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CanonicalIdBytes">
+  CanonicalIdBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the portable ordinal GUID sorting representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] CanonicalIdBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CanonicalIdBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.CanonicalIdBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CommitWatermark_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CommitWatermark*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CommitWatermark" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CommitWatermark">
+  CommitWatermark
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the transactionally visible publication position.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long CommitWatermark { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CommitWatermark_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.CommitWatermark;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CompletedUtcTicks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CompletedUtcTicks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CompletedUtcTicks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CompletedUtcTicks">
+  CompletedUtcTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the observed UTC completion ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long CompletedUtcTicks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CompletedUtcTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.CompletedUtcTicks;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CompletionSequence_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CompletionSequence*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CompletionSequence" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CompletionSequence">
+  CompletionSequence
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the original writer-local completion number.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long CompletionSequence { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CompletionSequence_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.CompletionSequence;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CorrelationBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CorrelationBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CorrelationBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.CorrelationBytes">
+  CorrelationBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the exact lookup-only correlation value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] CorrelationBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_CorrelationBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.CorrelationBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Dimensions_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Dimensions*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Dimensions" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Dimensions">
+  Dimensions
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the independently indexed typed metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ICollection&lt;OperationProfilingDimensionEntity&gt; Dimensions { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingDimensionEntity.html">OperationProfilingDimensionEntity</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Dimensions_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Dimensions;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_DurationTicks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.DurationTicks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_DurationTicks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.DurationTicks">
+  DurationTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the monotonic elapsed ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long DurationTicks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_DurationTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.DurationTicks;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_EstimatedPayloadBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.EstimatedPayloadBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_EstimatedPayloadBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.EstimatedPayloadBytes">
+  EstimatedPayloadBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the conservatively charged frozen graph size.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long EstimatedPayloadBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_EstimatedPayloadBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.EstimatedPayloadBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HasSegmentFailures_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HasSegmentFailures*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HasSegmentFailures" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HasSegmentFailures">
+  HasSegmentFailures
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets whether any segment contains an observed failed invocation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasSegmentFailures { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HasSegmentFailures_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.HasSegmentFailures;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpMethodBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpMethodBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpMethodBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpMethodBytes">
+  HttpMethodBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the canonical HTTP method projection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] HttpMethodBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpMethodBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.HttpMethodBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpMethodGroupBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpMethodGroupBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpMethodGroupBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpMethodGroupBytes">
+  HttpMethodGroupBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the length-prefixed HTTP method or missing grouping component.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] HttpMethodGroupBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpMethodGroupBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.HttpMethodGroupBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpRouteBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpRouteBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpRouteBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpRouteBytes">
+  HttpRouteBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the complete canonical route projection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] HttpRouteBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpRouteBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.HttpRouteBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpRouteHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpRouteHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpRouteHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpRouteHash">
+  HttpRouteHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the indexed route digest with collision verification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] HttpRouteHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpRouteHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.HttpRouteHash;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpStatusCode_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpStatusCode*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpStatusCode" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.HttpStatusCode">
+  HttpStatusCode
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the final HTTP status when observed.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public int? HttpStatusCode { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">int</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_HttpStatusCode_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.HttpStatusCode;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Id_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Id*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Id" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Id">
+  Id
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the immutable operation occurrence identity.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid Id { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Id_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Id;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Key_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Key*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Key" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Key">
+  Key
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the supplied operation display key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Key { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Key_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Key;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KeyBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KeyBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KeyBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KeyBytes">
+  KeyBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the complete canonical key comparison representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] KeyBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KeyBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.KeyBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KeyHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KeyHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KeyHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KeyHash">
+  KeyHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the indexed canonical key digest with full-value collision verification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] KeyHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KeyHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.KeyHash;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Kind_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Kind*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Kind" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Kind">
+  Kind
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the supplied operation kind.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string Kind { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Kind_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Kind;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KindBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KindBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KindBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KindBytes">
+  KindBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the complete canonical kind comparison representation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] KindBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KindBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.KindBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KindHash_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KindHash*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KindHash" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.KindHash">
+  KindHash
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the indexed canonical kind digest with full-value collision verification.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] KindHash { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_KindHash_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.KindHash;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Node_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Node*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Node" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Node">
+  Node
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the non-cascading shared process descriptor.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProfilingNodeEntity Node { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingNodeEntity.html">ProfilingNodeEntity</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Node_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Node;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_NodeId_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.NodeId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_NodeId" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.NodeId">
+  NodeId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the shared cached process owner.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid NodeId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_NodeId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.NodeId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_NodeKey_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.NodeKey*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_NodeKey" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.NodeKey">
+  NodeKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the immutable readable node key for one-read graph reconstruction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string NodeKey { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_NodeKey_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.NodeKey;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Outcome_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Outcome*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Outcome" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Outcome">
+  Outcome
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the observed business outcome.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public OperationProfilingOutcome Outcome { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingOutcome.html">OperationProfilingOutcome</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Outcome_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Outcome;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ParentOperationId_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.ParentOperationId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ParentOperationId" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.ParentOperationId">
+  ParentOperationId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the non-owning parent occurrence link.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid? ParentOperationId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_ParentOperationId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.ParentOperationId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_RecordJson_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.RecordJson*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_RecordJson" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.RecordJson">
+  RecordJson
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the bounded frozen graph for one-read detail reconstruction.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string RecordJson { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_RecordJson_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.RecordJson;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_SamplingConfigurationBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.SamplingConfigurationBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_SamplingConfigurationBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.SamplingConfigurationBytes">
+  SamplingConfigurationBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the canonical adapter sampling policy identifier.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] SamplingConfigurationBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_SamplingConfigurationBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.SamplingConfigurationBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_SamplingStrategyBytes_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.SamplingStrategyBytes*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_SamplingStrategyBytes" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.SamplingStrategyBytes">
+  SamplingStrategyBytes
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the canonical adapter sampling strategy.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public byte[] SamplingStrategyBytes { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">byte</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_SamplingStrategyBytes_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.SamplingStrategyBytes;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Segments_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Segments*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Segments" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.Segments">
+  Segments
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the independently addressed aggregate summary paths.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ICollection&lt;OperationProfilingSegmentEntity&gt; Segments { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">ICollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingSegmentEntity.html">OperationProfilingSegmentEntity</a>&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_Segments_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.Segments;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_StartedUtcTicks_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.StartedUtcTicks*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_StartedUtcTicks" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.StartedUtcTicks">
+  StartedUtcTicks
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the observed UTC start ticks.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long StartedUtcTicks { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_StartedUtcTicks_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.StartedUtcTicks;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_WriterGeneration_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.WriterGeneration*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_WriterGeneration" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.WriterGeneration">
+  WriterGeneration
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the original registration generation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long WriterGeneration { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_WriterGeneration_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.WriterGeneration;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_WriterId_" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.WriterId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_WriterId" data-uid="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.WriterId">
+  WriterId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets the original writer identity retained independently of lease cleanup.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid WriterId { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Infrastructure_EntityFramework_Profiling_OperationProfilingEntity_WriterId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = entity.WriterId;</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

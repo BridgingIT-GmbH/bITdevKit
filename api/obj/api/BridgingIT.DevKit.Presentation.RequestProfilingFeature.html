@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class RequestProfilingFeature | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class RequestProfilingFeature | bITdevKit API Reference ">
+      
+      <meta name="description" content="Coordinates HTTP observations and exactly-once finalization without retaining application payloads.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature" class="text-break">
+Class RequestProfilingFeature  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Coordinates HTTP observations and exactly-once finalization without retaining application payloads.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public sealed class RequestProfilingFeature : IRequestProfilingFeature</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">RequestProfilingFeature</span></div>
+    </dd>
+  </dl>
+
+  <dl class="typelist implements">
+    <dt>Implements</dt>
+    <dd>
+      <div><a class="xref" href="BridgingIT.DevKit.Presentation.IRequestProfilingFeature.html">IRequestProfilingFeature</a></div>
+    </dd>
+  </dl>
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_examples">Examples</h2>
+  <p>Installed by RequestProfilingMiddleware, reused by exception observers and consuming filters.</p>
+
+
+
+
+  <h2 class="section" id="constructors">Constructors
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature__ctor_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.#ctor*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature__ctor_Microsoft_AspNetCore_Http_HttpContext_BridgingIT_DevKit_Common_IProfilingOperationScope_BridgingIT_DevKit_Presentation_RequestProfilingRuntime_BridgingIT_DevKit_Common_HttpRequestProfilingMetadata_System_Boolean_System_String_System_Nullable_System_Boolean__" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.#ctor(Microsoft.AspNetCore.Http.HttpContext,BridgingIT.DevKit.Common.IProfilingOperationScope,BridgingIT.DevKit.Presentation.RequestProfilingRuntime,BridgingIT.DevKit.Common.HttpRequestProfilingMetadata,System.Boolean,System.String,System.Nullable{System.Boolean})">
+  RequestProfilingFeature(HttpContext, IProfilingOperationScope, RequestProfilingRuntime, HttpRequestProfilingMetadata, bool, string, bool?)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates the selected or suppressed request feature from immutable entry metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RequestProfilingFeature(HttpContext context, IProfilingOperationScope operation, RequestProfilingRuntime runtime, HttpRequestProfilingMetadata metadata, bool selected, string initialKey, bool? suppressed = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <span class="xref">HttpContext</span></dt>
+    <dd></dd>
+    <dt><code>operation</code> <a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a></dt>
+    <dd></dd>
+    <dt><code>runtime</code> <a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingRuntime.html">RequestProfilingRuntime</a></dt>
+    <dd></dd>
+    <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Common.HttpRequestProfilingMetadata.html">HttpRequestProfilingMetadata</a></dt>
+    <dd></dd>
+    <dt><code>selected</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+    <dt><code>initialKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>suppressed</code> <span class="xref">bool</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature__ctor_Microsoft_AspNetCore_Http_HttpContext_BridgingIT_DevKit_Common_IProfilingOperationScope_BridgingIT_DevKit_Presentation_RequestProfilingRuntime_BridgingIT_DevKit_Common_HttpRequestProfilingMetadata_System_Boolean_System_String_System_Nullable_System_Boolean___examples">Examples</h4>
+  <p>Created once at HTTP middleware entry.</p>
+
+
+
+
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Id_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Id*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Id" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Id">
+  Id
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the selected occurrence ID, including capture admission rejection.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid Id { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Id_examples">Examples</h4>
+  <pre><code class="lang-csharp">var id = context.Features.Get&lt;IRequestProfilingFeature&gt;()?.Id;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_InitialKey_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.InitialKey*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_InitialKey" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.InitialKey">
+  InitialKey
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the bounded default key chosen at entry, unaffected by controller overrides.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string InitialKey { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_InitialKey_examples">Examples</h4>
+  <pre><code class="lang-csharp">var initial = feature.InitialKey;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Operation_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Operation*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Operation" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Operation">
+  Operation
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the explicit root handle, independent from the ambient execution or DI scope.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public IProfilingOperationScope Operation { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.IProfilingOperationScope.html">IProfilingOperationScope</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Operation_examples">Examples</h4>
+  <pre><code class="lang-csharp">feature.Operation?.SetKey("Products.List");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Selected_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Selected*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Selected" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Selected">
+  Selected
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether the entry sampling policy selected this request.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Selected { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Selected_examples">Examples</h4>
+  <pre><code class="lang-csharp">var selected = feature.Selected;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Suppressed_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Suppressed*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Suppressed" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Suppressed">
+  Suppressed
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether nested instrumentation is suppressed by a blacklist or sampling skip.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool Suppressed { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Suppressed_examples">Examples</h4>
+  <pre><code class="lang-csharp">var suppressed = feature.Suppressed;</code></pre>
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Attach_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Attach*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Attach_BridgingIT_DevKit_Presentation_ProfilingResponseBodyFeature_BridgingIT_DevKit_Presentation_ProfilingRequestBodyObserver_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.Attach(BridgingIT.DevKit.Presentation.ProfilingResponseBodyFeature,BridgingIT.DevKit.Presentation.ProfilingRequestBodyObserver)">
+  Attach(ProfilingResponseBodyFeature, ProfilingRequestBodyObserver)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Attaches observers and an abort notification without changing transport ownership.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void Attach(ProfilingResponseBodyFeature response, ProfilingRequestBodyObserver request)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>response</code> <a class="xref" href="BridgingIT.DevKit.Presentation.ProfilingResponseBodyFeature.html">ProfilingResponseBodyFeature</a></dt>
+    <dd></dd>
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Presentation.ProfilingRequestBodyObserver.html">ProfilingRequestBodyObserver</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_Attach_BridgingIT_DevKit_Presentation_ProfilingResponseBodyFeature_BridgingIT_DevKit_Presentation_ProfilingRequestBodyObserver__examples">Examples</h4>
+  <p>Called once after installing the response and optional request adapters.</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_CaptureOriginalRoute_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.CaptureOriginalRoute*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_CaptureOriginalRoute" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.CaptureOriginalRoute">
+  CaptureOriginalRoute()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Captures the original route once and promotes its template to the default key without replacing explicit overrides.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void CaptureOriginalRoute()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_CaptureOriginalRoute_examples">Examples</h4>
+  <pre><code class="lang-csharp">feature?.CaptureOriginalRoute();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_CompleteAsync_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.CompleteAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_CompleteAsync" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.CompleteAsync">
+  CompleteAsync()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finalizes normal response processing once, including final status and quality.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Task CompleteAsync()</code></pre>
+  </div>
+
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_CompleteAsync_examples">Examples</h4>
+  <p>Registered with HttpResponse.OnCompleted by the outer middleware.</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ObserveRequest_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ObserveRequest*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ObserveRequest_System_Int64_System_Boolean_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ObserveRequest(System.Int64,System.Boolean)">
+  ObserveRequest(long, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records ordinarily consumed request bytes; false detaches expired observation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ObserveRequest(long bytes, bool partial)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>partial</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ObserveRequest_System_Int64_System_Boolean__examples">Examples</h4>
+  <p>Used by the optional request Stream and PipeReader adapters.</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ObserveResponse_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ObserveResponse*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ObserveResponse_System_Int64_System_Boolean_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ObserveResponse(System.Int64,System.Boolean)">
+  ObserveResponse(long, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Records a successful response write or uncertain partial delivery; false detaches expired observation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool ObserveResponse(long bytes, bool partial)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>bytes</code> <span class="xref">long</span></dt>
+    <dd></dd>
+    <dt><code>partial</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ObserveResponse_System_Int64_System_Boolean__examples">Examples</h4>
+  <p>Used by Stream, BodyWriter and send-file adapters after successful forwarding.</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_PipelineUnwound_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.PipelineUnwound*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_PipelineUnwound_System_Boolean_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.PipelineUnwound(System.Boolean)">
+  PipelineUnwound(bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Restores pipeline ownership externally, retaining only the explicit handle for completion.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void PipelineUnwound(bool escaped)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>escaped</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_PipelineUnwound_System_Boolean__examples">Examples</h4>
+  <p>Called in the outer middleware finally block after downstream unwinds.</p>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ReportException_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ReportException*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ReportException_System_Exception_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ReportException(System.Exception)">
+  ReportException(Exception)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Safely observes an exception before a consuming handler or filter replaces its response.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ReportException(Exception exception)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>exception</code> <span class="xref">Exception</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ReportException_System_Exception__examples">Examples</h4>
+  <pre><code class="lang-csharp">feature?.ReportException(exception);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ResponseStarting_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ResponseStarting*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ResponseStarting" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingFeature.ResponseStarting">
+  ResponseStarting()
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates header-time metadata before the transport begins sending the selected response.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public void ResponseStarting()</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingFeature_ResponseStarting_examples">Examples</h4>
+  <p>Called by the outer OnStarting callback after inner cache callbacks.</p>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -89,7 +89,7 @@ Class ActivityHelper
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
@@ -184,6 +184,9 @@ Class ActivityHelper
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ActivityHelper_StartActvity_System_Diagnostics_Activity_System_String_System_Func_System_Diagnostics_Activity_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Diagnostics_ActivityKind_System_String_System_Collections_Generic_IDictionary_System_String_System_String__System_Collections_Generic_IDictionary_System_String_System_String__System_String_System_Boolean_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">await Activity.Current.StartActvity("publish", (_, token) =&gt; PublishAsync(token));</code></pre>
 
 
 

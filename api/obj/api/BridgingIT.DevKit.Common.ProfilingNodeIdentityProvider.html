@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ProfilingNodeIdentityProvider | bITdevKit API Reference ">
       
-      <meta name="description" content="Resolves the local Broadcast process registration to one stable profiling node.">
+      <meta name="description" content="Creates and caches one process descriptor without persistence or Broadcast dependencies.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -89,11 +89,11 @@ Class ProfilingNodeIdentityProvider
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Resolves the local Broadcast process registration to one stable profiling node.</p>
+  <div class="markdown summary"><p>Creates and caches one process descriptor without persistence or Broadcast dependencies.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -257,7 +257,7 @@ Class ProfilingNodeIdentityProvider
 
 
   <h2 id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider_examples">Examples</h2>
-  <pre><code class="lang-csharp">var node = await provider.GetAsync(registration, cancellationToken);</code></pre>
+  <pre><code class="lang-csharp">var identity = new ProfilingNodeIdentityProvider().GetNode();</code></pre>
 
 
 
@@ -268,24 +268,27 @@ Class ProfilingNodeIdentityProvider
 
   <a id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider__ctor_" data-uid="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider__ctor_BridgingIT_DevKit_Common_IProfilingStore_" data-uid="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.#ctor(BridgingIT.DevKit.Common.IProfilingStore)">
-  ProfilingNodeIdentityProvider(IProfilingStore)
+  <h3 id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider__ctor_System_TimeProvider_System_String_System_String_" data-uid="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.#ctor(System.TimeProvider,System.String,System.String)">
+  ProfilingNodeIdentityProvider(TimeProvider, string, string)
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Resolves the local Broadcast process registration to one stable profiling node.</p>
+  <div class="markdown level1 summary"><p>Creates the process-lifetime cache with optional host display metadata.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingNodeIdentityProvider(IProfilingStore store)</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingNodeIdentityProvider(TimeProvider timeProvider = null, string displayName = null, string applicationVersion = null)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>store</code> <a class="xref" href="BridgingIT.DevKit.Common.IProfilingStore.html">IProfilingStore</a></dt>
-    <dd><p>The configured profiling store.</p>
-</dd>
+    <dt><code>timeProvider</code> <span class="xref">TimeProvider</span></dt>
+    <dd></dd>
+    <dt><code>displayName</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>applicationVersion</code> <span class="xref">string</span></dt>
+    <dd></dd>
   </dl>
 
 
@@ -294,8 +297,8 @@ Class ProfilingNodeIdentityProvider
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider__ctor_BridgingIT_DevKit_Common_IProfilingStore__examples">Examples</h4>
-  <pre><code class="lang-csharp">var node = await provider.GetAsync(registration, cancellationToken);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider__ctor_System_TimeProvider_System_String_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var identity = new ProfilingNodeIdentityProvider(displayName: "worker-a");</code></pre>
 
 
 
@@ -306,32 +309,25 @@ Class ProfilingNodeIdentityProvider
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider_GetAsync_" data-uid="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.GetAsync*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider_GetNode_" data-uid="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.GetNode*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider_GetAsync_BridgingIT_DevKit_Common_BroadcastNodeRegistration_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.GetAsync(BridgingIT.DevKit.Common.BroadcastNodeRegistration,System.Threading.CancellationToken)">
-  GetAsync(BroadcastNodeRegistration, CancellationToken)
+  <h3 id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider_GetNode" data-uid="BridgingIT.DevKit.Common.ProfilingNodeIdentityProvider.GetNode">
+  GetNode()
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Resolves one Broadcast registration to a stable profiling node.</p>
+  <div class="markdown level1 summary"><p>Returns the immutable cached process descriptor without I/O.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public Task&lt;Result&lt;ProfilingNode&gt;&gt; GetAsync(BroadcastNodeRegistration registration, CancellationToken cancellationToken = default)</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingNode GetNode()</code></pre>
   </div>
 
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>registration</code> <a class="xref" href="BridgingIT.DevKit.Common.BroadcastNodeRegistration.html">BroadcastNodeRegistration</a></dt>
-    <dd></dd>
-    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
-    <dd></dd>
-  </dl>
 
   <h4 class="section">Returns</h4>
   <dl class="parameters">
-    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a>&gt;&gt;</dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a></dt>
     <dd></dd>
   </dl>
 
@@ -339,6 +335,9 @@ Class ProfilingNodeIdentityProvider
 
 
 
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingNodeIdentityProvider_GetNode_examples">Examples</h4>
+  <pre><code class="lang-csharp">var node = identities.GetNode();</code></pre>
 
 
 

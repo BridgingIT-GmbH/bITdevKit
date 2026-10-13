@@ -89,7 +89,7 @@ Class CorrelationId
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
@@ -317,9 +317,12 @@ when no correlation identifier is available.</p>
 
 
   <h4 class="section" id="BridgingIT_DevKit_Common_CorrelationId_BeginScope_System_String__examples">Examples</h4>
-  <pre><code class="lang-csharp">using var scope = CorrelationId.BeginScope(message.CorrelationId);</code></pre>
+  <pre><code class="lang-csharp">using var scope = CorrelationId.BeginScope(CorrelationId.ReadFrom(message.Properties));</code></pre>
 
 
+  <h4 class="section" id="BridgingIT_DevKit_Common_CorrelationId_BeginScope_System_String__remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>A null scope suppresses Activity baggage until the scope is disposed.</p>
+</div>
 
 
 
@@ -365,6 +368,93 @@ when no correlation identifier is available.</p>
   <h4 class="section" id="BridgingIT_DevKit_Common_CorrelationId_IsValid_System_String__remarks">Remarks</h4>
   <div class="markdown level1 remarks"><p>A valid value contains between 1 and 128 ASCII letters, digits, hyphens, underscores,
 periods, or colons.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_CorrelationId_PropagateTo_" data-uid="BridgingIT.DevKit.Common.CorrelationId.PropagateTo*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_CorrelationId_PropagateTo_System_Collections_Generic_IDictionary_System_String_System_Object__" data-uid="BridgingIT.DevKit.Common.CorrelationId.PropagateTo(System.Collections.Generic.IDictionary{System.String,System.Object})">
+  PropagateTo(IDictionary&lt;string, object&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Copies the current application correlation identifier into transport metadata before publishing.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static void PropagateTo(IDictionary&lt;string, object&gt; properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>properties</code> <span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
+    <dd><p>The mutable transport properties, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_CorrelationId_PropagateTo_System_Collections_Generic_IDictionary_System_String_System_Object___examples">Examples</h4>
+  <pre><code class="lang-csharp">CorrelationId.PropagateTo(message.Properties);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_CorrelationId_PropagateTo_System_Collections_Generic_IDictionary_System_String_System_Object___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Preserves a valid explicit transport identifier. Does not generate an identifier when the
+origin has none and does not replace it with a tracing identifier. JSON strings are normalized
+to CLR strings so native transport property collections can carry them when republishing.</p>
+</div>
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_CorrelationId_ReadFrom_" data-uid="BridgingIT.DevKit.Common.CorrelationId.ReadFrom*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_CorrelationId_ReadFrom_System_Collections_Generic_IDictionary_System_String_System_Object__" data-uid="BridgingIT.DevKit.Common.CorrelationId.ReadFrom(System.Collections.Generic.IDictionary{System.String,System.Object})">
+  ReadFrom(IDictionary&lt;string, object&gt;)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Reads a valid correlation identifier from transport metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string ReadFrom(IDictionary&lt;string, object&gt; properties)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>properties</code> <span class="xref">IDictionary</span>&lt;<span class="xref">string</span>, <span class="xref">object</span>&gt;</dt>
+    <dd><p>The transport properties, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a>.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd><p>The supported correlation identifier, or <a href="https://learn.microsoft.com/dotnet/csharp/language-reference/keywords/null">null</a> when absent or invalid.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_CorrelationId_ReadFrom_System_Collections_Generic_IDictionary_System_String_System_Object___examples">Examples</h4>
+  <pre><code class="lang-csharp">var correlationId = CorrelationId.ReadFrom(message.Properties);</code></pre>
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_CorrelationId_ReadFrom_System_Collections_Generic_IDictionary_System_String_System_Object___remarks">Remarks</h4>
+  <div class="markdown level1 remarks"><p>Accepts a CLR string or a JSON string restored by a transport serializer. Other values are
+ignored without calling their <span class="xref">object.ToString()</span> method.</p>
 </div>
 
 

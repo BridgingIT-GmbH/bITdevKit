@@ -155,7 +155,7 @@ the same lifetime and dependencies (e.g., DbContext).</p>
 <b>Lifetime Warning:</b> This context is only valid within the DI scope it was created from.
 Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 <span class="xref">System.ObjectDisposedException</span> if the underlying scope (and its services) are disposed.
-Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html#BridgingIT_DevKit_Domain_ActiveEntityContextScope_UseAsync__3_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Func_BridgingIT_DevKit_Domain_ActiveEntityContext___0___1__System_Threading_Tasks_Task___2___">UseAsync&lt;TEntity, TId, TResult&gt;(ActiveEntityContext&lt;TEntity, TId&gt;, Func&lt;ActiveEntityContext&lt;TEntity, TId&gt;, Task&lt;TResult&gt;&gt;)</a>
+Always use it immediately within the creating method (e.g., inside <a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityContextScope.html">ActiveEntityContextScope</a>
 or a <code>WithTransactionAsync</code> operation).
 </p>
 <p>
@@ -212,6 +212,11 @@ and add them as properties here, rather than resolving them later to avoid scope
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityMetricsBehavior-1.html">ActiveEntityMetricsBehavior&lt;TEntity&gt;</a></dt>
       <dd><p>Emits ActiveEntity read, write, and delete metrics for ActiveEntity operations.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.ActiveEntityProfilingBehavior-1.html">ActiveEntityProfilingBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Profiles complete Active Entity operations, joining an existing operation or owning an independent operation.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -449,6 +454,11 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Domain.IActiveEntityEntityProvider-2.html">IActiveEntityEntityProvider&lt;TEntity, TId&gt;</a></dt>
       <dd><p>Defines the contract for a persistence provider in the Active Entity pattern, handling CRUD, queries, and transactions for entities.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Domain.IActiveEntityOperationBehavior-1.html">IActiveEntityOperationBehavior&lt;TEntity&gt;</a></dt>
+      <dd><p>Provides an optional execution wrapper around a complete Active Entity operation, including its lifecycle hooks.</p>
 </dd>
     </dl>
     <dl class="jumplist">

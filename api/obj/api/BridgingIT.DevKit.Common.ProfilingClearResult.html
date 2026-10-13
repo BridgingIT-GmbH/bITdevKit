@@ -89,8 +89,8 @@ Class ProfilingClearResult
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
-  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
   <div class="markdown summary"><p>Contains the result of a complete profiling-store reset.</p>
@@ -272,7 +272,7 @@ Class ProfilingClearResult
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingClearResult(int RemovedSessionCount, long RemovedSnapshotCount)</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingClearResult(int RemovedSessionCount = 0, long RemovedSnapshotCount = 0)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -301,6 +301,324 @@ Class ProfilingClearResult
 
   <h2 class="section" id="properties">Properties
 </h2>
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_ClearId_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.ClearId*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_ClearId" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.ClearId">
+  ClearId
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider-coordinated clear occurrence.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public Guid ClearId { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Guid</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_ClearId_examples">Examples</h4>
+  <pre><code class="lang-csharp">var id = result.ClearId;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_CompletedUtc_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.CompletedUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_CompletedUtc" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.CompletedUtc">
+  CompletedUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets completion UTC when deletion and late-write fencing are complete.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ProfilingUtcJsonConverter))]
+public DateTimeOffset? CompletedUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_CompletedUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var utc = result.CompletedUtc;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_DataSet_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.DataSet*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_DataSet" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.DataSet">
+  DataSet
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the selected independent history datasets.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProfilingDataSet DataSet { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingDataSet.html">ProfilingDataSet</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_DataSet_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = record.DataSet;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_FromUtc_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.FromUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_FromUtc" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.FromUtc">
+  FromUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the normalized inclusive completion-UTC lower bound.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ProfilingUtcJsonConverter))]
+public DateTimeOffset? FromUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_FromUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = record.FromUtc;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_HasRemainingWork_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.HasRemainingWork*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_HasRemainingWork" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.HasRemainingWork">
+  HasRemainingWork
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets whether additional bounded deletion remains.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool HasRemainingWork { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_HasRemainingWork_examples">Examples</h4>
+  <pre><code class="lang-csharp">var pending = result.HasRemainingWork;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_PreparedUtc_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.PreparedUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_PreparedUtc" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.PreparedUtc">
+  PreparedUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets provider-authoritative preparation UTC.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ProfilingUtcJsonConverter))]
+public DateTimeOffset PreparedUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_PreparedUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var utc = result.PreparedUtc;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_ProviderScope_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.ProviderScope*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_ProviderScope" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.ProviderScope">
+  ProviderScope
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the provider scope in which history was cleared.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ProviderScope { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_ProviderScope_examples">Examples</h4>
+  <pre><code class="lang-csharp">var scope = result.ProviderScope;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_RemovedOperationCount_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.RemovedOperationCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_RemovedOperationCount" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.RemovedOperationCount">
+  RemovedOperationCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets roots removed from Operation history.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long RemovedOperationCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_RemovedOperationCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">var count = result.RemovedOperationCount;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_RemovedSegmentSummaryCount_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.RemovedSegmentSummaryCount*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_RemovedSegmentSummaryCount" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.RemovedSegmentSummaryCount">
+  RemovedSegmentSummaryCount
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets operation summaries removed with their owning roots.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public long RemovedSegmentSummaryCount { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">long</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_RemovedSegmentSummaryCount_examples">Examples</h4>
+  <pre><code class="lang-csharp">var count = result.RemovedSegmentSummaryCount;</code></pre>
+
+
+
+
 
 
   <a id="BridgingIT_DevKit_Common_ProfilingClearResult_RemovedSessionCount_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.RemovedSessionCount*"></a>
@@ -361,6 +679,113 @@ Class ProfilingClearResult
   </dl>
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_SealedUtc_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.SealedUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_SealedUtc" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.SealedUtc">
+  SealedUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets provider-authoritative sealing UTC when a fence is durable.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ProfilingUtcJsonConverter))]
+public DateTimeOffset? SealedUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_SealedUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var utc = result.SealedUtc;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_State_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.State*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_State" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.State">
+  State
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the bounded maintenance lifecycle state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProfilingClearState State { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingClearState.html">ProfilingClearState</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_State_examples">Examples</h4>
+  <pre><code class="lang-csharp">var state = result.State;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingClearResult_ToUtc_" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.ToUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingClearResult_ToUtc" data-uid="BridgingIT.DevKit.Common.ProfilingClearResult.ToUtc">
+  ToUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the normalized exclusive completion-UTC upper bound.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ProfilingUtcJsonConverter))]
+public DateTimeOffset? ToUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span>?</dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingClearResult_ToUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = record.ToUtc;</code></pre>
 
 
 

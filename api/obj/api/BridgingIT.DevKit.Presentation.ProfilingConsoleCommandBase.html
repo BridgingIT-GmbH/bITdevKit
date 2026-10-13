@@ -89,7 +89,7 @@ Class ProfilingConsoleCommandBase
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
   </div>
 
@@ -463,7 +463,7 @@ Class ProfilingConsoleCommandBase
 
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_GetRequired__1_Spectre_Console_IAnsiConsole_System_IServiceProvider__examples">Examples</h4>
-  <pre><code class="lang-csharp">var control = GetRequired&lt;IProfilingControlService&gt;(console, services);</code></pre>
+  <pre><code class="lang-csharp">var control = GetRequired&lt;IRuntimeProfilingControlService&gt;(console, services);</code></pre>
 
 
 
@@ -472,8 +472,8 @@ Class ProfilingConsoleCommandBase
 
   <a id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteControlResult_" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteControlResult*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteControlResult_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_ProfilingControlResult_" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteControlResult(Spectre.Console.IAnsiConsole,BridgingIT.DevKit.Common.ProfilingControlResult)">
-  WriteControlResult(IAnsiConsole, ProfilingControlResult)
+  <h3 id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteControlResult_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_RuntimeProfilingControlResult_" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteControlResult(Spectre.Console.IAnsiConsole,BridgingIT.DevKit.Common.RuntimeProfilingControlResult)">
+  WriteControlResult(IAnsiConsole, RuntimeProfilingControlResult)
   
   </h3>
 
@@ -482,7 +482,7 @@ Class ProfilingConsoleCommandBase
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected static void WriteControlResult(IAnsiConsole console, ProfilingControlResult result)</code></pre>
+    <pre><code class="lang-csharp hljs">protected static void WriteControlResult(IAnsiConsole console, RuntimeProfilingControlResult result)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -490,7 +490,7 @@ Class ProfilingConsoleCommandBase
     <dt><code>console</code> <span class="xref">IAnsiConsole</span></dt>
     <dd><p>The command output.</p>
 </dd>
-    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingControlResult.html">ProfilingControlResult</a></dt>
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingControlResult.html">RuntimeProfilingControlResult</a></dt>
     <dd><p>The shared control-service result.</p>
 </dd>
   </dl>
@@ -501,7 +501,7 @@ Class ProfilingConsoleCommandBase
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteControlResult_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_ProfilingControlResult__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteControlResult_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_RuntimeProfilingControlResult__examples">Examples</h4>
   <pre><code class="lang-csharp">WriteControlResult(console, result.Value);</code></pre>
 
 
@@ -511,8 +511,8 @@ Class ProfilingConsoleCommandBase
 
   <a id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors_" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteErrors*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_Result_" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteErrors(Spectre.Console.IAnsiConsole,BridgingIT.DevKit.Common.Result)">
-  WriteErrors(IAnsiConsole, Result)
+  <h3 id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_IResult_" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteErrors(Spectre.Console.IAnsiConsole,BridgingIT.DevKit.Common.IResult)">
+  WriteErrors(IAnsiConsole, IResult)
   
   </h3>
 
@@ -521,7 +521,7 @@ Class ProfilingConsoleCommandBase
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected static void WriteErrors(IAnsiConsole console, Result result)</code></pre>
+    <pre><code class="lang-csharp hljs">protected static void WriteErrors(IAnsiConsole console, IResult result)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -529,7 +529,7 @@ Class ProfilingConsoleCommandBase
     <dt><code>console</code> <span class="xref">IAnsiConsole</span></dt>
     <dd><p>The command output.</p>
 </dd>
-    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result.html">Result</a></dt>
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult.html">IResult</a></dt>
     <dd><p>The failed operation result.</p>
 </dd>
   </dl>
@@ -540,7 +540,7 @@ Class ProfilingConsoleCommandBase
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_Result__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_IResult__examples">Examples</h4>
   <pre><code class="lang-csharp">WriteErrors(console, result);</code></pre>
 
 
@@ -550,8 +550,8 @@ Class ProfilingConsoleCommandBase
 
   <a id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors_" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteErrors*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors__1_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_Result___0__" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteErrors``1(Spectre.Console.IAnsiConsole,BridgingIT.DevKit.Common.Result{``0})">
-  WriteErrors&lt;T&gt;(IAnsiConsole, Result&lt;T&gt;)
+  <h3 id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors__1_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_IResult___0__" data-uid="BridgingIT.DevKit.Presentation.ProfilingConsoleCommandBase.WriteErrors``1(Spectre.Console.IAnsiConsole,BridgingIT.DevKit.Common.IResult{``0})">
+  WriteErrors&lt;T&gt;(IAnsiConsole, IResult&lt;T&gt;)
   
   </h3>
 
@@ -560,7 +560,7 @@ Class ProfilingConsoleCommandBase
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">protected static void WriteErrors&lt;T&gt;(IAnsiConsole console, Result&lt;T&gt; result)</code></pre>
+    <pre><code class="lang-csharp hljs">protected static void WriteErrors&lt;T&gt;(IAnsiConsole console, IResult&lt;T&gt; result)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
@@ -568,7 +568,7 @@ Class ProfilingConsoleCommandBase
     <dt><code>console</code> <span class="xref">IAnsiConsole</span></dt>
     <dd><p>The command output.</p>
 </dd>
-    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.Result-1.html">Result</a>&lt;T&gt;</dt>
+    <dt><code>result</code> <a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;T&gt;</dt>
     <dd><p>The failed operation result.</p>
 </dd>
   </dl>
@@ -585,7 +585,7 @@ Class ProfilingConsoleCommandBase
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors__1_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_Result___0___examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingConsoleCommandBase_WriteErrors__1_Spectre_Console_IAnsiConsole_BridgingIT_DevKit_Common_IResult___0___examples">Examples</h4>
   <pre><code class="lang-csharp">WriteErrors(console, result);</code></pre>
 
 

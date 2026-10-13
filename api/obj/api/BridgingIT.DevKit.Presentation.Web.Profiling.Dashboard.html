@@ -97,7 +97,37 @@ Classes
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardPageProvider.html">DashboardPageProvider</a></dt>
-      <dd><p>Provides the Profiling dashboard navigation and index card.</p>
+      <dd><p>Provides Profiling navigation and overview cards for Runtime, Operations and Requests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingDashboardModel.html">OperationProfilingDashboardModel</a></dt>
+      <dd><p>Contains one retained-history view and its node-local freshness observation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingDashboardQuery.html">OperationProfilingDashboardQuery</a></dt>
+      <dd><p>Translates dashboard controls to the shared bounded query contract without implementing storage predicates.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingDimensionAction.html">OperationProfilingDimensionAction</a></dt>
+      <dd><p>Supplies one explicitly scoped dimension and its owning operation to dashboard actions.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingTiming.html">OperationProfilingTiming</a></dt>
+      <dd><p>Supplies an elapsed segment value and the operation duration used as its percentage denominator.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.OperationProfilingViewModelBuilder.html">OperationProfilingViewModelBuilder</a></dt>
+      <dd><p>Builds initial, content and detail views through the same DI query service without reading queues or EF.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.ProfilingDashboardGroupDeleteRequest.html">ProfilingDashboardGroupDeleteRequest</a></dt>
+      <dd><p>Confirms deletion of every retained execution matching an exact displayed operation group and its current filters.</p>
 </dd>
     </dl>
 

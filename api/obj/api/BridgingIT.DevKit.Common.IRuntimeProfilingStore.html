@@ -1,0 +1,1112 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Interface IRuntimeProfilingStore | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Interface IRuntimeProfilingStore | bITdevKit API Reference ">
+      
+      <meta name="description" content="Stores profiling sessions and their immutable diagnostic observations.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore">
+
+
+
+  <h1 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore" class="text-break">
+Interface IRuntimeProfilingStore  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Stores profiling sessions and their immutable diagnostic observations.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public interface IRuntimeProfilingStore</code></pre>
+  </div>
+
+
+
+
+
+
+
+
+  <dl class="typelist extensionMethods">
+    <dt>Extension Methods</dt>
+    <dd>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_DoAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.DoAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Do__1___0_System_Action___0__">LinqFluentExtensions.Do&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, CancellationToken, Task&lt;TResult&gt;&gt;, Func&lt;CancellationToken, Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_MatchAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Func_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.MatchAsync&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, Task&lt;TResult&gt;&gt;, Func&lt;Task&lt;TResult&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Match__2___0_System_Func___0___1__System_Func___1__">LinqFluentExtensions.Match&lt;TSource, TResult&gt;(TSource, Func&lt;TSource, TResult&gt;, Func&lt;TResult&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElseAsync__1___0_System_Func_System_Threading_Tasks_Task___0___System_Threading_CancellationToken_">LinqFluentExtensions.OrElseAsync&lt;T&gt;(T, Func&lt;Task&lt;T&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_OrElse__1___0_System_Func___0__">LinqFluentExtensions.OrElse&lt;T&gt;(T, Func&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, CancellationToken, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_SelectAsync__2___0_System_Func___0_System_Threading_Tasks_Task___1___System_Threading_CancellationToken_">LinqFluentExtensions.SelectAsync&lt;TIn, TOut&gt;(TIn, Func&lt;TIn, Task&lt;TOut&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Exception___System_Threading_CancellationToken_">LinqFluentExtensions.ThrowWhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&lt;Exception&gt;&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_ThrowWhen__1___0_System_Func___0_System_Boolean__System_Func___0_System_Exception__">LinqFluentExtensions.ThrowWhen&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Throw__1___0_System_Func_System_Exception__">LinqFluentExtensions.Throw&lt;T&gt;(T, Func&lt;Exception&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_UnlessAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.UnlessAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.Unless&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_Unless__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.Unless&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task_System_Boolean___System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&lt;bool&gt;&gt;, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNullAsync__1___0_System_Func___0_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNotNullAsync&lt;T&gt;(T, Func&lt;T, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNotNull__1___0_System_Action___0__">LinqFluentExtensions.WhenNotNull&lt;T&gt;(T, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNullAsync__1___0_System_Func_System_Threading_CancellationToken_System_Threading_Tasks_Task__System_Threading_CancellationToken_">LinqFluentExtensions.WhenNullAsync&lt;T&gt;(T, Func&lt;CancellationToken, Task&gt;, CancellationToken)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_WhenNull__1___0_System_Action_">LinqFluentExtensions.WhenNull&lt;T&gt;(T, Action)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Action___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Action&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__1___0_System_Func___0_System_Boolean__System_Func___0___0__">LinqFluentExtensions.When&lt;T&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.LinqFluentExtensions.html#BridgingIT_DevKit_Common_LinqFluentExtensions_When__2___0_System_Func___0_System_Boolean__System_Func___0___1__System_Func___0___1__">LinqFluentExtensions.When&lt;T, TOut&gt;(T, Func&lt;T, bool&gt;, Func&lt;T, TOut&gt;, Func&lt;T, TOut&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.ResultValidationExtensions.html#BridgingIT_DevKit_Common_ResultValidationExtensions_Validate__1___0_FluentValidation_IValidator___0__">ResultValidationExtensions.Validate&lt;T&gt;(T, IValidator&lt;T&gt;)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_">StreamExtensions.ToStreamAsync&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStreamAsync__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStreamAsync&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_">StreamExtensions.ToStream&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.StreamExtensions.html#BridgingIT_DevKit_Common_StreamExtensions_ToStream__1___0_System_Text_Json_JsonSerializerOptions_">StreamExtensions.ToStream&lt;T&gt;(T, JsonSerializerOptions)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_">UtilitiesExtensions.Clone&lt;T&gt;(T)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_Clone__1___0_System_Type_">UtilitiesExtensions.Clone&lt;T&gt;(T, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To_System_Object_System_Type_System_Boolean_System_Object_System_Globalization_CultureInfo_">Extensions.To(object, Type, bool, object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_ToType__1_System_Object_">Extensions.ToType&lt;T&gt;(object)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_To__1_System_Object_System_Boolean___0_System_Globalization_CultureInfo_">Extensions.To&lt;TValue&gt;(object, bool, TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo_System_Object_System_Type_System_Object__System_Globalization_CultureInfo_">Extensions.TryTo(object, Type, out object, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.Extensions.html#BridgingIT_DevKit_Common_Extensions_TryTo__1_System_Object___0__System_Globalization_CultureInfo_">Extensions.TryTo&lt;TValue&gt;(object, out TValue, CultureInfo)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsNotOfType_System_Object_System_Type_">TypeExtensions.IsNotOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.TypeExtensions.html#BridgingIT_DevKit_Common_TypeExtensions_IsOfType_System_Object_System_Type_">TypeExtensions.IsOfType(object, Type)</a>
+  </div>
+  <div>
+      <a class="xref" href="BridgingIT.DevKit.Common.UtilitiesExtensions.html#BridgingIT_DevKit_Common_UtilitiesExtensions_AsReflectionDynamic_System_Object_">UtilitiesExtensions.AsReflectionDynamic(object)</a>
+  </div>
+  </dd></dl>
+
+
+  <h2 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_examples">Examples</h2>
+  <pre><code class="lang-csharp">var active = await store.GetActiveSessionAsync(cancellationToken);</code></pre>
+
+
+  <h2 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_remarks">Remarks</h2>
+  <div class="markdown level0 remarks"><p>Implementations own atomic lifecycle coordination. Application-facing callers use readable
+keys, while provider and runtime code may use internal identifiers after one resolution.</p>
+</div>
+
+
+  <h2 class="section" id="properties">Properties
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_Capabilities_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.Capabilities*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_Capabilities" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.Capabilities">
+  Capabilities
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets provider capabilities.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">ProfilingStoreCapabilities Capabilities { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStoreCapabilities.html">ProfilingStoreCapabilities</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddMarkerAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddMarkerAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddMarkerAsync_BridgingIT_DevKit_Common_ProfilingMarker_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddMarkerAsync(BridgingIT.DevKit.Common.ProfilingMarker,System.Threading.CancellationToken)">
+  AddMarkerAsync(ProfilingMarker, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically adds a shared marker only while the session remains active.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;ProfilingMarker&gt;&gt; AddMarkerAsync(ProfilingMarker marker, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>marker</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingMarker.html">ProfilingMarker</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingMarker.html">ProfilingMarker</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddMetricObservationAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddMetricObservationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddMetricObservationAsync_BridgingIT_DevKit_Common_ProfilingMetricObservation_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddMetricObservationAsync(BridgingIT.DevKit.Common.ProfilingMetricObservation,System.Threading.CancellationToken)">
+  AddMetricObservationAsync(ProfilingMetricObservation, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends one immutable custom metric observation.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;ProfilingMetricObservation&gt;&gt; AddMetricObservationAsync(ProfilingMetricObservation observation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>observation</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingMetricObservation.html">ProfilingMetricObservation</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingMetricObservation.html">ProfilingMetricObservation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddRuntimeContextAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddRuntimeContextAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddRuntimeContextAsync_BridgingIT_DevKit_Common_RuntimeProfilingContext_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddRuntimeContextAsync(BridgingIT.DevKit.Common.RuntimeProfilingContext,System.Threading.CancellationToken)">
+  AddRuntimeContextAsync(RuntimeProfilingContext, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Stores immutable node runtime context once per session and node.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingContext&gt;&gt; AddRuntimeContextAsync(RuntimeProfilingContext context, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>context</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingContext.html">RuntimeProfilingContext</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingContext.html">RuntimeProfilingContext</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddSnapshotAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddSnapshotAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_AddSnapshotAsync_BridgingIT_DevKit_Common_RuntimeProfilingSnapshot_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.AddSnapshotAsync(BridgingIT.DevKit.Common.RuntimeProfilingSnapshot,System.Threading.CancellationToken)">
+  AddSnapshotAsync(RuntimeProfilingSnapshot, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Appends one immutable runtime snapshot.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSnapshot&gt;&gt; AddSnapshotAsync(RuntimeProfilingSnapshot snapshot, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>snapshot</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSnapshot.html">RuntimeProfilingSnapshot</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSnapshot.html">RuntimeProfilingSnapshot</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ApplyRetentionAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ApplyRetentionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ApplyRetentionAsync_System_Int32_System_TimeSpan_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ApplyRetentionAsync(System.Int32,System.TimeSpan,System.DateTimeOffset,System.Threading.CancellationToken)">
+  ApplyRetentionAsync(int, TimeSpan, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Applies configured age and count retention to unpinned terminal sessions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;int&gt;&gt; ApplyRetentionAsync(int maximumRetainedSessions, TimeSpan maximumSessionAge, DateTimeOffset utcNow, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>maximumRetainedSessions</code> <span class="xref">int</span></dt>
+    <dd></dd>
+    <dt><code>maximumSessionAge</code> <span class="xref">TimeSpan</span></dt>
+    <dd></dd>
+    <dt><code>utcNow</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<span class="xref">int</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ClearAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ClearAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ClearAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ClearAsync(System.Threading.CancellationToken)">
+  ClearAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically clears the complete store only when no session is active.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;ProfilingClearResult&gt;&gt; ClearAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingClearResult.html">ProfilingClearResult</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_DeleteSessionAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.DeleteSessionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_DeleteSessionAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.DeleteSessionAsync(System.String,System.Threading.CancellationToken)">
+  DeleteSessionAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes one terminal session and all associated records.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;bool&gt;&gt; DeleteSessionAsync(string sessionKey, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sessionKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<span class="xref">bool</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_DeleteUnpinnedSessionsAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.DeleteUnpinnedSessionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_DeleteUnpinnedSessionsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.DeleteUnpinnedSessionsAsync(System.Threading.CancellationToken)">
+  DeleteUnpinnedSessionsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Deletes all unpinned terminal sessions.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;int&gt;&gt; DeleteUnpinnedSessionsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<span class="xref">int</span>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_FindNodeAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.FindNodeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_FindNodeAsync_BridgingIT_DevKit_Common_RuntimeProfilingNodeCorrelation_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.FindNodeAsync(BridgingIT.DevKit.Common.RuntimeProfilingNodeCorrelation,System.Threading.CancellationToken)">
+  FindNodeAsync(RuntimeProfilingNodeCorrelation, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds registered Runtime process metadata; absent remote registrations return an absent value.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;ProfilingNode&gt;&gt; FindNodeAsync(RuntimeProfilingNodeCorrelation correlation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>correlation</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeCorrelation.html">RuntimeProfilingNodeCorrelation</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_FindNodeAsync_BridgingIT_DevKit_Common_RuntimeProfilingNodeCorrelation_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var node = await store.FindNodeAsync(correlation, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_FindSessionAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.FindSessionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_FindSessionAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.FindSessionAsync(System.String,System.Threading.CancellationToken)">
+  FindSessionAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Finds a session by public readable key.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSession&gt;&gt; FindSessionAsync(string sessionKey, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sessionKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetActiveSessionAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetActiveSessionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetActiveSessionAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetActiveSessionAsync(System.Threading.CancellationToken)">
+  GetActiveSessionAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the active logical session when one exists.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSession&gt;&gt; GetActiveSessionAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetOrCreateActiveSessionAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetOrCreateActiveSessionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetOrCreateActiveSessionAsync_BridgingIT_DevKit_Common_RuntimeProfilingSessionCreateRequest_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetOrCreateActiveSessionAsync(BridgingIT.DevKit.Common.RuntimeProfilingSessionCreateRequest,System.Threading.CancellationToken)">
+  GetOrCreateActiveSessionAsync(RuntimeProfilingSessionCreateRequest, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically creates a session or returns the existing active session.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSessionResolution&gt;&gt; GetOrCreateActiveSessionAsync(RuntimeProfilingSessionCreateRequest request, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>request</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionCreateRequest.html">RuntimeProfilingSessionCreateRequest</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionResolution.html">RuntimeProfilingSessionResolution</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetOrCreateNodeAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetOrCreateNodeAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetOrCreateNodeAsync_BridgingIT_DevKit_Common_RuntimeProfilingNodeCorrelation_BridgingIT_DevKit_Common_ProfilingNode_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetOrCreateNodeAsync(BridgingIT.DevKit.Common.RuntimeProfilingNodeCorrelation,BridgingIT.DevKit.Common.ProfilingNode,System.Threading.CancellationToken)">
+  GetOrCreateNodeAsync(RuntimeProfilingNodeCorrelation, ProfilingNode, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or creates the stable profiling node for one Broadcast process registration.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;ProfilingNode&gt;&gt; GetOrCreateNodeAsync(RuntimeProfilingNodeCorrelation correlation, ProfilingNode proposedNode, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>correlation</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeCorrelation.html">RuntimeProfilingNodeCorrelation</a></dt>
+    <dd></dd>
+    <dt><code>proposedNode</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingNode.html">ProfilingNode</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetSessionDataAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetSessionDataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_GetSessionDataAsync_System_String_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.GetSessionDataAsync(System.String,System.Threading.CancellationToken)">
+  GetSessionDataAsync(string, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Loads all records for one session.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSessionData&gt;&gt; GetSessionDataAsync(string sessionKey, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sessionKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionData.html">RuntimeProfilingSessionData</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ImportSessionAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ImportSessionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ImportSessionAsync_BridgingIT_DevKit_Common_RuntimeProfilingSessionData_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ImportSessionAsync(BridgingIT.DevKit.Common.RuntimeProfilingSessionData,System.Threading.CancellationToken)">
+  ImportSessionAsync(RuntimeProfilingSessionData, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Atomically inserts one complete, already-remapped terminal session graph.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSession&gt;&gt; ImportSessionAsync(RuntimeProfilingSessionData data, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>data</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionData.html">RuntimeProfilingSessionData</a></dt>
+    <dd><p>The complete terminal session graph to insert.</p>
+</dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd><p>Cancels the import.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;&gt;</dt>
+    <dd><p>The inserted session or a typed validation or provider failure.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ImportSessionAsync_BridgingIT_DevKit_Common_RuntimeProfilingSessionData_System_Threading_CancellationToken__examples">Examples</h4>
+  <pre><code class="lang-csharp">var imported = await store.ImportSessionAsync(data, cancellationToken);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ListSessionsAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ListSessionsAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_ListSessionsAsync_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.ListSessionsAsync(System.Threading.CancellationToken)">
+  ListSessionsAsync(CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Lists stored sessions in reverse chronological order.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;IReadOnlyList&lt;RuntimeProfilingSession&gt;&gt;&gt; ListSessionsAsync(CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_TryTransitionSessionAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.TryTransitionSessionAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_TryTransitionSessionAsync_System_Guid_System_Collections_Generic_IReadOnlyCollection_BridgingIT_DevKit_Common_RuntimeProfilingSessionState__BridgingIT_DevKit_Common_RuntimeProfilingSessionState_System_DateTimeOffset_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.TryTransitionSessionAsync(System.Guid,System.Collections.Generic.IReadOnlyCollection{BridgingIT.DevKit.Common.RuntimeProfilingSessionState},BridgingIT.DevKit.Common.RuntimeProfilingSessionState,System.DateTimeOffset,System.Threading.CancellationToken)">
+  TryTransitionSessionAsync(Guid, IReadOnlyCollection&lt;RuntimeProfilingSessionState&gt;, RuntimeProfilingSessionState, DateTimeOffset, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Transitions a session when its current state matches an expected state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSession&gt;&gt; TryTransitionSessionAsync(Guid sessionId, IReadOnlyCollection&lt;RuntimeProfilingSessionState&gt; expectedStates, RuntimeProfilingSessionState nextState, DateTimeOffset transitionedUtc, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sessionId</code> <span class="xref">Guid</span></dt>
+    <dd></dd>
+    <dt><code>expectedStates</code> <span class="xref">IReadOnlyCollection</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionState.html">RuntimeProfilingSessionState</a>&gt;</dt>
+    <dd></dd>
+    <dt><code>nextState</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionState.html">RuntimeProfilingSessionState</a></dt>
+    <dd></dd>
+    <dt><code>transitionedUtc</code> <span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_UpdateSessionMetadataAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.UpdateSessionMetadataAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_UpdateSessionMetadataAsync_System_String_BridgingIT_DevKit_Common_RuntimeProfilingSessionMetadata_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.UpdateSessionMetadataAsync(System.String,BridgingIT.DevKit.Common.RuntimeProfilingSessionMetadata,System.Threading.CancellationToken)">
+  UpdateSessionMetadataAsync(string, RuntimeProfilingSessionMetadata, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Updates editable descriptive session metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingSession&gt;&gt; UpdateSessionMetadataAsync(string sessionKey, RuntimeProfilingSessionMetadata metadata, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>sessionKey</code> <span class="xref">string</span></dt>
+    <dd></dd>
+    <dt><code>metadata</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionMetadata.html">RuntimeProfilingSessionMetadata</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_UpsertParticipationAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.UpsertParticipationAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_UpsertParticipationAsync_BridgingIT_DevKit_Common_RuntimeProfilingNodeParticipation_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.UpsertParticipationAsync(BridgingIT.DevKit.Common.RuntimeProfilingNodeParticipation,System.Threading.CancellationToken)">
+  UpsertParticipationAsync(RuntimeProfilingNodeParticipation, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds or updates a node's session participation state and cumulative totals.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;RuntimeProfilingNodeParticipation&gt;&gt; UpsertParticipationAsync(RuntimeProfilingNodeParticipation participation, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>participation</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeParticipation.html">RuntimeProfilingNodeParticipation</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeParticipation.html">RuntimeProfilingNodeParticipation</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_UpsertSegmentAsync_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.UpsertSegmentAsync*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_IRuntimeProfilingStore_UpsertSegmentAsync_BridgingIT_DevKit_Common_ProfilingSegment_System_Threading_CancellationToken_" data-uid="BridgingIT.DevKit.Common.IRuntimeProfilingStore.UpsertSegmentAsync(BridgingIT.DevKit.Common.ProfilingSegment,System.Threading.CancellationToken)">
+  UpsertSegmentAsync(ProfilingSegment, CancellationToken)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Adds or closes a node-owned segment.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">Task&lt;IResult&lt;ProfilingSegment&gt;&gt; UpsertSegmentAsync(ProfilingSegment segment, CancellationToken cancellationToken = default)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>segment</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingSegment.html">ProfilingSegment</a></dt>
+    <dd></dd>
+    <dt><code>cancellationToken</code> <span class="xref">CancellationToken</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">Task</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.IResult-1.html">IResult</a>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingSegment.html">ProfilingSegment</a>&gt;&gt;</dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -89,7 +89,7 @@ Class DashboardEndpoints
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.html">Profiling</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.html">Dashboard</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.html">Profiling</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.html">Dashboard</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
   </div>
 
@@ -275,7 +275,9 @@ Class DashboardEndpoints
 
 
   <h2 id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_examples">Examples</h2>
-  <pre><code class="lang-csharp">services.AddProfiling(options =&gt; options.Enabled()); services.AddDashboard(options =&gt; options.Enabled());</code></pre>
+  <pre><code class="lang-csharp">services.AddProfiling(options =&gt; options.Enabled()).WithRuntimeProfiling(); services.AddDashboard(options =&gt; options.Enabled());</code></pre>
+
+  <pre><code class="lang-csharp">app.MapEndpoints();</code></pre>
 
 
 
@@ -313,7 +315,7 @@ Class DashboardEndpoints
 
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints__ctor_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions__examples">Examples</h4>
-  <pre><code class="lang-csharp">services.AddProfiling(options =&gt; options.Enabled()); services.AddDashboard(options =&gt; options.Enabled());</code></pre>
+  <pre><code class="lang-csharp">services.AddProfiling(options =&gt; options.Enabled()).WithRuntimeProfiling(); services.AddDashboard(options =&gt; options.Enabled());</code></pre>
 
 
 
@@ -734,6 +736,46 @@ Class DashboardEndpoints
 
 
 
+  <a id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildInsightsPath_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildInsightsPath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildInsightsPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildInsightsPath(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions)">
+  BuildInsightsPath(DashboardEndpointsOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the Insights page under the configured dashboard prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string BuildInsightsPath(DashboardEndpointsOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions.html">DashboardEndpointsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildInsightsPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildInsightsPath(options);</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildMarkerPath_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildMarkerPath*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildMarkerPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildMarkerPath(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions)">
@@ -741,7 +783,7 @@ Class DashboardEndpoints
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Builds the phase-marker path.</p>
+  <div class="markdown level1 summary"><p>Builds the marker path.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -810,6 +852,48 @@ Class DashboardEndpoints
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildMetadataPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildMetadataPath(options, "sess0001");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildOperationsPath_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildOperationsPath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildOperationsPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_Boolean_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildOperationsPath(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions,System.Boolean)">
+  BuildOperationsPath(DashboardEndpointsOptions, bool)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds an Operations or Requests page path under the configured dashboard prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string BuildOperationsPath(DashboardEndpointsOptions options, bool requestsOnly = false)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions.html">DashboardEndpointsOptions</a></dt>
+    <dd></dd>
+    <dt><code>requestsOnly</code> <span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildOperationsPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_Boolean__examples">Examples</h4>
+  <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildOperationsPath(options, requestsOnly: true);</code></pre>
 
 
 
@@ -900,6 +984,46 @@ Class DashboardEndpoints
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildRestartPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildRestartPath(options, "sess0001");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildRootPath_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildRootPath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildRootPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildRootPath(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions)">
+  BuildRootPath(DashboardEndpointsOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the capability-selecting Profiling landing path under the configured dashboard prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string BuildRootPath(DashboardEndpointsOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions.html">DashboardEndpointsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildRootPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildRootPath(options);</code></pre>
 
 
 
@@ -1270,6 +1394,46 @@ Class DashboardEndpoints
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildStressPath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions__examples">Examples</h4>
   <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildStressPath(options);</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildTimelinePath_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildTimelinePath*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildTimelinePath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints.BuildTimelinePath(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions)">
+  BuildTimelinePath(DashboardEndpointsOptions)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Builds the operation timeline page under the configured dashboard prefix.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static string BuildTimelinePath(DashboardEndpointsOptions options)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions.html">DashboardEndpointsOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_DashboardEndpoints_BuildTimelinePath_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions__examples">Examples</h4>
+  <pre><code class="lang-csharp">var path = DashboardEndpoints.BuildTimelinePath(options);</code></pre>
 
 
 

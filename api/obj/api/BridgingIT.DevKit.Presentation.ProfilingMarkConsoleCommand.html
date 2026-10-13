@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ProfilingMarkConsoleCommand | bITdevKit API Reference ">
       
-      <meta name="description" content="Adds a named phase marker to the active session.">
+      <meta name="description" content="Adds a named marker to the active session.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -89,11 +89,11 @@ Class ProfilingMarkConsoleCommand
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Adds a named phase marker to the active session.</p>
+  <div class="markdown summary"><p>Adds a named marker to the active session.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -291,7 +291,7 @@ Class ProfilingMarkConsoleCommand
 
 
   <h2 id="BridgingIT_DevKit_Presentation_ProfilingMarkConsoleCommand_examples">Examples</h2>
-  <pre><code class="lang-csharp">profiling mark --name "load started"</code></pre>
+  <pre><code class="lang-csharp">profiling runtime mark --name "load started"</code></pre>
 
 
 
@@ -307,7 +307,7 @@ Class ProfilingMarkConsoleCommand
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Adds a named phase marker to the active session.</p>
+  <div class="markdown level1 summary"><p>Adds a named marker to the active session.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -323,7 +323,7 @@ Class ProfilingMarkConsoleCommand
 
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_ProfilingMarkConsoleCommand__ctor_examples">Examples</h4>
-  <pre><code class="lang-csharp">profiling mark --name "load started"</code></pre>
+  <pre><code class="lang-csharp">profiling runtime mark --name "load started"</code></pre>
 
 
 
@@ -346,7 +346,7 @@ Class ProfilingMarkConsoleCommand
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">[ConsoleCommandOption(&quot;name&quot;, Alias = &quot;n&quot;, Description = &quot;Phase marker name&quot;, Required = true)]
+    <pre><code class="lang-csharp hljs">[ConsoleCommandOption(&quot;name&quot;, Alias = &quot;n&quot;, Description = &quot;Marker name&quot;, Required = true)]
 public string MarkerName { get; set; }</code></pre>
   </div>
 

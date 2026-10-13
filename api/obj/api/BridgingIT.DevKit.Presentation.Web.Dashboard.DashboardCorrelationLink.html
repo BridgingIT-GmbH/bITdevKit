@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+      <title>Class DashboardCorrelationLink | bITdevKit API Reference </title>
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="title" content="Class DashboardCorrelationLink | bITdevKit API Reference ">
+      
+      <meta name="description" content="Renders a correlation identifier with a filtered logs link and a copy button.">
+      <link rel="icon" href="../../favicon.ico">
+      <link rel="stylesheet" href="../../public/docfx.min.css">
+      <link rel="stylesheet" href="../../public/main.css">
+      <meta name="docfx:navrel" content="../../toc.html">
+      <meta name="docfx:tocrel" content="toc.html">
+      
+      
+      
+      
+      
+      <meta name="loc:inThisArticle" content="In this article">
+      <meta name="loc:searchResultsCount" content="{count} results for &quot;{query}&quot;">
+      <meta name="loc:searchNoResults" content="No results for &quot;{query}&quot;">
+      <meta name="loc:tocFilter" content="Filter by title">
+      <meta name="loc:nextArticle" content="Next">
+      <meta name="loc:prevArticle" content="Previous">
+      <meta name="loc:themeLight" content="Light">
+      <meta name="loc:themeDark" content="Dark">
+      <meta name="loc:themeAuto" content="Auto">
+      <meta name="loc:changeTheme" content="Change theme">
+      <meta name="loc:copy" content="Copy">
+      <meta name="loc:downloadPdf" content="Download PDF">
+
+      <script type="module" src="./../../public/docfx.min.js"></script>
+
+      <script>
+        const theme = localStorage.getItem('theme') || 'auto'
+        document.documentElement.setAttribute('data-bs-theme', theme === 'auto' ? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light') : theme)
+      </script>
+
+  </head>
+
+  <body class="tex2jax_ignore" data-layout="" data-yaml-mime="ManagedReference">
+    <header class="bg-body border-bottom">
+      <nav id="autocollapse" class="navbar navbar-expand-md" role="navigation">
+        <div class="container-xxl flex-nowrap">
+          <a class="navbar-brand" href="../../index.html">
+            <img id="logo" class="svg" src="../../logo.svg" alt="bITdevKit API Reference">
+            bITdevKit API Reference
+          </a>
+          <button class="btn btn-lg d-md-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navpanel" aria-controls="navpanel" aria-expanded="false" aria-label="Toggle navigation">
+            <i class="bi bi-three-dots"></i>
+          </button>
+          <div class="collapse navbar-collapse" id="navpanel">
+            <div id="navbar">
+            </div>
+          </div>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container-xxl">
+      <div class="toc-offcanvas">
+        <div class="offcanvas-md offcanvas-start" tabindex="-1" id="tocOffcanvas" aria-labelledby="tocOffcanvasLabel">
+          <div class="offcanvas-header">
+            <h5 class="offcanvas-title" id="tocOffcanvasLabel">Table of Contents</h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#tocOffcanvas" aria-label="Close"></button>
+          </div>
+          <div class="offcanvas-body">
+            <nav class="toc" id="toc"></nav>
+          </div>
+        </div>
+      </div>
+
+      <div class="content">
+        <div class="actionbar">
+          <button class="btn btn-lg border-0 d-md-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#tocOffcanvas" aria-controls="tocOffcanvas" aria-expanded="false" aria-label="Show table of contents">
+            <i class="bi bi-list"></i>
+          </button>
+
+          <nav id="breadcrumb"></nav>
+        </div>
+
+        <article data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardCorrelationLink">
+
+
+
+  <h1 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardCorrelationLink" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardCorrelationLink" class="text-break">
+Class DashboardCorrelationLink  
+  </h1>
+
+  <div class="facts text-secondary">
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.html">Dashboard</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
+  </div>
+
+  <div class="markdown summary"><p>Renders a correlation identifier with a filtered logs link and a copy button.</p>
+</div>
+  <div class="markdown conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static class DashboardCorrelationLink</code></pre>
+  </div>
+
+
+
+
+  <dl class="typelist inheritance">
+    <dt>Inheritance</dt>
+    <dd>
+      <div><span class="xref">object</span></div>
+      <div><span class="xref">DashboardCorrelationLink</span></div>
+    </dd>
+  </dl>
+
+
+
+
+
+
+  <h2 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardCorrelationLink_examples">Examples</h2>
+  <pre><code class="lang-csharp">var link = DashboardCorrelationLink.Render(options, record.CorrelationId);</code></pre>
+
+
+
+
+  <h2 class="section" id="methods">Methods
+</h2>
+
+
+  <a id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardCorrelationLink_Render_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardCorrelationLink.Render*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardCorrelationLink_Render_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_String_System_Boolean_System_String_" data-uid="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardCorrelationLink.Render(BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions,System.String,System.Boolean,System.String)">
+  Render(DashboardEndpointsOptions, string, bool, string)
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Creates safely encoded correlation markup used by dashboard pages and refreshed fragments.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public static IHtmlContent Render(DashboardEndpointsOptions options, string correlationId, bool shorten = false, string href = null)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>options</code> <a class="xref" href="BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardEndpointsOptions.html">DashboardEndpointsOptions</a></dt>
+    <dd><p>The dashboard route configuration, or null to use the defaults.</p>
+</dd>
+    <dt><code>correlationId</code> <span class="xref">string</span></dt>
+    <dd><p>The full identifier displayed and copied.</p>
+</dd>
+    <dt><code>shorten</code> <span class="xref">bool</span></dt>
+    <dd><p>Whether to shorten only the visible label.</p>
+</dd>
+    <dt><code>href</code> <span class="xref">string</span></dt>
+    <dd><p>An optional logs URL preserving a page's additional filters.</p>
+</dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><span class="xref">IHtmlContent</span></dt>
+    <dd><p>The logs link and copy control, or a placeholder when the identifier is missing.</p>
+</dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardCorrelationLink_Render_BridgingIT_DevKit_Presentation_Web_Dashboard_DashboardEndpointsOptions_System_String_System_Boolean_System_String__examples">Examples</h4>
+  <pre><code class="lang-csharp">var link = DashboardCorrelationLink.Render(options, entry.CorrelationId, shorten: true);</code></pre>
+
+
+
+
+
+
+
+</article>
+
+
+
+      </div>
+
+      <div class="affix">
+        <nav id="affix"></nav>
+      </div>
+    </main>
+
+
+    <footer class="border-top text-secondary">
+      <div class="container-xxl">
+        <div class="flex-fill">
+          <span>Made with <a href="https://dotnet.github.io/docfx">docfx</a></span>
+        </div>
+      </div>
+    </footer>
+  </body>
+</html>

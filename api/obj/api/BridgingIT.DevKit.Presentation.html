@@ -91,6 +91,11 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.AllRequestsProfilingSamplingStrategy.html">AllRequestsProfilingSamplingStrategy</a></dt>
+      <dd><p>Selects every eligible request, still subject to recording and persistence limits.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.ClearConsoleCommand.html">ClearConsoleCommand</a></dt>
       <dd><p>Represents clear console command.</p>
 </dd>
@@ -577,6 +582,11 @@ Useful for conditional startup logic, diagnostics and environment-specific confi
 </dd>
     </dl>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.ProbabilityRequestProfilingSamplingStrategy.html">ProbabilityRequestProfilingSamplingStrategy</a></dt>
+      <dd><p>Selects independent eligible requests with a validated probability.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.ProcessDocsBrowserLauncher.html">ProcessDocsBrowserLauncher</a></dt>
       <dd><p>Opens documentation URLs with the operating system default browser.</p>
 </dd>
@@ -618,7 +628,17 @@ Useful for conditional startup logic, diagnostics and environment-specific confi
     </dl>
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.ProfilingMarkConsoleCommand.html">ProfilingMarkConsoleCommand</a></dt>
-      <dd><p>Adds a named phase marker to the active session.</p>
+      <dd><p>Adds a named marker to the active session.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.ProfilingRequestBodyObserver.html">ProfilingRequestBodyObserver</a></dt>
+      <dd><p>Observes ordinary request consumption through Stream and PipeReader without initiating or buffering reads.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.ProfilingResponseBodyFeature.html">ProfilingResponseBodyFeature</a></dt>
+      <dd><p>Forwards response transport operations and observes successful outer-boundary body bytes once.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -644,6 +664,71 @@ Useful for conditional startup logic, diagnostics and environment-specific confi
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.QuitConsoleCommand.html">QuitConsoleCommand</a></dt>
       <dd><p>Represents quit console command.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RateLimitRequestProfilingSamplingStrategy.html">RateLimitRequestProfilingSamplingStrategy</a></dt>
+      <dd><p>Limits selections with a process-local monotonic token bucket, without delaying requests.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingExceptionObserverMiddleware.html">RequestProfilingExceptionObserverMiddleware</a></dt>
+      <dd><p>Reports exceptions before the host handler consumes or re-executes them, preserving original routing.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingFeature.html">RequestProfilingFeature</a></dt>
+      <dd><p>Coordinates HTTP observations and exactly-once finalization without retaining application payloads.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingMetadataCapture.html">RequestProfilingMetadataCapture</a></dt>
+      <dd><p>Captures bounded request metadata without reading bodies or retaining authentication headers.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingMiddleware.html">RequestProfilingMiddleware</a></dt>
+      <dd><p>Owns one full downstream HTTP observation outside the host's error handler and response processors.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingOptions.html">RequestProfilingOptions</a></dt>
+      <dd><p>Configures the HTTP adapter without changing application routing, caching or error responses.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html">RequestProfilingOptionsBuilder</a></dt>
+      <dd><p>Composes explicit HTTP adapter settings on the shared profiling builder.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingPathMatcher.html">RequestProfilingPathMatcher</a></dt>
+      <dd><p>Matches anchored path globs with bounded state and no regular-expression backtracking.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingRuntime.html">RequestProfilingRuntime</a></dt>
+      <dd><p>Owns one prepared request policy and process-local selected-request concurrency.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingSamplingBuilder.html">RequestProfilingSamplingBuilder</a></dt>
+      <dd><p>Selects validated built-in or singleton custom head-sampling strategies.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingSamplingContext.html">RequestProfilingSamplingContext</a></dt>
+      <dd><p>Supplies immutable entry data to a singleton sampler without a live HTTP context.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingSamplingDecision.html">RequestProfilingSamplingDecision</a></dt>
+      <dd><p>Describes a head-sampling decision without affecting application execution.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingStartupValidator.html">RequestProfilingStartupValidator</a></dt>
+      <dd><p>Validates the complete HTTP configuration at host startup without starting capture.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -727,6 +812,21 @@ Interfaces
     <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Presentation.IGroupedConsoleCommand.html">IGroupedConsoleCommand</a></dt>
       <dd><p>Defines a console command that is part of a command group.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.IRequestProfilingFeature.html">IRequestProfilingFeature</a></dt>
+      <dd><p>Preserves one request-entry decision and explicit recording handle across re-execution and DI scopes.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.IRequestProfilingRandomSource.html">IRequestProfilingRandomSource</a></dt>
+      <dd><p>Supplies unbiased independent probability input; tests may inject a controlled source.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Presentation.IRequestProfilingSamplingStrategy.html">IRequestProfilingSamplingStrategy</a></dt>
+      <dd><p>Provides thread-safe, synchronous, bounded request-entry sampling without I/O.</p>
 </dd>
     </dl>
     <h3 id="enums">

@@ -89,8 +89,8 @@ Class ProfilingNode
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
-  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+  <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Abstractions.dll</dd></dl>
   </div>
 
   <div class="markdown summary"><p>Describes one stable profiling node and its private Broadcast correlation.</p>
@@ -293,6 +293,41 @@ Class ProfilingNode
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Common_ProfilingNode_ApplicationVersion_" data-uid="BridgingIT.DevKit.Common.ProfilingNode.ApplicationVersion*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingNode_ApplicationVersion" data-uid="BridgingIT.DevKit.Common.ProfilingNode.ApplicationVersion">
+  ApplicationVersion
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets bounded application version metadata.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string ApplicationVersion { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingNode_ApplicationVersion_examples">Examples</h4>
+  <pre><code class="lang-csharp">var version = node.ApplicationVersion;</code></pre>
+
+
+
+
+
+
   <a id="BridgingIT_DevKit_Common_ProfilingNode_Correlation_" data-uid="BridgingIT.DevKit.Common.ProfilingNode.Correlation*"></a>
 
   <h3 id="BridgingIT_DevKit_Common_ProfilingNode_Correlation" data-uid="BridgingIT.DevKit.Common.ProfilingNode.Correlation">
@@ -306,7 +341,7 @@ Class ProfilingNode
 
   <div class="codewrapper">
     <pre><code class="lang-csharp hljs">[JsonIgnore]
-public ProfilingNodeCorrelation Correlation { get; init; }</code></pre>
+public RuntimeProfilingNodeCorrelation Correlation { get; init; }</code></pre>
   </div>
 
 
@@ -315,11 +350,46 @@ public ProfilingNodeCorrelation Correlation { get; init; }</code></pre>
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeCorrelation.html">ProfilingNodeCorrelation</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeCorrelation.html">RuntimeProfilingNodeCorrelation</a></dt>
     <dd></dd>
   </dl>
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingNode_DisplayName_" data-uid="BridgingIT.DevKit.Common.ProfilingNode.DisplayName*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingNode_DisplayName" data-uid="BridgingIT.DevKit.Common.ProfilingNode.DisplayName">
+  DisplayName
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the bounded host-configured node display name.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public string DisplayName { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">string</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingNode_DisplayName_examples">Examples</h4>
+  <pre><code class="lang-csharp">var display = node.DisplayName;</code></pre>
 
 
 
@@ -416,6 +486,42 @@ public ProfilingNodeCorrelation Correlation { get; init; }</code></pre>
   </dl>
 
 
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingNode_ProcessStartedUtc_" data-uid="BridgingIT.DevKit.Common.ProfilingNode.ProcessStartedUtc*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingNode_ProcessStartedUtc" data-uid="BridgingIT.DevKit.Common.ProfilingNode.ProcessStartedUtc">
+  ProcessStartedUtc
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the cached actual process-start UTC.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">[JsonConverter(typeof(ProfilingUtcJsonConverter))]
+public DateTimeOffset ProcessStartedUtc { get; init; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">DateTimeOffset</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingNode_ProcessStartedUtc_examples">Examples</h4>
+  <pre><code class="lang-csharp">var started = node.ProcessStartedUtc;</code></pre>
 
 
 

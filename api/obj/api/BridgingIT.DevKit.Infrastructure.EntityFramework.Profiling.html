@@ -91,18 +91,33 @@
 Classes
 </h3>
     <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStorageProvider-1.html">EntityFrameworkProfilingStorageProvider&lt;TContext&gt;</a></dt>
+      <dd><p>Stores independent Runtime and Operation histories in a shared relational provider scope.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
       <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStoreConstants.html">EntityFrameworkProfilingStoreConstants</a></dt>
       <dd><p>Defines durable profiling store coordination constants.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.EntityFrameworkProfilingStore-1.html">EntityFrameworkProfilingStore&lt;TContext&gt;</a></dt>
-      <dd><p>Stores shared profiling sessions through an application-owned Entity Framework context.</p>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingDimensionEntity.html">OperationProfilingDimensionEntity</a></dt>
+      <dd><p>Persists one exact typed root or segment metadata projection.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingActionMarkerEntity.html">ProfilingActionMarkerEntity</a></dt>
-      <dd><p>Represents one immutable action marker owned by a profiling session JSON document.</p>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingEntity.html">OperationProfilingEntity</a></dt>
+      <dd><p>Persists one immutable operation graph with portable indexed query projections.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.OperationProfilingSegmentEntity.html">OperationProfilingSegmentEntity</a></dt>
+      <dd><p>Persists one aggregate per complete operation segment path.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingClearEntity.html">ProfilingClearEntity</a></dt>
+      <dd><p>Retains bounded recoverable clear preparation and durable replay fences.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -111,13 +126,8 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingInvalidSessionEntity.html">ProfilingInvalidSessionEntity</a></dt>
-      <dd><p>Preserves one invalidated session identity after data deletion.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMetricObservationEntity.html">ProfilingMetricObservationEntity</a></dt>
-      <dd><p>Represents one immutable custom profiling metric observation.</p>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingMarkerEntity.html">ProfilingMarkerEntity</a></dt>
+      <dd><p>Stores one instantaneous Runtime annotation with explicit scope.</p>
 </dd>
     </dl>
     <dl class="jumplist">
@@ -131,42 +141,62 @@ Classes
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingParticipationEntity.html">ProfilingParticipationEntity</a></dt>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeGateEntity.html">ProfilingRuntimeGateEntity</a></dt>
+      <dd><p>Coordinates Runtime maintenance separately from high-volume operation publication.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingStoreStateEntity.html">ProfilingStoreStateEntity</a></dt>
+      <dd><p>Coordinates durable publication, deletion and Runtime maintenance within the provider scope.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingWriterEntity.html">ProfilingWriterEntity</a></dt>
+      <dd><p>Retains a bounded live writer lease independently of immutable history.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingInvalidSessionEntity.html">RuntimeProfilingInvalidSessionEntity</a></dt>
+      <dd><p>Preserves one invalidated session identity after data deletion.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingMetricObservationEntity.html">RuntimeProfilingMetricObservationEntity</a></dt>
+      <dd><p>Represents one immutable custom profiling metric observation.</p>
+</dd>
+    </dl>
+    <dl class="jumplist">
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingParticipationEntity.html">RuntimeProfilingParticipationEntity</a></dt>
       <dd><p>Represents one node's mutable participation in a profiling session.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingPhaseMarkerEntity.html">ProfilingPhaseMarkerEntity</a></dt>
-      <dd><p>Represents one immutable phase marker owned by a profiling session JSON document.</p>
-</dd>
-    </dl>
-    <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingRuntimeContextEntity.html">ProfilingRuntimeContextEntity</a></dt>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingRuntimeContextEntity.html">RuntimeProfilingRuntimeContextEntity</a></dt>
       <dd><p>Represents immutable runtime context owned by a profiling session JSON document.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentEntity.html">ProfilingSegmentEntity</a></dt>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSegmentEntity.html">RuntimeProfilingSegmentEntity</a></dt>
       <dd><p>Represents one measured segment owned by a profiling session JSON document.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSegmentTagEntity.html">ProfilingSegmentTagEntity</a></dt>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSegmentTagEntity.html">RuntimeProfilingSegmentTagEntity</a></dt>
       <dd><p>Represents one ordered tag nested in a segment JSON document.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionEntity.html">ProfilingSessionEntity</a></dt>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSessionEntity.html">RuntimeProfilingSessionEntity</a></dt>
       <dd><p>Represents one durable profiling session.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSessionTagEntity.html">ProfilingSessionTagEntity</a></dt>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSessionTagEntity.html">RuntimeProfilingSessionTagEntity</a></dt>
       <dd><p>Represents one ordered session tag owned by a profiling session JSON document.</p>
 </dd>
     </dl>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.ProfilingSnapshotEntity.html">ProfilingSnapshotEntity</a></dt>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.RuntimeProfilingSnapshotEntity.html">RuntimeProfilingSnapshotEntity</a></dt>
       <dd><p>Represents one immutable node-local profiling snapshot.</p>
 </dd>
     </dl>
@@ -174,8 +204,8 @@ Classes
 Interfaces
 </h3>
     <dl class="jumplist">
-      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.IProfilingContext.html">IProfilingContext</a></dt>
-      <dd><p>Defines the Entity Framework sets required by durable profiling persistence.</p>
+      <dt><a class="xref" href="BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling.IProfilingDbContext.html">IProfilingDbContext</a></dt>
+      <dd><p>Provides EF sets for the model registered by ConfigureProfiling, without host-owned property boilerplate.</p>
 </dd>
     </dl>
 

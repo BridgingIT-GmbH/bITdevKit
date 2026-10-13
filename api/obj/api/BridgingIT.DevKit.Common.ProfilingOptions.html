@@ -6,7 +6,7 @@
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <meta name="title" content="Class ProfilingOptions | bITdevKit API Reference ">
       
-      <meta name="description" content="Configures the opt-in profiling feature.">
+      <meta name="description" content="Configures the overarching Profiling feature and its independent capabilities.">
       <link rel="icon" href="../../favicon.ico">
       <link rel="stylesheet" href="../../public/docfx.min.css">
       <link rel="stylesheet" href="../../public/main.css">
@@ -89,11 +89,11 @@ Class ProfilingOptions
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Common.html">Common</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Common.Utilities.dll</dd></dl>
   </div>
 
-  <div class="markdown summary"><p>Configures the opt-in profiling feature.</p>
+  <div class="markdown summary"><p>Configures the overarching Profiling feature and its independent capabilities.</p>
 </div>
   <div class="markdown conceptual"></div>
 
@@ -254,10 +254,7 @@ Class ProfilingOptions
 
 
   <h2 id="BridgingIT_DevKit_Common_ProfilingOptions_examples">Examples</h2>
-  <pre><code class="lang-csharp">services.AddProfiling(options =&gt; options
-    .Enabled()
-    .SamplingInterval(TimeSpan.FromSeconds(1))
-    .Duration(TimeSpan.FromSeconds(30)));</code></pre>
+  <pre><code class="lang-csharp">services.AddProfiling(o =&gt; o.Enabled()).WithRuntimeProfiling();</code></pre>
 
 
 
@@ -292,28 +289,30 @@ Class ProfilingOptions
 
 
 
-  <h2 class="section" id="fields">Fields
+  <h2 class="section" id="properties">Properties
 </h2>
 
 
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_ApplicationVersion_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.ApplicationVersion*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_DefaultSessionNameFormat" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.DefaultSessionNameFormat">
-  DefaultSessionNameFormat
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_ApplicationVersion" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.ApplicationVersion">
+  ApplicationVersion
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets the format used for a generated default session name.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the bounded application version override.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public const string DefaultSessionNameFormat = &quot;O&quot;</code></pre>
+    <pre><code class="lang-csharp hljs">public string ApplicationVersion { get; set; }</code></pre>
   </div>
 
 
 
 
-  <h4 class="section">Field Value</h4>
+
+  <h4 class="section">Property Value</h4>
   <dl class="parameters">
     <dt><span class="xref">string</span></dt>
     <dd></dd>
@@ -321,117 +320,8 @@ Class ProfilingOptions
 
 
 
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_DefaultSessionNameFormat_examples">Examples</h4>
-  <pre><code class="lang-csharp">var name = utcNow.ToString(ProfilingOptions.DefaultSessionNameFormat);</code></pre>
-
-
-
-
-
-
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_MinimumSamplingInterval" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.MinimumSamplingInterval">
-  MinimumSamplingInterval
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets the fixed minimum supported sampling interval.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public static readonly TimeSpan MinimumSamplingInterval</code></pre>
-  </div>
-
-
-
-
-  <h4 class="section">Field Value</h4>
-  <dl class="parameters">
-    <dt><span class="xref">TimeSpan</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_MinimumSamplingInterval_examples">Examples</h4>
-  <pre><code class="lang-csharp">var minimum = ProfilingOptions.MinimumSamplingInterval;</code></pre>
-
-
-
-
-
-
-  <h2 class="section" id="properties">Properties
-</h2>
-
-
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_AutomaticStop_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.AutomaticStop*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_AutomaticStop" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.AutomaticStop">
-  AutomaticStop
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets or sets whether collection stops when the configured duration elapses.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public bool AutomaticStop { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><span class="xref">bool</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_AutomaticStop_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.AutomaticStop = true;</code></pre>
-
-
-
-
-
-
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_Duration_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Duration*"></a>
-
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_Duration" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Duration">
-  Duration
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Gets or sets the required maximum duration of a collection session.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan Duration { get; set; }</code></pre>
-  </div>
-
-
-
-
-
-  <h4 class="section">Property Value</h4>
-  <dl class="parameters">
-    <dt><span class="xref">TimeSpan</span></dt>
-    <dd></dd>
-  </dl>
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_Duration_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.Duration = TimeSpan.FromSeconds(30);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_ApplicationVersion_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = options.ApplicationVersion;</code></pre>
 
 
 
@@ -445,7 +335,7 @@ Class ProfilingOptions
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets whether profiling collection is enabled.</p>
+  <div class="markdown level1 summary"><p>Gets or sets whether the master feature is enabled.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -466,26 +356,26 @@ Class ProfilingOptions
 
 
   <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_Enabled_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.Enabled = environment.IsDevelopment();</code></pre>
+  <pre><code class="lang-csharp">var value = options.Enabled;</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_FinalizationGracePeriod_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.FinalizationGracePeriod*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_NodeDisplayName_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.NodeDisplayName*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_FinalizationGracePeriod" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.FinalizationGracePeriod">
-  FinalizationGracePeriod
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_NodeDisplayName" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.NodeDisplayName">
+  NodeDisplayName
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the delay after the logical end before finalization may occur.</p>
+  <div class="markdown level1 summary"><p>Gets or sets the bounded local process display name.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan FinalizationGracePeriod { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public string NodeDisplayName { get; set; }</code></pre>
   </div>
 
 
@@ -494,33 +384,33 @@ Class ProfilingOptions
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">TimeSpan</span></dt>
+    <dt><span class="xref">string</span></dt>
     <dd></dd>
   </dl>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_FinalizationGracePeriod_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.FinalizationGracePeriod = TimeSpan.FromSeconds(1);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_NodeDisplayName_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = options.NodeDisplayName;</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_MaximumRetainedSessions_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.MaximumRetainedSessions*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_OperationEnabled_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.OperationEnabled*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_MaximumRetainedSessions" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.MaximumRetainedSessions">
-  MaximumRetainedSessions
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_OperationEnabled" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.OperationEnabled">
+  OperationEnabled
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the maximum number of retained unpinned terminal sessions.</p>
+  <div class="markdown level1 summary"><p>Gets the effective operation capture state.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public int MaximumRetainedSessions { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public bool OperationEnabled { get; }</code></pre>
   </div>
 
 
@@ -529,33 +419,33 @@ Class ProfilingOptions
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">int</span></dt>
+    <dt><span class="xref">bool</span></dt>
     <dd></dd>
   </dl>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_MaximumRetainedSessions_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.MaximumRetainedSessions = 20;</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_OperationEnabled_examples">Examples</h4>
+  <pre><code class="lang-csharp">if (options.OperationEnabled) StartRecorder();</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_MaximumSessionAge_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.MaximumSessionAge*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_Operations_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Operations*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_MaximumSessionAge" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.MaximumSessionAge">
-  MaximumSessionAge
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_Operations" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Operations">
+  Operations
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the maximum age of an unpinned terminal session.</p>
+  <div class="markdown level1 summary"><p>Gets or sets independent operation recording settings.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan MaximumSessionAge { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public OperationProfilingOptions Operations { get; set; }</code></pre>
   </div>
 
 
@@ -564,33 +454,33 @@ Class ProfilingOptions
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">TimeSpan</span></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.OperationProfilingOptions.html">OperationProfilingOptions</a></dt>
     <dd></dd>
   </dl>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_MaximumSessionAge_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.MaximumSessionAge = TimeSpan.FromDays(7);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_Operations_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = options.Operations;</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_ParticipationDeadline_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.ParticipationDeadline*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_Queries_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Queries*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_ParticipationDeadline" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.ParticipationDeadline">
-  ParticipationDeadline
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_Queries" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Queries">
+  Queries
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the deadline for accepting start-command participants.</p>
+  <div class="markdown level1 summary"><p>Gets or sets bounded retained-history query settings.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan ParticipationDeadline { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingQueryOptions Queries { get; set; }</code></pre>
   </div>
 
 
@@ -599,33 +489,33 @@ Class ProfilingOptions
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">TimeSpan</span></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingQueryOptions.html">ProfilingQueryOptions</a></dt>
     <dd></dd>
   </dl>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_ParticipationDeadline_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.ParticipationDeadline = TimeSpan.FromSeconds(1);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_Queries_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = options.Queries;</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_RefreshInterval_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.RefreshInterval*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_Requests_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Requests*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_RefreshInterval" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.RefreshInterval">
-  RefreshInterval
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_Requests" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Requests">
+  Requests
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the default dashboard refresh interval.</p>
+  <div class="markdown level1 summary"><p>Gets or sets http adapter enablement, configured by the web package.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan RefreshInterval { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingCapabilityOptions Requests { get; set; }</code></pre>
   </div>
 
 
@@ -634,33 +524,33 @@ Class ProfilingOptions
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">TimeSpan</span></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingCapabilityOptions.html">ProfilingCapabilityOptions</a></dt>
     <dd></dd>
   </dl>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_RefreshInterval_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.RefreshInterval = TimeSpan.FromSeconds(5);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_Requests_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = options.Requests;</code></pre>
 
 
 
 
 
 
-  <a id="BridgingIT_DevKit_Common_ProfilingOptions_SamplingInterval_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.SamplingInterval*"></a>
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_Runtime_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Runtime*"></a>
 
-  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_SamplingInterval" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.SamplingInterval">
-  SamplingInterval
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_Runtime" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Runtime">
+  Runtime
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Gets or sets the default interval between scheduled snapshots.</p>
+  <div class="markdown level1 summary"><p>Gets or sets independent runtime capture settings.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public TimeSpan SamplingInterval { get; set; }</code></pre>
+    <pre><code class="lang-csharp hljs">public RuntimeProfilingOptions Runtime { get; set; }</code></pre>
   </div>
 
 
@@ -669,14 +559,84 @@ Class ProfilingOptions
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">TimeSpan</span></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingOptions.html">RuntimeProfilingOptions</a></dt>
     <dd></dd>
   </dl>
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_SamplingInterval_examples">Examples</h4>
-  <pre><code class="lang-csharp">options.SamplingInterval = TimeSpan.FromSeconds(1);</code></pre>
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_Runtime_examples">Examples</h4>
+  <pre><code class="lang-csharp">var value = options.Runtime;</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_RuntimeEnabled_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.RuntimeEnabled*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_RuntimeEnabled" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.RuntimeEnabled">
+  RuntimeEnabled
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets the effective Runtime capture state.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public bool RuntimeEnabled { get; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><span class="xref">bool</span></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_RuntimeEnabled_examples">Examples</h4>
+  <pre><code class="lang-csharp">if (options.RuntimeEnabled) StartRuntime();</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Common_ProfilingOptions_Storage_" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Storage*"></a>
+
+  <h3 id="BridgingIT_DevKit_Common_ProfilingOptions_Storage" data-uid="BridgingIT.DevKit.Common.ProfilingOptions.Storage">
+  Storage
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Gets or sets bounded storage coordination and maintenance settings.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public ProfilingStorageOptions Storage { get; set; }</code></pre>
+  </div>
+
+
+
+
+
+  <h4 class="section">Property Value</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStorageOptions.html">ProfilingStorageOptions</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Common_ProfilingOptions_Storage_examples">Examples</h4>
+  <pre><code class="lang-csharp">var timeout = options.Storage.ClearPreparationTimeout;</code></pre>
 
 
 
@@ -694,7 +654,7 @@ Class ProfilingOptions
   
   </h3>
 
-  <div class="markdown level1 summary"><p>Validates the configured profiling limits.</p>
+  <div class="markdown level1 summary"><p>Validates the final composed configuration.</p>
 </div>
   <div class="markdown level1 conceptual"></div>
 
@@ -714,12 +674,6 @@ Class ProfilingOptions
 
 
 
-  <h4 class="section">Exceptions</h4>
-  <dl class="parameters">
-    <dt><span class="xref">InvalidOperationException</span></dt>
-    <dd><p>Thrown when an enabled configuration is invalid.</p>
-</dd>
-  </dl>
 
 
 

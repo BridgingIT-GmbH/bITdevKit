@@ -89,7 +89,7 @@ Class ProfilingDashboardDataResponse
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd><a class="xref" href="BridgingIT.html">BridgingIT</a>.<a class="xref" href="BridgingIT.DevKit.html">DevKit</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.html">Profiling</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Models.html">Models</a></dd></dl>
+    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.html">Web</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.html">Profiling</a>.<a class="xref" href="BridgingIT.DevKit.Presentation.Web.Profiling.Models.html">Models</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
   </div>
 
@@ -262,8 +262,8 @@ Class ProfilingDashboardDataResponse
 
   <a id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse__ctor_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.#ctor*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse__ctor_BridgingIT_DevKit_Common_ProfilingStatus_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_ProfilingSession__BridgingIT_DevKit_Common_ProfilingSessionData_BridgingIT_DevKit_Common_ProfilingNodeSessionData_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.#ctor(BridgingIT.DevKit.Common.ProfilingStatus,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.ProfilingSession},BridgingIT.DevKit.Common.ProfilingSessionData,BridgingIT.DevKit.Common.ProfilingNodeSessionData)">
-  ProfilingDashboardDataResponse(ProfilingStatus, IReadOnlyList&lt;ProfilingSession&gt;, ProfilingSessionData, ProfilingNodeSessionData)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse__ctor_BridgingIT_DevKit_Common_RuntimeProfilingStatus_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_RuntimeProfilingSession__BridgingIT_DevKit_Common_RuntimeProfilingSessionData_BridgingIT_DevKit_Common_RuntimeProfilingNodeSessionData_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.#ctor(BridgingIT.DevKit.Common.RuntimeProfilingStatus,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.RuntimeProfilingSession},BridgingIT.DevKit.Common.RuntimeProfilingSessionData,BridgingIT.DevKit.Common.RuntimeProfilingNodeSessionData)">
+  ProfilingDashboardDataResponse(RuntimeProfilingStatus, IReadOnlyList&lt;RuntimeProfilingSession&gt;, RuntimeProfilingSessionData, RuntimeProfilingNodeSessionData)
   
   </h3>
 
@@ -272,21 +272,21 @@ Class ProfilingDashboardDataResponse
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingDashboardDataResponse(ProfilingStatus Status, IReadOnlyList&lt;ProfilingSession&gt; Sessions, ProfilingSessionData SelectedSession, ProfilingNodeSessionData SelectedNode)</code></pre>
+    <pre><code class="lang-csharp hljs">public ProfilingDashboardDataResponse(RuntimeProfilingStatus Status, IReadOnlyList&lt;RuntimeProfilingSession&gt; Sessions, RuntimeProfilingSessionData SelectedSession, RuntimeProfilingNodeSessionData SelectedNode)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>Status</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingStatus.html">ProfilingStatus</a></dt>
+    <dt><code>Status</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingStatus.html">RuntimeProfilingStatus</a></dt>
     <dd><p>The current profiling availability and active-session status.</p>
 </dd>
-    <dt><code>Sessions</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingSession.html">ProfilingSession</a>&gt;</dt>
+    <dt><code>Sessions</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;</dt>
     <dd><p>The stored session summaries.</p>
 </dd>
-    <dt><code>SelectedSession</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionData.html">ProfilingSessionData</a></dt>
+    <dt><code>SelectedSession</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionData.html">RuntimeProfilingSessionData</a></dt>
     <dd><p>The optional complete selected session.</p>
 </dd>
-    <dt><code>SelectedNode</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeSessionData.html">ProfilingNodeSessionData</a></dt>
+    <dt><code>SelectedNode</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeSessionData.html">RuntimeProfilingNodeSessionData</a></dt>
     <dd><p>The optional selected-node timeline.</p>
 </dd>
   </dl>
@@ -297,7 +297,7 @@ Class ProfilingDashboardDataResponse
 
 
 
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse__ctor_BridgingIT_DevKit_Common_ProfilingStatus_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_ProfilingSession__BridgingIT_DevKit_Common_ProfilingSessionData_BridgingIT_DevKit_Common_ProfilingNodeSessionData__examples">Examples</h4>
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse__ctor_BridgingIT_DevKit_Common_RuntimeProfilingStatus_System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_RuntimeProfilingSession__BridgingIT_DevKit_Common_RuntimeProfilingSessionData_BridgingIT_DevKit_Common_RuntimeProfilingNodeSessionData__examples">Examples</h4>
   <pre><code class="lang-csharp">var selected = response.SelectedNode;</code></pre>
 
 
@@ -321,7 +321,7 @@ Class ProfilingDashboardDataResponse
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingNodeSessionData SelectedNode { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public RuntimeProfilingNodeSessionData SelectedNode { get; init; }</code></pre>
   </div>
 
 
@@ -330,7 +330,7 @@ Class ProfilingDashboardDataResponse
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeSessionData.html">ProfilingNodeSessionData</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeSessionData.html">RuntimeProfilingNodeSessionData</a></dt>
     <dd></dd>
   </dl>
 
@@ -353,7 +353,7 @@ Class ProfilingDashboardDataResponse
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingSessionData SelectedSession { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public RuntimeProfilingSessionData SelectedSession { get; init; }</code></pre>
   </div>
 
 
@@ -362,7 +362,7 @@ Class ProfilingDashboardDataResponse
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionData.html">ProfilingSessionData</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionData.html">RuntimeProfilingSessionData</a></dt>
     <dd></dd>
   </dl>
 
@@ -385,7 +385,7 @@ Class ProfilingDashboardDataResponse
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;ProfilingSession&gt; Sessions { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public IReadOnlyList&lt;RuntimeProfilingSession&gt; Sessions { get; init; }</code></pre>
   </div>
 
 
@@ -394,7 +394,7 @@ Class ProfilingDashboardDataResponse
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingSession.html">ProfilingSession</a>&gt;</dt>
+    <dt><span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;</dt>
     <dd></dd>
   </dl>
 
@@ -417,7 +417,7 @@ Class ProfilingDashboardDataResponse
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public ProfilingStatus Status { get; init; }</code></pre>
+    <pre><code class="lang-csharp hljs">public RuntimeProfilingStatus Status { get; init; }</code></pre>
   </div>
 
 
@@ -426,7 +426,7 @@ Class ProfilingDashboardDataResponse
 
   <h4 class="section">Property Value</h4>
   <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Common.ProfilingStatus.html">ProfilingStatus</a></dt>
+    <dt><a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingStatus.html">RuntimeProfilingStatus</a></dt>
     <dd></dd>
   </dl>
 
@@ -443,8 +443,8 @@ Class ProfilingDashboardDataResponse
 
   <a id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse_Deconstruct_" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.Deconstruct*"></a>
 
-  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse_Deconstruct_BridgingIT_DevKit_Common_ProfilingStatus__System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_ProfilingSession___BridgingIT_DevKit_Common_ProfilingSessionData__BridgingIT_DevKit_Common_ProfilingNodeSessionData__" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.Deconstruct(BridgingIT.DevKit.Common.ProfilingStatus@,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.ProfilingSession}@,BridgingIT.DevKit.Common.ProfilingSessionData@,BridgingIT.DevKit.Common.ProfilingNodeSessionData@)">
-  Deconstruct(out ProfilingStatus, out IReadOnlyList&lt;ProfilingSession&gt;, out ProfilingSessionData, out ProfilingNodeSessionData)
+  <h3 id="BridgingIT_DevKit_Presentation_Web_Profiling_Models_ProfilingDashboardDataResponse_Deconstruct_BridgingIT_DevKit_Common_RuntimeProfilingStatus__System_Collections_Generic_IReadOnlyList_BridgingIT_DevKit_Common_RuntimeProfilingSession___BridgingIT_DevKit_Common_RuntimeProfilingSessionData__BridgingIT_DevKit_Common_RuntimeProfilingNodeSessionData__" data-uid="BridgingIT.DevKit.Presentation.Web.Profiling.Models.ProfilingDashboardDataResponse.Deconstruct(BridgingIT.DevKit.Common.RuntimeProfilingStatus@,System.Collections.Generic.IReadOnlyList{BridgingIT.DevKit.Common.RuntimeProfilingSession}@,BridgingIT.DevKit.Common.RuntimeProfilingSessionData@,BridgingIT.DevKit.Common.RuntimeProfilingNodeSessionData@)">
+  Deconstruct(out RuntimeProfilingStatus, out IReadOnlyList&lt;RuntimeProfilingSession&gt;, out RuntimeProfilingSessionData, out RuntimeProfilingNodeSessionData)
   
   </h3>
 
@@ -452,18 +452,18 @@ Class ProfilingDashboardDataResponse
   <div class="markdown level1 conceptual"></div>
 
   <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public void Deconstruct(out ProfilingStatus Status, out IReadOnlyList&lt;ProfilingSession&gt; Sessions, out ProfilingSessionData SelectedSession, out ProfilingNodeSessionData SelectedNode)</code></pre>
+    <pre><code class="lang-csharp hljs">public void Deconstruct(out RuntimeProfilingStatus Status, out IReadOnlyList&lt;RuntimeProfilingSession&gt; Sessions, out RuntimeProfilingSessionData SelectedSession, out RuntimeProfilingNodeSessionData SelectedNode)</code></pre>
   </div>
 
   <h4 class="section">Parameters</h4>
   <dl class="parameters">
-    <dt><code>Status</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingStatus.html">ProfilingStatus</a></dt>
+    <dt><code>Status</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingStatus.html">RuntimeProfilingStatus</a></dt>
     <dd></dd>
-    <dt><code>Sessions</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.ProfilingSession.html">ProfilingSession</a>&gt;</dt>
+    <dt><code>Sessions</code> <span class="xref">IReadOnlyList</span>&lt;<a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSession.html">RuntimeProfilingSession</a>&gt;</dt>
     <dd></dd>
-    <dt><code>SelectedSession</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingSessionData.html">ProfilingSessionData</a></dt>
+    <dt><code>SelectedSession</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingSessionData.html">RuntimeProfilingSessionData</a></dt>
     <dd></dd>
-    <dt><code>SelectedNode</code> <a class="xref" href="BridgingIT.DevKit.Common.ProfilingNodeSessionData.html">ProfilingNodeSessionData</a></dt>
+    <dt><code>SelectedNode</code> <a class="xref" href="BridgingIT.DevKit.Common.RuntimeProfilingNodeSessionData.html">RuntimeProfilingNodeSessionData</a></dt>
     <dd></dd>
   </dl>
 

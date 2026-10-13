@@ -93,7 +93,7 @@ nav:
           - Developer Dashboards: developer-dashboards.md
       - Package Map: packages.md
   - Guides:
-      - Decisions: decisions.md
+      - Guides: guides.md
       - Messaging or Queueing: decisions-messaging-vs-queueing.md
       - Repository or ActiveEntity: decisions-repository-vs-activeentity.md
       - Pipeline or Orchestration: decisions-pipeline-vs-orchestration.md

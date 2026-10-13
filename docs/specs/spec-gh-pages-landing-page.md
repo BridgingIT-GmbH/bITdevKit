@@ -127,7 +127,7 @@ Implemented structure:
   architecture.md
   packages.md
   examples.md
-  decisions.md
+  guides.md
   decisions-messaging-vs-queueing.md
   decisions-repository-vs-activeentity.md
   /assets/
@@ -257,7 +257,7 @@ Implemented top-level navigation:
 - Architecture
 - Packages
 - Examples
-- Decisions
+- Guides
 - Documentation
 
 The exact labels shall remain aligned with the repository’s public site pages and user journeys.
@@ -285,7 +285,7 @@ Implemented canonical route families:
 - `/architecture/` for architecture overview and request flow
 - `/packages/` for the package map
 - `/examples/` for the example story
-- `/decisions/` for decision guides
+- `/guides/` for practical feature and application guides
 - `/reference/` for the broader curated docs overview
 
 ### 8.4 Primary user journeys
@@ -541,7 +541,7 @@ Implemented public docs groupings:
 - Architecture
 - Packages
 - Examples
-- Decisions
+- Guides
 - Documentation
 
 ### 10.3.1 Public docs map

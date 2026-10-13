@@ -1,14 +1,12 @@
 ---
-title: Decisions
+title: Guides
 ---
 
-# Decisions
+# Guides
 
-Use these guides to choose a `bITdevKit` feature or decide where code belongs. Each guide explains the tradeoffs with a concrete example and links to the feature documentation.
+These guides explain how to use `bITdevKit` features and apply common application patterns. Each guide includes practical examples and links to the feature documentation.
 
-## Available guides
-
-| Decision | Question |
+| Guide | Question |
 | --- | --- |
 | [Messaging or Queueing](decisions-messaging-vs-queueing.md) | Should an event reach several consumers, or should one consumer own a work item? |
 | [Repository or ActiveEntity](decisions-repository-vs-activeentity.md) | Should persistence use an injected repository or entity-scoped methods? |

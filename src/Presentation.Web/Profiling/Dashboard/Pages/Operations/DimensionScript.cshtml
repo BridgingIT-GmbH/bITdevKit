@@ -1,0 +1,269 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const content = document.getElementById('operation-content');
+    if (!content) return;
+    const types = ['String', 'Int64', 'Decimal', 'Double', 'Boolean', 'UtcDateTime'];
+    const operators = ['Equal', 'Present', 'Missing', 'Mixed'];
+    const editors = new Set();
+    const maximumPredicates = Number(content.dataset.dimensionLimit) || 8;
+    let sequence = 0;
+    const normalize = value => Object.fromEntries(Object.entries(value || {}).map(([key, item]) => [key[0].toLowerCase() + key.slice(1), item]));
+    const typed = value => { const result = normalize(value); return { type: typeof result.type === 'number' ? ['String', 'Boolean', 'Int64', 'Decimal', 'Double', 'UtcDateTime'][result.type] : result.type, scalar: result.scalar }; };
+    const predicate = value => { const item = normalize(value); return { key: item.key, operator: typeof item.operator === 'number' ? operators[item.operator] : item.operator || 'Equal', ...(item.value ? { value: typed(item.value) } : {}) }; };
+    const label = value => value.scalar === '' ? '(empty string)' : value.scalar;
+    const readJson = (value, fallback) => { try { return JSON.parse(value); } catch { return fallback; } };
+    const executionIdentifiers = new Set(readJson(content.dataset.executionDimensionKeys, []).map(key => key.toUpperCase()));
+    const workloadDimension = key => !executionIdentifiers.has(key?.toUpperCase());
+    function cleanGrouping(value) {
+        const result = normalize(value);
+        if (Array.isArray(result.groupingDimensions)) result.groupingDimensions = result.groupingDimensions.filter(workloadDimension);
+        if (Array.isArray(result.groupDimensions)) result.groupDimensions = result.groupDimensions.filter(item => workloadDimension(normalize(item).key));
+        return result;
+    }
+    async function discover(query, filters, signal) {
+        const clean = normalize(query);
+        delete clean.cursor; delete clean.boundary; clean.groupingDimensions = [];
+        const name = (filters.dimensionKey || filters.omitDimensionKey)?.toUpperCase();
+        if (name) for (const property of ['dimensions', 'groupDimensions', 'segmentDimensions']) {
+            // Keep other conditions, but reveal alternatives to the dimension currently being edited.
+            if (property === 'segmentDimensions' && filters.scope !== 'Segment' || property !== 'segmentDimensions' && filters.scope === 'Segment') continue;
+            clean[property] = (clean[property] || []).filter(item => normalize(item).key?.toUpperCase() !== name);
+        }
+        const url = new URL(content.dataset.dimensionsUrl, location.origin);
+        url.searchParams.set('query', JSON.stringify(clean));
+        Object.entries(filters).forEach(([key, value]) => { if (key !== 'omitDimensionKey' && value != null && value !== '') url.searchParams.set(key, value); });
+        const response = await fetch(url, { signal, cache: 'no-store' });
+        if (response.redirected) throw new Error('Sign in again or refresh the page.');
+        const media = (response.headers.get('content-type') || '').split(';', 1)[0].trim();
+        if (media !== 'application/json' && !media.endsWith('+json')) throw new Error('Unexpected response. Refresh the page.');
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.detail || 'HTTP ' + response.status);
+        return data;
+    }
+    function createEditor(host, options) {
+        [...editors].filter(editor => !editor.row.isConnected).forEach(editor => editor.dispose());
+        const row = document.createElement('div'); row.className = 'operation-comparison-dimension operation-dimension-editor';
+        const id = 'profiling-dimension-' + (++sequence);
+        function input(attribute, description, maximum) {
+            const field = document.createElement('input'); field.className = 'form-control form-control-sm'; field.maxLength = maximum;
+            field.setAttribute(attribute, ''); field.setAttribute('aria-label', description); return field;
+        }
+        function select(attribute, description, values) {
+            const field = document.createElement('select'); field.className = 'form-select form-select-sm';
+            field.setAttribute(attribute, ''); field.setAttribute('aria-label', description);
+            values.forEach(value => field.add(new Option(value, value))); return field;
+        }
+        const key = input('data-dimension-key', options.label + ' dimension name', 128); key.placeholder = 'Name'; key.required = true;
+        const names = document.createElement('datalist'); names.id = id + '-names'; key.setAttribute('list', names.id);
+        const operator = select('data-dimension-operator', options.label + ' condition', options.scope === 'Segment' ? operators : operators.slice(0, 3));
+        const type = select('data-dimension-type', options.label + ' value type', types);
+        const value = input('data-dimension-value', options.label + ' value', 256); value.placeholder = 'Exact value';
+        const choices = document.createElement('select'); choices.className = 'form-select form-select-sm operation-dimension-choices'; choices.setAttribute('aria-label', options.label + ' recorded values');
+        choices.add(new Option('Recorded values…', '')); choices.hidden = true;
+        const status = document.createElement('small'); status.className = 'text-muted operation-dimension-discovery'; status.setAttribute('role', 'status'); status.setAttribute('aria-live', 'polite');
+        const remove = document.createElement('button'); remove.type = 'button'; remove.className = 'btn btn-outline-secondary btn-sm';
+        remove.title = 'Remove dimension'; remove.setAttribute('aria-label', 'Remove ' + options.label + ' dimension');
+        const icon = document.createElement('i'); icon.className = 'bi bi-x'; icon.setAttribute('aria-hidden', 'true'); remove.append(icon);
+        let timer = null, controller = null, revision = 0;
+        function cancel() {
+            clearTimeout(timer); controller?.abort(); controller = null; revision++;
+            names.replaceChildren(); choices.hidden = true; status.textContent = '';
+        }
+        function update() {
+            type.disabled = value.disabled = operator.value !== 'Equal'; choices.disabled = type.disabled;
+            // Keep UTC scalars as text to preserve sub-millisecond precision and their explicit timezone.
+            value.title = type.value === 'UtcDateTime' ? 'UTC ISO timestamp, including Z. Precision is preserved.'
+                : type.value === 'Boolean' ? 'true or false' : 'Exact typed value. String values are case-sensitive.';
+        }
+        function read() {
+            return { key: key.value, operator: operator.value, ...(operator.value === 'Equal' ? { value: { type: type.value, scalar: value.value } } : {}) };
+        }
+        function apply(saved) {
+            const item = predicate(saved || {}); key.value = item.key || ''; operator.value = item.operator || 'Equal';
+            type.value = item.value?.type || 'String'; value.value = item.value?.scalar || ''; update();
+        }
+        function changed() { options.changed?.(); }
+        function schedule(values) {
+            cancel(); const active = revision;
+            timer = setTimeout(async () => {
+                if (!row.isConnected) return;
+                controller = new AbortController();
+                try {
+                    const query = options.query();
+                    if (options.scope === 'Segment' && !normalize(query).segmentPath) { status.textContent = 'Select a segment path first.'; return; }
+                    status.textContent = 'Loading recorded dimensions…';
+                    const result = await discover(query, { scope: options.scope, omitDimensionKey: key.value, ...(values && key.value.trim() ? { dimensionKey: key.value, valueSearch: value.value } : { nameSearch: key.value }) }, controller.signal);
+                    if (active !== revision || !row.isConnected) return;
+                    names.replaceChildren();
+                    result.dimensions.forEach(dimension => { const option = new Option(dimension.key + ' · ' + dimension.presentCount + ' executions', dimension.key); names.append(option); });
+                    const dimension = result.dimensions.find(item => item.key.toUpperCase() === key.value.toUpperCase());
+                    choices.replaceChildren(new Option('Select a recorded value', ''));
+                    if (dimension) dimension.values.forEach(item => {
+                        const selected = typed(item.value);
+                        choices.add(new Option(label(selected) + ' · ' + selected.type + ' · ' + item.count + ' executions', JSON.stringify(selected)));
+                    });
+                    choices.hidden = !dimension || operator.value !== 'Equal';
+                    status.textContent = dimension ? dimension.presentCount + ' present · ' + dimension.missingCount + ' missing' +
+                        (dimension.mixedCount ? ' · ' + dimension.mixedCount + ' mixed' : '') + (dimension.partialCount ? ' · ' + dimension.partialCount + ' partial' : '') +
+                        (dimension.valuesTruncated ? ' · More values; type to search.' : '')
+                        : result.operationCount + ' retained executions' + (result.namesTruncated ? ' · More names; type to search.' : '');
+                } catch (error) { if (error.name !== 'AbortError' && active === revision) status.textContent = 'Discovery unavailable: ' + error.message; }
+            }, 300);
+        }
+        const editor = { row, key, read, apply, cancel, refresh: () => schedule(true), dispose() { cancel(); editors.delete(editor); row.remove(); }, focus: () => key.focus() };
+        editors.add(editor);
+        key.addEventListener('focus', () => schedule(false));
+        key.addEventListener('input', () => { names.replaceChildren(); choices.hidden = true; changed(); schedule(false); });
+        key.addEventListener('change', () => { changed(); schedule(true); });
+        value.addEventListener('focus', () => schedule(true)); value.addEventListener('input', () => { changed(); schedule(true); });
+        operator.addEventListener('change', () => { update(); changed(); schedule(true); }); type.addEventListener('change', () => { update(); changed(); });
+        choices.addEventListener('change', () => { if (!choices.value) return; const item = readJson(choices.value, null); if (!item) return; type.value = item.type; value.value = item.scalar; update(); changed(); });
+        remove.addEventListener('click', () => { editor.dispose(); changed(); options.removed?.(); });
+        row.append(key, operator, type, value, remove, names, choices, status); host.append(row); apply(options.saved);
+        return editor;
+    }
+    function initializeList(selectionQuery) {
+        const form = document.getElementById('operation-filters');
+        if (!form) return;
+        const section = document.getElementById('operation-dimension-controls'), chips = document.getElementById('operation-dimension-chips');
+        const grouping = document.getElementById('operation-group-dimension'), path = document.getElementById('operation-dimension-path');
+        const hidden = name => document.getElementById('operation-' + name);
+        const status = document.getElementById('operation-dimension-status');
+        hidden('group-by').value = hidden('group-by').value.split(',').map(key => key.trim()).filter(workloadDimension).join(',');
+        const selector = document.getElementById('operation-query');
+        try { selector.value = JSON.stringify(cleanGrouping(JSON.parse(selector.value))); } catch { }
+        const lists = { operation: [], segment: [] };
+        let discovering = null, generation = 0;
+        function selectedPath() { const components = readJson(hidden('segment-path').value, null); return Array.isArray(components) ? { components } : null; }
+        function query() {
+            const result = selectionQuery();
+            result.dimensions = lists.operation.map(editor => editor.read()).filter(item => item.key);
+            result.segmentDimensions = lists.segment.map(editor => editor.read()).filter(item => item.key);
+            result.segmentPath = selectedPath(); return result;
+        }
+        function synchronize() {
+            for (const scope of ['operation', 'segment']) {
+                lists[scope] = lists[scope].filter(editor => editor.row.isConnected);
+                hidden(scope === 'operation' ? 'dimensions' : 'segment-dimensions').value = JSON.stringify(lists[scope].map(editor => editor.read()));
+            }
+            chips.replaceChildren();
+            for (const scope of ['operation', 'segment']) for (const editor of lists[scope]) {
+                const item = editor.read(); if (!item.key) continue;
+                const button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-outline-secondary btn-sm operation-dimension-chip';
+                button.textContent = (scope === 'segment' ? 'Segment · ' : '') + item.key + ' ' + (item.operator === 'Equal' ? '= ' + label(item.value) + ' (' + item.value.type + ')' : item.operator) + ' ×';
+                button.title = 'Remove this condition'; button.setAttribute('aria-label', 'Remove condition ' + button.textContent.slice(0, -2));
+                button.addEventListener('click', () => { editor.dispose(); synchronize(); }); chips.append(button);
+            }
+            const field = document.getElementById('operation-query'), raw = normalize(readJson(field.value, {}));
+            for (const condition of raw.groupDimensions || []) {
+                const item = predicate(condition), button = document.createElement('button'); button.type = 'button'; button.className = 'btn btn-outline-secondary btn-sm operation-dimension-chip';
+                button.textContent = 'Group · ' + item.key + ' ' + (item.operator === 'Equal' ? '= ' + label(item.value) + ' (' + item.value.type + ')' : item.operator) + ' ×';
+                button.title = 'Remove the selected group condition';
+                button.addEventListener('click', () => {
+                    const current = normalize(readJson(field.value, {})); current.groupDimensions = (current.groupDimensions || []).filter(value => normalize(value).key.toUpperCase() !== item.key.toUpperCase());
+                    field.value = JSON.stringify(current); synchronize();
+                }); chips.append(button);
+            }
+            form.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+        function add(scope, saved, focus = false) {
+            if (lists.operation.length + lists.segment.length >= maximumPredicates) { status.textContent = 'At most ' + maximumPredicates + ' dimension conditions can be selected.'; return; }
+            const editor = createEditor(document.getElementById(scope + '-dimension-rows'), { label: scope, scope: scope === 'segment' ? 'Segment' : 'Operation', saved, query, changed: synchronize });
+            lists[scope].push(editor); if (focus) { section.open = true; editor.focus(); } return editor;
+        }
+        function loadRows(scope, saved) { lists[scope].forEach(editor => editor.dispose()); lists[scope] = []; saved.slice(0, maximumPredicates).forEach(item => add(scope, item)); }
+        function keepOption(select, value, text) { if (value && ![...select.options].some(option => option.value === value)) select.add(new Option(text || value, value)); select.value = value; }
+        async function refreshChoices() {
+            discovering?.abort(); discovering = new AbortController(); const active = ++generation;
+            try {
+                const selection = query(); selection.segmentPath = null; selection.segmentDimensions = [];
+                const result = await discover(selection, { scope: 'Operation' }, discovering.signal);
+                if (active !== generation) return;
+                const group = hidden('group-by').value, segment = hidden('segment-path').value;
+                grouping.replaceChildren(new Option('Key and kind only', ''));
+                result.dimensions.filter(item => workloadDimension(item.key)).forEach(item => grouping.add(new Option(item.key + ' · ' + item.distinctValueCount + ' values', item.key)));
+                keepOption(grouping, group);
+                path.replaceChildren(new Option('Select a recorded segment', ''));
+                result.segmentPaths.forEach(item => path.add(new Option(item.path.components.join(' › ') + ' · ' + item.count + ' executions', JSON.stringify(item.path.components))));
+                keepOption(path, segment, selectedPath()?.components.join(' › '));
+                status.textContent = result.operationCount + ' retained executions · ' + result.matchingNameCount + ' dimension names' +
+                    (result.namesTruncated || result.pathsTruncated ? ' · Choices limited; narrow the key or time range. Type a dimension name to search more.' : '');
+            } catch (error) { if (error.name !== 'AbortError' && active === generation) status.textContent = 'Discovery unavailable: ' + error.message; }
+        }
+        loadRows('operation', readJson(hidden('dimensions').value, [])); loadRows('segment', readJson(hidden('segment-dimensions').value, []));
+        keepOption(grouping, hidden('group-by').value); keepOption(path, hidden('segment-path').value, selectedPath()?.components.join(' › '));
+        section.open ||= lists.operation.length > 0 || lists.segment.length > 0 || !!grouping.value;
+        grouping.addEventListener('change', () => { hidden('group-by').value = grouping.value; synchronize(); });
+        path.addEventListener('change', () => { hidden('segment-path').value = path.value; loadRows('segment', []); synchronize(); });
+        form.querySelectorAll('[data-dimension-add]').forEach(button => button.addEventListener('click', () => { add(button.dataset.dimensionAdd, {}, true); synchronize(); }));
+        section.addEventListener('toggle', () => { if (section.open) refreshChoices(); });
+        grouping.addEventListener('focus', refreshChoices); path.addEventListener('focus', refreshChoices);
+        document.getElementById('operation-query').addEventListener('change', event => {
+            try {
+                const raw = cleanGrouping(JSON.parse(event.target.value));
+                event.target.value = JSON.stringify(raw);
+                loadRows('operation', raw.dimensions || []); loadRows('segment', raw.segmentDimensions || []);
+                hidden('group-by').value = (raw.groupingDimensions || []).join(','); hidden('segment-path').value = JSON.stringify(normalize(raw.segmentPath).components || null).replace(/^null$/, '');
+                keepOption(grouping, hidden('group-by').value); keepOption(path, hidden('segment-path').value, selectedPath()?.components.join(' › ')); synchronize();
+            } catch { status.textContent = 'Invalid selector JSON.'; }
+        });
+        form.addEventListener('change', event => { if (event.target !== form && !event.target.closest('.operation-dimension-editor')) { discovering?.abort(); editors.forEach(editor => editor.cancel()); } });
+        function useDimension(context, item, segmentPath) {
+            const rawField = document.getElementById('operation-query'); const raw = normalize(readJson(rawField.value, {}));
+            raw.key = context.key; delete raw.keyContains; raw.cursor = raw.boundary = null;
+            rawField.value = JSON.stringify(raw); document.getElementById('operation-key').value = context.key;
+            const kind = document.getElementById('operation-kind'); keepOption(kind, context.kind);
+            if (segmentPath) {
+                const value = JSON.stringify(segmentPath.components);
+                if (value !== hidden('segment-path').value) loadRows('segment', []);
+                hidden('segment-path').value = value; keepOption(path, value, segmentPath.components.join(' › '));
+            }
+            const scope = segmentPath ? 'segment' : 'operation';
+            const existing = lists[scope].find(editor => editor.read().key.toUpperCase() === item.key.toUpperCase());
+            const editor = existing || add(scope, item); if (existing) existing.apply(item);
+            section.open = true; synchronize(); form.requestSubmit(); editor?.focus();
+        }
+        synchronize();
+        window.bdkOperationDimensions.useDimension = useDimension;
+        window.bdkOperationDimensions.groupDimension = (context, item) => {
+            if (!workloadDimension(item.key)) return;
+            const field = document.getElementById('operation-query'), raw = normalize(readJson(field.value, {}));
+            raw.groupDimensions = (raw.groupDimensions || []).filter(value => normalize(value).key.toUpperCase() !== item.key.toUpperCase());
+            lists.operation.filter(editor => editor.read().key.toUpperCase() === item.key.toUpperCase()).forEach(editor => editor.dispose());
+            raw.key = context.key; delete raw.keyContains; raw.cursor = raw.boundary = null; field.value = JSON.stringify(raw);
+            document.getElementById('operation-key').value = context.key; keepOption(document.getElementById('operation-kind'), context.kind);
+            hidden('group-by').value = item.key; keepOption(grouping, item.key); section.open = true; synchronize(); form.requestSubmit();
+        };
+        window.bdkOperationDimensions.listQuery = query;
+        window.bdkOperationDimensions.refreshChoices = () => { if (section.open) refreshChoices(); };
+        window.addEventListener('pagehide', () => discovering?.abort());
+    }
+    window.bdkOperationDimensions = { normalize, typed, predicate, createEditor, discover, initializeList, maximumPredicates, cancel: () => editors.forEach(editor => editor.cancel()) };
+    document.addEventListener('click', event => {
+        const button = event.target.closest('[data-profiling-dimension-action]');
+        if (!button) return;
+        event.preventDefault();
+        const context = normalize(readJson(button.dataset.dimensionContext, {})), item = predicate(readJson(button.dataset.dimensionPredicate, {}));
+        const components = readJson(button.dataset.dimensionSegmentPath, null), path = components ? { components } : null;
+        const action = button.dataset.profilingDimensionAction;
+        const run = () => {
+            if (action === 'baseline' || action === 'candidate') { window.bdkOperationComparison?.useDimension(context, item, action, path); return; }
+            if (document.getElementById('operation-filters')) {
+                if (action === 'group') window.bdkOperationDimensions.groupDimension(context, item);
+                else window.bdkOperationDimensions.useDimension(context, item, path);
+            } else {
+                const selection = { key: context.key, kind: context.kind, fromUtc: context.fromUtc, toUtc: context.toUtc,
+                    ...(action === 'group' ? { groupingDimensions: [item.key] } : path ? { segmentPath: path, segmentDimensions: [item] } : { dimensions: [item] }) };
+                const url = new URL(content.dataset.operationListUrl || content.dataset.pageUrl, location.origin); url.searchParams.set('query', JSON.stringify(selection));
+                const view = new URL(location.href).searchParams.get('dashboardView'); if (view) url.searchParams.set('dashboardView', view);
+                location.assign(url);
+            }
+        };
+        const modal = button.closest('.modal');
+        if (modal && window.bootstrap?.Modal) { modal.addEventListener('hidden.bs.modal', run, { once: true }); bootstrap.Modal.getOrCreateInstance(modal).hide(); }
+        else run();
+    });
+    window.addEventListener('pagehide', () => editors.forEach(editor => editor.cancel()));
+})();
+</script>

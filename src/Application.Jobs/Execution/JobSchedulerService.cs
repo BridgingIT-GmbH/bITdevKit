@@ -1714,6 +1714,7 @@ public partial class JobSchedulerService(
         cancellationToken.ThrowIfCancellationRequested();
         var executionId = Guid.NewGuid();
         using var executionLogScope = this.BeginOccurrenceLogScope(occurrenceState, executionId);
+        using var correlationScope = CorrelationId.BeginScope(occurrenceState.CorrelationId);
         var reserved = await this.TryReserveConcurrencySlotAsync(definition, trigger, occurrenceState.OccurrenceId, executionId, lease, cancellationToken).ConfigureAwait(false);
         if (reserved.IsFailure)
         {
@@ -3022,7 +3023,7 @@ public partial class JobSchedulerService(
 
     private static string NormalizeCorrelationId(string correlationId)
     {
-        return string.IsNullOrWhiteSpace(correlationId) ? Guid.NewGuid().ToString("N") : correlationId.Trim();
+        return string.IsNullOrWhiteSpace(correlationId) ? CorrelationIdGenerator.Create() : correlationId.Trim();
     }
 
     private static string NormalizeIdempotencyKey(string idempotencyKey, string fallback)

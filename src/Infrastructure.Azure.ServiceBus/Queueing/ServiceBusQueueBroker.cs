@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Infrastructure.Azure;
 
 using System.Collections.Concurrent;
-using System.Diagnostics;
 using BridgingIT.DevKit.Application.Queueing;
 using BridgingIT.DevKit.Common;
 using global::Azure.Messaging.ServiceBus;
@@ -136,7 +135,7 @@ public class ServiceBusQueueBroker : QueueBrokerBase, IDisposable, IAsyncDisposa
         {
             MessageId = message.MessageId,
             Subject = messageTypeName,
-            CorrelationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey),
+            CorrelationId = CorrelationId.ReadFrom(message.Properties),
             ApplicationProperties =
             {
                 [nameof(IQueueMessage.Timestamp)] = message.Timestamp.ToUnixTimeSeconds(),

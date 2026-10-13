@@ -18,13 +18,13 @@ using BenchmarkDotNet.Attributes;
 [MemoryDiagnoser]
 public class ProfilingRuntimeBenchmarks
 {
-    private readonly SystemProfilingRuntimeSnapshotSource runtimeSource = new();
-    private readonly SystemProfilingRuntimeContextSource contextSource = new();
-    private ProfilingSnapshotProbe fixedSourceProbe;
-    private ProfilingSnapshotProbe systemProbe;
-    private ProfilingRuntimeContextFactory contextFactory;
-    private ProfilingCaptureRequest captureRequest;
-    private ProfilingSession session;
+    private readonly SystemRuntimeProfilingRuntimeSnapshotSource runtimeSource = new();
+    private readonly SystemRuntimeProfilingRuntimeContextSource contextSource = new();
+    private RuntimeProfilingSnapshotProbe fixedSourceProbe;
+    private RuntimeProfilingSnapshotProbe systemProbe;
+    private RuntimeProfilingContextFactory contextFactory;
+    private RuntimeProfilingCaptureRequest captureRequest;
+    private RuntimeProfilingSession session;
     private ProfilingNode node;
 
     /// <summary>Creates stable session and node inputs outside benchmark measurements.</summary>
@@ -35,7 +35,7 @@ public class ProfilingRuntimeBenchmarks
         var startedUtc = DateTimeOffset.UtcNow;
         this.session = CreateSession(startedUtc);
         this.node = CreateNode(startedUtc);
-        this.captureRequest = new ProfilingCaptureRequest(
+        this.captureRequest = new RuntimeProfilingCaptureRequest(
             this.session,
             this.node,
             1,
@@ -44,25 +44,25 @@ public class ProfilingRuntimeBenchmarks
             0,
             0
         );
-        this.fixedSourceProbe = new ProfilingSnapshotProbe(
+        this.fixedSourceProbe = new RuntimeProfilingSnapshotProbe(
             TimeProvider.System,
             new FixedRuntimeSnapshotSource()
         );
-        this.systemProbe = new ProfilingSnapshotProbe();
-        this.contextFactory = new ProfilingRuntimeContextFactory(this.contextSource);
+        this.systemProbe = new RuntimeProfilingSnapshotProbe();
+        this.contextFactory = new RuntimeProfilingContextFactory(this.contextSource);
     }
 
     /// <summary>Measures the platform and runtime calls used for one raw sample.</summary>
     /// <returns>The captured raw runtime sample.</returns>
     /// <example><code>var sample = benchmarks.CaptureSystemRuntimeSample();</code></example>
     [Benchmark]
-    public ProfilingRuntimeSample CaptureSystemRuntimeSample() => this.runtimeSource.Capture();
+    public RuntimeProfilingSample CaptureSystemRuntimeSample() => this.runtimeSource.Capture();
 
     /// <summary>Measures probe orchestration and model creation without platform-call cost.</summary>
     /// <returns>The completed snapshot result.</returns>
     /// <example><code>var result = benchmarks.CaptureFixedSourceSnapshot();</code></example>
     [Benchmark]
-    public Result<ProfilingSnapshot> CaptureFixedSourceSnapshot() =>
+    public IResult<RuntimeProfilingSnapshot> CaptureFixedSourceSnapshot() =>
         this
             .fixedSourceProbe.CaptureAsync(this.captureRequest, CancellationToken.None)
             .GetAwaiter()
@@ -72,7 +72,7 @@ public class ProfilingRuntimeBenchmarks
     /// <returns>The completed snapshot result.</returns>
     /// <example><code>var result = benchmarks.CaptureSystemSnapshot();</code></example>
     [Benchmark]
-    public Result<ProfilingSnapshot> CaptureSystemSnapshot() =>
+    public IResult<RuntimeProfilingSnapshot> CaptureSystemSnapshot() =>
         this
             .systemProbe.CaptureAsync(this.captureRequest, CancellationToken.None)
             .GetAwaiter()
@@ -82,14 +82,14 @@ public class ProfilingRuntimeBenchmarks
     /// <returns>The immutable runtime context.</returns>
     /// <example><code>var context = benchmarks.CaptureSystemRuntimeContext();</code></example>
     [Benchmark]
-    public ProfilingRuntimeContext CaptureSystemRuntimeContext() =>
+    public RuntimeProfilingContext CaptureSystemRuntimeContext() =>
         this.contextFactory.Create(this.session, this.node);
 
-    private static ProfilingSession CreateSession(DateTimeOffset startedUtc) =>
+    private static RuntimeProfilingSession CreateSession(DateTimeOffset startedUtc) =>
         new()
         {
-            Identity = ProfilingSessionIdentity.Create(),
-            State = ProfilingSessionState.Running,
+            Identity = ProfilingIdentityFactory.CreateRuntimeSession(),
+            State = RuntimeProfilingSessionState.Running,
             StartedUtc = startedUtc,
             EndsUtc = startedUtc.AddMinutes(1),
             SamplingInterval = TimeSpan.FromSeconds(1),
@@ -99,15 +99,15 @@ public class ProfilingRuntimeBenchmarks
     private static ProfilingNode CreateNode(DateTimeOffset processStartedUtc) =>
         new()
         {
-            Identity = ProfilingNodeIdentity.Create(),
-            Correlation = new ProfilingNodeCorrelation("profiling-benchmark", processStartedUtc),
+            Identity = ProfilingIdentityFactory.CreateNode(),
+            Correlation = new RuntimeProfilingNodeCorrelation("profiling-benchmark", processStartedUtc),
             HostName = Environment.MachineName,
             ProcessId = Environment.ProcessId,
         };
 
-    private sealed class FixedRuntimeSnapshotSource : IProfilingRuntimeSnapshotSource
+    private sealed class FixedRuntimeSnapshotSource : IRuntimeProfilingSnapshotSource
     {
-        private static readonly ProfilingGcObservation LatestGc = new(
+        private static readonly RuntimeProfilingGcObservation LatestGc = new(
             10,
             2,
             32 * 1024 * 1024,
@@ -117,7 +117,7 @@ public class ProfilingRuntimeBenchmarks
             TimeSpan.FromMilliseconds(2)
         );
 
-        public ProfilingRuntimeSample Capture() =>
+        public RuntimeProfilingSample Capture() =>
             new()
             {
                 ProcessCpuDuration = TimeSpan.FromSeconds(10),
@@ -152,8 +152,8 @@ public class ProfilingRuntimeBenchmarks
 [MemoryDiagnoser]
 public class ProfilingGcObservationBenchmarks
 {
-    private readonly ProfilingGcObservationState state = new();
-    private readonly ProfilingGcObservation latest = new(
+    private readonly RuntimeProfilingGcObservationState state = new();
+    private readonly RuntimeProfilingGcObservation latest = new(
         10,
         2,
         32 * 1024 * 1024,
@@ -167,7 +167,7 @@ public class ProfilingGcObservationBenchmarks
     /// <returns>The derived GC observation result.</returns>
     /// <example><code>var result = benchmarks.ObserveGcEvidence();</code></example>
     [Benchmark]
-    public ProfilingGcObservationResult ObserveGcEvidence() =>
+    public RuntimeProfilingGcObservationResult ObserveGcEvidence() =>
         this.state.Observe(
             this.latest,
             this.latest,
@@ -186,9 +186,9 @@ public class ProfilingGcObservationBenchmarks
 public class ProfilingInMemoryStoreBenchmarks
 {
     private const int SnapshotBatchSize = 512;
-    private ProfilingSessionCreateRequest sessionRequest;
+    private RuntimeProfilingSessionCreateRequest sessionRequest;
     private ProfilingNode node;
-    private ProfilingSnapshot[] snapshots;
+    private RuntimeProfilingSnapshot[] snapshots;
 
     /// <summary>Creates a fixed store input and append batch outside benchmark measurements.</summary>
     /// <example><code>benchmarks.Setup();</code></example>
@@ -196,15 +196,15 @@ public class ProfilingInMemoryStoreBenchmarks
     public void Setup()
     {
         var startedUtc = DateTimeOffset.UtcNow;
-        var sessionIdentity = ProfilingSessionIdentity.Create();
+        var sessionIdentity = ProfilingIdentityFactory.CreateRuntimeSession();
         this.node = new ProfilingNode
         {
-            Identity = ProfilingNodeIdentity.Create(),
-            Correlation = new ProfilingNodeCorrelation("profiling-benchmark", startedUtc),
+            Identity = ProfilingIdentityFactory.CreateNode(),
+            Correlation = new RuntimeProfilingNodeCorrelation("profiling-benchmark", startedUtc),
             HostName = Environment.MachineName,
             ProcessId = Environment.ProcessId,
         };
-        this.sessionRequest = new ProfilingSessionCreateRequest(
+        this.sessionRequest = new RuntimeProfilingSessionCreateRequest(
             sessionIdentity,
             "benchmark",
             startedUtc,
@@ -215,9 +215,9 @@ public class ProfilingInMemoryStoreBenchmarks
 
         this.snapshots = Enumerable
             .Range(1, SnapshotBatchSize)
-            .Select(sequence => new ProfilingSnapshot
+            .Select(sequence => new RuntimeProfilingSnapshot
             {
-                Identity = ProfilingSnapshotIdentity.Create(),
+                Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
                 SessionId = sessionIdentity.Id,
                 NodeId = this.node.Identity.Id,
                 SessionKey = sessionIdentity.Key,
@@ -239,7 +239,7 @@ public class ProfilingInMemoryStoreBenchmarks
     [Benchmark(OperationsPerInvoke = SnapshotBatchSize)]
     public async Task<int> AppendSnapshotBatchAsync()
     {
-        var store = new InMemoryProfilingStore();
+        var store = new InMemoryRuntimeProfilingStore();
         await store.GetOrCreateActiveSessionAsync(this.sessionRequest).ConfigureAwait(false);
         await store.GetOrCreateNodeAsync(this.node.Correlation, this.node).ConfigureAwait(false);
 

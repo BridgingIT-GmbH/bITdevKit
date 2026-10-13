@@ -10,17 +10,37 @@ using static ProfilingRuntimeTestData;
 public class ProfilingNodeIdentityProviderTests
 {
     [Fact]
-    public async Task GetAsync_MissingBroadcastIdentity_ReturnsValidationFailure()
+    public void GetNode_RepeatedCalls_ReturnsCachedImmutableProcessIdentity()
     {
         // Arrange
-        var provider = new ProfilingNodeIdentityProvider(new InMemoryProfilingStore());
-        var registration = CreateRegistration(
-            " ",
-            new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero)
-        );
+        var provider = new ProfilingNodeIdentityProvider(displayName: "worker-a", applicationVersion: "1.2.3");
 
         // Act
-        var result = await provider.GetAsync(registration);
+        var first = provider.GetNode();
+        var repeated = provider.GetNode();
+
+        // Assert
+        repeated.ShouldBeSameAs(first);
+        first.Identity.Id.ShouldNotBe(Guid.Empty);
+        first.Identity.Key.Length.ShouldBe(8);
+        first.ProcessId.ShouldBe(Environment.ProcessId);
+        first.HostName.ShouldBe(Environment.MachineName);
+        first.DisplayName.ShouldBe("worker-a");
+        first.ApplicationVersion.ShouldBe("1.2.3");
+        first.ProcessStartedUtc.Offset.ShouldBe(TimeSpan.Zero);
+        new ProfilingNodeIdentityProvider().GetNode().Identity.ShouldNotBe(first.Identity);
+        first.Correlation.ShouldBeNull();
+    }
+
+    [Fact]
+    public async Task RegisterLocalAsync_MissingBroadcastIdentity_ReturnsValidationFailure()
+    {
+        // Arrange
+        var adapter = new RuntimeProfilingNodeRegistrationAdapter(new InMemoryRuntimeProfilingStore(), new ProfilingNodeIdentityProvider());
+        var registration = new BroadcastNodeRegistration { NodeIdentity = " ", ProcessStartedUtc = DateTimeOffset.UtcNow };
+
+        // Act
+        var result = await adapter.RegisterLocalAsync(registration);
 
         // Assert
         result.IsFailure.ShouldBeTrue();
@@ -28,41 +48,29 @@ public class ProfilingNodeIdentityProviderTests
     }
 
     [Fact]
-    public async Task GetAsync_SameBroadcastProcess_ReturnsStableProcessLifetimeNode()
+    public async Task RegisterLocalAsync_RepeatedRegistration_ReusesCachedIdentityAndFindsRemoteMetadata()
     {
         // Arrange
-        var provider = new ProfilingNodeIdentityProvider(new InMemoryProfilingStore());
-        var processStartedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
-        var registration = CreateRegistration("broadcast-node", processStartedUtc);
+        var store = new InMemoryRuntimeProfilingStore();
+        var identities = new ProfilingNodeIdentityProvider();
+        var adapter = new RuntimeProfilingNodeRegistrationAdapter(store, identities);
+        var registration = new BroadcastNodeRegistration { NodeIdentity = "broadcast-node", ProcessStartedUtc = DateTimeOffset.UtcNow };
 
         // Act
-        var first = await provider.GetAsync(registration);
-        var repeated = await provider.GetAsync(registration);
-        var restarted = await provider.GetAsync(
-            CreateRegistration("broadcast-node", processStartedUtc.AddMinutes(1))
-        );
+        var first = await adapter.RegisterLocalAsync(registration);
+        var repeated = await adapter.RegisterLocalAsync(registration);
+        var remoteLookup = await adapter.GetAsync(registration);
+        var absent = await adapter.GetAsync(registration with { NodeIdentity = "not-registered" });
 
         // Assert
         first.IsSuccess.ShouldBeTrue();
-        repeated.IsSuccess.ShouldBeTrue();
-        first.Value.ShouldBe(repeated.Value);
-        first.Value.Identity.Id.ShouldNotBe(Guid.Empty);
-        first.Value.Identity.Key.Length.ShouldBe(8);
-        first.Value.HostName.ShouldBe(Environment.MachineName);
-        first.Value.ProcessId.ShouldBe(Environment.ProcessId);
-        restarted.Value.Identity.ShouldNotBe(first.Value.Identity);
+        repeated.Value.ShouldBe(first.Value);
+        remoteLookup.Value.ShouldBe(first.Value);
+        first.Value.Identity.ShouldBe(identities.GetNode().Identity);
+        absent.IsSuccess.ShouldBeTrue();
+        absent.Value.ShouldBeNull();
+        identities.GetNode().Correlation.ShouldBeNull();
     }
-
-    private static BroadcastNodeRegistration CreateRegistration(
-        string nodeIdentity,
-        DateTimeOffset processStartedUtc
-    ) =>
-        new()
-        {
-            NodeIdentity = nodeIdentity,
-            ProcessStartedUtc = processStartedUtc,
-            RegisteredUtc = processStartedUtc,
-        };
 }
 
 public class ProfilingRuntimeContextFactoryTests
@@ -75,7 +83,7 @@ public class ProfilingRuntimeContextFactoryTests
         var session = CreateSession(processStartedUtc);
         var node = CreateNode(processStartedUtc);
         var source = new StubRuntimeContextSource(
-            new ProfilingRuntimeContextValues(
+            new RuntimeProfilingContextValues(
                 "sample-app",
                 "1.2.3",
                 ".NET test runtime",
@@ -89,7 +97,7 @@ public class ProfilingRuntimeContextFactoryTests
                 true
             )
         );
-        var sut = new ProfilingRuntimeContextFactory(source);
+        var sut = new RuntimeProfilingContextFactory(source);
 
         // Act
         var result = sut.Create(session, node);
@@ -108,7 +116,7 @@ public class ProfilingRuntimeContextFactoryTests
         result.LogicalProcessorCount.ShouldBe(12);
         result.ProcessStartedUtc.ShouldBe(processStartedUtc);
         result.DebuggerAttached.ShouldBeTrue();
-        typeof(ProfilingRuntimeContext)
+        typeof(RuntimeProfilingContext)
             .GetProperties()
             .Select(property => property.Name)
             .ShouldNotContain(name =>
@@ -124,7 +132,7 @@ public class ProfilingRuntimeContextFactoryTests
     {
         // Arrange
         var processStartedUtc = DateTimeOffset.UtcNow.AddMinutes(-1);
-        var sut = new ProfilingRuntimeContextFactory();
+        var sut = new RuntimeProfilingContextFactory();
 
         // Act
         var result = sut.Create(CreateSession(processStartedUtc), CreateNode(processStartedUtc));
@@ -140,10 +148,10 @@ public class ProfilingRuntimeContextFactoryTests
         result.ProcessStartedUtc.ShouldBe(processStartedUtc);
     }
 
-    private sealed class StubRuntimeContextSource(ProfilingRuntimeContextValues values)
-        : IProfilingRuntimeContextSource
+    private sealed class StubRuntimeContextSource(RuntimeProfilingContextValues values)
+        : IRuntimeProfilingContextSource
     {
-        public ProfilingRuntimeContextValues Capture() => values;
+        public RuntimeProfilingContextValues Capture() => values;
     }
 }
 
@@ -154,7 +162,7 @@ public class ProfilingSnapshotProbeTests
     {
         // Arrange
         var source = new SequenceRuntimeSnapshotSource([]);
-        var sut = new ProfilingSnapshotProbe(
+        var sut = new RuntimeProfilingSnapshotProbe(
             new ManualProfilingTimeProvider(DateTimeOffset.UtcNow),
             source
         );
@@ -175,11 +183,11 @@ public class ProfilingSnapshotProbeTests
         var utcNow = new DateTimeOffset(2026, 8, 7, 12, 0, 0, TimeSpan.FromHours(2));
         var timeProvider = new ManualProfilingTimeProvider(utcNow);
         var source = new SequenceRuntimeSnapshotSource(
-            [new ProfilingRuntimeSample { LogicalProcessorCount = 4 }],
+            [new RuntimeProfilingSample { LogicalProcessorCount = 4 }],
             () => timeProvider.Advance(TimeSpan.FromMilliseconds(25))
         );
         var request = CreateRequest(utcNow.ToUniversalTime());
-        var sut = new ProfilingSnapshotProbe(timeProvider, source);
+        var sut = new RuntimeProfilingSnapshotProbe(timeProvider, source);
 
         // Act
         var result = await sut.CaptureAsync(request);
@@ -203,7 +211,7 @@ public class ProfilingSnapshotProbeTests
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
         var timeProvider = new ManualProfilingTimeProvider(startedUtc);
         var source = new SequenceRuntimeSnapshotSource([
-            new ProfilingRuntimeSample
+            new RuntimeProfilingSample
             {
                 ProcessCpuDuration = TimeSpan.FromSeconds(10),
                 LogicalProcessorCount = 2,
@@ -211,7 +219,7 @@ public class ProfilingSnapshotProbeTests
                 TotalPhysicalMemoryBytes = 1_000,
                 AvailablePhysicalMemoryBytes = 400,
             },
-            new ProfilingRuntimeSample
+            new RuntimeProfilingSample
             {
                 ProcessCpuDuration = TimeSpan.FromSeconds(11),
                 LogicalProcessorCount = 2,
@@ -219,7 +227,7 @@ public class ProfilingSnapshotProbeTests
             },
         ]);
         var request = CreateRequest(startedUtc);
-        var sut = new ProfilingSnapshotProbe(timeProvider, source);
+        var sut = new RuntimeProfilingSnapshotProbe(timeProvider, source);
 
         // Act
         var first = await sut.CaptureAsync(request);
@@ -247,13 +255,13 @@ public class ProfilingSnapshotProbeTests
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
         var timeProvider = new ManualProfilingTimeProvider(startedUtc);
         var source = new SequenceRuntimeSnapshotSource([
-            new ProfilingRuntimeSample
+            new RuntimeProfilingSample
             {
                 LatestGc = CreateGcObservation(10, 0, 1_000, 100, false, true, 10),
                 LatestGen2Gc = CreateGcObservation(8, 2, 8_000, 800, true, false, 20),
                 TotalGcPauseDuration = TimeSpan.FromSeconds(1),
             },
-            new ProfilingRuntimeSample
+            new RuntimeProfilingSample
             {
                 LatestGc = CreateGcObservation(11, 2, 11_000, 1_100, true, false, 100),
                 LatestGen2Gc = CreateGcObservation(11, 2, 11_000, 1_100, true, false, 100),
@@ -261,7 +269,7 @@ public class ProfilingSnapshotProbeTests
             },
         ]);
         var request = CreateRequest(startedUtc);
-        var sut = new ProfilingSnapshotProbe(timeProvider, source);
+        var sut = new RuntimeProfilingSnapshotProbe(timeProvider, source);
 
         // Act
         var first = await sut.CaptureAsync(request);
@@ -289,9 +297,9 @@ public class ProfilingSnapshotProbeTests
     {
         // Arrange
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
-        var sut = new ProfilingSnapshotProbe(
+        var sut = new RuntimeProfilingSnapshotProbe(
             new ManualProfilingTimeProvider(startedUtc),
-            new SequenceRuntimeSnapshotSource([ProfilingRuntimeSample.Empty])
+            new SequenceRuntimeSnapshotSource([RuntimeProfilingSample.Empty])
         );
 
         // Act
@@ -315,7 +323,7 @@ public class ProfilingSnapshotProbeTests
     {
         // Arrange
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
-        var sut = new ProfilingSnapshotProbe(
+        var sut = new RuntimeProfilingSnapshotProbe(
             new ManualProfilingTimeProvider(startedUtc),
             new UnsupportedRuntimeSnapshotSource()
         );
@@ -339,7 +347,7 @@ public class ProfilingSnapshotProbeTests
         var request = CreateRequest(startedUtc) with { Session = session, Node = node };
         var originalSession = session with { };
         var originalNode = node with { };
-        var sut = new ProfilingSnapshotProbe();
+        var sut = new RuntimeProfilingSnapshotProbe();
 
         // Act
         var result = await sut.CaptureAsync(request);
@@ -358,7 +366,7 @@ public class ProfilingSnapshotProbeTests
         node.ShouldBe(originalNode);
     }
 
-    private static ProfilingGcObservation CreateGcObservation(
+    private static RuntimeProfilingGcObservation CreateGcObservation(
         long index,
         int generation,
         long heapBytes,
@@ -396,15 +404,15 @@ public class ProfilingSnapshotProbeTests
     }
 
     private sealed class SequenceRuntimeSnapshotSource(
-        IReadOnlyList<ProfilingRuntimeSample> samples,
+        IReadOnlyList<RuntimeProfilingSample> samples,
         Action onCapture = null
-    ) : IProfilingRuntimeSnapshotSource
+    ) : IRuntimeProfilingSnapshotSource
     {
-        private readonly Queue<ProfilingRuntimeSample> samples = new(samples);
+        private readonly Queue<RuntimeProfilingSample> samples = new(samples);
 
         public int CaptureCount { get; private set; }
 
-        public ProfilingRuntimeSample Capture()
+        public RuntimeProfilingSample Capture()
         {
             this.CaptureCount++;
             onCapture?.Invoke();
@@ -412,20 +420,20 @@ public class ProfilingSnapshotProbeTests
         }
     }
 
-    private sealed class UnsupportedRuntimeSnapshotSource : IProfilingRuntimeSnapshotSource
+    private sealed class UnsupportedRuntimeSnapshotSource : IRuntimeProfilingSnapshotSource
     {
-        public ProfilingRuntimeSample Capture() =>
+        public RuntimeProfilingSample Capture() =>
             throw new PlatformNotSupportedException("Unavailable in this test environment.");
     }
 }
 
 public static class ProfilingRuntimeTestData
 {
-    public static ProfilingSession CreateSession(DateTimeOffset startedUtc) =>
+    public static RuntimeProfilingSession CreateSession(DateTimeOffset startedUtc) =>
         new()
         {
-            Identity = ProfilingSessionIdentity.Create(),
-            State = ProfilingSessionState.Running,
+            Identity = ProfilingIdentityFactory.CreateRuntimeSession(),
+            State = RuntimeProfilingSessionState.Running,
             StartedUtc = startedUtc,
             EndsUtc = startedUtc.AddSeconds(30),
             SamplingInterval = TimeSpan.FromSeconds(1),
@@ -434,17 +442,17 @@ public static class ProfilingRuntimeTestData
 
     public static ProfilingNode CreateNode(DateTimeOffset processStartedUtc)
     {
-        var correlation = new ProfilingNodeCorrelation("broadcast-node", processStartedUtc);
+        var correlation = new RuntimeProfilingNodeCorrelation("broadcast-node", processStartedUtc);
         return new ProfilingNode
         {
-            Identity = ProfilingNodeIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateNode(),
             Correlation = correlation,
             HostName = "test-host",
             ProcessId = 42,
         };
     }
 
-    public static ProfilingCaptureRequest CreateRequest(DateTimeOffset startedUtc) =>
+    public static RuntimeProfilingCaptureRequest CreateRequest(DateTimeOffset startedUtc) =>
         new(
             CreateSession(startedUtc),
             CreateNode(startedUtc),

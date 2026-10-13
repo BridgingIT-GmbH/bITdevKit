@@ -17,7 +17,7 @@ using System.Collections.Generic;
 /// <b>Lifetime Warning:</b> This context is only valid within the DI scope it was created from.
 /// Do not cache or pass it across async boundaries outside of that scope, as it may lead to
 /// <see cref="ObjectDisposedException"/> if the underlying scope (and its services) are disposed.
-/// Always use it immediately within the creating method (e.g., inside <see cref="ActiveEntityContextScope.UseAsync{TEntity, TId, TResult}"/>
+/// Always use it immediately within the creating method (e.g., inside <see cref="ActiveEntityContextScope"/>
 /// or a <c>WithTransactionAsync</c> operation).
 /// </para>
 ///

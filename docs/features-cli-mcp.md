@@ -17,7 +17,8 @@ Use MCP when you want a coding agent to understand DevKit patterns and inspect a
 - summarize the selected project runtime, modules and advertised MCP capabilities
 - check local runtime availability and health
 - inspect retained logs and errors
-- follow a correlation id across logs, jobs, messaging, queueing and orchestrations
+- query retained operation and HTTP request recordings, inspect segment costs and compare performance under different conditions
+- follow a correlation id across logs, operation recordings, jobs, messaging, queueing and orchestrations
 - inspect, retry, pause, resume, signal or trigger supported runtime features
 - search official DevKit documentation from any consuming project
 - inspect generated DevKit API reference details from any consuming project
@@ -288,6 +289,7 @@ The MCP catalog is stable. Tools can return structured unavailable responses whe
 | Runtime | `bdk_mcp_status`, `bdk_mcp_self_test`, `bdk_runtimes_*`, `bdk_capabilities_get` |
 | Health and metrics | `bdk_health_snapshot`, `bdk_metrics_snapshot`, `bdk_metrics_query` |
 | Logs and errors | `bdk_logs_query`, `bdk_logs_tail`, `bdk_errors_recent`, `bdk_errors_details`, `bdk_correlation_inspect` |
+| Operation and request profiling | `bdk_profiling_query`, `bdk_profiling_details`, `bdk_profiling_insights`, `bdk_profiling_compare` |
 | Messaging | `bdk_messages_summary`, `bdk_messages_list`, `bdk_messages_details`, `bdk_messages_retry`, `bdk_messages_archive`, `bdk_messages_purge` |
 | Queueing | `bdk_queueing_summary`, `bdk_queueing_messages`, `bdk_queueing_retry`, `bdk_queueing_pause_queue`, `bdk_queueing_purge` |
 | Blob Storage | `bdk_blobs_summary`, `bdk_blobs_clients`, `bdk_blobs_probe` |
@@ -299,6 +301,102 @@ The MCP catalog is stable. Tools can return structured unavailable responses whe
 | API reference | `bdk_api_search`, `bdk_api_get` |
 | Project summary | `bdk_project_summary` |
 | Project operations | `bdk_project_operations`, `bdk_project_call` |
+
+## Inspect operation and request recordings
+
+The four profiling tools run in the selected application through the existing local IPC bridge. `ProfilingMcpHandler` calls `IOperationProfilingQueryService`, the same service used by the profiling dashboard. MCP reads the configured runtime store, including process-local in-memory history or a shared provider. It does not require an open dashboard, a Runtime Profiling session or a separate copy of the recordings.
+
+The DevKit web builder registers the profiling handler when local MCP is enabled. Enable operation capture in the application:
+
+```csharp
+builder.Services.AddProfiling(options => options.Enabled(builder.Environment.IsDevelopment()))
+    .WithOperationProfiling()
+    .WithRequestProfiling(); // optional HTTP adapter
+```
+
+For a host that registers handlers explicitly, use `services.AddMcpHandler<ProfilingMcpHandler>()`. All four tools belong to the default `diagnostics` toolset and read retained data. An unavailable query service or disabled profiling returns a structured unavailable response. Capture must have been enabled when the work ran. Reads do not force a writer flush, so pending completions can appear on a later call. Process-local recordings disappear when that process stops.
+
+| Tool | Arguments and result |
+| --- | --- |
+| `bdk_profiling_query` | Shared filters, `view` (`Recent`, `Slow`, `ByCount`), `take`, `cursor` and `grouped`. Returns compact execution summaries with IDs, node IDs, outcomes and capture quality. `grouped=true` returns logical group counts and a real representative execution; HTTP methods remain separate. |
+| `bdk_profiling_details` | Required execution `id`, optional `segmentTake`. Returns retained dimensions, measurements, HTTP metadata, safe failures, wall-time buckets and aggregate segment paths ranked by self time. |
+| `bdk_profiling_insights` | Shared filters, `rankBy` (`p95`, `total`, `count`, `failures`), `take` and `segmentTake`. Returns exact hotspot rankings, outcome counts, completed latency samples, Total in milliseconds and segment bottlenecks. |
+| `bdk_profiling_compare` | Required exact `key`, `kind`, `baseline` and `candidate`; optional shared `httpMethod` and `segmentTake`. Each side accepts its own time, node, application version, correlation, outcome and dimension filters. Returns sample counts, latency and segment statistics, and p95 change. Both sides select the same logical operation. |
+
+Shared filters are `fromUtc`, `toUtc`, `kind`, `key`, `keyContains`, `nodeId`, `applicationVersion`, `correlationId`, `outcomes`, `httpMethod`, `httpStatusCode`, `hasSegmentFailures`, `dimensions`, `segmentPath`, `segmentDimensions` and `segmentOutcomes`. Query and insights also accept `groupingDimensions`; roots missing any selected grouping dimension are excluded. Kind is a string so custom kinds and storage behaviors are supported. Use `kind="HttpRequest"` for requests and their route-template keys.
+
+Date bounds select **execution start times**. `fromUtc` is inclusive and `toUtc` is exclusive. Supply UTC timestamps with `Z` or `+00:00`. Omitted bounds use fifteen minutes before the resolved end and now; an existing paging cursor preserves its original boundary. Query and insights default to all root outcomes. Comparison defaults to `Completed`; an explicit empty `outcomes` array selects all outcomes. Insights always calculates latency, Total and segment costs from completed latency samples, while root failure rates use all selected outcomes.
+
+`take` defaults to 25 and accepts 1–100, subject to the runtime's configured page limit. `segmentTake` accepts 1–100 and defaults to 20 for details, 5 for insights and 10 for comparison. Insights ranks the entire selection before applying `take`. Analysis uses at most 10,000 records, or a lower configured runtime bound. Exceeding that bound returns `profiling_limit_exceeded`, with instructions to narrow the filters. It never silently ranks a partial sample. Segment and group limits set `truncated`; segment responses also report the full segment count. Capture quality and retained sample counts remain visible.
+
+For query paging, pass `data.nextCursor` as `cursor` and keep filters, `view`, `grouped` and `take` unchanged. Deletion, expiry or changed filters can return `profiling_boundary_invalid`; restart without the cursor. Empty results mean no matching retained evidence, rather than proving that the work never ran. Capture health reports the serving node's process-lifetime counters, separately from the selected history.
+
+Find slow HTTP requests:
+
+```json
+{
+  "kind": "HttpRequest",
+  "keyContains": "/cities/",
+  "httpMethod": "GET",
+  "view": "Slow",
+  "take": 10
+}
+```
+
+Call `bdk_profiling_details` with an ID from `data.operations`, or rank aggregate costs with `bdk_profiling_insights`:
+
+```json
+{
+  "kind": "DocumentStorage",
+  "rankBy": "total",
+  "take": 10,
+  "segmentTake": 5
+}
+```
+
+Compare the same request route across two time ranges with `bdk_profiling_compare`:
+
+```json
+{
+  "key": "/core/cities/{cityId}/weather",
+  "kind": "HttpRequest",
+  "httpMethod": "GET",
+  "baseline": {
+    "fromUtc": "2026-10-12T08:00:00Z",
+    "toUtc": "2026-10-12T09:00:00Z"
+  },
+  "candidate": {
+    "fromUtc": "2026-10-12T09:00:00Z",
+    "toUtc": "2026-10-12T10:00:00Z"
+  }
+}
+```
+
+Use keys and dimension names returned by the selected runtime. A typed dimension filter has this form:
+
+```json
+{
+  "dimensions": [
+    { "key": "filestorage.location", "value": { "type": "String", "scalar": "attachments" } }
+  ]
+}
+```
+
+`operator` defaults to `Equal`. `Present` and `Missing` omit `value`; segment conditions also support `Mixed`. Scalar types are `String`, `Boolean`, `Int64`, `Decimal`, `Double` and `UtcDateTime`, with `scalar` encoded as a string. Predicates share the runtime's limits and validation rules. Segment predicates apply to the same recorded segment summary. These recordings contain aggregate segment evidence, not exact invocation order. See [Profiling](features-profiling.md) for capture, sampling and timing semantics.
+
+### Correlation investigations
+
+`bdk_correlation_inspect` and `bdk_investigate_correlation` now return logs, errors and a separate `data.profiling` response for the same `correlationId`. Existing log fields and `continuationToken` remain available. Profiling contributes compact execution summaries with IDs for subsequent details calls. Shared `startTime` and `endTime` bounds select log timestamps and profiling execution starts; profiling treats the end as exclusive. Without dates, profiling uses its last-15-minute default.
+
+Use `profilingTake` (default 25, maximum 100) and `profilingCursor` for independent profiling paging. The profiling continuation is `data.profiling.data.nextCursor`; the log continuation is `data.continuationToken`. Preserve the correlation ID, dates and each source's page size while paging.
+
+Logs and profiling are independently available. Profiling-only investigations work without a retained log service; unavailable profiling does not hide existing logs. Check `logsAvailable`, `logsReason` and `profiling.available` before interpreting the evidence. A read failure in one source does not discard evidence from the other. Correlation indicates related work; it does not establish that overlapping durations belong to one ordered or additive trace.
+
+Example developer prompt:
+
+```text
+Use bdk_profiling_insights to find the slowest request operation in the last 15 minutes. Inspect its representative execution, then follow its correlation id with bdk_investigate_correlation. Identify the dominant recorded segment costs and report the retained sample counts.
+```
 
 ## Curated guidance
 
@@ -313,6 +411,7 @@ The current guidance topics cover the major DevKit feature areas:
 - `queueing`
 - `orchestration`
 - `pipelines`
+- `profiling`
 - `caching`
 - `mapping`
 - `serialization`
@@ -376,6 +475,42 @@ Additional examples:
   "query": "give me guidance for blob storage uploads and downloads"
 }
 ```
+
+### Operation profiling guidance
+
+Call `bdk_guidance_get` with `topic="profiling"` for coding help before an application is running:
+
+```json
+{
+  "topic": "profiling"
+}
+```
+
+The guide explains operation ownership, capture registration, HTTP request adapters, recording completion and persistence, nested and repeated segments, independent workers, explicit outcomes, `IResult` classification, correlation metadata, dimensions and measurements. It distinguishes operation elapsed time from process CPU/memory profiling and explains incomplete evidence, overlap, suppression and capture limits. Stable grouping keys and bounded dimensions are covered; IDs, file paths and blob keys remain unsuitable dimensions.
+
+Its `examples` array includes C# registration, `JoinOrStartAsync` with a timed segment and result classification, and manual root/segment completion, failure and cancellation. Examples that call `loadAsync` assume the application's existing business delegate. The guide links to `docs/features-profiling.md` and suggests API lookup for `IOperationProfiler` and `OperationProfilingHelpers`. Runtime tools are optional verification after coding; they are not needed to retrieve guidance.
+
+Natural-language queries about operation recordings, request profiling or segments infer this topic:
+
+```json
+{
+  "query": "how do I add operation recordings and nested segments to a service?"
+}
+```
+
+A query about profiling a job or pipeline combines profiling guidance with the matching feature guides. The guide does not require exact invocation-order capture. Use [the profiling runtime tools](#inspect-operation-and-request-recordings) later to check what the running application actually retained.
+
+## Dashboard inspection
+
+Open MCP at `/_bdk/dashboard/mcp` with the host MCP runtime and [Dashboard](features-presentation-dashboard.md) registered. The page lists handler registrations and their operation counts, toolsets and features. Its Operations table shows each capability's owner, category, handler and description.
+
+[![MCP dashboard inventory of registered handlers and their exposed features](assets/dashboard/16-mcp-mcp.png)](assets/dashboard/16-mcp-mcp.png)
+
+The operation inventory helps identify the capability to call before inspecting its input schema. Use the braces button to see the arguments accepted by its handler.
+
+[![MCP operation inventory with capability names, categories and argument-schema buttons](assets/dashboard/mcp/operations.png)](assets/dashboard/mcp/operations.png)
+
+The host bridge and MCP server are separate parts of the connection. Registered handlers show what the host can expose. The server-session panel reports heartbeats from running `bdk mcp` processes and their selected runtime. An Offline server with registered handlers means no active server session is publishing a heartbeat; it does not mean the capability registrations are missing. Use the toolbar refresh controls to watch connection changes.
 
 ## Documentation-aware development
 

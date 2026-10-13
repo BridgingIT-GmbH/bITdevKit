@@ -1,0 +1,116 @@
+@using BridgingIT.DevKit.Common
+@using ProfilingDashboard = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@inherits DashboardPageSlice
+@{
+    var options = Dashboard.RequiredService<DashboardEndpointsOptions>();
+    var pagePath = Dashboard.Url("core-api-requests");
+    var citiesApiPath = $"{HttpContext.Request.PathBase}/api/core/cities";
+    var requestsPath = ProfilingDashboard.BuildOperationsPath(options, true);
+    var profiling = Dashboard.Service<ProfilingOptions>();
+    var captureEnabled = profiling?.OperationEnabled == true && profiling.Requests.Enabled;
+}
+<div class="py-2 mb-3 border-bottom">
+    <h1 id="http-heading" class="h4 mb-1">API Requests</h1>
+    <p class="small text-muted mb-0">Generate a bounded burst of requests against the cities and weather API.</p>
+</div>
+<section class="card card-body" aria-labelledby="http-heading">
+    <form id="api-requests-form" class="row g-2" autocomplete="off">
+        <div class="col-12 col-md-6"><label class="form-label small" for="api-request-workload">Workload</label><select id="api-request-workload" class="form-select form-select-sm"><option value="cities">Cities</option><option value="weather">City weather</option><option value="mixed">Cities and weather</option></select></div>
+        <div class="col-6 col-md-3"><label class="form-label small" for="api-request-count">Requests</label><input id="api-request-count" class="form-control form-control-sm" type="number" min="1" max="100" value="10" required title="Number of workload requests, excluding the initial city lookup for weather workloads." /></div>
+        <div class="col-6 col-md-3"><label class="form-label small" for="api-request-concurrency">Concurrency</label><input id="api-request-concurrency" class="form-control form-control-sm" type="number" min="1" max="8" value="2" required /></div>
+        <div class="col-12"><details><summary class="small">API access</summary><label class="form-label small mt-2" for="api-request-token">Bearer token override</label><input id="api-request-token" class="form-control form-control-sm" type="password" autocomplete="off" spellcheck="false" placeholder="Use dashboard sign-in" /><p class="small text-muted mt-1 mb-0">Uses your dashboard sign-in token. An override stays in this page only.</p></details></div>
+        <div class="col-12 d-flex flex-wrap gap-2 mt-3">
+            <button id="api-request-run" class="btn btn-primary btn-sm" type="submit">Send requests</button>
+            <button id="api-request-cancel" class="btn btn-outline-secondary btn-sm" type="button" disabled>Cancel requests</button>
+            @if (captureEnabled) { <a class="btn btn-outline-secondary btn-sm" href="@requestsPath">Request profiles</a> }
+        </div>
+    </form>
+    <p class="small text-muted mt-3 mb-2">Calls the cities and weather API directly. Weather workloads first load your subscribed cities, then rotate their weather requests. Profiles appear after periodic persistence.</p>
+    <div id="api-request-status" class="small mb-2" role="status" aria-live="polite"></div>
+    <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Request</th><th>Status</th><th title="Browser elapsed time until the response body has been received.">Duration</th><th>Profile</th></tr></thead><tbody id="api-request-results"></tbody></table></div>
+</section>
+<script>
+(() => {
+    const pageUrl = @(new HtmlString(System.Text.Json.JsonSerializer.Serialize(pagePath)));
+    const requestsUrl = @(new HtmlString(System.Text.Json.JsonSerializer.Serialize(requestsPath)));
+    const citiesApiUrl = @(new HtmlString(System.Text.Json.JsonSerializer.Serialize(citiesApiPath)));
+    let httpController;
+    const httpRun = document.getElementById('api-request-run');
+    const httpCancel = document.getElementById('api-request-cancel');
+    const httpForm = document.getElementById('api-requests-form');
+    httpCancel.addEventListener('click', () => httpController?.abort());
+    window.addEventListener('pagehide', () => httpController?.abort());
+    httpForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        if (httpController || !httpForm.reportValidity()) return;
+        httpController = new AbortController();
+        const signal = httpController.signal;
+        const status = document.getElementById('api-request-status');
+        const results = document.getElementById('api-request-results');
+        const bounded = (id, maximum, fallback) => { const value = Number(document.getElementById(id).value); return Number.isFinite(value) ? Math.max(1, Math.min(maximum, Math.trunc(value))) : fallback; };
+        const count = bounded('api-request-count', 100, 10);
+        const concurrency = bounded('api-request-concurrency', 8, 2);
+        const workload = document.getElementById('api-request-workload').value;
+        let token = document.getElementById('api-request-token').value.trim().replace(/^Bearer\s+/i, '');
+        let next = 0, succeeded = 0, failed = 0, canceled = 0;
+        const controls = [...httpForm.querySelectorAll('input,select')];
+        controls.forEach(control => control.disabled = true);
+        httpRun.disabled = true; httpCancel.disabled = false; results.replaceChildren();
+        const update = () => status.textContent = `${succeeded} succeeded, ${failed} failed, ${canceled} canceled, ${count - next} not sent.`;
+        async function request(path, label, readJson = false) {
+            const row = document.createElement('tr');
+            const cells = Array.from({length: 4}, () => row.appendChild(document.createElement('td')));
+            cells[0].textContent = `${label}: GET ${path}`; cells[1].textContent = 'Pending'; cells[3].textContent = '—'; results.appendChild(row);
+            const started = performance.now();
+            try {
+                const headers = {'Accept': 'application/json'};
+                if (token) headers.Authorization = `Bearer ${token}`;
+                const response = await fetch(path, {cache: 'no-store', credentials: 'same-origin', redirect: 'error', headers, signal});
+                const id = response.headers.get('X-Request-Profiling-Id');
+                if (/^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id || '')) {
+                    const link = document.createElement('a'); link.href = `${requestsUrl}/${encodeURIComponent(id)}`; link.className = 'btn btn-outline-secondary btn-sm'; link.title = `View request ${id}`; link.setAttribute('aria-label', `View request ${id}`);
+                    const icon = document.createElement('i'); icon.className = 'bi bi-eye'; icon.setAttribute('aria-hidden', 'true'); link.appendChild(icon); cells[3].replaceChildren(link);
+                } else cells[3].title = 'No profile ID. Capture may be disabled or the request was not sampled.';
+                const body = await response.arrayBuffer();
+                cells[1].textContent = String(response.status);
+                if (!response.ok) throw new Error(response.status === 401 || response.status === 403 ? `HTTP ${response.status}. Sign in again or supply an API token.` : `HTTP ${response.status}`);
+                return readJson ? JSON.parse(new TextDecoder().decode(body)) : null;
+            } catch (error) { cells[1].textContent = signal.aborted ? 'Canceled' : error.message; throw error; }
+            finally { const elapsed = performance.now() - started; cells[2].textContent = elapsed < 1000 ? `${elapsed.toFixed(1)} ms` : `${(elapsed / 1000).toFixed(2)} s`; }
+        }
+        try {
+            status.textContent = 'Preparing API requests...';
+            if (!token) {
+                const access = await fetch(`${pageUrl}/http-access`, {cache: 'no-store', headers: {'X-Requested-With': 'fetch'}, signal});
+                if (!access.ok) throw new Error(`Dashboard sign-in unavailable. HTTP ${access.status}.`);
+                token = (await access.json()).accessToken || '';
+            }
+            let cityIds = [];
+            if (workload !== 'cities') {
+                const cities = await request(citiesApiUrl, 'City lookup', true);
+                cityIds = [...new Set(cities.map(city => city.cityId).filter(id => /^[0-9a-f]{8}(?:-[0-9a-f]{4}){3}-[0-9a-f]{12}$/i.test(id || '')))];
+                if (!cityIds.length) throw new Error('No subscribed cities. Subscribe to a city first, or use the Cities workload.');
+            }
+            update();
+            const worker = async () => {
+                while (next < count && !signal.aborted) {
+                    const index = next++;
+                    const weather = workload === 'weather' || (workload === 'mixed' && index % 2 === 1);
+                    const path = weather ? `${citiesApiUrl}/${encodeURIComponent(cityIds[(workload === 'mixed' ? Math.floor(index / 2) : index) % cityIds.length])}/weather` : citiesApiUrl;
+                    try { await request(path, `Request ${index + 1}`); succeeded++; }
+                    catch { if (signal.aborted) canceled++; else failed++; }
+                    update();
+                }
+            };
+            await Promise.all(Array.from({length: Math.min(count, concurrency)}, worker));
+            update();
+        } catch (error) { status.textContent = signal.aborted ? `Canceled before the workload. ${count} requests not sent.` : error.message; }
+        finally { token = ''; httpController = null; controls.forEach(control => control.disabled = false); httpRun.disabled = false; httpCancel.disabled = true; }
+    });
+})();
+</script>
+@functions {
+    /// <summary>Gets the API request runner's dashboard title.</summary>
+    /// <example><code>var title = this.PageTitle;</code></example>
+    public override string PageTitle => "API Requests";
+}

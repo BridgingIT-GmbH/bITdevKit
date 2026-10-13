@@ -26,10 +26,10 @@ else
                 @foreach (var card in group.OrderBy(card => card.Order).ThenBy(card => card.Title, StringComparer.OrdinalIgnoreCase))
                 {
                     <div class="col-12 col-md-6 col-xl-4">
-                        <a class="card h-100 text-decoration-none text-reset" href="@card.Url">
+                        <a class="card dashboard-overview-card h-100 text-decoration-none text-reset" data-dashboard-feature="@card.Icon" href="@card.Url">
                             <div class="card-body p-3">
                                 <div class="d-flex align-items-start justify-content-between gap-2">
-                                    <div class="min-w-0">
+                                    <div class="min-w-0" style="min-width: 0">
                                         <div class="text-muted small">@DisplayValue(card.Subtitle)</div>
                                         <h6 class="card-title mb-2">@card.Title</h6>
                                         @if (!string.IsNullOrWhiteSpace(card.Value))
@@ -38,12 +38,12 @@ else
                                         }
                                         @if (!string.IsNullOrWhiteSpace(card.Detail))
                                         {
-                                            <div class="text-muted small text-truncate text-start" style="direction: rtl">@card.Detail</div>
+                                            <div class="text-muted small text-truncate text-start" title="@card.Detail">@card.Detail</div>
                                         }
                                     </div>
                                     @if (!string.IsNullOrWhiteSpace(card.Icon))
                                     {
-                                        <i class="bi bi-@card.Icon fs-3 text-secondary"></i>
+                                        <i class="bi bi-@card.Icon fs-3 dashboard-card-icon"></i>
                                     }
                                 </div>
                             </div>

@@ -17,6 +17,47 @@ public abstract class EntityFrameworkQueueBrokerTestsBase
 {
     protected abstract EntityFrameworkQueueBrokerTestSupport Support { get; }
 
+    /// <summary>Checks the origin correlation survives EF serialization and overrides the worker context during handling.</summary>
+    [Fact]
+    public virtual async Task ProcessAsync_PublisherCorrelation_RestoresConsumerContext()
+    {
+        string observed = null;
+        var correlation = Guid.NewGuid().ToString("N");
+        var options = this.CreateOptions();
+        options.HandlerBehaviors = [new CorrelationObserver(value => observed = value)];
+        var sut = this.CreateBroker(options);
+        var worker = this.CreateWorker(sut, options);
+        var message = new RelationalQueueMessage("correlation");
+        await sut.Subscribe<RelationalQueueMessage, RelationalQueueMessageHandler>();
+        using (CorrelationId.BeginScope(correlation))
+        {
+            await sut.EnqueueAndWait(message);
+        }
+
+        var stored = await this.Support.ExecuteDbContextAsync(context => context.QueueMessages.SingleAsync());
+        CorrelationId.ReadFrom(stored.Properties).ShouldBe(correlation);
+        using (CorrelationId.BeginScope("worker-correlation"))
+        {
+            await worker.ProcessAsync();
+            CorrelationId.Current.ShouldBe("worker-correlation");
+        }
+
+        observed.ShouldBe(correlation);
+        stored = await this.Support.ExecuteDbContextAsync(context => context.QueueMessages.SingleAsync());
+        stored.Status.ShouldBe(QueueMessageStatus.Succeeded);
+    }
+
+    private sealed class CorrelationObserver(Action<string> observe) : IQueueHandlerBehavior
+    {
+        /// <inheritdoc />
+        public async Task Handle(IQueueMessage message, CancellationToken cancellationToken, object handler, QueueHandlerDelegate next)
+        {
+            await next();
+            await Task.Yield();
+            observe(CorrelationId.Current);
+        }
+    }
+
     [Fact]
     public virtual async Task ProcessAsync_WhenWorkerRuns_ProcessesPersistedMessageSafely()
     {

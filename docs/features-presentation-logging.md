@@ -209,6 +209,10 @@ The feature checks the global `Log.Logger` type before configuration. If another
 
 Configure one owner for the global logger. If the application creates a bootstrap logger before `AddLogging()`, keep the complete Serilog setup in that bootstrap path.
 
+## Dashboard log inspection
+
+With a persistence sink, `ILogEntryService` and the [Dashboard](features-presentation-dashboard.md) registered, inspect Logs, Errors and Logs Stream without accessing the sink's database schema. The [Log Entries dashboard guide](features-log-entries.md#dashboard-guide) shows searchable log rows, related-error context and the live terminal, with screenshots of each page.
+
 ## Related documentation
 
 - [Presentation Host](./features-presentation.md) covers devkit builder composition.

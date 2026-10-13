@@ -11,9 +11,9 @@ public class InMemoryProfilingStoreTests
     public async Task GetOrCreateNodeAsync_SameBroadcastProcess_ReturnsStableProfilingNode()
     {
         // Arrange
-        var sut = new InMemoryProfilingStore();
+        var sut = new InMemoryRuntimeProfilingStore();
         var processStartedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
-        var correlation = new ProfilingNodeCorrelation("node-a", processStartedUtc);
+        var correlation = new RuntimeProfilingNodeCorrelation("node-a", processStartedUtc);
         var firstProposal = CreateNode(correlation);
         var secondProposal = CreateNode(correlation);
 
@@ -35,10 +35,10 @@ public class InMemoryProfilingStoreTests
     }
 
     [Fact]
-    public async Task PhaseMarkerAndStopAsync_CompetingMutations_RemainAtomic()
+    public async Task MarkerAndStopAsync_CompetingMutations_RemainAtomic()
     {
         // Arrange
-        var sut = new InMemoryProfilingStore();
+        var sut = new InMemoryRuntimeProfilingStore();
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
         var session = (await sut.GetOrCreateActiveSessionAsync(CreateSessionRequest(startedUtc)))
             .Value
@@ -49,7 +49,7 @@ public class InMemoryProfilingStoreTests
         var markerTask = Task.Run(async () =>
         {
             barrier.SignalAndWait();
-            return await sut.AddPhaseMarkerAsync(
+            return await sut.AddMarkerAsync(
                 new(
                     Guid.NewGuid(),
                     session.Identity.Id,
@@ -64,8 +64,8 @@ public class InMemoryProfilingStoreTests
             barrier.SignalAndWait();
             return await sut.TryTransitionSessionAsync(
                 session.Identity.Id,
-                [ProfilingSessionState.Running],
-                ProfilingSessionState.Stopped,
+                [RuntimeProfilingSessionState.Running],
+                RuntimeProfilingSessionState.Stopped,
                 startedUtc.AddSeconds(1)
             );
         });
@@ -76,14 +76,14 @@ public class InMemoryProfilingStoreTests
 
         // Assert
         stopResult.IsSuccess.ShouldBeTrue();
-        data.Session.State.ShouldBe(ProfilingSessionState.Stopped);
+        data.Session.State.ShouldBe(RuntimeProfilingSessionState.Stopped);
         if (markerResult.IsSuccess)
         {
-            data.PhaseMarkers.Count.ShouldBe(1);
+            data.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).Count().ShouldBe(1);
         }
         else
         {
-            data.PhaseMarkers.ShouldBeEmpty();
+            data.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).ShouldBeEmpty();
         }
     }
 
@@ -91,7 +91,7 @@ public class InMemoryProfilingStoreTests
     public async Task StartAndClearAsync_CompetingMutations_LeaveOneCompleteActiveSession()
     {
         // Arrange
-        var sut = new InMemoryProfilingStore();
+        var sut = new InMemoryRuntimeProfilingStore();
         var request = CreateSessionRequest(new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero));
         using var barrier = new Barrier(2);
 
@@ -113,7 +113,7 @@ public class InMemoryProfilingStoreTests
 
         // Assert
         startResult.IsSuccess.ShouldBeTrue();
-        sessions.ShouldHaveSingleItem().State.ShouldBe(ProfilingSessionState.Running);
+        sessions.ShouldHaveSingleItem().State.ShouldBe(RuntimeProfilingSessionState.Running);
         if (clearResult.IsSuccess)
         {
             clearResult.Value.ShouldBe(new ProfilingClearResult(0, 0));
@@ -128,7 +128,7 @@ public class InMemoryProfilingStoreTests
     public async Task SnapshotAfterStoppedSession_InsideOriginalWindow_IsAccepted()
     {
         // Arrange
-        var sut = new InMemoryProfilingStore();
+        var sut = new InMemoryRuntimeProfilingStore();
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
         var session = (await sut.GetOrCreateActiveSessionAsync(CreateSessionRequest(startedUtc)))
             .Value
@@ -141,8 +141,8 @@ public class InMemoryProfilingStoreTests
         ).Value;
         await sut.TryTransitionSessionAsync(
             session.Identity.Id,
-            [ProfilingSessionState.Running],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Running],
+            RuntimeProfilingSessionState.Stopped,
             startedUtc.AddSeconds(2)
         );
 
@@ -163,17 +163,17 @@ public class InMemoryProfilingStoreTests
     public async Task ClearAndSnapshotAsync_CompetingMutations_CannotLeaveOrphanedData()
     {
         // Arrange
-        var sut = new InMemoryProfilingStore();
+        var sut = new InMemoryRuntimeProfilingStore();
         var startedUtc = new DateTimeOffset(2026, 8, 7, 10, 0, 0, TimeSpan.Zero);
         var session = (await sut.GetOrCreateActiveSessionAsync(CreateSessionRequest(startedUtc)))
             .Value
             .Session;
-        var correlation = new ProfilingNodeCorrelation("node-a", startedUtc);
+        var correlation = new RuntimeProfilingNodeCorrelation("node-a", startedUtc);
         var node = (await sut.GetOrCreateNodeAsync(correlation, CreateNode(correlation))).Value;
         await sut.TryTransitionSessionAsync(
             session.Identity.Id,
-            [ProfilingSessionState.Running],
-            ProfilingSessionState.Stopped,
+            [RuntimeProfilingSessionState.Running],
+            RuntimeProfilingSessionState.Stopped,
             startedUtc.AddSeconds(2)
         );
         using var barrier = new Barrier(2);
@@ -209,9 +209,9 @@ public class InMemoryProfilingStoreTests
         }
     }
 
-    private static ProfilingSessionCreateRequest CreateSessionRequest(DateTimeOffset startedUtc) =>
+    private static RuntimeProfilingSessionCreateRequest CreateSessionRequest(DateTimeOffset startedUtc) =>
         new(
-            ProfilingSessionIdentity.Create(),
+            ProfilingIdentityFactory.CreateRuntimeSession(),
             "session",
             startedUtc,
             TimeSpan.FromSeconds(1),
@@ -219,24 +219,24 @@ public class InMemoryProfilingStoreTests
             []
         );
 
-    private static ProfilingNode CreateNode(ProfilingNodeCorrelation correlation) =>
+    private static ProfilingNode CreateNode(RuntimeProfilingNodeCorrelation correlation) =>
         new()
         {
-            Identity = ProfilingNodeIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateNode(),
             Correlation = correlation,
             HostName = "host",
             ProcessId = 1234,
         };
 
-    private static ProfilingSnapshot CreateSnapshot(
-        ProfilingSession session,
+    private static RuntimeProfilingSnapshot CreateSnapshot(
+        RuntimeProfilingSession session,
         ProfilingNode node,
         DateTimeOffset timestampUtc,
         long sequence
     ) =>
         new()
         {
-            Identity = ProfilingSnapshotIdentity.Create(),
+            Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
             SessionId = session.Identity.Id,
             SessionKey = session.Identity.Key,
             NodeId = node.Identity.Id,

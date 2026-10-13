@@ -12,6 +12,8 @@ using FluentValidation;
 /// </summary>
 public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
 {
+    private readonly IProfilingExecutionBoundaryBehavior profilingBoundary;
+
     /// <summary>
     /// Initializes a new instance of the <c>MessageBrokerBase</c> class.
     /// </summary>
@@ -35,6 +37,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         this.Serializer = serializer ?? new SystemTextJsonSerializer();
         this.PublisherBehaviors = publisherBehaviors ?? [];
         this.HandlerBehaviors = handlerBehaviors ?? [];
+        this.profilingBoundary = this.HandlerBehaviors.OfType<IProfilingExecutionBoundaryBehavior>().FirstOrDefault();
     }
 
     private static readonly SemaphoreSlim Semaphore = new SemaphoreSlim(1, 1);
@@ -170,11 +173,16 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
     {
         EnsureArg.IsNotNull(message, nameof(message));
 
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
+        using var logScope = this.Logger.BeginScope(new Dictionary<string, object> { [Constants.CorrelationIdKey] = correlationId });
+
         var messageType = message.GetType().PrettyName(false);
 
         TypedLogger.LogPublish(this.Logger, Constants.LogKey, messageType, message.MessageId);
         this.Logger.LogDebug("[{LogKey}] publish validating (type={MessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
         this.ValidatePublish(message); // TODO: message validation can also be done with a PublisherBehavior
+        CorrelationId.PropagateTo(message.Properties);
 
         // create a behavior pipeline and run it (publisher > next)
         this.Logger.LogDebug(
@@ -207,7 +215,8 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         EnsureArg.IsNotNull(messageRequest.Message, nameof(messageRequest.Message));
 
         var messageType = messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
         var result = true;
 
@@ -262,7 +271,8 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         EnsureArg.IsNotNull(subscription, nameof(subscription));
 
         messageType ??= messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
 
         using var scope = this.Logger.BeginScope(new Dictionary<string, object>
@@ -347,7 +357,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
     /// <param name="handlerMethod">The reflected handler method to invoke.</param>
     /// <param name="handledMessage">The message instance passed to the handler pipeline.</param>
     /// <returns>A task that completes when the handler pipeline finishes.</returns>
-    protected virtual Task ProcessSubscriptionHandler(
+    protected virtual async Task ProcessSubscriptionHandler(
         MessageRequest messageRequest,
         SubscriptionDetails subscription,
         object handlerInstance,
@@ -360,6 +370,8 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
         EnsureArg.IsNotNull(handlerMethod, nameof(handlerMethod));
         EnsureArg.IsNotNull(handledMessage, nameof(handledMessage));
 
+        using var profilingExecutionBoundary = this.profilingBoundary?.BeginExecutionBoundary();
+
         this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
 
         async Task Handler()
@@ -367,7 +379,7 @@ public abstract partial class MessageBrokerBase : IMessageBrokerRuntime
             await ((Task)handlerMethod.Invoke(handlerInstance, [handledMessage, messageRequest.CancellationToken])).AnyContext();
         }
 
-        return this.HandlerBehaviors.SafeNull()
+        await this.HandlerBehaviors.SafeNull()
             .Reverse()
             .Aggregate((MessageHandlerDelegate)Handler,
                 (next, pipeline) => async () =>

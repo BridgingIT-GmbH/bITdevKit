@@ -15,6 +15,7 @@ DevKit MCP gives an agent both implementation guidance and evidence from the run
 - search official DevKit documentation and API symbols
 - get implementation guidance for common DevKit features
 - inspect the selected runtime, registered modules, health, metrics, logs, and errors
+- inspect recorded operations and HTTP requests, find performance hotspots, and compare recordings
 - inspect messaging, queueing, jobs, and orchestrations when the host exposes them
 - call project-owned diagnostics registered by the application
 - run explicitly enabled operations after you approve them
@@ -26,6 +27,29 @@ The available runtime tools depend on the features registered by the selected ap
 Your MCP client starts `bdk mcp` as a local process. The CLI finds a ready DevKit host in the current workspace and forwards runtime calls over local IPC.
 
 Documentation and API search do not require a running host. Runtime diagnostics do.
+
+## Inspect operations and requests
+
+When operation profiling is enabled, the agent reads retained recordings through the same runtime services used by the profiling dashboard. It can filter by time range, operation kind, key, node, dimensions, and correlation ID.
+
+| Tool | What the agent can inspect |
+| --- | --- |
+| `bdk_profiling_query` | Recent or slow executions, grouped operation counts, outcomes, and execution IDs |
+| `bdk_profiling_details` | An execution's duration, dimensions, measurements, HTTP metadata, failures, and aggregate segment costs |
+| `bdk_profiling_insights` | Hotspots ranked by p95 latency, Total duration, execution count, or failures, with retained sample counts and segment bottlenecks |
+| `bdk_profiling_compare` | The same operation across time ranges, nodes, or application versions, including latency and segment cost changes |
+
+Use `bdk_investigate_correlation` to connect operation recordings with related logs and errors. HTTP request recordings require the optional request profiling adapter. These tools read captured work; profiling must have been enabled when that work ran.
+
+For example, ask the agent:
+
+```text
+Use bdk MCP to find slow HTTP requests in the last 15 minutes. Inspect a recorded execution and its segment costs, then follow its correlation ID to related logs and errors. Report the retained sample counts.
+```
+
+For coding help, use `bdk_guidance_get` with `topic="profiling"` to learn how to record operations, add segments, choose stable dimensions, and handle outcomes. This guidance works without a running application.
+
+See [Profiling](reference/features-profiling.md) for capture setup and [MCP profiling tools](reference/features-cli-mcp.md#inspect-operation-and-request-recordings) for filters, comparison, and correlation investigations.
 
 ## Get started
 

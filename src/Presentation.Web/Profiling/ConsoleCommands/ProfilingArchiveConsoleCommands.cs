@@ -9,7 +9,7 @@ using BridgingIT.DevKit.Common;
 using Spectre.Console;
 
 /// <summary>Exports a portable archive or a one-way Perfetto visualization trace.</summary>
-/// <example><code>profiling export --session abc12345 --format perfetto --output run.perfetto.json</code></example>
+/// <example><code>profiling runtime export --session abc12345 --format perfetto --output run.perfetto.json</code></example>
 public sealed class ProfilingExportConsoleCommand()
     : ProfilingConsoleCommandBase("export", "Export profiling JSON as an archive or Perfetto trace")
 {
@@ -78,10 +78,10 @@ public sealed class ProfilingExportConsoleCommand()
     )
     {
         var perfetto = this.Format == "perfetto"
-            ? GetRequired<IProfilingPerfettoExportService>(console, services)
+            ? GetRequired<IRuntimeProfilingPerfettoExportService>(console, services)
             : null;
         var archives = this.Format == "archive"
-            ? GetRequired<IProfilingArchiveService>(console, services)
+            ? GetRequired<IRuntimeProfilingArchiveService>(console, services)
             : null;
         if (perfetto is null && archives is null)
         {
@@ -165,7 +165,7 @@ public sealed class ProfilingExportConsoleCommand()
 }
 
 /// <summary>Imports one portable Profiling JSON archive as a fresh terminal session.</summary>
-/// <example><code>profiling import --file run.json</code></example>
+/// <example><code>profiling runtime import --file run.json</code></example>
 public sealed class ProfilingImportConsoleCommand()
     : ProfilingConsoleCommandBase("import", "Import a portable profiling JSON archive")
 {
@@ -181,7 +181,7 @@ public sealed class ProfilingImportConsoleCommand()
         CancellationToken cancellationToken = default
     )
     {
-        var archives = GetRequired<IProfilingArchiveService>(console, services);
+        var archives = GetRequired<IRuntimeProfilingArchiveService>(console, services);
         if (archives is null)
         {
             return;

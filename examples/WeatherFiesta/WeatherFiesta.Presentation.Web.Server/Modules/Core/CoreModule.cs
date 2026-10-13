@@ -31,6 +31,7 @@ public class CoreModule : WebModuleBase
         // Orchestrations
         services.AddOrchestrations()
             .WithOrchestration<WeatherHelloWorldOrchestration>()
+            .WithProfilingBehavior()
             .WithBehavior<MetricsOrchestrationBehavior>()
             .WithEntityFramework<CoreDbContext>()
             .AddEndpoints();
@@ -85,6 +86,7 @@ public class CoreModule : WebModuleBase
                     .WithMissedOccurrencePolicy(JobMissedOccurrencePolicy.RunOnce))
                 .AddTrigger("manual", trigger => trigger.Manual()))
             .WithEntityFramework<CoreDbContext>()
+            .WithBehavior<JobProfilingBehavior>()
             .WithBehavior<JobMetricsBehavior>()
             .WithBehavior<ModuleScopeBehavior>()
             .AddEndpoints()
@@ -134,6 +136,7 @@ public class CoreModule : WebModuleBase
         services.AddOpenMeteo(moduleConfiguration);
 
         // Weather report text generation
+        services.AddScoped<WeatherCityReviewService>();
         services.AddPipelines()
             .WithPipeline<WeatherIngestionPipeline>();
         services.AddWeatherReportTextGeneration(configuration);
@@ -149,6 +152,7 @@ public class CoreModule : WebModuleBase
         // Endpoints
         services.AddEndpoints<CityEndpoints>();
         services.AddEndpoints<WeatherEndpoints>();
+        services.AddEndpoints<WeatherProfilingEndpoints>();
         services.AddEndpoints<UserEndpoints>();
         services.AddEndpoints<DashboardEndpoints>();
         services.AddEndpoints<AdminEndpoints>();

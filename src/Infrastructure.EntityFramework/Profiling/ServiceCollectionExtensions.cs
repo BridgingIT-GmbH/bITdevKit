@@ -8,13 +8,12 @@ namespace Microsoft.Extensions.DependencyInjection;
 using BridgingIT.DevKit.Common;
 using BridgingIT.DevKit.Infrastructure.EntityFramework.Profiling;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 
 /// <summary>Provides Entity Framework persistence for profiling.</summary>
 /// <example>
 /// <code>
 /// services.AddProfiling(options => options.Enabled())
-///     .WithEntityFrameworkStore&lt;AppDbContext&gt;();
+///     .WithEntityFrameworkProvider&lt;AppDbContext&gt;();
 /// </code>
 /// </example>
 public static class ProfilingEntityFrameworkServiceCollectionExtensions
@@ -23,7 +22,7 @@ public static class ProfilingEntityFrameworkServiceCollectionExtensions
     /// Replaces the default process-local profiling store with a durable Entity Framework store.
     /// </summary>
     /// <typeparam name="TContext">
-    /// The application context implementing <see cref="IProfilingContext"/>.
+    /// The application context implementing <see cref="IProfilingDbContext"/>.
     /// </typeparam>
     /// <param name="context">The profiling builder context.</param>
     /// <returns>The same builder context for fluent configuration.</returns>
@@ -37,43 +36,17 @@ public static class ProfilingEntityFrameworkServiceCollectionExtensions
     /// <example>
     /// <code>
     /// services.AddProfiling(options => options.Enabled())
-    ///     .WithEntityFrameworkStore&lt;AppDbContext&gt;();
+    ///     .WithEntityFrameworkProvider&lt;AppDbContext&gt;();
     /// </code>
     /// </example>
-    public static ProfilingBuilderContext WithEntityFrameworkStore<TContext>(
+    public static ProfilingBuilderContext WithEntityFrameworkProvider<TContext>(
         this ProfilingBuilderContext context
     )
-        where TContext : DbContext, IProfilingContext
+        where TContext : DbContext, IProfilingDbContext
     {
         ArgumentNullException.ThrowIfNull(context);
 
-        var providerType = typeof(EntityFrameworkProfilingStore<TContext>);
-        var registrations = context
-            .Services.Where(descriptor => descriptor.ServiceType == typeof(IProfilingStore))
-            .ToArray();
-        if (
-            registrations.Any(descriptor =>
-                !IsDefaultStore(descriptor) && !IsSameProvider(descriptor, providerType)
-            )
-        )
-        {
-            throw new InvalidOperationException(
-                "A different profiling store provider is already registered."
-            );
-        }
-
-        context.Services.RemoveAll<IProfilingStore>();
-        context.Services.TryAddSingleton<
-            IProfilingStore,
-            EntityFrameworkProfilingStore<TContext>
-        >();
-
-        return context;
+        return context.WithProvider<EntityFrameworkProfilingStorageProvider<TContext>>(provider =>
+            new(provider.GetRequiredService<IServiceScopeFactory>(), provider.GetRequiredService<ProfilingOptions>(), provider.GetService<TimeProvider>()));
     }
-
-    private static bool IsDefaultStore(ServiceDescriptor descriptor) =>
-        descriptor.ImplementationType == typeof(InMemoryProfilingStore);
-
-    private static bool IsSameProvider(ServiceDescriptor descriptor, Type providerType) =>
-        descriptor.ImplementationType == providerType;
 }

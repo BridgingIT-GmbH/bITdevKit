@@ -1409,6 +1409,20 @@ builder.Services.AddJobScheduler()
         .AddTrigger("manual", trigger => trigger.Manual()));
 ```
 
+## Dashboard guide
+
+Open Jobs at `/_bdk/dashboard/jobs` after registering the scheduler and [Dashboard](features-presentation-dashboard.md), with `Presentation.Web.Jobs` referenced. The page uses `IJobSchedulerQueryService` to show registered jobs and recent occurrences.
+
+The job table distinguishes definition state from execution state. A job can be active while having no running occurrences. Check trigger counts, next execution and last execution beside the running and failed counts. The adjacent occurrence table shows the outcome, trigger, creation time and duration of individual runs.
+
+[![Jobs dashboard with registered definitions and completed scheduler occurrences](assets/dashboard/06-jobs-jobs.png)](assets/dashboard/06-jobs-jobs.png)
+
+Select an occurrence's information button to inspect its context, correlation ID, messages and latest execution details. Follow the correlation ID to Logs or copy it for a support lookup.
+
+[![Job occurrence context and execution information in a dashboard dialog](assets/dashboard/jobs/occurrence-details.png)](assets/dashboard/jobs/occurrence-details.png)
+
+Dispatch, pause and disable actions operate on job definitions. Occurrences expose cancel, interrupt or retry actions when their current state permits them. Realtime Graph samples the current browser session; History Graph queries retained scheduler history. Use the toolbar refresh button or interval selector to update the projections.
+
 ## Operational notes
 
 ### Endpoint surface
@@ -1545,3 +1559,18 @@ DELETE /_bdk/api/jobs/occurrences?olderThan=2026-04-01T00:00:00Z&statuses=Archiv
 - [Orchestrations](./features-orchestrations.md)
 - [Messaging](./features-messaging.md)
 - [Queueing](./features-queueing.md)
+
+## Optional Operation Profiling
+
+Register the feature independently, then add the behavior to the scheduler:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddJobScheduler().WithBehavior<JobProfilingBehavior>();
+```
+
+The behavior owns `job:<job-name>` when no operation is active, or records a child segment under an existing owner. Actually executing the job contributes timing and safe job/execution/correlation identifiers, status and Result classification. Queued independent jobs establish a fresh execution boundary; they do not retain an enqueue caller's operation. Retries remain distinct observed attempts.
+
+`JobProfilingBehavior` takes an optional `IOperationProfiler` dependency. It does not register Profiling itself. Omitted, disabled or suppressed capture preserves the original delegate result, exception and cancellation. If a job adds its own segments, inject the same facade and use `RunSegmentAsync` or an explicit completed scope. Observation failures do not replace business outcomes.
+
+The [Profiling guide](features-profiling.md) describes keyed segment aggregation, periodic providers, sampling scope, health and dashboard analysis. Runtime measurements remain separate and are started deliberately through `IRuntimeProfilingMeasurementService`.

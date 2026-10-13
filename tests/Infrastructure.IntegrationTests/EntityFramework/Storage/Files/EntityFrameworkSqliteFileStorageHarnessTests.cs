@@ -25,7 +25,7 @@ public class EntityFrameworkSqliteFileStorageHarnessTests(ITestOutputHelper outp
     {
         using var harness = new SqliteFileHarness(output);
         var barrier = new Barrier(2);
-        Func<Task> waitForPeer = () =>
+        var waitForPeer = () =>
         {
             barrier.SignalAndWait(TimeSpan.FromSeconds(5));
             return Task.CompletedTask;

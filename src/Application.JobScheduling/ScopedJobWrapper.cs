@@ -20,7 +20,7 @@ public class ScopedJobWrapper(IServiceScope scope, IJob innerJob, IEnumerable<IM
         EnsureArg.IsNotNull(context, nameof(context));
 
         context.Trigger.JobDataMap.TryGetString(Constants.CorrelationIdKey, out var triggerCorrelationId);
-        var correlationId = triggerCorrelationId.EmptyToNull() ?? GuidGenerator.CreateSequential().ToString("N");
+        var correlationId = triggerCorrelationId.EmptyToNull() ?? CorrelationIdGenerator.Create();
         var flowId = GuidGenerator.Create(this.GetType().ToString()).ToString("N");
         var logger = scope.ServiceProvider.GetService<ILoggerFactory>()?.CreateLogger(this.GetType());
         var jobId = context.JobDetail.JobDataMap.GetString(Constants.JobIdKey) ?? context.FireInstanceId;

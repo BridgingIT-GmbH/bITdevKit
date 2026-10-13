@@ -25,6 +25,7 @@ var builder = DevKitWebApplication.CreateBuilder(args)
 // Configure the app services
 builder.Services.AddRequester()
     .AddHandlers()
+    .WithBehavior(typeof(ProfilingRequestBehavior<,>))
     .WithBehavior(typeof(MetricsRequestBehavior<,>))
     .WithBehavior(typeof(TracingBehavior<,>))
     .WithBehavior(typeof(ModuleScopeBehavior<,>))
@@ -35,6 +36,8 @@ builder.Services.AddRequester()
 
 builder.Services.AddNotifier()
     .AddHandlers()
+    .WithBehavior(typeof(ProfilingNotificationBehavior<,>))
+    .WithBehavior(typeof(ProfilingNotificationHandlerBehavior<,>))
     .WithBehavior(typeof(MetricsNotificationBehavior<,>))
     .WithBehavior(typeof(MetricsNotificationHandlerBehavior<,>))
     .WithBehavior(typeof(TracingBehavior<,>))
@@ -46,6 +49,7 @@ builder.Services.AddNotifier()
 
 builder.Services.AddMessaging(builder.Configuration, o => o
         .StartupDelay("00:00:30"))
+    .WithBehavior<MessageHandlerProfilingBehavior>()
     .WithBehavior<ModuleScopeMessagePublisherBehavior>()
     .WithBehavior<ModuleScopeMessageHandlerBehavior>()
     .WithBehavior<MetricsMessagePublisherBehavior>()
@@ -58,6 +62,7 @@ builder.Services.AddMessaging(builder.Configuration, o => o
 
 builder.Services.AddQueueing(builder.Configuration, o => o
         .StartupDelay("00:00:30"))
+    .WithBehavior<QueueHandlerProfilingBehavior>()
     .WithBehavior<ModuleScopeQueueEnqueuerBehavior>()
     .WithBehavior<ModuleScopeQueueHandlerBehavior>()
     .WithBehavior<MetricsQueueEnqueuerBehavior>()
@@ -99,6 +104,7 @@ builder.Services.AddFileStorage(factory => factory
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
             .WithMetrics()
             .WithPermalinks()
+            .WithProfiling()
             .WithLifetime(ServiceLifetime.Singleton))
         .RegisterProvider("attachments", storage => storage
             .UseEntityFramework<CoreDbContext>(
@@ -109,11 +115,13 @@ builder.Services.AddFileStorage(factory => factory
                     .MaximumBufferedContentSize(8 * 1024 * 1024))
             .WithMetrics()
             .WithPermalinks()
+            .WithProfiling()
             .WithLifetime(ServiceLifetime.Singleton)))
         .AddEndpoints(options => options.RequireAuthorization())
         .AddConsoleCommands();
 
 builder.Services.AddDocumentStorage(o => o.Enabled())
+    .WithProfilingBehavior<OpenMeteoWeatherArchiveDocument>()
     .WithBehavior<LoggingDocumentStoreClientBehavior<OpenMeteoWeatherArchiveDocument>>()
     .WithMetricsBehavior<OpenMeteoWeatherArchiveDocument>()
     .WithEntityFrameworkClient<OpenMeteoWeatherArchiveDocument, CoreDbContext>(
@@ -125,6 +133,7 @@ builder.Services.AddDocumentStorage(o => o.Enabled())
     .AddConsoleCommands();
 
 builder.Services.AddBlobStorage(o => o.Enabled())
+    .WithProfilingBehavior()
     .WithLoggingBehavior()
     .WithMetricsBehavior()
     .WithEntityFrameworkClient<CoreDbContext>(o =>
@@ -164,6 +173,10 @@ builder.Services.AddFakeIdentityProvider(o => o
 builder.Services.AddEndpoints<SystemEndpoints>();
 builder.Services.AddProfiling(o => o
         .Enabled(builder.Environment.IsDevelopment()))
+    .WithRuntimeProfiling()
+    .WithOperationProfiling()
+    .WithRequestProfiling(o => o.StripPathPrefix("/api")
+        .AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"))
     .AddConsoleCommands(builder.Environment.IsDevelopment());
 builder.Services.AddDashboard(o => o
     .Enabled(builder.Environment.IsDevelopment())
@@ -212,6 +225,9 @@ builder.Services.AddAppOpenApi();
 // Configure the HTTP request pipeline
 var app = builder.Build();
 
+app.UseRequestCorrelation();
+app.UseRequestProfiling();
+
 if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
@@ -243,10 +259,11 @@ app.UseResultLogger();
 
 app.UseHttpsRedirection();
 app.UseProblemDetails();
+app.UseRequestProfilingExceptionObserver();
+app.UseRouting();
 //app.UseExceptionHandler();
 
 app.UseStaticFiles();
-app.UseRequestCorrelation();
 app.UseRequestModuleContext();
 app.UseRequestLogging();
 app.UseRequestMetrics();

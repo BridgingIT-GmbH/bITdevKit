@@ -1,0 +1,18 @@
+@inherits RazorSlice
+<script>
+(() => {
+    const selector = '.profiling-help[data-bs-toggle="tooltip"]';
+    window.bdkProfiling = {
+        formatUpdatedAt(value) { return 'Updated ' + value.toISOString().slice(11, 19) + ' UTC'; },
+        initializeHelp(root = document) {
+            if (!window.bootstrap?.Tooltip) return;
+            root.querySelectorAll(selector).forEach(element => bootstrap.Tooltip.getOrCreateInstance(element, { container: 'body' }));
+        },
+        disposeHelp(root) {
+            root.querySelectorAll(selector).forEach(element => window.bootstrap?.Tooltip.getInstance(element)?.dispose());
+        }
+    };
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', () => window.bdkProfiling.initializeHelp(), { once: true });
+    else window.bdkProfiling.initializeHelp();
+})();
+</script>

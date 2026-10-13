@@ -93,7 +93,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -186,7 +186,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -282,7 +282,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -378,7 +378,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -481,7 +481,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -568,7 +568,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -665,7 +665,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -763,7 +763,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -861,7 +861,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -966,6 +966,6 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Projec
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 }

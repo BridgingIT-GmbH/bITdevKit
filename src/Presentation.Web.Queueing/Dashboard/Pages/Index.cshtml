@@ -212,23 +212,7 @@
         }
 
         function appendCorrelationLink(container, value) {
-            if (!value) {
-                container.textContent = '-';
-                return;
-            }
-
-            const url = new URL(logEntriesPath, window.location.origin);
-            url.searchParams.set('level', 'All');
-            url.searchParams.set('pageSize', '100');
-            url.searchParams.set('from', new Date().toISOString().slice(0, 10));
-            url.searchParams.set('correlationId', value.toString());
-
-            const link = document.createElement('a');
-            link.className = 'text-decoration-none';
-            link.href = url.toString();
-            link.textContent = value.toString();
-            link.title = 'Open related logs';
-            container.appendChild(link);
+            window.bdkDashboard.appendCorrelationLink(container, value, logEntriesPath);
         }
 
         function renderProperties(container, properties) {

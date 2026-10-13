@@ -12,6 +12,79 @@ using Microsoft.Extensions.Hosting;
 public class ProfilingFoundationTests
 {
     [Fact]
+    public void WithRuntimeProfiling_DisableWithExistingBroadcast_RemovesOnlyOwnedHandlers()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddBroadcasting();
+        var state = services.First(d => d.ServiceType == typeof(BroadcastingRegistrationState)).ImplementationInstance as BroadcastingRegistrationState;
+        var originalHandlers = state.Handlers.ToArray();
+        var configuration = services.AddProfiling(o => o.Enabled()).WithRuntimeProfiling();
+        state.Handlers.Count.ShouldBe(originalHandlers.Length + 4);
+
+        // Act
+        configuration.WithRuntimeProfiling(o => o.Enabled(false));
+
+        // Assert
+        state.Handlers.ShouldBe(originalHandlers);
+        services.ShouldContain(d => d.ServiceType == typeof(IBroadcastRegistryStore));
+        services.ShouldNotContain(d => d.ServiceType == typeof(IRuntimeProfilingCollector));
+    }
+
+    [Fact]
+    public void AddProfiling_MasterEnabledWithoutRuntime_InstallsNoBroadcastOrRuntimeWorkers()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+
+        // Act
+        services.AddProfiling(o => o.Enabled());
+        using var provider = services.BuildServiceProvider();
+
+        // Assert
+        provider.GetRequiredService<ProfilingOptions>().RuntimeEnabled.ShouldBeFalse();
+        services.ShouldNotContain(d => d.ServiceType == typeof(IRuntimeProfilingBroadcastService));
+        services.ShouldNotContain(d => d.ServiceType == typeof(IRuntimeProfilingCollector));
+        services.ShouldNotContain(d => d.ServiceType == typeof(IBroadcastRegistryStore));
+        provider.GetRequiredService<IProfilingNodeIdentityProvider>().GetNode().ShouldNotBeNull();
+    }
+
+    [Fact]
+    public void WithRuntimeProfiling_BeforeMasterEnablement_ComposesOneWorkerSet()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        services.AddProfiling().WithRuntimeProfiling(o => o.Duration(TimeSpan.FromMinutes(1)));
+
+        // Act
+        var configuration = services.AddProfiling(o => o.Enabled()).WithRuntimeProfiling();
+        configuration.WithRuntimeProfiling(o => o.SamplingInterval(TimeSpan.FromSeconds(2)));
+
+        // Assert
+        configuration.Options.RuntimeEnabled.ShouldBeTrue();
+        configuration.Options.Runtime.Duration.ShouldBe(TimeSpan.FromMinutes(1));
+        configuration.Options.Runtime.SamplingInterval.ShouldBe(TimeSpan.FromSeconds(2));
+        services.Count(d => d.ImplementationType == typeof(RuntimeProfilingCollectorHostedService)).ShouldBe(1);
+    }
+
+    [Fact]
+    public void WithRuntimeProfiling_ExplicitDisableThenRepeatedCall_RemainsDisabled()
+    {
+        // Arrange
+        var services = new ServiceCollection();
+        var configuration = services.AddProfiling(o => o.Enabled()).WithRuntimeProfiling();
+
+        // Act
+        configuration.WithRuntimeProfiling(o => o.Enabled(false));
+        configuration.WithRuntimeProfiling();
+
+        // Assert
+        configuration.Options.RuntimeEnabled.ShouldBeFalse();
+        services.ShouldNotContain(d => d.ServiceType == typeof(IRuntimeProfilingCollector));
+        services.ShouldNotContain(d => d.ServiceType == typeof(IRuntimeProfilingBroadcastService));
+    }
+
+    [Fact]
     public void AddProfiling_Defaults_UseApprovedConservativeValues()
     {
         // Arrange
@@ -24,23 +97,25 @@ public class ProfilingFoundationTests
 
         // Assert
         options.Enabled.ShouldBeFalse();
-        ProfilingOptions.MinimumSamplingInterval.ShouldBe(TimeSpan.FromMilliseconds(500));
-        options.SamplingInterval.ShouldBe(TimeSpan.FromSeconds(1));
-        options.Duration.ShouldBe(TimeSpan.FromSeconds(30));
-        options.AutomaticStop.ShouldBeTrue();
-        options.MaximumRetainedSessions.ShouldBe(20);
-        options.MaximumSessionAge.ShouldBe(TimeSpan.FromDays(7));
-        options.RefreshInterval.ShouldBe(TimeSpan.FromSeconds(5));
-        options.ParticipationDeadline.ShouldBe(TimeSpan.FromSeconds(1));
-        options.FinalizationGracePeriod.ShouldBe(TimeSpan.FromSeconds(1));
-        ProfilingOptions.DefaultSessionNameFormat.ShouldBe("O");
+        RuntimeProfilingOptions.MinimumSamplingInterval.ShouldBe(TimeSpan.FromMilliseconds(500));
+        options.Runtime.SamplingInterval.ShouldBe(TimeSpan.FromSeconds(1));
+        options.Runtime.Duration.ShouldBe(TimeSpan.FromSeconds(30));
+        options.Runtime.AutomaticStop.ShouldBeTrue();
+        options.Runtime.MaximumRetainedSessions.ShouldBe(20);
+        options.Runtime.MaximumSessionAge.ShouldBe(TimeSpan.FromDays(7));
+        options.Runtime.Enabled.ShouldBeFalse();
+        options.Operations.Enabled.ShouldBeFalse();
+        options.Requests.Enabled.ShouldBeFalse();
+        options.Runtime.ParticipationDeadline.ShouldBe(TimeSpan.FromSeconds(1));
+        options.Runtime.FinalizationGracePeriod.ShouldBe(TimeSpan.FromSeconds(1));
+        RuntimeProfilingOptions.DefaultSessionNameFormat.ShouldBe("O");
     }
 
     [Fact]
     public void SamplingInterval_BelowMinimum_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
-        var builder = new ProfilingOptionsBuilder(new ProfilingOptions());
+        var builder = new RuntimeProfilingOptionsBuilder(new RuntimeProfilingOptions());
 
         // Act
         var action = () => builder.SamplingInterval(TimeSpan.FromMilliseconds(499));
@@ -53,7 +128,7 @@ public class ProfilingFoundationTests
     public void Duration_NonPositive_ThrowsArgumentOutOfRangeException()
     {
         // Arrange
-        var builder = new ProfilingOptionsBuilder(new ProfilingOptions());
+        var builder = new RuntimeProfilingOptionsBuilder(new RuntimeProfilingOptions());
 
         // Act
         var action = () => builder.Duration(TimeSpan.Zero);
@@ -66,7 +141,7 @@ public class ProfilingFoundationTests
     public void Validate_EnabledWithoutAutomaticStop_ThrowsInvalidOperationException()
     {
         // Arrange
-        var options = new ProfilingOptions { Enabled = true, AutomaticStop = false };
+        var options = new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true, AutomaticStop = false } };
 
         // Act
         var action = options.Validate;
@@ -82,10 +157,8 @@ public class ProfilingFoundationTests
         var services = new ServiceCollection();
 
         // Act
-        var first = services.AddProfiling(options => options.Enabled());
-        var second = services.AddProfiling(options =>
-            options.SamplingInterval(TimeSpan.FromSeconds(2)).Duration(TimeSpan.FromMinutes(1))
-        );
+        var first = services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling();
+        var second = services.AddProfiling().WithRuntimeProfiling(options => options.SamplingInterval(TimeSpan.FromSeconds(2)).Duration(TimeSpan.FromMinutes(1)));
         using var provider = services.BuildServiceProvider();
 
         // Assert
@@ -96,77 +169,77 @@ public class ProfilingFoundationTests
         provider.GetRequiredService<ProfilingOptions>().Enabled.ShouldBeTrue();
         provider
             .GetRequiredService<ProfilingOptions>()
-            .SamplingInterval.ShouldBe(TimeSpan.FromSeconds(2));
-        provider.GetRequiredService<ProfilingOptions>().Duration.ShouldBe(TimeSpan.FromMinutes(1));
-        provider.GetServices<IProfilingStore>().ShouldHaveSingleItem();
-        provider.GetRequiredService<IProfilingStore>().ShouldBeOfType<InMemoryProfilingStore>();
+            .Runtime.SamplingInterval.ShouldBe(TimeSpan.FromSeconds(2));
+        provider.GetRequiredService<ProfilingOptions>().Runtime.Duration.ShouldBe(TimeSpan.FromMinutes(1));
+        provider.GetServices<IRuntimeProfilingStore>().ShouldHaveSingleItem();
+        provider.GetRequiredService<IRuntimeProfilingStore>().ShouldBeOfType<InMemoryRuntimeProfilingStore>();
         provider
             .GetServices<IProfilingNodeIdentityProvider>()
             .ShouldHaveSingleItem()
             .ShouldBeOfType<ProfilingNodeIdentityProvider>();
         provider
-            .GetServices<IProfilingRuntimeContextFactory>()
+            .GetServices<IRuntimeProfilingContextFactory>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingRuntimeContextFactory>();
+            .ShouldBeOfType<RuntimeProfilingContextFactory>();
         provider
-            .GetServices<IProfilingSnapshotProbe>()
+            .GetServices<IRuntimeProfilingSnapshotProbe>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingSnapshotProbe>();
+            .ShouldBeOfType<RuntimeProfilingSnapshotProbe>();
         provider
-            .GetServices<IProfilingCollector>()
+            .GetServices<IRuntimeProfilingCollector>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingCollector>();
+            .ShouldBeOfType<RuntimeProfilingCollector>();
         services
             .Count(descriptor =>
                 descriptor.ServiceType == typeof(IHostedService)
-                && descriptor.ImplementationType == typeof(ProfilingCollectorHostedService)
+                && descriptor.ImplementationType == typeof(RuntimeProfilingCollectorHostedService)
             )
             .ShouldBe(1);
         provider
-            .GetServices<IProfilingControlService>()
+            .GetServices<IRuntimeProfilingControlService>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingControlService>();
+            .ShouldBeOfType<RuntimeProfilingControlService>();
         provider
-            .GetServices<IProfilingBroadcastService>()
+            .GetServices<IRuntimeProfilingBroadcastService>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingBroadcastService>();
+            .ShouldBeOfType<RuntimeProfilingBroadcastService>();
         provider
-            .GetServices<IProfilingMeasurementService>()
+            .GetServices<IRuntimeProfilingMeasurementService>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingMeasurementService>();
+            .ShouldBeOfType<RuntimeProfilingMeasurementService>();
         provider
-            .GetServices<IProfilingEvaluationService>()
+            .GetServices<IRuntimeProfilingEvaluationService>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingEvaluator>();
+            .ShouldBeOfType<RuntimeProfilingEvaluator>();
         provider
-            .GetServices<IProfilingPerfettoExportService>()
+            .GetServices<IRuntimeProfilingPerfettoExportService>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingPerfettoExportService>();
+            .ShouldBeOfType<RuntimeProfilingPerfettoExportService>();
         provider
-            .GetServices<IProfilingQueryService>()
+            .GetServices<IRuntimeProfilingQueryService>()
             .ShouldHaveSingleItem()
-            .ShouldBeOfType<ProfilingQueryService>();
-        provider.GetRequiredService<ProfilingActiveSessionContext>().ShouldNotBeNull();
-        provider.GetRequiredService<ProfilingSegmentContext>().ShouldNotBeNull();
-        provider.GetRequiredService<ProfilingCustomMetricListener>().ShouldNotBeNull();
+            .ShouldBeOfType<RuntimeProfilingQueryService>();
+        provider.GetRequiredService<RuntimeProfilingActiveSessionContext>().ShouldNotBeNull();
+        provider.GetRequiredService<RuntimeProfilingSegmentContext>().ShouldNotBeNull();
+        provider.GetRequiredService<RuntimeProfilingCustomMetricListener>().ShouldNotBeNull();
         services
             .Count(descriptor =>
                 descriptor.ServiceType == typeof(IHostedService)
-                && descriptor.ImplementationType == typeof(ProfilingCustomMetricHostedService)
+                && descriptor.ImplementationType == typeof(RuntimeProfilingCustomMetricHostedService)
             )
             .ShouldBe(1);
         var handlers = provider.GetRequiredService<BroadcastingRegistrationState>().Handlers;
         handlers
-            .Count(handler => handler.PayloadType == typeof(ProfilingStartBroadcast))
+            .Count(handler => handler.PayloadType == typeof(RuntimeProfilingStartBroadcast))
             .ShouldBe(1);
         handlers
-            .Count(handler => handler.PayloadType == typeof(ProfilingStopBroadcast))
+            .Count(handler => handler.PayloadType == typeof(RuntimeProfilingStopBroadcast))
             .ShouldBe(1);
         handlers
-            .Count(handler => handler.PayloadType == typeof(ProfilingSnapshotBroadcast))
+            .Count(handler => handler.PayloadType == typeof(RuntimeProfilingSnapshotBroadcast))
             .ShouldBe(1);
         handlers
-            .Count(handler => handler.PayloadType == typeof(ProfilingGarbageCollectionBroadcast))
+            .Count(handler => handler.PayloadType == typeof(RuntimeProfilingGarbageCollectionBroadcast))
             .ShouldBe(1);
     }
 
@@ -179,38 +252,38 @@ public class ProfilingFoundationTests
         // Act
         services.AddProfiling();
         using var provider = services.BuildServiceProvider();
-        var status = await provider.GetRequiredService<IProfilingControlService>().GetStatusAsync();
+        var status = await provider.GetRequiredService<IRuntimeProfilingControlService>().GetStatusAsync();
         var measurement = await provider
-            .GetRequiredService<IProfilingMeasurementService>()
+            .GetRequiredService<IRuntimeProfilingMeasurementService>()
             .BeginAsync("disabled");
-        var query = await provider.GetRequiredService<IProfilingQueryService>().ListSessionsAsync();
+        var query = await provider.GetRequiredService<IRuntimeProfilingQueryService>().ListSessionsAsync();
 
         // Assert
-        services.ShouldNotContain(descriptor => descriptor.ServiceType == typeof(IHostedService));
-        services.ShouldNotContain(descriptor => descriptor.ServiceType == typeof(IProfilingStore));
+        services.Where(descriptor => descriptor.ServiceType == typeof(IHostedService)).ShouldHaveSingleItem();
+        services.ShouldContain(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingStore));
         services.ShouldNotContain(descriptor =>
-            descriptor.ServiceType == typeof(IProfilingCollector)
+            descriptor.ServiceType == typeof(IRuntimeProfilingCollector)
         );
         services.ShouldNotContain(descriptor =>
-            descriptor.ServiceType == typeof(IProfilingSnapshotProbe)
+            descriptor.ServiceType == typeof(IRuntimeProfilingSnapshotProbe)
         );
         services.ShouldNotContain(descriptor =>
-            descriptor.ServiceType == typeof(IProfilingBroadcastService)
+            descriptor.ServiceType == typeof(IRuntimeProfilingBroadcastService)
         );
         services
-            .Count(descriptor => descriptor.ServiceType == typeof(IProfilingControlService))
+            .Count(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingControlService))
             .ShouldBe(1);
         services
-            .Count(descriptor => descriptor.ServiceType == typeof(IProfilingMeasurementService))
+            .Count(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingMeasurementService))
             .ShouldBe(1);
         services
-            .Count(descriptor => descriptor.ServiceType == typeof(IProfilingEvaluationService))
+            .Count(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingEvaluationService))
             .ShouldBe(1);
         services
-            .Count(descriptor => descriptor.ServiceType == typeof(IProfilingPerfettoExportService))
+            .Count(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingPerfettoExportService))
             .ShouldBe(1);
         services
-            .Count(descriptor => descriptor.ServiceType == typeof(IProfilingQueryService))
+            .Count(descriptor => descriptor.ServiceType == typeof(IRuntimeProfilingQueryService))
             .ShouldBe(1);
         status.IsSuccess.ShouldBeTrue();
         status.Value.Enabled.ShouldBeFalse();
@@ -225,9 +298,9 @@ public class ProfilingFoundationTests
     public void CreateIdentities_AlwaysUseEightCharacterLowercaseKeys()
     {
         // Act
-        var session = ProfilingSessionIdentity.Create();
-        var node = ProfilingNodeIdentity.Create();
-        var snapshot = ProfilingSnapshotIdentity.Create();
+        var session = ProfilingIdentityFactory.CreateRuntimeSession();
+        var node = ProfilingIdentityFactory.CreateNode();
+        var snapshot = ProfilingIdentityFactory.CreateRuntimeSnapshot();
 
         // Assert
         AssertIdentity(session.Id, session.Key);
@@ -241,7 +314,7 @@ public class ProfilingFoundationTests
         // Act
         var action = () =>
         {
-            _ = new ProfilingSessionIdentity(Guid.NewGuid(), "ABC-1234");
+            _ = new RuntimeProfilingSessionIdentity(Guid.NewGuid(), "ABC-1234");
         };
 
         // Assert
@@ -252,7 +325,7 @@ public class ProfilingFoundationTests
     public void Identity_InternalIdentifier_IsExcludedFromJson()
     {
         // Arrange
-        var identity = new ProfilingSessionIdentity(
+        var identity = new RuntimeProfilingSessionIdentity(
             Guid.Parse("52de217d-ca84-442e-ac83-c8c328586b21"),
             "a1b2c3d4"
         );
@@ -282,8 +355,8 @@ public class ProfilingFoundationTests
         // Arrange
         var node = new ProfilingNode
         {
-            Identity = ProfilingNodeIdentity.Create(),
-            Correlation = new ProfilingNodeCorrelation(
+            Identity = ProfilingIdentityFactory.CreateNode(),
+            Correlation = new RuntimeProfilingNodeCorrelation(
                 "private-host:1234",
                 DateTimeOffset.Parse("2026-08-07T10:00:00Z")
             ),
@@ -303,28 +376,28 @@ public class ProfilingFoundationTests
     [Fact]
     public void SessionState_AllApprovedStates_AreRepresented()
     {
-        Enum.GetValues<ProfilingSessionState>()
+        Enum.GetValues<RuntimeProfilingSessionState>()
             .ShouldBe([
-                ProfilingSessionState.Running,
-                ProfilingSessionState.Completed,
-                ProfilingSessionState.CompletedWithWarnings,
-                ProfilingSessionState.Stopped,
-                ProfilingSessionState.Failed,
+                RuntimeProfilingSessionState.Running,
+                RuntimeProfilingSessionState.Completed,
+                RuntimeProfilingSessionState.CompletedWithWarnings,
+                RuntimeProfilingSessionState.Stopped,
+                RuntimeProfilingSessionState.Failed,
             ]);
     }
 
     [Fact]
     public void NodeRole_ExpectedAndAdHoc_AreRepresented()
     {
-        Enum.GetValues<ProfilingNodeRole>()
-            .ShouldBe([ProfilingNodeRole.ExpectedParticipant, ProfilingNodeRole.AdHocContributor]);
+        Enum.GetValues<RuntimeProfilingNodeRole>()
+            .ShouldBe([RuntimeProfilingNodeRole.ExpectedParticipant, RuntimeProfilingNodeRole.AdHocContributor]);
     }
 
     [Fact]
     public void EvaluationResult_ContainsOnlyApprovedTopLevelGroups()
     {
         // Arrange
-        var properties = typeof(ProfilingEvaluationResult)
+        var properties = typeof(RuntimeProfilingEvaluationResult)
             .GetProperties()
             .Select(property => property.Name)
             .ToArray();

@@ -17,6 +17,9 @@ using Microsoft.EntityFrameworkCore;
 [Index(nameof(BroadcastNodeIdentity), nameof(ProcessStartedUtc), IsUnique = true)]
 public sealed class ProfilingNodeEntity
 {
+    private DateTimeOffset processStartedUtc;
+    private DateTimeOffset executionStartedUtc;
+
     /// <summary>Gets or sets the node identifier.</summary>
     [Key]
     public Guid Id { get; set; }
@@ -27,17 +30,54 @@ public sealed class ProfilingNodeEntity
     public string Key { get; set; }
 
     /// <summary>Gets or sets the private Broadcast node identity.</summary>
-    [Required]
     [MaxLength(256)]
     public string BroadcastNodeIdentity { get; set; }
 
     /// <summary>Gets or sets the process start timestamp.</summary>
     [Required]
-    public DateTimeOffset ProcessStartedUtc { get; set; }
+    public DateTimeOffset ProcessStartedUtc
+    {
+        get => this.processStartedUtc;
+        set
+        {
+            this.processStartedUtc = value;
+            this.ProcessStartedUtcTicks = value.UtcTicks;
+        }
+    }
+
+    /// <summary>Gets or sets the exact cached process-start ticks independent of database timestamp precision.</summary>
+    /// <example><code>var ticks = entity.ProcessStartedUtcTicks;</code></example>
+    public long ProcessStartedUtcTicks { get; set; }
 
     /// <summary>Gets or sets hostname metadata.</summary>
     [MaxLength(256)]
     public string HostName { get; set; }
+
+    /// <summary>Gets or sets the cached process-start UTC independently of Broadcast registration time.</summary>
+    /// <example><code>var utc = node.ExecutionStartedUtc;</code></example>
+    public DateTimeOffset ExecutionStartedUtc
+    {
+        get => this.executionStartedUtc;
+        set
+        {
+            this.executionStartedUtc = value;
+            this.ExecutionStartedUtcTicks = value.UtcTicks;
+        }
+    }
+
+    /// <summary>Gets or sets lossless process identity ticks for cross-provider correlation.</summary>
+    /// <example><code>var ticks = entity.ExecutionStartedUtcTicks;</code></example>
+    public long ExecutionStartedUtcTicks { get; set; }
+
+    /// <summary>Gets or sets the bounded display name.</summary>
+    /// <example><code>node.DisplayName = "worker-a";</code></example>
+    [MaxLength(128)]
+    public string DisplayName { get; set; }
+
+    /// <summary>Gets or sets bounded application-version metadata.</summary>
+    /// <example><code>node.ApplicationVersion = "1.2.3";</code></example>
+    [MaxLength(128)]
+    public string ApplicationVersion { get; set; }
 
     /// <summary>Gets or sets process identifier metadata.</summary>
     [Required]
@@ -45,12 +85,14 @@ public sealed class ProfilingNodeEntity
 }
 
 /// <summary>Represents one node's mutable participation in a profiling session.</summary>
-/// <example><code>public DbSet&lt;ProfilingParticipationEntity&gt; ProfilingParticipations { get; set; }</code></example>
-[Table("__Profiling_Participations")]
+/// <example><code>public DbSet&lt;RuntimeProfilingParticipationEntity&gt; ProfilingParticipations { get; set; }</code></example>
+[Table("__Profiling_RuntimeParticipations")]
 [PrimaryKey(nameof(SessionId), nameof(NodeId))]
 [Index(nameof(SessionId), nameof(State))]
-public sealed class ProfilingParticipationEntity
+public sealed class RuntimeProfilingParticipationEntity
 {
+    private DateTimeOffset joinedUtc;
+    private DateTimeOffset? completedUtc;
     /// <summary>Gets or sets the session identifier.</summary>
     public Guid SessionId { get; set; }
 
@@ -59,18 +101,34 @@ public sealed class ProfilingParticipationEntity
 
     /// <summary>Gets or sets the node role.</summary>
     [Required]
-    public ProfilingNodeRole Role { get; set; }
+    public RuntimeProfilingNodeRole Role { get; set; }
 
     /// <summary>Gets or sets the participation state.</summary>
     [Required]
-    public ProfilingParticipationState State { get; set; }
+    public RuntimeProfilingParticipationState State { get; set; }
 
     /// <summary>Gets or sets when the node joined.</summary>
     [Required]
-    public DateTimeOffset JoinedUtc { get; set; }
+    public DateTimeOffset JoinedUtc
+    {
+        get => this.joinedUtc;
+        set { this.joinedUtc = value; this.JoinedUtcTicks = value.UtcTicks; }
+    }
+
+    /// <summary>Gets or sets exact UTC ticks for the actual collection-window start.</summary>
+    /// <example><code>var ticks = participation.JoinedUtcTicks;</code></example>
+    public long JoinedUtcTicks { get; set; }
 
     /// <summary>Gets or sets when local participation ended.</summary>
-    public DateTimeOffset? CompletedUtc { get; set; }
+    public DateTimeOffset? CompletedUtc
+    {
+        get => this.completedUtc;
+        set { this.completedUtc = value; this.CompletedUtcTicks = value?.UtcTicks; }
+    }
+
+    /// <summary>Gets or sets exact UTC ticks for the actual collection-window end.</summary>
+    /// <example><code>var ticks = participation.CompletedUtcTicks;</code></example>
+    public long? CompletedUtcTicks { get; set; }
 
     /// <summary>Gets or sets successful capture count.</summary>
     [Required]
@@ -96,7 +154,7 @@ public sealed class ProfilingParticipationEntity
     /// <summary>Gets or sets the owning session.</summary>
     [Required]
     [ForeignKey(nameof(SessionId))]
-    public ProfilingSessionEntity Session { get; set; }
+    public RuntimeProfilingSessionEntity Session { get; set; }
 
     /// <summary>Gets or sets the participating node.</summary>
     [Required]
@@ -110,8 +168,8 @@ public sealed class ProfilingParticipationEntity
 }
 
 /// <summary>Represents immutable runtime context owned by a profiling session JSON document.</summary>
-/// <example><code>session.RuntimeContexts.Add(new ProfilingRuntimeContextEntity { NodeId = nodeId });</code></example>
-public sealed class ProfilingRuntimeContextEntity
+/// <example><code>session.RuntimeContexts.Add(new RuntimeProfilingRuntimeContextEntity { NodeId = nodeId });</code></example>
+public sealed class RuntimeProfilingRuntimeContextEntity
 {
     /// <summary>Gets or sets the session identifier.</summary>
     public Guid SessionId { get; set; }

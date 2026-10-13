@@ -152,6 +152,14 @@ Missing claims return `null` or an empty role array. The accessor does not infer
 
 Application code should depend on `ICurrentUserAccessor`, not `HttpCurrentUserAccessor` or `IHttpContextAccessor`. This keeps the application layer independent of ASP.NET Core and lets tests provide a small substitute.
 
+## Dashboard identity
+
+Open Identity at `/_bdk/dashboard/identity` to inspect the current dashboard request's principal. Register the [Dashboard](features-presentation-dashboard.md) and `ICurrentUserAccessor` using the host's authentication setup. The page shows authentication state, user identity, roles and claims.
+
+[![Dashboard Identity page with the authenticated user, roles and claims](assets/dashboard/02-identity-identity.png)](assets/dashboard/02-identity-identity.png)
+
+If the authentication handler saved tokens, the page also has collapsible token entries with copy and JWT-inspection controls. Token values remain collapsed in this image. The page describes the signed-in dashboard user; it is not a directory of all application users or a view of another client's principal. See [dashboard authorization](features-presentation-dashboard.md#authentication-and-authorization) for dashboard-owned and host-owned sign-in options.
+
 ## Role and policy metadata
 
 `AuthorizeRolesAttribute` joins its role names with commas. ASP.NET Core treats the roles in one attribute as alternatives:

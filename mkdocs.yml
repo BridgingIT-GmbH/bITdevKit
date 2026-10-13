@@ -9,7 +9,7 @@ use_directory_urls: true
 
 nav:
   - Home: index.md
-  - Get Started:
+  - Quickstart:
       - Quickstart: getting-started.md
       - Templates: templates.md
   - Docs:
@@ -92,10 +92,23 @@ nav:
           - AI Agent Support Guide: agent-support-guide.md
           - Developer Dashboards: developer-dashboards.md
       - Package Map: packages.md
-      - Decision Guides:
-          - Decisions: decisions.md
-          - Messaging or Queueing: decisions-messaging-vs-queueing.md
-          - Repository or ActiveEntity: decisions-repository-vs-activeentity.md
+  - Guides:
+      - Decisions: decisions.md
+      - Messaging or Queueing: decisions-messaging-vs-queueing.md
+      - Repository or ActiveEntity: decisions-repository-vs-activeentity.md
+      - Pipeline or Orchestration: decisions-pipeline-vs-orchestration.md
+      - Blob Storage or Document Storage: decisions-blob-vs-document-storage.md
+      - Jobs or Startup Tasks: decisions-jobs-vs-startup-tasks.md
+      - Where to Put Business Logic: decisions-business-logic.md
+      - When to Use Domain Events: decisions-domain-events.md
+      - Requester or Notifier: decisions-requester-vs-notifier.md
+      - Queueing or Jobs: decisions-queueing-vs-jobs.md
+      - Domain Events or Application Events: decisions-domain-vs-application-events.md
+      - Change History or Event Sourcing: decisions-change-history-vs-event-sourcing.md
+      - Repository or Document Storage: decisions-repository-vs-document-storage.md
+      - Direct Call or Requester: decisions-direct-call-vs-requester.md
+      - Retry or Compensation: decisions-retry-vs-compensation.md
+      - "Result&lt;T&gt; or plain return type": decisions-results.md
   - API: api/index.md
   - Examples: examples.md
 
@@ -119,56 +132,102 @@ theme:
     - content.code.copy
     - content.tabs.link
   palette:
-    - media: "(prefers-color-scheme)"
+    - scheme: tokyo-night
       primary: custom
       accent: custom
       toggle:
-        icon: material/brightness-auto
-        name: Use system theme
-    - media: "(prefers-color-scheme: light)"
-      scheme: light
+        icon: material/palette
+        name: Use Tokyo Night theme
+    - scheme: matte-black
       primary: custom
       accent: custom
       toggle:
-        icon: material/weather-night
-        name: Use light theme
-    - media: "(prefers-color-scheme: dark)"
-      scheme: dark
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/weather-sunny
-        name: Use dark theme
+        icon: material/palette
+        name: Use Matte Black theme
     - scheme: catppuccin
       primary: custom
       accent: custom
       toggle:
         icon: material/palette
         name: Use Catppuccin theme
-    - scheme: darkforest
+    - scheme: lumon
       primary: custom
       accent: custom
       toggle:
         icon: material/palette
-        name: Use Darkforest theme
-    - scheme: carbon
+        name: Use Lumon theme
+    - scheme: ethereal
       primary: custom
       accent: custom
       toggle:
         icon: material/palette
-        name: Use Carbon theme
-    - scheme: tokionights
+        name: Use Ethereal theme
+    - scheme: everforest
       primary: custom
       accent: custom
       toggle:
         icon: material/palette
-        name: Use Tokyo Night theme
-    - scheme: matrix
+        name: Use Everforest theme
+    - scheme: hackerman
       primary: custom
       accent: custom
       toggle:
         icon: material/palette
-        name: Use Matrix theme
+        name: Use Hackerman theme
+    - scheme: osaka-jade
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Osaka Jade theme
+    - scheme: kanagawa
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Kanagawa theme
+    - scheme: vantablack
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Vantablack theme
+    - scheme: ristretto
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Ristretto theme
+    - scheme: retro-82
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Retro 82 theme
+    - scheme: flexoki-light
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Flexoki Light theme
+    - scheme: catppuccin-latte
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Catppuccin Latte theme
+    - scheme: white
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use White theme
+    - scheme: system
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-auto
+        name: Use System theme
 
 plugins:
   - search

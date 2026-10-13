@@ -5,54 +5,52 @@
 
 namespace BridgingIT.DevKit.Common;
 
-/// <summary>
-/// Resolves the local Broadcast process registration to one stable profiling node.
-/// </summary>
-/// <param name="store">The configured profiling store.</param>
-/// <example><code>var node = await provider.GetAsync(registration, cancellationToken);</code></example>
-public sealed class ProfilingNodeIdentityProvider(IProfilingStore store)
-    : IProfilingNodeIdentityProvider
+using System.Diagnostics;
+using System.Reflection;
+
+/// <summary>Creates and caches one process descriptor without persistence or Broadcast dependencies.</summary>
+/// <example><code>var identity = new ProfilingNodeIdentityProvider().GetNode();</code></example>
+public sealed class ProfilingNodeIdentityProvider : IProfilingNodeIdentityProvider
 {
-    private readonly IProfilingStore store =
-        store ?? throw new ArgumentNullException(nameof(store));
+    private readonly ProfilingNode node;
 
-    /// <inheritdoc />
-    public Task<Result<ProfilingNode>> GetAsync(
-        BroadcastNodeRegistration registration,
-        CancellationToken cancellationToken = default
-    )
+    /// <summary>Creates the process-lifetime cache with optional host display metadata.</summary>
+    /// <example><code>var identity = new ProfilingNodeIdentityProvider(displayName: "worker-a");</code></example>
+    public ProfilingNodeIdentityProvider(TimeProvider timeProvider = null, string displayName = null, string applicationVersion = null)
     {
-        cancellationToken.ThrowIfCancellationRequested();
-
-        if (
-            registration is null
-            || string.IsNullOrWhiteSpace(registration.NodeIdentity)
-            || registration.ProcessStartedUtc == default
-        )
+        var clock = timeProvider ?? TimeProvider.System;
+        DateTimeOffset processStartedUtc;
+        try
         {
-            return Task.FromResult(
-                Result<ProfilingNode>
-                    .Failure()
-                    .WithError(
-                        new ProfilingValidationError(
-                            "A Broadcast node identity and process-start timestamp are required."
-                        )
-                    )
-            );
+            using var process = Process.GetCurrentProcess();
+            processStartedUtc = new DateTimeOffset(process.StartTime.ToUniversalTime(), TimeSpan.Zero);
+        }
+        catch (InvalidOperationException)
+        {
+            processStartedUtc = clock.GetUtcNow().ToUniversalTime();
         }
 
-        var correlation = new ProfilingNodeCorrelation(
-            registration.NodeIdentity.Trim(),
-            registration.ProcessStartedUtc.ToUniversalTime()
-        );
-        var proposed = new ProfilingNode
+        this.node = new ProfilingNode
         {
-            Identity = ProfilingNodeIdentity.Create(),
-            Correlation = correlation,
-            HostName = Environment.MachineName,
+            Identity = ProfilingIdentityFactory.CreateNode(),
+            HostName = Bound(Environment.MachineName),
+            DisplayName = Bound(displayName ?? Environment.MachineName),
             ProcessId = Environment.ProcessId,
+            ProcessStartedUtc = processStartedUtc,
+            ApplicationVersion = Bound(applicationVersion ?? Assembly.GetEntryAssembly()?.GetName().Version?.ToString())
         };
+    }
 
-        return this.store.GetOrCreateNodeAsync(correlation, proposed, cancellationToken);
+    /// <inheritdoc />
+    public ProfilingNode GetNode() => this.node;
+
+    private static string Bound(string value)
+    {
+        if (value is null || value.Length <= 128)
+        {
+            return value;
+        }
+
+        return value[..(char.IsHighSurrogate(value[127]) ? 127 : 128)];
     }
 }

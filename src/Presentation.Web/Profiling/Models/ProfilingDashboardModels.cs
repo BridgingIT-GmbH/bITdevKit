@@ -81,8 +81,8 @@ public sealed record ProfilingDashboardAnalyzeRequest(
 /// <param name="SelectedNode">The optional selected-node timeline.</param>
 /// <example><code>var selected = response.SelectedNode;</code></example>
 public sealed record ProfilingDashboardDataResponse(
-    ProfilingStatus Status,
-    IReadOnlyList<ProfilingSession> Sessions,
-    ProfilingSessionData SelectedSession,
-    ProfilingNodeSessionData SelectedNode
+    RuntimeProfilingStatus Status,
+    IReadOnlyList<RuntimeProfilingSession> Sessions,
+    RuntimeProfilingSessionData SelectedSession,
+    RuntimeProfilingNodeSessionData SelectedNode
 );

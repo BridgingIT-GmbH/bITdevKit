@@ -173,7 +173,7 @@ public sealed class DashboardEndpoints(DashboardEndpointsOptions options) : Endp
                 var data = new AliveJobData
                 {
                     Source = "dashboard",
-                    CorrelationId = GuidGenerator.CreateSequential().ToString("N"),
+                    CorrelationId = CorrelationIdGenerator.Create(),
                 };
                 var result = await svc.DispatchAsync(
                     AliveJob.JobName,

@@ -230,5 +230,5 @@ public sealed class ChangeHistoryDashboardQueryState
         => Guid.TryParse(GetString(query, key), out var value) ? value : null;
 
     private static DateTimeOffset? GetDateTimeOffset(IQueryCollection query, string key)
-        => DateTimeOffset.TryParse(GetString(query, key), out var value) ? value : null;
+        => BridgingIT.DevKit.Presentation.Web.Dashboard.DashboardDateTime.ParseUtc(GetString(query, key));
 }

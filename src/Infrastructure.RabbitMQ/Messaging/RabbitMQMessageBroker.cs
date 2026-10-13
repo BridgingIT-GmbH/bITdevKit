@@ -5,7 +5,6 @@
 
 namespace BridgingIT.DevKit.Infrastructure.RabbitMQ;
 
-using System.Diagnostics;
 using System.Globalization;
 using Application.Messaging;
 using Common;
@@ -136,7 +135,7 @@ public class RabbitMQMessageBroker : MessageBrokerBase, IDisposable
         var basicProperties = this.publisherChannel.CreateBasicProperties();
         basicProperties.MessageId = message.MessageId;
         basicProperties.Type = messageName;
-        basicProperties.CorrelationId = Activity.Current?.GetBaggageItem(ActivityConstants.CorrelationIdTagKey);
+        basicProperties.CorrelationId = CorrelationId.ReadFrom(message.Properties);
         basicProperties.Timestamp = new AmqpTimestamp(message.Timestamp.ToUnixTimeSeconds());
 
         if (this.options.IsDurable)

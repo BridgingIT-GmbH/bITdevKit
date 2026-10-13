@@ -29,24 +29,39 @@ public class CosmosDocumentStoreProviderTests
         }
     }
 
-    [SkippableFact]
-    public async Task ConditionalMutations_WithStaleEtag_AreRejectedAtomically()
+    /// <summary>Fresh header/body ETags agree and stale conditional writes/deletes remain rejected.</summary>
+    /// <param name="quotedToken">Whether the caller supplies the token in HTTP header form.</param>
+    /// <example>await test.ConditionalMutations_WithStaleEtag_AreRejectedAtomically(true);</example>
+    [SkippableTheory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ConditionalMutations_WithStaleEtag_AreRejectedAtomically(bool quotedToken)
     {
         Skip.IfNot(this.fixture.CosmosContainer.State == TestcontainersStates.Running, "container not running");
         var client = new DocumentStoreClient<PersonStub>(this.sut);
         var key = new DocumentKey("etag", Guid.NewGuid().ToString("N"));
         var created = await client.UpsertAsync(key, new PersonStub { Id = Guid.NewGuid(), FirstName = "one" });
+        created.ShouldBeSuccess();
+        var original = await client.GetAsync(key);
+        original.ShouldBeSuccess();
+        original.Value.ETag.ShouldBe(created.Value.ETag);
+        var expectedETag = quotedToken ? $"\"{created.Value.ETag}\"" : created.Value.ETag;
 
-        var updated = await client.UpsertAsync(key, new PersonStub { Id = Guid.NewGuid(), FirstName = "two" }, new() { IfMatchETag = created.Value.ETag });
-        var staleWrite = await client.UpsertAsync(key, new PersonStub { Id = Guid.NewGuid(), FirstName = "three" }, new() { IfMatchETag = created.Value.ETag });
-        var staleDelete = await client.DeleteAsync(key, new() { IfMatchETag = created.Value.ETag });
+        var updated = await client.UpsertAsync(key, new PersonStub { Id = Guid.NewGuid(), FirstName = "two" }, new() { IfMatchETag = expectedETag });
+        updated.ShouldBeSuccess();
+        var staleWrite = await client.UpsertAsync(key, new PersonStub { Id = Guid.NewGuid(), FirstName = "three" }, new() { IfMatchETag = expectedETag });
+        var staleDelete = await client.DeleteAsync(key, new() { IfMatchETag = expectedETag });
         var current = await client.GetAsync(key);
+        current.ShouldBeSuccess();
 
         created.Value.ETag.ShouldNotBeNullOrWhiteSpace();
         updated.Value.ETag.ShouldNotBe(created.Value.ETag);
         staleWrite.Errors.ShouldContain(x => x is DocumentStoreConflictError);
         staleDelete.Errors.ShouldContain(x => x is DocumentStoreConflictError);
         current.Value.Value.FirstName.ShouldBe("two");
+        var currentETag = quotedToken ? $"\"{current.Value.ETag}\"" : current.Value.ETag;
+        (await client.DeleteAsync(key, new() { IfMatchETag = currentETag })).ShouldBeSuccess();
+        (await client.GetAsync(key)).Errors.ShouldContain(x => x is DocumentStoreNotFoundError);
     }
 
     //[Fact(Skip = "The Cosmos DB Linux Emulator Docker image does not run on Microsoft's CI environment (GitHub, Azure DevOps).")] // https://github.com/Azure/azure-cosmos-db-emulator-docker/issues/45.

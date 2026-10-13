@@ -105,8 +105,7 @@
         }
 
         var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var href = LogEntriesDashboard.BuildCorrelationHref(dashboardOptions, correlationId);
-        return new Microsoft.AspNetCore.Html.HtmlString($"<a class=\"btn btn-link btn-sm p-0 text-decoration-none\" href=\"{System.Net.WebUtility.HtmlEncode(href)}\" title=\"Open related logs\">{System.Net.WebUtility.HtmlEncode(LogEntriesDashboard.ShortId(correlationId))}</a>");
+        return DashboardCorrelationLink.Render(dashboardOptions, correlationId, shorten: true);
     }
 
     private static Microsoft.AspNetCore.Html.IHtmlContent RenderDetail(string label, string value)
@@ -123,9 +122,10 @@
         }
 
         var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
-        var href = LogEntriesDashboard.BuildCorrelationHref(dashboardOptions, correlationId);
-        return new Microsoft.AspNetCore.Html.HtmlString(
-            $"<dt>{System.Net.WebUtility.HtmlEncode("Correlation")}</dt><dd><a class=\"btn btn-link btn-sm p-0 text-decoration-none\" href=\"{System.Net.WebUtility.HtmlEncode(href)}\" title=\"Open related logs\">{System.Net.WebUtility.HtmlEncode(correlationId)}</a></dd>");
+        var link = DashboardCorrelationLink.Render(dashboardOptions, correlationId);
+        var writer = new System.IO.StringWriter();
+        link.WriteTo(writer, System.Text.Encodings.Web.HtmlEncoder.Default);
+        return new Microsoft.AspNetCore.Html.HtmlString($"<dt>Correlation</dt><dd>{writer}</dd>");
     }
 
     private static string FormatStructuredValue(object value)

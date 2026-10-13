@@ -191,6 +191,18 @@ services.AddBlobStorage(options => options
 
 `AddBlobStorage` also registers the provider-neutral `IBlobStorageDiagnosticsService` and the blob-retention background service, so diagnostics snapshots and expiration sweeping are available without additional registration calls.
 
+## Operation profiling
+
+Register Profiling before other behaviors to measure their downstream work:
+
+```csharp
+services.AddBlobStorage()
+    .WithProfilingBehavior()
+    .WithInMemoryClient("archive");
+```
+
+All seven client methods join an existing operation or create a `BlobStorage` operation with key `blobstorage:{operation}`. Dimensions are `blobstorage.store`, `blobstorage.container` and `blobstorage.operation`. Container names come from the key, upload, property update or listing query; blob names, prefixes, tokens and content are omitted. Returned download streams retain caller ownership, and timing ends when the download method returns. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for optional registration, classification and dimension comparisons.
+
 ## High-volume uploads
 
 Use the optional upload-concurrency behavior when bursts must not open an unbounded number of provider operations, contexts, transactions, or database connections. Admission is shared by every DI scope in one process and isolated by case-insensitive named store.
@@ -312,6 +324,12 @@ The dashboard page is provider-neutral and uses the configured `IBlobStoreClient
 - conditionally delete an exact blob using the ETag shown by the current row
 
 The compact list shows content type, size, modification time, expiration, and content hash. Manual and interval refreshes use the currently applied store, container, prefix, page size, full-scan consent, and continuation state. The standard refresh interval is off by default and remembered in browser-local storage. The dashboard renders metadata only and does not download blob content for list, exists, or property-style operations. The download action streams the selected blob and disposes the returned `BlobDownload`.
+
+Open Blobs at `/_bdk/dashboard/storage/blobs`. Choose a store and container, then apply a name prefix and page size. An unfiltered query requires Allow full scan consent and a provider that permits it. The table shows content type, size, modification time, expiration and hash without downloading payloads.
+
+[![Blob dashboard with store and container filters, content metadata and row actions](assets/dashboard/19-storage-blobs-blobs.png)](assets/dashboard/19-storage-blobs-blobs.png)
+
+Use Upload to add a file. Select a row's information button to edit properties and expiration, or download its content. Permalink download and copy actions appear for clients decorated with `WithPermalinks()`. Use Previous and Next when the query returns continuation pages. See the [shared dashboard setup](features-presentation-dashboard.md) for plugin discovery and authorization.
 
 ## Compression and encryption behaviors
 

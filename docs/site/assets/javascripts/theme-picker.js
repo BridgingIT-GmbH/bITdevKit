@@ -1,45 +1,21 @@
 (function () {
   "use strict";
 
-  const labels = {
-    dark: "Dark",
-    catppuccin: "Catppuccin",
-    darkforest: "Darkforest",
-    carbon: "Carbon",
-    tokionights: "Tokyo Night",
-    matrix: "Matrix",
-    light: "Light",
-    system: "System"
-  };
-
   function getSelectedTheme() {
-    const palette = typeof __md_get === "function" ? __md_get("__palette") : null;
-    const color = palette && palette.color;
-
-    if (color && color.media === "(prefers-color-scheme)") {
-      return "system";
-    }
-
-    if (color && labels[color.scheme]) {
-      return color.scheme;
-    }
-
-    const scheme = document.body.getAttribute("data-md-color-scheme");
-    return labels[scheme] ? scheme : "system";
+    return document.body.getAttribute("data-md-color-scheme") || "tokyo-night";
   }
 
   function updatePicker(picker) {
     const theme = getSelectedTheme();
     const label = picker.querySelector("[data-bdk-theme-label]");
 
-    if (label) {
-      label.textContent = labels[theme];
-    }
-
     picker.querySelectorAll("[data-bdk-theme-option]").forEach(function (option) {
       const active = option.dataset.bdkThemeOption === theme;
       option.classList.toggle("is-active", active);
       option.setAttribute("aria-checked", active ? "true" : "false");
+      if (active && label) {
+        label.textContent = option.querySelector("[data-bdk-theme-name]").textContent;
+      }
     });
   }
 

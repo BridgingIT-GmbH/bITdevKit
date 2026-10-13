@@ -307,6 +307,14 @@ The `diag` group centralizes point-in-time runtime introspection.
 
 All output is tabular via Spectre.Console for readability and consistent formatting.
 
+## Dashboard console
+
+Open Console at `/_bdk/dashboard/console` with console commands and the [Dashboard](features-presentation-dashboard.md) registered. The browser terminal executes the same registered commands through the dashboard's SignalR hub. Wait for Connected, then enter `help` to list the available groups and commands.
+
+[![Dashboard console connected to the host and displaying command help](assets/dashboard/15-console-console.png)](assets/dashboard/15-console-console.png)
+
+Use the toolbar to cancel a running command or clear terminal output. The Logs button opens a command-log panel when `ILogEntryService` is registered. Commands run against the current application and retain their normal validation and authorization requirements. The shared dashboard authentication settings govern access to this page.
+
 ## Non-interactive invocation
 
 You can host commands in a console entry point to perform a single operation based on command-line args:

@@ -133,10 +133,10 @@
             <div class="tab-pane fade show active" id="jobs-graph-realtime" role="tabpanel" tabindex="0">
                 <div class="jobs-graph-canvas" id="jobs-realtime-graph"></div>
                 <div class="jobs-legend">
-                    <span><i class="jobs-dot" style="background:#198754"></i>Running</span>
-                    <span><i class="jobs-dot" style="background:#dc3545"></i>Failed</span>
-                    <span><i class="jobs-dot" style="background:#0d6efd"></i>Due</span>
-                    <span><i class="jobs-dot" style="background:#20c997"></i>Completed</span>
+                    <span><i class="jobs-dot" style="background:var(--bs-success)"></i>Running</span>
+                    <span><i class="jobs-dot" style="background:var(--bs-danger)"></i>Failed</span>
+                    <span><i class="jobs-dot" style="background:var(--bs-primary)"></i>Due</span>
+                    <span><i class="jobs-dot" style="background:var(--bs-info)"></i>Completed</span>
                 </div>
             </div>
             <div class="tab-pane fade" id="jobs-graph-history" role="tabpanel" tabindex="0">
@@ -149,9 +149,9 @@
                 </div>
                 <div class="jobs-graph-canvas" id="jobs-history-graph"></div>
                 <div class="jobs-legend">
-                    <span><i class="jobs-dot" style="background:#198754"></i>Completed</span>
-                    <span><i class="jobs-dot" style="background:#dc3545"></i>Failed</span>
-                    <span><i class="jobs-dot" style="background:#0d6efd"></i>Running</span>
+                    <span><i class="jobs-dot" style="background:var(--bs-success)"></i>Completed</span>
+                    <span><i class="jobs-dot" style="background:var(--bs-danger)"></i>Failed</span>
+                    <span><i class="jobs-dot" style="background:var(--bs-primary)"></i>Running</span>
                 </div>
             </div>
         </div>
@@ -245,7 +245,7 @@
                 await Plotly.react(host, traces, getPlotLayout(), {
                     displayModeBar: false,
                     responsive: true,
-                    staticPlot: true,
+                    staticPlot: false,
                 });
             } catch {
                 // best effort chart rendering
@@ -304,10 +304,10 @@
             const x = realtimeSamples.map(x => new Date(x.timestampUtc));
             const theme = window.bdkDashboard.getChartTheme();
             await renderPlot(realtimeHost, [
-                { x, y: realtimeSamples.map(x => x.running ?? 0), mode: 'lines', line: { color: theme.success, width: 2 }, type: 'scatter' },
-                { x, y: realtimeSamples.map(x => x.due ?? 0), mode: 'lines', line: { color: theme.primary, width: 2 }, type: 'scatter' },
-                { x, y: getDeltaSeries(realtimeSamples, 'completed'), mode: 'lines', line: { color: theme.info, width: 2 }, type: 'scatter' },
-                { x, y: getDeltaSeries(realtimeSamples, 'failed'), mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
+                { x, y: realtimeSamples.map(x => x.running ?? 0), name: 'Running', mode: 'lines', line: { color: theme.success, width: 2 }, type: 'scatter' },
+                { x, y: realtimeSamples.map(x => x.due ?? 0), name: 'Due', mode: 'lines', line: { color: theme.primary, width: 2 }, type: 'scatter' },
+                { x, y: getDeltaSeries(realtimeSamples, 'completed'), name: 'Completed', mode: 'lines', line: { color: theme.info, width: 2 }, type: 'scatter' },
+                { x, y: getDeltaSeries(realtimeSamples, 'failed'), name: 'Failed', mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
             ]);
         }
 
@@ -359,9 +359,9 @@
                 const theme = window.bdkDashboard.getChartTheme();
 
                 await renderPlot(historyHost, [
-                    { x, y: buckets.map(x => x.completed ?? 0), mode: 'lines', line: { color: theme.success, width: 2 }, type: 'scatter' },
-                    { x, y: buckets.map(x => x.failed ?? 0), mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
-                    { x, y: buckets.map(x => x.running ?? 0), mode: 'lines', line: { color: theme.primary, width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(x => x.completed ?? 0), name: 'Completed', mode: 'lines', line: { color: theme.success, width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(x => x.failed ?? 0), name: 'Failed', mode: 'lines', line: { color: theme.danger, width: 2 }, type: 'scatter' },
+                    { x, y: buckets.map(x => x.running ?? 0), name: 'Running', mode: 'lines', line: { color: theme.primary, width: 2 }, type: 'scatter' },
                 ]);
             } catch {
                 // best effort graph loading

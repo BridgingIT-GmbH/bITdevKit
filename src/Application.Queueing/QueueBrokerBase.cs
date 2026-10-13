@@ -10,6 +10,8 @@ using Microsoft.Extensions.Logging.Abstractions;
 /// </summary>
 public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
 {
+    private readonly IProfilingExecutionBoundaryBehavior profilingBoundary;
+
     /// <summary>
     /// Initializes a new instance of the <c>QueueBrokerBase</c> class.
     /// </summary>
@@ -32,6 +34,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         this.Serializer = serializer ?? new SystemTextJsonSerializer();
         this.EnqueuerBehaviors = enqueuerBehaviors ?? [];
         this.HandlerBehaviors = handlerBehaviors ?? [];
+        this.profilingBoundary = this.HandlerBehaviors.OfType<IProfilingExecutionBoundaryBehavior>().FirstOrDefault();
     }
 
     /// <summary>
@@ -158,11 +161,16 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
     {
         ArgumentNullException.ThrowIfNull(message);
 
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message.Properties);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
+        using var logScope = this.Logger.BeginScope(new Dictionary<string, object> { [Constants.CorrelationIdKey] = correlationId });
+
         var messageType = message.GetType().PrettyName(false);
 
         TypedLogger.LogEnqueue(this.Logger, Constants.LogKey, messageType, message.MessageId);
         this.Logger.LogDebug("[{LogKey}] enqueue validating (type={QueueMessageType}, id={MessageId})", Constants.LogKey, messageType, message.MessageId);
         this.ValidateEnqueue(message);
+        CorrelationId.PropagateTo(message.Properties);
 
         this.Logger.LogDebug(
             $"{{LogKey}} enqueue behaviors: {this.EnqueuerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {this.GetType().Name}:Enqueue",
@@ -204,9 +212,8 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         ArgumentNullException.ThrowIfNull(messageRequest.Message);
 
         var messageType = messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message.Properties.TryGetValue(Constants.CorrelationIdKey, out var correlationValue)
-            ? correlationValue?.ToString()
-            : null;
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message.Properties.TryGetValue(Constants.FlowIdKey, out var flowValue)
             ? flowValue?.ToString()
             : null;
@@ -249,7 +256,8 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         ArgumentNullException.ThrowIfNull(subscription);
 
         messageType ??= messageRequest.Message.GetType().PrettyName(false);
-        var correlationId = messageRequest.Message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var correlationId = CorrelationIdGenerator.GetOrCreate(messageRequest.Message.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = messageRequest.Message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
 
         using var scope = this.Logger.BeginScope(new Dictionary<string, object>
@@ -316,7 +324,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
     /// <param name="handlerMethod">The handler method used by the operation.</param>
     /// <param name="handledMessage">The handled message used by the operation.</param>
     /// <returns>A task that represents the asynchronous operation.</returns>
-    protected virtual Task ProcessSubscriptionHandler(
+    protected virtual async Task ProcessSubscriptionHandler(
         QueueMessageRequest messageRequest,
         object handlerInstance,
         System.Reflection.MethodInfo handlerMethod,
@@ -327,6 +335,8 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
         ArgumentNullException.ThrowIfNull(handlerMethod);
         ArgumentNullException.ThrowIfNull(handledMessage);
 
+        using var profilingExecutionBoundary = this.profilingBoundary?.BeginExecutionBoundary();
+
         this.Logger.LogDebug($"{{LogKey}} handle behaviors: {this.HandlerBehaviors.SafeNull().Select(b => b.GetType().Name).ToString(" -> ")} -> {handlerInstance.GetType().Name}:Handle", Constants.LogKey);
 
         async Task Next()
@@ -334,7 +344,7 @@ public abstract partial class QueueBrokerBase : IQueueBrokerRuntime
             await ((Task)handlerMethod.Invoke(handlerInstance, [handledMessage, messageRequest.CancellationToken])).AnyContext();
         }
 
-        return this.HandlerBehaviors.SafeNull()
+        await this.HandlerBehaviors.SafeNull()
             .Reverse()
             .Aggregate((QueueHandlerDelegate)Next,
                 (next, behavior) => async () =>

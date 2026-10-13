@@ -83,14 +83,17 @@ public class JobTestHarnessTests(ITestOutputHelper output) : JobSchedulerTestBas
         materialized.IsSuccess.ShouldBeTrue();
         var cronOccurrence = await harness.FindOccurrenceAsync("cron-job", "cron");
         cronOccurrence.ShouldNotBeNull();
-        Guid.TryParseExact(cronOccurrence.CorrelationId, "N", out _).ShouldBeTrue();
+        cronOccurrence.CorrelationId.Length.ShouldBe(12);
+        CorrelationId.IsValid(cronOccurrence.CorrelationId).ShouldBeTrue();
         cronOccurrence.CorrelationId.ShouldNotBe(cronOccurrence.OccurrenceKey);
         (await harness.FindOccurrenceAsync("delayed-job", "delayed")).ShouldNotBeNull();
         (await harness.FindOccurrenceAsync("startup-job", "startup")).ShouldNotBeNull();
         manualDispatch.IsSuccess.ShouldBeTrue();
         var manualOccurrence = await harness.FindOccurrenceAsync("manual-job", "manual");
         manualOccurrence.ShouldNotBeNull();
-        Guid.TryParseExact(manualOccurrence.CorrelationId, "N", out _).ShouldBeTrue();
+        manualOccurrence.CorrelationId.Length.ShouldBe(12);
+        CorrelationId.IsValid(manualOccurrence.CorrelationId).ShouldBeTrue();
+        manualOccurrence.CorrelationId.ShouldNotBe(cronOccurrence.CorrelationId);
     }
 
     [Fact]

@@ -14,14 +14,23 @@ using Microsoft.Extensions.Logging;
 /// </summary>
 /// <param name="scopeFactory">The scope factory used to create execution scopes.</param>
 /// <param name="tracker">The in-memory execution tracker.</param>
-/// <param name="loggerFactory">The logger factory used for internal pipeline logging.</param>
+/// <param name="loggerFactory">The logger factory used for pipeline logging.</param>
+/// <param name="validationInvoker">The execution context validator.</param>
+/// <param name="profiling">Optional profiling used only to isolate independently scheduled execution.</param>
+/// <example><code>services.AddPipelines().WithPipeline&lt;ImportPipeline&gt;();</code></example>
 public class PipelineRuntime(
     IServiceScopeFactory scopeFactory,
     InMemoryPipelineExecutionTracker tracker,
     ILoggerFactory loggerFactory,
-    IPipelineContextValidationInvoker validationInvoker) : IPipelineRuntime
+    IPipelineContextValidationInvoker validationInvoker,
+    IOperationProfiler profiling = null) : IPipelineRuntime
 {
     private readonly ILogger logger = loggerFactory.CreateLogger<PipelineRuntime>();
+
+    private IDisposable BeginProfilingBoundary()
+    {
+        return profiling.BeginSafeExecutionBoundary();
+    }
 
     /// <inheritdoc />
     public async Task<Result> ExecuteAsync(
@@ -64,6 +73,7 @@ public class PipelineRuntime(
 
         _ = Task.Run(async () =>
         {
+            using var boundary = BeginProfilingBoundary();
             PipelineCompletion completion = null;
 
             try
@@ -124,7 +134,8 @@ public class PipelineRuntime(
         CancellationToken cancellationToken)
     {
         var state = new PipelineRunState(executionId, Result.Success());
-        var correlationId = Activity.Current?.TraceId.ToString() ?? executionId.ToString("N");
+        var correlationId = CorrelationId.Current ?? CorrelationIdGenerator.Create();
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var pipelineStarted = false;
         IReadOnlyList<IPipelineHookInvoker> hooks = Array.Empty<IPipelineHookInvoker>();
         IReadOnlyList<IPipelineBehaviorInvoker> behaviors = Array.Empty<IPipelineBehaviorInvoker>();
@@ -155,7 +166,7 @@ public class PipelineRuntime(
             behaviors = this.ResolveBehaviors(serviceProvider, definition);
 
             // Behaviors wrap the core step loop from outermost to innermost.
-            Func<ValueTask<Result>> next = () => this.ExecuteStepsCoreAsync(definition, context, options, serviceProvider, state, hooks, behaviors, cancellationToken);
+            var next = () => this.ExecuteStepsCoreAsync(definition, context, options, serviceProvider, state, hooks, behaviors, cancellationToken);
             foreach (var behavior in behaviors.Reverse())
             {
                 var capturedNext = next;
@@ -297,7 +308,7 @@ public class PipelineRuntime(
         try
         {
             // Step behaviors wrap the actual step execution just like pipeline behaviors wrap the full step loop.
-            Func<ValueTask<PipelineControl>> next = () => step.ExecuteAsync(context, result, options, cancellationToken);
+            var next = () => step.ExecuteAsync(context, result, options, cancellationToken);
             foreach (var behavior in behaviors.Reverse())
             {
                 var capturedNext = next;

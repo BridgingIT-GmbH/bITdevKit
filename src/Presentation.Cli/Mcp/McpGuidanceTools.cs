@@ -112,6 +112,80 @@ public sealed class McpGuidanceTools
                     "bdk_errors_recent"
                 ],
                 "Use docs to match the pipeline structure, then verify execution through logs or project-owned diagnostics."),
+            ["profiling"] = new(
+                "profiling",
+                "Instrument logical operations and HTTP requests with bounded recordings, aggregate segments and typed metadata while preserving business behavior.",
+                "docs/features-profiling.md",
+                [
+                    "Read the Operation and Request setup and Enrichment and segments sections of the Profiling documentation. Operation Profiling records application work; Runtime Profiling separately samples process CPU, memory and GC.",
+                    "Find the existing AddProfiling(...).WithOperationProfiling() registration, provider and feature-owned profiling behaviors. WithRequestProfiling() adds the optional HTTP adapter; application recordings do not need a Runtime session.",
+                    "Choose the outer business boundary that owns the operation. HTTP middleware owns selected requests, so enrich that owner and add segments. Reusable services and behaviors should use JoinOrStartAsync to join the current operation or own one root when called independently; use RunOperationAsync or BeginOperation for deliberately independent roots.",
+                    "Use stable operation kinds and keys, such as catalog:refresh or a route template. Keep dimensions useful for filtering, such as storage location, container, category or operation name; do not use entity IDs, execution IDs, correlation IDs, per-file paths or blob keys as dimensions.",
+                    "Time meaningful work with RunSegmentAsync or BeginSegment, and nest through the owning scope. Repeated case-insensitive full paths aggregate invocation counts and total/self durations. Parallel durations can overlap; recordings do not retain exact invocation order or invocation percentiles.",
+                    "Prefer delegate helpers to observe completion, exceptions and cancellation while preserving the business result. For IResult-returning work, pass OperationProfilingHelpers.ClassifyResult as the classifier so a failed result is not reported as success.",
+                    "Dispose every manual scope and explicitly call Complete, Fail or Cancel. Disposing an uncompleted scope records incomplete evidence. Root and segment outcomes are separate; a failed child does not automatically make its caller fail.",
+                    "Keep correlation IDs in lookup metadata. When owning an independent root, pass CorrelationId.Current through OperationProfilingStartRequest.CorrelationId where available; an execution boundary clears inherited profiling ownership, so correlation should be propagated explicitly.",
+                    "Use typed SetDimension values and finite numeric SetMeasurement values with units. For repeated segment measurements choose a compatible MeasurementAggregation. Avoid request bodies, credentials, result payloads and raw exception stacks in metadata.",
+                    "Recording is synchronous and nonblocking: completed captures enter a bounded queue and a periodic writer persists them. Retention, sampling, capture limits and queue loss can leave absent or partial evidence; an execution ID is not a persistence receipt. Queries do not force a flush.",
+                    "Respect disabled capture, suppression and HTTP blacklists. Reuse existing profiling behaviors instead of measuring the same boundary twice. Independent worker entry points may use BeginSafeExecutionBoundary; do not clear suppression in ordinary nested business calls.",
+                    "Use bdk_api_search and bdk_api_get to confirm IOperationProfiler, OperationProfilingHelpers and scope signatures. Test success, failed IResult values, cancellation, repeated/nested segments and business execution with capture disabled. When a runtime is available, verify with bdk_profiling_query, bdk_profiling_details, bdk_profiling_insights and bdk_profiling_compare."
+                ],
+                [
+                    "bdk_docs_search", "bdk_docs_get", "bdk_api_search", "bdk_api_get",
+                    "bdk_profiling_query", "bdk_profiling_details", "bdk_profiling_insights", "bdk_profiling_compare",
+                    "bdk_investigate_correlation"
+                ],
+                "Read the profiling docs and exact API signatures, inspect existing capture registration and ownership, then add stable operations, aggregate segments and bounded metadata. Preserve results, exceptions and cancellation. Validate focused tests; use the profiling runtime tools only when an application is running.",
+                [
+                    new("Enable operation recordings; add HTTP capture only when needed", """
+                        builder.Services.AddProfiling(options => options.Enabled(builder.Environment.IsDevelopment()))
+                            .WithOperationProfiling()
+                            .WithRequestProfiling(); // Optional HTTP adapter.
+                        """),
+                    new("Join the current operation or own one root, and classify Result failures", """
+                        // Inside an application service; loadAsync is the existing business delegate.
+                        return await profiling.JoinOrStartAsync(
+                            new OperationProfilingStartRequest
+                            {
+                                Key = "catalog:load",
+                                Kind = "Service",
+                                CorrelationId = CorrelationId.Current
+                            },
+                            async (scope, token) =>
+                            {
+                                scope.SetDimension("storage.location", "catalog");
+                                return await scope.RunSegmentAsync("Read", (_, ct) => loadAsync(ct), token,
+                                    value => OperationProfilingHelpers.ClassifyResult(value));
+                            },
+                            cancellationToken,
+                            value => OperationProfilingHelpers.ClassifyResult(value));
+                        """),
+                    new("Explicit outcomes for a manual root and segment", """
+                        using var operation = profiling.BeginOperation(new OperationProfilingStartRequest
+                        {
+                            Key = "catalog:refresh", Kind = "Service", CorrelationId = CorrelationId.Current
+                        });
+                        using var segment = operation.BeginSegment("Read");
+                        try
+                        {
+                            await loadAsync(cancellationToken);
+                            segment.Complete();
+                            operation.Complete();
+                        }
+                        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+                        {
+                            segment.Cancel();
+                            operation.Cancel();
+                            throw;
+                        }
+                        catch (Exception exception)
+                        {
+                            segment.Fail(exception);
+                            operation.Fail(exception);
+                            throw;
+                        }
+                        """)
+                ]),
             ["caching"] = new(
                 "caching",
                 "Use the DevKit caching abstraction for bounded in-process cache access without leaking implementation details.",
@@ -523,6 +597,7 @@ public sealed class McpGuidanceTools
         new("queueing", ["queue", "queues", "queued", "queueing", "queue message", "queue processor"]),
         new("orchestration", ["orchestration", "orchestrations", "orchestrator", "workflow", "signal", "timer"]),
         new("pipelines", ["pipeline", "pipelines", "step", "steps"]),
+        new("profiling", ["profiling", "operation profiling", "request profiling", "operation recording", "record operations", "recordings", "segment", "segments", "ioperationprofiler", "runsegmentasync", "beginsegment", "joinorstartasync"]),
         new("caching", ["cache", "caching", "memory cache"]),
         new("mapping", ["map", "maps", "mapping", "mapper", "mapster", "dto conversion"]),
         new("serialization", ["serialization", "serializer", "serializing", "json", "payload"]),
@@ -567,7 +642,8 @@ public sealed class McpGuidanceTools
         "blob_storage",
         "file_storage",
         "monitoring",
-        "caching"
+        "caching",
+        "profiling"
     };
 
     /// <summary>
@@ -661,6 +737,7 @@ public sealed class McpGuidanceTools
                     guidance.Docs,
                     query,
                     steps = guidance.Steps,
+                    examples = guidance.Examples ?? [],
                     recommendedTools = GetRecommendedTools(guidance),
                     prompt = guidance.Prompt,
                     workflow = GetWorkflow(guidance)
@@ -679,6 +756,7 @@ public sealed class McpGuidanceTools
                     guidance.Summary,
                     guidance.Docs,
                     steps = guidance.Steps,
+                    examples = guidance.Examples ?? [],
                     recommendedTools = GetRecommendedTools(guidance),
                     prompt = guidance.Prompt
                 }).ToArray(),
@@ -714,7 +792,9 @@ public sealed class McpGuidanceTools
 
         if (UsesApiReference(guidance))
         {
-            calls.Add(new McpNextCall("bdk_api_search", new { query = guidance.Topic, topic = guidance.Topic }));
+            calls.Add(new McpNextCall("bdk_api_search", guidance.Topic == "profiling"
+                ? new { query = "IOperationProfiler" }
+                : (object)new { query = guidance.Topic, topic = guidance.Topic }));
         }
 
         calls.Add(new McpNextCall("bdk_project_summary", new { }));
@@ -772,7 +852,13 @@ public sealed class McpGuidanceTools
         string Docs,
         IReadOnlyList<string> Steps,
         IReadOnlyList<string> RecommendedTools,
-        string Prompt);
+        string Prompt,
+        IReadOnlyList<GuidanceExample> Examples = null);
+
+    private sealed record GuidanceExample(string Title, string Code)
+    {
+        public string Language => "csharp";
+    }
 
     private sealed record GuidanceTopicAlias(string Topic, IReadOnlyList<string> Terms);
 }

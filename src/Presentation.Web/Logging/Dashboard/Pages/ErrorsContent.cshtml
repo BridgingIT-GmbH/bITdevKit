@@ -110,7 +110,7 @@ else
                                         {
                                             <tr>
                                                 <td class="text-muted text-nowrap">@property.Key</td>
-                                                <td class="text-break">@property.Value</td>
+                                                <td class="text-break">@if (string.Equals(property.Key, "CorrelationId", StringComparison.OrdinalIgnoreCase)) { @RenderLogEntriesLink(logEntriesPath, filter, "correlationId", "Correlation", property.Value?.ToString()) } else { @property.Value }</td>
                                             </tr>
                                         }
                                         </tbody>
@@ -313,6 +313,12 @@ else
         };
 
         var href = $"{path}{LogEntriesDashboard.BuildQuery(target)}";
+        if (string.Equals(name, "correlationId", StringComparison.Ordinal))
+        {
+            return new HtmlContentBuilder().Append(label + ": ")
+                .AppendHtml(DashboardCorrelationLink.Render(null, value, shorten: true, href: href));
+        }
+
         return new HtmlString($"""
             <a class="btn btn-link btn-sm p-0 text-decoration-none" href="{HtmlEncoder.Default.Encode(href)}">{HtmlEncoder.Default.Encode(label)}: {HtmlEncoder.Default.Encode(LogEntriesDashboard.ShortId(value))}</a>
             """);

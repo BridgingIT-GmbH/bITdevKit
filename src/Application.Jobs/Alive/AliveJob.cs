@@ -26,7 +26,7 @@ public sealed class AliveJobData
     /// <summary>
     /// Gets or sets the correlation identifier assigned to this probe.
     /// </summary>
-    public string CorrelationId { get; set; } = GuidGenerator.CreateSequential().ToString("N");
+    public string CorrelationId { get; set; } = CorrelationIdGenerator.Create();
 }
 
 /// <summary>
@@ -54,7 +54,7 @@ public sealed class AliveJob(ILogger<AliveJob> logger) : JobBase<AliveJobData>
     {
         var source = string.IsNullOrWhiteSpace(context.Data?.Source) ? "dashboard" : context.Data.Source.Trim();
         var correlationId = string.IsNullOrWhiteSpace(context.Data?.CorrelationId)
-            ? GuidGenerator.CreateSequential().ToString("N")
+            ? CorrelationIdGenerator.Create()
             : context.Data.CorrelationId.Trim();
 
         await Task.Delay(600, cancellationToken); // Simulate some work

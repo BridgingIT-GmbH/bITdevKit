@@ -31,7 +31,7 @@ else
     var problemCount = metrics.FailedCount + metrics.CancelledCount + metrics.TerminatedCount;
 
     <div class="row g-2 orchestrations-card-grid">
-        @RenderMetricCard("Total", metrics.TotalCount, null)
+        @RenderMetricCard("Total", metrics.TotalCount, "text-primary")
         @RenderMetricCard("Running", metrics.RunningCount, "text-info")
         @RenderMetricCard("Waiting", metrics.WaitingCount, "text-warning")
         @RenderMetricCard("Paused", metrics.PausedCount, null)
@@ -401,10 +401,12 @@ else
 
     private static Microsoft.AspNetCore.Html.IHtmlContent RenderMetricCard(string title, long value, string css)
     {
+        css = value > 0 ? css : null;
+        var tone = css?.Replace("text-", string.Empty) ?? string.Empty;
         var valueClass = string.IsNullOrWhiteSpace(css) ? "fs-4 fw-semibold" : $"fs-4 fw-semibold {css}";
         return new Microsoft.AspNetCore.Html.HtmlString($"""
             <div class="col-6 col-lg-2">
-                <div class="card h-100">
+                <div class="card dashboard-metric h-100" data-metric-tone="{tone}">
                     <div class="card-body p-3">
                         <div class="text-muted small">{title}</div>
                         <div class="{valueClass}">{value.ToString("N0", CultureInfo.InvariantCulture)}</div>

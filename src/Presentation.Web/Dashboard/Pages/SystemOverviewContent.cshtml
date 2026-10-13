@@ -106,7 +106,7 @@
                     <h6 class="card-title mb-0">CPU Trend</h6>
                     <span class="text-muted small">last 48 samples</span>
                 </div>
-                @RenderTrendChart("system-cpu-history")
+                @RenderTrendChart("system-cpu-history", "CPU", "%")
             </div>
         </section>
 
@@ -116,7 +116,7 @@
                     <h6 class="card-title mb-0">Memory Trend</h6>
                     <span class="text-muted small">working set</span>
                 </div>
-                @RenderTrendChart("system-memory-history")
+                @RenderTrendChart("system-memory-history", "Working set", "MB")
             </div>
         </section>
 
@@ -126,7 +126,7 @@
                     <h6 class="card-title mb-0">Request Rate</h6>
                     <span class="text-muted small">requests/min</span>
                 </div>
-                @RenderTrendChart("system-request-history")
+                @RenderTrendChart("system-request-history", "Request rate", "requests/min")
             </div>
         </section>
 
@@ -136,7 +136,7 @@
                     <h6 class="card-title mb-0">Latency Trend</h6>
                     <span class="text-muted small">average ms</span>
                 </div>
-                @RenderTrendChart("system-latency-history")
+                @RenderTrendChart("system-latency-history", "Average latency", "ms")
             </div>
         </section>
 
@@ -338,6 +338,7 @@
         var offset = Circumference - (Circumference * clamped / 100d);
         return new HtmlString($"""
             <svg viewBox="0 0 100 100" role="img" aria-label="CPU usage {FormatNumber(clamped)} percent">
+                <title>CPU usage {FormatNumber(clamped)}%</title>
                 <circle class="dashboard-system-gauge-track" cx="50" cy="50" r="40"></circle>
                 <circle class="dashboard-system-gauge-value" cx="50" cy="50" r="40" stroke-dasharray="{Invariant(Circumference)}" stroke-dashoffset="{Invariant(offset)}"></circle>
             </svg>
@@ -360,10 +361,10 @@
         return new HtmlString(html);
     }
 
-    private IHtmlContent RenderTrendChart(string id)
+    private IHtmlContent RenderTrendChart(string id, string label, string unit)
     {
         return new HtmlString($"""
-            <div class="dashboard-system-chart" id="{HtmlEncode(id)}">
+            <div class="dashboard-system-chart" id="{HtmlEncode(id)}" data-series-label="{HtmlEncode(label)}" data-series-unit="{HtmlEncode(unit)}" tabindex="0" role="img" aria-label="{HtmlEncode(label)} history, {HtmlEncode(unit)}" aria-describedby="{HtmlEncode(id)}-tooltip">
                 <svg viewBox="0 0 300 92" preserveAspectRatio="none" aria-hidden="true">
                     <line class="dashboard-system-chart-grid" x1="0" y1="23" x2="300" y2="23"></line>
                     <line class="dashboard-system-chart-grid" x1="0" y1="46" x2="300" y2="46"></line>
@@ -371,6 +372,7 @@
                     <polyline class="dashboard-system-chart-line" data-system-line points=""></polyline>
                     <circle class="dashboard-system-chart-point" data-system-point cx="150" cy="46" r="3.5" opacity="0"></circle>
                 </svg>
+                <div class="dashboard-system-chart-tooltip" id="{HtmlEncode(id)}-tooltip" role="tooltip" hidden></div>
             </div>
             """);
     }

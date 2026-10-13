@@ -24,15 +24,20 @@ public sealed class LogEntryMcpHandler(IServiceProvider services) : IMcpHandler
         Capability("logs.purge", McpToolset.Admin, "Purges retained log entries."),
         Capability("errors.recent", McpToolset.Diagnostics, "Returns recent error log entries."),
         Capability("errors.details", McpToolset.Diagnostics, "Returns a selected error log entry."),
-        Capability("correlation.inspect", McpToolset.Diagnostics, "Returns log entries for a correlation id."),
+        Capability("correlation.inspect", McpToolset.Diagnostics, "Returns retained logs and profiling executions for a correlation id.") with { ArgumentSchema = ProfilingMcpSchemas.Correlation() },
         Capability("investigate.recentErrors", McpToolset.Diagnostics, "Aggregates recent error diagnostics."),
-        Capability("investigate.correlation", McpToolset.Diagnostics, "Aggregates diagnostics for a correlation id.")
+        Capability("investigate.correlation", McpToolset.Diagnostics, "Aggregates diagnostics for a correlation id.") with { ArgumentSchema = ProfilingMcpSchemas.Correlation() }
     ];
 
     /// <inheritdoc />
     public async ValueTask<McpResponse> HandleAsync(McpRequest request, CancellationToken cancellationToken)
     {
         var service = services.GetService<ILogEntryService>();
+        if (request.Operation is "correlation.inspect" or "investigate.correlation")
+        {
+            return await this.CorrelationAsync(service, request.Arguments, cancellationToken).ConfigureAwait(false);
+        }
+
         if (service is null)
         {
             return McpResponse.Unavailable(
@@ -48,7 +53,6 @@ public sealed class LogEntryMcpHandler(IServiceProvider services) : IMcpHandler
             "logs.purge" => await PurgeAsync(service, request.Arguments, cancellationToken).ConfigureAwait(false),
             "errors.recent" => await QueryAsync(service, request.Arguments, cancellationToken, "errors").ConfigureAwait(false),
             "errors.details" => await ErrorDetailsAsync(service, request.Arguments, cancellationToken).ConfigureAwait(false),
-            "correlation.inspect" or "investigate.correlation" => await CorrelationAsync(service, request.Arguments, cancellationToken).ConfigureAwait(false),
             "investigate.recentErrors" => await RecentErrorsAsync(service, request.Arguments, cancellationToken).ConfigureAwait(false),
             _ => McpResponse.Unavailable(McpErrorCode.FeatureUnavailable, $"Operation '{request.Operation}' is not handled by log diagnostics.")
         };
@@ -87,7 +91,7 @@ public sealed class LogEntryMcpHandler(IServiceProvider services) : IMcpHandler
             : McpResponse.Success($"Returned error log entry {id.Value}.", new { entry });
     }
 
-    private static async Task<McpResponse> CorrelationAsync(ILogEntryService service, JsonElement arguments, CancellationToken cancellationToken)
+    private async Task<McpResponse> CorrelationAsync(ILogEntryService service, JsonElement arguments, CancellationToken cancellationToken)
     {
         var correlationId = McpArgumentReader.GetString(arguments, "correlationId");
         if (string.IsNullOrWhiteSpace(correlationId))
@@ -95,22 +99,44 @@ public sealed class LogEntryMcpHandler(IServiceProvider services) : IMcpHandler
             return McpResponse.Unavailable(McpErrorCode.OperationFailed, "correlationId is required.");
         }
 
-        var request = BuildQueryRequest(arguments);
-        request.CorrelationId = correlationId;
-        request.PageSize = Math.Min(request.PageSize, 200);
-        var response = await service.QueryAsync(request, cancellationToken).ConfigureAwait(false);
-        var errors = response.Items?.Where(item => string.Equals(item.Level, "Error", StringComparison.OrdinalIgnoreCase) || !string.IsNullOrWhiteSpace(item.Exception)).ToArray() ?? [];
+        LogEntryQueryResponse response = null;
+        var logsReason = service is null ? "Retained logs are not registered in this runtime." : null;
+        if (service is not null)
+        {
+            try
+            {
+                var request = BuildQueryRequest(arguments);
+                request.CorrelationId = correlationId;
+                request.PageSize = Math.Min(request.PageSize, 200);
+                response = await service.QueryAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested) { throw; }
+            catch (Exception) { logsReason = "Retained logs could not be read."; }
+        }
+
+        var profiling = await new ProfilingMcpHandler(services).InspectCorrelationAsync(correlationId, arguments, cancellationToken).ConfigureAwait(false);
+        if (response is null && !profiling.Available)
+        {
+            return McpResponse.Unavailable(McpErrorCode.FeatureUnavailable, "No correlation evidence is available.",
+                $"{logsReason} Profiling: {profiling.Code}.");
+        }
+
+        var errors = response?.Items?.Where(item => string.Equals(item.Level, "Error", StringComparison.OrdinalIgnoreCase) || !string.IsNullOrWhiteSpace(item.Exception)).ToArray() ?? [];
 
         return McpResponse.Success(
-            $"Correlation '{correlationId}' returned {response.Items.Count} log entr{(response.Items.Count == 1 ? "y" : "ies")} and {errors.Length} error entr{(errors.Length == 1 ? "y" : "ies")}.",
+            $"Correlation '{correlationId}' returned {response?.Items?.Count ?? 0} log entries, {errors.Length} error entries and {(profiling.Available ? "available" : "unavailable")} profiling evidence.",
             new
             {
                 correlationId,
-                logs = response.Items,
+                logs = response?.Items ?? [],
                 errors,
-                response.ContinuationToken
+                continuationToken = response?.ContinuationToken,
+                logsAvailable = response is not null,
+                logsReason,
+                profiling
             },
-            truncated: !string.IsNullOrWhiteSpace(response.ContinuationToken));
+            truncated: !string.IsNullOrWhiteSpace(response?.ContinuationToken) || profiling.Truncated,
+            next: profiling.Next);
     }
 
     private static async Task<McpResponse> RecentErrorsAsync(ILogEntryService service, JsonElement arguments, CancellationToken cancellationToken)

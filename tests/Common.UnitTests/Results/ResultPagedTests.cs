@@ -326,7 +326,7 @@ public class ResultPagedTests
 
         // Act
 #pragma warning disable IDE0007 // Use implicit type
-        Result result = sut.Unwrap();
+        var result = sut.Unwrap();
 #pragma warning restore IDE0007 // Use implicit type
 
         // Assert

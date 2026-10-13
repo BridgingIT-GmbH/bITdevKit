@@ -12,16 +12,16 @@ using BridgingIT.DevKit.Common;
 public sealed class DashboardProfilingViewModel
 {
     /// <summary>Gets or sets the current feature and active-session status.</summary>
-    public ProfilingStatus Status { get; set; }
+    public RuntimeProfilingStatus Status { get; set; }
 
     /// <summary>Gets or sets stored sessions in provider order.</summary>
-    public IReadOnlyList<ProfilingSession> Sessions { get; set; } = [];
+    public IReadOnlyList<RuntimeProfilingSession> Sessions { get; set; } = [];
 
     /// <summary>Gets or sets the complete selected-session data.</summary>
-    public ProfilingSessionData SelectedSession { get; set; }
+    public RuntimeProfilingSessionData SelectedSession { get; set; }
 
     /// <summary>Gets or sets the selected-node timeline.</summary>
-    public ProfilingNodeSessionData SelectedNode { get; set; }
+    public RuntimeProfilingNodeSessionData SelectedNode { get; set; }
 
     /// <summary>Gets or sets the selected public session key.</summary>
     public string SessionKey { get; set; }
@@ -59,7 +59,7 @@ public sealed class DashboardProfilingViewModel
     /// <summary>Gets or sets the fixed host-local stress action path.</summary>
     public string StressPath { get; set; }
 
-    /// <summary>Gets or sets the phase-marker action path.</summary>
+    /// <summary>Gets or sets the marker action path.</summary>
     public string MarkerPath { get; set; }
 
     /// <summary>Gets or sets the metadata update path.</summary>

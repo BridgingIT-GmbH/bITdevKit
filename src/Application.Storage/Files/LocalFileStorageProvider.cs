@@ -1469,9 +1469,10 @@ public class LocalFileStorageProvider(string locationName, string rootPath, bool
         return (currentBufferSize, false);
     }
 
-    private string GetFullPath(string path) => Path.Combine(this.RootPath, path.Replace("/", "\\").TrimStart('\\'));
+    private string GetFullPath(string path) => Path.Combine(this.RootPath,
+        path.Replace('\\', Path.DirectorySeparatorChar).Replace('/', Path.DirectorySeparatorChar).TrimStart(Path.DirectorySeparatorChar));
 
-    private string GetRelativePath(string fullPath) => fullPath[this.RootPath.Length..].TrimStart('\\').Replace("\\", "/");
+    private string GetRelativePath(string fullPath) => Path.GetRelativePath(this.RootPath, fullPath).Replace('\\', '/');
 
     private string GetTemporaryFilePath(string fullPath)
     {

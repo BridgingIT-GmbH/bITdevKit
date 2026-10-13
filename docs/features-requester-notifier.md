@@ -1257,6 +1257,27 @@ services.AddNotifier()
     .WithBehavior(typeof(TimeoutPipelineBehavior<,>));
 ```
 
+#### Profiling behaviors
+
+Enable [Operation Profiling](features-profiling.md#requester-and-notifier-behaviors) and register the optional integrations:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddRequester()
+	.AddHandlers()
+	.WithBehavior(typeof(ProfilingRequestBehavior<,>));
+services.AddNotifier()
+	.AddHandlers()
+	.WithBehavior(typeof(ProfilingNotificationBehavior<,>))
+	.WithBehavior(typeof(ProfilingNotificationHandlerBehavior<,>));
+```
+
+Place profiling before other behaviors to include their work. Requester records the downstream pipeline. Notifier records dispatch and each executed handler. Both join an existing operation or own an independent operation. Sequential and concurrent handler timings remain distinct and aggregate by complete segment path.
+
+Fire-and-forget dispatch records scheduling time. Detached handlers own independent `NotifierHandler` operations and can finish after the dispatch record closes. Their outcomes do not change the dispatch result. Independent worker boundaries clear inherited profiling context and remain subject to the enabled operation capability and capture limits.
+
+The behaviors work when `AddProfiling` is omitted and honor disabled capture and normal caller suppression. They preserve results, exceptions and cancellation, and store bounded type names without message or result payloads. Repeated profiling registration is idempotent. Handler resolution occurs before the behavior pipeline and is outside its timing.
+
 #### Creating a custom behavior
 
 You can create custom pipeline behaviors to add your own cross-cutting concerns. To do so, inherit from `PipelineBehaviorBase<TRequest, TResponse>` and implement the required methods. The behavior can be used by both `Requester` and `Notifier`.

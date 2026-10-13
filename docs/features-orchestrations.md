@@ -1324,6 +1324,20 @@ await harness.Assert(dispatch.Value).HaveCurrentStateAsync("PhoneDestroyed");
 await harness.Assert(dispatch.Value).HaveStatusAsync(OrchestrationStatus.Terminated);
 ```
 
+## Dashboard guide
+
+Open Orchestrations at `/_bdk/dashboard/orchestrations` to inspect persisted instances. Reference `Presentation.Web.Orchestrations`, register orchestration services and enable the [Dashboard](features-presentation-dashboard.md). The page reads `IOrchestrationQueryService` directly.
+
+Filter by status, name, state or correlation ID and select Apply. Instances show their current state, activity, last update and duration. Definitions and States summarize persisted instances; an orchestration definition without a persisted instance does not appear in those counts. Runtime shows average duration and the oldest waiting instance.
+
+[![Orchestrations dashboard with completed instances and persisted state summaries](assets/dashboard/12-orchestrations-orchestrations.png)](assets/dashboard/12-orchestrations-orchestrations.png)
+
+Select the information button to inspect instance details, properties, typed data, history and timers. The correlation ID links to Logs and can be copied. History helps identify the activity or transition associated with a failure or wait.
+
+[![Orchestration instance dialog with state, correlation and execution history](assets/dashboard/orchestrations/instance-details.png)](assets/dashboard/orchestrations/instance-details.png)
+
+Pause, resume, cancel, terminate and archive actions appear according to instance state. Lease-release and timer-requeue controls support recovery workflows. Refresh manually or choose an interval. Realtime Graph collects browser-session samples; History Graph uses retained history.
+
 ## Operational endpoints
 
 When `Presentation.Web.Orchestrations` is registered, the default group path is `/_bdk/api/orchestrations`.
@@ -1532,3 +1546,18 @@ The examples used in this guide are based on the runnable unit-test orchestratio
 - [TelephoneCallOrchestrationTests.cs](../tests/Application.UnitTests/Orchestrations/TelephoneCallOrchestrationTests.cs)
 
 The original design is documented in [spec-application-orchestration.md](./specs/spec-application-orchestration.md).
+
+## Optional Operation Profiling
+
+Enable general Operations and select the orchestration adapter explicitly:
+
+```csharp
+services.AddProfiling(options => options.Enabled()).WithOperationProfiling();
+services.AddOrchestrations().WithProfilingBehavior();
+```
+
+`WithProfilingBehavior` installs the action behavior and bounded executor-slice adapter together. An execution slice joins an active operation or owns a workflow operation. Activity/action attempts contribute nested segments keyed by stable state/name/kind, including signal and compensation work. Wait, pause, completion, failure and cancellation close the slice. Resume starts a new correlated root rather than holding a recording across an unbounded wait. Repeated attempts aggregate without producing a dependency trace.
+
+Both adapters take optional profiling dependencies. They register no Profiling services and work with omitted, disabled or suppressed capture. Independent queue/resume entries restore a fresh execution boundary. Profiling status, metadata and disposal failures do not replace the workflow result or original exception.
+
+The [Profiling guide](features-profiling.md) explains the shared providers, clear fences, outcome/coverage summaries and Runtime overlays. Workflow segments do not own the Runtime session shown near their timestamps.

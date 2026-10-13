@@ -38,20 +38,20 @@ public class ProfilingQueryServiceTests
         sessionResult.Value.Participations.Count.ShouldBe(2);
         sessionResult
             .Value.Participations.ShouldContain(x =>
-                x.Role == ProfilingNodeRole.ExpectedParticipant
+                x.Role == RuntimeProfilingNodeRole.ExpectedParticipant
             );
         sessionResult
-            .Value.Participations.ShouldContain(x => x.Role == ProfilingNodeRole.AdHocContributor);
+            .Value.Participations.ShouldContain(x => x.Role == RuntimeProfilingNodeRole.AdHocContributor);
         nodeResult.IsSuccess.ShouldBeTrue();
         nodeResult.Value.Snapshots.Count.ShouldBe(2);
         nodeResult.Value.LatestSnapshot.Identity.Key.ShouldBe("snap0002");
         nodeResult.Value.RuntimeContext.NodeKey.ShouldBe(fixture.ExpectedNode.Identity.Key);
-        nodeResult.Value.PhaseMarkers.ShouldHaveSingleItem();
-        nodeResult.Value.ActionMarkers.ShouldHaveSingleItem();
+        nodeResult.Value.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).ShouldHaveSingleItem();
+        nodeResult.Value.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Node).ShouldHaveSingleItem();
         nodeResult.Value.Segments.ShouldHaveSingleItem();
         nodeResult.Value.MetricObservations.ShouldHaveSingleItem();
         nodeResult.Value.SamplingStatus.ShouldBe(
-            new ProfilingSamplingStatus(
+            new RuntimeProfilingSamplingStatus(
                 2,
                 3,
                 1,
@@ -141,7 +141,7 @@ public class ProfilingQueryServiceTests
         after
             .MetricObservations.Select(x => new { x.Id, x.Value })
             .ShouldBe(before.MetricObservations.Select(x => new { x.Id, x.Value }));
-        after.PhaseMarkers.ShouldBe(before.PhaseMarkers);
+        after.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session).ShouldBe(before.Markers.Where(marker => marker.Scope == ProfilingMarkerScope.Session));
         after.Segments.ShouldBe(before.Segments);
     }
 
@@ -174,7 +174,7 @@ public class ProfilingQueryServiceTests
         first.GetProperty("identity").TryGetProperty("id", out _).ShouldBeFalse();
         selectedNode.Value.ShouldNotContain(fixture.Session.Identity.Id.ToString());
         selectedNode.Value.ShouldNotContain(fixture.ExpectedNode.Identity.Id.ToString());
-        selectedNode.Value.ShouldNotContain("phaseMarkers");
+        selectedNode.Value.ShouldNotContain("markers");
         selectedNode.Value.ShouldNotContain("segments");
         selectedNode.Value.ShouldNotContain("metricObservations");
         selectedNode.Value.ShouldNotContain("runtimeContexts");
@@ -280,16 +280,16 @@ public class ProfilingQueryServiceTests
     public async Task LifecycleAndEvaluationMethods_DelegateWithoutDuplicatingBehavior()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
-        var evaluation = Substitute.For<IProfilingEvaluationService>();
-        var session = new ProfilingSession
+        var control = Substitute.For<IRuntimeProfilingControlService>();
+        var evaluation = Substitute.For<IRuntimeProfilingEvaluationService>();
+        var session = new RuntimeProfilingSession
         {
             Identity = new(Guid.NewGuid(), "sess0001"),
             Name = "restart",
         };
         control
             .RestartAsync("sess0001", Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(new(session, true, [])));
+            .Returns(Result<RuntimeProfilingControlResult>.Success(new(session, true, [])));
         control
             .DeleteSessionAsync("sess0001", Arg.Any<CancellationToken>())
             .Returns(Result<bool>.Success(true));
@@ -299,9 +299,9 @@ public class ProfilingQueryServiceTests
         control
             .ClearAsync(true, Arg.Any<CancellationToken>())
             .Returns(Result<ProfilingClearResult>.Success(new(3, 12)));
-        var evaluationResult = new ProfilingEvaluationResult(
+        var evaluationResult = new RuntimeProfilingEvaluationResult(
             new(
-                ProfilingEvaluationMode.NodeSession,
+                RuntimeProfilingEvaluationMode.NodeSession,
                 "sess0001",
                 "node0001",
                 [],
@@ -316,11 +316,11 @@ public class ProfilingQueryServiceTests
             []
         );
         evaluation
-            .EvaluateAsync(Arg.Any<ProfilingEvaluationRequest>(), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingEvaluationResult>.Success(evaluationResult));
-        var sut = new ProfilingQueryService(
+            .EvaluateAsync(Arg.Any<RuntimeProfilingEvaluationRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result<RuntimeProfilingEvaluationResult>.Success(evaluationResult));
+        var sut = new RuntimeProfilingQueryService(
             EnabledOptions(),
-            new InMemoryProfilingStore(),
+            new InMemoryRuntimeProfilingStore(),
             control,
             evaluation
         );
@@ -331,7 +331,7 @@ public class ProfilingQueryServiceTests
         (await sut.DeleteUnpinnedSessionsAsync()).Value.ShouldBe(2);
         (await sut.ClearAsync(true)).Value.ShouldBe(new ProfilingClearResult(3, 12));
         (
-            await sut.EvaluateAsync(new ProfilingEvaluationRequest("sess0001", "node0001"))
+            await sut.EvaluateAsync(new RuntimeProfilingEvaluationRequest("sess0001", "node0001"))
         ).Value.ShouldBe(evaluationResult);
 
         // Assert
@@ -341,14 +341,14 @@ public class ProfilingQueryServiceTests
         await control.Received(1).ClearAsync(true, Arg.Any<CancellationToken>());
         await evaluation
             .Received(1)
-            .EvaluateAsync(Arg.Any<ProfilingEvaluationRequest>(), Arg.Any<CancellationToken>());
+            .EvaluateAsync(Arg.Any<RuntimeProfilingEvaluationRequest>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task MissingInfrastructure_ReturnsSafeUnavailableResults()
     {
         // Arrange
-        var sut = new ProfilingQueryService(EnabledOptions());
+        var sut = new RuntimeProfilingQueryService(EnabledOptions());
 
         // Act
         var list = await sut.ListSessionsAsync();
@@ -361,14 +361,14 @@ public class ProfilingQueryServiceTests
         evaluation.Errors.ShouldContain(x => x is ProfilingUnavailableError);
     }
 
-    private static ProfilingQueryService CreateSut(IProfilingStore store) =>
+    private static RuntimeProfilingQueryService CreateSut(IRuntimeProfilingStore store) =>
         new(EnabledOptions(), store);
 
-    private static ProfilingOptions EnabledOptions() => new() { Enabled = true };
+    private static ProfilingOptions EnabledOptions() => new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } };
 
     private static async Task<QueryFixture> CreateFixtureAsync()
     {
-        var store = new InMemoryProfilingStore();
+        var store = new InMemoryRuntimeProfilingStore();
         var session = (
             await store.GetOrCreateActiveSessionAsync(
                 new(
@@ -392,7 +392,7 @@ public class ProfilingQueryServiceTests
             CreateParticipation(
                 session,
                 expected,
-                ProfilingNodeRole.ExpectedParticipant,
+                RuntimeProfilingNodeRole.ExpectedParticipant,
                 successful: 2,
                 skipped: 3,
                 failed: 1
@@ -402,7 +402,7 @@ public class ProfilingQueryServiceTests
             CreateParticipation(
                 session,
                 adHoc,
-                ProfilingNodeRole.AdHocContributor,
+                RuntimeProfilingNodeRole.AdHocContributor,
                 successful: 1
             )
         );
@@ -441,7 +441,7 @@ public class ProfilingQueryServiceTests
                 privateMemory: 90
             )
         );
-        await store.AddPhaseMarkerAsync(
+        await store.AddMarkerAsync(
             new(
                 Guid.NewGuid(),
                 session.Identity.Id,
@@ -450,7 +450,7 @@ public class ProfilingQueryServiceTests
                 StartedUtc.AddMilliseconds(500)
             )
         );
-        await store.AddActionMarkerAsync(
+        await store.AddMarkerAsync(
             new(
                 Guid.NewGuid(),
                 session.Identity.Id,
@@ -470,7 +470,7 @@ public class ProfilingQueryServiceTests
             NodeKey = expected.Identity.Key,
             Name = "operation",
             StartedUtc = StartedUtc.AddMilliseconds(500),
-            Outcome = ProfilingSegmentOutcome.Open,
+            Outcome = null,
         };
         await store.UpsertSegmentAsync(segment);
         await store.AddMetricObservationAsync(
@@ -493,13 +493,13 @@ public class ProfilingQueryServiceTests
     }
 
     private static async Task<ProfilingNode> CreateNodeAsync(
-        IProfilingStore store,
+        IRuntimeProfilingStore store,
         string broadcastIdentity,
         string nodeKey,
         int processId
     )
     {
-        var correlation = new ProfilingNodeCorrelation(broadcastIdentity, StartedUtc);
+        var correlation = new RuntimeProfilingNodeCorrelation(broadcastIdentity, StartedUtc);
         return (
             await store.GetOrCreateNodeAsync(
                 correlation,
@@ -514,10 +514,10 @@ public class ProfilingQueryServiceTests
         ).Value;
     }
 
-    private static ProfilingNodeParticipation CreateParticipation(
-        ProfilingSession session,
+    private static RuntimeProfilingNodeParticipation CreateParticipation(
+        RuntimeProfilingSession session,
         ProfilingNode node,
-        ProfilingNodeRole role,
+        RuntimeProfilingNodeRole role,
         long successful,
         long skipped = 0,
         long failed = 0
@@ -529,15 +529,15 @@ public class ProfilingQueryServiceTests
             NodeId = node.Identity.Id,
             NodeKey = node.Identity.Key,
             Role = role,
-            State = ProfilingParticipationState.Collecting,
+            State = RuntimeProfilingParticipationState.Collecting,
             JoinedUtc = StartedUtc,
             SuccessfulCaptureCount = successful,
             SkippedCaptureCount = skipped,
             FailedCaptureCount = failed,
         };
 
-    private static ProfilingRuntimeContext CreateContext(
-        ProfilingSession session,
+    private static RuntimeProfilingContext CreateContext(
+        RuntimeProfilingSession session,
         ProfilingNode node
     ) =>
         new()
@@ -551,8 +551,8 @@ public class ProfilingQueryServiceTests
             ProcessStartedUtc = StartedUtc,
         };
 
-    private static ProfilingSnapshot CreateSnapshot(
-        ProfilingSession session,
+    private static RuntimeProfilingSnapshot CreateSnapshot(
+        RuntimeProfilingSession session,
         ProfilingNode node,
         string snapshotKey,
         long sequence,
@@ -585,8 +585,8 @@ public class ProfilingQueryServiceTests
     }
 
     private sealed record QueryFixture(
-        InMemoryProfilingStore Store,
-        ProfilingSession Session,
+        InMemoryRuntimeProfilingStore Store,
+        RuntimeProfilingSession Session,
         ProfilingNode ExpectedNode,
         ProfilingNode AdHocNode
     );

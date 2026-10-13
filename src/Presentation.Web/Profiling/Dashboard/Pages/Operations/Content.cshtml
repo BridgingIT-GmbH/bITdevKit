@@ -1,0 +1,4 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@inherits RazorSlice<OperationProfilingDashboardModel>
+@(await RenderPartialAsync<Data, OperationProfilingDashboardModel>(Model))

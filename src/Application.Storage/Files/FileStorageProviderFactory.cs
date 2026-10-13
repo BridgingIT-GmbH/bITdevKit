@@ -259,6 +259,15 @@ public class FileStorageProviderFactory(IServiceProvider serviceProvider) : IFil
             return this;
         }
 
+        /// <summary>Profiles provider calls with logical location and operation dimensions, joining an existing operation when available.</summary>
+        /// <returns>The current provider builder.</returns>
+        /// <example><code>builder.UseInMemory("documents").WithProfiling();</code></example>
+        public FileStorageBuilder WithProfiling()
+        {
+            this.behaviors.Add((provider, services) => new ProfilingFileStorageBehavior(provider, services.GetService<IOperationProfiler>()));
+            return this;
+        }
+
         /// <summary>
         /// Enables Storage Permalinks for this configured provider.
         /// </summary>

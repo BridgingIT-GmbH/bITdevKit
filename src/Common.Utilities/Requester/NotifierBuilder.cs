@@ -447,6 +447,12 @@ public class NotifierBuilder
             return this;
         }
 
+        if ((behaviorType == typeof(ProfilingNotificationBehavior<,>) || behaviorType == typeof(ProfilingNotificationHandlerBehavior<,>))
+            && this.pipelineBehaviorTypes.Contains(behaviorType))
+        {
+            return this;
+        }
+
         if (!behaviorType.IsGenericTypeDefinition)
         {
             throw new ArgumentException($"Behavior type '{behaviorType}' must be an open generic type.", nameof(behaviorType));

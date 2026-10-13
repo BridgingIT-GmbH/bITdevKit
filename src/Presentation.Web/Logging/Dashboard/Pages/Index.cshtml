@@ -172,21 +172,16 @@
                 </select>
             </div>
             <div class="col-6 col-lg-2">
-                <label class="form-label small" for="logentries-from">From</label>
+                <label class="form-label small" for="logentries-from">From UTC</label>
                 <div class="input-group input-group-sm">
-                    <input id="logentries-from" name="from" type="date" value="@LogEntriesDashboard.FormatDate(filter.StartTime)" class="form-control form-control-sm" data-dashboard-date-picker>
-                    <button type="button" class="btn btn-outline-secondary" data-dashboard-date-picker-button="logentries-from" aria-label="Open from date picker" title="Open date picker">
-                        <i class="bi bi-calendar3"></i>
-                    </button>
+                    @(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("logentries-from", "logentries-to")))
+                    <input id="logentries-from" name="from" type="datetime-local" step="60" value="@DashboardDateTime.FormatInput(filter.StartTime)" class="form-control form-control-sm" data-dashboard-date-picker>
                 </div>
             </div>
             <div class="col-6 col-lg-2">
-                <label class="form-label small" for="logentries-to">To</label>
+                <label class="form-label small" for="logentries-to">To UTC</label>
                 <div class="input-group input-group-sm">
-                    <input id="logentries-to" name="to" type="date" value="@LogEntriesDashboard.FormatDate(filter.EndTime)" class="form-control form-control-sm" data-dashboard-date-picker>
-                    <button type="button" class="btn btn-outline-secondary" data-dashboard-date-picker-button="logentries-to" aria-label="Open to date picker" title="Open date picker">
-                        <i class="bi bi-calendar3"></i>
-                    </button>
+                    <input id="logentries-to" name="to" type="datetime-local" step="60" value="@DashboardDateTime.FormatInput(filter.EndTime)" class="form-control form-control-sm" data-dashboard-date-picker>
                 </div>
             </div>
             <div class="col-12 col-lg-2 d-flex align-items-end gap-2">
@@ -233,7 +228,8 @@
             const query = new URLSearchParams();
             for (const [key, value] of data.entries()) {
                 if (value !== null && value.toString().trim() !== '') {
-                    query.set(key, value.toString().trim());
+                    const text = value.toString().trim();
+                    query.set(key, (key === 'from' || key === 'to') ? text + 'Z' : text);
                 }
             }
 
@@ -256,9 +252,8 @@
             exportElement.href = query.toString() ? `${exportUrl}?${query}` : exportUrl;
         }
 
-        function localDateInputValue(date) {
-            const offsetDate = new Date(date.getTime() - (date.getTimezoneOffset() * 60000));
-            return offsetDate.toISOString().slice(0, 10);
+        function utcDayStartInputValue(date) {
+            return date.toISOString().slice(0, 10) + 'T00:00';
         }
 
         function resetFilters() {
@@ -278,7 +273,7 @@
 
             const from = formElement.elements.namedItem('from');
             if (from) {
-                from.value = localDateInputValue(new Date());
+                from.value = utcDayStartInputValue(new Date());
             }
         }
 

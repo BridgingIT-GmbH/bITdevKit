@@ -121,12 +121,15 @@
                 <input id="change-history-user-id" class="form-control form-control-sm" name="changedByUserId" value="@query.ChangedByUserId" autocomplete="off">
             </div>
             <div class="col-12 col-md-6 col-xl-2">
-                <label class="form-label" for="change-history-date-from">From</label>
-                <input id="change-history-date-from" class="form-control form-control-sm" name="changedDateFrom" value="@FormatDateInput(query.ChangedDateFrom)" autocomplete="off">
+                <label class="form-label" for="change-history-date-from">From UTC</label>
+                <div class="input-group input-group-sm">
+                    @(await RenderPartialAsync<DateRange, DashboardDateRangeModel>(new("change-history-date-from", "change-history-date-to")))
+                    <input id="change-history-date-from" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateFrom" value="@DashboardDateTime.FormatInput(query.ChangedDateFrom)" autocomplete="off">
+                </div>
             </div>
             <div class="col-12 col-md-6 col-xl-2">
-                <label class="form-label" for="change-history-date-to">To</label>
-                <input id="change-history-date-to" class="form-control form-control-sm" name="changedDateTo" value="@FormatDateInput(query.ChangedDateTo)" autocomplete="off">
+                <label class="form-label" for="change-history-date-to">To UTC</label>
+                <input id="change-history-date-to" class="form-control form-control-sm" type="datetime-local" step="60" name="changedDateTo" value="@DashboardDateTime.FormatInput(query.ChangedDateTo)" autocomplete="off">
             </div>
             <div class="col-12 col-md-6 col-xl-2">
                 <div class="form-check mb-1">
@@ -446,7 +449,7 @@
         => value.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss", CultureInfo.InvariantCulture);
 
     private static string FormatDateInput(DateTimeOffset? value)
-        => value?.ToString("O", CultureInfo.InvariantCulture);
+        => DashboardDateTime.FormatQuery(value);
 
     private static string FormatValue(string value, string hash)
     {
@@ -458,7 +461,7 @@
         return string.IsNullOrWhiteSpace(hash) ? string.Empty : $"hash:{hash}";
     }
 
-    private static string RenderRowDetails(ChangeHistoryRecord row)
+    private string RenderRowDetails(ChangeHistoryRecord row)
     {
         var writer = new StringBuilder();
         writer.Append("<details class=\"mt-1\"><summary class=\"small text-muted\">Details</summary><div class=\"change-history-row-details small text-muted mt-1\">");
@@ -469,7 +472,13 @@
         AppendDetail(writer, "Entity id CLR type", row.EntityIdType);
         AppendDetail(writer, "Value CLR type", row.ValueClrType);
         AppendDetail(writer, "Changed date ticks", row.ChangedDateTicks.ToString(CultureInfo.InvariantCulture));
-        AppendDetail(writer, "Correlation id", row.CorrelationId);
+        if (!string.IsNullOrWhiteSpace(row.CorrelationId))
+        {
+            var link = DashboardCorrelationLink.Render(HttpContext.RequestServices.GetService<DashboardEndpointsOptions>(), row.CorrelationId);
+            using var markup = new System.IO.StringWriter(CultureInfo.InvariantCulture);
+            link.WriteTo(markup, System.Text.Encodings.Web.HtmlEncoder.Default);
+            writer.Append("<div><span class=\"fw-semibold\">Correlation id:</span> ").Append(markup).Append("</div>");
+        }
         AppendDetail(writer, "Flow id", row.FlowId);
         AppendDetail(writer, "Module", row.ModuleName);
         AppendDetail(writer, "Activity parent id", row.ActivityParentId);

@@ -89,6 +89,7 @@
     }
 
     .dashboard-system-chart {
+        position: relative;
         border: 1px solid var(--bs-border-color);
         border-radius: .35rem;
         height: 9rem;
@@ -118,6 +119,20 @@
     .dashboard-system-chart-point {
         fill: var(--bs-primary);
         transition: opacity .15s ease;
+    }
+
+    .dashboard-system-chart-tooltip {
+        position: absolute;
+        left: .5rem;
+        right: .5rem;
+        bottom: .5rem;
+        padding: .25rem .4rem;
+        background: var(--bs-body-bg);
+        color: var(--bs-body-color);
+        border: 1px solid var(--bs-border-color);
+        font-size: .75rem;
+        white-space: pre-line;
+        pointer-events: none;
     }
 
     .dashboard-system-statusbar {
@@ -412,28 +427,50 @@
         }
 
         function drawChart(id, samples, key, maxValue) {
-            const path = document.querySelector(`#${id} polyline[data-system-line]`);
+            const chart = document.getElementById(id);
+            if (!chart) return;
+            const path = chart.querySelector('polyline[data-system-line]');
             if (path) {
                 path.setAttribute('points', buildPoints(samples, key, maxValue));
             }
 
-            const point = document.querySelector(`#${id} circle[data-system-point]`);
-            if (!point) {
-                return;
-            }
-
-            if (samples.length !== 1) {
-                point.setAttribute('opacity', '0');
-                return;
-            }
-
-            const width = 300;
-            const height = 92;
-            const value = Number(samples[0][key]) || 0;
-            const max = Math.max(maxValue || 0, value, 1);
-            point.setAttribute('cx', (width / 2).toFixed(1));
-            point.setAttribute('cy', (height - (value / max) * height).toFixed(1));
-            point.setAttribute('opacity', '1');
+            const point = chart.querySelector('circle[data-system-point]');
+            const tooltip = chart.querySelector('[role="tooltip"]');
+            if (!point || !tooltip || !samples.length) return;
+            const max = Math.max(maxValue || 0, ...samples.map(item => Number(item[key]) || 0), 1);
+            let selectedIndex = samples.length - 1;
+            const positionPoint = index => {
+                point.setAttribute('cx', samples.length === 1 ? '150' : (index / (samples.length - 1) * 300).toFixed(1));
+                point.setAttribute('cy', (92 - (Number(samples[index][key]) || 0) / max * 92).toFixed(1));
+            };
+            const show = index => {
+                selectedIndex = Math.max(0, Math.min(samples.length - 1, index));
+                const sample = samples[selectedIndex];
+                const timestamp = new Date(Number(sample.capturedAt));
+                const time = Number.isNaN(timestamp.getTime()) ? '' : timestamp.toISOString().slice(0, 19).replace('T', ' ') + ' UTC';
+                tooltip.textContent = `${chart.dataset.seriesLabel}: ${Number(sample[key] || 0).toLocaleString(undefined, { maximumFractionDigits: 2 })} ${chart.dataset.seriesUnit}\n${time}`;
+                tooltip.hidden = false;
+                positionPoint(selectedIndex);
+                point.setAttribute('opacity', '1');
+            };
+            const hide = () => {
+                tooltip.hidden = true;
+                positionPoint(0);
+                point.setAttribute('opacity', samples.length === 1 ? '1' : '0');
+            };
+            chart.onpointermove = event => {
+                const bounds = chart.getBoundingClientRect();
+                show(Math.round((event.clientX - bounds.left) / bounds.width * (samples.length - 1)));
+            };
+            chart.onpointerleave = () => { if (document.activeElement !== chart) hide(); };
+            chart.onfocus = () => show(samples.length - 1);
+            chart.onblur = hide;
+            chart.onkeydown = event => {
+                if (!['ArrowLeft', 'ArrowRight', 'Home', 'End'].includes(event.key)) return;
+                event.preventDefault();
+                show(event.key === 'Home' ? 0 : event.key === 'End' ? samples.length - 1 : selectedIndex + (event.key === 'ArrowLeft' ? -1 : 1));
+            };
+            hide();
         }
 
         function applyEnvironmentFilter(contentElement) {

@@ -17,6 +17,36 @@ public class JobSchedulerTelemetryTests(ITestOutputHelper output) : JobScheduler
     private const string TelemetrySourceName = "BridgingIT.DevKit.Application.Jobs";
     private const string TelemetryMeterName = Metrics.MeterName;
 
+    /// <summary>Checks job-originated transport metadata carries the job ID without an Activity listener and restores the caller context.</summary>
+    [Fact]
+    public async Task DispatchAndWait_ExecutionCorrelation_PropagatesWithoutActivityListener()
+    {
+        var properties = new Dictionary<string, object>();
+        using var harness = this.CreateHarness(jobs => jobs
+            .WithJob<CorrelationJob>("correlation-job", job => job.AddTrigger("manual", trigger => trigger.Manual())),
+            configureServices: services => services.AddSingleton(properties));
+        using var caller = CorrelationId.BeginScope("caller-correlation");
+
+        var result = await harness.DispatchAndWaitAsync<CorrelationJob>(options: new JobDispatchOptions { CorrelationId = "job-correlation" });
+
+        result.IsSuccess.ShouldBeTrue();
+        result.Value.Status.ShouldBe(JobExecutionStatus.Completed);
+        CorrelationId.ReadFrom(properties).ShouldBe("job-correlation");
+        CorrelationId.Current.ShouldBe("caller-correlation");
+    }
+
+    private sealed class CorrelationJob(Dictionary<string, object> properties) : JobBase
+    {
+        /// <inheritdoc />
+        public override async Task<Result> ExecuteAsync(IJobExecutionContext<Unit> context, CancellationToken cancellationToken = default)
+        {
+            await Task.Yield();
+            CorrelationId.Current.ShouldBe(context.CorrelationId);
+            CorrelationId.PropagateTo(properties);
+            return Result.Success();
+        }
+    }
+
     [Fact]
     public async Task DispatchAndWaitEmitsExecutionActivityAndMetrics()
     {

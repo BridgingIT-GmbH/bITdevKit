@@ -22,8 +22,6 @@ namespace BridgingIT.DevKit.Common;
 /// </example>
 public sealed class CorrelationIdPropagationHandler : DelegatingHandler
 {
-    private const int GeneratedIdLength = 12;
-
     /// <summary>
     /// Adds the resolved correlation identifier to the request and invokes the next handler.
     /// </summary>
@@ -62,6 +60,6 @@ public sealed class CorrelationIdPropagationHandler : DelegatingHandler
             }
         }
 
-        return KeyGenerator.CreateLowercase(GeneratedIdLength);
+        return CorrelationIdGenerator.Create();
     }
 }

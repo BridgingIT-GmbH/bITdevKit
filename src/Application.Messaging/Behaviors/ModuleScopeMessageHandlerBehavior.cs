@@ -31,7 +31,8 @@ public class ModuleScopeMessageHandlerBehavior(
         }
 
         var moduleNameOrigin = message?.Properties?.GetValue(ModuleConstants.ModuleNameOriginKey)?.ToString().EmptyToNull() ?? ModuleConstants.UnknownModuleName;
-        var correlationId = message?.Properties?.GetValue(Constants.CorrelationIdKey)?.ToString();
+        var correlationId = CorrelationIdGenerator.GetOrCreate(message?.Properties, useAmbient: false);
+        using var correlationScope = CorrelationId.BeginScope(correlationId);
         var flowId = message?.Properties?.GetValue(Constants.FlowIdKey)?.ToString();
         var parentId = message?.Properties?.GetValue(ModuleConstants.ActivityParentIdKey)?.ToString();
 

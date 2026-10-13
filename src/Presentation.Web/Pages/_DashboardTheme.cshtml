@@ -2,27 +2,119 @@
 
 <script>
     (() => {
-        const themes = Object.freeze({
-            light: 'light',
-            dark: 'dark',
-            catppuccin: 'catppuccin',
-            darkforest: 'darkforest',
-            carbon: 'carbon',
-            tokionights: 'tokionights',
-            matrix: 'matrix',
-            system: 'system'
+        // White keeps every palette slot monochrome.
+        const palettes = Object.freeze({
+            "matte-black": Object.freeze({ label: "Matte Black",
+                mode: "dark", accent: "#e68e0d", selection: "#2a2a2a", muted: "#333333",
+                background: "#121212", dark_background: "#0d0d0d", darker_background: "#090909", lighter_background: "#1e1e1e",
+                foreground: "#bebebe", dark_foreground: "#555555", light_foreground: "#8a8a8d", bright_foreground: "#bebebe",
+                red: "#D35F5F", yellow: "#b91c1c", orange: "#c63d3d", green: "#FFC107", cyan: "#bebebe", blue: "#e68e0d", magenta: "#D35F5F", brown: "#631e1e",
+                bright_red: "#B91C1C", bright_yellow: "#b90a0a", bright_green: "#FFC107", bright_cyan: "#eaeaea", bright_blue: "#f59e0b", bright_magenta: "#B91C1C"
+            }),
+            "tokyo-night": Object.freeze({ label: "Tokyo Night",
+                mode: "dark", accent: "#7aa2f7", selection: "#292e42", muted: "#414868",
+                background: "#1a1b26", dark_background: "#13141c", darker_background: "#0e0e14", lighter_background: "#24283b",
+                foreground: "#a9b1d6", dark_foreground: "#565f89", light_foreground: "#b4bee6", bright_foreground: "#c0caf5",
+                red: "#f7768e", yellow: "#e0af68", orange: "#eb927b", green: "#9ece6a", cyan: "#449dab", blue: "#7aa2f7", magenta: "#ad8ee6", brown: "#75493d",
+                bright_red: "#ff7a93", bright_yellow: "#ff9e64", bright_green: "#b9f27c", bright_cyan: "#0db9d7", bright_blue: "#7da6ff", bright_magenta: "#bb9af7"
+            }),
+            "catppuccin": Object.freeze({ label: "Catppuccin",
+                mode: "dark", accent: "#89b4fa", selection: "#45475a", muted: "#585b70",
+                background: "#1e1e2e", dark_background: "#161622", darker_background: "#101019", lighter_background: "#313244",
+                foreground: "#cdd6f4", dark_foreground: "#6c7086", light_foreground: "#bac2de", bright_foreground: "#cdd6f4",
+                red: "#f38ba8", yellow: "#f9e2af", orange: "#f6b6ab", green: "#a6e3a1", cyan: "#94e2d5", blue: "#89b4fa", magenta: "#f5c2e7", brown: "#7b5b55",
+                bright_red: "#f38ba8", bright_yellow: "#f9e2af", bright_green: "#a6e3a1", bright_cyan: "#94e2d5", bright_blue: "#89b4fa", bright_magenta: "#f5c2e7"
+            }),
+            "lumon": Object.freeze({ label: "Lumon",
+                mode: "dark", accent: "#8bc9eb", selection: "#243d56", muted: "#304860",
+                background: "#16242d", dark_background: "#101b21", darker_background: "#0b1216", lighter_background: "#1b2d40",
+                foreground: "#d6e2ee", dark_foreground: "#4d86b0", light_foreground: "#d6e2ee", bright_foreground: "#f2fcff",
+                red: "#4d86b0", yellow: "#6fa4c9", orange: "#8bc9eb", green: "#5e95bc", cyan: "#b4e4f6", blue: "#6fb8e3", magenta: "#8bc9eb", brown: "#456475",
+                bright_red: "#73a6cb", bright_yellow: "#9dcae5", bright_green: "#86b7d8", bright_cyan: "#d1eef8", bright_blue: "#f2fcff", bright_magenta: "#b1d8ee"
+            }),
+            "ethereal": Object.freeze({ label: "Ethereal",
+                mode: "dark", accent: "#7d82d9", selection: "#252e56", muted: "#6d7db6",
+                background: "#060B1E", dark_background: "#040816", darker_background: "#030610", lighter_background: "#131a3a",
+                foreground: "#ffcead", dark_foreground: "#6d7db6", light_foreground: "#c9b8a6", bright_foreground: "#ffcead",
+                red: "#ED5B5A", yellow: "#E9BB4F", orange: "#eb8b54", green: "#92a593", cyan: "#a3bfd1", blue: "#7d82d9", magenta: "#c89dc1", brown: "#75452a",
+                bright_red: "#faaaa9", bright_yellow: "#f7dc9c", bright_green: "#c4cfc4", bright_cyan: "#dfeaf0", bright_blue: "#c2c4f0", bright_magenta: "#ead7e7"
+            }),
+            "everforest": Object.freeze({ label: "Everforest",
+                mode: "dark", accent: "#7fbbb3", selection: "#3d484d", muted: "#475258",
+                background: "#2d353b", dark_background: "#21272c", darker_background: "#181d20", lighter_background: "#343f44",
+                foreground: "#d3c6aa", dark_foreground: "#4f585e", light_foreground: "#9da9a0", bright_foreground: "#d3c6aa",
+                red: "#e67e80", yellow: "#dbbc7f", orange: "#e09d7f", green: "#a7c080", cyan: "#83c092", blue: "#7fbbb3", magenta: "#d699b6", brown: "#704e3f",
+                bright_red: "#e67e80", bright_yellow: "#dbbc7f", bright_green: "#a7c080", bright_cyan: "#83c092", bright_blue: "#7fbbb3", bright_magenta: "#d699b6"
+            }),
+            "hackerman": Object.freeze({ label: "Hackerman",
+                mode: "dark", accent: "#82FB9C", selection: "#1f253a", muted: "#2d3450",
+                background: "#0B0C16", dark_background: "#080910", darker_background: "#06060c", lighter_background: "#151828",
+                foreground: "#ddf7ff", dark_foreground: "#6a6e95", light_foreground: "#b5c5db", bright_foreground: "#ddf7ff",
+                red: "#50f872", yellow: "#50f7d4", orange: "#50f7a3", green: "#4fe88f", cyan: "#7cf8f7", blue: "#829dd4", magenta: "#86a7df", brown: "#287b51",
+                bright_red: "#85ff9d", bright_yellow: "#a4ffec", bright_green: "#9cf7c2", bright_cyan: "#d1fffe", bright_blue: "#c4d2ed", bright_magenta: "#cddbf4"
+            }),
+            "osaka-jade": Object.freeze({ label: "Osaka Jade",
+                mode: "dark", accent: "#509475", selection: "#32473B", muted: "#53685B",
+                background: "#111c18", dark_background: "#0c1512", darker_background: "#090f0d", lighter_background: "#23372B",
+                foreground: "#C1C497", dark_foreground: "#81B8A8", light_foreground: "#D6D5BC", bright_foreground: "#F7E8B2",
+                red: "#FF5345", yellow: "#459451", orange: "#a2734b", green: "#549e6a", cyan: "#2DD5B7", blue: "#509475", magenta: "#D2689C", brown: "#513925",
+                bright_red: "#db9f9c", bright_yellow: "#E5C736", bright_green: "#63b07a", bright_cyan: "#8CD3CB", bright_blue: "#ACD4CF", bright_magenta: "#75bbb3"
+            }),
+            "kanagawa": Object.freeze({ label: "Kanagawa",
+                mode: "dark", accent: "#dcd7ba", selection: "#363646", muted: "#54546D",
+                background: "#1f1f28", dark_background: "#17171e", darker_background: "#111116", lighter_background: "#223249",
+                foreground: "#dcd7ba", dark_foreground: "#727169", light_foreground: "#c8c093", bright_foreground: "#dcd7ba",
+                red: "#c34043", yellow: "#c0a36e", orange: "#c17158", green: "#76946a", cyan: "#6a9589", blue: "#7e9cd8", magenta: "#957fb8", brown: "#60382c",
+                bright_red: "#e82424", bright_yellow: "#e6c384", bright_green: "#98bb6c", bright_cyan: "#7aa89f", bright_blue: "#7fb4ca", bright_magenta: "#938aa9"
+            }),
+            "vantablack": Object.freeze({ label: "Vantablack",
+                mode: "dark", accent: "#8d8d8d", selection: "#1a1a1a", muted: "#7a7a7a",
+                background: "#000000", dark_background: "#090909", darker_background: "#070707", lighter_background: "#1a1a1a",
+                foreground: "#ffffff", dark_foreground: "#505050", light_foreground: "#ececec", bright_foreground: "#ffffff",
+                red: "#a4a4a4", yellow: "#cecece", orange: "#b9b9b9", green: "#b6b6b6", cyan: "#b0b0b0", blue: "#8d8d8d", magenta: "#9b9b9b", brown: "#5c5c5c",
+                bright_red: "#a4a4a4", bright_yellow: "#cecece", bright_green: "#b6b6b6", bright_cyan: "#b0b0b0", bright_blue: "#8d8d8d", bright_magenta: "#9b9b9b"
+            }),
+            "ristretto": Object.freeze({ label: "Ristretto",
+                mode: "dark", accent: "#f38d70", selection: "#403e41", muted: "#72696a",
+                background: "#2c2525", dark_background: "#211b1b", darker_background: "#181414", lighter_background: "#3d2f2a",
+                foreground: "#e6d9db", dark_foreground: "#72696a", light_foreground: "#c3b7b8", bright_foreground: "#e6d9db",
+                red: "#fd6883", yellow: "#f9cc6c", orange: "#fb9a77", green: "#adda78", cyan: "#85dacc", blue: "#f38d70", magenta: "#a8a9eb", brown: "#7d4d3b",
+                bright_red: "#ff8297", bright_yellow: "#fcd675", bright_green: "#c8e292", bright_cyan: "#9bf1e1", bright_blue: "#f8a788", bright_magenta: "#bebffd"
+            }),
+            "retro-82": Object.freeze({ label: "Retro 82",
+                mode: "dark", accent: "#faa968", selection: "#134e5a", muted: "#2a6b78",
+                background: "#05182e", dark_background: "#031222", darker_background: "#020c17", lighter_background: "#0a2540",
+                foreground: "#f6dcac", dark_foreground: "#3f8f8a", light_foreground: "#a7c9c6", bright_foreground: "#f6dcac",
+                red: "#f85525", yellow: "#e97b3c", orange: "#faa968", green: "#028391", cyan: "#8cbfb8", blue: "#3f8f8a", magenta: "#3f8f8a", brown: "#743d1e",
+                bright_red: "#f85525", bright_yellow: "#e97b3c", bright_green: "#028391", bright_cyan: "#8cbfb8", bright_blue: "#faa968", bright_magenta: "#3f8f8a"
+            }),
+            "flexoki-light": Object.freeze({ label: "Flexoki Light",
+                mode: "light", accent: "#205EA6", selection: "#CECDC3", muted: "#B7B5AC",
+                background: "#FFFCF0", dark_background: "#f2efe4", darker_background: "#e5e2d8", lighter_background: "#E6E4D9",
+                foreground: "#100F0F", dark_foreground: "#878580", light_foreground: "#403E3C", bright_foreground: "#100F0F",
+                red: "#D14D41", yellow: "#D0A215", orange: "#d0772b", green: "#879A39", cyan: "#3AA99F", blue: "#205EA6", magenta: "#CE5D97", brown: "#683b15",
+                bright_red: "#D14D41", bright_yellow: "#D0A215", bright_green: "#879A39", bright_cyan: "#3AA99F", bright_blue: "#4385BE", bright_magenta: "#CE5D97"
+            }),
+            "catppuccin-latte": Object.freeze({ label: "Catppuccin Latte",
+                mode: "light", accent: "#1e66f5", selection: "#ccd0da", muted: "#acb0be",
+                background: "#eff1f5", dark_background: "#e3e4e8", darker_background: "#d7d8dc", lighter_background: "#dce0e8",
+                foreground: "#4c4f69", dark_foreground: "#9ca0b0", light_foreground: "#5c5f77", bright_foreground: "#4c4f69",
+                red: "#d20f39", yellow: "#df8e1d", orange: "#d84e2b", green: "#40a02b", cyan: "#179299", blue: "#1e66f5", magenta: "#ea76cb", brown: "#6c2715",
+                bright_red: "#d20f39", bright_yellow: "#df8e1d", bright_green: "#40a02b", bright_cyan: "#179299", bright_blue: "#1e66f5", bright_magenta: "#ea76cb"
+            }),
+            "white": Object.freeze({ label: "White",
+                mode: "light", accent: "#6e6e6e", selection: "#c0c0c0", muted: "#808080",
+                background: "#ffffff", dark_background: "#f5f5f5", darker_background: "#e8e8e8", lighter_background: "#c0c0c0",
+                foreground: "#000000", dark_foreground: "#c0c0c0", light_foreground: "#000000", bright_foreground: "#000000",
+                red: "#2a2a2a", yellow: "#4a4a4a", orange: "#4a4a4a", green: "#3a3a3a", cyan: "#3e3e3e", blue: "#1a1a1a", magenta: "#2e2e2e", brown: "#252525",
+                bright_red: "#2a2a2a", bright_yellow: "#4a4a4a", bright_green: "#3a3a3a", bright_cyan: "#3e3e3e", bright_blue: "#1a1a1a", bright_magenta: "#2e2e2e"
+            }),
         });
-        const labels = Object.freeze({
-            light: 'Light',
-            dark: 'Dark',
-            catppuccin: 'Catppuccin',
-            darkforest: 'Darkforest',
-            carbon: 'Carbon',
-            tokionights: 'Tokyo Night',
-            matrix: 'Matrix',
-            system: 'System'
-        });
-        const themeValues = Object.values(themes);
+        const themes = Object.freeze({ ...Object.fromEntries(Object.keys(palettes).map(name => [name, name])), dark: 'matte-black', light: 'white', system: 'system' });
+        const defaultTheme = themes['tokyo-night'];
+        const labels = Object.freeze({ ...Object.fromEntries(Object.entries(palettes).map(([name, palette]) => [name, palette.label])), system: 'System' });
+        const themeValues = [...Object.keys(palettes), themes.system];
+        const legacyThemes = Object.freeze({ dark: 'matte-black', light: 'white', tokionights: 'tokyo-night', darkforest: 'osaka-jade', carbon: 'catppuccin', matrix: 'hackerman' });
 
         const readPreference = (key, fallback) => {
             try {
@@ -40,9 +132,96 @@
             }
         };
 
+        const rgb = hex => [1, 3, 5].map(index => parseInt(hex.slice(index, index + 2), 16));
+        const mix = (start, end, amount) => '#' + rgb(start).map((value, index) => Math.round(value * (1 - amount) + rgb(end)[index] * amount).toString(16).padStart(2, '0')).join('');
+        const luminance = hex => rgb(hex).map(value => value / 255).map(value => value <= .04045 ? value / 12.92 : ((value + .055) / 1.055) ** 2.4).reduce((sum, value, index) => sum + value * [.2126, .7152, .0722][index], 0);
+        const contrast = (foreground, background) => (Math.max(luminance(foreground), luminance(background)) + .05) / (Math.min(luminance(foreground), luminance(background)) + .05);
+        const readable = (color, background) => {
+            if (contrast(color, background) >= 4.5) return color;
+            const target = contrast('#000000', background) > contrast('#ffffff', background) ? '#000000' : '#ffffff';
+            for (let amount = .01; amount <= 1; amount += .01) {
+                const candidate = mix(color, target, amount);
+                if (contrast(candidate, background) >= 4.5) return candidate;
+            }
+            return target;
+        };
+
+        function themeVariables(palette) {
+            const foregroundRgb = rgb(palette.foreground).join(',');
+            const surface = palette.lighter_background;
+            const activeBackground = mix(palette.background, palette.accent, .14);
+            const muted = [surface, mix(surface, palette.accent, .04), ...['accent', 'magenta', 'green', 'cyan', 'yellow', 'red'].map(key => mix(surface, palette[key], .09))]
+                .reduce((text, background) => readable(text, background), palette.light_foreground);
+            const variables = {
+                'color-scheme': palette.mode,
+                '--bs-body-bg': palette.background,
+                '--bs-body-bg-rgb': rgb(palette.background).join(','),
+                '--bs-body-color': palette.foreground,
+                '--bs-body-color-rgb': foregroundRgb,
+                '--bs-emphasis-color': palette.bright_foreground,
+                '--bs-emphasis-color-rgb': rgb(palette.bright_foreground).join(','),
+                '--bs-secondary-color': muted,
+                '--bs-secondary-bg': palette.dark_background,
+                '--bs-tertiary-bg': palette.lighter_background,
+                '--bs-tertiary-color': palette.dark_foreground,
+                '--bs-border-color': `rgba(${foregroundRgb},.4)`,
+                '--bs-border-color-translucent': `rgba(${foregroundRgb},.18)`,
+                '--bs-link-color': readable(palette.accent, palette.background),
+                '--bs-link-hover-color': readable(mix(palette.accent, palette.foreground, .18), palette.background),
+                '--bs-focus-ring-color': `rgba(${rgb(palette.accent).join(',')},.25)`,
+                '--bs-code-color': readable(palette.accent, palette.dark_background),
+                '--dashboard-surface': surface,
+                '--dashboard-surface-inset': palette.dark_background,
+                '--dashboard-surface-header': mix(surface, palette.accent, .04),
+                '--dashboard-surface-muted': mix(palette.background, surface, .5),
+                '--dashboard-border': `rgba(${foregroundRgb},.4)`,
+                '--dashboard-border-rgb': foregroundRgb,
+                '--dashboard-panel-border': `rgba(${foregroundRgb},.18)`,
+                '--dashboard-panel-border-hover': `rgba(${foregroundRgb},.4)`,
+                '--dashboard-text': palette.foreground,
+                '--dashboard-muted': muted,
+                '--dashboard-code-bg': palette.dark_background,
+                '--dashboard-navbar-bg': palette.background,
+                '--dashboard-sidebar-bg': palette.background,
+                '--dashboard-nav-icon': [palette.background, activeBackground, surface]
+                    .reduce((color, background) => readable(color, background), palette.blue),
+                '--dashboard-active-bg': activeBackground,
+                '--dashboard-selected-bg': palette.selection,
+                '--dashboard-active-fg': readable(palette.accent, mix(surface, palette.accent, .14)),
+                '--dashboard-selected-fg': readable(palette.foreground, palette.selection)
+            };
+            variables['--bs-link-color-rgb'] = rgb(variables['--bs-link-color']).join(',');
+            variables['--bs-link-hover-color-rgb'] = rgb(variables['--bs-link-hover-color']).join(',');
+            for (const [key, color] of Object.entries(palette)) {
+                if (!/^#[0-9a-f]{6}$/i.test(color)) continue;
+                const name = key.replaceAll('_', '-');
+                variables[`--dashboard-palette-${name}`] = color;
+                variables[`--dashboard-palette-${name}-rgb`] = rgb(color).join(',');
+            }
+            for (const [index, key] of ['blue', 'yellow', 'magenta', 'green', 'red', 'cyan', 'orange', 'bright_blue'].entries()) {
+                variables[`--dashboard-series-${index + 1}-text`] = [surface, mix(surface, palette[key], .1), mix(palette.background, palette[key], .22)]
+                    .reduce((text, background) => readable(text, background), palette[key]);
+            }
+            for (const [role, key] of Object.entries({ primary: 'accent', secondary: 'light_foreground', success: 'green', info: 'cyan', warning: 'yellow', danger: 'red', analysis: 'magenta' })) {
+                const color = palette[key];
+                const onColor = [palette.foreground, palette.background].find(candidate => contrast(candidate, color) >= 4.5)
+                    || (contrast('#000000', color) > contrast('#ffffff', color) ? '#000000' : '#ffffff');
+                variables[`--bs-${role}`] = color;
+                variables[`--bs-${role}-rgb`] = rgb(color).join(',');
+                variables[`--bs-${role}-bg-subtle`] = mix(palette.background, color, .1);
+                variables[`--bs-${role}-border-subtle`] = mix(palette.background, color, .35);
+                variables[`--bs-${role}-text-emphasis`] = readable(color, mix(surface, color, .15));
+                variables[`--dashboard-${role}-text`] = variables[`--bs-${role}-text-emphasis`];
+                variables[`--dashboard-on-${role}`] = onColor;
+                variables[`--dashboard-${role}-hover-bg`] = mix(color, contrast('#000000', color) > contrast('#ffffff', color) ? '#ffffff' : '#000000', .1);
+            }
+            return variables;
+        }
+
         window.bdkTheme = window.bdkTheme || {
             themes,
             labels,
+            palettes,
             initialized: false,
 
             getSystemTheme() {
@@ -52,11 +231,14 @@
             },
 
             normalizeTheme(theme) {
-                return themeValues.includes(theme) ? theme : themes.dark;
+                return themeValues.includes(theme) ? theme : Object.hasOwn(legacyThemes, theme) ? legacyThemes[theme] : defaultTheme;
             },
 
             getCurrentTheme() {
-                return this.normalizeTheme(readPreference('theme', themes.dark));
+                const stored = readPreference('theme', defaultTheme);
+                const normalized = this.normalizeTheme(stored);
+                if (stored !== normalized) writePreference('theme', normalized);
+                return normalized;
             },
 
             applyTheme(theme, persist = true) {
@@ -65,15 +247,18 @@
                     ? this.getSystemTheme()
                     : selectedTheme;
 
-                document.documentElement.setAttribute('data-bs-theme', effectiveTheme);
+                const palette = palettes[effectiveTheme];
+                for (const [key, value] of Object.entries(themeVariables(palette))) document.documentElement.style.setProperty(key, value);
+                document.documentElement.setAttribute('data-bs-theme', palette.mode);
                 document.documentElement.setAttribute('data-dashboard-theme', selectedTheme);
+                document.documentElement.setAttribute('data-dashboard-palette', effectiveTheme);
                 if (persist) {
                     writePreference('theme', selectedTheme);
                 }
 
                 this.updateThemePickers(selectedTheme);
                 document.dispatchEvent(new CustomEvent('bdk-dashboard-theme-changed', {
-                    detail: { theme: selectedTheme, effectiveTheme }
+                    detail: { theme: selectedTheme, effectiveTheme, mode: palette.mode }
                 }));
             },
 
@@ -104,6 +289,27 @@
                         return;
                     }
 
+                    const options = picker.querySelector('[data-theme-options]');
+                    if (options) {
+                        for (const name of themeValues) {
+                            const palette = palettes[name] || palettes[this.getSystemTheme()];
+                            const item = document.createElement('li');
+                            const option = document.createElement('button');
+                            option.type = 'button';
+                            option.className = 'dropdown-item d-flex align-items-center gap-2';
+                            option.dataset.themeOption = name;
+                            const swatch = document.createElement('span');
+                            swatch.className = 'dashboard-theme-swatch';
+                            swatch.setAttribute('aria-hidden', 'true');
+                            swatch.style.setProperty('--theme-bg', palette.background);
+                            swatch.style.setProperty('--theme-swatch', palette.foreground);
+                            swatch.style.setProperty('--theme-accent', palette.accent);
+                            option.append(swatch, document.createTextNode(labels[name]));
+                            item.append(option);
+                            options.append(item);
+                        }
+                    }
+
                     picker.dataset.themePickerReady = 'true';
                     toggle.addEventListener('click', event => {
                         event.stopPropagation();
@@ -126,7 +332,7 @@
 
             updateThemePickers(theme) {
                 document.querySelectorAll('[data-theme-label]').forEach(label => {
-                    label.textContent = labels[theme] || labels.dark;
+                    label.textContent = labels[theme] || labels[defaultTheme];
                 });
 
                 document.querySelectorAll('[data-theme-option]').forEach(option => {
@@ -169,7 +375,7 @@
                 });
                 window.addEventListener('storage', event => {
                     if (event.key === 'theme' || event.key === null) {
-                        this.applyTheme(event.newValue || themes.dark, false);
+                        this.applyTheme(event.newValue || defaultTheme, false);
                     }
 
                     if (event.key === 'dashboardTexture' || event.key === null) {
@@ -186,304 +392,153 @@
 
 <style>
     :root {
-        --bs-primary: #66d9ef;
-        --bs-primary-rgb: 102,217,239;
-        --bs-secondary: #fd971f;
-        --bs-secondary-rgb: 253,151,31;
-        --bs-success: #a6e22e;
-        --bs-success-rgb: 166,226,46;
-        --bs-info: #66d9ef;
-        --bs-info-rgb: 102,217,239;
-        --bs-warning: #fd971f;
-        --bs-warning-rgb: 253,151,31;
-        --bs-danger: #f92672;
-        --bs-danger-rgb: 249,38,114;
-        --bs-body-bg: #151414;
-        --bs-body-color: #f8f8f2;
-        --bs-tertiary-bg: #1d1c1c;
-        --bs-secondary-bg: #242222;
-        --bs-border-color: #302d2d;
-        --bs-emphasis-color: #ffffff;
-        --bs-secondary-color: #a59f99;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .12);
-        --bs-primary-text-emphasis: #a6eaff;
+        --dashboard-series-1: var(--dashboard-palette-blue);
+        --dashboard-series-2: var(--dashboard-palette-yellow);
+        --dashboard-series-3: var(--dashboard-palette-magenta);
+        --dashboard-series-4: var(--dashboard-palette-green);
+        --dashboard-series-5: var(--dashboard-palette-red);
+        --dashboard-series-6: var(--dashboard-palette-cyan);
+        --dashboard-series-7: var(--dashboard-palette-orange);
+        --dashboard-series-8: var(--dashboard-palette-bright-blue);
+    }
+
+    .nav-pills { --bs-nav-pills-link-active-bg: var(--dashboard-active-bg); --bs-nav-pills-link-active-color: var(--dashboard-active-fg); }
+    .nav-pills .nav-link { color: var(--bs-link-color); }
+    .nav-pills .nav-link.active { color: var(--dashboard-active-fg); box-shadow: inset 0 -2px var(--bs-primary); }
+    .list-group-item.active { color: var(--dashboard-selected-fg); background-color: var(--dashboard-selected-bg); border-color: var(--bs-primary); }
+    .badge.text-bg-light, .badge.bg-light, .badge.text-bg-dark, .badge.bg-dark { background-color: var(--dashboard-surface-muted) !important; border-color: var(--dashboard-panel-border-hover); color: var(--bs-body-color) !important; }
+
+    .btn-primary, .btn-outline-primary {
+        --bs-btn-color: var(--dashboard-primary-text);
+        --bs-btn-border-color: var(--bs-primary);
+        --bs-btn-hover-color: var(--dashboard-on-primary);
+        --bs-btn-hover-bg: var(--bs-primary);
+        --bs-btn-hover-border-color: var(--bs-primary);
+        --bs-btn-active-color: var(--dashboard-on-primary);
+        --bs-btn-active-bg: var(--bs-primary);
+        --bs-btn-active-border-color: var(--bs-primary);
+        --bs-btn-disabled-color: var(--dashboard-primary-text);
+        --bs-btn-disabled-border-color: var(--bs-primary);
+        --bs-btn-focus-shadow-rgb: var(--bs-primary-rgb);
+    }
+    .btn-primary { --bs-btn-color: var(--dashboard-on-primary); --bs-btn-bg: var(--bs-primary); --bs-btn-hover-bg: var(--dashboard-primary-hover-bg); --bs-btn-disabled-color: var(--dashboard-on-primary); --bs-btn-disabled-bg: var(--bs-primary); }
+    .text-primary { color: var(--dashboard-primary-text) !important; }
+    .text-bg-primary { color: var(--dashboard-on-primary) !important; }
+
+    .btn-secondary, .btn-outline-secondary {
+        --bs-btn-color: var(--dashboard-secondary-text);
+        --bs-btn-border-color: var(--bs-secondary);
+        --bs-btn-hover-color: var(--dashboard-on-secondary);
+        --bs-btn-hover-bg: var(--bs-secondary);
+        --bs-btn-hover-border-color: var(--bs-secondary);
+        --bs-btn-active-color: var(--dashboard-on-secondary);
+        --bs-btn-active-bg: var(--bs-secondary);
+        --bs-btn-active-border-color: var(--bs-secondary);
+        --bs-btn-disabled-color: var(--dashboard-secondary-text);
+        --bs-btn-disabled-border-color: var(--bs-secondary);
+        --bs-btn-focus-shadow-rgb: var(--bs-secondary-rgb);
+    }
+    .btn-secondary { --bs-btn-color: var(--dashboard-on-secondary); --bs-btn-bg: var(--bs-secondary); --bs-btn-hover-bg: var(--dashboard-secondary-hover-bg); --bs-btn-disabled-color: var(--dashboard-on-secondary); --bs-btn-disabled-bg: var(--bs-secondary); }
+    .text-secondary { color: var(--dashboard-secondary-text) !important; }
+    .text-bg-secondary { color: var(--dashboard-on-secondary) !important; }
+
+    .btn-outline-analysis, .btn[data-operation-comparison-open] {
+        --bs-btn-color: var(--dashboard-analysis-text);
+        --bs-btn-border-color: var(--bs-analysis);
+        --bs-btn-hover-color: var(--dashboard-on-analysis);
+        --bs-btn-hover-bg: var(--bs-analysis);
+        --bs-btn-hover-border-color: var(--bs-analysis);
+        --bs-btn-active-color: var(--dashboard-on-analysis);
+        --bs-btn-active-bg: var(--bs-analysis);
+        --bs-btn-active-border-color: var(--bs-analysis);
+        --bs-btn-disabled-color: var(--dashboard-analysis-text);
+        --bs-btn-disabled-border-color: var(--bs-analysis);
+        --bs-btn-focus-shadow-rgb: var(--bs-analysis-rgb);
+    }
+    .text-analysis { color: var(--dashboard-analysis-text) !important; }
+
+    .btn-success, .btn-outline-success {
+        --bs-btn-color: var(--dashboard-success-text);
+        --bs-btn-border-color: var(--bs-success);
+        --bs-btn-hover-color: var(--dashboard-on-success);
+        --bs-btn-hover-bg: var(--bs-success);
+        --bs-btn-hover-border-color: var(--bs-success);
+        --bs-btn-active-color: var(--dashboard-on-success);
+        --bs-btn-active-bg: var(--bs-success);
+        --bs-btn-active-border-color: var(--bs-success);
+        --bs-btn-disabled-color: var(--dashboard-success-text);
+        --bs-btn-disabled-border-color: var(--bs-success);
+        --bs-btn-focus-shadow-rgb: var(--bs-success-rgb);
+    }
+    .btn-success { --bs-btn-color: var(--dashboard-on-success); --bs-btn-bg: var(--bs-success); --bs-btn-hover-bg: var(--dashboard-success-hover-bg); --bs-btn-disabled-color: var(--dashboard-on-success); --bs-btn-disabled-bg: var(--bs-success); }
+    .text-success { color: var(--dashboard-success-text) !important; }
+    .text-bg-success { color: var(--dashboard-on-success) !important; }
+
+    .btn-info, .btn-outline-info {
+        --bs-btn-color: var(--dashboard-info-text);
+        --bs-btn-border-color: var(--bs-info);
+        --bs-btn-hover-color: var(--dashboard-on-info);
+        --bs-btn-hover-bg: var(--bs-info);
+        --bs-btn-hover-border-color: var(--bs-info);
+        --bs-btn-active-color: var(--dashboard-on-info);
+        --bs-btn-active-bg: var(--bs-info);
+        --bs-btn-active-border-color: var(--bs-info);
+        --bs-btn-disabled-color: var(--dashboard-info-text);
+        --bs-btn-disabled-border-color: var(--bs-info);
+        --bs-btn-focus-shadow-rgb: var(--bs-info-rgb);
+    }
+    .btn-info { --bs-btn-color: var(--dashboard-on-info); --bs-btn-bg: var(--bs-info); --bs-btn-hover-bg: var(--dashboard-info-hover-bg); --bs-btn-disabled-color: var(--dashboard-on-info); --bs-btn-disabled-bg: var(--bs-info); }
+    .text-info { color: var(--dashboard-info-text) !important; }
+    .text-bg-info { color: var(--dashboard-on-info) !important; }
+
+    .btn-warning, .btn-outline-warning {
+        --bs-btn-color: var(--dashboard-warning-text);
+        --bs-btn-border-color: var(--bs-warning);
+        --bs-btn-hover-color: var(--dashboard-on-warning);
+        --bs-btn-hover-bg: var(--bs-warning);
+        --bs-btn-hover-border-color: var(--bs-warning);
+        --bs-btn-active-color: var(--dashboard-on-warning);
+        --bs-btn-active-bg: var(--bs-warning);
+        --bs-btn-active-border-color: var(--bs-warning);
+        --bs-btn-disabled-color: var(--dashboard-warning-text);
+        --bs-btn-disabled-border-color: var(--bs-warning);
+        --bs-btn-focus-shadow-rgb: var(--bs-warning-rgb);
+    }
+    .btn-warning { --bs-btn-color: var(--dashboard-on-warning); --bs-btn-bg: var(--bs-warning); --bs-btn-hover-bg: var(--dashboard-warning-hover-bg); --bs-btn-disabled-color: var(--dashboard-on-warning); --bs-btn-disabled-bg: var(--bs-warning); }
+    .text-warning { color: var(--dashboard-warning-text) !important; }
+    .text-bg-warning { color: var(--dashboard-on-warning) !important; }
+
+    .btn-danger, .btn-outline-danger {
+        --bs-btn-color: var(--dashboard-danger-text);
+        --bs-btn-border-color: var(--bs-danger);
+        --bs-btn-hover-color: var(--dashboard-on-danger);
+        --bs-btn-hover-bg: var(--bs-danger);
+        --bs-btn-hover-border-color: var(--bs-danger);
+        --bs-btn-active-color: var(--dashboard-on-danger);
+        --bs-btn-active-bg: var(--bs-danger);
+        --bs-btn-active-border-color: var(--bs-danger);
+        --bs-btn-disabled-color: var(--dashboard-danger-text);
+        --bs-btn-disabled-border-color: var(--bs-danger);
+        --bs-btn-focus-shadow-rgb: var(--bs-danger-rgb);
+    }
+    .btn-danger { --bs-btn-color: var(--dashboard-on-danger); --bs-btn-bg: var(--bs-danger); --bs-btn-hover-bg: var(--dashboard-danger-hover-bg); --bs-btn-disabled-color: var(--dashboard-on-danger); --bs-btn-disabled-bg: var(--bs-danger); }
+    .text-danger { color: var(--dashboard-danger-text) !important; }
+    .text-bg-danger { color: var(--dashboard-on-danger) !important; }
+
+    :root {
         --bs-border-radius: .125rem;
         --bs-border-radius-sm: .1rem;
         --bs-border-radius-lg: .2rem;
-        --dashboard-surface: #171616;
-        --dashboard-surface-muted: #1d1c1c;
-        --dashboard-border: #302d2d;
-        --dashboard-border-rgb: 248,248,242;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .18);
-        --dashboard-text: #f8f8f2;
-        --dashboard-muted: #a59f99;
-        --dashboard-code-bg: #0f0e0e;
-        --dashboard-navbar-bg: var(--dashboard-surface);
         --dashboard-sidebar-bg: #111010;
-        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .12);
-        --dashboard-active-fg: var(--bs-secondary);
         --dashboard-sidebar-width: 13.5rem;
         --dashboard-sidebar-collapsed-width: 4.25rem;
-    }
-
-    [data-bs-theme="light"] {
-        --bs-primary: #0f62fe;
-        --bs-primary-rgb: 15,98,254;
-        --bs-secondary: #8a3ffc;
-        --bs-secondary-rgb: 138,63,252;
-        --bs-success: #198038;
-        --bs-success-rgb: 25,128,56;
-        --bs-info: #0072c3;
-        --bs-info-rgb: 0,114,195;
-        --bs-warning: #b28600;
-        --bs-warning-rgb: 178,134,0;
-        --bs-danger: #da1e28;
-        --bs-danger-rgb: 218,30,40;
-        --bs-body-bg: #f7f7f2;
-        --bs-body-color: #171717;
-        --bs-tertiary-bg: #efeee7;
-        --bs-secondary-bg: #e5e3db;
-        --bs-border-color: #cbc8bd;
-        --bs-emphasis-color: #000000;
-        --bs-secondary-color: #5f5b50;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .1);
-        --bs-primary-text-emphasis: #003a8c;
-        --dashboard-surface: #fffef8;
-        --dashboard-surface-muted: #efeee7;
-        --dashboard-border: #cbc8bd;
-        --dashboard-border-rgb: 23,23,23;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .16);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .24);
-        --dashboard-text: #171717;
-        --dashboard-muted: #5f5b50;
-        --dashboard-code-bg: #eceae0;
-        --dashboard-navbar-bg: #f7f7f2;
         --dashboard-sidebar-bg: #efeee7;
-        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .1);
-        --dashboard-active-fg: var(--bs-primary);
-    }
-
-    [data-bs-theme="dark"] {
-        --bs-primary: #66d9ef;
-        --bs-primary-rgb: 102,217,239;
-        --bs-secondary: #fd971f;
-        --bs-secondary-rgb: 253,151,31;
-        --bs-success: #a6e22e;
-        --bs-success-rgb: 166,226,46;
-        --bs-info: #66d9ef;
-        --bs-info-rgb: 102,217,239;
-        --bs-warning: #fd971f;
-        --bs-warning-rgb: 253,151,31;
-        --bs-danger: #f92672;
-        --bs-danger-rgb: 249,38,114;
-        --bs-body-bg: #151414;
-        --bs-body-color: #f8f8f2;
-        --bs-tertiary-bg: #1d1c1c;
-        --bs-secondary-bg: #242222;
-        --bs-border-color: #302d2d;
-        --bs-emphasis-color: #ffffff;
-        --bs-secondary-color: #a59f99;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .12);
-        --bs-primary-text-emphasis: #a6eaff;
-        --dashboard-surface: #171616;
-        --dashboard-surface-muted: #1d1c1c;
-        --dashboard-border: #302d2d;
-        --dashboard-border-rgb: 248,248,242;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .18);
-        --dashboard-text: #f8f8f2;
-        --dashboard-muted: #a59f99;
-        --dashboard-code-bg: #0f0e0e;
-        --dashboard-navbar-bg: #171616;
         --dashboard-sidebar-bg: #111010;
-        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .12);
-        --dashboard-active-fg: var(--bs-secondary);
-    }
-
-    [data-bs-theme="catppuccin"] {
-        --bs-primary: #89b4fa;
-        --bs-primary-rgb: 137,180,250;
-        --bs-secondary: #f5c2e7;
-        --bs-secondary-rgb: 245,194,231;
-        --bs-success: #a6e3a1;
-        --bs-success-rgb: 166,227,161;
-        --bs-info: #94e2d5;
-        --bs-info-rgb: 148,226,213;
-        --bs-warning: #f9e2af;
-        --bs-warning-rgb: 249,226,175;
-        --bs-danger: #f38ba8;
-        --bs-danger-rgb: 243,139,168;
-        --bs-body-bg: #11111b;
-        --bs-body-color: #cdd6f4;
-        --bs-tertiary-bg: #181825;
-        --bs-secondary-bg: #1e1e2e;
-        --bs-border-color: #313244;
-        --bs-emphasis-color: #f5e0dc;
-        --bs-secondary-color: #a6adc8;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .14);
-        --bs-primary-text-emphasis: #b4befe;
-        --dashboard-surface: #181825;
-        --dashboard-surface-muted: #1e1e2e;
-        --dashboard-border: #313244;
-        --dashboard-border-rgb: 205,214,244;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .2);
-        --dashboard-text: #cdd6f4;
-        --dashboard-muted: #a6adc8;
-        --dashboard-code-bg: #0b0b13;
-        --dashboard-navbar-bg: #11111b;
         --dashboard-sidebar-bg: #0b0b13;
-        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .12);
-        --dashboard-active-fg: var(--bs-secondary);
-    }
-
-    [data-bs-theme="darkforest"] {
-        --bs-primary: #9ece6a;
-        --bs-primary-rgb: 158,206,106;
-        --bs-secondary: #e0af68;
-        --bs-secondary-rgb: 224,175,104;
-        --bs-success: #73daca;
-        --bs-success-rgb: 115,218,202;
-        --bs-info: #7dcfff;
-        --bs-info-rgb: 125,207,255;
-        --bs-warning: #e0af68;
-        --bs-warning-rgb: 224,175,104;
-        --bs-danger: #f7768e;
-        --bs-danger-rgb: 247,118,142;
-        --bs-body-bg: #07120d;
-        --bs-body-color: #d6e8d1;
-        --bs-tertiary-bg: #0c1d14;
-        --bs-secondary-bg: #102719;
-        --bs-border-color: #244432;
-        --bs-emphasis-color: #f3fff0;
-        --bs-secondary-color: #91aa8a;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .13);
-        --bs-primary-text-emphasis: #c4f0a0;
-        --dashboard-surface: #0c1d14;
-        --dashboard-surface-muted: #102719;
-        --dashboard-border: #244432;
-        --dashboard-border-rgb: 214,232,209;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .11);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .19);
-        --dashboard-text: #d6e8d1;
-        --dashboard-muted: #91aa8a;
-        --dashboard-code-bg: #050d09;
-        --dashboard-navbar-bg: #07120d;
         --dashboard-sidebar-bg: #050d09;
-        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .12);
-        --dashboard-active-fg: var(--bs-primary);
-    }
-
-    [data-bs-theme="carbon"] {
-        --bs-primary: #78a9ff;
-        --bs-primary-rgb: 120,169,255;
-        --bs-secondary: #ff7eb6;
-        --bs-secondary-rgb: 255,126,182;
-        --bs-success: #42be65;
-        --bs-success-rgb: 66,190,101;
-        --bs-info: #33b1ff;
-        --bs-info-rgb: 51,177,255;
-        --bs-warning: #f1c21b;
-        --bs-warning-rgb: 241,194,27;
-        --bs-danger: #fa4d56;
-        --bs-danger-rgb: 250,77,86;
-        --bs-body-bg: #161616;
-        --bs-body-color: #f4f4f4;
-        --bs-tertiary-bg: #262626;
-        --bs-secondary-bg: #393939;
-        --bs-border-color: #525252;
-        --bs-emphasis-color: #ffffff;
-        --bs-secondary-color: #c6c6c6;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .13);
-        --bs-primary-text-emphasis: #a6c8ff;
-        --dashboard-surface: #262626;
-        --dashboard-surface-muted: #393939;
-        --dashboard-border: #525252;
-        --dashboard-border-rgb: 244,244,244;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .12);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .22);
-        --dashboard-text: #f4f4f4;
-        --dashboard-muted: #c6c6c6;
-        --dashboard-code-bg: #0f0f0f;
-        --dashboard-navbar-bg: #161616;
         --dashboard-sidebar-bg: #0f0f0f;
-        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .12);
-        --dashboard-active-fg: var(--bs-primary);
-    }
-
-    [data-bs-theme="tokionights"] {
-        --bs-primary: #7aa2f7;
-        --bs-primary-rgb: 122,162,247;
-        --bs-secondary: #bb9af7;
-        --bs-secondary-rgb: 187,154,247;
-        --bs-success: #9ece6a;
-        --bs-success-rgb: 158,206,106;
-        --bs-info: #2ac3de;
-        --bs-info-rgb: 42,195,222;
-        --bs-warning: #ff9e64;
-        --bs-warning-rgb: 255,158,100;
-        --bs-danger: #f7768e;
-        --bs-danger-rgb: 247,118,142;
-        --bs-body-bg: #0f1021;
-        --bs-body-color: #c0caf5;
-        --bs-tertiary-bg: #16172d;
-        --bs-secondary-bg: #1f2335;
-        --bs-border-color: #3b4261;
-        --bs-emphasis-color: #ffffff;
-        --bs-secondary-color: #9aa5ce;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .16);
-        --bs-primary-text-emphasis: #a9bdfd;
-        --dashboard-surface: #16172d;
-        --dashboard-surface-muted: #1f2335;
-        --dashboard-border: #3b4261;
-        --dashboard-border-rgb: 192,202,245;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .13);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .24);
-        --dashboard-text: #c0caf5;
-        --dashboard-muted: #9aa5ce;
-        --dashboard-code-bg: #090a16;
-        --dashboard-navbar-bg: #0f1021;
         --dashboard-sidebar-bg: #090a16;
-        --dashboard-active-bg: rgba(var(--bs-secondary-rgb), .14);
-        --dashboard-active-fg: var(--bs-secondary);
-    }
-
-    [data-bs-theme="matrix"] {
-        --bs-primary: #00ff66;
-        --bs-primary-rgb: 0,255,102;
-        --bs-secondary: #39ff14;
-        --bs-secondary-rgb: 57,255,20;
-        --bs-success: #00ff66;
-        --bs-success-rgb: 0,255,102;
-        --bs-info: #8cffb0;
-        --bs-info-rgb: 140,255,176;
-        --bs-warning: #b7ff4a;
-        --bs-warning-rgb: 183,255,74;
-        --bs-danger: #ff4d6d;
-        --bs-danger-rgb: 255,77,109;
-        --bs-body-bg: #020802;
-        --bs-body-color: #b6ffbf;
-        --bs-tertiary-bg: #041204;
-        --bs-secondary-bg: #071d07;
-        --bs-border-color: #124512;
-        --bs-emphasis-color: #e7ffea;
-        --bs-secondary-color: #73c77c;
-        --bs-primary-bg-subtle: rgba(var(--bs-primary-rgb), .12);
-        --bs-primary-text-emphasis: #8cff9e;
-        --dashboard-surface: #041204;
-        --dashboard-surface-muted: #071d07;
-        --dashboard-border: #124512;
-        --dashboard-border-rgb: 0,255,102;
-        --dashboard-panel-border: rgba(var(--dashboard-border-rgb), .18);
-        --dashboard-panel-border-hover: rgba(var(--dashboard-border-rgb), .34);
-        --dashboard-text: #b6ffbf;
-        --dashboard-muted: #73c77c;
-        --dashboard-code-bg: #000400;
-        --dashboard-navbar-bg: #020802;
         --dashboard-sidebar-bg: #000400;
-        --dashboard-active-bg: rgba(var(--bs-primary-rgb), .14);
-        --dashboard-active-fg: var(--bs-primary);
     }
 
     body {
@@ -538,7 +593,7 @@
     }
 
     .theme-toggle i {
-        color: var(--dashboard-active-fg);
+        color: var(--dashboard-nav-icon);
         font-size: .85rem;
     }
 
@@ -547,7 +602,9 @@
         display: none;
         inset-inline-end: 0;
         inset-inline-start: auto;
-        min-width: 10rem;
+        min-width: 12rem;
+        max-height: min(32rem, calc(100dvh - 4rem));
+        overflow-y: auto;
         padding: .25rem;
         position: absolute;
         top: calc(100% + .25rem) !important;

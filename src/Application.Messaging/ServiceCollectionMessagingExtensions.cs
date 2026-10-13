@@ -281,6 +281,13 @@ public static class ServiceCollectionMessagingExtensions
         IMessageHandlerBehavior behavior = null)
         where TBehavior : class, IMessageHandlerBehavior
     {
+        if ((typeof(TBehavior) == typeof(MessageHandlerProfilingBehavior) || behavior is MessageHandlerProfilingBehavior)
+            && context.Services.Any(service => service.ServiceType == typeof(IMessageHandlerBehavior)
+                && (service.ImplementationType == typeof(MessageHandlerProfilingBehavior) || service.ImplementationInstance is MessageHandlerProfilingBehavior)))
+        {
+            return context;
+        }
+
         if (behavior is null)
         {
             context.Services.AddSingleton<IMessageHandlerBehavior, TBehavior>();
@@ -321,6 +328,11 @@ public static class ServiceCollectionMessagingExtensions
         this MessagingBuilderContext context,
         IMessageHandlerBehavior behavior)
     {
+        if (behavior is MessageHandlerProfilingBehavior)
+        {
+            return context.WithBehavior<MessageHandlerProfilingBehavior>(behavior);
+        }
+
         if (behavior is not null)
         {
             context.Services.AddSingleton(typeof(IMessageHandlerBehavior), behavior);

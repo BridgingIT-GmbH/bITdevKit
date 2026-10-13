@@ -28,7 +28,7 @@ public sealed class ProfilingConsoleCommandTests
         var commands = provider
             .GetServices<IConsoleCommand>()
             .OfType<IGroupedConsoleCommand>()
-            .Where(command => command.GroupName == "profiling")
+            .Where(command => command.GroupName == "profiling runtime")
             .ToArray();
 
         // Assert
@@ -38,7 +38,7 @@ public sealed class ProfilingConsoleCommandTests
                 ["status", "start", "stop", "snapshot", "gc", "mark", "clear", "analyze", "export", "import"],
                 ignoreOrder: true
             );
-        commands.ShouldAllBe(command => command.GroupAliases.Contains("prof"));
+        commands.ShouldAllBe(command => command.GroupAliases.Contains("prof runtime"));
     }
 
     [Theory]
@@ -75,17 +75,17 @@ public sealed class ProfilingConsoleCommandTests
     public async Task Start_WithFriendlyOptions_DelegatesParsedOverridesToCoreService()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
-        ProfilingStartRequest capturedRequest = null;
+        var control = Substitute.For<IRuntimeProfilingControlService>();
+        RuntimeProfilingStartRequest capturedRequest = null;
         control
-            .StartAsync(Arg.Do<ProfilingStartRequest>(request => capturedRequest = request), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(new(CreateSession(), true, [])));
+            .StartAsync(Arg.Do<RuntimeProfilingStartRequest>(request => capturedRequest = request), Arg.Any<CancellationToken>())
+            .Returns(Result<RuntimeProfilingControlResult>.Success(new(CreateSession(), true, [])));
         using var provider = CreateProvider(control: control);
         var (console, writer) = CreateConsole();
 
         // Act
         var result = await new ConsoleCommandExecutor().ExecuteAsync(
-            "prof start --name warm-up --interval 500ms --duration 30s",
+            "prof runtime start --name warm-up --interval 500ms --duration 30s",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -104,17 +104,17 @@ public sealed class ProfilingConsoleCommandTests
     public async Task Start_WithoutOptions_LeavesDefaultsForCoreService()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
-        ProfilingStartRequest capturedRequest = null;
+        var control = Substitute.For<IRuntimeProfilingControlService>();
+        RuntimeProfilingStartRequest capturedRequest = null;
         control
-            .StartAsync(Arg.Do<ProfilingStartRequest>(request => capturedRequest = request), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingControlResult>.Success(new(CreateSession(), true, [])));
+            .StartAsync(Arg.Do<RuntimeProfilingStartRequest>(request => capturedRequest = request), Arg.Any<CancellationToken>())
+            .Returns(Result<RuntimeProfilingControlResult>.Success(new(CreateSession(), true, [])));
         using var provider = CreateProvider(control: control);
         var (console, _) = CreateConsole();
 
         // Act
         await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling start",
+            "profiling runtime start",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -131,13 +131,13 @@ public sealed class ProfilingConsoleCommandTests
     public async Task Start_WithInvalidDuration_FailsBeforeCallingCoreService()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
+        var control = Substitute.For<IRuntimeProfilingControlService>();
         using var provider = CreateProvider(control: control);
         var (console, writer) = CreateConsole();
 
         // Act
         var result = await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling start --duration invalid",
+            "profiling runtime start --duration invalid",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -146,20 +146,20 @@ public sealed class ProfilingConsoleCommandTests
         // Assert
         result.Succeeded.ShouldBeFalse();
         writer.ToString().ShouldContain("Invalid --duration");
-        await control.DidNotReceive().StartAsync(Arg.Any<ProfilingStartRequest>(), Arg.Any<CancellationToken>());
+        await control.DidNotReceive().StartAsync(Arg.Any<RuntimeProfilingStartRequest>(), Arg.Any<CancellationToken>());
     }
 
     [Fact]
     public async Task Analyze_WithOneSnapshotOption_IsRejectedWithoutEvaluation()
     {
         // Arrange
-        var queries = Substitute.For<IProfilingQueryService>();
+        var queries = Substitute.For<IRuntimeProfilingQueryService>();
         using var provider = CreateProvider(queries: queries);
         var (console, writer) = CreateConsole();
 
         // Act
         var result = await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling analyze --session sess0001 --node node0001 --snapshot-a snap0001",
+            "profiling runtime analyze --session sess0001 --node node0001 --snapshot-a snap0001",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -168,27 +168,27 @@ public sealed class ProfilingConsoleCommandTests
         // Assert
         result.Succeeded.ShouldBeFalse();
         writer.ToString().ShouldContain("must be supplied together");
-        await queries.DidNotReceive().EvaluateAsync(Arg.Any<ProfilingEvaluationRequest>(), Arg.Any<CancellationToken>());
+        await queries.DidNotReceive().EvaluateAsync(Arg.Any<RuntimeProfilingEvaluationRequest>(), Arg.Any<CancellationToken>());
     }
 
     [Theory]
-    [InlineData(null, null, ProfilingEvaluationMode.NodeSession)]
-    [InlineData("snap0001", "snap0002", ProfilingEvaluationMode.TwoSnapshots)]
+    [InlineData(null, null, RuntimeProfilingEvaluationMode.NodeSession)]
+    [InlineData("snap0001", "snap0002", RuntimeProfilingEvaluationMode.TwoSnapshots)]
     public async Task Analyze_WithValidSelection_DelegatesTimelineOrPair(
         string snapshotA,
         string snapshotB,
-        ProfilingEvaluationMode expectedMode
+        RuntimeProfilingEvaluationMode expectedMode
     )
     {
         // Arrange
-        var queries = Substitute.For<IProfilingQueryService>();
-        ProfilingEvaluationRequest capturedRequest = null;
+        var queries = Substitute.For<IRuntimeProfilingQueryService>();
+        RuntimeProfilingEvaluationRequest capturedRequest = null;
         queries
-            .EvaluateAsync(Arg.Do<ProfilingEvaluationRequest>(request => capturedRequest = request), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingEvaluationResult>.Success(CreateEvaluation(expectedMode)));
+            .EvaluateAsync(Arg.Do<RuntimeProfilingEvaluationRequest>(request => capturedRequest = request), Arg.Any<CancellationToken>())
+            .Returns(Result<RuntimeProfilingEvaluationResult>.Success(CreateEvaluation(expectedMode)));
         using var provider = CreateProvider(queries: queries);
         var (console, writer) = CreateConsole();
-        var commandLine = "profiling analyze --session sess0001 --node node0001"
+        var commandLine = "profiling runtime analyze --session sess0001 --node node0001"
             + (snapshotA is null ? string.Empty : $" --snapshot-a {snapshotA} --snapshot-b {snapshotB}");
 
         // Act
@@ -209,11 +209,11 @@ public sealed class ProfilingConsoleCommandTests
     public async Task Analyze_WithJson_WritesExactComputedContractWithoutPersistingIt()
     {
         // Arrange
-        var evaluation = CreateEvaluation(ProfilingEvaluationMode.NodeSession);
-        var queries = Substitute.For<IProfilingQueryService>();
+        var evaluation = CreateEvaluation(RuntimeProfilingEvaluationMode.NodeSession);
+        var queries = Substitute.For<IRuntimeProfilingQueryService>();
         queries
-            .EvaluateAsync(Arg.Any<ProfilingEvaluationRequest>(), Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingEvaluationResult>.Success(evaluation));
+            .EvaluateAsync(Arg.Any<RuntimeProfilingEvaluationRequest>(), Arg.Any<CancellationToken>())
+            .Returns(Result<RuntimeProfilingEvaluationResult>.Success(evaluation));
         var services = new ServiceCollection().AddSingleton(queries).BuildServiceProvider();
         var (console, writer) = CreateConsole();
         var command = new ProfilingAnalyzeConsoleCommand
@@ -233,7 +233,7 @@ public sealed class ProfilingConsoleCommandTests
         );
         writer.ToString().TrimEnd().ShouldBe(expected);
         await queries.Received(1).EvaluateAsync(
-            new ProfilingEvaluationRequest("sess0001", "node0001"),
+            new RuntimeProfilingEvaluationRequest("sess0001", "node0001"),
             Arg.Any<CancellationToken>()
         );
     }
@@ -245,7 +245,7 @@ public sealed class ProfilingConsoleCommandTests
         var directory = Path.Combine(Path.GetTempPath(), $"bitdevkit-prof-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
         var exportPath = Path.Combine(directory, "session.json");
-        var archives = Substitute.For<IProfilingArchiveService>();
+        var archives = Substitute.For<IRuntimeProfilingArchiveService>();
         archives
             .ExportSessionAsync("sess0001", Arg.Any<Stream>(), Arg.Any<CancellationToken>())
             .Returns(call =>
@@ -256,7 +256,7 @@ public sealed class ProfilingConsoleCommandTests
         archives
             .ImportAsync(Arg.Any<Stream>(), Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingArchiveImportResult>.Success(
+                Result<RuntimeProfilingArchiveImportResult>.Success(
                     new("newsess1", new Dictionary<string, string>(), new Dictionary<string, string>())
                 )
             );
@@ -267,13 +267,13 @@ public sealed class ProfilingConsoleCommandTests
         {
             // Act
             var exportResult = await new ConsoleCommandExecutor().ExecuteAsync(
-                $"profiling export --session sess0001 --output \"{exportPath}\"",
+                $"profiling runtime export --session sess0001 --output \"{exportPath}\"",
                 console,
                 provider,
                 ConsoleCommandExecutionSource.Terminal
             );
             var importResult = await new ConsoleCommandExecutor().ExecuteAsync(
-                $"profiling import --file \"{exportPath}\"",
+                $"profiling runtime import --file \"{exportPath}\"",
                 console,
                 provider,
                 ConsoleCommandExecutionSource.Terminal
@@ -312,8 +312,8 @@ public sealed class ProfilingConsoleCommandTests
         var directory = Path.Combine(Path.GetTempPath(), $"bitdevkit-prof-{Guid.NewGuid():N}");
         Directory.CreateDirectory(directory);
         var exportPath = Path.Combine(directory, "session.perfetto.json");
-        var archives = Substitute.For<IProfilingArchiveService>();
-        var perfetto = Substitute.For<IProfilingPerfettoExportService>();
+        var archives = Substitute.For<IRuntimeProfilingArchiveService>();
+        var perfetto = Substitute.For<IRuntimeProfilingPerfettoExportService>();
         perfetto
             .ExportSessionAsync("sess0001", Arg.Any<Stream>(), Arg.Any<CancellationToken>())
             .Returns(call =>
@@ -328,7 +328,7 @@ public sealed class ProfilingConsoleCommandTests
         {
             // Act
             var result = await new ConsoleCommandExecutor().ExecuteAsync(
-                $"profiling export --session sess0001 --format perfetto --output \"{exportPath}\"",
+                $"profiling runtime export --session sess0001 --format perfetto --output \"{exportPath}\"",
                 console,
                 provider,
                 ConsoleCommandExecutionSource.Terminal
@@ -361,13 +361,13 @@ public sealed class ProfilingConsoleCommandTests
     public async Task Clear_WithoutYes_ChangesNothingAndExplainsConfirmation()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
+        var control = Substitute.For<IRuntimeProfilingControlService>();
         using var provider = CreateProvider(control: control);
         var (console, writer) = CreateConsole();
 
         // Act
         await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling clear",
+            "profiling runtime clear",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -383,11 +383,11 @@ public sealed class ProfilingConsoleCommandTests
     public async Task Mark_WithoutActiveSession_WritesCoreStateFailure()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
+        var control = Substitute.For<IRuntimeProfilingControlService>();
         control
-            .AddPhaseMarkerAsync("load", Arg.Any<CancellationToken>())
+            .AddMarkerAsync("load", Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingPhaseMarker>
+                Result<ProfilingMarker>
                     .Failure()
                     .WithError(new ProfilingInvalidStateError("No profiling session is active."))
             );
@@ -396,7 +396,7 @@ public sealed class ProfilingConsoleCommandTests
 
         // Act
         await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling mark --name load",
+            "profiling runtime mark --name load",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -410,18 +410,18 @@ public sealed class ProfilingConsoleCommandTests
     public async Task Start_WhenDisabled_WritesSafeTypedFailure()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
+        var control = Substitute.For<IRuntimeProfilingControlService>();
         control
-            .StartAsync(Arg.Any<ProfilingStartRequest>(), Arg.Any<CancellationToken>())
+            .StartAsync(Arg.Any<RuntimeProfilingStartRequest>(), Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingControlResult>.Failure().WithError(new ProfilingDisabledError())
+                Result<RuntimeProfilingControlResult>.Failure().WithError(new ProfilingDisabledError())
             );
         using var provider = CreateProvider(control: control);
         var (console, writer) = CreateConsole();
 
         // Act
         await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling start",
+            "profiling runtime start",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -442,7 +442,7 @@ public sealed class ProfilingConsoleCommandTests
 
         // Act
         var result = await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling status",
+            "profiling runtime status",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -459,16 +459,16 @@ public sealed class ProfilingConsoleCommandTests
         // Arrange
         using var cancellation = new CancellationTokenSource();
         cancellation.Cancel();
-        var control = Substitute.For<IProfilingControlService>();
+        var control = Substitute.For<IRuntimeProfilingControlService>();
         control
-            .StartAsync(Arg.Any<ProfilingStartRequest>(), cancellation.Token)
-            .Returns(Task.FromCanceled<Result<ProfilingControlResult>>(cancellation.Token));
+            .StartAsync(Arg.Any<RuntimeProfilingStartRequest>(), cancellation.Token)
+            .Returns(Task.FromCanceled<IResult<RuntimeProfilingControlResult>>(cancellation.Token));
         using var provider = CreateProvider(control: control);
         var (console, writer) = CreateConsole();
 
         // Act
         var result = await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling start",
+            "profiling runtime start",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal,
@@ -478,22 +478,22 @@ public sealed class ProfilingConsoleCommandTests
         // Assert
         result.Succeeded.ShouldBeFalse();
         writer.ToString().ShouldContain("Command cancelled");
-        await control.Received(1).StartAsync(Arg.Any<ProfilingStartRequest>(), cancellation.Token);
+        await control.Received(1).StartAsync(Arg.Any<RuntimeProfilingStartRequest>(), cancellation.Token);
     }
 
     [Fact]
     public async Task Snapshot_WithAcceptedNode_UsesImmediateOutcomeTerminology()
     {
         // Arrange
-        var control = Substitute.For<IProfilingControlService>();
+        var control = Substitute.For<IRuntimeProfilingControlService>();
         control
             .SnapshotAsync(null, Arg.Any<CancellationToken>())
             .Returns(
-                Result<ProfilingControlResult>.Success(
+                Result<RuntimeProfilingControlResult>.Success(
                     new(
                         CreateSession(),
                         false,
-                        [new("node0001", BroadcastDeliveryOutcome.Accepted, Duration: TimeSpan.FromMilliseconds(3))]
+                        [new("node0001", RuntimeProfilingDeliveryOutcome.Accepted, Duration: TimeSpan.FromMilliseconds(3))]
                     )
                 )
             );
@@ -502,7 +502,7 @@ public sealed class ProfilingConsoleCommandTests
 
         // Act
         await new ConsoleCommandExecutor().ExecuteAsync(
-            "profiling snapshot",
+            "profiling runtime snapshot",
             console,
             provider,
             ConsoleCommandExecutionSource.Terminal
@@ -544,68 +544,68 @@ public sealed class ProfilingConsoleCommandTests
     }
 
     private static ServiceProvider CreateProvider(
-        IProfilingControlService control = null,
-        IProfilingQueryService queries = null,
-        IProfilingArchiveService archives = null,
-        IProfilingPerfettoExportService perfetto = null
+        IRuntimeProfilingControlService control = null,
+        IRuntimeProfilingQueryService queries = null,
+        IRuntimeProfilingArchiveService archives = null,
+        IRuntimeProfilingPerfettoExportService perfetto = null
     )
     {
         var services = new ServiceCollection();
         services.AddProfiling().AddConsoleCommands();
         if (control is not null)
         {
-            services.RemoveAll<IProfilingControlService>();
+            services.RemoveAll<IRuntimeProfilingControlService>();
             services.AddSingleton(control);
         }
 
         if (queries is not null)
         {
-            services.RemoveAll<IProfilingQueryService>();
+            services.RemoveAll<IRuntimeProfilingQueryService>();
             services.AddSingleton(queries);
         }
 
         if (archives is not null)
         {
-            services.RemoveAll<IProfilingArchiveService>();
+            services.RemoveAll<IRuntimeProfilingArchiveService>();
             services.AddSingleton(archives);
         }
 
         if (perfetto is not null)
         {
-            services.RemoveAll<IProfilingPerfettoExportService>();
+            services.RemoveAll<IRuntimeProfilingPerfettoExportService>();
             services.AddSingleton(perfetto);
         }
 
         return services.BuildServiceProvider();
     }
 
-    private static ProfilingSession CreateSession() =>
+    private static RuntimeProfilingSession CreateSession() =>
         new()
         {
             Identity = new(Guid.NewGuid(), "sess0001"),
             Name = "test",
-            State = ProfilingSessionState.Running,
+            State = RuntimeProfilingSessionState.Running,
             StartedUtc = DateTimeOffset.Parse("2026-08-07T10:00:00Z"),
             EndsUtc = DateTimeOffset.Parse("2026-08-07T10:00:30Z"),
             SamplingInterval = TimeSpan.FromSeconds(1),
             Duration = TimeSpan.FromSeconds(30),
         };
 
-    private static ProfilingEvaluationResult CreateEvaluation(ProfilingEvaluationMode mode) =>
+    private static RuntimeProfilingEvaluationResult CreateEvaluation(RuntimeProfilingEvaluationMode mode) =>
         new(
             new(
                 mode,
                 "sess0001",
                 "node0001",
-                mode == ProfilingEvaluationMode.TwoSnapshots ? ["snap0001", "snap0002"] : [],
+                mode == RuntimeProfilingEvaluationMode.TwoSnapshots ? ["snap0001", "snap0002"] : [],
                 DateTimeOffset.Parse("2026-08-07T10:00:00Z"),
                 DateTimeOffset.Parse("2026-08-07T10:00:10Z"),
-                mode == ProfilingEvaluationMode.TwoSnapshots ? 2 : 11,
+                mode == RuntimeProfilingEvaluationMode.TwoSnapshots ? 2 : 11,
                 false
             ),
             new()
             {
-                Sufficiency = ProfilingDataSufficiency.Sufficient,
+                Sufficiency = RuntimeProfilingDataSufficiency.Sufficient,
                 AvailableInputs = ["cpu", "memory"],
                 SamplingCoveragePercent = 100,
                 CaptureDurationP95 = TimeSpan.FromMilliseconds(4),
@@ -614,10 +614,10 @@ public sealed class ProfilingConsoleCommandTests
             [
                 new(
                     "managed-memory-growth",
-                    ProfilingSignalLabel.Notable,
+                    RuntimeProfilingSignalLabel.Notable,
                     "Managed memory increased during the evaluated period.",
                     [new("managed-memory-delta", 1024, "bytes")],
-                    ProfilingSignalConfidence.Medium,
+                    RuntimeProfilingSignalConfidence.Medium,
                     "Inspect allocation-heavy code."
                 ),
             ],

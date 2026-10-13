@@ -150,6 +150,7 @@ public sealed class DevKitWebApplicationBuilder : IDevKitApplicationBuilder
             this.Services.AddSingleton<McpServerSessionReader>();
             this.Services.AddMcpHandler<RuntimeDiagnosticsMcpHandler>();
             this.Services.AddMcpHandler<LogEntryMcpHandler>();
+            this.Services.AddMcpHandler<ProfilingMcpHandler>();
             this.Services.AddSingleton<IHostFeatureEndpointContributor, McpHostFeatureEndpointContributor>();
             this.Services.AddHostedService<McpIpcServer>();
         }

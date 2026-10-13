@@ -1,0 +1,89 @@
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Operations
+@using Microsoft.AspNetCore.Http
+@using DashboardEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.DashboardEndpoints
+@using BridgingIT.DevKit.Common
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@using Microsoft.Extensions.DependencyInjection
+@inherits RazorSlice<OperationProfilingDashboardModel>
+@{
+    var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+    var pagePath = DashboardEndpoints.BuildOperationsPath(options, Model.RequestsOnly);
+}
+<section data-operation-view data-refreshed-utc="@OperationProfilingViewModelBuilder.Utc(Model.RefreshedUtc)">
+@(await RenderPartialAsync<Health, OperationProfilingDashboardModel>(Model))
+<template data-operation-comparison-keys>@foreach (var group in Model.Groups?.Groups.DistinctBy(group => (ProfilingKeyComparer.Canonicalize(group.Kind), ProfilingKeyComparer.Canonicalize(group.Key))) ?? []) { <option value="@System.Text.Json.JsonSerializer.Serialize(new[] { ProfilingKeyComparer.Canonicalize(group.Kind), ProfilingKeyComparer.Canonicalize(group.Key) })" data-key="@group.Key" data-kind="@group.Kind" title="@group.Key">@OperationProfilingViewModelBuilder.KindLabel(group.Kind) &#183; @OperationProfilingViewModelBuilder.GroupName(group.Key, group.Kind)</option> }</template>
+<template data-operation-node-options>@(await RenderPartialAsync<Nodes, OperationProfilingDashboardModel>(Model))</template>
+<template data-operation-comparison-groups>@foreach (var group in Model.Groups?.Groups ?? []) { <option value="@group.ComparisonKey" data-key="@group.Key" data-kind="@group.Kind" data-selector="@System.Text.Json.JsonSerializer.Serialize(GroupSelector(group))">@OperationProfilingViewModelBuilder.GroupName(group.Key, group.Kind) @foreach (var key in Model.Query.GroupingDimensions) { var value = group.Dimensions.FirstOrDefault(item => ProfilingKeyComparer.Instance.Equals(item.Key, key))?.Value; <text> &#183; @key = @(value?.Scalar is "" ? "(empty string)" : value?.Scalar ?? "Missing") @value?.Type</text> } &#183; @group.Count executions</option> }</template>
+@if (Model.Error is not null)
+{
+    <div class="alert alert-warning" role="alert">@Model.Error</div>
+}
+else
+{
+    <div class="operation-metrics mb-2">
+        <article class="operation-metric dashboard-metric" data-metric-tone="primary"><span>Executions @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>("Retained, persisted executions matching these filters. Sampling and retention can reduce this count."))</span><strong>@Model.Groups.TotalOperationCount</strong></article>
+        <article class="operation-metric dashboard-metric" data-metric-tone="analysis"><span>Groups</span><strong>@Model.Groups.TotalGroupCount</strong></article>
+        <article class="operation-metric dashboard-metric" data-metric-tone="@(Model.Health?.QueueRecords > 0 ? "info" : "")"><span>Queued @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>("Pending persistence on the serving node. These executions are not yet included in the list."))</span><strong>@Model.Health?.QueueRecords</strong></article>
+        <article class="operation-metric dashboard-metric" data-metric-tone="@(Model.Health?.DroppedOperations > 0 ? "warning" : "")"><span>Dropped @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>("Executions dropped on the serving node. Stored counts may include other nodes when the provider is shared."))</span><strong class="@(Model.Health?.DroppedOperations > 0 ? "text-warning" : "")">@Model.Health?.DroppedOperations</strong></article>
+    </div>
+    @if (Model.Groups.Groups.Count == 0) { <div class="alert alert-secondary">No retained executions match this selection.</div> }
+    @if (Model.Groups.StatisticsLimitation is not null) { <p class="small text-warning" role="status">@Model.Groups.StatisticsLimitation</p> }
+    @foreach (var group in Model.Groups.Groups)
+    {
+        var rows = Model.Query.View == OperationProfilingView.ByCount ? new[] { group.Representative } : group.Occurrences;
+        <details open data-operation-group data-dashboard-series-key="@group.Kind" data-preserve-key="group-@group.ComparisonKey" class="card mb-3">
+            <summary class="card-header operation-group-header" title="Key: @group.Key"><span>@OperationProfilingViewModelBuilder.KindLabel(group.Kind)</span> &#183; <strong>@OperationProfilingViewModelBuilder.GroupName(group.Key, group.Kind)</strong> @if (!string.IsNullOrEmpty(group.HttpMethod)) { <span>&#183; @group.HttpMethod</span> } <a class="badge text-bg-secondary text-decoration-none operation-expand-group" href="@Expand(group)" title="View retained executions matching this group">@group.Count @(group.Count == 1 ? "execution" : "executions")</a> @foreach (var key in Model.Query.GroupingDimensions) { var dimension = group.Dimensions.FirstOrDefault(value => ProfilingKeyComparer.Instance.Equals(value.Key, key)); <span class="badge text-bg-secondary ms-1">@key = @(dimension?.Value?.Scalar is "" ? "(empty string)" : dimension?.Value?.Scalar ?? "Missing") @dimension?.Value?.Type</span> } <span class="operation-group-actions"><button class="btn btn-outline-primary btn-sm" type="button" data-operation-comparison-open data-operation-comparison-key="@group.Key" data-operation-comparison-kind="@group.Kind" data-operation-comparison-identity="@System.Text.Json.JsonSerializer.Serialize(new[] { ProfilingKeyComparer.Canonicalize(group.Kind), ProfilingKeyComparer.Canonicalize(group.Key) })" data-operation-comparison-selector="@System.Text.Json.JsonSerializer.Serialize(GroupSelector(group))" data-operation-comparison-group="@group.ComparisonKey" title="Compare this group with another selection of the same operation" aria-label="Compare executions of @OperationProfilingViewModelBuilder.GroupName(group.Key, group.Kind)"><i class="bi bi-arrow-left-right" aria-hidden="true"></i></button><button class="btn btn-outline-danger btn-sm" type="button" data-operation-delete-group data-delete-url="@(pagePath + "/groups/delete")" data-delete-selector="@System.Text.Json.JsonSerializer.Serialize(GroupSelector(group))" data-delete-name="@(OperationProfilingViewModelBuilder.KindLabel(group.Kind) + " · " + OperationProfilingViewModelBuilder.GroupName(group.Key, group.Kind))" data-delete-count="@group.Count" title="Delete all executions matching this group and the current filters" aria-label="Delete group"><i class="bi bi-trash" aria-hidden="true"></i></button></span></summary>
+            <div class="operation-group-content">
+            @if (Model.Query.GroupingDimensions.Count > 0) { <div class="small text-muted px-2 py-1 operation-group-statistics">@if (group.Distribution is { } distribution) { <span>Median @OperationProfilingViewModelBuilder.DurationMilliseconds(distribution.P50Milliseconds) &#183; p95 @OperationProfilingViewModelBuilder.DurationMilliseconds(distribution.P95Milliseconds) &#183; @distribution.Count samples</span> @if (distribution.PartialOperationCount > 0) { <span class="text-warning"> &#183; @distribution.PartialOperationCount partial</span> } } else { <span>Median / p95 unavailable</span> }</div> }
+            <div class="table-responsive"><table class="table table-sm align-middle mb-0"><thead><tr><th>Execution / started UTC</th><th>Node</th><th>Outcome</th>@if (Model.RequestsOnly) { <th>HTTP</th> }<th>Duration</th><th scope="col" class="text-center" style="width:1%"><span class="visually-hidden">Execution details</span></th><th style="min-width:16rem">Duration breakdown @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>("Percent of operation duration spent in each segment. Parallel work and time outside segments are separate buckets."))</th></tr></thead><tbody>
+            @foreach (var record in rows.Where(value => value is not null))
+            {
+                var detailsPath = pagePath + "/" + record.Id.ToString("D");
+                var byCount = Model.Query.View == OperationProfilingView.ByCount;
+                <tr><td class="text-nowrap"><time class="small" datetime="@OperationProfilingViewModelBuilder.Utc(record.StartedUtc)">@OperationProfilingViewModelBuilder.Utc(record.StartedUtc)</time></td>
+                    <td class="text-nowrap"><span title="Node ID: @record.NodeId &#183; Key: @record.Node.Identity.Key &#183; Host: @record.Node.HostName &#183; Version: @record.Node.ApplicationVersion">@(record.Node.DisplayName ?? record.Node.HostName)</span></td>
+                    <td class="text-nowrap"><span class="@OutcomeClass(record.Outcome)" title="@OperationProfilingViewModelBuilder.Quality(record)">@record.Outcome</span>@if (record.Segments.Any(value => value.Outcomes.Any(bucket => bucket.Outcome == ProfilingSegmentOutcome.Failed && bucket.Statistics.Count > 0))) { <span class="badge text-bg-warning">Segment failures</span> }</td>
+                    @if (Model.RequestsOnly) { <td class="text-nowrap"><span title="@(record.Http?.Path + record.Http?.QueryString) &#183; Response: @(record.Http?.ResponseBytes?.ToString(CultureInfo.InvariantCulture) ?? "—") bytes &#183; @record.Http?.ResponseBytesQuality">@record.Http?.Method @record.Http?.StatusCode</span><span class="visually-hidden">Sampling: @record.Http?.SamplingStrategyKey</span>@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>($"Sampling: {record.Http?.SamplingStrategyKey} / {record.Http?.SamplingConfigurationKey}; inclusion probability: {record.Http?.SamplingInclusionProbability?.ToString("0.####", CultureInfo.InvariantCulture) ?? "unknown"}."))</td> }
+                    <td class="text-nowrap">@OperationProfilingViewModelBuilder.Duration(record.Duration)</td>
+                    <td class="text-center text-nowrap"><button class="btn btn-outline-secondary btn-sm operation-view-execution" type="button" data-operation-detail-url="@(detailsPath + "/content")" title="@(byCount ? "Representative execution details" : "Execution details") &#183; @record.Id" aria-label="Execution details"><i class="bi bi-info-circle" aria-hidden="true"></i></button></td>
+                    <td>@(await RenderPartialAsync<WallTime, OperationProfilingRecord>(record))</td>
+                </tr>
+            }
+            </tbody></table></div>
+            </div>
+        </details>
+    }
+    @if (Model.Groups.NextCursor is not null) { <a class="btn btn-outline-secondary btn-sm operation-next-page" href="@Next()">Next page</a> }
+}
+</section>
+@functions {
+    private static string OutcomeClass(OperationProfilingOutcome outcome) => outcome switch
+    {
+        OperationProfilingOutcome.Completed => "text-success",
+        OperationProfilingOutcome.Failed => "text-danger",
+        _ => "text-warning"
+    };
+    private string Next()
+    {
+        var values = HttpContext.Request.Query.Where(value => value.Key != "cursor" && value.Key != "_").ToDictionary(value => value.Key, value => value.Value.ToString());
+        values["cursor"] = Model.Groups.NextCursor;
+        return (HttpContext.Request.Path.Value.EndsWith("/content", StringComparison.Ordinal) ? HttpContext.Request.Path.Value[..^8] : HttpContext.Request.Path.Value) + QueryString.Create(values);
+    }
+    private string Expand(OperationProfilingGroup group)
+    {
+        var selector = GroupSelector(group);
+        var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+        return DashboardEndpoints.BuildOperationsPath(options, Model.RequestsOnly) + QueryString.Create("query", System.Text.Json.JsonSerializer.Serialize(selector));
+    }
+    private OperationProfilingQuery GroupSelector(OperationProfilingGroup group) => Model.Query with
+    {
+        View = OperationProfilingView.Recent, Key = group.Key, KeyContains = null, Kind = group.Kind, HttpMethod = group.HttpMethod ?? Model.Query.HttpMethod,
+        GroupDimensions = Model.Query.GroupDimensions.Where(item => !Model.Query.GroupingDimensions.Contains(item.Key, ProfilingKeyComparer.Instance)).Concat(Model.Query.GroupingDimensions.Select(key =>
+        {
+            var value = group.Dimensions.FirstOrDefault(dimension => ProfilingKeyComparer.Instance.Equals(dimension.Key, key))?.Value;
+            return new ProfilingDimensionPredicate { Key = key, Value = value, Operator = value is null ? ProfilingDimensionOperator.Missing : ProfilingDimensionOperator.Equal };
+        })).ToArray(),
+        GroupingDimensions = [], GroupByHttpMethod = false, Cursor = null, Boundary = null, FromUtc = Model.Groups.Boundary.FromUtc, ToUtc = Model.Groups.Boundary.ToUtc,
+    };
+}

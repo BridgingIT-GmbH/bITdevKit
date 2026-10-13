@@ -117,6 +117,12 @@ public sealed class DatabaseSeederTask(
 
 When the host has started and both configured delays have elapsed, the application log contains `Database seeding completed`. An exception is logged by the service; setting `HaltOnFailure()` at service or task level terminates the process with `Environment.FailFast`.
 
+### Dashboard health
+
+With the [Dashboard](features-presentation-dashboard.md) and health checks enabled, open Health at `/_bdk/dashboard/health` to inspect the `StartupTasksService` health entry alongside database readiness and other background services. The service entry reports startup-task service state; it is not a per-task execution-history page. Use [Logs](features-log-entries.md#dashboard-guide) for an individual task's start, completion, duration and failure records.
+
+[![Health dashboard with startup-task service and database-readiness entries](assets/dashboard/05-health-health.png)](assets/dashboard/05-health-health.png)
+
 ### Configuration options
 
 Tasks can be configured with various options:

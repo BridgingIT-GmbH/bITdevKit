@@ -19,6 +19,10 @@ using System.Reflection;
 /// </example>
 public class DashboardEndpointsOptions : EndpointsOptionsBase
 {
+    /// <summary>Gets or sets the initial Profiling dashboard refresh interval.</summary>
+    /// <example><code>options.ProfilingRefreshInterval = TimeSpan.FromSeconds(5);</code></example>
+    public TimeSpan ProfilingRefreshInterval { get; set; } = TimeSpan.FromSeconds(5);
+
     /// <summary>
     ///     Initializes a new instance of the <see cref="DashboardEndpointsOptions" /> class with dashboard defaults.
     /// </summary>

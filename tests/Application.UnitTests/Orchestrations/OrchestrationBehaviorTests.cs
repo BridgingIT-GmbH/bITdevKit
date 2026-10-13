@@ -12,6 +12,50 @@ using Microsoft.Extensions.Logging;
 
 public class OrchestrationBehaviorTests(ITestOutputHelper output) : OrchestrationTestBase(output)
 {
+    /// <summary>Checks inline and persisted orchestration work carries its own ID into transport metadata and restores the caller.</summary>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task ExecuteAsync_OriginCorrelation_PropagatesWithoutActivityListener(bool persisted)
+    {
+        var properties = new Dictionary<string, object>();
+        await using var sut = this.CreateHarnessBuilder()
+            .WithBehavior(new CorrelationBehavior(properties))
+            .WithOrchestration<FirstBehaviorOrchestration>()
+            .Build();
+        using var caller = CorrelationId.BeginScope("caller-correlation");
+        string expected;
+        if (persisted)
+        {
+            var result = await sut.DispatchAsync<FirstBehaviorOrchestration, BehaviorData>(new BehaviorData());
+            result.IsSuccess.ShouldBeTrue();
+            expected = (await sut.GetContextAsync<BehaviorData>(result.Value)).CorrelationId;
+            expected.Length.ShouldBe(12);
+            CorrelationId.IsValid(expected).ShouldBeTrue();
+        }
+        else
+        {
+            var result = await sut.ExecuteAsync<FirstBehaviorOrchestration, BehaviorData>(new BehaviorData(), correlationId: "orchestration-correlation");
+            result.IsSuccess.ShouldBeTrue();
+            expected = "orchestration-correlation";
+        }
+
+        CorrelationId.ReadFrom(properties).ShouldBe(expected);
+        CorrelationId.Current.ShouldBe("caller-correlation");
+    }
+
+    private sealed class CorrelationBehavior(Dictionary<string, object> properties) : OrchestrationBehaviorBase(null)
+    {
+        /// <inheritdoc />
+        public override async Task<OrchestrationOutcome> ExecuteAsync(OrchestrationActivityExecutionContext context, CancellationToken cancellationToken, OrchestrationDelegate next)
+        {
+            await Task.Yield();
+            CorrelationId.Current.ShouldBe(context.CorrelationId);
+            CorrelationId.PropagateTo(properties);
+            return await next();
+        }
+    }
+
     [Fact]
     public async Task ExecuteAsync_WhenBehaviorIsRegistered_AppliesToAllOrchestrations()
     {

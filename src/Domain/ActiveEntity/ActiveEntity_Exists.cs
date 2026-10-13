@@ -86,7 +86,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -148,7 +148,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -220,7 +220,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -285,7 +285,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -350,7 +350,7 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 
     /// <summary>
@@ -418,6 +418,6 @@ public abstract partial class ActiveEntity<TEntity, TId> : Entity<TId> // Exists
                 }
 
                 return result;
-            });
+            }, cancellationToken: cancellationToken);
     }
 }

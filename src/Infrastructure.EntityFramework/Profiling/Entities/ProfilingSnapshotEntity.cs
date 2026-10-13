@@ -10,13 +10,14 @@ using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
 
 /// <summary>Represents one immutable node-local profiling snapshot.</summary>
-/// <example><code>public DbSet&lt;ProfilingSnapshotEntity&gt; ProfilingSnapshots { get; set; }</code></example>
-[Table("__Profiling_Snapshots")]
+/// <example><code>public DbSet&lt;RuntimeProfilingSnapshotEntity&gt; ProfilingSnapshots { get; set; }</code></example>
+[Table("__Profiling_RuntimeSnapshots")]
 [Index(nameof(Key), IsUnique = true)]
 [Index(nameof(SessionId), nameof(NodeId), nameof(Sequence), IsUnique = true)]
 [Index(nameof(SessionId), nameof(NodeId), nameof(TimestampUtc))]
-public sealed class ProfilingSnapshotEntity
+public sealed class RuntimeProfilingSnapshotEntity
 {
+    private DateTimeOffset timestampUtc;
     /// <summary>Gets or sets the snapshot identifier.</summary>
     [Key]
     public Guid Id { get; set; }
@@ -34,7 +35,15 @@ public sealed class ProfilingSnapshotEntity
 
     /// <summary>Gets or sets the capture timestamp.</summary>
     [Required]
-    public DateTimeOffset TimestampUtc { get; set; }
+    public DateTimeOffset TimestampUtc
+    {
+        get => this.timestampUtc;
+        set { this.timestampUtc = value; this.TimestampUtcTicks = value.UtcTicks; }
+    }
+
+    /// <summary>Gets or sets lossless UTC ticks for portable indexed interval selection.</summary>
+    /// <example><code>var ticks = snapshot.TimestampUtcTicks;</code></example>
+    public long TimestampUtcTicks { get; set; }
 
     /// <summary>Gets or sets hostname metadata.</summary>
     [MaxLength(256)]
@@ -231,7 +240,7 @@ public sealed class ProfilingSnapshotEntity
     /// <summary>Gets or sets the owning session.</summary>
     [Required]
     [ForeignKey(nameof(SessionId))]
-    public ProfilingSessionEntity Session { get; set; }
+    public RuntimeProfilingSessionEntity Session { get; set; }
 
     /// <summary>Gets or sets the producing node.</summary>
     [Required]

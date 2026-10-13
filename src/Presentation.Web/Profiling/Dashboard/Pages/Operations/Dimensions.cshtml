@@ -1,0 +1,22 @@
+@using System.Text.Json
+@using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard
+@inherits RazorSlice<OperationProfilingDashboardModel>
+<details id="operation-dimension-controls" class="mt-2" data-preserve-key="dimension-controls">
+    <summary class="small">Dimensions <span title="Filter executions by recorded metadata. Conditions must all match. Grouping uses operation dimensions; segment filters select one full path."><i class="bi bi-info-circle" aria-hidden="true"></i></span></summary>
+    <input type="hidden" id="operation-dimensions" name="dimensions" value="@JsonSerializer.Serialize(Model.Query.Dimensions)" />
+    <input type="hidden" id="operation-segment-dimensions" name="segmentDimensions" value="@JsonSerializer.Serialize(Model.Query.SegmentDimensions)" />
+    <input type="hidden" id="operation-group-by" name="groupBy" value="@string.Join(",", Model.Query.GroupingDimensions)" />
+    <input type="hidden" id="operation-segment-path" name="segmentPath" value="@(Model.Query.SegmentPath is null ? "" : JsonSerializer.Serialize(Model.Query.SegmentPath.Components))" />
+    <div class="row g-2 mt-1">
+        <div class="col-md-6"><label for="operation-group-dimension" class="form-label small">Group by operation dimension</label><select id="operation-group-dimension" class="form-select form-select-sm" title="Operations without the selected dimension are excluded."><option value="">Key and kind only</option></select></div>
+        <div class="col-md-6"><label for="operation-dimension-path" class="form-label small">Segment filter path</label><select id="operation-dimension-path" class="form-select form-select-sm"><option value="">Select a recorded segment</option></select></div>
+    </div>
+    <div class="row g-2 mt-1">
+        @foreach (var scope in new[] { "operation", "segment" })
+        {
+            <div class="col-lg-6"><div class="d-flex justify-content-between align-items-center mb-1"><span class="small text-muted">@(scope == "operation" ? "Operation conditions" : "Segment conditions")</span><button class="btn btn-outline-primary btn-sm" type="button" data-dimension-add="@scope" title="Add a dimension condition"><i class="bi bi-plus" aria-hidden="true"></i> Add</button></div><div id="@(scope + "-dimension-rows")"></div></div>
+        }
+    </div>
+    <p id="operation-dimension-status" class="small text-muted mb-0 mt-1" role="status" aria-live="polite"></p>
+</details>
+<div id="operation-dimension-chips" class="d-flex flex-wrap gap-1 mt-2" aria-label="Active dimension conditions"></div>

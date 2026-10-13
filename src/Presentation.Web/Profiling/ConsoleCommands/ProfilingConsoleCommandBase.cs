@@ -18,17 +18,17 @@ public abstract class ProfilingConsoleCommandBase(
 ) : ConsoleCommandBase(name, description, aliases), IGroupedConsoleCommand
 {
     /// <inheritdoc />
-    public string GroupName => "profiling";
+    public string GroupName => "profiling runtime";
 
     /// <inheritdoc />
-    public IReadOnlyCollection<string> GroupAliases => ["prof"];
+    public IReadOnlyCollection<string> GroupAliases => ["prof runtime"];
 
     /// <summary>Resolves a command dependency and writes a safe unavailable message when absent.</summary>
     /// <typeparam name="T">The required service contract.</typeparam>
     /// <param name="console">The command output.</param>
     /// <param name="services">The command service provider.</param>
     /// <returns>The resolved dependency, or <see langword="null"/> when unavailable.</returns>
-    /// <example><code>var control = GetRequired&lt;IProfilingControlService&gt;(console, services);</code></example>
+    /// <example><code>var control = GetRequired&lt;IRuntimeProfilingControlService&gt;(console, services);</code></example>
     protected static T GetRequired<T>(IAnsiConsole console, IServiceProvider services)
         where T : class
     {
@@ -48,7 +48,7 @@ public abstract class ProfilingConsoleCommandBase(
     /// <param name="console">The command output.</param>
     /// <param name="result">The failed operation result.</param>
     /// <example><code>WriteErrors(console, result);</code></example>
-    protected static void WriteErrors<T>(IAnsiConsole console, Result<T> result)
+    protected static void WriteErrors<T>(IAnsiConsole console, IResult<T> result)
     {
         var messages = result
             .Errors.SafeNull()
@@ -73,7 +73,7 @@ public abstract class ProfilingConsoleCommandBase(
     /// <param name="console">The command output.</param>
     /// <param name="result">The failed operation result.</param>
     /// <example><code>WriteErrors(console, result);</code></example>
-    protected static void WriteErrors(IAnsiConsole console, Result result)
+    protected static void WriteErrors(IAnsiConsole console, IResult result)
     {
         var messages = result
             .Errors.SafeNull()
@@ -100,7 +100,7 @@ public abstract class ProfilingConsoleCommandBase(
     /// <example><code>WriteControlResult(console, result.Value);</code></example>
     protected static void WriteControlResult(
         IAnsiConsole console,
-        ProfilingControlResult result
+        RuntimeProfilingControlResult result
     )
     {
         if (result.Session is not null)
@@ -142,17 +142,17 @@ public abstract class ProfilingConsoleCommandBase(
         );
     }
 
-    private static string FormatOutcome(BroadcastDeliveryOutcome outcome) =>
+    private static string FormatOutcome(RuntimeProfilingDeliveryOutcome outcome) =>
         outcome switch
         {
-            BroadcastDeliveryOutcome.Accepted => "[green]Accepted[/]",
-            BroadcastDeliveryOutcome.AlreadyProcessed => "[blue]Already processed[/]",
-            BroadcastDeliveryOutcome.Expired => "[yellow]Expired[/]",
-            BroadcastDeliveryOutcome.Unsupported => "[yellow]Unsupported[/]",
-            BroadcastDeliveryOutcome.Rejected => "[red]Rejected[/]",
-            BroadcastDeliveryOutcome.Failed => "[red]Failed[/]",
-            BroadcastDeliveryOutcome.Unreachable => "[red]Unreachable[/]",
-            BroadcastDeliveryOutcome.TimedOut => "[red]Timed out[/]",
+            RuntimeProfilingDeliveryOutcome.Accepted => "[green]Accepted[/]",
+            RuntimeProfilingDeliveryOutcome.AlreadyProcessed => "[blue]Already processed[/]",
+            RuntimeProfilingDeliveryOutcome.Expired => "[yellow]Expired[/]",
+            RuntimeProfilingDeliveryOutcome.Unsupported => "[yellow]Unsupported[/]",
+            RuntimeProfilingDeliveryOutcome.Rejected => "[red]Rejected[/]",
+            RuntimeProfilingDeliveryOutcome.Failed => "[red]Failed[/]",
+            RuntimeProfilingDeliveryOutcome.Unreachable => "[red]Unreachable[/]",
+            RuntimeProfilingDeliveryOutcome.TimedOut => "[red]Timed out[/]",
             _ => Markup.Escape(outcome.ToString()),
         };
 }

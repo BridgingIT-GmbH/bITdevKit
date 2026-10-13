@@ -256,6 +256,18 @@ Both `IDocumentStoreProvider` and `IDocumentStoreClient<T>` are keyed by the sam
 
 Behaviors are composed between the provider adapter and the outer validating/serializing client. Invalid input never reaches logging, retry, timeout, cache, chaos, transforms, or providers.
 
+## Operation profiling
+
+Register Profiling before other named-client behaviors to include their downstream work:
+
+```csharp
+services.AddDocumentStorage()
+    .WithProfilingBehavior<Person>()
+    .RegisterProvider<Person>(_ => new InMemoryDocumentStoreProvider(), name: "archive");
+```
+
+Every typed client method is measured, including count, key-only paging, property updates and batch writes/deletes. `DocumentStorage` keys use `documentstorage:{type name}:{operation}`. Dimensions are `documentstorage.client`, `documentstorage.documentType` and `documentstorage.operation`; partition keys, row keys, query tokens and document payloads are omitted. A partially completed batch keeps its original result while profiling records `PartialBatch` failure. Direct `DocumentStoreBuilderContext<T>` registration also offers `.WithProfilingBehavior()`. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for ownership and comparison rules.
+
 ## Behaviors
 
 - Typed logging with raw keys by default. Register `Sha256KeyDisplayStrategy` only where keys are classified as sensitive.
@@ -300,6 +312,16 @@ Azure providers depend on an existing account, not pre-created feature resources
 ## Dashboard and diagnostics
 
 The Document Storage dashboard inherits the shared dashboard authorization and antiforgery conventions. It selects named clients, lists document pages from 25 to 500 rows, and presents partition/row keys, serialized JSON size, modification time, and expiration in the compact table. Manual and interval refreshes use the currently applied client, key filters, query mode, page size, continuation state, and selected document. The standard refresh interval is off by default and remembered in browser-local storage. The details dialog exposes ETags, hashes, timestamps, expiration, scalar properties, and conditional save/delete actions without adding retention or transform administration to the browsing surface.
+
+Open Documents at `/_bdk/dashboard/storage/documents`. Choose a client, then apply partition and row-key filters. Prefix, Suffix and Exact select how the row key is matched. Use the pager when the result has a continuation page.
+
+[![Document dashboard with named client, key filters and persisted JSON document metadata](assets/dashboard/14-storage-documents-documents.png)](assets/dashboard/14-storage-documents-documents.png)
+
+Select a row's information button to inspect and edit its JSON payload, scalar properties and expiration. The New document button opens the same editor with editable partition and row keys. A create conflict reports an existing key rather than overwriting it.
+
+[![Document details editor with keyed JSON payload, expiration and metadata](assets/dashboard/storage/document-details.png)](assets/dashboard/storage/document-details.png)
+
+Permalink download and copy actions appear for clients registered with `WithPermalinks<T>()`. See the [shared dashboard setup](features-presentation-dashboard.md) for plugin discovery and authorization.
 
 `IDocumentStorageDiagnosticsService` reports non-sensitive registration identity, lifetime, capabilities, size limits, configured transform identifiers, latest retention outcome, and health. `DocumentStorageMcpHandler` exposes `documents.summary`, `documents.clients`, and `documents.probe` when the MCP runtime is registered. Neither surface exposes payloads, continuation tokens, encryption material, or secrets.
 

@@ -22,13 +22,13 @@ public sealed class ProfilingWorkflowIntegrationTests
         await using var node = CreateNode("node-a", registry);
         await node.StartAsync();
         await WaitForTargetsAsync(registry, 1);
-        var control = node.Services.GetRequiredService<IProfilingControlService>();
-        var queries = node.Services.GetRequiredService<IProfilingQueryService>();
-        var store = node.Services.GetRequiredService<IProfilingStore>();
+        var control = node.Services.GetRequiredService<IRuntimeProfilingControlService>();
+        var queries = node.Services.GetRequiredService<IRuntimeProfilingQueryService>();
+        var store = node.Services.GetRequiredService<IRuntimeProfilingStore>();
 
         // Act
         var started = await control.StartAsync(new("single-node", Duration: TimeSpan.FromSeconds(10)));
-        var marked = await control.AddPhaseMarkerAsync("load");
+        var marked = await control.AddMarkerAsync("load");
         var firstCapture = await control.SnapshotAsync();
         var secondCapture = await control.SnapshotAsync();
         await WaitForSessionDataAsync(
@@ -46,7 +46,7 @@ public sealed class ProfilingWorkflowIntegrationTests
             store,
             started.Value.Session.Identity.Key,
             data => data.Participations.Count == 1
-                && data.Participations[0].State == ProfilingParticipationState.Stopped
+                && data.Participations[0].State == RuntimeProfilingParticipationState.Stopped
         );
         var exported = await queries.ExportSnapshotsJsonAsync(
             started.Value.Session.Identity.Key,
@@ -59,7 +59,7 @@ public sealed class ProfilingWorkflowIntegrationTests
         started.IsSuccess.ShouldBeTrue();
         started.Value.Created.ShouldBeTrue();
         started.Value.NodeOutcomes.ShouldHaveSingleItem().Outcome.ShouldBe(
-            BroadcastDeliveryOutcome.Accepted
+            RuntimeProfilingDeliveryOutcome.Accepted
         );
         marked.IsSuccess.ShouldBeTrue();
         marked.Value.Name.ShouldBe("load");
@@ -71,7 +71,7 @@ public sealed class ProfilingWorkflowIntegrationTests
         analysis.Value.Scope.NodeKey.ShouldBe(nodeKey);
         analysis.Value.Scope.SnapshotCount.ShouldBeGreaterThanOrEqualTo(2);
         stopped.IsSuccess.ShouldBeTrue();
-        stopped.Value.Session.State.ShouldBe(ProfilingSessionState.Stopped);
+        stopped.Value.Session.State.ShouldBe(RuntimeProfilingSessionState.Stopped);
         exported.IsSuccess.ShouldBeTrue();
         using (var document = JsonDocument.Parse(exported.Value))
         {
@@ -99,7 +99,7 @@ public sealed class ProfilingWorkflowIntegrationTests
         await using var nodeB = CreateNode("node-b", registry, store);
         await nodeA.StartAsync();
         await WaitForTargetsAsync(registry, 1);
-        var control = nodeA.Services.GetRequiredService<IProfilingControlService>();
+        var control = nodeA.Services.GetRequiredService<IRuntimeProfilingControlService>();
         var started = await control.StartAsync(new("late-node", Duration: TimeSpan.FromSeconds(10)));
         started.IsSuccess.ShouldBeTrue();
 
@@ -118,19 +118,19 @@ public sealed class ProfilingWorkflowIntegrationTests
         // Assert
         started.IsSuccess.ShouldBeTrue();
         started.Value.NodeOutcomes.ShouldHaveSingleItem().Outcome.ShouldBe(
-            BroadcastDeliveryOutcome.Accepted
+            RuntimeProfilingDeliveryOutcome.Accepted
         );
         snapshot.IsSuccess.ShouldBeTrue();
         snapshot.Value.NodeOutcomes.Count.ShouldBe(2);
         snapshot.Value.NodeOutcomes.ShouldAllBe(outcome =>
-            outcome.Outcome == BroadcastDeliveryOutcome.Accepted
+            outcome.Outcome == RuntimeProfilingDeliveryOutcome.Accepted
         );
         data.Participations.Count.ShouldBe(2);
         data.Participations.Count(participation =>
-            participation.Role == ProfilingNodeRole.ExpectedParticipant
+            participation.Role == RuntimeProfilingNodeRole.ExpectedParticipant
         ).ShouldBe(1);
         data.Participations.Count(participation =>
-            participation.Role == ProfilingNodeRole.AdHocContributor
+            participation.Role == RuntimeProfilingNodeRole.AdHocContributor
         ).ShouldBe(1);
         data.Snapshots.Select(item => item.NodeKey).Distinct().Count().ShouldBe(2);
 
@@ -150,7 +150,7 @@ public sealed class ProfilingWorkflowIntegrationTests
         await nodeA.StartAsync();
         await nodeB.StartAsync();
         await WaitForTargetsAsync(registry, 2);
-        var control = nodeA.Services.GetRequiredService<IProfilingControlService>();
+        var control = nodeA.Services.GetRequiredService<IRuntimeProfilingControlService>();
         var started = await control.StartAsync(new("missed-stop", Duration: TimeSpan.FromSeconds(10)));
         started.IsSuccess.ShouldBeTrue();
         started.Value.NodeOutcomes.Count.ShouldBe(2);
@@ -177,17 +177,17 @@ public sealed class ProfilingWorkflowIntegrationTests
         started.Value.NodeOutcomes.Count.ShouldBe(2);
         data.IsSuccess.ShouldBeTrue();
         data.Value.Participations.Count(participation =>
-            participation.Role == ProfilingNodeRole.ExpectedParticipant
+            participation.Role == RuntimeProfilingNodeRole.ExpectedParticipant
         ).ShouldBe(2);
         stopped.IsSuccess.ShouldBeTrue();
-        stopped.Value.Session.State.ShouldBe(ProfilingSessionState.Stopped);
+        stopped.Value.Session.State.ShouldBe(RuntimeProfilingSessionState.Stopped);
         stopped.Value.Session.EndsUtc.ShouldBe(originalEnd);
         stopped.Value.NodeOutcomes.Any(outcome =>
-            outcome.Outcome != BroadcastDeliveryOutcome.Accepted
-            && outcome.Outcome != BroadcastDeliveryOutcome.AlreadyProcessed
+            outcome.Outcome != RuntimeProfilingDeliveryOutcome.Accepted
+            && outcome.Outcome != RuntimeProfilingDeliveryOutcome.AlreadyProcessed
         ).ShouldBeTrue();
         data.Value.Participations.ShouldContain(participation =>
-            participation.State != ProfilingParticipationState.Completed
+            participation.State != RuntimeProfilingParticipationState.Completed
         );
 
         await nodeB.StopAsync();
@@ -204,9 +204,9 @@ public sealed class ProfilingWorkflowIntegrationTests
         await nodeA.StartAsync();
         await nodeB.StartAsync();
         await WaitForTargetsAsync(registry, 2);
-        var nodeAStore = nodeA.Services.GetRequiredService<IProfilingStore>();
-        var nodeBStore = nodeB.Services.GetRequiredService<IProfilingStore>();
-        var control = nodeA.Services.GetRequiredService<IProfilingControlService>();
+        var nodeAStore = nodeA.Services.GetRequiredService<IRuntimeProfilingStore>();
+        var nodeBStore = nodeB.Services.GetRequiredService<IRuntimeProfilingStore>();
+        var control = nodeA.Services.GetRequiredService<IRuntimeProfilingControlService>();
 
         // Act
         var result = await control.StartAsync(new("invalid-local-multi-node"));
@@ -226,7 +226,7 @@ public sealed class ProfilingWorkflowIntegrationTests
     private static WebApplication CreateNode(
         string identity,
         IBroadcastRegistryStore registry,
-        IProfilingStore store = null
+        IRuntimeProfilingStore store = null
     )
     {
         var builder = WebApplication.CreateBuilder();
@@ -237,20 +237,18 @@ public sealed class ProfilingWorkflowIntegrationTests
             builder.Services.AddSingleton(store);
         }
 
-        builder.Services.AddSingleton<IProfilingSnapshotProbe, DeterministicSnapshotProbe>();
+        builder.Services.AddSingleton<IRuntimeProfilingSnapshotProbe, DeterministicSnapshotProbe>();
         builder
             .Services.AddBroadcasting(options =>
                 options.Scopes("profiling-test").NodeIdentity(identity)
             )
             .WithHttpTransport(options => options.SharedSecret("profiling-test-secret"));
-        builder.Services.AddProfiling(options =>
-            options
-                .Enabled()
-                .SamplingInterval(ProfilingOptions.MinimumSamplingInterval)
+        builder.Services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling(options => options
+
+                .SamplingInterval(RuntimeProfilingOptions.MinimumSamplingInterval)
                 .Duration(TimeSpan.FromSeconds(10))
                 .ParticipationDeadline(TimeSpan.FromSeconds(2))
-                .FinalizationGracePeriod(TimeSpan.Zero)
-        );
+                .FinalizationGracePeriod(TimeSpan.Zero));
 
         var app = builder.Build();
         app.MapEndpoints();
@@ -279,10 +277,10 @@ public sealed class ProfilingWorkflowIntegrationTests
         );
     }
 
-    private static async Task<ProfilingSessionData> WaitForSessionDataAsync(
-        IProfilingStore store,
+    private static async Task<RuntimeProfilingSessionData> WaitForSessionDataAsync(
+        IRuntimeProfilingStore store,
         string sessionKey,
-        Func<ProfilingSessionData, bool> condition
+        Func<RuntimeProfilingSessionData, bool> condition
     )
     {
         var deadline = DateTimeOffset.UtcNow.AddSeconds(5);
@@ -302,19 +300,19 @@ public sealed class ProfilingWorkflowIntegrationTests
         );
     }
 
-    private sealed class DeterministicSnapshotProbe : IProfilingSnapshotProbe
+    private sealed class DeterministicSnapshotProbe : IRuntimeProfilingSnapshotProbe
     {
-        public Task<Result<ProfilingSnapshot>> CaptureAsync(
-            ProfilingCaptureRequest request,
+        public Task<IResult<RuntimeProfilingSnapshot>> CaptureAsync(
+            RuntimeProfilingCaptureRequest request,
             CancellationToken cancellationToken = default
         )
         {
             var megabytes = request.Sequence * 1024L * 1024L;
-            return Task.FromResult(
-                Result<ProfilingSnapshot>.Success(
+            return Task.FromResult<IResult<RuntimeProfilingSnapshot>>(
+                Result<RuntimeProfilingSnapshot>.Success(
                     new()
                     {
-                        Identity = ProfilingSnapshotIdentity.Create(),
+                        Identity = ProfilingIdentityFactory.CreateRuntimeSnapshot(),
                         SessionId = request.Session.Identity.Id,
                         SessionKey = request.Session.Identity.Key,
                         NodeId = request.Node.Identity.Id,
@@ -409,40 +407,48 @@ public sealed class ProfilingWorkflowIntegrationTests
         ) => this.inner.ListAsync(cancellationToken);
     }
 
-    private sealed class SharedCapabilityProfilingStore : IProfilingStore
+    private sealed class SharedCapabilityProfilingStore : IRuntimeProfilingStore
     {
-        private readonly InMemoryProfilingStore inner = new();
+        private readonly InMemoryRuntimeProfilingStore inner = new();
+
+        public Task<IResult<ProfilingNode>> FindNodeAsync(RuntimeProfilingNodeCorrelation correlation, CancellationToken cancellationToken = default)
+            => this.inner.FindNodeAsync(correlation, cancellationToken);
+
+        public Task<IResult<RuntimeProfilingSession>> ImportSessionAsync(
+            RuntimeProfilingSessionData data,
+            CancellationToken cancellationToken = default
+        ) => this.inner.ImportSessionAsync(data, cancellationToken);
 
         public ProfilingStoreCapabilities Capabilities { get; } = new(true);
 
-        public Task<Result<ProfilingSessionResolution>> GetOrCreateActiveSessionAsync(
-            ProfilingSessionCreateRequest request,
+        public Task<IResult<RuntimeProfilingSessionResolution>> GetOrCreateActiveSessionAsync(
+            RuntimeProfilingSessionCreateRequest request,
             CancellationToken cancellationToken = default
         ) => this.inner.GetOrCreateActiveSessionAsync(request, cancellationToken);
 
-        public Task<Result<ProfilingSession>> GetActiveSessionAsync(
+        public Task<IResult<RuntimeProfilingSession>> GetActiveSessionAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.GetActiveSessionAsync(cancellationToken);
 
-        public Task<Result<ProfilingSession>> FindSessionAsync(
+        public Task<IResult<RuntimeProfilingSession>> FindSessionAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => this.inner.FindSessionAsync(sessionKey, cancellationToken);
 
-        public Task<Result<IReadOnlyList<ProfilingSession>>> ListSessionsAsync(
+        public Task<IResult<IReadOnlyList<RuntimeProfilingSession>>> ListSessionsAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.ListSessionsAsync(cancellationToken);
 
-        public Task<Result<ProfilingSession>> UpdateSessionMetadataAsync(
+        public Task<IResult<RuntimeProfilingSession>> UpdateSessionMetadataAsync(
             string sessionKey,
-            ProfilingSessionMetadata metadata,
+            RuntimeProfilingSessionMetadata metadata,
             CancellationToken cancellationToken = default
         ) => this.inner.UpdateSessionMetadataAsync(sessionKey, metadata, cancellationToken);
 
-        public Task<Result<ProfilingSession>> TryTransitionSessionAsync(
+        public Task<IResult<RuntimeProfilingSession>> TryTransitionSessionAsync(
             Guid sessionId,
-            IReadOnlyCollection<ProfilingSessionState> expectedStates,
-            ProfilingSessionState nextState,
+            IReadOnlyCollection<RuntimeProfilingSessionState> expectedStates,
+            RuntimeProfilingSessionState nextState,
             DateTimeOffset transitionedUtc,
             CancellationToken cancellationToken = default
         ) =>
@@ -454,66 +460,61 @@ public sealed class ProfilingWorkflowIntegrationTests
                 cancellationToken
             );
 
-        public Task<Result<ProfilingNode>> GetOrCreateNodeAsync(
-            ProfilingNodeCorrelation correlation,
+        public Task<IResult<ProfilingNode>> GetOrCreateNodeAsync(
+            RuntimeProfilingNodeCorrelation correlation,
             ProfilingNode proposedNode,
             CancellationToken cancellationToken = default
         ) => this.inner.GetOrCreateNodeAsync(correlation, proposedNode, cancellationToken);
 
-        public Task<Result<ProfilingNodeParticipation>> UpsertParticipationAsync(
-            ProfilingNodeParticipation participation,
+        public Task<IResult<RuntimeProfilingNodeParticipation>> UpsertParticipationAsync(
+            RuntimeProfilingNodeParticipation participation,
             CancellationToken cancellationToken = default
         ) => this.inner.UpsertParticipationAsync(participation, cancellationToken);
 
-        public Task<Result<ProfilingRuntimeContext>> AddRuntimeContextAsync(
-            ProfilingRuntimeContext context,
+        public Task<IResult<RuntimeProfilingContext>> AddRuntimeContextAsync(
+            RuntimeProfilingContext context,
             CancellationToken cancellationToken = default
         ) => this.inner.AddRuntimeContextAsync(context, cancellationToken);
 
-        public Task<Result<ProfilingSnapshot>> AddSnapshotAsync(
-            ProfilingSnapshot snapshot,
+        public Task<IResult<RuntimeProfilingSnapshot>> AddSnapshotAsync(
+            RuntimeProfilingSnapshot snapshot,
             CancellationToken cancellationToken = default
         ) => this.inner.AddSnapshotAsync(snapshot, cancellationToken);
 
-        public Task<Result<ProfilingPhaseMarker>> AddPhaseMarkerAsync(
-            ProfilingPhaseMarker marker,
+        public Task<IResult<ProfilingMarker>> AddMarkerAsync(
+            ProfilingMarker marker,
             CancellationToken cancellationToken = default
-        ) => this.inner.AddPhaseMarkerAsync(marker, cancellationToken);
+        ) => this.inner.AddMarkerAsync(marker, cancellationToken);
 
-        public Task<Result<ProfilingActionMarker>> AddActionMarkerAsync(
-            ProfilingActionMarker marker,
-            CancellationToken cancellationToken = default
-        ) => this.inner.AddActionMarkerAsync(marker, cancellationToken);
-
-        public Task<Result<ProfilingSegment>> UpsertSegmentAsync(
+        public Task<IResult<ProfilingSegment>> UpsertSegmentAsync(
             ProfilingSegment segment,
             CancellationToken cancellationToken = default
         ) => this.inner.UpsertSegmentAsync(segment, cancellationToken);
 
-        public Task<Result<ProfilingMetricObservation>> AddMetricObservationAsync(
+        public Task<IResult<ProfilingMetricObservation>> AddMetricObservationAsync(
             ProfilingMetricObservation observation,
             CancellationToken cancellationToken = default
         ) => this.inner.AddMetricObservationAsync(observation, cancellationToken);
 
-        public Task<Result<ProfilingSessionData>> GetSessionDataAsync(
+        public Task<IResult<RuntimeProfilingSessionData>> GetSessionDataAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => this.inner.GetSessionDataAsync(sessionKey, cancellationToken);
 
-        public Task<Result<bool>> DeleteSessionAsync(
+        public Task<IResult<bool>> DeleteSessionAsync(
             string sessionKey,
             CancellationToken cancellationToken = default
         ) => this.inner.DeleteSessionAsync(sessionKey, cancellationToken);
 
-        public Task<Result<int>> DeleteUnpinnedSessionsAsync(
+        public Task<IResult<int>> DeleteUnpinnedSessionsAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.DeleteUnpinnedSessionsAsync(cancellationToken);
 
-        public Task<Result<ProfilingClearResult>> ClearAsync(
+        public Task<IResult<ProfilingClearResult>> ClearAsync(
             CancellationToken cancellationToken = default
         ) => this.inner.ClearAsync(cancellationToken);
 
-        public Task<Result<int>> ApplyRetentionAsync(
+        public Task<IResult<int>> ApplyRetentionAsync(
             int maximumRetainedSessions,
             TimeSpan maximumSessionAge,
             DateTimeOffset utcNow,

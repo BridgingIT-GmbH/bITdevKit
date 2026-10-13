@@ -71,6 +71,10 @@ DevKit treats `CorrelationId`, `FlowId`, and W3C `TraceId` as separate identifie
 - establish a correlation scope around consumed or scheduled work
 - inspect correlation, flow, and trace identifiers in diagnostics
 
+## Dashboard navigation
+
+Dashboard correlation identifiers link to the logs view filtered by the full identifier. The adjacent copy button copies the full value, including when the displayed label is shortened. The same controls appear in profiling, job, orchestration, messaging, queueing, error, log-entry and change-history details.
+
 ## Basic Usage
 
 This example places correlation middleware after routing and returns the three identifiers visible to an endpoint.
@@ -177,7 +181,10 @@ Invalid or multiple values do not produce an HTTP error. They are ignored and re
 the next source. For example, an invalid header can fall back to a valid query value. If no source is
 valid, the middleware generates a replacement.
 
-Inbound values preserve their casing. Generated request correlation IDs are lowercase.
+Inbound values preserve their casing. `CorrelationIdGenerator.Create()` generates cryptographically
+random 12-character lowercase alphanumeric IDs. Request middleware, outbound HTTP, jobs,
+orchestrations, pipelines, startup tasks, and alive probes use this shared generator when they need a
+new correlation ID. Supplied IDs, including GUID strings, remain supported.
 
 Query-string correlation IDs are supported for developer tooling and constrained integrations. Prefer
 the header for normal service calls because URLs commonly appear in browser history, access logs,
@@ -225,6 +232,16 @@ using (CorrelationId.BeginScope(workItem.CorrelationId))
 Disposing the scope restores the previous value. Normal `async`/`await` execution and child tasks that
 flow `ExecutionContext` inherit the `AsyncLocal` scope. Child activities also inherit parent activity
 baggage.
+
+For new work without an originating correlation ID, generate one before opening the scope:
+
+```csharp
+using var scope = CorrelationId.BeginScope(CorrelationIdGenerator.Create());
+await ProcessAsync(workItem, cancellationToken);
+```
+
+Pipelines reuse `CorrelationId.Current` when present and otherwise generate a new ID. The pipeline
+keeps that ID ambient while its steps execute and restores the caller's scope when it completes.
 
 ```mermaid
 flowchart TD
@@ -376,8 +393,10 @@ sequence diagram.
 
 The corresponding feature owns each durable correlation contract:
 
-- Standard messaging and queueing behaviors/providers copy correlation activity baggage into message
-  properties or broker metadata and restore it into consumer activities.
+- Messaging and queueing brokers preserve explicit metadata or the caller's scope and otherwise
+  create a short ID before publishing or enqueueing. Consumers restore that ID before handler
+  behaviors and logging. Legacy payloads without it receive an independent ID; unrelated worker
+  context is not inherited. Providers carry the value in message properties and broker metadata.
 - The Entity Framework domain-event outbox stores correlation and flow properties and restores them
   when processing the event.
 - Jobs expose explicit correlation fields in dispatch options, execution context, history, activities,

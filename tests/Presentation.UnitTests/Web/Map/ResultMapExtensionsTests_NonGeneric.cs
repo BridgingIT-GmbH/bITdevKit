@@ -115,7 +115,7 @@ public class ResultMapExtensionsNonGenericTests
     {
         // Arrange
         var result = Result.Success();
-        Func<Created> successFunc = () => TypedResults.Created("/api/custom");
+        var successFunc = () => TypedResults.Created("/api/custom");
 
         // Act
         var response = result.MapHttp<Created, NotFound, UnauthorizedHttpResult, BadRequest, ProblemHttpResult>(

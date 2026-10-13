@@ -519,7 +519,7 @@ internal static class CompositionRuntime
         IReadOnlyList<Func<IServiceProvider, IInterceptionBehavior<TService>>> behaviorFactories)
         where TService : class
     {
-        Func<TService> implementationFactory = () => (TService)ResolveOrCreate(implementationType, services);
+        var implementationFactory = () => (TService)ResolveOrCreate(implementationType, services);
         object current = behaviorFactories.Count > 0
             ? RuntimeInterceptionHostFactory.Create(services, implementationFactory, behaviorFactories)
             : implementationFactory();

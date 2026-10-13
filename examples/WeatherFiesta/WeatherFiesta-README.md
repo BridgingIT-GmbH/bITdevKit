@@ -131,7 +131,7 @@ Base URL: `https://localhost:5001`
 |---|---|---|
 | GET | `/api/core/cities/alerts` | Weather alerts for all subscribed cities |
 | GET | `/api/core/cities/{cityId}/sun?days={days}` | Sunrise/sunset data |
-| GET | `/api/core/cities/compare` | Compare weather across cities (body: city IDs) |
+| POST | `/api/core/cities/compare` | Compare weather across cities (body: city IDs) |
 | GET | `/api/core/cities/export` | Export all subscribed cities weather as CSV |
 | GET | `/api/core/cities/{cityId}/weather/export?days={days}` | Export forecast for specific city |
 | GET | `/api/core/cities/{cityId}/recommendations` | Weather recommendations |
@@ -235,15 +235,80 @@ Available users: `luke.skywalker`, `leia.organa`, `han.solo`, `darth.vader`, etc
 - OpenAPI spec: `https://localhost:5001/openapi.json`
 - Scalar UI: `https://localhost:5001/scalar/`
 
+### API requests
+
+**Core > API Requests** at `/_bdk/dashboard/app/core/api-requests` is a separate HTTP workload page. Choose Cities, City weather, or Cities and weather, set 1–100 requests and 1–8 concurrent calls, then select **Send requests**. It calls the backend API directly from the browser and remains usable when Profiling is disabled. **Cancel requests** aborts active calls and stops sending the remaining requests.
+
+The runner uses the API access token saved by your dashboard sign-in. **API access** accepts an optional bearer token override for other authentication setups. Tokens stay in the page and are not saved to browser storage. Weather workloads first make one city lookup request, then rotate across that API user's subscribed cities; the configured count excludes the lookup. Subscribe to a city before running weather requests, or choose Cities to profile city-list reads. The workload does not trigger ingestion or an external weather API.
+
+Results show the HTTP status and browser duration through receipt of the response body. When a response contains `X-Request-Profiling-Id`, its eye button opens the request profile. Profiling records appear after normal periodic persistence. The runner does not flush the writer.
+
+### Profiling
+
+File locations `documents` and `attachments`, document archive clients and blob clients also enable operation profiling behaviors. Their storage calls appear as segments within existing request/job profiles or as independent storage operations. Use logical location, document client/type and blob store/container dimensions to filter or compare workloads; individual paths and keys are not captured.
+
+Open **BDK > Profiling > Timeline** for a live kind-by-time overview. Choose a 15-minute, 30-minute, hour, 12-hour, day, week or month window, or set UTC bounds. Kind, key-contains and node filters are remembered; boxes open execution details or a paged selection for dense activity. Dashboard storage action URLs allow nested business profiling while their HTTP requests and ordinary polling remain excluded.
+
+Open **BDK > Profiling > Insights** to rank operations by p95, accumulated completed time, frequency or root failure rate. Inspect completed latency sample counts and open segment bottlenecks, execution details or comparisons in dialogs. Filters and ranking are remembered. Empty dates select the last 15 minutes; rankings cover the complete bounded retained selection before applying the row limit.
+
+Open **Core > Profiling Lab** at `/_bdk/dashboard/app/core/profiling` after signing in as an administrator. The page runs stored-weather reviews and links directly to their operation details. It also shows Runtime session status, persistence backlog, and the executing node.
+
+1. Click **Start Runtime session** to observe the process for two minutes. Click **Take snapshot** for a baseline.
+2. Run one city review with two read passes. Inspect `LoadCities`, repeated `ReadWeather`, and `Summarize` segments. Requester and Active Entity segments appear beneath their caller.
+3. Increase **Operations** to four and **Concurrency** to two. Each dashboard action uses its own database scope. The page allows at most ten operations and four concurrent actions per burst. **Cancel running reviews** aborts active calls and stops dispatching the remaining actions.
+4. Open **City reviews** and compare Slow, Recent, and By count. Group by `cityLimit` and `repetitions` to compare matching work. Follow the executing-node link to filter that process.
+5. Take another Runtime snapshot. Open an operation detail to inspect overlapping Runtime observations on the same process. Runtime CPU and memory do not measure the resources attributable to that operation.
+6. Click **Dispatch orchestration**, then follow **Job history**. The scheduler, orchestration actions, and independent message and queue consumers all participate through optional profiling behaviors. The normal weather ingestion job also captures its pipeline steps.
+7. When CPU and allocation pressure is intended, click **Dispatch Runtime stress job**. This manually queues the existing development-only workload. Stop the Runtime session when the comparison is complete.
+
+The review loads the registered city list, then reads stored weather for up to ten selected cities over one to five passes. It does not modify city or weather records or call an external weather API. Missing weather increments `missingWeather` and produces failed `ReadWeather` invocations while the partial review can complete. Completed profiles become visible after the periodic writer runs. The page does not flush the writer.
+
+For the same work through the HTTP adapter, send an administrator-authenticated `POST /api/core/profiling/review` with:
+
+```json
+{"cityLimit":3,"repetitions":2}
+```
+
+The response's `operationId` matches `X-Request-Profiling-Id`. Find that ID in **Requests** to inspect HTTP status, response bytes, and nested work. This example endpoint is mapped when Operation and Request Profiling are enabled. Dashboard review actions instead own `Service` operations because dashboard paths are excluded from HTTP capture. Both use `weather:city-review`, with typed `cityLimit`, `repetitions`, and `source` dimensions and city/read/missing-weather measurements.
+
+Development enables Runtime, Operation and Request Profiling with the in-memory provider. The dashboard keeps its existing OpenID Connect authentication and Administrators role requirement. Profiling and its dashboard are disabled outside Development.
+
+The registration in [Program.cs](WeatherFiesta.Presentation.Web.Server/Program.cs) is:
+
+```csharp
+builder.Services.AddProfiling(o => o.Enabled(builder.Environment.IsDevelopment()))
+	.WithRuntimeProfiling()
+	.WithOperationProfiling()
+	.WithRequestProfiling(o => o.StripPathPrefix("/api"))
+	.AddConsoleCommands(builder.Environment.IsDevelopment());
+```
+
+Eligible API requests are captured by default. The shared defaults select in-memory storage and exclude `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`, `/.well-known*` and `/.well-known/**`. The outer middleware follows request correlation; the exception observer runs after exception handling and before routing. The default operation key uses the matched route template and strips `/api`, so city IDs share the `/core/cities/{cityId}/weather` group. Unmatched routes fall back to their incoming path. The recorded HTTP path retains `/api` and actual route arguments; explicit handler keys take precedence. Completed records become visible after periodic persistence; dashboard reads do not force a flush. In-memory history belongs to this process and is lost when it exits.
+
+Core's seven Active Entity registrations include `AddProfilingBehavior()`. Entity operations contribute segments such as `activeentity:City:FindAll` to the current HTTP or job operation. The city review nests entity reads beneath `ReadWeather`. The compare endpoint's `Query` segment contains the entity work performed by its handler. Outside an active operation, entity calls own independent operations. Disabled or omitted Profiling registration leaves entity execution unchanged.
+
+Requester registers `ProfilingRequestBehavior<,>` before its other behaviors. Notifier registers `ProfilingNotificationBehavior<,>` and `ProfilingNotificationHandlerBehavior<,>`. A request such as `requester:CityCompareQuery` contributes a segment beneath `Query`; awaited notifications include individual handler segments. Fire-and-forget notification handlers own independent operations. These registrations remain usable when Profiling is disabled or omitted.
+
+Messaging and Queueing register `MessageHandlerProfilingBehavior` and `QueueHandlerProfilingBehavior` before their other handler behaviors. Hello-world message and queue handlers create independent consumer operations with their executing-node identity. Their nested work contributes segments; producer capture and consumer capture retain separate ownership. Profiling timing excludes queue residence and transport acknowledgement. Use the Operations view's **Exact node GUID** filter for that process's records.
+
+1. Sign in to `/_bdk/dashboard` as an administrator. Runtime, Operations and Requests are separate profiling views.
+2. Call `GET /api/core/cities/alerts`, then copy its `X-Request-Profiling-Id` response header into **Find exact ID** on the Requests view. The record includes the default `/core/cities/alerts` key, HTTP status/method, duration and response-byte quality.
+3. With a subscription that allows comparison, call `POST /api/core/cities/compare` with a JSON array of city IDs. [WeatherEndpoints.cs](WeatherFiesta.Presentation.Web.Server/Modules/Core/Endpoints/WeatherEndpoints.cs) sets `weather:compare`, the numeric `cityCount` dimension and a `Query` segment. Group by `cityCount` to compare matching workloads. A rejected comparison also records the failed segment while preserving its business response.
+4. Start a Runtime profiling session and manually dispatch `core_profiling_stress` from the Jobs dashboard. The development-only [WeatherProfilingStressJob](WeatherFiesta.Presentation.Web.Server/Modules/Core/Jobs/WeatherProfilingStressJob.cs) contributes `weather:profiling-stress` beneath the scheduler's `job:core_profiling_stress` operation and records `Cpu`, `Allocate` and `Retain` segments alongside its Runtime measurement. Its operation detail relates Runtime observations by executing-process identity and timestamps. Runtime metrics describe the process, not CPU or memory attributed to that operation.
+
+The workload deliberately generates CPU, allocation and GC pressure; dispatch it only when that load is intended. It is a manual example, not an automatic production job. Shared profiling contracts, defaults and provider configuration are documented in the [application-neutral profiling guide](../../docs/features-profiling.md).
+
 ## Testing
 
 Integration tests in `WeatherFiesta.IntegrationTests` use:
 
-- **InMemory EF Core provider** — each `WebApplicationFactory` instance gets a unique DB name
+- **Isolated SQL Server databases** — Docker-backed fixtures give each application factory its own database; the factory also supports an InMemory fallback
 - **No mocks for internal logic** — real handlers, ActiveEntity, and IRequester pipeline execute
 - **Only external HTTP services mocked** — `IWeatherAgent` and `IWeatherGeocodingClient` via NSubstitute
 - **Test authentication** — `TestAuthenticationHandler` returns a fully authenticated user with `CoreAdmin` role
-- **Seeded test data** — `TestData.SeedAsync` populates the InMemory database
+- **Seeded test data** — `TestData.SeedAsync` populates the isolated database
+
+[ProfilingEndpointsTests.cs](WeatherFiesta.IntegrationTests/Modules/Core/Presentation/ProfilingEndpointsTests.cs) verifies the separate API Requests page and saved-token access, city/weather request profiles, the authorized Profiling Lab, bounded concurrent city reviews, repeated/nested segments, the shared HTTP adapter, job/orchestration/pipeline behaviors, default and enriched HTTP records, natural periodic persistence, the non-HTTP stress job and Runtime overlay, blacklist exclusion, independent broker handler capture and executing-node filters, disabled-host behavior, and authorization on all profiling views and internal reads. Its bounded workload and test authentication are fixture-only; the application retains its normal authentication configuration.
 
 ```bash
 # Run integration tests

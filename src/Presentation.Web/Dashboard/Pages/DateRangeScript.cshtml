@@ -1,0 +1,23 @@
+@inherits RazorSlice
+<script>
+(() => {
+    // Delegation also covers filter forms replaced by an automatic dashboard refresh.
+    document.addEventListener('click', event => {
+        const preset = event.target.closest('[data-dashboard-date-range-duration]');
+        const range = preset?.closest('[data-dashboard-date-range-from][data-dashboard-date-range-to]');
+        if (!range) return;
+        const duration = Number(preset.dataset.dashboardDateRangeDuration);
+        const from = document.getElementById(range.dataset.dashboardDateRangeFrom);
+        const to = document.getElementById(range.dataset.dashboardDateRangeTo);
+        if (!Number.isFinite(duration) || duration <= 0 || !from || !to || from.disabled || to.disabled) return;
+        const end = Math.floor(Date.now() / 60000) * 60000;
+        from.value = new Date(end - duration).toISOString().slice(0, 16);
+        to.value = ''; // Keep the upper bound open so subsequent refreshes include newer records.
+        // Set both bounds before notifying persistence and filter listeners. Do not submit the form.
+        for (const input of [from, to]) {
+            input.dispatchEvent(new Event('input', { bubbles: true }));
+            input.dispatchEvent(new Event('change', { bubbles: true }));
+        }
+    });
+})();
+</script>

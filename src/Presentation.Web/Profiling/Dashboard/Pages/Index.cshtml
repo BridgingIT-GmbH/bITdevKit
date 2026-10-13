@@ -1,13 +1,18 @@
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
+@using Microsoft.Extensions.DependencyInjection
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
 @inherits RazorSlice
 @implements IUsesLayout<BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardLayout, DashboardLayoutModel>
 
+@{ var dashboardOptions = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>(); }
+
+
 <div class="d-flex justify-content-end align-items-center py-2 mb-2 border-bottom">
     <div class="d-flex align-items-center gap-2">
-        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.LocalDateTime.ToString("T", CultureInfo.InvariantCulture)</span>
         <button type="button" id="profiling-stress" class="btn btn-outline-warning btn-sm profiling-tool-button profiling-stress-button" aria-label="Run a 30-second profiling stress workload" title="Stress this process for 30 seconds with high CPU, managed allocations, and retained memory"><i class="bi bi-fire" aria-hidden="true"></i></button>
+        <span id="profiling-refresh-status" class="text-muted small" role="status">Updated @DateTimeOffset.UtcNow.ToString("HH:mm:ss 'UTC'", CultureInfo.InvariantCulture)</span>
         <label for="profiling-refresh-interval" class="visually-hidden">Profiling refresh interval</label>
-        <select id="profiling-refresh-interval" class="form-select form-select-sm" style="width: 8.5rem">
+        <select id="profiling-refresh-interval" class="form-select form-select-sm" style="width: 9rem">
             <option value="">Off</option>
             <option value="1000">1 sec</option>
             <option value="5000" selected>5 sec</option>
@@ -16,13 +21,17 @@
             <option value="30000">30 sec</option>
             <option value="60000">60 sec</option>
         </select>
-        <button type="button" id="profiling-refresh-now" class="btn btn-outline-secondary btn-sm" aria-label="Refresh profiling dashboard now" title="Refresh now"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
+        <button type="button" id="profiling-refresh-now" class="btn btn-outline-warning btn-sm" aria-label="Refresh profiling dashboard now" title="Refresh now"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button>
     </div>
 </div>
+
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("runtime"))
 
 <div id="dashboard-profiling-content">
     @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content>())
 </div>
+
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
 
 <div class="modal fade" id="profiling-chart-focus-modal" tabindex="-1" aria-labelledby="profiling-chart-focus-title" aria-hidden="true">
     <div class="modal-dialog profiling-chart-focus-dialog">
@@ -68,6 +77,10 @@
     .profiling-session-actions { display: flex; align-items: center; justify-content: flex-end; flex: 1 1 auto; flex-wrap: wrap; gap: .35rem; min-width: 0; }
     .profiling-marker-control { flex: 0 1 16rem; width: 16rem; min-width: 11rem; }
     .profiling-sessions-body[hidden] { display: none !important; }
+    .profiling-disclosure-toggle { padding: 0; border: 0; background: transparent; color: inherit; font: inherit; line-height: 1; cursor: pointer; }
+    .profiling-disclosure-toggle::before { content: "▼"; font-size: .75em; }
+    .profiling-disclosure-toggle[aria-expanded="false"]::before { content: "▶"; }
+    .profiling-disclosure-toggle:focus-visible { outline: 2px solid var(--bs-info); outline-offset: 2px; }
     .profiling-tool-button { display: inline-flex; align-items: center; justify-content: center; width: 2.15rem; height: 2rem; padding: 0; }
     .profiling-compact-focus-button { width: 1.8rem; height: 1.8rem; font-size: .76rem; }
     .profiling-session-control { display: flex; align-items: flex-end; }
@@ -85,7 +98,7 @@
     .profiling-tab { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: .45rem; min-width: 8.5rem; padding: .65rem .9rem; border: 0; border-bottom: 2px solid transparent; background: transparent; color: var(--bs-secondary-color); font-size: .82rem; font-weight: 650; letter-spacing: .02em; }
     .profiling-tab:hover { color: var(--bs-body-color); background: color-mix(in srgb, var(--bs-info) 6%, transparent); }
     .profiling-tab:focus-visible { z-index: 1; outline: 2px solid var(--bs-info); outline-offset: -2px; }
-    .profiling-tab.is-active { border-bottom-color: var(--bs-info); color: var(--bs-body-color); background: transparent; }
+    .profiling-tab.is-active { border-bottom-color: var(--bs-primary); color: var(--dashboard-active-fg); background: var(--dashboard-active-bg); }
     .profiling-tab-panel[hidden] { display: none; }
     .profiling-panel-header { display: flex; align-items: center; justify-content: space-between; gap: 1rem; border-bottom: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); background: transparent; }
     .profiling-vitals-grid { display: grid; grid-template-columns: repeat(7, minmax(8rem, 1fr)); gap: .55rem; }
@@ -126,8 +139,7 @@
     .profiling-snapshot-metric-row dt code { display: block; margin-top: .08rem; color: var(--bs-secondary-color); font-size: .62rem; font-weight: 400; }
     .profiling-snapshot-metric-row dd { margin: 0; overflow-wrap: anywhere; color: var(--bs-body-color); font-variant-numeric: tabular-nums; font-weight: 650; text-align: right; }
     .profiling-chart-filters { padding: .55rem .75rem; border: 1px dashed var(--bs-border-color); font-size: .8rem; }
-    .profiling-analysis-summary { list-style: none; cursor: pointer; user-select: none; }
-    .profiling-analysis-summary::-webkit-details-marker { display: none; }
+    .profiling-analysis-summary { cursor: pointer; user-select: none; }
     .profiling-analysis-result { border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
     .profiling-analysis-result .profiling-analysis-inner { padding: .75rem; background: transparent; }
     .profiling-signal { padding: .65rem .75rem; margin-top: .55rem; border: 1px solid var(--dashboard-panel-border, var(--bs-border-color)); }
@@ -183,15 +195,25 @@
         const escapeHtml = value => String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
         const display = value => value === null || value === undefined || value === '' ? 'unavailable' : String(value);
         const formatNumber = value => value === null || value === undefined ? 'unavailable' : Number(value).toLocaleString(undefined, { maximumFractionDigits: 2 });
+        const formatMetric = (value, unit) => {
+            if (value === null || value === undefined) return 'unavailable';
+            if (unit === 'bytes' || unit === 'bytes-per-second') {
+                const units = ['B', 'KiB', 'MiB', 'GiB', 'TiB'];
+                const exponent = Math.min(units.length - 1, Math.max(0, Math.floor(Math.log2(Math.abs(value) || 1) / 10)));
+                return `${formatNumber(value / Math.pow(1024, exponent))} ${units[exponent]}${unit === 'bytes-per-second' ? '/s' : ''}`;
+            }
+            if (unit === 'percent') return `${formatNumber(value)}%`;
+            if (unit === 'percentage-points') return `${formatNumber(value)} pp`;
+            return `${formatNumber(value)}${unit && unit !== 'count' ? ' ' + unit : ''}`;
+        };
         const enumName = (value, names) => typeof value === 'number' ? (names[value] || String(value)) : display(value);
 
         const profilingGlossary = Object.freeze({
             'snapshot-key': 'Readable identity of this immutable snapshot.',
             'session-key': 'Readable identity of the profiling session that owns this snapshot.',
             'node-key': 'Readable identity of the process node that captured this snapshot.',
-            'timestamp': 'Browser-local date and time at which this snapshot capture began.',
+            'timestamp': 'UTC date and time at which this snapshot capture began.',
             'host-name': 'Machine name reported by the process that captured this snapshot.',
-            'process-id': 'Operating-system process identifier for the captured application instance.',
             'sequence': 'The capture order within this node. A gap can indicate a skipped or failed capture.',
             'scheduled-elapsed': 'Time from session start to when this snapshot was scheduled.',
             'capture-started-elapsed': 'Time from session start to when measurement actually began.',
@@ -315,7 +337,6 @@
                     ['node-key', 'Node key', snapshot => snapshot.nodeKey],
                     ['timestamp', 'Captured', snapshot => snapshot.timestampUtc, 'timestamp'],
                     ['host-name', 'Host', snapshot => snapshot.hostName],
-                    ['process-id', 'Process ID', snapshot => snapshot.processId, 'number'],
                     ['sequence', 'Sequence', snapshot => snapshot.sequence, 'number'],
                     ['scheduled-elapsed', 'Scheduled elapsed', snapshot => snapshot.scheduledElapsed, 'duration'],
                     ['capture-started-elapsed', 'Capture started elapsed', snapshot => snapshot.captureStartedElapsed, 'duration'],
@@ -413,7 +434,7 @@
             if (value === null || value === undefined || value === '') return 'unavailable';
             if (format === 'timestamp') {
                 const date = new Date(value);
-                return Number.isNaN(date.getTime()) ? 'unavailable' : date.toLocaleString(undefined, { dateStyle: 'medium', timeStyle: 'long' });
+                return Number.isNaN(date.getTime()) ? 'unavailable' : date.toISOString();
             }
             if (format === 'bytes' || format === 'rate') {
                 const bytes = Number(value);
@@ -551,16 +572,15 @@
             return `${dayPrefix}${hours}:${minutes}:${seconds}${fraction}`;
         }
 
-        function formatLocalSnapshotTimestamp(value) {
+        function formatUtcSnapshotTimestamp(value) {
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) return 'invalid date';
-            const pad = (part, length = 2) => String(part).padStart(length, '0');
-            return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}:${pad(date.getSeconds())}`;
+            return date.toISOString();
         }
 
-        function localizeSnapshotOptions() {
+        function updateUtcSnapshotOptions() {
             document.querySelectorAll('[data-profiling-snapshot-option]').forEach(option => {
-                option.textContent = `#${option.dataset.sequence} · ${formatLocalSnapshotTimestamp(option.dataset.timestampUtc)} · ${option.dataset.key}`;
+                option.textContent = `#${option.dataset.sequence} · ${formatUtcSnapshotTimestamp(option.dataset.timestampUtc)} · ${option.dataset.key}`;
             });
         }
 
@@ -603,7 +623,7 @@
                 return false;
             }
 
-            subtitle.textContent = `#${snapshot.sequence} · ${formatLocalSnapshotTimestamp(snapshot.timestampUtc)} · ${snapshot.identity?.key || 'unavailable'}`;
+            subtitle.textContent = `#${snapshot.sequence} · ${formatUtcSnapshotTimestamp(snapshot.timestampUtc)} · ${snapshot.identity?.key || 'unavailable'}`;
             content.innerHTML = `<div class="profiling-snapshot-metric-groups">${snapshotMetricGroups.map(group => `
                 <section class="profiling-snapshot-metric-group">
                     <h3>${escapeHtml(group.title)}</h3>
@@ -633,8 +653,6 @@
             toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
             toggle.title = expanded ? 'Collapse snapshot details' : 'Expand snapshot details';
             toggle.setAttribute('aria-label', toggle.title);
-            const icon = toggle.querySelector('i');
-            if (icon) icon.className = `bi bi-chevron-${expanded ? 'up' : 'down'}`;
             if (persist) localStorage.setItem(storage.snapshotDetails, expanded ? 'true' : 'false');
         }
 
@@ -646,8 +664,6 @@
             toggle.setAttribute('aria-expanded', expanded ? 'true' : 'false');
             toggle.title = expanded ? 'Collapse sessions' : 'Expand sessions';
             toggle.setAttribute('aria-label', toggle.title);
-            const icon = toggle.querySelector('i');
-            if (icon) icon.className = `bi bi-chevron-${expanded ? 'up' : 'down'}`;
             if (persist) localStorage.setItem(storage.sessions, expanded ? 'true' : 'false');
         }
 
@@ -756,6 +772,7 @@
         }
 
         function applyContentRefresh(contentElement, responseText) {
+            window.bdkProfiling.disposeHelp(contentElement);
             const scrollPosition = { x: window.scrollX, y: window.scrollY };
             const template = document.createElement('template');
             template.innerHTML = responseText.trim();
@@ -795,45 +812,53 @@
         }
 
         function getFilters() {
-            try { return { phases: true, actions: true, segments: true, ...JSON.parse(localStorage.getItem(storage.filters) || '{}') }; }
-            catch { return { phases: true, actions: true, segments: true }; }
+            try { return { sessionMarkers: true, nodeMarkers: true, segments: true, ...JSON.parse(localStorage.getItem(storage.filters) || '{}') }; }
+            catch { return { sessionMarkers: true, nodeMarkers: true, segments: true }; }
         }
 
-        function toPlotlyLocalTime(value) {
+        function toPlotlyUtcTime(value) {
             if (!value) return value;
             const date = new Date(value);
             if (Number.isNaN(date.getTime())) return value;
-            const offsetMilliseconds = date.getTimezoneOffset() * 60 * 1000;
-            return new Date(date.getTime() - offsetMilliseconds).toISOString().replace(/Z$/, '');
+            return date.toISOString();
         }
 
         function annotationLayers(data, selectedSnapshotKey, selectedColor) {
             const filters = getFilters();
+            const theme = window.bdkDashboard.getChartTheme();
+            const tint = (role, opacity) => `rgba(${window.bdkDashboard.getCssValue(`--bs-${role}-rgb`)},${opacity})`;
             const shapes = [];
             const annotations = [];
             if (filters.segments) {
                 (data?.segments || []).forEach((segment, index) => {
-                    const started = toPlotlyLocalTime(segment.startedUtc);
-                    const ended = toPlotlyLocalTime(segment.endedUtc || data?.latestSnapshot?.timestampUtc || segment.startedUtc);
-                    const color = index % 2 ? '#fd971f' : '#66d9ef';
-                    shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: started, x1: ended, y0: 0, y1: 1, fillcolor: index % 2 ? 'rgba(253,151,31,.08)' : 'rgba(102,217,239,.08)', line: { width: 1, dash: 'dot', color: 'rgba(165,159,153,.55)' }, layer: 'below' });
-                    annotations.push({ x: started, y: 0.98, xref: 'x', yref: 'paper', text: `SEGMENT · ${escapeHtml(segment.name)}`, showarrow: false, xanchor: 'left', yanchor: 'top', font: { size: 9, color }, bgcolor: 'rgba(0,0,0,.58)', borderpad: 2 });
+                    const started = toPlotlyUtcTime(segment.startedUtc);
+                    const ended = toPlotlyUtcTime(segment.endedUtc || data?.latestSnapshot?.timestampUtc || segment.startedUtc);
+                    const role = index % 2 ? 'analysis' : 'info';
+                    const color = window.bdkDashboard.getCssValue(`--dashboard-${role}-text`);
+                    shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: started, x1: ended, y0: 0, y1: 1, fillcolor: tint(role, .08), line: { width: 1, dash: 'dot', color: theme.grid }, layer: 'below' });
+                    annotations.push({ x: started, y: 0.98, xref: 'x', yref: 'paper', text: `SEGMENT · ${escapeHtml(segment.name)}`, showarrow: false, xanchor: 'left', yanchor: 'top', font: { size: 9, color }, bgcolor: theme.background, borderpad: 2 });
                 });
             }
             const addMarker = (marker, color, dash, prefix) => {
-                const timestamp = toPlotlyLocalTime(marker.timestampUtc);
+                const timestamp = toPlotlyUtcTime(marker.timestampUtc);
                 shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: timestamp, x1: timestamp, y0: 0, y1: 1, line: { color, width: 1.4, dash } });
                 annotations.push({ x: timestamp, y: 1.035, xref: 'x', yref: 'paper', text: `${prefix}${escapeHtml(marker.name)}`, showarrow: false, yanchor: 'bottom', textangle: -35, font: { size: 9, color } });
             };
-            if (filters.phases) (data?.phaseMarkers || []).forEach(marker => addMarker(marker, '#fd971f', 'dash', 'PHASE · '));
-            if (filters.actions) (data?.actionMarkers || []).forEach(marker => addMarker(marker, '#66d9ef', 'dot', 'ACTION · '));
+            if (filters.sessionMarkers) (data?.markers || []).filter(marker => marker.scope === 0 || marker.scope === 'Session' || marker.scope === 'session').forEach(marker => addMarker(marker, window.bdkDashboard.getCssValue('--dashboard-analysis-text'), 'dash', 'SESSION MARKER · '));
+            if (filters.nodeMarkers) (data?.markers || []).filter(marker => marker.scope === 1 || marker.scope === 'Node' || marker.scope === 'node').forEach(marker => addMarker(marker, window.bdkDashboard.getCssValue('--dashboard-info-text'), 'dot', 'NODE MARKER · '));
             const selectedSnapshot = selectedSnapshotKey
                 ? (data?.snapshots || []).find(item => item.identity?.key === selectedSnapshotKey)
                 : null;
             if (selectedSnapshot) {
-                const timestamp = toPlotlyLocalTime(selectedSnapshot.timestampUtc);
+                const timestamp = toPlotlyUtcTime(selectedSnapshot.timestampUtc);
                 shapes.push({ type: 'line', xref: 'x', yref: 'paper', x0: timestamp, x1: timestamp, y0: 0, y1: 1, line: { color: selectedColor, width: 2.5 } });
                 annotations.push({ x: timestamp, y: 1.035, xref: 'x', yref: 'paper', text: `SELECTED · #${selectedSnapshot.sequence}`, showarrow: false, yanchor: 'bottom', textangle: -35, font: { size: 10, color: selectedColor } });
+            }
+            const selectedInterval = new URL(location.href).searchParams;
+            const from = selectedInterval.get('fromUtc'), to = selectedInterval.get('toUtc');
+            if (from && to && Number.isFinite(Date.parse(from)) && Number.isFinite(Date.parse(to))) {
+                shapes.push({ type: 'rect', xref: 'x', yref: 'paper', x0: toPlotlyUtcTime(from), x1: toPlotlyUtcTime(to), y0: 0, y1: 1, fillcolor: tint('primary', .13), line: { width: 0 }, layer: 'below' });
+                annotations.push({ x: toPlotlyUtcTime(from), y: 1, xref: 'x', yref: 'paper', text: 'Selected operation interval · UTC', showarrow: false });
             }
             return { shapes, annotations };
         }
@@ -867,11 +892,11 @@
                     return;
                 }
                 const points = data.snapshots;
-                const x = points.map(item => toPlotlyLocalTime(item.timestampUtc));
+                const x = points.map(item => toPlotlyUtcTime(item.timestampUtc));
                 const mb = values => values.map(value => value === null || value === undefined ? null : value / 1048576);
-                const trace = (name, values, color, axis = 'y') => ({ name, x, y: values, type: 'scatter', mode: 'lines', connectgaps: false, yaxis: axis, line: { width: 1.7, color }, hovertemplate: `%{y:.2f}<extra>${name}</extra>` });
+                const trace = (name, values, color, unit = '%', axis = 'y') => ({ name, x, y: values, type: 'scatter', mode: 'lines', connectgaps: false, yaxis: axis, line: { width: 1.7, color }, hovertemplate: `%{fullData.name}: %{y:.2f} ${unit}<extra></extra>` });
                 const theme = window.bdkDashboard.getChartTheme();
-                const layers = annotationLayers(data, selectedSnapshotKey, theme.danger);
+                const layers = annotationLayers(data, selectedSnapshotKey, window.bdkDashboard.getCssValue('--dashboard-danger-text'));
                 const memoryLayout = window.bdkDashboard.createPlotlyLayout({ margin: { l: 56, r: 22, t: 84, b: 58 }, showlegend: true, legend: { orientation: 'h', x: 0, y: -0.18 } });
                 memoryLayout.dragmode = 'zoom';
                 memoryLayout.yaxis.title = { text: 'MiB' };
@@ -879,12 +904,12 @@
                 memoryLayout.shapes = layers.shapes;
                 memoryLayout.annotations = layers.annotations;
                 const memoryTraces = [
-                    trace('Managed memory', mb(points.map(item => item.managedMemoryBytes)), theme.primary),
-                    trace('Managed heap', mb(points.map(item => item.managedHeapSizeBytes)), theme.success),
-                    trace('Private memory', mb(points.map(item => item.privateMemoryBytes)), theme.warning),
-                    trace('Working set', mb(points.map(item => item.workingSetBytes)), theme.secondary),
-                    trace('Committed', mb(points.map(item => item.totalCommittedBytes)), theme.info),
-                    trace('LOH', mb(points.map(item => item.largeObjectHeapBytes)), theme.danger)
+                    trace('Managed memory', mb(points.map(item => item.managedMemoryBytes)), theme.primary, 'MiB'),
+                    trace('Managed heap', mb(points.map(item => item.managedHeapSizeBytes)), theme.success, 'MiB'),
+                    trace('Private memory', mb(points.map(item => item.privateMemoryBytes)), theme.warning, 'MiB'),
+                    trace('Working set', mb(points.map(item => item.workingSetBytes)), theme.secondary, 'MiB'),
+                    trace('Committed', mb(points.map(item => item.totalCommittedBytes)), theme.info, 'MiB'),
+                    trace('LOH', mb(points.map(item => item.largeObjectHeapBytes)), theme.danger, 'MiB')
                 ];
                 const gcLayout = window.bdkDashboard.createPlotlyLayout({ margin: { l: 56, r: 64, t: 84, b: 58 }, showlegend: true, legend: { orientation: 'h', x: 0, y: -0.18 } });
                 gcLayout.dragmode = 'zoom';
@@ -900,7 +925,7 @@
                     trace('Heap fragmentation', points.map(item => item.heapFragmentationPercent), theme.secondary),
                     trace('LOH fragmentation', points.map(item => item.largeObjectHeapFragmentationPercent), theme.danger),
                     trace('GC pause', points.map(item => item.gcPausePercent), theme.success),
-                    trace('Allocation rate', points.map(item => item.allocationRateBytesPerSecond === null || item.allocationRateBytesPerSecond === undefined ? null : item.allocationRateBytesPerSecond / 1048576), theme.info, 'y2')
+                    trace('Allocation rate', points.map(item => item.allocationRateBytesPerSecond === null || item.allocationRateBytesPerSecond === undefined ? null : item.allocationRateBytesPerSecond / 1048576), theme.info, 'MiB/s', 'y2')
                 ];
                 state.chartSpecs = {
                     memory: { title: 'Memory History', ariaLabel: 'Focused Memory History chart', traces: memoryTraces, layout: memoryLayout },
@@ -989,20 +1014,20 @@
             const kpis = result.kpIs || result.kpis || [];
             const limitations = result.limitations || [];
             const sufficiency = enumName(quality.sufficiency, ['Collecting', 'Sufficient', 'Limited']);
-            const headline = signals.length ? `${signals.length} evidence-backed signal${signals.length === 1 ? '' : 's'}` : (sufficiency === 'Collecting' ? 'Collecting enough data for analysis.' : 'No notable behavior detected.');
+            const headline = signals.length ? `${signals.length} signal${signals.length === 1 ? '' : 's'}` : (sufficiency === 'Collecting' ? 'Collecting data.' : 'No signals.');
             const signalsHtml = signals.map(signal => {
                 const signalName = humanizeIdentifier(signal.identifier);
                 const signalDescription = signal.explanation || descriptionFor(signal.identifier);
                 const confidence = enumName(signal.confidence, ['Low', 'Medium', 'High']);
                 const confidenceDescription = `${confidence} confidence describes how complete and independently supported the required evidence is. It is not a probability or severity score.`;
-                const evidenceHtml = (signal.evidence || []).map(item => `<span class="profiling-evidence"><span>${escapeHtml(humanizeIdentifier(item.identifier))}: <strong>${formatNumber(item.value)} ${escapeHtml(item.unit)}</strong></span>${infoHtml(descriptionFor(item.identifier), humanizeIdentifier(item.identifier))}</span>`).join('');
-                return `<article class="profiling-signal"><div class="d-flex justify-content-between gap-2"><div class="profiling-signal-title"><strong>${escapeHtml(enumName(signal.label, ['Notable', 'Investigate']))} · ${escapeHtml(signalName)}</strong>${infoHtml(signalDescription, signalName)}<code class="profiling-technical-name">${escapeHtml(signal.identifier)}</code></div><span class="badge text-bg-secondary">${escapeHtml(confidence)} confidence ${infoHtml(confidenceDescription, `${confidence} confidence`)}</span></div><p class="mb-1 mt-2">${escapeHtml(signalDescription)}</p><div class="small text-muted"><strong>Suggested next step:</strong> ${escapeHtml(signal.suggestedAction)}</div><div class="small mt-1" aria-label="Signal evidence">${evidenceHtml}</div></article>`;
+                const evidenceHtml = (signal.evidence || []).map(item => `<span class="profiling-evidence"><span>${escapeHtml(humanizeIdentifier(item.identifier))}: <strong>${escapeHtml(formatMetric(item.value, item.unit))}</strong></span>${infoHtml(`${descriptionFor(item.identifier)} Recorded value: ${display(item.value)} ${item.unit || ''}.`, humanizeIdentifier(item.identifier))}</span>`).join('');
+                return `<article class="profiling-signal"><div class="d-flex justify-content-between gap-2"><div class="profiling-signal-title"><strong>${escapeHtml(enumName(signal.label, ['Notable', 'Investigate']))} · ${escapeHtml(signalName)}</strong>${infoHtml(signalDescription, signalName)}</div><span class="badge text-bg-secondary">${escapeHtml(confidence)} confidence ${infoHtml(confidenceDescription, `${confidence} confidence`)}</span></div><div class="small text-muted mt-2">${escapeHtml(signal.suggestedAction)}</div><div class="small mt-1" aria-label="Signal evidence">${evidenceHtml}</div></article>`;
             }).join('');
             const kpiHtml = kpis.map(item => {
                 const label = humanizeIdentifier(item.identifier);
-                return `<div class="profiling-kpi"><span class="profiling-kpi-label">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span><strong>${formatNumber(item.value)} ${escapeHtml(item.unit)}</strong><code class="profiling-technical-name">${escapeHtml(item.identifier)}</code></div>`;
+                return `<div class="profiling-kpi"><span class="profiling-kpi-label">${escapeHtml(label)} ${infoHtml(`${descriptionFor(item.identifier)} Recorded value: ${display(item.value)} ${item.unit || ''}.`, label)}</span><strong>${escapeHtml(formatMetric(item.value, item.unit))}</strong></div>`;
             }).join('');
-            target.innerHTML = `<div class="profiling-analysis-inner"><div class="d-flex flex-wrap justify-content-between gap-2"><strong>${escapeHtml(headline)} ${infoHtml('A signal is emitted only when a fixed rule is supported by the available measurements. Signals remain independent and are never combined.', 'Evidence-backed signals')}</strong><span class="small text-muted">${result.scope?.snapshotCount ?? 0} snapshots · ${result.scope?.provisional ? 'provisional' : 'terminal'} · ${escapeHtml(sufficiency)}</span></div>${signalsHtml}<div class="profiling-kpi-grid" aria-label="Evaluation key performance indicators">${kpiHtml}</div>${limitations.length ? `<div class="small text-muted mt-2"><strong>Limitations:</strong> ${limitations.map(escapeHtml).join(' · ')}</div>` : ''}</div>`;
+            target.innerHTML = `<div class="profiling-analysis-inner"><div class="d-flex flex-wrap justify-content-between gap-2"><strong>${escapeHtml(headline)} ${infoHtml('A signal is emitted only when a fixed rule is supported by the available measurements. Signals remain independent and are never combined.', 'Evidence-backed signals')}</strong><span class="small text-muted">${result.scope?.snapshotCount ?? 0} snapshots · ${result.scope?.provisional ? 'provisional' : 'terminal'} · ${escapeHtml(sufficiency)}</span></div>${signalsHtml}<div class="profiling-kpi-grid" aria-label="Evaluation key performance indicators">${kpiHtml}</div>${limitations.length ? `<details class="small text-muted mt-2"><summary>Limitations (${limitations.length})</summary>${limitations.map(escapeHtml).join(' · ')}</details>` : ''}</div>`;
         }
 
         function renderComparison(result) {
@@ -1011,7 +1036,7 @@
             const metrics = result.metrics || [];
             body.innerHTML = metrics.map(item => {
                 const label = humanizeIdentifier(item.identifier);
-                return `<tr><td><span class="profiling-metric-name">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span><code class="profiling-technical-name">${escapeHtml(item.identifier)}</code></td><td>${escapeHtml(item.unit)}</td><td class="text-end">${formatNumber(item.earlierValue)}</td><td class="text-end">${formatNumber(item.laterValue)}</td><td class="text-end">${formatNumber(item.difference)}</td><td class="text-end">${item.percentageDifference === null || item.percentageDifference === undefined ? 'unavailable' : `${formatNumber(item.percentageDifference)}%`}</td></tr>`;
+                return `<tr><td><span class="profiling-metric-name">${escapeHtml(label)} ${infoHtml(descriptionFor(item.identifier), label)}</span></td><td>${escapeHtml(item.unit)}</td><td class="text-end">${formatNumber(item.earlierValue)}</td><td class="text-end">${formatNumber(item.laterValue)}</td><td class="text-end">${formatNumber(item.difference)}</td><td class="text-end">${item.percentageDifference === null || item.percentageDifference === undefined ? 'unavailable' : `${formatNumber(item.percentageDifference)}%`}</td></tr>`;
             }).join('') || '<tr><td colspan="6" class="text-muted">No comparable raw metrics were returned.</td></tr>';
         }
 
@@ -1053,7 +1078,7 @@
             if (confirmation && !window.confirm(confirmation)) return false;
             try {
                 const result = await request(url, method, body);
-                showOutcome(summarizeControl(result, label), 'success');
+                showOutcome(result?.hasRemainingWork ? 'Clear is applying to Runtime and Operations. Refresh to see the remaining data.' : summarizeControl(result, label), 'success');
                 const resultSession = result?.session?.identity?.key;
                 if (selectResultSession && resultSession && resultSession !== state.root?.dataset.sessionKey) {
                     await selectContext(resultSession, null);
@@ -1169,6 +1194,7 @@
             const metadataButton = document.querySelector('#profiling-edit-metadata');
 
             if (sessionToggle) {
+                sessionToggle.disabled = (state.root?.dataset.runtimeControlsEnabled || '').toLowerCase() !== 'true';
                 sessionToggle.dataset.sessionAction = running ? 'stop' : 'start';
                 sessionToggle.title = running ? 'Stop the active profiling session' : 'Start a profiling session';
                 sessionToggle.setAttribute('aria-label', running ? 'Stop profiling session' : 'Start profiling session');
@@ -1180,6 +1206,9 @@
                 if (icon) icon.className = `bi ${running ? 'bi-stop-fill' : 'bi-play-fill'}`;
             }
 
+            const stressButton = document.getElementById('profiling-stress');
+            if (stressButton) stressButton.disabled = (state.root?.dataset.runtimeControlsEnabled || '').toLowerCase() !== 'true';
+
             if (markerInput) {
                 markerInput.disabled = !running;
                 markerInput.title = running
@@ -1190,7 +1219,7 @@
             if (markerButton) {
                 markerButton.disabled = !running;
                 markerButton.title = running
-                    ? 'Add phase marker'
+                    ? 'Add marker'
                     : 'Start a session before adding a marker';
             }
 
@@ -1219,10 +1248,10 @@
             const liveSwitch = document.querySelector('#profiling-live-analysis');
             if (liveSwitch) liveSwitch.checked = live;
             const filters = getFilters();
-            ['phases', 'actions', 'segments'].forEach(key => { const input = document.querySelector(`#profiling-filter-${key}`); if (input) input.checked = filters[key] !== false; });
+            ['sessionMarkers', 'nodeMarkers', 'segments'].forEach(key => { const input = document.querySelector(`#profiling-filter-${key}`); if (input) input.checked = filters[key] !== false; });
             setSessionsExpanded(localStorage.getItem(storage.sessions) !== 'false');
             setSnapshotDetailsExpanded(localStorage.getItem(storage.snapshotDetails) !== 'false');
-            localizeSnapshotOptions();
+            updateUtcSnapshotOptions();
             activateTab(localStorage.getItem(storage.tab) || 'overview');
             if (state.sessionAnalysis) renderAnalysis('#profiling-session-analysis-result', state.sessionAnalysis);
             if (state.pairAnalysis) renderAnalysis('#profiling-pair-analysis', state.pairAnalysis);
@@ -1239,7 +1268,7 @@
                 if (event.target.matches('#profiling-snapshot-select')) selectSnapshot(event.target.value);
                 if (event.target.matches('#profiling-live-analysis')) localStorage.setItem(storage.live, event.target.checked ? 'true' : 'false');
                 if (event.target.matches('.profiling-chart-filter')) {
-                    const filters = { phases: document.querySelector('#profiling-filter-phases')?.checked !== false, actions: document.querySelector('#profiling-filter-actions')?.checked !== false, segments: document.querySelector('#profiling-filter-segments')?.checked !== false };
+                    const filters = { sessionMarkers: document.querySelector('#profiling-filter-sessionMarkers')?.checked !== false, nodeMarkers: document.querySelector('#profiling-filter-nodeMarkers')?.checked !== false, segments: document.querySelector('#profiling-filter-segments')?.checked !== false };
                     localStorage.setItem(storage.filters, JSON.stringify(filters));
                     scheduleChartRender();
                 }
@@ -1301,10 +1330,10 @@
                 if (button.id === 'profiling-snapshot') takeSnapshot();
                 if (button.id === 'profiling-gc') runAction(state.root.dataset.gcPath, 'POST', undefined, 'GC requested.');
                 if (button.id === 'profiling-stress') startStress(button);
-                if (button.id === 'profiling-add-marker') runAction(state.root.dataset.markerPath, 'POST', { name: document.querySelector('#profiling-marker-name')?.value.trim() }, 'Phase marker added.');
+                if (button.id === 'profiling-add-marker') runAction(state.root.dataset.markerPath, 'POST', { name: document.querySelector('#profiling-marker-name')?.value.trim() }, 'Marker added.');
                 if (button.id === 'profiling-delete-session') runAction(state.root.dataset.deletePath, 'DELETE', undefined, 'Session deleted.', 'Delete the selected terminal profiling session and all of its data?');
                 if (button.id === 'profiling-delete-unpinned') runAction(state.root.dataset.deleteUnpinnedPath, 'DELETE', undefined, 'Unpinned sessions deleted.', 'Delete every unpinned terminal profiling session?');
-                if (button.id === 'profiling-clear') runAction(state.root.dataset.clearPath, 'POST', { confirmed: true }, 'Profiling store cleared.', 'Clear ALL profiling data? This includes pinned sessions, snapshots, markers, segments, custom metrics, node records, and invalidated identities. This cannot be undone.');
+                if (button.id === 'profiling-clear') runAction(state.root.dataset.clearPath, 'POST', { confirmed: true }, 'Runtime and Operation profiling data cleared.', 'Clear ALL Runtime and Operation profiling data, including requests, pinned sessions, snapshots, markers and segments? New captures can still be recorded. This cannot be undone.');
                 if (button.id === 'profiling-analyze-now') analyzeTimeline(false);
                 if (button.id === 'profiling-compare') analyzePair();
                 if (button.id === 'profiling-toggle-snapshot-details') {
@@ -1364,7 +1393,8 @@
                 refreshButtonSelector: '#profiling-refresh-now',
                 storageKey: storage.refresh,
                 applyResponse: applyContentRefresh,
-                onSuccess: initializeContent
+                onSuccess: () => { initializeContent(); window.bdkProfiling.initializeHelp(); },
+                formatUpdatedAt: window.bdkProfiling.formatUpdatedAt
             });
 
             const current = new URL(window.location.href);

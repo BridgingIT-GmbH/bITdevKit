@@ -36,6 +36,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
     private readonly OrchestrationExecutionSettings executionSettings;
     private readonly ILogger<InMemoryOrchestrationExecutor> logger;
     private readonly IMetricsService metricsService;
+    private readonly OrchestrationProfilingExecutionScope profiling;
     private readonly ConcurrentDictionary<Guid, byte> scheduledTimerWatchers = new ConcurrentDictionary<Guid, byte>();
     private readonly AsyncLocal<ActivityCheckpointSession> currentCheckpointSession = new();
 
@@ -147,6 +148,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         this.executionSettings = serviceProvider.GetService<OrchestrationExecutionSettings>() ?? new OrchestrationExecutionSettings();
         this.logger = (serviceProvider.GetService<ILoggerFactory>() ?? NullLoggerFactory.Instance).CreateLogger<InMemoryOrchestrationExecutor>();
         this.metricsService = serviceProvider.GetService<IMetricsService>();
+        this.profiling = serviceProvider.GetService<OrchestrationProfilingExecutionScope>();
     }
 
     /// <inheritdoc />
@@ -459,6 +461,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             correlationId: NormalizeCorrelationId(correlationId),
             startedUtc: this.clock.UtcNow);
         using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState, context.CorrelationId);
+        using var correlationScope = CorrelationId.BeginScope(context.CorrelationId);
 
         this.logger.LogDebug(
             "[{LogKey}] executing orchestration inline (instanceId={InstanceId}, orchestration={Orchestration})",
@@ -545,6 +548,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             correlationId: NormalizeCorrelationId(correlationId),
             startedUtc: this.clock.UtcNow);
         using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState, context.CorrelationId);
+        using var correlationScope = CorrelationId.BeginScope(context.CorrelationId);
 
         this.logger.LogInformation(
             "[{LogKey}] created orchestration instance (instanceId={InstanceId}, orchestration={Orchestration})",
@@ -586,7 +590,11 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
             instanceId,
             typeof(TOrchestration).Name);
 
-        _ = Task.Run(() => this.ContinueInstanceCoreAsync<TOrchestration, TData>(instanceId, CancellationToken.None));
+        _ = Task.Run(async () =>
+        {
+            using var boundary = this.profiling?.BeginIndependentExecutionBoundary();
+            await this.ContinueInstanceCoreAsync<TOrchestration, TData>(instanceId, CancellationToken.None).ConfigureAwait(false);
+        });
     }
 
     internal async Task ContinueInstanceAsync(Guid instanceId, CancellationToken cancellationToken = default)
@@ -643,6 +651,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         var definition = orchestrationDefinition.GetDefinition();
         var completed = false;
         using var logScope = this.BeginOrchestrationScope(instanceId, orchestration.Name, snapshot.CurrentState, snapshot.CorrelationId);
+        using var correlationScope = CorrelationId.BeginScope(snapshot.CorrelationId);
 
         try
         {
@@ -727,6 +736,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         }
 
         using var logScope = this.BeginOrchestrationScope(instanceId, snapshot.OrchestrationName, snapshot.CurrentState, snapshot.CorrelationId);
+        using var correlationScope = CorrelationId.BeginScope(snapshot.CorrelationId);
 
         var waitPlan = this.TryGetWaitPlan(snapshot, out var plan) ? plan : null;
         if (waitPlan is null || waitPlan.ExpectedTimers.Count == 0)
@@ -789,7 +799,17 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         }
     }
 
-    private async Task ProcessContextAsync<TData>(
+    private Task ProcessContextAsync<TData>(
+        OrchestrationDefinition<TData> definition,
+        OrchestrationContext<TData> context,
+        OrchestrationInstanceSnapshot snapshot,
+        LeaseHandle lease,
+        CancellationToken cancellationToken)
+        where TData : class, IOrchestrationData =>
+        this.profiling is null ? this.ProcessContextCoreAsync(definition, context, snapshot, lease, cancellationToken)
+            : this.profiling.RunAsync(context, () => this.ProcessContextCoreAsync(definition, context, snapshot, lease, cancellationToken), cancellationToken);
+
+    private async Task ProcessContextCoreAsync<TData>(
         OrchestrationDefinition<TData> definition,
         OrchestrationContext<TData> context,
         OrchestrationInstanceSnapshot snapshot,
@@ -1669,6 +1689,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
 
         _ = Task.Run(async () =>
         {
+            using var boundary = this.profiling?.BeginIndependentExecutionBoundary();
             try
             {
                 var delay = timer.DueTimeUtc - this.clock.UtcNow;
@@ -1757,6 +1778,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
                 {
                     var context = await this.persistenceProvider.Queries.GetContextAsync<TData>(instanceId, scope.ServiceProvider, cancellationToken).ConfigureAwait(false);
                     using var logScope = this.BeginOrchestrationScope(instanceId, orchestration.Name, context.CurrentState, context.CorrelationId);
+                    using var correlationScope = CorrelationId.BeginScope(context.CorrelationId);
                     var definition = orchestrationDefinition.GetDefinition();
                     var stateName = string.IsNullOrWhiteSpace(context.CurrentState) ? definition.InitialState : context.CurrentState;
                     var state = definition.States[stateName];
@@ -2193,6 +2215,7 @@ public class InMemoryOrchestrationExecutor : IOrchestrationExecutor, IOrchestrat
         where TData : class, IOrchestrationData
     {
         using var logScope = this.BeginOrchestrationScope(context.InstanceId, context.OrchestrationName, context.CurrentState, context.CorrelationId);
+        using var correlationScope = CorrelationId.BeginScope(context.CorrelationId);
         var stack = this.GetCompensationStack(context);
         if (stack.Count == 0)
         {

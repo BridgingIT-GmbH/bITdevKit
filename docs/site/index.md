@@ -57,7 +57,7 @@ The template creates `./projects/SolutionName/SolutionName.slnx` with applicatio
   </a>
 </div>
 
-## Give your coding agent DevKit context
+## Give your coding agent context
 
 <aside class="agent-callout">
   <div>

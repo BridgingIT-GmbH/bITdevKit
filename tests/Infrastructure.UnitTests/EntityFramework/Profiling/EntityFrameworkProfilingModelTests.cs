@@ -13,7 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 public sealed class EntityFrameworkProfilingModelTests
 {
     [Fact]
-    public void Model_ProfilingAggregates_HaveSixTablesAndOwnedJsonDocuments()
+    public void Model_ProfilingAggregates_HaveIndependentTablesAndRuntimeOwnedDocuments()
     {
         // Arrange
         using var context = CreateContext();
@@ -24,16 +24,15 @@ public sealed class EntityFrameworkProfilingModelTests
             .ToArray();
 
         // Act
-        var session = model.FindEntityType(typeof(ProfilingSessionEntity));
-        var participation = model.FindEntityType(typeof(ProfilingParticipationEntity));
-        var segment = model.FindEntityType(typeof(ProfilingSegmentEntity));
-        var snapshot = model.FindEntityType(typeof(ProfilingSnapshotEntity));
-        var runtimeContext = model.FindEntityType(typeof(ProfilingRuntimeContextEntity));
-        var phaseMarker = model.FindEntityType(typeof(ProfilingPhaseMarkerEntity));
-        var actionMarker = model.FindEntityType(typeof(ProfilingActionMarkerEntity));
-        var observation = model.FindEntityType(typeof(ProfilingMetricObservationEntity));
-        var sessionTag = model.FindEntityType(typeof(ProfilingSessionTagEntity));
-        var segmentTag = model.FindEntityType(typeof(ProfilingSegmentTagEntity));
+        var session = model.FindEntityType(typeof(RuntimeProfilingSessionEntity));
+        var participation = model.FindEntityType(typeof(RuntimeProfilingParticipationEntity));
+        var segment = model.FindEntityType(typeof(RuntimeProfilingSegmentEntity));
+        var snapshot = model.FindEntityType(typeof(RuntimeProfilingSnapshotEntity));
+        var runtimeContext = model.FindEntityType(typeof(RuntimeProfilingRuntimeContextEntity));
+        var marker = model.FindEntityType(typeof(ProfilingMarkerEntity));
+        var observation = model.FindEntityType(typeof(RuntimeProfilingMetricObservationEntity));
+        var sessionTag = model.FindEntityType(typeof(RuntimeProfilingSessionTagEntity));
+        var segmentTag = model.FindEntityType(typeof(RuntimeProfilingSegmentTagEntity));
 
         // Assert
         profilingTypes.ShouldNotBeEmpty();
@@ -44,12 +43,19 @@ public sealed class EntityFrameworkProfilingModelTests
             .OrderBy(name => name, StringComparer.Ordinal)
             .ShouldBe(
                 [
-                    "__Profiling_InvalidSessions",
-                    "__Profiling_MetricObservations",
+                    "__Profiling_Clears",
                     "__Profiling_Nodes",
-                    "__Profiling_Participations",
-                    "__Profiling_Sessions",
-                    "__Profiling_Snapshots",
+                    "__Profiling_OperationDimensions",
+                    "__Profiling_OperationSegments",
+                    "__Profiling_Operations",
+                    "__Profiling_RuntimeGate",
+                    "__Profiling_RuntimeInvalidSessions",
+                    "__Profiling_RuntimeMetricObservations",
+                    "__Profiling_RuntimeParticipations",
+                    "__Profiling_RuntimeSessions",
+                    "__Profiling_RuntimeSnapshots",
+                    "__Profiling_StoreState",
+                    "__Profiling_Writers"
                 ]
             );
         session
@@ -66,10 +72,8 @@ public sealed class EntityFrameworkProfilingModelTests
         participation.FindProperty("ConcurrencyVersion").IsConcurrencyToken.ShouldBeTrue();
         runtimeContext.IsOwned().ShouldBeTrue();
         runtimeContext.GetContainerColumnName().ShouldBe("RuntimeContexts");
-        phaseMarker.IsOwned().ShouldBeTrue();
-        phaseMarker.GetContainerColumnName().ShouldBe("PhaseMarkers");
-        actionMarker.IsOwned().ShouldBeTrue();
-        actionMarker.GetContainerColumnName().ShouldBe("ActionMarkers");
+        marker.IsOwned().ShouldBeTrue();
+        marker.GetContainerColumnName().ShouldBe("Markers");
         segment.IsOwned().ShouldBeTrue();
         segment.GetContainerColumnName().ShouldBe("Segments");
         segmentTag.IsOwned().ShouldBeTrue();
@@ -93,10 +97,10 @@ public sealed class EntityFrameworkProfilingModelTests
         var model = context.Model;
 
         // Act
-        var snapshot = model.FindEntityType(typeof(ProfilingSnapshotEntity));
+        var snapshot = model.FindEntityType(typeof(RuntimeProfilingSnapshotEntity));
         var sessionForeignKey = snapshot
             .GetForeignKeys()
-            .Single(key => key.PrincipalEntityType.ClrType == typeof(ProfilingSessionEntity));
+            .Single(key => key.PrincipalEntityType.ClrType == typeof(RuntimeProfilingSessionEntity));
         var nodeForeignKey = snapshot
             .GetForeignKeys()
             .Single(key => key.PrincipalEntityType.ClrType == typeof(ProfilingNodeEntity));
@@ -115,8 +119,8 @@ public sealed class EntityFrameworkProfilingModelTests
         var services = new ServiceCollection();
         services.AddDbContext<ProfilingTestDbContext>(options => options.UseSqlite(connection));
         services
-            .AddProfiling(options => options.Enabled())
-            .WithEntityFrameworkStore<ProfilingTestDbContext>();
+            .AddProfiling(options => options.Enabled()).WithRuntimeProfiling()
+            .WithEntityFrameworkProvider<ProfilingTestDbContext>();
         using var provider = services.BuildServiceProvider(
             new ServiceProviderOptions { ValidateScopes = true }
         );
@@ -127,7 +131,7 @@ public sealed class EntityFrameworkProfilingModelTests
                 .Database.EnsureCreated();
         }
 
-        var store = provider.GetRequiredService<IProfilingStore>();
+        var store = provider.GetRequiredService<IRuntimeProfilingStore>();
         var before = Volatile.Read(ref ProfilingTestDbContext.InstancesCreated);
 
         // Act
@@ -138,7 +142,7 @@ public sealed class EntityFrameworkProfilingModelTests
         (
             Volatile.Read(ref ProfilingTestDbContext.InstancesCreated) - before
         ).ShouldBeGreaterThanOrEqualTo(2);
-        provider.GetRequiredService<IProfilingStore>().ShouldBeSameAs(store);
+        provider.GetRequiredService<IRuntimeProfilingStore>().ShouldBeSameAs(store);
     }
 
     [Fact]
@@ -146,11 +150,11 @@ public sealed class EntityFrameworkProfilingModelTests
     {
         // Arrange
         var services = new ServiceCollection();
-        services.AddSingleton(Substitute.For<IProfilingStore>());
-        var builder = services.AddProfiling(options => options.Enabled());
+        services.AddSingleton(Substitute.For<IRuntimeProfilingStore>());
+        var builder = services.AddProfiling(options => options.Enabled()).WithRuntimeProfiling();
 
         // Act
-        var action = () => builder.WithEntityFrameworkStore<ProfilingTestDbContext>();
+        var action = () => builder.WithEntityFrameworkProvider<ProfilingTestDbContext>();
 
         // Assert
         action

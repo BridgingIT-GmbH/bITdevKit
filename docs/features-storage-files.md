@@ -113,6 +113,19 @@ app.Run();
 
 `PUT /files/example.txt` returns `File: example.txt`. The in-memory provider retains files only while its singleton instance remains alive.
 
+## Operation profiling
+
+Add `.WithProfiling()` to a configured file provider, after other behaviors when their work should be included:
+
+```csharp
+services.AddFileStorage(factory => factory.RegisterProvider("reports", storage => storage
+    .UseInMemory("reports")
+    .WithMetrics()
+    .WithProfiling()));
+```
+
+With Operation Profiling enabled, all provider calls join the caller's profile or create a `FileStorage` operation. Keys use `filestorage:{operation}`; dimensions are the logical `filestorage.location` and `filestorage.operation`. Paths and filenames are omitted. Stream-returning methods measure opening the stream and preserve its ownership. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for lifecycle, registration order and dashboard dimension filtering.
+
 ## Architecture details
 
 The `FileStorage` subsystem is built around the `IFileStorageProvider` interface, which defines core file operations. Providers like `LocalFileStorageProvider`, `InMemoryFileStorageProvider`, `EntityFrameworkFileStorageProvider<TContext>`, and others implement this interface. The `IFileStorageProviderFactory` resolves providers by name, and extensions like `FileStorageProviderCompressionExtensions` and `FileStorageProviderCrossExtensions` add advanced functionality such as compression and cross-provider operations. Behaviors can be applied to providers to add cross-cutting concerns like logging or retry logic.
@@ -192,6 +205,16 @@ classDiagram
 - **Cross-Provider Transfers**: Copy or move files between different storage providers (e.g., from local to cloud storage).
 - **Database-backed Virtual Filesystems**: Persist files and directories in the application database through Entity Framework when a separate blob store or file share is unnecessary.
 - **Health Monitoring**: Check the health of storage providers to ensure availability.
+
+## Dashboard guide
+
+Open Files at `/_bdk/dashboard/storage/files` with `Presentation.Web.Storage`, registered file providers and the [Dashboard](features-presentation-dashboard.md) enabled. The page uses `IFileStorageProviderFactory`, so the same explorer works with different storage providers.
+
+Choose a provider, then use the folder tree or path breadcrumbs to browse it. The table shows file names, types, sizes and modification times. Use Folder, Text File or Upload to add content to the selected location. Row actions download, rename, copy, move or delete content through the selected provider. Operation failures appear in the page rather than as successful changes.
+
+[![File explorer with provider selection, file metadata and download or management actions](assets/dashboard/13-storage-files-files.png)](assets/dashboard/13-storage-files-files.png)
+
+Providers decorated with `WithPermalinks()` also expose permalink download and copy buttons. Those links appear in the [Permalinks dashboard](features-storage-permalinks.md#dashboard-guide). Use the toolbar refresh button to reload the directory after an external change.
 
 ## Detailed usage
 

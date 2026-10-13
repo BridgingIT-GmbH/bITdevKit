@@ -197,7 +197,9 @@ public class FakeIdentityProviderTests : IAsyncDisposable
         content.ShouldContain("dashboard-navbar-heading");
         content.ShouldContain("BDK Identity Provider");
         content.ShouldContain("identity-signin");
-        content.ShouldContain("data-theme-option=\"catppuccin\"");
+        content.ShouldContain("class=\"dropdown dashboard-theme-picker\"");
+        content.ShouldContain("data-theme-options");
+        content.ShouldContain("<span data-theme-label>Tokyo Night</span>");
         content.ShouldContain("window.addEventListener('storage'");
         content.ShouldNotContain("id=\"sidebarMenu\"");
     }

@@ -44,3 +44,32 @@ public sealed class ProfilingArchiveError(string message) : ResultErrorBase(mess
 /// <param name="message">A safe trace-export failure description.</param>
 /// <example><code>var error = new ProfilingTraceExportError("A writable destination is required.");</code></example>
 public sealed class ProfilingTraceExportError(string message) : ResultErrorBase(message);
+
+/// <summary>Reports bounded query capacity or concurrent maintenance contention.</summary>
+/// <example><code>var error = new ProfilingBusyError("A clear is already applying.");</code></example>
+public sealed class ProfilingBusyError(string message) : ResultErrorBase(message);
+
+/// <summary>Reports a cursor invalidated by deletion, reset, expiry or changed filters.</summary>
+/// <example><code>var error = new ProfilingQueryBoundaryError();</code></example>
+public sealed class ProfilingQueryBoundaryError() : ResultErrorBase("The profiling query boundary expired or no longer matches this selection. Refresh the view.");
+
+/// <summary>Requires a narrower selection instead of silently truncating exact analysis.</summary>
+/// <example><code>var error = new ProfilingQueryLimitError();</code></example>
+public sealed class ProfilingQueryLimitError() : ResultErrorBase("The profiling selection exceeds its exact analysis bound. Narrow the filters.");
+
+/// <summary>Classifies a provider attempt without exposing backend payloads or guessing commit success.</summary>
+/// <example><code>if (error is ProfilingPersistenceError { MayHaveCommitted: true }) ReportUnknown();</code></example>
+public sealed class ProfilingPersistenceError(bool mayHaveCommitted, bool transient) : ResultErrorBase("Profiling persistence is unavailable; commit certainty and retry eligibility are reported separately.")
+{
+    /// <summary>Gets whether an acknowledgement may have been lost after commit began.</summary>
+    /// <example><code>var uncertain = error.MayHaveCommitted;</code></example>
+    public bool MayHaveCommitted { get; } = mayHaveCommitted;
+
+    /// <summary>Gets whether a bounded background retry is eligible.</summary>
+    /// <example><code>var retry = error.Transient;</code></example>
+    public bool Transient { get; } = transient;
+}
+
+/// <summary>Reports an exhausted view-build deadline without presenting partial data as a successful view.</summary>
+/// <example><code>if (result.Errors.Any(error => error is ProfilingQueryTimeoutError)) ShowStale();</code></example>
+public sealed class ProfilingQueryTimeoutError() : ResultErrorBase("The profiling view exceeded its query deadline. Narrow the selection or refresh later.");

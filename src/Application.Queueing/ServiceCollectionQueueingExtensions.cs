@@ -208,6 +208,13 @@ public static class ServiceCollectionQueueingExtensions
         IQueueHandlerBehavior behavior = null)
         where TBehavior : class, IQueueHandlerBehavior
     {
+        if ((typeof(TBehavior) == typeof(QueueHandlerProfilingBehavior) || behavior is QueueHandlerProfilingBehavior)
+            && context.Services.Any(service => service.ServiceType == typeof(IQueueHandlerBehavior)
+                && (service.ImplementationType == typeof(QueueHandlerProfilingBehavior) || service.ImplementationInstance is QueueHandlerProfilingBehavior)))
+        {
+            return context;
+        }
+
         if (behavior is null)
         {
             context.Services.AddSingleton<IQueueHandlerBehavior, TBehavior>();
@@ -242,6 +249,11 @@ public static class ServiceCollectionQueueingExtensions
         this QueueingBuilderContext context,
         IQueueHandlerBehavior behavior)
     {
+        if (behavior is QueueHandlerProfilingBehavior)
+        {
+            return context.WithBehavior<QueueHandlerProfilingBehavior>(behavior);
+        }
+
         if (behavior is not null)
         {
             context.Services.AddSingleton(typeof(IQueueHandlerBehavior), behavior);

@@ -236,6 +236,16 @@ The `broadcasting list` command shows registrations. `broadcasting probe` publis
 
 When the dashboard is registered, its Broadcasting page shows the provider-neutral diagnostic snapshot. Register [Metrics](./features-metrics.md) to emit publication, delivery, and handler measurements through the `bdk` meter.
 
+## Dashboard guide
+
+Open Broadcasting at `/_bdk/dashboard/broadcasting` with broadcasting and the [Dashboard](features-presentation-dashboard.md) registered. The page shows the provider-neutral diagnostics snapshot, including active and inactive node counts.
+
+Inspect a node's scopes, receiver, reachability, registration and lease to check whether it can participate in a broadcast. Publication and local-acceptance counters describe activity on the current node; a registration is not proof that every remote delivery succeeded. The toolbar's broadcast button publishes a `BroadcastProbe` to the default scope when broadcasting is enabled.
+
+[![Broadcasting dashboard with node registration, scopes, receiver and lease information](assets/dashboard/21-broadcasting-broadcasting.png)](assets/dashboard/21-broadcasting-broadcasting.png)
+
+Refresh manually or choose an interval to watch registration changes. For per-delivery results, inspect `BroadcastResult` as described above.
+
 ## Correlation behavior
 
 Broadcasting copies the current application correlation ID into the envelope. The receiving dispatcher restores that value while it runs the handler. It does not transport the current distributed tracing `TraceId`.

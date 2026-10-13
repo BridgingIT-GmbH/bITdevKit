@@ -88,7 +88,7 @@ public sealed class JobTestHarnessBuilder
     private readonly Guid occurrenceId = Guid.NewGuid();
     private readonly Guid executionId = Guid.NewGuid();
     private readonly int attemptNumber = 1;
-    private string correlationId = Guid.NewGuid().ToString("N");
+    private string correlationId = CorrelationIdGenerator.Create();
     private string idempotencyKey = Guid.NewGuid().ToString("N");
     private DateTimeOffset? scheduledUtc;
     private DateTimeOffset dueUtc = new(2026, 05, 26, 09, 00, 00, TimeSpan.Zero);

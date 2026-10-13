@@ -1,5 +1,7 @@
 namespace BridgingIT.DevKit.Cli;
 
+using BridgingIT.DevKit.Common;
+
 /// <summary>
 /// Provides the stable MCP tool catalog exposed by <c>bdk mcp</c>.
 /// </summary>
@@ -28,14 +30,18 @@ public sealed class McpToolCatalog
         Tool("bdk_health_snapshot", "Returns a bounded health snapshot from the selected runtime.", EmptySchema),
         Tool("bdk_metrics_snapshot", "Returns a bounded runtime metrics snapshot from the selected runtime.", EmptySchema),
         Tool("bdk_metrics_query", "Queries bounded runtime metrics from the selected runtime.", EmptySchema),
+        Tool("bdk_profiling_query", "Queries retained operations and HTTP requests through the runtime's shared profiling service.", ProfilingMcpSchemas.Query()),
+        Tool("bdk_profiling_details", "Returns one recorded execution with dimensions and aggregate segment costs.", ProfilingMcpSchemas.Details()),
+        Tool("bdk_profiling_insights", "Ranks exact retained hotspots by p95, total duration, frequency or failure rate.", ProfilingMcpSchemas.Insights()),
+        Tool("bdk_profiling_compare", "Compares the same logical operation under independent time, node, version or dimension conditions.", ProfilingMcpSchemas.Compare()),
         Tool("bdk_logs_query", "Queries bounded log entries from the selected runtime.", LogQuerySchema()),
         Tool("bdk_logs_tail", "Returns recent bounded log entries from the selected runtime.", LogQuerySchema()),
         Tool("bdk_logs_purge", "Purges retained logs when the admin toolset is enabled and confirmation is supplied.", LogPurgeSchema()),
         Tool("bdk_errors_recent", "Returns recent errors from the selected runtime.", LogQuerySchema()),
         Tool("bdk_errors_details", "Returns details for a selected error.", Id64Schema("Log entry id.")),
-        Tool("bdk_correlation_inspect", "Aggregates diagnostics for a correlation id.", CorrelationSchema()),
+        Tool("bdk_correlation_inspect", "Aggregates diagnostics for a correlation id.", ProfilingMcpSchemas.Correlation()),
         Tool("bdk_investigate_recent_errors", "Aggregates recent error diagnostics from the selected runtime.", LogQuerySchema()),
-        Tool("bdk_investigate_correlation", "Aggregates diagnostics for a correlation id.", CorrelationSchema()),
+        Tool("bdk_investigate_correlation", "Aggregates diagnostics for a correlation id.", ProfilingMcpSchemas.Correlation()),
         Tool("bdk_investigate_job_run", "Aggregates diagnostics for a job run.", JobRunInvestigationSchema()),
         Tool("bdk_investigate_orchestration_instance", "Aggregates diagnostics for an orchestration instance.", InstanceIdSchema()),
         Tool("bdk_messages_summary", "Returns broker message runtime summary from the selected runtime.", EmptySchema),
@@ -151,6 +157,7 @@ public sealed class McpToolCatalog
                     "queueing",
                     "orchestration",
                     "pipelines",
+                    "profiling",
                     "caching",
                     "mapping",
                     "serialization",
@@ -229,22 +236,6 @@ public sealed class McpToolCatalog
                 clientName = String("Alias for name."),
                 providerName = String("Provider name filter."),
                 healthy = Bool("Health state filter.")
-            }
-        };
-
-    private static object CorrelationSchema()
-        => new
-        {
-            type = "object",
-            additionalProperties = false,
-            required = new[] { "correlationId" },
-            properties = new
-            {
-                correlationId = String("Correlation id to inspect."),
-                startTime = DateTime("Inclusive lower timestamp bound."),
-                endTime = DateTime("Inclusive upper timestamp bound."),
-                take = Integer("Maximum number of log entries to return."),
-                continuationToken = String("Continuation token from a previous response.")
             }
         };
 

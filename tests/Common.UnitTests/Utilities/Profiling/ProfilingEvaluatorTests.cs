@@ -7,7 +7,7 @@ namespace BridgingIT.DevKit.Common.UnitTests.Utilities.Profiling;
 
 using System.Text.Json;
 
-public class ProfilingEvaluatorTests
+public class RuntimeProfilingEvaluatorTests
 {
     private const string SessionKey = "sess0001";
     private const string NodeKey = "node0001";
@@ -95,7 +95,7 @@ public class ProfilingEvaluatorTests
         // Assert
         countResult.Value.Signals.ShouldBeEmpty();
         spanResult.Value.Signals.ShouldBeEmpty();
-        countResult.Value.DataQuality.Sufficiency.ShouldBe(ProfilingDataSufficiency.Collecting);
+        countResult.Value.DataQuality.Sufficiency.ShouldBe(RuntimeProfilingDataSufficiency.Collecting);
         countResult.Value.Limitations.ShouldContain("Collecting enough data for analysis.");
         sufficientResult.Value.Signals.ShouldContain(x => x.Identifier == "sustained-cpu");
     }
@@ -115,11 +115,11 @@ public class ProfilingEvaluatorTests
 
         // Assert
         Signal(countResult, "strong-sustained-cpu")
-            .Confidence.ShouldBe(ProfilingSignalConfidence.Medium);
+            .Confidence.ShouldBe(RuntimeProfilingSignalConfidence.Medium);
         Signal(spanResult, "strong-sustained-cpu")
-            .Confidence.ShouldBe(ProfilingSignalConfidence.Medium);
+            .Confidence.ShouldBe(RuntimeProfilingSignalConfidence.Medium);
         Signal(exactResult, "strong-sustained-cpu")
-            .Confidence.ShouldBe(ProfilingSignalConfidence.High);
+            .Confidence.ShouldBe(RuntimeProfilingSignalConfidence.High);
     }
 
     [Fact]
@@ -172,9 +172,9 @@ public class ProfilingEvaluatorTests
 
             // Assert
             Signal(result, "strong-sustained-cpu")
-                .Confidence.ShouldBe(ProfilingSignalConfidence.Medium);
+                .Confidence.ShouldBe(RuntimeProfilingSignalConfidence.Medium);
             result.Value.Limitations.ShouldContain(qualityCase.Limitation);
-            result.Value.DataQuality.Sufficiency.ShouldBe(ProfilingDataSufficiency.Limited);
+            result.Value.DataQuality.Sufficiency.ShouldBe(RuntimeProfilingDataSufficiency.Limited);
         }
     }
 
@@ -199,7 +199,7 @@ public class ProfilingEvaluatorTests
         reset.Value.Limitations.ShouldContain(
             "One or more invalid monotonic or cumulative-counter intervals were excluded."
         );
-        reset.Value.DataQuality.Sufficiency.ShouldBe(ProfilingDataSufficiency.Limited);
+        reset.Value.DataQuality.Sufficiency.ShouldBe(RuntimeProfilingDataSufficiency.Limited);
         missing.Value.DataQuality.MissingInputs.ShouldContain("cpu");
         missing.Value.Signals.ShouldNotContain(x => x.Identifier.Contains("cpu"));
     }
@@ -243,7 +243,7 @@ public class ProfilingEvaluatorTests
     {
         // Arrange
         var evaluator = CreateEvaluator(BuildData(HighConfidenceScenario()));
-        var request = new ProfilingEvaluationRequest(SessionKey, NodeKey);
+        var request = new RuntimeProfilingEvaluationRequest(SessionKey, NodeKey);
 
         // Act
         var first = await evaluator.EvaluateAsync(request);
@@ -258,11 +258,11 @@ public class ProfilingEvaluatorTests
     {
         // Arrange
         var data = BuildData(new());
-        var store = Substitute.For<IProfilingStore>();
+        var store = Substitute.For<IRuntimeProfilingStore>();
         store
             .GetSessionDataAsync(SessionKey, Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingSessionData>.Success(data));
-        var evaluator = new ProfilingEvaluator(new ProfilingOptions { Enabled = true }, store);
+            .Returns(Result<RuntimeProfilingSessionData>.Success(data));
+        var evaluator = new RuntimeProfilingEvaluator(new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } }, store);
 
         // Act
         var result = await evaluator.EvaluateAsync(new(SessionKey, NodeKey));
@@ -292,18 +292,18 @@ public class ProfilingEvaluatorTests
         var result = await EvaluateAsync(scenario);
 
         // Assert
-        result.Value.Scope.Mode.ShouldBe(ProfilingEvaluationMode.TwoSnapshots);
+        result.Value.Scope.Mode.ShouldBe(RuntimeProfilingEvaluationMode.TwoSnapshots);
         result.Value.Signals.ShouldNotBeEmpty();
-        result.Value.Signals.ShouldAllBe(x => x.Confidence == ProfilingSignalConfidence.Low);
+        result.Value.Signals.ShouldAllBe(x => x.Confidence == RuntimeProfilingSignalConfidence.Low);
     }
 
     [Fact]
     public async Task EvaluateAsync_SessionState_SetsProvisionalAndTerminalLimitations()
     {
         // Arrange
-        var running = new Scenario { State = ProfilingSessionState.Running };
-        var completed = running with { State = ProfilingSessionState.Completed };
-        var warnings = running with { State = ProfilingSessionState.CompletedWithWarnings };
+        var running = new Scenario { State = RuntimeProfilingSessionState.Running };
+        var completed = running with { State = RuntimeProfilingSessionState.Completed };
+        var warnings = running with { State = RuntimeProfilingSessionState.CompletedWithWarnings };
 
         // Act
         var runningResult = await EvaluateAsync(running);
@@ -326,8 +326,8 @@ public class ProfilingEvaluatorTests
     public async Task EvaluateAsync_DisabledUnavailableAndInvalidKey_ReturnTypedFailures()
     {
         // Arrange
-        var disabled = new ProfilingEvaluator(new ProfilingOptions());
-        var unavailable = new ProfilingEvaluator(new ProfilingOptions { Enabled = true });
+        var disabled = new RuntimeProfilingEvaluator(new ProfilingOptions());
+        var unavailable = new RuntimeProfilingEvaluator(new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } });
         var evaluator = CreateEvaluator(BuildData(new()));
 
         // Act
@@ -424,14 +424,14 @@ public class ProfilingEvaluatorTests
         result.Value.Limitations.ShouldContain(
             "One or more expected samples were missing from the node-local sequence."
         );
-        result.Value.DataQuality.Sufficiency.ShouldBe(ProfilingDataSufficiency.Limited);
+        result.Value.DataQuality.Sufficiency.ShouldBe(RuntimeProfilingDataSufficiency.Limited);
     }
 
     [Fact]
     public async Task EvaluateAsync_FixedSignals_UseApprovedLabelsAndActions()
     {
         // Arrange
-        var observed = new Dictionary<string, ProfilingSignal>(StringComparer.Ordinal);
+        var observed = new Dictionary<string, RuntimeProfilingSignal>(StringComparer.Ordinal);
 
         // Act
         foreach (var boundary in CreateBoundaryCases())
@@ -447,67 +447,67 @@ public class ProfilingEvaluatorTests
         AssertSignal(
             observed,
             "sustained-cpu",
-            ProfilingSignalLabel.Notable,
+            RuntimeProfilingSignalLabel.Notable,
             "Capture a CPU profile and inspect hot methods."
         );
         AssertSignal(
             observed,
             "strong-sustained-cpu",
-            ProfilingSignalLabel.Investigate,
+            RuntimeProfilingSignalLabel.Investigate,
             "Capture a CPU profile and inspect hot methods."
         );
         AssertSignal(
             observed,
             "managed-heap-growth",
-            ProfilingSignalLabel.Notable,
+            RuntimeProfilingSignalLabel.Notable,
             "Compare heap types and retained sizes."
         );
         AssertSignal(
             observed,
             "possible-retention",
-            ProfilingSignalLabel.Investigate,
+            RuntimeProfilingSignalLabel.Investigate,
             "Inspect retained object roots after Gen2."
         );
         AssertSignal(
             observed,
             "unexplained-process-memory-growth",
-            ProfilingSignalLabel.Investigate,
+            RuntimeProfilingSignalLabel.Investigate,
             "Review native allocations and memory mappings."
         );
         AssertSignal(
             observed,
             "loh-fragmentation",
-            ProfilingSignalLabel.Notable,
+            RuntimeProfilingSignalLabel.Notable,
             "Inspect large-object allocation and reuse patterns."
         );
         AssertSignal(
             observed,
             "sustained-allocation",
-            ProfilingSignalLabel.Notable,
+            RuntimeProfilingSignalLabel.Notable,
             "Inspect the highest allocation hot paths."
         );
         AssertSignal(
             observed,
             "allocation-churn",
-            ProfilingSignalLabel.Investigate,
+            RuntimeProfilingSignalLabel.Investigate,
             "Reduce short-lived allocation in hot paths."
         );
         AssertSignal(
             observed,
             "allocation-with-heap-growth",
-            ProfilingSignalLabel.Investigate,
+            RuntimeProfilingSignalLabel.Investigate,
             "Inspect allocations that remain reachable."
         );
         AssertSignal(
             observed,
             "notable-gc-pause",
-            ProfilingSignalLabel.Notable,
+            RuntimeProfilingSignalLabel.Notable,
             "Inspect GC events and heap pressure."
         );
         AssertSignal(
             observed,
             "strong-gc-pressure",
-            ProfilingSignalLabel.Investigate,
+            RuntimeProfilingSignalLabel.Investigate,
             "Inspect GC pauses, allocations, and retained heap."
         );
     }
@@ -713,7 +713,7 @@ public class ProfilingEvaluatorTests
             CpuInterval = fraction => fraction < 0.5 ? 80 : 105,
         };
 
-    private static async Task<Result<ProfilingEvaluationResult>> EvaluateAsync(Scenario scenario)
+    private static async Task<IResult<RuntimeProfilingEvaluationResult>> EvaluateAsync(Scenario scenario)
     {
         var data = BuildData(scenario);
         var evaluator = CreateEvaluator(data);
@@ -724,20 +724,20 @@ public class ProfilingEvaluatorTests
                 data.Snapshots[0].Identity.Key,
                 data.Snapshots[^1].Identity.Key
             )
-            : new ProfilingEvaluationRequest(SessionKey, NodeKey);
+            : new RuntimeProfilingEvaluationRequest(SessionKey, NodeKey);
         return await evaluator.EvaluateAsync(request);
     }
 
-    private static ProfilingEvaluator CreateEvaluator(ProfilingSessionData data)
+    private static RuntimeProfilingEvaluator CreateEvaluator(RuntimeProfilingSessionData data)
     {
-        var store = Substitute.For<IProfilingStore>();
+        var store = Substitute.For<IRuntimeProfilingStore>();
         store
             .GetSessionDataAsync(SessionKey, Arg.Any<CancellationToken>())
-            .Returns(Result<ProfilingSessionData>.Success(data));
-        return new(new ProfilingOptions { Enabled = true }, store);
+            .Returns(Result<RuntimeProfilingSessionData>.Success(data));
+        return new(new ProfilingOptions { Enabled = true, Runtime = new() { Enabled = true } }, store);
     }
 
-    private static ProfilingSessionData BuildData(Scenario scenario)
+    private static RuntimeProfilingSessionData BuildData(Scenario scenario)
     {
         var sessionId = Guid.Parse("11111111-1111-1111-1111-111111111111");
         var nodeId = Guid.Parse("22222222-2222-2222-2222-222222222222");
@@ -746,7 +746,7 @@ public class ProfilingEvaluatorTests
         var step = count > 1 ? span / (count - 1) : 0;
         var cpuDuration = 0d;
         var allocated = 0d;
-        var snapshots = new List<ProfilingSnapshot>();
+        var snapshots = new List<RuntimeProfilingSnapshot>();
 
         for (var index = 0; index < count; index++)
         {
@@ -856,8 +856,8 @@ public class ProfilingEvaluatorTests
                     NodeId = nodeId,
                     SessionKey = SessionKey,
                     NodeKey = NodeKey,
-                    Role = ProfilingNodeRole.ExpectedParticipant,
-                    State = ProfilingParticipationState.Completed,
+                    Role = RuntimeProfilingNodeRole.ExpectedParticipant,
+                    State = RuntimeProfilingParticipationState.Completed,
                     SuccessfulCaptureCount = count,
                     SkippedCaptureCount = scenario.SkippedCaptures,
                     FailedCaptureCount = scenario.FailedCaptures,
@@ -893,15 +893,15 @@ public class ProfilingEvaluatorTests
     private static double Interpolate(double start, double end, double fraction) =>
         start + ((end - start) * fraction);
 
-    private static ProfilingSignal Signal(
-        Result<ProfilingEvaluationResult> result,
+    private static RuntimeProfilingSignal Signal(
+        IResult<RuntimeProfilingEvaluationResult> result,
         string identifier
     ) => result.Value.Signals.Single(x => x.Identifier == identifier);
 
     private static void AssertSignal(
-        IReadOnlyDictionary<string, ProfilingSignal> signals,
+        IReadOnlyDictionary<string, RuntimeProfilingSignal> signals,
         string identifier,
-        ProfilingSignalLabel label,
+        RuntimeProfilingSignalLabel label,
         string action
     )
     {
@@ -972,6 +972,6 @@ public class ProfilingEvaluatorTests
 
         public bool ReverseUtc { get; init; }
 
-        public ProfilingSessionState State { get; init; } = ProfilingSessionState.Completed;
+        public RuntimeProfilingSessionState State { get; init; } = RuntimeProfilingSessionState.Completed;
     }
 }

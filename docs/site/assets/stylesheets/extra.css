@@ -551,14 +551,47 @@ body {
 /* Admonitions, details and tabs */
 
 .md-typeset .admonition,
-.md-typeset details {
+.md-typeset details,
+.md-typeset :is(.admonition, details)[class] {
+  --bdk-admonition-color: var(--bdk-info);
+  --bdk-admonition-rgb: var(--bdk-info-rgb);
   background: transparent;
   border: 1px solid var(--bdk-panel-border);
-  border-left: 0.15rem solid rgb(var(--md-admonition-fg-color, var(--bdk-primary-rgb)));
+  border-left: 0.15rem solid var(--bdk-admonition-color);
   border-radius: var(--bdk-radius);
   box-shadow: none;
   font-size: 0.64rem;
   margin: 0.75rem 0;
+}
+
+.md-typeset :is(.admonition, details):is(.tip, .hint, .success, .check, .done) {
+  --bdk-admonition-color: var(--bdk-success);
+  --bdk-admonition-rgb: var(--bdk-success-rgb);
+}
+
+.md-typeset :is(.admonition, details):is(.warning, .caution, .attention, .question, .help, .faq) {
+  --bdk-admonition-color: var(--bdk-warning);
+  --bdk-admonition-rgb: var(--bdk-warning-rgb);
+}
+
+.md-typeset :is(.admonition, details):is(.danger, .error, .failure, .fail, .missing, .bug) {
+  --bdk-admonition-color: var(--bdk-danger);
+  --bdk-admonition-rgb: var(--bdk-danger-rgb);
+}
+
+.md-typeset :is(.admonition, details):is(.example, .abstract, .summary, .tldr) {
+  --bdk-admonition-color: var(--bdk-secondary);
+  --bdk-admonition-rgb: var(--bdk-secondary-rgb);
+}
+
+.md-typeset :is(.admonition, details):is(.quote, .cite) {
+  --bdk-admonition-color: var(--bdk-muted);
+  --bdk-admonition-rgb: var(--bdk-border-rgb);
+}
+
+.md-typeset :is(.admonition, details)[class]:focus-within {
+  box-shadow: none;
+  outline: 1px solid var(--bdk-admonition-color);
 }
 
 .md-typeset .admonition-title,
@@ -568,6 +601,19 @@ body {
   font-weight: 700;
   padding-bottom: 0.4rem;
   padding-top: 0.4rem;
+}
+
+.md-typeset :is(.admonition, details) > :is(.admonition-title, summary) {
+  background: rgba(var(--bdk-admonition-rgb), 0.09);
+  color: var(--bdk-admonition-color);
+}
+
+.md-typeset :is(.admonition, details) > :is(.admonition-title, summary)::before {
+  background-color: var(--bdk-admonition-color);
+}
+
+.md-typeset :is(.admonition, details) > :is(.admonition-title, summary)::after {
+  color: var(--bdk-admonition-color);
 }
 
 .md-typeset .tabbed-labels {
@@ -761,11 +807,11 @@ body {
 .cta-primary {
   background: var(--bdk-primary);
   border-color: var(--bdk-primary);
-  color: #080808 !important;
+  color: var(--bdk-on-primary) !important;
 }
 
 .cta-primary::before {
-  color: #080808;
+  color: var(--bdk-on-primary);
 }
 
 .cta-secondary {
@@ -817,7 +863,7 @@ body {
 .example-card,
 .gateway-card,
 .capability-card {
-  background: transparent;
+  background: var(--bdk-surface);
   border: 1px solid var(--bdk-panel-border);
   border-radius: var(--bdk-radius);
   box-shadow: none;
@@ -826,17 +872,6 @@ body {
   min-height: 100%;
   padding: 0.55rem;
   text-decoration: none !important;
-}
-
-[data-md-color-scheme="default"] .value-card,
-[data-md-color-scheme="default"] .example-card,
-[data-md-color-scheme="default"] .gateway-card,
-[data-md-color-scheme="default"] .capability-card,
-[data-md-color-scheme="light"] .value-card,
-[data-md-color-scheme="light"] .example-card,
-[data-md-color-scheme="light"] .gateway-card,
-[data-md-color-scheme="light"] .capability-card {
-  background: var(--bdk-surface);
 }
 
 .value-card:hover,
@@ -1076,14 +1111,6 @@ body {
   font-size: 0.68rem;
   min-height: 2rem;
   padding: 0.35rem 0.65rem;
-}
-
-.cta-primary {
-  color: var(--bdk-bg) !important;
-}
-
-.cta-primary::before {
-  color: var(--bdk-bg);
 }
 
 .capability-grid--home {

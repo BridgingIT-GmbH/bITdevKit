@@ -9,6 +9,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Include="../Shared/Profiling/*.cs" Link="Utilities/Profiling/Shared/%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Using Include="BridgingIT.DevKit.Common" />
     <Using Include="Bogus" />
     <Using Include="Bogus.DataSets" />

@@ -17,7 +17,7 @@ DevKit MCP gives agents four kinds of context:
 | Guidance | `bdk_guidance_list`, `bdk_guidance_get` | Get an implementation checklist for common DevKit work. |
 | Documentation | `bdk_docs_search`, `bdk_docs_get` | Read official DevKit feature docs while coding in a consuming project. |
 | API reference | `bdk_api_search`, `bdk_api_get` | Find DevKit types, members, overloads, extension methods, and signatures. |
-| Runtime | `bdk_project_summary`, `bdk_capabilities_get`, feature tools | Inspect the selected application, its modules, capabilities, and operational state. |
+| Runtime | `bdk_project_summary`, `bdk_capabilities_get`, feature tools | Inspect the selected application, its modules, capabilities, operational state, and retained operation and request recordings. |
 
 For feature work, use this flow:
 
@@ -41,6 +41,17 @@ Guidance covers these DevKit areas:
 - domain patterns such as ActiveEntity, domain events, repositories, specifications, domain modeling, results, and rules
 - shared capabilities such as caching, mapping, serialization, utilities, filtering, modules, and Requester or Notifier
 - storage and presentation features such as document, blob, and file storage, storage monitoring, and dashboard pages
+- operation and request profiling, including recording ownership, segments, outcomes, dimensions, and capture configuration
+
+For profiling implementation guidance, request the exact topic:
+
+```json
+{
+  "topic": "profiling"
+}
+```
+
+The guide explains how to start or join an operation, record nested or repeated segments, preserve results and cancellation, and choose stable grouping dimensions. Use `bdk_api_search` and `bdk_api_get` to confirm the signatures of `IOperationProfiler` and `OperationProfilingHelpers` before changing code. Guidance is available without a running application.
 
 ## Use docs while coding
 
@@ -104,17 +115,23 @@ The CLI owns the stable MCP tool catalog. The selected runtime advertises the ap
 
 | Area | Examples |
 | --- | --- |
-| Runtime | MCP status, self-test, capabilities, health, and metrics |
-| Logs and errors | query logs, tail logs, recent errors, and inspect correlation IDs |
+| Runtime | `bdk_mcp_status`, `bdk_mcp_self_test`, `bdk_mcp_explain_setup`, `bdk_runtimes_list`, `bdk_runtimes_current`, `bdk_runtimes_select`, `bdk_runtimes_refresh`, and `bdk_capabilities_get` |
+| Health and metrics | `bdk_health_snapshot`, `bdk_metrics_snapshot`, and `bdk_metrics_query` |
+| Logs and errors | `bdk_logs_query`, `bdk_logs_tail`, `bdk_errors_recent`, `bdk_errors_details`, and `bdk_correlation_inspect` |
+| Operation and request profiling | `bdk_profiling_query`, `bdk_profiling_details`, `bdk_profiling_insights`, and `bdk_profiling_compare` |
+| Investigations | `bdk_investigate_recent_errors`, `bdk_investigate_correlation`, `bdk_investigate_job_run`, and `bdk_investigate_orchestration_instance` |
 | Messaging | summaries, subscriptions, retained messages, retry, archive, pause, and resume |
 | Queueing | queue summaries, retained queue messages, retry, archive, and queue or type pause and resume |
+| Blob Storage | `bdk_blobs_summary`, `bdk_blobs_clients`, and `bdk_blobs_probe` inspect registered clients and storage health without changing stored blobs |
 | Jobs | job definitions, run history, run statistics, trigger, pause, resume, and interrupt |
 | Orchestrations | instances, details, history, timers, signals, and runtime control |
 | Project tools | application-owned diagnostics through `bdk_project_operations` and `bdk_project_call` |
 | Project summary | selected runtime, registered modules, MCP capability groups, and project-owned operations |
-| Guidance | implementation checklists for jobs, messaging, queueing, orchestration, pipelines, and dashboard pages |
+| Guidance | `bdk_guidance_list` and `bdk_guidance_get` provide implementation checklists for application, domain, storage, presentation, and profiling features |
 | Documentation | official DevKit documentation search and retrieval |
 | API reference | official DevKit API symbols, signatures, summaries, and DocFX links |
+
+Tools return structured unavailable responses when the selected host does not expose the required feature. Use `bdk_capabilities_get` to check availability. See the [MCP Reference](reference/features-cli-mcp.md#tool-areas) for the broader catalog and argument contracts.
 
 Operations are grouped into toolsets:
 
@@ -128,9 +145,42 @@ Start the MCP server with explicit toolsets when you need more than diagnostics:
 dotnet tool run bdk mcp --toolset diagnostics,operations,admin
 ```
 
+## Operation and request profiling
+
+The four profiling tools belong to the default `diagnostics` toolset. They read retained recordings through `IOperationProfilingQueryService`, the same runtime service used by the dashboard. The dashboard does not need to be open, and operation recordings do not require a Runtime Profiling session.
+
+Enable `.WithOperationProfiling()` when registering profiling in the application; add `.WithRequestProfiling()` for HTTP request capture. Recordings must have been captured before they can be queried.
+
+| Tool | Use |
+| --- | --- |
+| `bdk_profiling_query` | Find recent or slow executions, or group them by operation count. Filter by time, kind, key, node, application version, correlation ID, outcomes, or dimensions. |
+| `bdk_profiling_details` | Inspect an execution ID returned by query: duration, outcomes, HTTP metadata, dimensions, measurements, failures, and aggregate segment costs. |
+| `bdk_profiling_insights` | Rank hotspots by `p95`, `total`, `count`, or `failures` (failure rate); inspect latency samples, failure rates, and segment bottlenecks. |
+| `bdk_profiling_compare` | Compare the same exact operation `key` and `kind` under separate baseline and candidate conditions, such as time ranges, nodes, or application versions. |
+
+For example, find slow retained HTTP requests:
+
+```json
+{
+  "kind": "HttpRequest",
+  "view": "Slow",
+  "take": 10
+}
+```
+
+Pass this object to `bdk_profiling_query`, then use a returned execution ID with `bdk_profiling_details`. Without date bounds, query and insights select the last 15 minutes. Date bounds select execution start times, with an inclusive `fromUtc` and exclusive `toUtc`.
+
+Comparison defaults to completed outcomes. To compare failure rates across all outcomes, set `outcomes: []` in both the baseline and candidate selections.
+
+Inspect sample counts and capture quality when interpreting results. Insights calculates latency, Total duration, and segment costs from completed executions; failure rates use all selected outcomes. Segment costs describe aggregated paths, rather than exact invocation order. If an analysis exceeds the runtime's configured bound, narrow the filters instead of treating a partial sample as a full ranking.
+
+Both `bdk_correlation_inspect` and `bdk_investigate_correlation` return related logs, errors, and a separate `data.profiling` result. Use execution IDs from that result to inspect details. Logs and profiling can be available independently; profiling pagination uses `profilingCursor`, while logs use `continuationToken`.
+
+See [MCP profiling tools](reference/features-cli-mcp.md#inspect-operation-and-request-recordings) for schemas, comparison examples, paging, and bounds, and [Profiling](reference/features-profiling.md) for recording and segment semantics.
+
 ## Prompt library
 
-State what the agent must inspect first, what it can change, and when it must wait for approval. These prompts assume that the application and `bdk mcp` are running.
+State what the agent must inspect first, what it can change, and when it must wait for approval. Runtime prompts require the application and `bdk mcp` to be running. Documentation, API reference, and guidance prompts work without a running application.
 
 ### Runtime orientation
 
@@ -139,17 +189,37 @@ Use the bdk MCP tools to verify the selected runtime. Run the MCP self-test, ins
 ```
 
 ```text
-Use bdk MCP to check whether this application exposes logs, jobs, messaging, queueing, orchestrations, and project-owned operations. Tell me which areas are available and which are not.
+Use bdk MCP to check whether this application exposes logs, operation and request profiling, Blob Storage diagnostics, jobs, messaging, queueing, orchestrations, and project-owned operations. Tell me which areas are available and which are not.
 ```
 
 ### Debug a local feature
 
 ```text
-Use bdk MCP to inspect the latest errors from the running app. For the newest error, follow the correlation ID, summarize the related logs, and point me to the most likely code area.
+Use bdk MCP to inspect the latest errors from the running app. For the newest error, use bdk_investigate_correlation to inspect related logs and operation recordings. Summarize the evidence and point me to the most likely code area.
 ```
 
 ```text
 I just reproduced a bug locally. Use bdk MCP to tail recent warning and error logs from the last 10 minutes, then suggest the smallest code change to investigate first.
+```
+
+### Profiling and performance
+
+```text
+Use bdk_profiling_insights to find HTTP request hotspots in the last 15 minutes, ranked by p95. Query a matching execution and inspect its details and aggregate segment costs. Report retained sample counts and capture limitations before proposing a change.
+```
+
+```text
+Use bdk_profiling_compare to compare operation <key> of kind <kind> before and after my change. Use the baseline and candidate time ranges I provide, include all outcomes on both sides to compare failure rates, and keep the other filters equivalent. Summarize latency, failure rates, and segment cost changes.
+```
+
+```text
+Use bdk_investigate_correlation for <correlation-id>. Inspect both logs and profiling evidence, then use bdk_profiling_details for the relevant execution IDs. State which evidence sources are available.
+```
+
+### Blob Storage diagnostics
+
+```text
+Use bdk_blobs_summary and bdk_blobs_clients to inspect registered Blob Storage clients. Probe an unhealthy client with bdk_blobs_probe and summarize the result without changing stored blobs.
 ```
 
 ### Jobs, messaging, and queueing
@@ -205,6 +275,10 @@ Use bdk_guidance_get for jobs, then use the linked docs and bdk_project_summary 
 ```
 
 ```text
+Use bdk_guidance_get with topic profiling, read the linked docs, and confirm IOperationProfiler and OperationProfilingHelpers with the API tools. Add operation recordings and aggregate segments with stable dimensions to this feature. When the app is running, verify the captured work with bdk_profiling_query and bdk_profiling_details.
+```
+
+```text
 Use bdk_project_summary to orient on this app's modules and MCP capabilities. Then choose the right DevKit guidance topic before proposing code changes.
 ```
 
@@ -253,4 +327,5 @@ These controls separate local diagnostics from production administration.
 
 - [MCP Client Configuration](reference/features-cli-mcp-clients.md)
 - [DevKit MCP Reference](reference/features-cli-mcp.md)
+- [Profiling](reference/features-profiling.md)
 - [DevKit CLI Reference](reference/features-cli.md)

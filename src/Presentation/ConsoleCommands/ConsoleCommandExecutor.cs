@@ -79,14 +79,17 @@ public sealed class ConsoleCommandExecutor
         var all = scope.ServiceProvider.GetServices<IConsoleCommand>().ToList();
         var consumed = 1;
         IConsoleCommand cmd = null;
-        var groupedCandidates = all.OfType<IGroupedConsoleCommand>()
-            .Where(g => string.Equals(g.GroupName, primary, StringComparison.OrdinalIgnoreCase) ||
-                g.GroupAliases?.Any(a => string.Equals(a, primary, StringComparison.OrdinalIgnoreCase)) == true)
-            .ToList();
+        var groupMatches = all.OfType<IGroupedConsoleCommand>()
+            .SelectMany(command => new[] { command.GroupName }.Concat(command.GroupAliases ?? [])
+                .Select(name => new { Command = command, Name = name, Parts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries) }))
+            .Where(match => match.Parts.Length <= tokens.Length && match.Parts.SequenceEqual(tokens.Take(match.Parts.Length), StringComparer.OrdinalIgnoreCase))
+            .ToArray();
+        var groupLength = groupMatches.Length == 0 ? 0 : groupMatches.Max(match => match.Parts.Length);
+        var groupedCandidates = groupMatches.Where(match => match.Parts.Length == groupLength).Select(match => match.Command).Distinct().ToList();
 
         if (groupedCandidates.Count != 0)
         {
-            if (tokens.Length == 1)
+            if (tokens.Length == groupLength)
             {
                 var table = new Table().Border(TableBorder.Minimal).Title($"[bold cyan]{primary} (group) subcommands[/]");
                 table.AddColumn("Sub");
@@ -100,8 +103,8 @@ public sealed class ConsoleCommandExecutor
                 return ConsoleCommandExecutionResult.Success();
             }
 
-            var sub = tokens[1];
-            consumed = 2;
+            var sub = tokens[groupLength];
+            consumed = groupLength + 1;
             cmd = groupedCandidates.FirstOrDefault(c => c.Matches(sub));
             if (cmd is null)
             {

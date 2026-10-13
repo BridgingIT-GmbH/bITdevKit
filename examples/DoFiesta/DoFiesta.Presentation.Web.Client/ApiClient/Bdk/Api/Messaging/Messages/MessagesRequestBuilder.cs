@@ -189,24 +189,36 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Messaging
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class MessagesRequestBuilderDeleteQueryParameters 
         {
+            #pragma warning disable CS1591
             public bool? IsArchived { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public DateTimeOffset? OlderThan { get; set; }
+            #pragma warning restore CS1591
             [Obsolete("This property is deprecated, use StatusesAsBrokerMessageStatus instead")]
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string[]? Statuses { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string[] Statuses { get; set; }
+            #pragma warning restore CS1591
 #endif
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             [QueryParameter("Statuses")]
             public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageStatus[]? StatusesAsBrokerMessageStatus { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             [QueryParameter("Statuses")]
             public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageStatus[] StatusesAsBrokerMessageStatus { get; set; }
+            #pragma warning restore CS1591
 #endif
         }
         /// <summary>
@@ -223,41 +235,69 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Messaging
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class MessagesRequestBuilderGetQueryParameters 
         {
+            #pragma warning disable CS1591
             public DateTimeOffset? CreatedAfter { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public DateTimeOffset? CreatedBefore { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public bool? IncludeHandlers { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public bool? IsArchived { get; set; }
+            #pragma warning restore CS1591
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string? LockedBy { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string LockedBy { get; set; }
+            #pragma warning restore CS1591
 #endif
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string? MessageId { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string MessageId { get; set; }
+            #pragma warning restore CS1591
 #endif
             [Obsolete("This property is deprecated, use StatusAsBrokerMessageStatus instead")]
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string? Status { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string Status { get; set; }
+            #pragma warning restore CS1591
 #endif
+            #pragma warning disable CS1591
             [QueryParameter("Status")]
             public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.BrokerMessageStatus? StatusAsBrokerMessageStatus { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public int? Take { get; set; }
+            #pragma warning restore CS1591
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string? Type { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string Type { get; set; }
+            #pragma warning restore CS1591
 #endif
         }
         /// <summary>

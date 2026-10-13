@@ -168,40 +168,64 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Occu
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class OccurrencesRequestBuilderDeleteQueryParameters 
         {
+            #pragma warning disable CS1591
             public int? BatchSize { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public bool? DryRun { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public bool? IsArchived { get; set; }
+            #pragma warning restore CS1591
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string? JobName { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string JobName { get; set; }
+            #pragma warning restore CS1591
 #endif
+            #pragma warning disable CS1591
             public DateTimeOffset? OlderThan { get; set; }
+            #pragma warning restore CS1591
             [Obsolete("This property is deprecated, use StatusesAsJobOccurrenceStatus instead")]
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string[]? Statuses { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string[] Statuses { get; set; }
+            #pragma warning restore CS1591
 #endif
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             [QueryParameter("Statuses")]
             public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus[]? StatusesAsJobOccurrenceStatus { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             [QueryParameter("Statuses")]
             public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus[] StatusesAsJobOccurrenceStatus { get; set; }
+            #pragma warning restore CS1591
 #endif
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
+            #pragma warning disable CS1591
             public string? TriggerName { get; set; }
+            #pragma warning restore CS1591
 #nullable restore
 #else
+            #pragma warning disable CS1591
             public string TriggerName { get; set; }
+            #pragma warning restore CS1591
 #endif
         }
         /// <summary>

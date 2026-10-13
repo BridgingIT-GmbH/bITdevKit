@@ -55,13 +55,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         /// <summary>The lastMaterializedScheduledUtc property</summary>
         public DateTimeOffset? LastMaterializedScheduledUtc { get; set; }
         /// <summary>The lastOccurrenceStatus property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus? LastOccurrenceStatus { get; set; }
-#nullable restore
-#else
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus LastOccurrenceStatus { get; set; }
-#endif
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus? LastOccurrenceStatus { get; set; }
         /// <summary>The lastOccurrenceUtc property</summary>
         public DateTimeOffset? LastOccurrenceUtc { get; set; }
         /// <summary>The nextDueUtc property</summary>
@@ -161,7 +155,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "hasMaterializedOccurrence", n => { HasMaterializedOccurrence = n.GetBoolValue(); } },
                 { "jobName", n => { JobName = n.GetStringValue(); } },
                 { "lastMaterializedScheduledUtc", n => { LastMaterializedScheduledUtc = n.GetDateTimeOffsetValue(); } },
-                { "lastOccurrenceStatus", n => { LastOccurrenceStatus = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus.CreateFromDiscriminatorValue); } },
+                { "lastOccurrenceStatus", n => { LastOccurrenceStatus = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>(); } },
                 { "lastOccurrenceUtc", n => { LastOccurrenceUtc = n.GetDateTimeOffsetValue(); } },
                 { "nextDueUtc", n => { NextDueUtc = n.GetDateTimeOffsetValue(); } },
                 { "paused", n => { Paused = n.GetBoolValue(); } },
@@ -194,7 +188,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteBoolValue("hasMaterializedOccurrence", HasMaterializedOccurrence);
             writer.WriteStringValue("jobName", JobName);
             writer.WriteDateTimeOffsetValue("lastMaterializedScheduledUtc", LastMaterializedScheduledUtc);
-            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus>("lastOccurrenceStatus", LastOccurrenceStatus);
+            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>("lastOccurrenceStatus", LastOccurrenceStatus);
             writer.WriteDateTimeOffsetValue("lastOccurrenceUtc", LastOccurrenceUtc);
             writer.WriteDateTimeOffsetValue("nextDueUtc", NextDueUtc);
             writer.WriteBoolValue("paused", Paused);
@@ -211,67 +205,6 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteStringValue("triggerName", TriggerName);
             writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobTriggerType>("triggerType", TriggerType);
             writer.WriteAdditionalData(AdditionalData);
-        }
-        /// <summary>
-        /// Composed type wrapper for classes <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel_lastOccurrenceStatusMember1"/>
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class JobSchedulerRecurringTriggerModel_lastOccurrenceStatus : IComposedTypeWrapper, IParsable
-        {
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus"/></summary>
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus? JobOccurrenceStatus { get; set; }
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel_lastOccurrenceStatusMember1"/></summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel_lastOccurrenceStatusMember1? JobSchedulerRecurringTriggerModelLastOccurrenceStatusMember1 { get; set; }
-#nullable restore
-#else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel_lastOccurrenceStatusMember1 JobSchedulerRecurringTriggerModelLastOccurrenceStatusMember1 { get; set; }
-#endif
-            /// <summary>
-            /// Creates a new instance of the appropriate class based on discriminator value
-            /// </summary>
-            /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus"/></returns>
-            /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-            public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus CreateFromDiscriminatorValue(IParseNode parseNode)
-            {
-                if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-                var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
-                var result = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel.JobSchedulerRecurringTriggerModel_lastOccurrenceStatus();
-                if(parseNode.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>() is global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus jobOccurrenceStatusValue)
-                {
-                    result.JobOccurrenceStatus = jobOccurrenceStatusValue;
-                }
-                return result;
-            }
-            /// <summary>
-            /// The deserialization information for the current model
-            /// </summary>
-            /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
-            public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
-            {
-                if(JobSchedulerRecurringTriggerModelLastOccurrenceStatusMember1 != null)
-                {
-                    return JobSchedulerRecurringTriggerModelLastOccurrenceStatusMember1.GetFieldDeserializers();
-                }
-                return new Dictionary<string, Action<IParseNode>>();
-            }
-            /// <summary>
-            /// Serializes information the current object
-            /// </summary>
-            /// <param name="writer">Serialization writer to use to serialize this model</param>
-            public virtual void Serialize(ISerializationWriter writer)
-            {
-                if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-                if(JobOccurrenceStatus != null)
-                {
-                    writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>(null, JobOccurrenceStatus);
-                }
-                else if(JobSchedulerRecurringTriggerModelLastOccurrenceStatusMember1 != null)
-                {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerRecurringTriggerModel_lastOccurrenceStatusMember1>(null, JobSchedulerRecurringTriggerModelLastOccurrenceStatusMember1);
-                }
-            }
         }
     }
 }

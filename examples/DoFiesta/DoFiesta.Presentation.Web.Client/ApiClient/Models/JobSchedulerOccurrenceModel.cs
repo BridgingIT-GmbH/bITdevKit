@@ -105,13 +105,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         /// <summary>The latestExecutionStartedUtc property</summary>
         public DateTimeOffset? LatestExecutionStartedUtc { get; set; }
         /// <summary>The latestExecutionStatus property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus? LatestExecutionStatus { get; set; }
-#nullable restore
-#else
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus LatestExecutionStatus { get; set; }
-#endif
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus? LatestExecutionStatus { get; set; }
         /// <summary>The leaseOwnerSchedulerInstanceId property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
@@ -151,13 +145,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         public List<string> PropertyKeys { get; set; }
 #endif
         /// <summary>The resumeStatus property</summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus? ResumeStatus { get; set; }
-#nullable restore
-#else
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus ResumeStatus { get; set; }
-#endif
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus? ResumeStatus { get; set; }
         /// <summary>The scheduledUtc property</summary>
         public DateTimeOffset? ScheduledUtc { get; set; }
         /// <summary>The status property</summary>
@@ -217,7 +205,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "latestExecutionCompletedUtc", n => { LatestExecutionCompletedUtc = n.GetDateTimeOffsetValue(); } },
                 { "latestExecutionDurationSeconds", n => { LatestExecutionDurationSeconds = n.GetDoubleValue(); } },
                 { "latestExecutionStartedUtc", n => { LatestExecutionStartedUtc = n.GetDateTimeOffsetValue(); } },
-                { "latestExecutionStatus", n => { LatestExecutionStatus = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus.CreateFromDiscriminatorValue); } },
+                { "latestExecutionStatus", n => { LatestExecutionStatus = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus>(); } },
                 { "leaseOwnerSchedulerInstanceId", n => { LeaseOwnerSchedulerInstanceId = n.GetStringValue(); } },
                 { "occurrenceId", n => { OccurrenceId = n.GetGuidValue(); } },
                 { "occurrenceKey", n => { OccurrenceKey = n.GetStringValue(); } },
@@ -225,7 +213,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
                 { "properties", n => { Properties = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_properties>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_properties.CreateFromDiscriminatorValue); } },
                 { "propertyCount", n => { PropertyCount = n.GetIntValue(); } },
                 { "propertyKeys", n => { PropertyKeys = n.GetCollectionOfPrimitiveValues<string>()?.AsList(); } },
-                { "resumeStatus", n => { ResumeStatus = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus.CreateFromDiscriminatorValue); } },
+                { "resumeStatus", n => { ResumeStatus = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>(); } },
                 { "scheduledUtc", n => { ScheduledUtc = n.GetDateTimeOffsetValue(); } },
                 { "status", n => { Status = n.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>(); } },
                 { "triggerName", n => { TriggerName = n.GetStringValue(); } },
@@ -258,7 +246,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteDateTimeOffsetValue("latestExecutionCompletedUtc", LatestExecutionCompletedUtc);
             writer.WriteDoubleValue("latestExecutionDurationSeconds", LatestExecutionDurationSeconds);
             writer.WriteDateTimeOffsetValue("latestExecutionStartedUtc", LatestExecutionStartedUtc);
-            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus>("latestExecutionStatus", LatestExecutionStatus);
+            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus>("latestExecutionStatus", LatestExecutionStatus);
             writer.WriteStringValue("leaseOwnerSchedulerInstanceId", LeaseOwnerSchedulerInstanceId);
             writer.WriteGuidValue("occurrenceId", OccurrenceId);
             writer.WriteStringValue("occurrenceKey", OccurrenceKey);
@@ -266,135 +254,13 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_properties>("properties", Properties);
             writer.WriteIntValue("propertyCount", PropertyCount);
             writer.WriteCollectionOfPrimitiveValues<string>("propertyKeys", PropertyKeys);
-            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus>("resumeStatus", ResumeStatus);
+            writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>("resumeStatus", ResumeStatus);
             writer.WriteDateTimeOffsetValue("scheduledUtc", ScheduledUtc);
             writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>("status", Status);
             writer.WriteStringValue("triggerName", TriggerName);
             writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobTriggerType>("triggerType", TriggerType);
             writer.WriteDateTimeOffsetValue("updatedDate", UpdatedDate);
             writer.WriteAdditionalData(AdditionalData);
-        }
-        /// <summary>
-        /// Composed type wrapper for classes <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_latestExecutionStatusMember1"/>
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class JobSchedulerOccurrenceModel_latestExecutionStatus : IComposedTypeWrapper, IParsable
-        {
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus"/></summary>
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus? JobExecutionStatus { get; set; }
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_latestExecutionStatusMember1"/></summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_latestExecutionStatusMember1? JobSchedulerOccurrenceModelLatestExecutionStatusMember1 { get; set; }
-#nullable restore
-#else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_latestExecutionStatusMember1 JobSchedulerOccurrenceModelLatestExecutionStatusMember1 { get; set; }
-#endif
-            /// <summary>
-            /// Creates a new instance of the appropriate class based on discriminator value
-            /// </summary>
-            /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus"/></returns>
-            /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-            public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus CreateFromDiscriminatorValue(IParseNode parseNode)
-            {
-                if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-                var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
-                var result = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_latestExecutionStatus();
-                if(parseNode.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus>() is global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus jobExecutionStatusValue)
-                {
-                    result.JobExecutionStatus = jobExecutionStatusValue;
-                }
-                return result;
-            }
-            /// <summary>
-            /// The deserialization information for the current model
-            /// </summary>
-            /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
-            public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
-            {
-                if(JobSchedulerOccurrenceModelLatestExecutionStatusMember1 != null)
-                {
-                    return JobSchedulerOccurrenceModelLatestExecutionStatusMember1.GetFieldDeserializers();
-                }
-                return new Dictionary<string, Action<IParseNode>>();
-            }
-            /// <summary>
-            /// Serializes information the current object
-            /// </summary>
-            /// <param name="writer">Serialization writer to use to serialize this model</param>
-            public virtual void Serialize(ISerializationWriter writer)
-            {
-                if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-                if(JobExecutionStatus != null)
-                {
-                    writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobExecutionStatus>(null, JobExecutionStatus);
-                }
-                else if(JobSchedulerOccurrenceModelLatestExecutionStatusMember1 != null)
-                {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_latestExecutionStatusMember1>(null, JobSchedulerOccurrenceModelLatestExecutionStatusMember1);
-                }
-            }
-        }
-        /// <summary>
-        /// Composed type wrapper for classes <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_resumeStatusMember1"/>
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class JobSchedulerOccurrenceModel_resumeStatus : IComposedTypeWrapper, IParsable
-        {
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus"/></summary>
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus? JobOccurrenceStatus { get; set; }
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_resumeStatusMember1"/></summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_resumeStatusMember1? JobSchedulerOccurrenceModelResumeStatusMember1 { get; set; }
-#nullable restore
-#else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_resumeStatusMember1 JobSchedulerOccurrenceModelResumeStatusMember1 { get; set; }
-#endif
-            /// <summary>
-            /// Creates a new instance of the appropriate class based on discriminator value
-            /// </summary>
-            /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus"/></returns>
-            /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-            public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus CreateFromDiscriminatorValue(IParseNode parseNode)
-            {
-                if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-                var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
-                var result = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel.JobSchedulerOccurrenceModel_resumeStatus();
-                if(parseNode.GetEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>() is global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus jobOccurrenceStatusValue)
-                {
-                    result.JobOccurrenceStatus = jobOccurrenceStatusValue;
-                }
-                return result;
-            }
-            /// <summary>
-            /// The deserialization information for the current model
-            /// </summary>
-            /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
-            public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
-            {
-                if(JobSchedulerOccurrenceModelResumeStatusMember1 != null)
-                {
-                    return JobSchedulerOccurrenceModelResumeStatusMember1.GetFieldDeserializers();
-                }
-                return new Dictionary<string, Action<IParseNode>>();
-            }
-            /// <summary>
-            /// Serializes information the current object
-            /// </summary>
-            /// <param name="writer">Serialization writer to use to serialize this model</param>
-            public virtual void Serialize(ISerializationWriter writer)
-            {
-                if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-                if(JobOccurrenceStatus != null)
-                {
-                    writer.WriteEnumValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobOccurrenceStatus>(null, JobOccurrenceStatus);
-                }
-                else if(JobSchedulerOccurrenceModelResumeStatusMember1 != null)
-                {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JobSchedulerOccurrenceModel_resumeStatusMember1>(null, JobSchedulerOccurrenceModelResumeStatusMember1);
-                }
-            }
         }
     }
 }

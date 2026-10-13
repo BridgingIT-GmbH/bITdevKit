@@ -116,10 +116,18 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Jobs.Dash
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class DashboardRequestBuilderGetQueryParameters 
         {
+            #pragma warning disable CS1591
             public DateTimeOffset? From { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public DateTimeOffset? FromUtc { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public DateTimeOffset? To { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public DateTimeOffset? ToUtc { get; set; }
+            #pragma warning restore CS1591
         }
         /// <summary>
         /// Configuration for the request such as headers, query parameters, and middleware options.

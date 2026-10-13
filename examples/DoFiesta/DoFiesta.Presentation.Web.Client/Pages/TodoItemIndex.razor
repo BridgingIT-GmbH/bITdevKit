@@ -742,7 +742,7 @@
             {
                 Reason = $"Restored from DoFiesta todo history UI at {DateTimeOffset.UtcNow:O}",
                 ExpectedConcurrencyVersion = TryParseGuid(selectedHistoryTodo.ConcurrencyVersion),
-                RestoreMode = CreatePointInTimeRestoreMode()
+                RestoreMode = ChangeHistoryRestoreMode.PointInTime
             };
 
             var response = await Api.Api.Core.Todoitems.History[selectedHistoryTodo.Id]
@@ -779,12 +779,6 @@
 
     private static Guid? TryParseGuid(string value)
         => Guid.TryParse(value, out var parsed) ? parsed : null;
-
-    private static ChangeHistoryRestoreRequestModel.ChangeHistoryRestoreRequestModel_restoreMode CreatePointInTimeRestoreMode()
-        => new()
-        {
-            ChangeHistoryRestoreMode = ChangeHistoryRestoreMode.PointInTime
-        };
 
     private static string FormatHistoryTitle(ChangeHistoryChangeSetRecord changeSet)
         => string.IsNullOrWhiteSpace(changeSet.Operation)

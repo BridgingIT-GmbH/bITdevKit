@@ -90,9 +90,15 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Bdk.Api.Messaging
         [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
         public partial class StatsRequestBuilderGetQueryParameters 
         {
+            #pragma warning disable CS1591
             public DateTimeOffset? EndDate { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public bool? IsArchived { get; set; }
+            #pragma warning restore CS1591
+            #pragma warning disable CS1591
             public DateTimeOffset? StartDate { get; set; }
+            #pragma warning restore CS1591
         }
         /// <summary>
         /// Configuration for the request such as headers, query parameters, and middleware options.

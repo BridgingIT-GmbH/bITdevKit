@@ -25,10 +25,10 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         /// <summary>The payload property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
 #nullable enable
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload? Payload { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement? Payload { get; set; }
 #nullable restore
 #else
-        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload Payload { get; set; }
+        public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement Payload { get; set; }
 #endif
         /// <summary>The signalName property</summary>
 #if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
@@ -64,7 +64,7 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
             return new Dictionary<string, Action<IParseNode>>
             {
                 { "idempotencyKey", n => { IdempotencyKey = n.GetStringValue(); } },
-                { "payload", n => { Payload = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload.CreateFromDiscriminatorValue); } },
+                { "payload", n => { Payload = n.GetObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement>(global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement.CreateFromDiscriminatorValue); } },
                 { "signalName", n => { SignalName = n.GetStringValue(); } },
             };
         }
@@ -76,76 +76,9 @@ namespace BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models
         {
             if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
             writer.WriteStringValue("idempotencyKey", IdempotencyKey);
-            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload>("payload", Payload);
+            writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement>("payload", Payload);
             writer.WriteStringValue("signalName", SignalName);
             writer.WriteAdditionalData(AdditionalData);
-        }
-        /// <summary>
-        /// Composed type wrapper for classes <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement"/>, <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest_payloadMember1"/>
-        /// </summary>
-        [global::System.CodeDom.Compiler.GeneratedCode("Kiota", "1.0.0")]
-        public partial class OrchestrationSignalRequest_payload : IComposedTypeWrapper, IParsable
-        {
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement"/></summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement? JsonElement { get; set; }
-#nullable restore
-#else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement JsonElement { get; set; }
-#endif
-            /// <summary>Composed type representation for type <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest_payloadMember1"/></summary>
-#if NETSTANDARD2_1_OR_GREATER || NETCOREAPP3_1_OR_GREATER
-#nullable enable
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest_payloadMember1? OrchestrationSignalRequestPayloadMember1 { get; set; }
-#nullable restore
-#else
-            public global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest_payloadMember1 OrchestrationSignalRequestPayloadMember1 { get; set; }
-#endif
-            /// <summary>
-            /// Creates a new instance of the appropriate class based on discriminator value
-            /// </summary>
-            /// <returns>A <see cref="global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload"/></returns>
-            /// <param name="parseNode">The parse node to use to read the discriminator value and create the object</param>
-            public static global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload CreateFromDiscriminatorValue(IParseNode parseNode)
-            {
-                if(ReferenceEquals(parseNode, null)) throw new ArgumentNullException(nameof(parseNode));
-                var mappingValue = parseNode.GetChildNode("")?.GetStringValue();
-                var result = new global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest.OrchestrationSignalRequest_payload();
-                return result;
-            }
-            /// <summary>
-            /// The deserialization information for the current model
-            /// </summary>
-            /// <returns>A IDictionary&lt;string, Action&lt;IParseNode&gt;&gt;</returns>
-            public virtual IDictionary<string, Action<IParseNode>> GetFieldDeserializers()
-            {
-                if(JsonElement != null)
-                {
-                    return JsonElement.GetFieldDeserializers();
-                }
-                else if(OrchestrationSignalRequestPayloadMember1 != null)
-                {
-                    return OrchestrationSignalRequestPayloadMember1.GetFieldDeserializers();
-                }
-                return new Dictionary<string, Action<IParseNode>>();
-            }
-            /// <summary>
-            /// Serializes information the current object
-            /// </summary>
-            /// <param name="writer">Serialization writer to use to serialize this model</param>
-            public virtual void Serialize(ISerializationWriter writer)
-            {
-                if(ReferenceEquals(writer, null)) throw new ArgumentNullException(nameof(writer));
-                if(JsonElement != null)
-                {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.JsonElement>(null, JsonElement);
-                }
-                else if(OrchestrationSignalRequestPayloadMember1 != null)
-                {
-                    writer.WriteObjectValue<global::BridgingIT.DevKit.Examples.DoFiesta.Presentation.Gen.Models.OrchestrationSignalRequest_payloadMember1>(null, OrchestrationSignalRequestPayloadMember1);
-                }
-            }
         }
     }
 }

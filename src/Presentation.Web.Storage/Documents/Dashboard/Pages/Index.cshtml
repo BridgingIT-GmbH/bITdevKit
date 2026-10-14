@@ -183,7 +183,7 @@
 
         function showDetailsAlert(kind, message) {
             if (!detailsAlert) {
-                window.alert(message);
+                window.bdkDashboard.showMessage({ title: 'Document storage', message, kind });
                 return;
             }
 
@@ -203,7 +203,7 @@
         async function readResponseMessage(response, fallback) {
             try {
                 const contentType = response.headers.get('content-type') || '';
-                if (contentType.includes('application/json')) {
+                if (contentType.includes('application/json') || contentType.includes('+json')) {
                     const body = await response.json();
                     return body.detail || body.title || body.message || fallback;
                 }
@@ -394,7 +394,7 @@
         function showNewDocumentDialog() {
             const state = stateFromRoot();
             if (!state.clientId || !detailsForm || !detailsModal) {
-                window.alert('Select a document client before creating a document.');
+                window.bdkDashboard.showMessage({ title: 'New document', message: 'Select a document client before creating a document.' });
                 return;
             }
 
@@ -490,7 +490,7 @@
 
         async function deleteDocument(partitionKey, rowKey, etag = '') {
             const state = stateFromRoot();
-            if (!window.confirm(`Delete this document?\n\n${partitionKey} / ${rowKey}\n\nThis cannot be undone.`)) {
+            if (!await window.bdkDashboard.confirmAction({ title: 'Delete document', selection: `${partitionKey} / ${rowKey}`, message: 'Delete this document? This cannot be undone.', confirmText: 'Delete' })) {
                 return;
             }
 
@@ -514,7 +514,7 @@
                 });
 
                 if (!response.ok) {
-                    window.alert(await readResponseMessage(response, 'Document could not be deleted.'));
+                    await window.bdkDashboard.showMessage({ title: 'Delete failed', message: await readResponseMessage(response, 'Document could not be deleted.'), kind: 'danger' });
                     return;
                 }
 
@@ -546,7 +546,7 @@
             if (isDeleteAction) {
                 const partitionKey = actionForm.elements.partitionKey?.value || '';
                 const rowKey = actionForm.elements.rowKey?.value || '';
-                if (!window.confirm(`Delete this document?\n\n${partitionKey} / ${rowKey}\n\nThis cannot be undone.`)) {
+                if (!await window.bdkDashboard.confirmAction({ title: 'Delete document', selection: `${partitionKey} / ${rowKey}`, message: 'Delete this document? This cannot be undone.', confirmText: 'Delete' })) {
                     return;
                 }
             }
@@ -570,7 +570,7 @@
                     if (actionForm === detailsForm) {
                         showDetailsAlert('danger', message);
                     } else {
-                        window.alert(message);
+                        await window.bdkDashboard.showMessage({ title: 'Document action failed', message, kind: 'danger' });
                     }
 
                     return;
@@ -621,7 +621,7 @@
                     populateFilterHistory();
                     document.getElementById('documents-refresh-status').textContent = `Updated ${new Date().toLocaleTimeString()}`;
                 } else {
-                    window.alert(await readResponseMessage(response, 'Documents could not be loaded.'));
+                    await window.bdkDashboard.showMessage({ title: 'Load failed', message: await readResponseMessage(response, 'Documents could not be loaded.'), kind: 'danger' });
                 }
             } finally {
                 setBusy(false);

@@ -32,6 +32,7 @@
 </div>
 
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Interactions>())
+@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog>())
 
 <div class="modal fade" id="profiling-chart-focus-modal" tabindex="-1" aria-labelledby="profiling-chart-focus-title" aria-hidden="true">
     <div class="modal-dialog profiling-chart-focus-dialog">
@@ -189,6 +190,7 @@
             chartRenderVersion: 0,
             chartRenderPromise: Promise.resolve()
         };
+        const actionDialog = { action: null, busy: false, trigger: null };
 
         const plotlyConfig = Object.freeze({ displayModeBar: true, displaylogo: false, responsive: true, scrollZoom: false });
 
@@ -1074,22 +1076,79 @@
             } catch (error) { validation.textContent = error.message; }
         }
 
-        async function runAction(url, method, body, label, confirmation, selectResultSession = false) {
-            if (confirmation && !window.confirm(confirmation)) return false;
+        async function executeAction(url, method, body, label, selectResultSession = false) {
+            const result = await request(url, method, body);
+            showOutcome(result?.hasRemainingWork ? 'Clear is applying to Runtime and Operations. Refresh to see the remaining data.' : summarizeControl(result, label), 'success');
+            const resultSession = result?.session?.identity?.key;
+            if (selectResultSession && resultSession && resultSession !== state.root?.dataset.sessionKey) {
+                await selectContext(resultSession, null);
+                return;
+            }
+            await state.refresher?.refresh(true);
+        }
+
+        async function runAction(url, method, body, label, selectResultSession = false) {
             try {
-                const result = await request(url, method, body);
-                showOutcome(result?.hasRemainingWork ? 'Clear is applying to Runtime and Operations. Refresh to see the remaining data.' : summarizeControl(result, label), 'success');
-                const resultSession = result?.session?.identity?.key;
-                if (selectResultSession && resultSession && resultSession !== state.root?.dataset.sessionKey) {
-                    await selectContext(resultSession, null);
-                    return true;
-                }
-                await state.refresher?.refresh(true);
+                await executeAction(url, method, body, label, selectResultSession);
                 return true;
             } catch (error) {
                 showOutcome(error.message, 'danger');
                 return false;
             }
+        }
+
+        function openActionDialog(trigger, action) {
+            const modal = document.querySelector('#profiling-action-modal');
+            if (!modal || actionDialog.busy) return;
+            actionDialog.action = action;
+            actionDialog.trigger = trigger;
+            document.querySelector('#profiling-action-heading').textContent = action.title;
+            document.querySelector('#profiling-action-message').textContent = action.message;
+            document.querySelector('#profiling-action-submit-label').textContent = action.title;
+            const selection = document.querySelector('#profiling-action-selection');
+            selection.textContent = action.selection || '';
+            selection.hidden = !action.selection;
+            const result = document.querySelector('#profiling-action-result');
+            result.textContent = '';
+            result.className = '';
+            trigger.closest('.profiling-tools-menu')?.removeAttribute('open');
+            window.bootstrap.Modal.getOrCreateInstance(modal).show();
+        }
+
+        function bindActionDialog() {
+            const modal = document.querySelector('#profiling-action-modal');
+            const submit = document.querySelector('#profiling-action-submit');
+            const result = document.querySelector('#profiling-action-result');
+            const controls = modal.querySelectorAll('button');
+            submit.addEventListener('click', async () => {
+                const action = actionDialog.action;
+                if (!action || actionDialog.busy) return;
+                actionDialog.busy = true;
+                controls.forEach(button => button.disabled = true);
+                result.className = 'text-muted mt-1';
+                result.textContent = 'Applying…';
+                try {
+                    await executeAction(action.url, action.method, action.body, action.label);
+                    actionDialog.busy = false;
+                    window.bootstrap.Modal.getInstance(modal).hide();
+                } catch (error) {
+                    result.className = 'text-danger mt-1';
+                    result.textContent = error.message;
+                } finally {
+                    actionDialog.busy = false;
+                    controls.forEach(button => button.disabled = false);
+                }
+            });
+            modal.addEventListener('hide.bs.modal', event => {
+                if (actionDialog.busy) event.preventDefault();
+            });
+            modal.addEventListener('hidden.bs.modal', () => {
+                const trigger = actionDialog.trigger;
+                const focus = trigger?.isConnected ? trigger.closest('.profiling-tools-menu')?.querySelector('summary') : null;
+                (focus || document.querySelector('.profiling-tools-menu > summary') || document.querySelector('#profiling-refresh-now'))?.focus();
+                actionDialog.action = null;
+                actionDialog.trigger = null;
+            });
         }
 
         const wait = milliseconds => new Promise(resolve => window.setTimeout(resolve, milliseconds));
@@ -1283,7 +1342,7 @@
                     const name = document.querySelector('#profiling-start-name')?.value.trim() || null;
                     const interval = Number(document.querySelector('#profiling-start-interval')?.value);
                     const duration = Number(document.querySelector('#profiling-start-duration')?.value);
-                    runAction(state.root.dataset.startPath, 'POST', { name, samplingInterval: toTimeSpan(interval), duration: toTimeSpan(duration * 1000), tags: [] }, 'Collection started.', undefined, true);
+                    runAction(state.root.dataset.startPath, 'POST', { name, samplingInterval: toTimeSpan(interval), duration: toTimeSpan(duration * 1000), tags: [] }, 'Collection started.', true);
                 }
                 if (event.target.matches('#profiling-metadata-form')) {
                     event.preventDefault();
@@ -1331,9 +1390,19 @@
                 if (button.id === 'profiling-gc') runAction(state.root.dataset.gcPath, 'POST', undefined, 'GC requested.');
                 if (button.id === 'profiling-stress') startStress(button);
                 if (button.id === 'profiling-add-marker') runAction(state.root.dataset.markerPath, 'POST', { name: document.querySelector('#profiling-marker-name')?.value.trim() }, 'Marker added.');
-                if (button.id === 'profiling-delete-session') runAction(state.root.dataset.deletePath, 'DELETE', undefined, 'Session deleted.', 'Delete the selected terminal profiling session and all of its data?');
-                if (button.id === 'profiling-delete-unpinned') runAction(state.root.dataset.deleteUnpinnedPath, 'DELETE', undefined, 'Unpinned sessions deleted.', 'Delete every unpinned terminal profiling session?');
-                if (button.id === 'profiling-clear') runAction(state.root.dataset.clearPath, 'POST', { confirmed: true }, 'Runtime and Operation profiling data cleared.', 'Clear ALL Runtime and Operation profiling data, including requests, pinned sessions, snapshots, markers and segments? New captures can still be recorded. This cannot be undone.');
+                if (button.id === 'profiling-delete-session') openActionDialog(button, {
+                    url: state.root.dataset.deletePath, method: 'DELETE', label: 'Session deleted.', title: 'Delete session',
+                    selection: document.querySelector('#profiling-session-select')?.selectedOptions[0]?.textContent.trim(),
+                    message: 'Delete the selected terminal session and all its snapshots, markers and segments?'
+                });
+                if (button.id === 'profiling-delete-unpinned') openActionDialog(button, {
+                    url: state.root.dataset.deleteUnpinnedPath, method: 'DELETE', label: 'Unpinned sessions deleted.', title: 'Delete unpinned sessions',
+                    message: 'Delete all unpinned terminal sessions and their recorded data?'
+                });
+                if (button.id === 'profiling-clear') openActionDialog(button, {
+                    url: state.root.dataset.clearPath, method: 'POST', body: { confirmed: true }, label: 'Runtime and Operation profiling data cleared.', title: 'Clear profiling data',
+                    message: 'Delete all Runtime and Operation profiling data, including requests, pinned sessions, snapshots, markers and segments? New captures may still be recorded.'
+                });
                 if (button.id === 'profiling-analyze-now') analyzeTimeline(false);
                 if (button.id === 'profiling-compare') analyzePair();
                 if (button.id === 'profiling-toggle-snapshot-details') {
@@ -1383,6 +1452,7 @@
         document.addEventListener('DOMContentLoaded', () => {
             initializeContent();
             bindEvents();
+            bindActionDialog();
             const refreshSelect = document.querySelector('#profiling-refresh-interval');
             if (refreshSelect && localStorage.getItem(storage.refresh) === null && state.root?.dataset.refreshInterval) refreshSelect.value = state.root.dataset.refreshInterval;
             state.refresher = window.bdkDashboard.createRefresher({

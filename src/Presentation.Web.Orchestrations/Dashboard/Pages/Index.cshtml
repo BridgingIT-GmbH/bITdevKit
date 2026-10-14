@@ -411,7 +411,7 @@
         };
 
         window.bdkOrchestrationPurge = async function(url) {
-            if (!window.confirm('Purge retained orchestration data? This cannot be undone.')) {
+            if (!await window.bdkDashboard.confirmAction({ title: 'Purge orchestration data', message: 'Purge retained orchestration data? This cannot be undone.', confirmText: 'Purge' })) {
                 return;
             }
 

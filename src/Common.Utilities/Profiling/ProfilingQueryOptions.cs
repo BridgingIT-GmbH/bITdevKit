@@ -15,7 +15,7 @@ public sealed class ProfilingQueryOptions
 
     /// <summary>Gets or sets MaximumPageSize.</summary>
     /// <example><code>var value = options.MaximumPageSize;</code></example>
-    public int MaximumPageSize { get; set; } = 250;
+    public int MaximumPageSize { get; set; } = 500;
 
     /// <summary>Gets or sets the maximum contributing-node choices returned with a grouped view.</summary>
     /// <example><code>options.MaximumNodeChoices = 200;</code></example>

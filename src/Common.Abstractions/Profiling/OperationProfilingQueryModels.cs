@@ -164,6 +164,10 @@ public sealed record OperationProfilingQuery
     /// <example><code>var value = record.Cursor;</code></example>
     public string Cursor { get; init; }
 
+    /// <summary>Gets an exclusive publication checkpoint for visible Recent rows. Counts and group statistics still cover the complete matching selection.</summary>
+    /// <example><code>var updates = await queries.GroupAsync(query with { View = OperationProfilingView.Recent, AfterCommitWatermark = previous.Boundary.CommitWatermark });</code></example>
+    public long? AfterCommitWatermark { get; init; }
+
     /// <summary>Gets predicates that must all match the same selected segment summary.</summary>
     /// <example><code>var predicates = query.SegmentDimensions;</code></example>
     public IReadOnlyList<ProfilingDimensionPredicate> SegmentDimensions { get; init; } = [];

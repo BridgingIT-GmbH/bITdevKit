@@ -44,6 +44,7 @@ public static class OperationProfilingDashboardQuery
                 SegmentPath = input.ContainsKey("segmentPath") ? Value("segmentPath") is string path ? new(JsonSerializer.Deserialize<string[]>(path, json)) : null : query.SegmentPath,
                 View = Value("view") is string view ? Enum.Parse<OperationProfilingView>(view, true) : query.View,
                 PageSize = Value("limit") is string limit ? int.Parse(limit, CultureInfo.InvariantCulture) : query.PageSize,
+                AfterCommitWatermark = Value("afterCommitWatermark") is string after ? long.Parse(after, CultureInfo.InvariantCulture) : query.AfterCommitWatermark,
                 Outcomes = input.ContainsKey("outcomes") ? Outcomes<OperationProfilingOutcome>("outcomes") : query.Outcomes,
                 SegmentOutcomes = input.ContainsKey("segmentOutcomes") ? Outcomes<ProfilingSegmentOutcome>("segmentOutcomes") : query.SegmentOutcomes,
                 Dimensions = Value("dimensions") is string dimensions ? JsonSerializer.Deserialize<ProfilingDimensionPredicate[]>(dimensions, json) : query.Dimensions,

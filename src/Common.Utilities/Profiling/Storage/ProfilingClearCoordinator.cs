@@ -145,7 +145,7 @@ internal sealed class ProfilingClearCoordinator(ProfilingStorageOptions options,
         || request.FromUtc.HasValue != request.ToUtc.HasValue || request.FromUtc?.Offset != null && request.FromUtc.Value.Offset != TimeSpan.Zero
         || request.ToUtc?.Offset != null && request.ToUtc.Value.Offset != TimeSpan.Zero || request.FromUtc >= request.ToUtc
         || request.OperationSelection is { } selection && (request.DataSet != ProfilingDataSet.Operations || request.FromUtc.HasValue
-            || selection.Key is null || selection.Kind is null || selection.KeyContains is not null || selection.Cursor is not null || selection.Boundary is not null
+            || selection.Key is null || selection.Kind is null || selection.KeyContains is not null || selection.Cursor is not null || selection.Boundary is not null || selection.AfterCommitWatermark.HasValue
             || !selection.FromUtc.HasValue || !selection.ToUtc.HasValue || selection.FromUtc.Value.Offset != TimeSpan.Zero || selection.ToUtc.Value.Offset != TimeSpan.Zero
             || selection.FromUtc >= selection.ToUtc)
         ? new ProfilingValidationError("Clear selection requires a valid dataset and UTC range. Group deletion additionally requires Operations, an exact key and kind, and an explicit UTC selection without paging.") : null;

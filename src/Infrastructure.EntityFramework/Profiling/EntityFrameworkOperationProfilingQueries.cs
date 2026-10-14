@@ -28,7 +28,8 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
             if (selection.Empty) { return Result<OperationProfilingPage>.Success(new()); }
 
             var total = await selection.Roots.LongCountAsync(token).ConfigureAwait(false);
-            var ids = await EntityFrameworkProfilingQuerySql<TContext>.PageIdsAsync(context, selection.Roots, selection.Query.View, selection.Cursor, selection.Query.PageSize + 1, token).ConfigureAwait(false);
+            var visibleRoots = selection.Query.AfterCommitWatermark is long after ? selection.Roots.Where(root => root.CommitWatermark > after) : selection.Roots;
+            var ids = await EntityFrameworkProfilingQuerySql<TContext>.PageIdsAsync(context, visibleRoots, selection.Query.View, selection.Cursor, selection.Query.PageSize + 1, token).ConfigureAwait(false);
             var more = ids.Length > selection.Query.PageSize;
             var records = await this.LoadRecordsAsync(context, ids.Take(selection.Query.PageSize).ToArray(), token).ConfigureAwait(false);
             if (!await ValidRevisionAsync(context, selection.Boundary, token).ConfigureAwait(false))
@@ -70,7 +71,8 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
             }
             else
             {
-                var ids = await EntityFrameworkProfilingQuerySql<TContext>.PageIdsAsync(context, selection.Roots, selection.Query.View, selection.Cursor, selection.Query.PageSize + 1, token).ConfigureAwait(false);
+                var visibleRoots = selection.Query.AfterCommitWatermark is long after ? selection.Roots.Where(root => root.CommitWatermark > after) : selection.Roots;
+                var ids = await EntityFrameworkProfilingQuerySql<TContext>.PageIdsAsync(context, visibleRoots, selection.Query.View, selection.Cursor, selection.Query.PageSize + 1, token).ConfigureAwait(false);
                 more = ids.Length > selection.Query.PageSize;
                 visible = await this.LoadRecordsAsync(context, ids.Take(selection.Query.PageSize).ToArray(), token).ConfigureAwait(false);
                 var keys = visible.Select(record => GroupKey(record, selection.Query)).Distinct(StringComparer.Ordinal).ToArray();
@@ -161,6 +163,8 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
                 }
 
                 var emptyQuery = codec.Normalize(query, null);
+                if (emptyQuery.AfterCommitWatermark > 0) { return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError()); }
+
                 return await context.Set<OperationProfilingEntity>().AnyAsync(token).ConfigureAwait(false)
                     ? Result<QuerySelection>.Failure(new ProfilingUnavailableError("The original profiling coordination state is absent."))
                     : Result<QuerySelection>.Success(new(emptyQuery, null, null, codec, null, true));
@@ -192,6 +196,8 @@ public sealed partial class EntityFrameworkProfilingStorageProvider<TContext> : 
             {
                 return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError());
             }
+
+            if (normalized.AfterCommitWatermark > boundary.CommitWatermark) { return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError()); }
 
             if (cursor is not null && normalized.View != OperationProfilingView.ByCount && !Guid.TryParseExact(cursor.Identity, "N", out _))
             {

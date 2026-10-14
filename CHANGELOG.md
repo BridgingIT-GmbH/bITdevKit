@@ -10,6 +10,10 @@ This changelog includes unreleased changes on `main` and the full tagged release
 - Added optional profiling behaviors for jobs, pipelines, orchestrations, and Active Entities, so their steps and actions appear as nested segments. They run unchanged when profiling is not registered.
 - Added profiling storage with in-memory and Entity Framework providers, bounded background writes, retention limits, and clearing of Runtime and Operation history, either fully or by time range.
 - Added Operations and Requests dashboard views with slow, recent, and by-count lists, grouping, filters, per-operation segment breakdowns, wall-time bars, and Runtime overlays correlated by process and time.
+- Changed Operations and Requests to append older recordings with **Load more** and prepend live recordings with **Tail**, preserving loaded groups and filters. Manual refresh remains; the interval selector was removed. The centered Load more control uses the current row choice (50, 100, 250, or 500) without restarting paging.
+- Changed Runtime profiling deletion and clear confirmations to compact dashboard dialogs with inline errors and retry support.
+- Changed browser confirmations and alerts across the dashboard to shared, themed dialogs, including purge actions, document and permalink deletion, and Change History restore errors.
+- Changed the profiling Timeline to update automatically while following now, without a refresh-interval selector. Fixed historical ranges use manual refresh.
 - Changed profiling registration to `AddProfiling(...).WithRuntimeProfiling(...).WithOperationProfiling(...).WithRequestProfiling(...)`. Request profiling requires Operation Profiling.
 - Changed: renamed the Runtime Profiling API, options, store types, and Entity Framework registration (`WithRuntimeProfiling`, Runtime-prefixed types). Runtime dashboard pages moved under `/profiling/runtime` and console commands under `profiling runtime`.
 

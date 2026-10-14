@@ -82,7 +82,7 @@ public sealed partial class DashboardEndpoints
     private static async Task<HttpResult> DeleteOperationGroupAsync(HttpContext context, ProfilingDashboardGroupDeleteRequest request, bool requestsOnly)
     {
         if (request?.Confirmed != true || request.Selection is not { } selection || string.IsNullOrEmpty(selection.Key) || string.IsNullOrEmpty(selection.Kind)
-            || selection.KeyContains is not null || !selection.FromUtc.HasValue || !selection.ToUtc.HasValue || selection.Cursor is not null || selection.Boundary is not null)
+            || selection.KeyContains is not null || !selection.FromUtc.HasValue || !selection.ToUtc.HasValue || selection.Cursor is not null || selection.Boundary is not null || selection.AfterCommitWatermark.HasValue)
         {
             return Results.Problem("Confirm deletion of an exact operation key and kind with the current UTC window and filters.", statusCode: 400);
         }

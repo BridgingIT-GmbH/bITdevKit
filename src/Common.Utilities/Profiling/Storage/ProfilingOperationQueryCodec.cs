@@ -18,6 +18,7 @@ internal sealed class ProfilingOperationQueryCodec(OperationProfilingOptions opt
     internal OperationProfilingQuery Normalize(OperationProfilingQuery query, ProfilingQueryBoundary boundary)
     {
         if (query is null || query.StartedWithin && query.IntervalOverlap || !Enum.IsDefined(query.View) || query.PageSize <= 0 || query.PageSize > this.queryOptions.MaximumPageSize
+            || query.AfterCommitWatermark < 0 || query.AfterCommitWatermark.HasValue && query.View != OperationProfilingView.Recent
             || query.MaximumAnalysisCount <= 0 || query.MaximumAnalysisCount > this.queryOptions.MaximumAnalysisRecords
             || query.Outcomes is null || query.Outcomes.Count > 5 || query.Outcomes.Any(o => !Enum.IsDefined(o))
             || query.SegmentOutcomes is null || query.SegmentOutcomes.Count > 4 || query.SegmentOutcomes.Any(o => !Enum.IsDefined(o))

@@ -1,0 +1,12 @@
+@inherits RazorSlice
+<div class="modal fade" id="profiling-action-modal" tabindex="-1" aria-labelledby="profiling-action-heading" aria-describedby="profiling-action-message" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header py-2"><h2 id="profiling-action-heading" class="modal-title h6"></h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body py-2 small">
+            <div id="profiling-action-selection" class="fw-semibold mb-1" hidden></div>
+            <p id="profiling-action-message" class="mb-0"></p>
+            <div id="profiling-action-result" role="status" aria-live="polite"></div>
+        </div>
+        <div class="modal-footer py-2"><button class="btn btn-outline-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancel</button><button id="profiling-action-submit" class="btn btn-danger btn-sm" type="button"><i class="bi bi-trash" aria-hidden="true"></i> <span id="profiling-action-submit-label"></span></button></div>
+    </div></div>
+</div>

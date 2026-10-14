@@ -10,7 +10,7 @@
     var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
     var pagePath = DashboardEndpoints.BuildOperationsPath(options, Model.RequestsOnly);
 }
-<section data-operation-view data-refreshed-utc="@OperationProfilingViewModelBuilder.Utc(Model.RefreshedUtc)">
+<section data-operation-view data-refreshed-utc="@OperationProfilingViewModelBuilder.Utc(Model.RefreshedUtc)" data-tail-url="@Tail()" data-tail-watermark="@(Model.Groups?.Boundary?.CommitWatermark ?? 0)" data-tail-epoch="@Model.Groups?.Boundary?.StoreEpoch" data-tail-revision="@Model.Groups?.Boundary?.DeletionRevision" data-operation-mode="@Model.Query?.View">
 @(await RenderPartialAsync<Health, OperationProfilingDashboardModel>(Model))
 <template data-operation-comparison-keys>@foreach (var group in Model.Groups?.Groups.DistinctBy(group => (ProfilingKeyComparer.Canonicalize(group.Kind), ProfilingKeyComparer.Canonicalize(group.Key))) ?? []) { <option value="@System.Text.Json.JsonSerializer.Serialize(new[] { ProfilingKeyComparer.Canonicalize(group.Kind), ProfilingKeyComparer.Canonicalize(group.Key) })" data-key="@group.Key" data-kind="@group.Kind" title="@group.Key">@OperationProfilingViewModelBuilder.KindLabel(group.Kind) &#183; @OperationProfilingViewModelBuilder.GroupName(group.Key, group.Kind)</option> }</template>
 <template data-operation-node-options>@(await RenderPartialAsync<Nodes, OperationProfilingDashboardModel>(Model))</template>
@@ -21,13 +21,13 @@
 }
 else
 {
-    <div class="operation-metrics mb-2">
+    <div class="operation-metrics mb-2" data-operation-metrics>
         <article class="operation-metric dashboard-metric" data-metric-tone="primary"><span>Executions @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>("Retained, persisted executions matching these filters. Sampling and retention can reduce this count."))</span><strong>@Model.Groups.TotalOperationCount</strong></article>
         <article class="operation-metric dashboard-metric" data-metric-tone="analysis"><span>Groups</span><strong>@Model.Groups.TotalGroupCount</strong></article>
         <article class="operation-metric dashboard-metric" data-metric-tone="@(Model.Health?.QueueRecords > 0 ? "info" : "")"><span>Queued @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>("Pending persistence on the serving node. These executions are not yet included in the list."))</span><strong>@Model.Health?.QueueRecords</strong></article>
         <article class="operation-metric dashboard-metric" data-metric-tone="@(Model.Health?.DroppedOperations > 0 ? "warning" : "")"><span>Dropped @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>("Executions dropped on the serving node. Stored counts may include other nodes when the provider is shared."))</span><strong class="@(Model.Health?.DroppedOperations > 0 ? "text-warning" : "")">@Model.Health?.DroppedOperations</strong></article>
     </div>
-    @if (Model.Groups.Groups.Count == 0) { <div class="alert alert-secondary">No retained executions match this selection.</div> }
+    @if (Model.Groups.Groups.Count == 0) { <div class="alert alert-secondary">@(Model.Query.AfterCommitWatermark.HasValue ? "No newly retained executions match this selection." : "No retained executions match this selection.")</div> }
     @if (Model.Groups.StatisticsLimitation is not null) { <p class="small text-warning" role="status">@Model.Groups.StatisticsLimitation</p> }
     @foreach (var group in Model.Groups.Groups)
     {
@@ -41,7 +41,7 @@ else
             {
                 var detailsPath = pagePath + "/" + record.Id.ToString("D");
                 var byCount = Model.Query.View == OperationProfilingView.ByCount;
-                <tr><td class="text-nowrap"><time class="small" datetime="@OperationProfilingViewModelBuilder.Utc(record.StartedUtc)">@OperationProfilingViewModelBuilder.Utc(record.StartedUtc)</time></td>
+                <tr data-operation-id="@record.Id"><td class="text-nowrap"><time class="small" datetime="@OperationProfilingViewModelBuilder.Utc(record.StartedUtc)">@OperationProfilingViewModelBuilder.Utc(record.StartedUtc)</time></td>
                     <td class="text-nowrap"><span title="Node ID: @record.NodeId &#183; Key: @record.Node.Identity.Key &#183; Host: @record.Node.HostName &#183; Version: @record.Node.ApplicationVersion">@(record.Node.DisplayName ?? record.Node.HostName)</span></td>
                     <td class="text-nowrap"><span class="@OutcomeClass(record.Outcome)" title="@OperationProfilingViewModelBuilder.Quality(record)">@record.Outcome</span>@if (record.Segments.Any(value => value.Outcomes.Any(bucket => bucket.Outcome == ProfilingSegmentOutcome.Failed && bucket.Statistics.Count > 0))) { <span class="badge text-bg-warning">Segment failures</span> }</td>
                     @if (Model.RequestsOnly) { <td class="text-nowrap"><span title="@(record.Http?.Path + record.Http?.QueryString) &#183; Response: @(record.Http?.ResponseBytes?.ToString(CultureInfo.InvariantCulture) ?? "—") bytes &#183; @record.Http?.ResponseBytesQuality">@record.Http?.Method @record.Http?.StatusCode</span><span class="visually-hidden">Sampling: @record.Http?.SamplingStrategyKey</span>@(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ProfilingHelp, string>($"Sampling: {record.Http?.SamplingStrategyKey} / {record.Http?.SamplingConfigurationKey}; inclusion probability: {record.Http?.SamplingInclusionProbability?.ToString("0.####", CultureInfo.InvariantCulture) ?? "unknown"}."))</td> }
@@ -54,7 +54,7 @@ else
             </div>
         </details>
     }
-    @if (Model.Groups.NextCursor is not null) { <a class="btn btn-outline-secondary btn-sm operation-next-page" href="@Next()">Next page</a> }
+    @if (Model.Groups.NextCursor is not null) { <div class="d-flex justify-content-center mt-2" data-operation-paging><button type="button" class="btn btn-outline-secondary btn-sm" data-operation-load-more data-next-url="@Next()">Load more</button></div> }
 }
 </section>
 @functions {
@@ -68,7 +68,17 @@ else
     {
         var values = HttpContext.Request.Query.Where(value => value.Key != "cursor" && value.Key != "_").ToDictionary(value => value.Key, value => value.Value.ToString());
         values["cursor"] = Model.Groups.NextCursor;
-        return (HttpContext.Request.Path.Value.EndsWith("/content", StringComparison.Ordinal) ? HttpContext.Request.Path.Value[..^8] : HttpContext.Request.Path.Value) + QueryString.Create(values);
+        var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+        return DashboardEndpoints.BuildOperationsPath(options, Model.RequestsOnly) + "/content" + QueryString.Create(values);
+    }
+    private string Tail()
+    {
+        if (Model.Error is not null || Model.Query?.View != OperationProfilingView.Recent) { return null; }
+
+        var selector = Model.Query with { Cursor = null, Boundary = null, AfterCommitWatermark = null,
+            FromUtc = Model.Groups?.Boundary?.FromUtc ?? Model.Query.FromUtc ?? Model.RefreshedUtc.AddMinutes(-15) };
+        var options = HttpContext.RequestServices.GetRequiredService<DashboardEndpointsOptions>();
+        return DashboardEndpoints.BuildOperationsPath(options, Model.RequestsOnly) + "/content" + QueryString.Create("query", System.Text.Json.JsonSerializer.Serialize(selector));
     }
     private string Expand(OperationProfilingGroup group)
     {
@@ -84,6 +94,6 @@ else
             var value = group.Dimensions.FirstOrDefault(dimension => ProfilingKeyComparer.Instance.Equals(dimension.Key, key))?.Value;
             return new ProfilingDimensionPredicate { Key = key, Value = value, Operator = value is null ? ProfilingDimensionOperator.Missing : ProfilingDimensionOperator.Equal };
         })).ToArray(),
-        GroupingDimensions = [], GroupByHttpMethod = false, Cursor = null, Boundary = null, FromUtc = Model.Groups.Boundary.FromUtc, ToUtc = Model.Groups.Boundary.ToUtc,
+        GroupingDimensions = [], GroupByHttpMethod = false, Cursor = null, Boundary = null, AfterCommitWatermark = null, FromUtc = Model.Groups.Boundary.FromUtc, ToUtc = Model.Groups.Boundary.ToUtc,
     };
 }

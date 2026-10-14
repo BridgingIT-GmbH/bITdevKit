@@ -48,7 +48,7 @@
 {
     var location = string.IsNullOrEmpty(entry.Location.Scope) ? entry.Location.Path : $"{entry.Location.Scope}/{entry.Location.Path}";
     var displayLocation = Shortener.Apply(location, new ShorteningOptions { MaximumLength = 64 });
-    <tr><td>@entry.Location.Kind</td><td class="permalinks-location-cell" title="@entry.Location.ToCanonicalString()"><code>@displayLocation</code></td><td class="text-muted small text-nowrap" title="@entry.CreatedAt.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">@entry.CreatedAt.LocalDateTime.ToString("g")</td><td><span class="badge text-bg-@(entry.Status == StoragePermalinkStatus.Active ? "success" : entry.Status == StoragePermalinkStatus.Expired ? "warning" : "secondary")">@entry.Status</span></td><td class="text-muted small text-nowrap">@(entry.ExpiresAt?.LocalDateTime.ToString("g") ?? "-")</td><td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-primary" href="@PublicRoutes.Download(entry.Id)" title="Download"><i class="bi bi-download"></i></a> <button type="button" class="btn btn-sm btn-outline-secondary" title="Copy permalink" data-copy-permalink="@PublicRoutes.Download(entry.Id)"><i class="bi bi-clipboard"></i></button> <button type="button" class="btn btn-sm btn-outline-secondary" title="Permalink details" data-permalink-details data-id="@entry.Id.Value" data-etag="@entry.ETag" data-type="@entry.Location.Kind" data-location="@location" data-created-at="@entry.CreatedAt.ToString("O")" data-status="@entry.Status" data-expires-at="@entry.ExpiresAt?.ToString("O")"><i class="bi bi-info-circle"></i></button> <form class="d-inline" method="post" action="@actions/delete" onsubmit="return confirm('Delete this permalink?')"><input type="hidden" name="id" value="@entry.Id.Value"><input type="hidden" name="etag" value="@entry.ETag"><button class="btn btn-sm btn-outline-danger" title="Delete permalink"><i class="bi bi-trash"></i></button></form></td></tr>
+    <tr><td>@entry.Location.Kind</td><td class="permalinks-location-cell" title="@entry.Location.ToCanonicalString()"><code>@displayLocation</code></td><td class="text-muted small text-nowrap" title="@entry.CreatedAt.LocalDateTime.ToString("yyyy-MM-dd HH:mm:ss")">@entry.CreatedAt.LocalDateTime.ToString("g")</td><td><span class="badge text-bg-@(entry.Status == StoragePermalinkStatus.Active ? "success" : entry.Status == StoragePermalinkStatus.Expired ? "warning" : "secondary")">@entry.Status</span></td><td class="text-muted small text-nowrap">@(entry.ExpiresAt?.LocalDateTime.ToString("g") ?? "-")</td><td class="text-end text-nowrap"><a class="btn btn-sm btn-outline-primary" href="@PublicRoutes.Download(entry.Id)" title="Download"><i class="bi bi-download"></i></a> <button type="button" class="btn btn-sm btn-outline-secondary" title="Copy permalink" data-copy-permalink="@PublicRoutes.Download(entry.Id)"><i class="bi bi-clipboard"></i></button> <button type="button" class="btn btn-sm btn-outline-secondary" title="Permalink details" data-permalink-details data-id="@entry.Id.Value" data-etag="@entry.ETag" data-type="@entry.Location.Kind" data-location="@location" data-created-at="@entry.CreatedAt.ToString("O")" data-status="@entry.Status" data-expires-at="@entry.ExpiresAt?.ToString("O")"><i class="bi bi-info-circle"></i></button> <form class="d-inline" method="post" action="@actions/delete" data-permalink-delete><input type="hidden" name="id" value="@entry.Id.Value"><input type="hidden" name="etag" value="@entry.ETag"><button class="btn btn-sm btn-outline-danger" title="Delete permalink"><i class="bi bi-trash"></i></button></form></td></tr>
 }
 </tbody></table></div>
 @if (result.IsSuccess && !string.IsNullOrWhiteSpace(result.Value.ContinuationToken)) { <a class="btn btn-sm btn-outline-secondary mt-2" href="?kind=@kind&status=@status&registration=@query["registration"]&location=@query["location"]&pageSize=@pageSize&continuationToken=@Uri.EscapeDataString(result.Value.ContinuationToken)">Next</a> }
@@ -79,10 +79,28 @@
     const toLocalInputValue = value => { if (!value) return ''; const date = new Date(value); const offset = date.getTimezoneOffset(); return Number.isNaN(date.valueOf()) ? '' : new Date(date.getTime() - offset * 60000).toISOString().slice(0, 16); };
     select.value = localStorage.getItem(key) || '';
     let timer;
-    const schedule = () => { clearInterval(timer); localStorage.setItem(key, select.value); if (select.value) timer = setInterval(() => location.reload(), Number(select.value)); };
+    const schedule = () => { clearInterval(timer); localStorage.setItem(key, select.value); if (select.value) timer = setInterval(() => { if (!document.querySelector('.modal.show, [data-permalink-delete][data-confirming="true"]')) location.reload(); }, Number(select.value)); };
     select.addEventListener('change', schedule);
     document.getElementById('permalink-refresh-now').addEventListener('click', () => location.reload());
     document.querySelector('[data-permalink-clear-filter]')?.addEventListener('click', () => location.assign(location.pathname));
+    document.addEventListener('submit', async event => {
+        const form = event.target.closest('[data-permalink-delete]');
+        if (!form) return;
+        event.preventDefault();
+        if (form.dataset.confirming === 'true') return;
+        form.dataset.confirming = 'true';
+        const button = form.querySelector('button');
+        button.disabled = true;
+        try {
+            if (await window.bdkDashboard.confirmAction({ title: 'Delete permalink', message: 'Delete this permalink?', confirmText: 'Delete' })) {
+                HTMLFormElement.prototype.submit.call(form);
+            }
+        } finally {
+            delete form.dataset.confirming;
+            button.disabled = false;
+            if (button.isConnected) button.focus();
+        }
+    });
     document.addEventListener('click', async event => {
         const copy = event.target.closest('[data-copy-permalink]');
         if (copy) { await navigator.clipboard.writeText(new URL(copy.dataset.copyPermalink, location.origin).href); copy.querySelector('i').className = 'bi bi-check-lg'; setTimeout(() => copy.querySelector('i').className = 'bi bi-clipboard', 1200); return; }

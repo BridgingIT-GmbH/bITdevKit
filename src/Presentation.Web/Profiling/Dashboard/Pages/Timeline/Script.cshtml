@@ -5,7 +5,7 @@
     if (root?.dataset.timeline !== 'true') return;
     const form = document.getElementById('timeline-filters');
     const chart = document.getElementById('timeline-chart');
-    const interval = document.getElementById('timeline-refresh-interval');
+    const liveRefreshMilliseconds = 5000;
     const status = document.getElementById('timeline-refresh-status');
     const error = document.getElementById('timeline-error');
     const cluster = document.getElementById('timeline-cluster-modal');
@@ -26,7 +26,6 @@
         control.value = control.type === 'datetime-local' ? value.slice(0, 16) : value;
     }
     if (![...document.getElementById('timeline-resolution').options].some(option => option.selected)) document.getElementById('timeline-resolution').value = 'hour';
-    if (typeof saved.refresh === 'string' && [...interval.options].some(option => option.value === saved.refresh)) interval.value = saved.refresh;
     let applied = Object.fromEntries(new FormData(form));
     let data = null, chartClock = 0, controller = null, refreshTimer = null, clusterController = null, clusterQuery = null, clusterTrigger = null, nextCursor = null;
     const elements = [];
@@ -38,7 +37,7 @@
         return { start, end };
     };
     function remember() {
-        try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)), refresh: interval.value })); } catch { }
+        try { localStorage.setItem(stateKey, JSON.stringify({ filters: Object.fromEntries(new FormData(form)) })); } catch { }
     }
     function urlFor(path, selection = applied) {
         const url = new URL(path, location.href);
@@ -55,7 +54,7 @@
     }
     function schedule() {
         clearTimeout(refreshTimer);
-        if (interval.value) refreshTimer = setTimeout(() => document.hidden ? schedule() : refresh(), Number(interval.value));
+        if (!applied.toUtc && !document.hidden) refreshTimer = setTimeout(refresh, liveRefreshMilliseconds);
     }
     function preserveChoice(select, values) {
         const selected = select.value;
@@ -163,11 +162,10 @@
     form.addEventListener('submit', event => { event.preventDefault(); apply(); });
     form.addEventListener('input', remember);
     document.getElementById('timeline-resolution').addEventListener('change', apply);
-    document.getElementById('timeline-reset').addEventListener('click', () => { form.reset(); interval.value = '5000'; apply(); });
-    interval.addEventListener('change', () => { remember(); schedule(); });
+    document.getElementById('timeline-reset').addEventListener('click', () => { form.reset(); apply(); });
     document.getElementById('timeline-refresh-now').addEventListener('click', refresh);
     let sizeTimer;
-    new ResizeObserver(() => { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => { if (data) refresh(); }, 200); }).observe(root.parentElement);
+    new ResizeObserver(() => { clearTimeout(sizeTimer); sizeTimer = setTimeout(() => { if (data && !document.hidden) refresh(); }, 200); }).observe(root.parentElement);
     async function openBucket(bucket, trigger) {
         clusterController?.abort();
         clusterQuery = { ...applied, fromUtc: bucket.fromUtc, toUtc: bucket.toUtc, kind: bucket.kind };
@@ -219,6 +217,12 @@
     cluster.addEventListener('hidden.bs.modal', () => { if (clusterTrigger?.isConnected) clusterTrigger.focus(); });
     document.addEventListener('bdk-dashboard-theme-changed', () => { if (data) render(); });
     const animationTimer = setInterval(() => { if (!document.hidden) position(); }, 1000);
+    document.addEventListener('visibilitychange', () => {
+        clearTimeout(refreshTimer);
+        if (document.hidden) {
+            if (!applied.toUtc) controller?.abort();
+        } else if (!applied.toUtc) refresh();
+    });
     window.addEventListener('pagehide', () => { remember(); controller?.abort(); clusterController?.abort(); clearTimeout(refreshTimer); clearInterval(animationTimer); clearTimeout(sizeTimer); });
     window.addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
     remember(); refresh();

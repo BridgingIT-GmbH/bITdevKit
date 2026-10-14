@@ -7,7 +7,7 @@
     const detailBody = document.getElementById('operation-detail-content');
     const timingRoots = [content, detailBody].filter(Boolean);
     const form = document.getElementById('operation-filters');
-    const interval = document.getElementById('operation-refresh-interval');
+    const tail = document.getElementById('operation-tail');
     const current = new URL(location.href);
     const stateKey = 'bdk.profiling.filters:' + content.dataset.pageUrl;
     let remembered = {};
@@ -18,6 +18,7 @@
         for (const control of form.elements) {
             const value = remembered.filters[control.name];
             if (!control.name || typeof value !== 'string' || value.length > 16384) continue;
+            if (control.name === 'limit' && ![...control.options].some(option => option.value === value)) { control.value = '50'; continue; }
             if (control.tagName === 'SELECT' && value && ![...control.options].some(option => option.value === value) && ['nodeId', 'kind'].includes(control.name)) control.add(new Option(value, value));
             control.value = control.type === 'datetime-local' ? value.slice(0, 16) : value;
         }
@@ -62,8 +63,13 @@
         if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
         event.currentTarget.href = url;
     });
-    let pinned = current.searchParams.has('cursor');
-    function unpin() { current.searchParams.delete('cursor'); pinned = false; if (interval) interval.disabled = false; document.getElementById('operation-refresh-status').removeAttribute('title'); }
+    let olderController = null;
+    function cancelOlder() {
+        olderController?.abort(); olderController = null;
+        const button = content.querySelector('[data-operation-load-more]');
+        if (button) { button.disabled = false; button.textContent = 'Load more'; }
+    }
+    function unpin() { cancelOlder(); cancelTail(); current.searchParams.delete('cursor'); document.getElementById('operation-refresh-status').removeAttribute('title'); }
     function selectionUrl() {
         const url = new URL(content.dataset.contentUrl, location.origin);
         if (current.searchParams.has('dashboardView')) url.searchParams.set('dashboardView', current.searchParams.get('dashboardView'));
@@ -78,6 +84,12 @@
             url.searchParams.set(key, (key === 'fromUtc' || key === 'toUtc') && value ? value + 'Z' : value);
         });
         else current.searchParams.forEach((value, key) => url.searchParams.set(key, value));
+        return url;
+    }
+    function pagingUrl(value) {
+        const url = new URL(value, location.origin);
+        const limit = form?.elements.namedItem('limit')?.value;
+        if (limit) url.searchParams.set('limit', limit);
         return url;
     }
     function synchronizeNodes() {
@@ -238,11 +250,194 @@
     });
     document.addEventListener('bdk-dashboard-theme-changed', () => timingRoots.forEach(root => charts(root).catch(() => {})));
     if (content.dataset.timeline === "true" || content.dataset.insights === "true") { applyTimingMode(); return; }
-    const refresher = window.bdkDashboard.createRefresher({ contentElement: content, intervalElement: interval, statusSelector: '#operation-refresh-status',
-        storageKey: stateKey + ':refresh', buildUrl: selectionUrl,
+    let tailTimer = null;
+    let tailController = null;
+    let tailRequested = false;
+    let filtersDirty = false;
+    let tailBlocked = false;
+    let tailCheckpoint = null;
+    const tailKey = stateKey + ':tail';
+    try { tailRequested = localStorage.getItem(tailKey) === 'true'; } catch { }
+    function setStatus(text, failed = false) {
+        const status = document.getElementById('operation-refresh-status');
+        status.textContent = text;
+        status.classList.toggle('text-danger', failed); status.classList.toggle('text-muted', !failed);
+    }
+    function cancelTail() {
+        if (tailTimer !== null) { clearTimeout(tailTimer); tailTimer = null; }
+        tailController?.abort(); tailController = null;
+    }
+    function updateTailControl() {
+        if (!tail) return;
+        const available = !!content.querySelector('[data-operation-view]')?.dataset.tailUrl && !tailBlocked
+            && (!form || form.elements.namedItem('view')?.value === 'Recent');
+        tail.disabled = !available;
+        tail.checked = available && tailRequested;
+        tail.title = tailBlocked ? 'Refresh the selection to resume tailing.' : filtersDirty ? 'Apply filters to resume tailing.' : available ? 'Prepend newly retained recordings.' : 'Tail is available in the Recent view.';
+    }
+    function scheduleTail() {
+        if (tailTimer !== null) clearTimeout(tailTimer);
+        tailTimer = null;
+        updateTailControl();
+        if (!tail?.checked || tail.disabled || filtersDirty || document.hidden || tailController !== null) return;
+        tailTimer = setTimeout(loadNewer, 2000);
+    }
+    function resetTail() {
+        cancelTail(); filtersDirty = tailBlocked = false;
+        const view = content.querySelector('[data-operation-view]');
+        tailCheckpoint = view ? { watermark: view.dataset.tailWatermark, epoch: view.dataset.tailEpoch, revision: view.dataset.tailRevision } : null;
+        scheduleTail();
+    }
+    function mergeGroups(views, prepend = false) {
+        const state = captureState();
+        const readingAnchor = prepend && state.y > 0 ? [...content.querySelectorAll('[data-operation-id]')].find(row => {
+            const bounds = row.getBoundingClientRect(); return bounds.height > 0 && bounds.top >= 0 && bounds.top < innerHeight;
+        }) : null;
+        const anchorTop = readingAnchor?.getBoundingClientRect().top;
+        const existingGroups = new Map([...content.querySelectorAll('[data-operation-group]')].map(group => [group.dataset.preserveKey, group]));
+        const ids = new Set([...content.querySelectorAll('[data-operation-id]')].map(row => row.dataset.operationId));
+        const incoming = new Map();
+        let loaded = 0;
+        for (const view of views) {
+            view.querySelectorAll('[data-operation-group]').forEach(group => {
+                group.querySelectorAll('[data-operation-id]').forEach(row => {
+                    if (ids.has(row.dataset.operationId)) row.remove();
+                    else { ids.add(row.dataset.operationId); loaded++; }
+                });
+                const previous = incoming.get(group.dataset.preserveKey);
+                if (previous) previous.querySelector('tbody').append(...group.querySelectorAll('[data-operation-id]'));
+                else incoming.set(group.dataset.preserveKey, group);
+            });
+            for (const selector of ['template[data-operation-comparison-keys]', 'template[data-operation-comparison-groups]']) {
+                const target = content.querySelector(selector), source = view.querySelector(selector);
+                if (!target || !source) continue;
+                const options = new Map([...target.content.querySelectorAll('option')].map(option => [option.value, option]));
+                source.content.querySelectorAll('option').forEach(option => {
+                    if (options.has(option.value)) { if (prepend) options.get(option.value).replaceWith(option); }
+                    else target.content.append(option);
+                    options.set(option.value, option);
+                });
+            }
+        }
+        const host = content.querySelector('[data-operation-view]');
+        let anchor = host.querySelector('[data-operation-group], [data-operation-paging]');
+        const groups = [...incoming.values()];
+        (prepend ? groups.reverse() : groups).forEach(group => {
+            const existing = existingGroups.get(group.dataset.preserveKey);
+            if (existing) {
+                const rows = [...group.querySelectorAll('[data-operation-id]')];
+                if (prepend) {
+                    window.bdkProfiling.disposeHelp(existing.querySelector('summary'));
+                    existing.querySelector('summary').replaceWith(group.querySelector('summary'));
+                    const statistics = group.querySelector('.operation-group-statistics');
+                    if (statistics) existing.querySelector('.operation-group-statistics')?.replaceWith(statistics);
+                    existing.querySelector('tbody').prepend(...rows);
+                } else existing.querySelector('tbody').append(...rows);
+                group = existing;
+            }
+            if (prepend) {
+                if (anchor) anchor.before(group); else host.append(group);
+                anchor = group;
+            } else if (!existing) {
+                const more = host.querySelector('[data-operation-paging]');
+                if (more) more.before(group); else host.append(group);
+            }
+        });
+        if (prepend) {
+            const view = views[0];
+            for (const selector of ['[data-operation-metrics]', 'template[data-operation-health]', 'template[data-operation-node-options]']) {
+                const source = view.querySelector(selector), target = host.querySelector(selector);
+                if (source && target) { window.bdkProfiling.disposeHelp(target); target.replaceWith(source); }
+            }
+            if (loaded > 0) host.querySelector('.alert-secondary')?.remove();
+            synchronizeNodes();
+        }
+        window.bdkDashboard.applySeriesColors(content); restoreDetails(); restoreState(state);
+        if (readingAnchor?.isConnected) scrollBy(0, readingAnchor.getBoundingClientRect().top - anchorTop);
+        synchronizeMetadata(); applyTimingMode(); window.bdkProfiling.initializeHelp(content);
+        return loaded;
+    }
+    async function readView(url, controller) {
+        const response = await fetch(url, { cache: 'no-store', headers: { 'X-Requested-With': 'fetch' }, signal: controller.signal });
+        if (!response.ok || response.redirected || !(response.headers.get('content-type') || '').includes('text/html')) {
+            const error = new Error('Unexpected response'); error.status = response.status(); throw error;
+        }
+        const template = document.createElement('template'); template.innerHTML = await response.text();
+        const view = template.content.querySelector('[data-operation-view]');
+        if (!view) throw new Error('Unexpected response');
+        return view;
+    }
+    const refresher = window.bdkDashboard.createRefresher({ contentElement: content, statusSelector: '#operation-refresh-status', buildUrl: selectionUrl,
         applyResponse: (element, html) => { const state = captureState(); window.bdkProfiling.disposeHelp(element); element.querySelectorAll('.js-plotly-plot').forEach(chart => window.Plotly?.purge(chart)); element.innerHTML = html; window.bdkDashboard.applySeriesColors(element); restoreState(state); synchronizeNodes(); synchronizeMetadata(); restoreDetails(); applyTimingMode(); window.bdkProfiling.initializeHelp(element); },
-        onSuccess: () => charts(), formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
-    if (pinned && interval) { interval.value = ''; interval.disabled = true; refresher.clear(); const status = document.getElementById('operation-refresh-status'); status.textContent = 'Paged view'; status.title = 'Auto refresh is paused. Refresh latest to return to the current window.'; }
+        onSuccess: () => { resetTail(); return charts(); }, formatUpdatedAt: window.bdkProfiling.formatUpdatedAt, errorText: 'Refresh failed; showing previous data.' });
+    async function loadNewer() {
+        tailTimer = null;
+        if (!tail?.checked || tail.disabled || filtersDirty || document.hidden || tailController !== null || !tailCheckpoint) return;
+        const source = content.querySelector('[data-operation-view]');
+        if (!source?.dataset.tailUrl) return;
+        const controller = new AbortController(); tailController = controller;
+        try {
+            const url = pagingUrl(source.dataset.tailUrl);
+            url.searchParams.set('afterCommitWatermark', tailCheckpoint.watermark);
+            const views = [];
+            let next = url.toString();
+            do {
+                const view = await readView(next, controller);
+                if (controller.signal.aborted || controller !== tailController) return;
+                if (tailCheckpoint.epoch && (view.dataset.tailEpoch !== tailCheckpoint.epoch || view.dataset.tailRevision !== tailCheckpoint.revision)) {
+                    const error = new Error('Publication boundary changed'); error.status = 400; throw error;
+                }
+                views.push(view);
+                next = view.querySelector('[data-operation-load-more]')?.dataset.nextUrl;
+            } while (next);
+            const loaded = mergeGroups(views, true);
+            const head = views[0];
+            tailCheckpoint = { watermark: head.dataset.tailWatermark, epoch: head.dataset.tailEpoch, revision: head.dataset.tailRevision };
+            window.bdkDashboard.clearRefreshError(content);
+            setStatus(loaded ? `Added ${loaded} new ${loaded === 1 ? 'recording' : 'recordings'}` : window.bdkProfiling.formatUpdatedAt(new Date()));
+        } catch (error) {
+            if (error.name !== 'AbortError' && controller === tailController) {
+                if (error.status === 400) tailBlocked = true;
+                setStatus(tailBlocked ? 'Tail paused; refresh the selection.' : 'Tail failed; showing previous data.', true);
+            }
+        } finally {
+            if (controller === tailController) { tailController = null; scheduleTail(); }
+        }
+    }
+    async function loadOlder(button) {
+        if (button.disabled || !button.dataset.nextUrl) return;
+        cancelOlder(); refresher.cancel();
+        const controller = new AbortController(); olderController = controller;
+        button.disabled = true; button.textContent = 'Loading…';
+        try {
+            const view = await readView(pagingUrl(button.dataset.nextUrl), controller);
+            if (controller.signal.aborted || controller !== olderController || !button.isConnected) return;
+            const loaded = mergeGroups([view]);
+            const next = view.querySelector('[data-operation-load-more]')?.dataset.nextUrl;
+            if (next) button.dataset.nextUrl = next; else button.closest('[data-operation-paging]').remove();
+            window.bdkDashboard.clearRefreshError(content);
+            setStatus(`Loaded ${loaded} more ${loaded === 1 ? 'recording' : 'recordings'}`);
+        } catch (error) {
+            if (error.name !== 'AbortError' && controller === olderController) setStatus('Load failed; refresh or try again.', true);
+        } finally {
+            if (controller === olderController) {
+                olderController = null;
+                if (button.isConnected) { button.disabled = false; button.textContent = 'Load more'; }
+            }
+        }
+    }
+    content.addEventListener('click', event => {
+        const button = event.target.closest('[data-operation-load-more]');
+        if (button) loadOlder(button);
+    });
+    tail?.addEventListener('change', () => {
+        tailRequested = tail.checked;
+        try { localStorage.setItem(tailKey, String(tailRequested)); } catch { }
+        cancelTail();
+        if (tailRequested) loadNewer();
+    });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) cancelTail(); else scheduleTail(); });
+    window.addEventListener('pagehide', () => { cancelTail(); cancelOlder(); });
     document.getElementById('operation-refresh-now')?.addEventListener('click', () => { unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl; if (form) history.replaceState(null, '', url); refresher.refresh(true); });
     window.addEventListener('bdk:operation-group-deleted', () => {
         unpin(); const url = selectionUrl(); url.pathname = content.dataset.pageUrl;
@@ -254,7 +449,16 @@
         const url = selectionUrl(); url.pathname = content.dataset.pageUrl;
         history.replaceState(null, '', url); remember(); refresher.refresh(true);
     });
-    form?.addEventListener('change', () => { remember(); refresher.cancel(); });
+    function pauseForFilters(event) {
+        remember(); cancelOlder(); cancelTail(); refresher.cancel();
+        if (event.target.name === 'limit') {
+            const url = new URL(location.href); url.searchParams.set('limit', event.target.value); history.replaceState(null, '', url);
+            scheduleTail(); return;
+        }
+        filtersDirty = true; updateTailControl();
+    }
+    form?.addEventListener('input', pauseForFilters);
+    form?.addEventListener('change', pauseForFilters);
     function selectionQuery() {
         const url = selectionUrl();
         const normalize = window.bdkOperationDimensions.normalize;
@@ -269,6 +473,7 @@
     applyTimingMode();
     synchronizeMetadata();
     restoreDetails();
+    if (!restoreFilters) resetTail();
     if (restoreFilters) { const url = selectionUrl(); url.pathname = content.dataset.pageUrl; history.replaceState(null, '', url); refresher.refresh(true); }
     charts().catch(() => { document.getElementById('operation-refresh-status').textContent = 'Charts unavailable'; });
 })();

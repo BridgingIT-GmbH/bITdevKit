@@ -127,12 +127,14 @@
                 if (!response.ok) {
                     const text = await response.text().catch(() => response.statusText);
                     console.error('ChangeHistory restore failed:', text);
-                    alert('ChangeHistory restore failed. See the browser console for details.');
+                    await window.bdkDashboard.showMessage({ title: 'Restore failed', message: 'Change History restore failed. See the browser console for details.', kind: 'danger' });
                     return;
                 }
 
                 restoreModal?.hide();
                 await refresher.refresh(true);
+            } catch (error) {
+                await window.bdkDashboard.showMessage({ title: 'Restore failed', message: error.message, kind: 'danger' });
             } finally {
                 if (submitButton) {
                     submitButton.disabled = false;

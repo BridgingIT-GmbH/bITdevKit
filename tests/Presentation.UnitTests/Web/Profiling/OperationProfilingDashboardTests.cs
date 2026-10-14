@@ -8,6 +8,7 @@ namespace BridgingIT.DevKit.Presentation.UnitTests.Web.Profiling;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard;
 using BridgingIT.DevKit.Presentation.Web.Profiling.Models;
@@ -23,6 +24,139 @@ using ProfilingEndpoints = BridgingIT.DevKit.Presentation.Web.Profiling.Dashboar
 /// <summary>Verifies the actual retained-history Razor and JSON paths without a provider flush during reads.</summary>
 public sealed class OperationProfilingDashboardTests
 {
+    /// <summary>Both lists offer the supported row choices and render a full 500-row page with a centered continuation control.</summary>
+    /// <example><code>await suite.List_RowChoices_Accept500AndCenterLoadMore(false);</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task List_RowChoices_Accept500AndCenterLoadMore(bool requestsOnly)
+    {
+        await using var app = await CreateAsync();
+        var kind = requestsOnly ? OperationProfilingKind.HttpRequest : OperationProfilingKind.Job;
+        for (var index = 0; index < 501; index++) { Capture(app, "rows:work", kind); }
+
+        await app.Services.GetRequiredService<OperationProfilingWriterService>().TickAsync();
+        var path = "/admin/profiling/" + (requestsOnly ? "requests" : "operations");
+        var html = await app.GetTestClient().GetStringAsync(path + "?limit=500");
+        Regex.Matches(html, "data-operation-id=").Count.ShouldBe(500);
+        var choices = Regex.Match(html, "<select id=\"operation-limit\"[^>]*>(.*?)</select>").Groups[1].Value;
+        Regex.Matches(choices, "value=\"([^\"]+)\"").Select(match => match.Groups[1].Value).ShouldBe(new[] { "50", "100", "250", "500" });
+        html.ShouldContain("class=\"d-flex justify-content-center mt-2\" data-operation-paging");
+        html.ShouldContain("data-operation-load-more");
+    }
+
+    /// <summary>Both lists render a Tail switch and filtered deltas with complete counts and stable continuation URLs.</summary>
+    /// <example><code>await suite.List_Tail_UsesPublicationCheckpointAndCompleteGroupCounts(false);</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task List_Tail_UsesPublicationCheckpointAndCompleteGroupCounts(bool requestsOnly)
+    {
+        await using var app = await CreateAsync();
+        var kind = requestsOnly ? OperationProfilingKind.HttpRequest : OperationProfilingKind.Job;
+        var initial = Capture(app, "tail-test", kind);
+        var writer = app.Services.GetRequiredService<OperationProfilingWriterService>();
+        await writer.TickAsync();
+        using var client = app.GetTestClient();
+        var path = "/admin/profiling/" + (requestsOnly ? "requests" : "operations");
+        var page = await client.GetStringAsync(path + "?key=tail-test&groupBy=category&limit=10");
+        page.ShouldContain("id=\"operation-tail\"");
+        page.ShouldNotContain("id=\"operation-refresh-interval\"");
+        var watermark = Regex.Match(page, "data-tail-watermark=\"([^\"]+)\"").Groups[1].Value;
+        var tailUrl = WebUtility.HtmlDecode(Regex.Match(page, "data-tail-url=\"([^\"]+)\"").Groups[1].Value);
+        tailUrl.ShouldStartWith(path + "/content?");
+        var added = Enumerable.Range(0, 23).Select(_ => Capture(app, "tail-test", kind)).ToHashSet();
+        Capture(app, "excluded", kind);
+        await writer.TickAsync();
+        var html = await client.GetStringAsync(tailUrl + "&afterCommitWatermark=" + watermark);
+        var seen = new HashSet<Guid>();
+        while (true)
+        {
+            foreach (Match row in Regex.Matches(html, "data-operation-id=\"([^\"]+)\"")) { seen.Add(Guid.Parse(row.Groups[1].Value)).ShouldBeTrue(); }
+
+            html.ShouldNotContain("data-operation-id=\"" + initial + "\"");
+            html.ShouldContain(">24 executions</a>");
+            var next = Regex.Match(html, "data-operation-load-more data-next-url=\"([^\"]+)\"");
+            if (!next.Success) { break; }
+
+            var url = WebUtility.HtmlDecode(next.Groups[1].Value);
+            url.ShouldContain("afterCommitWatermark=" + watermark);
+            html = await client.GetStringAsync(url);
+        }
+
+        seen.SetEquals(added).ShouldBeTrue();
+        var nextWatermark = Regex.Match(html, "data-tail-watermark=\"([^\"]+)\"").Groups[1].Value;
+        var empty = await client.GetStringAsync(tailUrl + "&afterCommitWatermark=" + nextWatermark);
+        empty.ShouldNotContain("data-operation-id=");
+        empty.ShouldContain("data-operation-metrics");
+    }
+
+    /// <summary>Both lists expose filtered continuation fragments with stable row and group identities for appending.</summary>
+    /// <example><code>await suite.List_LoadMore_PreservesSelectionAndReturnsEveryRecording(false, "Recent");</code></example>
+    [Theory]
+    [InlineData(false, "Recent")]
+    [InlineData(true, "Recent")]
+    [InlineData(false, "Slow")]
+    [InlineData(true, "Slow")]
+    [InlineData(false, "ByCount")]
+    [InlineData(true, "ByCount")]
+    public async Task List_LoadMore_PreservesSelectionAndReturnsEveryRecording(bool requestsOnly, string view)
+    {
+        // Arrange
+        await using var app = await CreateAsync();
+        var kind = requestsOnly ? OperationProfilingKind.HttpRequest : OperationProfilingKind.Job;
+        var expected = new HashSet<Guid>();
+        for (var index = 0; index < 23; index++)
+        {
+            expected.Add(Capture(app, "load-test:" + (view == "ByCount" ? index : index % 2), kind, "load-test"));
+        }
+
+        Capture(app, "load-test:excluded", kind, "another-correlation");
+        Capture(app, "other-key", kind, "load-test");
+        await app.Services.GetRequiredService<OperationProfilingWriterService>().TickAsync();
+        using var client = app.GetTestClient();
+        var path = "/admin/profiling/" + (requestsOnly ? "requests" : "operations");
+        var selection = "?limit=10&view=" + view + "&key=load-test:&correlationId=load-test&groupBy=category";
+
+        // Act
+        var html = await client.GetStringAsync(path + selection);
+        var seen = new HashSet<Guid>();
+        var groupKeys = new HashSet<string>();
+        var pages = 0;
+        while (true)
+        {
+            pages++;
+            foreach (Match row in Regex.Matches(html, "data-operation-id=\"([^\"]+)\""))
+            {
+                seen.Add(Guid.Parse(row.Groups[1].Value)).ShouldBeTrue();
+            }
+
+            foreach (Match group in Regex.Matches(html, "data-preserve-key=\"(group-[^\"]+)\""))
+            {
+                groupKeys.Add(group.Groups[1].Value);
+            }
+
+            var next = Regex.Match(html, "data-operation-load-more data-next-url=\"([^\"]+)\"");
+            if (!next.Success) { break; }
+
+            var url = WebUtility.HtmlDecode(next.Groups[1].Value);
+            url.ShouldStartWith(path + "/content?");
+            url.ShouldContain("cursor=");
+            url.ShouldContain("correlationId=load-test");
+            url.ShouldContain("groupBy=category");
+            html.ShouldContain(">Load more</button>");
+            html.ShouldNotContain("Next page");
+            pages.ShouldBeLessThan(4);
+            html = await client.GetStringAsync(url);
+        }
+
+        // Assert
+        pages.ShouldBe(3);
+        seen.SetEquals(expected).ShouldBeTrue();
+        groupKeys.Count.ShouldBe(view == "ByCount" ? 23 : 2);
+        html.ShouldNotContain("data-operation-load-more");
+    }
+
     /// <summary>Hotspot rankings analyze every retained root beyond the visible group limit and use shared dialogs.</summary>
     /// <example><code>await suite.Insights_Rankings_AnalyzeTheWholeSelection();</code></example>
     [Fact]
@@ -88,7 +222,7 @@ public sealed class OperationProfilingDashboardTests
     [Theory]
     [InlineData("rank=invalid")]
     [InlineData("limit=0")]
-    [InlineData("limit=251")]
+    [InlineData("limit=501")]
     [InlineData("nodeId=invalid")]
     [InlineData("fromUtc=invalid")]
     [InlineData("toUtc=0001-01-01T00:00Z")]
@@ -490,7 +624,7 @@ public sealed class OperationProfilingDashboardTests
         var client = app.GetTestClient();
         foreach (var path in new[] { "/operations", "/operations/content", "/operations/api/groups", "/operations/api/records", "/operations/api/analysis" })
         {
-            var response = await client.GetAsync("/admin/profiling" + path + "?limit=251");
+            var response = await client.GetAsync("/admin/profiling" + path + "?limit=501");
             response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
             (await response.Content.ReadAsStringAsync()).ShouldContain("Invalid bounded profiling selector");
         }

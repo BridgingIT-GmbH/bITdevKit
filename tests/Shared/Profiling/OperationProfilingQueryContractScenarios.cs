@@ -11,6 +11,89 @@ using Xunit;
 
 public abstract partial class ProfilingStorageContractTestsBase
 {
+    /// <summary>Changing the page size preserves the selected history and cursor order, including 500-row pages.</summary>
+    /// <example><code>await suite.GroupPaging_ChangingRowSize_PreservesBoundaryAndEveryRecord(OperationProfilingView.Recent);</code></example>
+    [Theory]
+    [InlineData(OperationProfilingView.Recent)]
+    [InlineData(OperationProfilingView.Slow)]
+    [InlineData(OperationProfilingView.ByCount)]
+    public async Task GroupPaging_ChangingRowSize_PreservesBoundaryAndEveryRecord(OperationProfilingView view)
+    {
+        var h = await this.CreateAsync();
+        var expected = Enumerable.Range(0, 603).Select(index => h.Record("rows:" + index)).ToArray();
+        foreach (var batch in expected.Select((record, index) => h.Envelope(record, index + 1)).Chunk(200))
+        {
+            (await h.Store.AppendAsync(batch)).IsSuccess.ShouldBeTrue();
+        }
+
+        var query = h.Query() with { View = view, PageSize = 1 };
+        var seen = new HashSet<Guid>();
+        ProfilingQueryBoundary boundary = null;
+        foreach (var size in new[] { 1, 2, 500, 100 })
+        {
+            query = query with { PageSize = size };
+            var page = await h.Store.GroupAsync(query);
+            page.IsSuccess.ShouldBeTrue();
+            page.Value.TotalOperationCount.ShouldBe(603);
+            if (boundary is not null) { page.Value.Boundary.ShouldBe(boundary); }
+
+            boundary = page.Value.Boundary;
+            var records = page.Value.Groups.SelectMany(group => view == OperationProfilingView.ByCount ? [group.Representative] : group.Occurrences).ToArray();
+            records.Length.ShouldBe(size);
+            foreach (var record in records) { seen.Add(record.Id).ShouldBeTrue(); }
+
+            query = query with { Cursor = page.Value.NextCursor };
+        }
+
+        query.Cursor.ShouldBeNull();
+        seen.SetEquals(expected.Select(record => record.Id)).ShouldBeTrue();
+    }
+
+    /// <summary>Recent deltas include delayed and equal-timestamp captures, with full counts and stable paging.</summary>
+    /// <example><code>await suite.Recent_PublicationCheckpoint_IncludesDelayedRecordsAndPreservesCounts();</code></example>
+    [Fact]
+    public async Task Recent_PublicationCheckpoint_IncludesDelayedRecordsAndPreservesCounts()
+    {
+        var h = await this.CreateAsync();
+        var original = h.Record();
+        (await h.Store.AppendAsync([h.Envelope(original, 1)])).IsSuccess.ShouldBeTrue();
+        h.Clock.Advance(TimeSpan.FromSeconds(1));
+        var query = h.Query() with { View = OperationProfilingView.Recent, Key = "Report", ToUtc = null, PageSize = 1 };
+        var initial = (await h.Store.GroupAsync(query)).Value;
+        var delayed = original with { Id = Guid.NewGuid(), StartedUtc = original.StartedUtc.AddMinutes(-1), CompletedUtc = original.CompletedUtc.AddMinutes(-1) };
+        var sameTime = original with { Id = Guid.NewGuid() };
+        (await h.Store.AppendAsync([h.Envelope(delayed, 2), h.Envelope(sameTime, 3), h.Envelope(h.Record("Other"), 4)])).IsSuccess.ShouldBeTrue();
+        h.Clock.Advance(TimeSpan.FromSeconds(1));
+        var tail = query with { AfterCommitWatermark = initial.Boundary.CommitWatermark };
+
+        var page = await h.Store.GroupAsync(tail);
+
+        page.IsSuccess.ShouldBeTrue();
+        page.Value.TotalOperationCount.ShouldBe(3);
+        page.Value.Groups.Single().Count.ShouldBe(3);
+        page.Value.Groups.Single().Occurrences.Single().Id.ShouldBe(sameTime.Id);
+        page.Value.HasMore.ShouldBeTrue();
+        var duringPaging = h.Record();
+        (await h.Store.AppendAsync([h.Envelope(duringPaging, 5)])).IsSuccess.ShouldBeTrue();
+        h.Clock.Advance(TimeSpan.FromSeconds(1));
+        var next = await h.Store.GroupAsync(tail with { Cursor = page.Value.NextCursor });
+        next.IsSuccess.ShouldBeTrue();
+        next.Value.Groups.Single().Occurrences.Single().Id.ShouldBe(delayed.Id);
+        next.Value.TotalOperationCount.ShouldBe(3);
+        next.Value.HasMore.ShouldBeFalse();
+        var fresh = await h.Store.QueryAsync(query with { AfterCommitWatermark = page.Value.Boundary.CommitWatermark });
+        fresh.IsSuccess.ShouldBeTrue();
+        fresh.Value.Records.Single().Id.ShouldBe(duringPaging.Id);
+        fresh.Value.TotalCount.ShouldBe(4);
+        var empty = await h.Store.QueryAsync(query with { AfterCommitWatermark = fresh.Value.Boundary.CommitWatermark });
+        empty.IsSuccess.ShouldBeTrue();
+        empty.Value.Records.ShouldBeEmpty();
+        empty.Value.TotalCount.ShouldBe(4);
+        (await h.Store.QueryAsync(query with { AfterCommitWatermark = fresh.Value.Boundary.CommitWatermark + 1 })).Errors.ShouldContain(error => error is ProfilingQueryBoundaryError);
+        (await h.Store.QueryAsync(query with { AfterCommitWatermark = -1 })).Errors.ShouldContain(error => error is ProfilingValidationError);
+        (await h.Store.QueryAsync(query with { AfterCommitWatermark = 0, View = OperationProfilingView.ByCount })).Errors.ShouldContain(error => error is ProfilingValidationError);
+    }
+
     /// <summary>An open end advances for fresh queries while subsequent pages retain the original end and commit boundary.</summary>
     /// <example><code>await suite.Query_OpenEnd_RefreshesNowAndPreservesPagingBoundary();</code></example>
     [Fact]

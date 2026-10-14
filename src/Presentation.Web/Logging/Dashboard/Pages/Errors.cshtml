@@ -299,7 +299,7 @@
         refreshButton.addEventListener('click', refreshContent);
 
         purgeButton.addEventListener('click', async () => {
-            if (!window.confirm('Purge retained log entries? This cannot be undone.')) {
+            if (!await window.bdkDashboard.confirmAction({ title: 'Purge log entries', message: 'Purge retained log entries? This cannot be undone.', confirmText: 'Purge' })) {
                 return;
             }
 

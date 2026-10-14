@@ -447,6 +447,8 @@ Profiling adds **Operations** and **Requests** cards beside its Profiling status
 
 The [page index](#getting-started) links each feature's dashboard guide and full-size screenshots. Those guides describe filters, detail dialogs, provider requirements and actions. Open a card to inspect that feature; use a correlation link in a detail dialog to continue into Logs.
 
+Dashboard actions use compact, themed confirmation and message dialogs. Cancel, Close or Escape dismisses a confirmation without executing the action. A confirmation opened from a details dialog returns to those details when dismissed.
+
 ### Quick date/time ranges
 
 Logs, Errors, Change History, Operations and Requests offer a **Quick range** clock icon immediately before the From UTC input. Open its menu to choose a preset. Choose Last minute, Last 5 or 15 minutes, Last hour, Last 6 hours, Last day, Last week or Last 30 days. The control fills **From UTC** with the selected interval before now and clears **To UTC**. An empty end includes new records on refresh. From UTC remains fixed until you edit it or choose a preset again. The pickers show only hours and minutes, with seconds defaulting to `00`; recorded timestamps and timings retain their precision. Select **Apply** to use the range. Day and week mean the previous 24 hours and 7 days, including across daylight-saving changes.

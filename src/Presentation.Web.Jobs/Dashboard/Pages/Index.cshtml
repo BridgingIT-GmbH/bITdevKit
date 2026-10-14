@@ -286,7 +286,7 @@ DashboardEndpointsOptions();
       };
 
       window.bdkJobsPurge = async function(url) {
-        if (!window.confirm('Purge retained terminal job occurrences? This cannot be undone.')) {
+        if (!await window.bdkDashboard.confirmAction({ title: 'Purge job occurrences', message: 'Purge retained terminal job occurrences? This cannot be undone.', confirmText: 'Purge' })) {
           return;
         }
 

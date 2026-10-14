@@ -1,0 +1,89 @@
+@inherits RazorSlice
+<div class="modal fade" id="dashboard-dialog-modal" tabindex="-1" aria-labelledby="dashboard-dialog-heading" aria-describedby="dashboard-dialog-selection dashboard-dialog-message" aria-hidden="true">
+    <div class="modal-dialog"><div class="modal-content">
+        <div class="modal-header py-2"><h2 id="dashboard-dialog-heading" class="modal-title h6"></h2><button class="btn-close" type="button" data-bs-dismiss="modal" aria-label="Close"></button></div>
+        <div class="modal-body py-2 small">
+            <div id="dashboard-dialog-selection" class="fw-semibold text-break mb-1" hidden></div>
+            <p id="dashboard-dialog-message" class="mb-0 text-break"></p>
+        </div>
+        <div class="modal-footer py-2"><button id="dashboard-dialog-dismiss" class="btn btn-outline-secondary btn-sm" type="button" data-bs-dismiss="modal">Cancel</button><button id="dashboard-dialog-confirm" class="btn btn-danger btn-sm" type="button"></button></div>
+    </div></div>
+</div>
+<script>
+(() => {
+    const element = document.getElementById('dashboard-dialog-modal');
+    const heading = document.getElementById('dashboard-dialog-heading');
+    const selection = document.getElementById('dashboard-dialog-selection');
+    const message = document.getElementById('dashboard-dialog-message');
+    const confirm = document.getElementById('dashboard-dialog-confirm');
+    const dismiss = document.getElementById('dashboard-dialog-dismiss');
+    let queue = Promise.resolve(), confirmationPending = false;
+
+    function hideModal(target) {
+        const instance = window.bootstrap.Modal.getOrCreateInstance(target);
+        return new Promise(resolve => {
+            const hide = () => instance.hide();
+            target.addEventListener('shown.bs.modal', hide, { once: true });
+            target.addEventListener('hidden.bs.modal', () => {
+                target.removeEventListener('shown.bs.modal', hide);
+                resolve();
+            }, { once: true });
+            hide();
+        });
+    }
+
+    function showModal(target) {
+        return new Promise(resolve => {
+            target.addEventListener('shown.bs.modal', resolve, { once: true });
+            window.bootstrap.Modal.getOrCreateInstance(target).show();
+        });
+    }
+
+    async function openDialog(options) {
+        const trigger = document.activeElement;
+        const parent = document.querySelector('.modal.show');
+        if (parent) await hideModal(parent);
+
+        heading.textContent = options.title;
+        selection.textContent = options.selection || '';
+        selection.hidden = !options.selection;
+        message.textContent = options.message;
+        message.className = 'mb-0 text-break' + (options.kind === 'danger' ? ' text-danger' : '');
+        confirm.textContent = options.confirmText || 'Confirm';
+        confirm.hidden = !options.isConfirmation;
+        confirm.disabled = false;
+        dismiss.textContent = options.isConfirmation ? 'Cancel' : 'Close';
+
+        let accepted = false;
+        confirm.onclick = () => {
+            accepted = true;
+            confirm.disabled = true;
+            window.bootstrap.Modal.getInstance(element).hide();
+        };
+        const closed = new Promise(resolve => element.addEventListener('hidden.bs.modal', resolve, { once: true }));
+        await showModal(element);
+        dismiss.focus();
+        await closed;
+        confirm.onclick = null;
+        if (parent?.isConnected) await showModal(parent);
+        if (trigger?.isConnected && trigger.getClientRects().length) trigger.focus();
+        return accepted;
+    }
+
+    function enqueue(options) {
+        const pending = queue.then(() => openDialog(options));
+        queue = pending.catch(() => {});
+        return pending;
+    }
+
+    window.bdkDashboard.confirmAction = function(options) {
+        if (confirmationPending) return Promise.resolve(false);
+        confirmationPending = true;
+        return enqueue({ ...options, isConfirmation: true })
+            .finally(() => { confirmationPending = false; });
+    };
+    window.bdkDashboard.showMessage = function(options) {
+        return enqueue({ title: 'Dashboard', ...options, isConfirmation: false });
+    };
+})();
+</script>

@@ -1500,6 +1500,7 @@
 </head>
 
 <body>
+    @(await RenderPartialAsync<_DashboardDialogs>())
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <div class="dashboard-navbar-heading">
             <a class="navbar-brand me-0 px-3" href="@dashboardHomePath" title="@dashboardTitle">@dashboardTitle</a>

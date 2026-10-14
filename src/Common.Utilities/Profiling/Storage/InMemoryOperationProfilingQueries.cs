@@ -24,7 +24,7 @@ public sealed partial class InMemoryProfilingStorageProvider
             }
 
             var (normalized, boundary, cursor, matching) = selection.Value;
-            var ordered = Order(matching, normalized.View);
+            var ordered = Order(matching.Where(r => normalized.AfterCommitWatermark is null || this.records[r.Id].CommitWatermark > normalized.AfterCommitWatermark), normalized.View);
             var page = ordered.Where(r => After(r, normalized.View, cursor)).Take(normalized.PageSize + 1).ToArray();
             var hasMore = page.Length > normalized.PageSize;
             var values = page.Take(normalized.PageSize).ToArray();
@@ -70,7 +70,8 @@ public sealed partial class InMemoryProfilingStorageProvider
             }
             else
             {
-                var ordered = Order(matching, normalized.View).Where(r => After(r, normalized.View, cursor)).Take(normalized.PageSize + 1).ToArray();
+                var ordered = Order(matching.Where(r => normalized.AfterCommitWatermark is null || this.records[r.Id].CommitWatermark > normalized.AfterCommitWatermark), normalized.View)
+                    .Where(r => After(r, normalized.View, cursor)).Take(normalized.PageSize + 1).ToArray();
                 hasMore = ordered.Length > normalized.PageSize;
                 var visible = ordered.Take(normalized.PageSize).ToArray();
                 groups = visible.GroupBy(r => GroupKey(r, normalized), StringComparer.Ordinal)
@@ -136,6 +137,8 @@ public sealed partial class InMemoryProfilingStorageProvider
             {
                 return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError());
             }
+
+            if (normalized.AfterCommitWatermark > boundary.CommitWatermark) { return Result<QuerySelection>.Failure(new ProfilingQueryBoundaryError()); }
 
             var matching = this.records.Values.Where(r => r.CommitWatermark <= boundary.CommitWatermark && Matches(r.Envelope.Record, normalized)).Select(r => r.Envelope.Record).ToArray();
             return Result<QuerySelection>.Success(new(normalized, boundary, cursor, matching));

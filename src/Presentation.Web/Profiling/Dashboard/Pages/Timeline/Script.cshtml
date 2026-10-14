@@ -130,7 +130,6 @@
             tick.textContent = (end - start > 86400000 ? date.toISOString().slice(5, 10) + ' ' : '') + date.toISOString().slice(11, 16);
         });
         document.getElementById('timeline-period').textContent = '· ' + utc(start) + ' → ' + utc(end) + ' UTC';
-        document.getElementById('timeline-mode').textContent = applied.toUtc ? 'History' : 'Live · following now';
     }
     async function refresh() {
         clearTimeout(refreshTimer);

@@ -22,7 +22,6 @@
     let applied = Object.fromEntries(new FormData(form));
     const number = value => Number(value || 0).toLocaleString();
     const duration = value => value == null ? '—' : value >= 1000 ? (value / 1000).toFixed(3) + ' s' : value.toFixed(3) + ' ms';
-    const utc = value => new Date(value).toISOString().slice(0, 19).replace('T', ' ');
     const failed = value => value.outcomes?.Failed || 0;
     const rate = value => value.count ? (failed(value) / value.count * 100).toFixed(1) + '%' : '—';
     const identity = group => JSON.stringify([group.kind, group.key, group.httpMethod]);
@@ -78,7 +77,6 @@
             document.getElementById(id).closest('.dashboard-metric').dataset.metricTone = count > 0 ? tone : '';
         }
         document.getElementById('insights-groups').textContent = number(value.groups.length) + ' of ' + number(value.groupCount) + ' groups';
-        document.getElementById('insights-period').textContent = utc(value.fromUtc) + ' → ' + utc(value.toUtc) + ' UTC';
         const node = document.getElementById('operation-node'), selected = node.value;
         node.replaceChildren(new Option('All nodes', ''), ...(value.nodes || []).map(item => { const option = new Option(item.name, item.id); option.title = item.details; return option; }));
         if (selected && ![...node.options].some(option => option.value === selected)) node.add(new Option(selected, selected)); node.value = selected;

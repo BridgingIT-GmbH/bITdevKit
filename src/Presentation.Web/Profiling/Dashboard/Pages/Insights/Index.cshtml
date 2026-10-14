@@ -13,7 +13,6 @@
     var kinds = Enum.GetNames<OperationProfilingKind>().Concat(new[] { "ActiveEntity", "Repository", "FileStorage", "DocumentStorage", "BlobStorage", "MessageHandler", "NotifierHandler" }).Distinct().Order(StringComparer.OrdinalIgnoreCase);
 }
 <div class="d-flex flex-wrap align-items-center gap-2 py-2 mb-2 border-bottom">
-    <span class="small text-muted" id="insights-period"></span>
     <div class="d-flex flex-wrap align-items-center gap-2 ms-auto"><span id="insights-status" class="small text-muted" role="status">Loading insights</span><select id="insights-refresh" class="form-select form-select-sm w-auto" aria-label="Insights refresh interval"><option value="" selected>Off</option><option value="5000">5 sec</option><option value="15000">15 sec</option><option value="30000">30 sec</option></select><button id="insights-refresh-now" class="btn btn-outline-warning btn-sm" type="button" aria-label="Refresh insights" title="Refresh insights"><i class="bi bi-arrow-clockwise" aria-hidden="true"></i></button></div>
 </div>
 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ViewNavigation, string>("insights"))

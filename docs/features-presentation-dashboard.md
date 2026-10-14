@@ -223,7 +223,7 @@ Built-in page keys:
 | Profiling | `profiling` | [Profiling](features-profiling.md#dashboard) | [Runtime](assets/dashboard/profiling/runtime-overview.png), [Operations](assets/dashboard/profiling/operations.png), [Requests](assets/dashboard/profiling/requests.png) |
 | Identity | `identity` | [Authentication](features-presentation-authentication.md#dashboard-identity) | [Identity](assets/dashboard/02-identity-identity.png) |
 | Console | `console` | [Console commands](features-presentation-console-commands.md#dashboard-console) | [Console](assets/dashboard/15-console-console.png) |
-| MCP | `mcp` | [MCP](features-cli-mcp.md#dashboard-inspection) | [MCP](assets/dashboard/16-mcp-mcp.png) |
+| MCP | `mcp` | [MCP](features-cli-mcp.md#dashboard-inspection) (opened from the robot icon in the header) | [MCP](assets/dashboard/16-mcp-mcp.png) |
 | Logs | `logging.logs` | [Log Entries](features-log-entries.md#search-persisted-logs) | [Logs](assets/dashboard/07-logentries-logs.png) |
 | Errors | `logging.errors` | [Log Entries](features-log-entries.md#investigate-errors) | [Errors](assets/dashboard/08-errors-errors.png) |
 | Logs Stream | `logging.stream` | [Log Entries](features-log-entries.md#follow-a-live-stream) | [Logs Stream](assets/dashboard/09-logentries-stream-logs-stream.png) |

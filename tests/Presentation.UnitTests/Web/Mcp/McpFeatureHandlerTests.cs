@@ -296,6 +296,7 @@ public sealed class McpFeatureHandlerTests
         // Assert
         page.Title.ShouldBe("MCP");
         page.Url.ShouldBe("/_bdk/dashboard/mcp");
+        page.ShowInSidebar.ShouldBeFalse();
     }
 
     [Fact]

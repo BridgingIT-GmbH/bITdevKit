@@ -19,6 +19,7 @@ This changelog includes unreleased changes on `main` and the full tagged release
 - Changed Runtime profiling deletion and clear confirmations to compact dashboard dialogs with inline errors and retry support.
 - Changed browser confirmations and alerts across the dashboard to shared, themed dialogs, including purge actions, document and permalink deletion, and Change History restore errors.
 - Changed the profiling Timeline to update automatically while following now, without a refresh-interval selector. Fixed historical ranges use manual refresh.
+- Changed the dashboard MCP page to open from a robot icon in the header bar instead of a sidebar item. The icon turns accent-coloured while an MCP server is connected to the runtime and updates live.
 - Changed profiling registration to `AddProfiling(...).WithRuntimeProfiling(...).WithOperationProfiling(...).WithRequestProfiling(...)`. Request profiling requires Operation Profiling.
 - Changed: renamed the Runtime Profiling API, options, store types, and Entity Framework registration (`WithRuntimeProfiling`, Runtime-prefixed types). Runtime dashboard pages moved under `/profiling/runtime` and console commands under `profiling runtime`.
 

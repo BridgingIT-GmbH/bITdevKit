@@ -502,7 +502,7 @@ A query about profiling a job or pipeline combines profiling guidance with the m
 
 ## Dashboard inspection
 
-Open MCP at `/_bdk/dashboard/mcp` with the host MCP runtime and [Dashboard](features-presentation-dashboard.md) registered. The page lists handler registrations and their operation counts, toolsets and features. Its Operations table shows each capability's owner, category, handler and description.
+Open MCP from the robot icon in the dashboard header bar, or at `/_bdk/dashboard/mcp`, with the host MCP runtime and [Dashboard](features-presentation-dashboard.md) registered. The page is not listed in the sidebar. The icon stays muted while no `bdk mcp` server is connected to the runtime and uses the theme accent colour with an accent border when one is; it updates every 10 seconds without a page reload. The page lists handler registrations and their operation counts, toolsets and features. Its Operations table shows each capability's owner, category, handler and description.
 
 [![MCP dashboard inventory of registered handlers and their exposed features](assets/dashboard/16-mcp-mcp.png)](assets/dashboard/16-mcp-mcp.png)
 

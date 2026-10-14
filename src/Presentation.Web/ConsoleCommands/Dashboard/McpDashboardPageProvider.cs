@@ -34,6 +34,7 @@ public sealed class McpDashboardPageProvider(DashboardEndpointsOptions options) 
             Group = "bdk",
             GroupOrder = 0,
             Order = 55,
+            ShowInSidebar = false,
             Description = "Local MCP handlers and IPC bridge",
             Card = GetCardAsync
         };

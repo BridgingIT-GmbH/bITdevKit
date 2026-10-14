@@ -17,6 +17,11 @@
     var signOutPath = DashboardPath.Combine(dashboardOptions.GroupPath, dashboardOptions.EndpointPaths.SignOut);
     var dashboardHomePath = DashboardPath.Combine(HttpContext.Request.PathBase, dashboardOptions.GroupPath);
     var currentDashboardUrl = $"{HttpContext.Request.PathBase}{HttpContext.Request.Path}{HttpContext.Request.QueryString}";
+    IReadOnlyList<DashboardPage> dashboardPages = hideSideBar ? [] : HttpContext.GetDashboardPages();
+    var mcpPage = dashboardPages.FirstOrDefault(page => string.Equals(page.Key, "mcp", StringComparison.OrdinalIgnoreCase));
+    var mcpStatus = mcpPage is null ? null : BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.McpDashboardStatus.Get(HttpContext.RequestServices);
+    var mcpStatusPath = BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard.McpDashboardEndpoints.BuildMcpStatusPath(dashboardOptions);
+    var mcpActive = mcpPage is not null && HttpContext.Request.Path.Value?.TrimEnd('/').StartsWith(mcpPage.Url.Split('?')[0].TrimEnd('/'), StringComparison.OrdinalIgnoreCase) == true;
 }
 
 <!DOCTYPE html>
@@ -873,6 +878,38 @@
             flex-shrink: 0;
         }
 
+        .dashboard-mcp-toggle:hover,
+        .dashboard-mcp-toggle:focus,
+        .dashboard-mcp-toggle.active {
+            color: var(--dashboard-active-fg);
+            background: var(--dashboard-active-bg);
+            border-color: var(--dashboard-panel-border-hover);
+        }
+
+        .dashboard-mcp-toggle {
+            text-decoration: none;
+        }
+
+        .dashboard-mcp-toggle i {
+            color: var(--bs-secondary-color);
+        }
+
+        .dashboard-mcp-toggle:hover i,
+        .dashboard-mcp-toggle:focus i,
+        .dashboard-mcp-toggle.active i {
+            color: var(--dashboard-active-fg);
+        }
+
+        .dashboard-mcp-toggle.dashboard-mcp-toggle-connected,
+        .dashboard-mcp-toggle.dashboard-mcp-toggle-connected i {
+            color: var(--bs-primary);
+        }
+
+        .dashboard-mcp-toggle.dashboard-mcp-toggle-connected {
+            background: rgba(var(--bs-primary-rgb), .14);
+            border-color: var(--bs-primary);
+        }
+
         .dashboard-theme-picker .dropdown-menu {
             bottom: auto !important;
             display: none;
@@ -1566,6 +1603,18 @@
                 <a class="btn dashboard-header-action dashboard-docs-link" href="https://bridgingit-gmbh.github.io/bITdevKit/" target="_blank" rel="noopener noreferrer" aria-label="Open documentation" title="Documentation">
                     <i class="bi bi-book" aria-hidden="true"></i>
                 </a>
+                @if (mcpPage is not null)
+                {
+                    <a class="btn dashboard-header-action dashboard-mcp-toggle @(mcpStatus.IsConnected ? "dashboard-mcp-toggle-connected" : "") @(mcpActive ? "active" : "")"
+                       href="@mcpPage.Url"
+                       aria-label="@mcpStatus.Title"
+                       title="@mcpStatus.Title"
+                       data-mcp-status="@mcpStatus.Status"
+                       data-mcp-status-url="@mcpStatusPath"
+                       aria-current="@(mcpActive ? "page" : null)">
+                        <i class="bi bi-robot"></i>
+                    </a>
+                }
                 <button class="btn dashboard-header-action dashboard-window-toggle" type="button" aria-label="Open current dashboard page in a new window" title="Open in new window">
                     <i class="bi bi-box-arrow-up-right"></i>
                 </button>
@@ -1591,7 +1640,7 @@
             @if (!hideSideBar)
             {
                 var pageSidebarItems = new List<DashboardSidebarItem>();
-                foreach (var page in HttpContext.GetDashboardPages().Where(page => page.ShowInSidebar))
+                foreach (var page in dashboardPages.Where(page => page.ShowInSidebar))
                 {
                     pageSidebarItems.Add(new DashboardSidebarItem(page.Title, page.Icon, page.Url)
                     {
@@ -1783,6 +1832,39 @@
             });
         }
 
+        function setupMcpStatusToggle() {
+            const toggle = document.querySelector('.dashboard-mcp-toggle[data-mcp-status-url]');
+            if (!toggle) {
+                return;
+            }
+
+            const refreshIntervalMs = 10000;
+            const apply = state => {
+                toggle.classList.toggle('dashboard-mcp-toggle-connected', state.connected === true);
+                toggle.dataset.mcpStatus = state.status;
+                toggle.title = state.title;
+                toggle.setAttribute('data-bs-original-title', state.title);
+                toggle.setAttribute('aria-label', state.title);
+            };
+            const refresh = async () => {
+                if (document.hidden) {
+                    return;
+                }
+
+                try {
+                    const response = await fetch(toggle.dataset.mcpStatusUrl, { cache: 'no-store', headers: { 'X-Requested-With': 'fetch' } });
+                    if (response.ok) {
+                        apply(await response.json());
+                    }
+                } catch {
+                    // keep the last known state when the status request fails
+                }
+            };
+
+            window.setInterval(refresh, refreshIntervalMs);
+            document.addEventListener('visibilitychange', refresh);
+        }
+
         function setupDashboardDatePickers() {
             document.addEventListener('click', event => {
                 const button = event.target.closest('[data-dashboard-date-picker-button]');
@@ -1832,6 +1914,7 @@
             window.bdkTheme.initialize();
             setupTextureToggle();
             setupDashboardWindowToggle();
+            setupMcpStatusToggle();
             setupDashboardDatePickers();
             setupSidebarToggle();
             setupSidebarGroups();

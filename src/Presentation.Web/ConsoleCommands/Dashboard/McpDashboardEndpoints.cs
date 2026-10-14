@@ -6,6 +6,7 @@
 namespace BridgingIT.DevKit.Presentation.Web.ConsoleCommands.Dashboard;
 
 using BridgingIT.DevKit.Presentation.Web.Dashboard;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 
@@ -21,6 +22,7 @@ public sealed class McpDashboardEndpoints(DashboardEndpointsOptions options) : E
 {
     private const string McpPath = "/mcp";
     private const string McpContentPath = "/mcp/content";
+    private const string McpStatusPath = "/mcp/status";
 
     /// <inheritdoc />
     public override void Map(IEndpointRouteBuilder app)
@@ -46,11 +48,27 @@ public sealed class McpDashboardEndpoints(DashboardEndpointsOptions options) : E
             "_bdk.Dashboard.McpContent",
             "Dashboard MCP Content",
             "Shows the MCP dashboard content fragment.");
+
+        group.MapGet(McpStatusPath, (HttpContext context) =>
+            {
+                var status = McpDashboardStatus.Get(context.RequestServices);
+
+                return Results.Json(new { status = status.Status, connected = status.IsConnected, title = status.Title });
+            })
+            .WithName("_bdk.Dashboard.McpStatus")
+            .WithSummary("Dashboard MCP Status")
+            .WithDescription("Returns the MCP server connection state shown in the dashboard header.")
+            .Produces(StatusCodes.Status200OK);
     }
 
     internal static string BuildMcpPath(DashboardEndpointsOptions options)
     {
         return DashboardPath.Combine(options?.GroupPath, McpPath);
+    }
+
+    internal static string BuildMcpStatusPath(DashboardEndpointsOptions options)
+    {
+        return DashboardPath.Combine(options?.GroupPath, McpStatusPath);
     }
 
     internal static string BuildMcpContentPath(DashboardEndpointsOptions options)

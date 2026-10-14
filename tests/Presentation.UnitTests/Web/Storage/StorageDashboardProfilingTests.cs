@@ -16,17 +16,15 @@ using Microsoft.Extensions.DependencyInjection;
 /// <example>Run with the StorageDashboardProfilingTests filter.</example>
 public sealed class StorageDashboardProfilingTests
 {
-    /// <summary>Files, documents and blobs produce independent storage operations only when their excluded action paths are opted in.</summary>
-    /// <example><code>await suite.DashboardActions_OptIn_CapturesStorageOperations(true);</code></example>
-    [Theory]
-    [InlineData(false)]
-    [InlineData(true)]
-    public async Task DashboardActions_OptIn_CapturesStorageOperations(bool optIn)
+    /// <summary>Files, documents and blobs produce independent operations for dashboard actions and reads despite HTTP exclusion.</summary>
+    /// <example><code>await suite.DashboardActions_HttpExcluded_CapturesStorageOperations();</code></example>
+    [Fact]
+    public async Task DashboardActions_HttpExcluded_CapturesStorageOperations()
     {
         var builder = WebApplication.CreateBuilder();
         builder.WebHost.UseTestServer();
         builder.Services.AddProfiling(o => o.Enabled()).WithOperationProfiling()
-            .WithRequestProfiling(o => { if (optIn) { o.AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"); } });
+            .WithRequestProfiling();
         builder.Services.AddFileStorage(factory => factory.RegisterProvider("documents", o => o.UseInMemory("documents").WithProfiling()));
         builder.Services.AddDocumentStorage().WithProfilingBehavior<TestDocument>()
             .RegisterProvider<TestDocument>(_ => new InMemoryDocumentStoreProvider(), name: "archive");
@@ -54,6 +52,7 @@ public sealed class StorageDashboardProfilingTests
             ["clientId"] = descriptor.ClientId, ["partitionKey"] = "test", ["rowKey"] = "one", ["content"] = "{\"Name\":\"test\"}"
         }));
         document.EnsureSuccessStatusCode();
+        document.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBeFalse();
         using var upload = new MultipartFormDataContent();
         upload.Add(new StringContent("reports"), "store");
         upload.Add(new StringContent("test"), "container");
@@ -61,27 +60,29 @@ public sealed class StorageDashboardProfilingTests
         upload.Add(new ByteArrayContent([1, 2, 3]), "file", "profiling.txt");
         using var blob = await client.PostAsync("/_bdk/dashboard/storage/blobs/actions/upload", upload);
         blob.EnsureSuccessStatusCode();
+        blob.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBeFalse();
         await writer.TickAsync();
         var queries = app.Services.GetRequiredService<IOperationProfilingQueryService>();
         var records = await queries.QueryAsync(new() { Outcomes = [], PageSize = 100 });
         records.IsSuccess.ShouldBeTrue();
-        records.Value.Records.Count.ShouldBe(optIn ? 3 : 0);
-        if (optIn)
-        {
-            records.Value.Records.Select(record => record.Kind).Order().ShouldBe(["BlobStorage", "DocumentStorage", "FileStorage"]);
-            records.Value.Records.Single(record => record.Kind == "FileStorage").Dimensions.Single(d => d.Key == "filestorage.location").Value.Scalar.ShouldBe("documents");
-            records.Value.Records.Single(record => record.Kind == "BlobStorage").Dimensions.Single(d => d.Key == "blobstorage.container").Value.Scalar.ShouldBe("test");
-            records.Value.Records.Single(record => record.Kind == "DocumentStorage").Dimensions.Single(d => d.Key == "documentstorage.client").Value.Scalar.ShouldBe("archive");
-        }
+        records.Value.Records.Count.ShouldBe(3);
+        records.Value.Records.Select(record => record.Kind).Order().ShouldBe(["BlobStorage", "DocumentStorage", "FileStorage"]);
+        records.Value.Records.Single(record => record.Kind == "FileStorage").Dimensions.Single(d => d.Key == "filestorage.location").Value.Scalar.ShouldBe("documents");
+        records.Value.Records.Single(record => record.Kind == "BlobStorage").Dimensions.Single(d => d.Key == "blobstorage.container").Value.Scalar.ShouldBe("test");
+        records.Value.Records.Single(record => record.Kind == "DocumentStorage").Dimensions.Single(d => d.Key == "documentstorage.client").Value.Scalar.ShouldBe("archive");
 
         foreach (var storage in new[] { "files", "documents", "blobs" })
         {
             using var poll = await client.GetAsync($"/_bdk/dashboard/storage/{storage}/content");
             poll.EnsureSuccessStatusCode();
+            poll.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBeFalse();
         }
 
         await writer.TickAsync();
-        (await queries.QueryAsync(new() { Outcomes = [] })).Value.TotalCount.ShouldBe(optIn ? 3 : 0);
+        var afterReads = await queries.QueryAsync(new() { Outcomes = [], PageSize = 100 });
+        afterReads.IsSuccess.ShouldBeTrue();
+        afterReads.Value.TotalCount.ShouldBeGreaterThan(3);
+        afterReads.Value.Records.ShouldAllBe(record => record.Kind != "HttpRequest");
     }
 
     /// <summary>Defines an isolated test document without touching application data.</summary>

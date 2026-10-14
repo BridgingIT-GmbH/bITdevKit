@@ -175,8 +175,7 @@ builder.Services.AddProfiling(o => o
         .Enabled(builder.Environment.IsDevelopment()))
     .WithRuntimeProfiling()
     .WithOperationProfiling()
-    .WithRequestProfiling(o => o.StripPathPrefix("/api")
-        .AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"))
+    .WithRequestProfiling(o => o.StripPathPrefix("/api"))
     .AddConsoleCommands(builder.Environment.IsDevelopment());
 builder.Services.AddDashboard(o => o
     .Enabled(builder.Environment.IsDevelopment())

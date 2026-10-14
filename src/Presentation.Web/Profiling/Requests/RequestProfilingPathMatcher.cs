@@ -21,7 +21,7 @@ public sealed class RequestProfilingPathMatcher
         ArgumentNullException.ThrowIfNull(patterns);
         if (patterns.Count > 128)
         {
-            throw new ArgumentException("At most 128 request blacklist patterns are supported.", nameof(patterns));
+            throw new ArgumentException("At most 128 request path patterns are supported.", nameof(patterns));
         }
 
         this.patterns = new string[patterns.Count][];
@@ -31,7 +31,7 @@ public sealed class RequestProfilingPathMatcher
             if (string.IsNullOrWhiteSpace(pattern) || pattern.Length > 256 || pattern[0] != '/' || pattern.Contains('?') || pattern.Contains('#')
                 || pattern.Any(c => char.IsControl(c) || c is '{' or '}' or '[' or ']' or '(' or ')' or '\\'))
             {
-                throw new ArgumentException("A blacklist pattern must be an anchored literal path with supported wildcard segments.", nameof(patterns));
+                throw new ArgumentException("A request path pattern must be an anchored literal path with supported wildcard segments.", nameof(patterns));
             }
 
             var segments = pattern.TrimEnd('/').Split('/').Skip(1).ToArray();

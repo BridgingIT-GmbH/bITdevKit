@@ -22,7 +22,7 @@ public interface IRequestProfilingFeature
     /// <summary>Gets the bounded default key chosen at entry, unaffected by controller overrides.</summary>
     /// <example><code>var initial = feature.InitialKey;</code></example>
     string InitialKey { get; }
-    /// <summary>Gets whether nested instrumentation is suppressed by a blacklist or sampling skip.</summary>
+    /// <summary>Gets whether the adapter established blanket suppression. HTTP exclusions and sampling skips leave business instrumentation eligible.</summary>
     /// <example><code>var suppressed = feature.Suppressed;</code></example>
     bool Suppressed { get; }
     /// <summary>Gets the explicit root handle, independent from the ambient execution or DI scope.</summary>
@@ -59,7 +59,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
     private ProfilingResponseBodyFeature responseObserver;
     private ProfilingRequestBodyObserver requestObserver;
 
-    /// <summary>Creates the selected or suppressed request feature from immutable entry metadata.</summary>
+    /// <summary>Creates the selected or unselected request feature from immutable entry metadata.</summary>
     /// <example>Created once at HTTP middleware entry.</example>
     public RequestProfilingFeature(HttpContext context, IProfilingOperationScope operation, RequestProfilingRuntime runtime,
         HttpRequestProfilingMetadata metadata, bool selected, string initialKey, bool? suppressed = null)
@@ -70,7 +70,7 @@ public sealed class RequestProfilingFeature : IRequestProfilingFeature
         this.runtime = runtime;
         this.metadata = metadata;
         this.Selected = selected;
-        this.Suppressed = suppressed ?? !selected;
+        this.Suppressed = suppressed ?? false;
         this.InitialKey = initialKey;
         try { this.id = operation?.Id ?? Guid.Empty; }
         catch (Exception) { runtime.RecordObservationFailure(); }

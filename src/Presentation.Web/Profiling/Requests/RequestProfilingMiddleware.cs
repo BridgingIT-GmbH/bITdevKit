@@ -30,7 +30,6 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
         RequestProfilingFeature feature = null;
         IProfilingOperationScope operation = null;
         IDisposable boundary = null;
-        IDisposable suppression = null;
         var entered = false;
         try
         {
@@ -53,7 +52,7 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
                 var utc = clock.GetUtcNow();
                 var path = context.Request.PathBase.Add(context.Request.Path).Value;
                 path = string.IsNullOrEmpty(path) ? "/" : path;
-                var blacklisted = runtime.Matcher.IsMatch(path);
+                var blacklisted = runtime.Matcher.IsMatch(path) && !runtime.WhitelistMatcher.IsMatch(path);
                 var (key, shortened) = blacklisted ? ((string)null, false) : RequestProfilingPathMatcher.CreateKey(path, runtime.Options.StripPathPrefix, runtime.MaximumKeyLength);
                 var decision = blacklisted ? new RequestProfilingSamplingDecision(false, "Blacklisted")
                     : runtime.Decide(new(context.Request.Method, path, key, nodes.GetNode(), utc));
@@ -61,7 +60,6 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
 
                 var selected = decision.Capture;
                 boundary = profiler.BeginExecutionBoundary();
-                suppression = selected || blacklisted && runtime.OperationCaptureMatcher.IsMatch(path) ? null : profiler.Suppress();
                 var activeSelected = selected ? runtime.EnterSelected() : (int?)null;
                 entered = selected;
                 operation = selected ? profiler.BeginOperation(new OperationProfilingStartRequest
@@ -77,7 +75,7 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
                     ActiveSelectedRequestsAtEntry = activeSelected,
                     SamplingStrategyKey = runtime.Options.StrategyKey, SamplingConfigurationKey = runtime.Options.ConfigurationKey,
                     SamplingInclusionProbability = decision.InclusionProbability,
-                }, selected, key, suppression is not null);
+                }, selected, key);
                 context.Features.Set<IRequestProfilingFeature>(feature);
                 if (selected)
                 {
@@ -122,7 +120,6 @@ public sealed class RequestProfilingMiddleware(RequestDelegate next, RequestProf
         finally
         {
             feature?.PipelineUnwound(escaped);
-            Safe(() => suppression?.Dispose());
             Safe(() => boundary?.Dispose());
         }
     }

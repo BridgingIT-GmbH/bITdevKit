@@ -20,9 +20,9 @@ public sealed class RequestProfilingOptions
     /// <summary>Gets or sets anchored exclusion patterns matched against the original incoming path; defaults exclude DevKit, root health, API documentation and well-known discovery paths.</summary>
     /// <example><code>options.BlacklistPatterns = ["/_bdk/**", "/health/**"];</code></example>
     public IReadOnlyList<string> BlacklistPatterns { get; set; } = ["/_bdk/**", "/health*", "/swagger/**", "/scalar/**", "/openapi/**", "/.well-known*", "/.well-known/**"];
-    /// <summary>Gets or sets blacklisted paths whose business operations remain eligible without capturing the HTTP request.</summary>
-    /// <example><code>options.OperationCapturePatterns = ["/_bdk/dashboard/storage/*/actions/**"];</code></example>
-    public IReadOnlyList<string> OperationCapturePatterns { get; set; } = [];
+    /// <summary>Gets or sets paths that remain eligible for HTTP capture despite matching the blacklist. Sampling still applies; the default list is empty.</summary>
+    /// <example><code>options.WhitelistPatterns = ["/_bdk/dashboard/app/core/**"];</code></example>
+    public IReadOnlyList<string> WhitelistPatterns { get; set; } = [];
     /// <summary>Gets or sets whether ordinary application request-body consumption is observed.</summary>
     /// <example><code>options.ObserveRequestBodyBytes = true;</code></example>
     public bool ObserveRequestBodyBytes { get; set; }
@@ -63,7 +63,7 @@ public sealed class RequestProfilingOptions
     {
         StripPathPrefix = this.StripPathPrefix,
         BlacklistPatterns = this.BlacklistPatterns?.ToArray(),
-        OperationCapturePatterns = this.OperationCapturePatterns?.ToArray(),
+        WhitelistPatterns = this.WhitelistPatterns?.ToArray(),
         ObserveRequestBodyBytes = this.ObserveRequestBodyBytes,
         CaptureQueryString = this.CaptureQueryString, MaximumQueryStringLength = this.MaximumQueryStringLength,
         RedactedQueryParameters = this.RedactedQueryParameters?.ToArray(),
@@ -92,7 +92,7 @@ public sealed class RequestProfilingOptions
             throw new InvalidOperationException("The request profiling query capture limit and redacted parameter names must be bounded and valid.");
         }
 
-        _ = new RequestProfilingPathMatcher(this.OperationCapturePatterns);
+        _ = new RequestProfilingPathMatcher(this.WhitelistPatterns);
         return new(this.BlacklistPatterns);
     }
 
@@ -115,9 +115,9 @@ public sealed class RequestProfilingOptionsBuilder(RequestProfilingOptions targe
     /// <summary>Replaces the default exclusion patterns; an empty argument list clears all exclusions.</summary>
     /// <example><code>requests.Blacklist("/health/**", "/swagger/**");</code></example>
     public RequestProfilingOptionsBuilder Blacklist(params string[] patterns) { target.BlacklistPatterns = patterns?.ToArray(); return this; }
-    /// <summary>Allows business operation capture for matching blacklisted paths while leaving their HTTP requests excluded. Does not override sampling rejection or explicit suppression.</summary>
-    /// <example><code>requests.AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**");</code></example>
-    public RequestProfilingOptionsBuilder AllowOperationsForBlacklistedPaths(params string[] patterns) { target.OperationCapturePatterns = patterns?.ToArray(); return this; }
+    /// <summary>Replaces the HTTP whitelist. Matching paths override blacklist exclusions but still follow sampling. An empty list clears the whitelist; business operation capture is independent.</summary>
+    /// <example><code>requests.Whitelist("/_bdk/dashboard/app/core/**");</code></example>
+    public RequestProfilingOptionsBuilder Whitelist(params string[] patterns) { target.WhitelistPatterns = patterns?.ToArray(); return this; }
     /// <summary>Enables observation of ordinary consumed request-body bytes without extra reads.</summary>
     /// <example><code>requests.ObserveRequestBodyBytes();</code></example>
     public RequestProfilingOptionsBuilder ObserveRequestBodyBytes(bool value = true) { target.ObserveRequestBodyBytes = value; return this; }
@@ -224,7 +224,7 @@ public sealed class RequestProfilingRuntime
         this.health = health;
         this.Options = options.Snapshot();
         this.Matcher = this.Options.Validate();
-        this.OperationCaptureMatcher = new(this.Options.OperationCapturePatterns);
+        this.WhitelistMatcher = new(this.Options.WhitelistPatterns);
         this.Sampler = this.Options.CreateSampler(services);
         this.health.SamplingStrategyKey = this.Options.StrategyKey;
         this.health.SamplingConfigurationKey = this.Options.ConfigurationKey;
@@ -236,9 +236,9 @@ public sealed class RequestProfilingRuntime
     /// <summary>Gets the prepared bounded original-path exclusion matcher.</summary>
     /// <example><code>var excluded = runtime.Matcher.IsMatch(path);</code></example>
     public RequestProfilingPathMatcher Matcher { get; }
-    /// <summary>Gets the prepared opt-in matcher for business operations beneath excluded HTTP requests.</summary>
-    /// <example><code>var allowed = runtime.OperationCaptureMatcher.IsMatch(path);</code></example>
-    public RequestProfilingPathMatcher OperationCaptureMatcher { get; }
+    /// <summary>Gets the prepared HTTP whitelist matcher, which overrides blacklist exclusions without bypassing sampling.</summary>
+    /// <example><code>var eligible = runtime.WhitelistMatcher.IsMatch(path);</code></example>
+    public RequestProfilingPathMatcher WhitelistMatcher { get; }
     /// <summary>Gets the effective one singleton strategy.</summary>
     /// <example><code>var decision = runtime.Sampler.Decide(context);</code></example>
     public IRequestProfilingSamplingStrategy Sampler { get; }

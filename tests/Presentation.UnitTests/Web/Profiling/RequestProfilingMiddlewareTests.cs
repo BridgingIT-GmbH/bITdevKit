@@ -20,16 +20,181 @@ using Microsoft.Extensions.DependencyInjection;
 /// <example>Runs against a real ASP.NET Core TestServer, not just an isolated throwing delegate.</example>
 public sealed class RequestProfilingMiddlewareTests
 {
-    /// <summary>Explicit storage action opt-ins capture business operations while excluding HTTP and unrelated dashboard traffic.</summary>
+    /// <summary>Requester queries create independent roots when HTTP capture is excluded, skipped or disabled; profiling's own queries remain explicitly suppressed.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData("/_bdk/dashboard/app/core", "blacklist")]
+    [InlineData("/_bdk/dashboard/app/core/content", "blacklist")]
+    [InlineData("/_bdk/dashboard/app/custom/nested/content", "blacklist")]
+    [InlineData("/_bdk/dashboard/custom/content", "blacklist")]
+    [InlineData("/health", "blacklist")]
+    [InlineData("/business/query", "sampling")]
+    [InlineData("/business/query", "disabled")]
+    public async Task HttpExclusion_RequesterQuery_StartsIndependentOperation(string path, string mode)
+    {
+        // Arrange
+        await using var sut = await Create(
+            options =>
+            {
+                if (mode == "sampling") { options.WithSampling(sampling => sampling.Probability(0)); }
+                else if (mode == "disabled") { options.Enabled(false); }
+            },
+            configureServices: services =>
+            {
+                services.AddRequester().WithBehavior(typeof(ProfilingRequestBehavior<,>));
+                services.AddSingleton<IRequestHandler<DashboardQuery, Guid>, DashboardQueryHandler>();
+            });
+        const string profilingPath = "/_bdk/dashboard/profiling/content";
+        sut.MapGet(path, ExecuteQueryAsync);
+        sut.MapGet(profilingPath, async (HttpContext context, IRequester requester, IOperationProfilingQueryService queries) =>
+        {
+            var result = await queries.BuildViewAsync<Guid>(
+                async (_, token) => await requester.SendAsync<DashboardQuery, Guid>(new(), cancellationToken: token),
+                context.RequestAborted);
+            result.IsSuccess.ShouldBeTrue();
+            return result.Value.ToString("D");
+        });
+        using var client = await Client(sut);
+
+        // Act
+        using var response = await client.GetAsync(path);
+        response.EnsureSuccessStatusCode();
+        var id = Guid.Parse(await response.Content.ReadAsStringAsync());
+        id.ShouldNotBe(Guid.Empty);
+        var record = await Stored(sut, id);
+        using var profilingResponse = await client.GetAsync(profilingPath);
+        profilingResponse.EnsureSuccessStatusCode();
+
+        // Assert
+        response.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBeFalse();
+        record.Key.ShouldBe("requester:DashboardQuery");
+        record.Kind.ShouldBe("Requester");
+        record.Outcome.ShouldBe(OperationProfilingOutcome.Completed);
+        record.Http.ShouldBeNull();
+        Guid.Parse(await profilingResponse.Content.ReadAsStringAsync()).ShouldBe(Guid.Empty);
+        sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().CompletedOperations.ShouldBe(1);
+
+        static async Task<string> ExecuteQueryAsync(HttpContext context, IRequester requester)
+        {
+            if (context.Features.Get<IRequestProfilingFeature>() is { } feature)
+            {
+                feature.Selected.ShouldBeFalse();
+                feature.Suppressed.ShouldBeFalse();
+            }
+
+            var result = await requester.SendAsync<DashboardQuery, Guid>(new(), cancellationToken: context.RequestAborted);
+            result.IsSuccess.ShouldBeTrue();
+            return result.Value.ToString("D");
+        }
+    }
+
+    /// <summary>Explicit suppression blocks nested helpers on excluded HTTP requests and restores independent capture afterward.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData("/_bdk/dashboard/app/core/content", false)]
+    [InlineData("/business/query", true)]
+    public async Task ExplicitSuppression_ExcludedHttp_BlocksAndRestoresBusinessCapture(string path, bool sampled)
+    {
+        // Arrange
+        await using var sut = await Create(options =>
+        {
+            if (sampled) { options.WithSampling(sampling => sampling.Probability(0)); }
+        });
+        sut.MapGet(path, async (IOperationProfiler profiling) =>
+        {
+            using (profiling.Suppress())
+            {
+                await profiling.JoinOrStartAsync("suppressed-query", OperationProfilingKind.Service, (scope, _) =>
+                {
+                    scope.IsRecording.ShouldBeFalse();
+                    return Task.FromResult(true);
+                });
+            }
+
+            profiling.Current.ShouldBeNull();
+            using var operation = profiling.BeginOperation("dashboard-query");
+            operation.IsRecording.ShouldBeTrue();
+            operation.Complete();
+            return operation.Id.ToString("D");
+        });
+        using var client = await Client(sut);
+
+        // Act
+        using var response = await client.GetAsync(path);
+
+        // Assert
+        response.EnsureSuccessStatusCode();
+        (await Stored(sut, Guid.Parse(await response.Content.ReadAsStringAsync()))).Key.ShouldBe("dashboard-query");
+        sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().CompletedOperations.ShouldBe(1);
+    }
+
+    /// <summary>HTTP-whitelisted paths override the blacklist but still follow sampling, replacement and clearing; business recording stays independent.</summary>
+    /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
+    [Theory]
+    [InlineData("selected", true)]
+    [InlineData("sampled", false)]
+    [InlineData("cleared", false)]
+    [InlineData("replaced", false)]
+    public async Task Whitelist_BlacklistedHttpPath_RespectsSamplingAndOverrides(string mode, bool selected)
+    {
+        // Arrange
+        await using var sut = await Create(options =>
+        {
+            options.Whitelist("/_bdk/dashboard/app/core/**");
+            if (mode == "sampled") { options.WithSampling(sampling => sampling.Probability(0)); }
+            else if (mode == "cleared") { options.Whitelist(); }
+            else if (mode == "replaced") { options.Whitelist("/other/**"); }
+        }, configureServices: services =>
+        {
+            services.AddRequester().WithBehavior(typeof(ProfilingRequestBehavior<,>));
+            services.AddSingleton<IRequestHandler<DashboardQuery, Guid>, DashboardQueryHandler>();
+        });
+        const string path = "/_bdk/dashboard/app/core/content";
+        sut.MapGet(path, async (HttpContext context, IRequester requester) =>
+        {
+            var feature = context.Features.Get<IRequestProfilingFeature>();
+            feature.Selected.ShouldBe(selected);
+            feature.Suppressed.ShouldBeFalse();
+            var result = await requester.SendAsync<DashboardQuery, Guid>(new(), cancellationToken: context.RequestAborted);
+            return result.Value.ToString("D");
+        });
+        using var client = await Client(sut);
+
+        // Act
+        using var response = await client.GetAsync(path);
+        response.EnsureSuccessStatusCode();
+        var id = Guid.Parse(await response.Content.ReadAsStringAsync());
+        var record = await Stored(sut, id);
+
+        // Assert
+        response.Headers.Contains(RequestProfilingMiddleware.HeaderName).ShouldBe(selected);
+        record.Kind.ShouldBe(selected ? "HttpRequest" : "Requester");
+        if (selected)
+        {
+            response.Headers.GetValues(RequestProfilingMiddleware.HeaderName).ShouldContain(id.ToString("D"));
+            record.Http.ShouldNotBeNull();
+            record.Segments.ShouldContain(segment => segment.Key == "requester:DashboardQuery");
+        }
+        else { record.Http.ShouldBeNull(); }
+
+        var health = sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot();
+        health.SelectedRequests.ShouldBe(selected ? 1 : 0);
+        health.SamplingSkippedRequests.ShouldBe(mode == "sampled" ? 1 : 0);
+        health.BlacklistedRequests.ShouldBe(mode is "cleared" or "replaced" ? 1 : 0);
+        health.CompletedOperations.ShouldBe(1);
+    }
+
+    /// <summary>Storage actions and reads own business operations even when their dashboard HTTP requests are excluded.</summary>
     /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
     [Theory]
     [InlineData("files")]
     [InlineData("documents")]
     [InlineData("blobs")]
-    public async Task Blacklist_OperationOptIn_LeavesHttpExcludedAndPollingSuppressed(string storage)
+    public async Task Blacklist_StorageOperations_RecordWithoutHttpCapture(string storage)
     {
-        await using var sut = await Create(options => options.AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"));
+        await using var sut = await Create();
         var id = Guid.Empty;
+        var pollId = Guid.Empty;
         var path = $"/_bdk/dashboard/storage/{storage}/actions/save";
         sut.MapPost(path, (HttpContext context, IOperationProfiler profiling) =>
         {
@@ -46,7 +211,9 @@ public sealed class RequestProfilingMiddlewareTests
         sut.MapGet($"/_bdk/dashboard/storage/{storage}/content", (IOperationProfiler profiling) =>
         {
             using var operation = profiling.BeginOperation("poll");
-            operation.IsRecording.ShouldBeFalse();
+            operation.IsRecording.ShouldBeTrue();
+            pollId = operation.Id;
+            operation.Complete();
             return "poll";
         });
         using var client = await Client(sut);
@@ -56,13 +223,15 @@ public sealed class RequestProfilingMiddlewareTests
         (await Stored(sut, id)).Key.ShouldBe("storage-save");
         using var poll = await client.GetAsync($"/_bdk/dashboard/storage/{storage}/content");
         poll.EnsureSuccessStatusCode();
-        sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().CompletedOperations.ShouldBe(1);
+        (await Stored(sut, pollId)).Key.ShouldBe("poll");
+        sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().CompletedOperations.ShouldBe(2);
     }
 
-    /// <summary>Default infrastructure exclusions suppress nested capture and leave the next business request eligible.</summary>
+    /// <summary>Default HTTP exclusions leave business operation and segment capture available without capturing their requests.</summary>
     /// <example>Run with the RequestProfilingMiddlewareTests filter.</example>
     [Theory]
     [InlineData("/_bdk/dashboard/profiling/operations")]
+    [InlineData("/_bdk/dashboard/application/core")]
     [InlineData("/health")]
     [InlineData("/healthz")]
     [InlineData("/HEALTH-readiness/")]
@@ -74,17 +243,21 @@ public sealed class RequestProfilingMiddlewareTests
     [InlineData("/.well-known/openid-configuration")]
     [InlineData("/.WELL-KNOWN/JWKS/")]
     [InlineData("/.well-known/acme-challenge/token")]
-    public async Task DefaultBlacklist_InfrastructureRequest_SuppressesNestedCapture(string path)
+    public async Task DefaultBlacklist_InfrastructureRequest_PreservesBusinessCapture(string path)
     {
         await using var sut = await Create();
         var calls = 0;
+        var id = Guid.Empty;
         sut.MapGet(path, ([FromServices] IOperationProfiler profiling) =>
         {
             calls++;
             using var operation = profiling.BeginOperation("nested-infrastructure");
-            operation.IsRecording.ShouldBeFalse();
+            operation.IsRecording.ShouldBeTrue();
+            id = operation.Id;
             using var segment = profiling.BeginSegment("Load");
-            segment.IsRecording.ShouldBeFalse();
+            segment.IsRecording.ShouldBeTrue();
+            segment.Complete();
+            operation.Complete();
             return Microsoft.AspNetCore.Http.Results.Text("infrastructure");
         });
         sut.MapGet("/api/products", () => "business");
@@ -97,7 +270,10 @@ public sealed class RequestProfilingMiddlewareTests
         var health = sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot();
         health.BlacklistedRequests.ShouldBe(1);
         health.EligibleRequests.ShouldBe(0);
-        health.CompletedOperations.ShouldBe(0);
+        health.CompletedOperations.ShouldBe(1);
+        var nested = await Stored(sut, id);
+        nested.Http.ShouldBeNull();
+        nested.Segments.ShouldContain(segment => segment.Key == "Load");
 
         using var business = await client.GetAsync("/api/products");
         business.StatusCode.ShouldBe(HttpStatusCode.OK);
@@ -473,10 +649,10 @@ public sealed class RequestProfilingMiddlewareTests
         sut.Services.GetRequiredService<IOperationProfilingHealthSource>().GetSnapshot().SelectedRequests.ShouldBe(1);
     }
 
-    /// <summary>Checks blacklist and sampling skips suppress explicit nested roots, while disabled HTTP allows manual work.</summary>
+    /// <summary>Checks HTTP blacklist, sampling skips and disabled HTTP all leave manual business capture available.</summary>
     [Theory]
-    [InlineData("blacklist", false)]
-    [InlineData("sampling", false)]
+    [InlineData("blacklist", true)]
+    [InlineData("sampling", true)]
     [InlineData("disabled", true)]
     public async Task Capture_SkippedOrDisabled_PreservesManualCaptureContract(string mode, bool manual)
     {
@@ -916,6 +1092,14 @@ public sealed class RequestProfilingMiddlewareTests
             "reason" => new(true, "\n"),
             _ => new(true, "Selected", double.NaN),
         };
+    }
+
+    private sealed class DashboardQuery : RequestBase<Guid>;
+
+    private sealed class DashboardQueryHandler(IOperationProfiler profiling) : RequestHandlerBase<DashboardQuery, Guid>
+    {
+        protected override Task<Result<Guid>> HandleAsync(DashboardQuery request, SendOptions options, CancellationToken cancellationToken) =>
+            Task.FromResult(Result<Guid>.Success(profiling.Current?.Id ?? Guid.Empty));
     }
 
     private sealed class AlternatingSampler : IRequestProfilingSamplingStrategy

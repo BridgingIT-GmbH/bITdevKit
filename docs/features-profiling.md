@@ -154,7 +154,20 @@ app.MapEndpoints();
 
 The default operation key is the matched route template, including any mount prefix. For example, `/api/orders/42` and `/api/orders/81` both belong to `/api/orders/{id}`, or `/orders/{id}` when stripping `/api`. The actual path and query arguments remain in each request's metadata. Requests without a matched template fall back to their incoming path. A controller's explicit `SetKey(...)` takes precedence; automatic prefix stripping only applies to defaults. Prefix stripping respects path-segment boundaries.
 
-Request Profiling defaults to AllRequests sampling and the blacklist `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`, `/.well-known*`, `/.well-known/**`. `Blacklist(...)` replaces that list; `Blacklist()` clears it. Blacklist patterns use `*` within a path segment and `**` across segments; they match the normalized request path before key-prefix stripping. `/health*` matches `/healthz` but not `/health/live`. The well-known patterns also exclude discovery endpoints such as `/.well-known/openid-configuration`. A match suppresses replacement operations in that request flow by default. `AllowOperationsForBlacklistedPaths(...)` explicitly allows business operations beneath matching excluded URLs without recording their HTTP requests. WeatherFiesta opts in its storage action URLs with `/_bdk/dashboard/storage/*/actions/**`; dashboard reads, polling, and profiling queries remain excluded. Sampling rejections and explicit `Suppress()` scopes remain suppressing. Sampling is decided once at middleware entry using the incoming path; route-template enrichment after routing does not resample the request.
+Request Profiling defaults to AllRequests sampling and the blacklist `/_bdk/**`, `/health*`, `/swagger/**`, `/scalar/**`, `/openapi/**`, `/.well-known*`, `/.well-known/**`. `Blacklist(...)` replaces that list; `Blacklist()` clears it. Blacklist patterns use `*` within a path segment and `**` across segments; they match the normalized request path before key-prefix stripping. `/health*` matches `/healthz` but not `/health/live`. The well-known patterns also exclude discovery endpoints such as `/.well-known/openid-configuration`.
+
+Blacklist exclusions and HTTP sampling skips affect only the automatic HTTP recording. Business behaviors remain eligible: `JoinOrStartAsync` adds a segment when an operation exists and starts its own operation otherwise. Explicit `Suppress()` scopes still disable nested recording. Profiling queries, writers, cleanup and maintenance use explicit suppression to avoid recording their own instrumentation. Sampling is decided once at middleware entry using the incoming path; route-template enrichment after routing does not resample the request.
+
+Server-side RazorSlice pages execute inside the incoming HTTP request that renders the page. Their content refreshes also arrive through HTTP. Although the default blacklist excludes dashboard HTTP requests, their Requester queries and storage behaviors can create independent operations without a whitelist. This includes queries run by automatic dashboard refreshes. `Requester.SendAsync()` itself makes no HTTP call.
+
+To record selected dashboard HTTP requests as well, whitelist their paths. Matching entries override the blacklist, and HTTP sampling still applies:
+
+```csharp
+profiling.WithRequestProfiling(requests => requests
+    .Whitelist("/_bdk/dashboard/app/core/**"));
+```
+
+The HTTP whitelist is empty by default. Use the configured dashboard prefix and pass all desired patterns together; `Whitelist(...)` replaces the list and `Whitelist()` clears it. Whitelisting does not force a sampled-out HTTP request to be recorded. Business operation capture remains independent of both HTTP lists.
 
 `WithInMemoryProvider()` is optional. Use `WithEntityFrameworkProvider<TContext>()` or `WithProvider<TProvider>()` to replace the shared default provider.
 
@@ -268,14 +281,7 @@ Profiling accepts valid CLR strings and JSON strings restored from durable stora
 
 ### Storage behaviors
 
-Storage actions performed through the dashboard need an HTTP exclusion opt-in when Request Profiling is enabled. The default `/_bdk/**` blacklist otherwise suppresses their storage decorators too:
-
-```csharp
-profiling.WithRequestProfiling(requests => requests
-    .AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**"));
-```
-
-Use the configured dashboard prefix in that pattern. This enables storage operation records for actions, while keeping automatic dashboard refreshes excluded.
+Storage behaviors remain profileable when their dashboard HTTP requests are blacklisted or sampled out. They need no path whitelist. Dashboard actions and reads, including refreshes, can produce storage operation records; use an explicit `Suppress()` scope around work that should not be recorded.
 
 File, document and blob storage can join the current operation as timed segments or own independent operations. They use these keys and dimensions:
 

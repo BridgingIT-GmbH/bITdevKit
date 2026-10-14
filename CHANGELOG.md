@@ -6,6 +6,7 @@ This changelog includes unreleased changes on `main` and the full tagged release
 
 - Added Operation Profiling, which records how a single execution spends its time in named segments. It works without HTTP, Runtime Profiling, or Broadcast, and captured data is aggregated per operation rather than stored as raw traces.
 - Added HTTP request profiling that captures request lifecycle, route, status, and response size. Every request is captured by default, with configurable path blacklisting, prefix stripping, and sampling (all requests, probability, or a rate limit).
+- Changed HTTP profiling exclusions and sampling skips to leave business operation recording independent. Added `Whitelist(...)` to allow selected blacklisted HTTP paths through the configured sampling policy; profiling internals remain explicitly suppressed.
 - Added optional profiling behaviors for jobs, pipelines, orchestrations, and Active Entities, so their steps and actions appear as nested segments. They run unchanged when profiling is not registered.
 - Added profiling storage with in-memory and Entity Framework providers, bounded background writes, retention limits, and clearing of Runtime and Operation history, either fully or by time range.
 - Added Operations and Requests dashboard views with slow, recent, and by-count lists, grouping, filters, per-operation segment breakdowns, wall-time bars, and Runtime overlays correlated by process and time.

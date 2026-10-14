@@ -924,3 +924,32 @@ Verification passed **403 Common**, **172 Presentation**, **36 Infrastructure un
 Visible Chromium exercised the actual WeatherFiesta fixture with its isolated business database. Checks covered Recent defaults; city/weather HTTP and independent service captures; correlation and redacted metadata; single-line eye/time and node rows; Kind/node dropdowns; contains searches; exact group drill-down across refresh; exact-key comparison results; capture-health modal refresh; independent localStorage selections, URL precedence and Reset; and live clear-all removal of both Runtime snapshots and operation/request records. There were no browser JavaScript errors. Three existing sidebar-free screenshots were refreshed, and a request-metadata screenshot was added. The owned browser host and test containers were stopped afterward; existing application containers remained running.
 
 These are functional regression checks, not new stress-test performance measurements. Raw run logs and browser scripts remain temporary local evidence under `/tmp/profiling-refinement-*` and `/tmp/playwright-test-profiling-refinements.js`.
+
+## Final closeout (2026-10-14)
+
+Starting revision: `4381c3b83`. SDK: .NET 10.0.402. The final worktree includes the shutdown fix and regression tests below, plus release-note and closeout documentation updates. All 82 implementation tasks remain complete. The current feature guide covers storage behaviors, Timeline, Insights, MCP query/details/insights/comparison and coding guidance, correlation investigations, HTTP whitelist semantics, independent business recording, filtered deletion, Load more and Tail.
+
+The initial WeatherFiesta application run passed 16 checks and failed two. One assertion still expected dashboard HTTP exclusions to suppress all business operations. It now checks authorization for the Core overview as well, waits for the actual `requester:AdminCitiesQuery` recording through the normal periodic writer, and verifies that dashboard requests produce no `HttpRequest` recordings. The fixture explicitly signals database readiness for this check because it seeds its isolated database directly and removes the hosted database creator; the production page otherwise correctly skips database queries until readiness is signaled.
+
+The other failure exposed overlapping calls to `BroadcastLocalDispatcher.StopAsync`: both attempted to dispose and clear the same cancellation source. Two controlled regression cases reproduced the exception, including cancellation of one shutdown waiter while a handler was active. Shutdown callers now share one task. Both cases, the existing Broadcasting checks and the complete selected WeatherFiesta application checks pass.
+
+| Check | Filter | Passed | Failed / skipped |
+| --- | --- | ---: | --- |
+| Complete Debug solution build | `dotnet build --configuration Debug --no-restore --nologo` | Zero warnings/errors | None |
+| Common unit tests | `FullyQualifiedName~Profiling\|FullyQualifiedName~Broadcasting` | 475 | 0 / 0 |
+| Domain unit tests | `FullyQualifiedName~Profiling` | 25 | 0 / 0 |
+| Application unit tests | `FullyQualifiedName~Profiling` | 133 | 0 / 0 |
+| Infrastructure unit tests | `FullyQualifiedName~Profiling` | 36 | 0 / 0 |
+| Infrastructure integration tests | `FullyQualifiedName~Profiling&FullyQualifiedName!~ProfilingPerformanceEvidenceTests` | 293 | 0 / 0 |
+| Presentation unit tests | `FullyQualifiedName~Profiling\|FullyQualifiedName~Mcp` | 375 | 0 / 0 |
+| WeatherFiesta unit tests | `FullyQualifiedName~Profiling\|FullyQualifiedName~WeatherCityReviewServiceTests` | 20 | 0 / 0 |
+| WeatherFiesta integration tests | `FullyQualifiedName~ProfilingEndpointsTests` | 18 | 0 / 0 |
+| **Selected test total** | | **1,375** | **0 / 0** |
+
+Each test suite used `dotnet test <project> --no-restore --nologo --filter '<filter>'`, with `--no-build` for already-built projects. Projects are under `tests/<suite>/<suite>.csproj` or `examples/WeatherFiesta/<suite>/<suite>.csproj`. The final WeatherFiesta run compiled its fixture update with `-p:BuildProjectReferences=false` after the complete solution build. Commands ran sequentially. The Common and Presentation suites and WeatherFiesta integration suite were rerun after the shutdown fix; unaffected earlier results were retained. TRX files are under `/tmp/bdk-profiling-final-tests/`, and per-suite logs are `/tmp/bdk-final-<suite>.log`. The build log is `/tmp/bdk-profiling-final-build.log`.
+
+Provider correctness ran on SQLite, SQL Server and PostgreSQL, using isolated test databases and containers. WeatherFiesta exercised its real HTTP, dashboard, Requester, job and orchestration composition through the existing application fixture. The running user's application and retained database were not restarted or cleared.
+
+This closeout reran build and correctness checks. Earlier browser, documentation-generation and synthetic capacity evidence remains historical; no new browser, benchmark or production-capacity claim is made. Multi-node Runtime capture still requires a shared profiling provider and valid Broadcasting targets, as documented in the feature guide. This is a host configuration requirement rather than an unfinished profiling implementation task.
+
+The unreleased changelog now includes the storage behaviors, Timeline/Insights, filtered deletion, MCP diagnostics/guidance and the shutdown correction. No remaining profiling implementation blocker was identified.

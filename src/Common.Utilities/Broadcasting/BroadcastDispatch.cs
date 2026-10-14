@@ -159,7 +159,9 @@ public sealed class BroadcastLocalDispatcher(
         )
     );
     private readonly List<Task> readers = [];
+    private readonly object shutdownSync = new();
     private CancellationTokenSource stopping;
+    private Task shutdown;
 
     /// <summary>Attempts to admit an accepted broadcast to its registered handler queue.</summary>
     public bool TryDispatch(AcceptedBroadcast accepted)
@@ -185,6 +187,7 @@ public sealed class BroadcastLocalDispatcher(
             return Task.CompletedTask;
         }
 
+        this.shutdown = null;
         this.stopping = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
         foreach (var channel in this.channels.Values)
         {
@@ -199,8 +202,17 @@ public sealed class BroadcastLocalDispatcher(
         return Task.CompletedTask;
     }
 
-    /// <summary>Completes all queues and stops their readers.</summary>
-    public async Task StopAsync(CancellationToken cancellationToken)
+    /// <summary>Completes all queues and stops their readers. Concurrent calls share one shutdown task.</summary>
+    /// <example><code>await dispatcher.StopAsync(cancellationToken);</code></example>
+    public Task StopAsync(CancellationToken cancellationToken)
+    {
+        lock (this.shutdownSync)
+        {
+            return this.shutdown ??= this.StopReadersAsync(cancellationToken);
+        }
+    }
+
+    private async Task StopReadersAsync(CancellationToken cancellationToken)
     {
         if (this.stopping is null)
         {

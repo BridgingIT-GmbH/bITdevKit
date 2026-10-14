@@ -163,12 +163,16 @@ public sealed class ProfilingEndpointsTests(
         record.Id.ShouldNotBe(failedRecord.Id);
     }
 
-    /// <summary>Full, partial and dashboard-only JSON routes preserve anonymous and role authorization and are excluded from capture.</summary>
+    /// <summary>Dashboard routes enforce authorization and exclude HTTP capture while retaining independent business operations.</summary>
+    /// <example><code>await tests.Dashboard_ProtectsAllViewsAndInternalReads_WithoutProfilingItsHttpRequests();</code></example>
     [Fact]
-    public async Task Dashboard_ProtectsAllViewsAndInternalReads_WithoutProfilingItself()
+    public async Task Dashboard_ProtectsAllViewsAndInternalReads_WithoutProfilingItsHttpRequests()
     {
+        // The fixture seeds the database directly and removes the hosted creator that normally signals readiness.
+        this.host.Services.GetRequiredService<IDatabaseReadyService>().SetReady(nameof(CoreDbContext));
         var routes = new[]
         {
+            "/app/core",
             "/app/core/profiling",
             "/app/core/profiling/content",
             "/app/core/api-requests",
@@ -200,9 +204,20 @@ public sealed class ProfilingEndpointsTests(
 
         using var health = await this.client.GetAsync("/healthz");
         health.Headers.Contains("X-Request-Profiling-Id").ShouldBeFalse();
-        this.host.Services.GetRequiredService<IOperationProfilingHealthSource>()
-            .GetSnapshot()
-            .CompletedOperations.ShouldBe(0);
+        var queries = this.host.Services.GetRequiredService<IOperationProfilingQueryService>();
+        await WaitUntilAsync(async () =>
+        {
+            var business = await queries.QueryAsync(new()
+            {
+                Kind = "Requester",
+                Key = "requester:AdminCitiesQuery"
+            });
+            business.IsSuccess.ShouldBeTrue();
+            return business.Value.TotalCount > 0;
+        });
+        var requests = await queries.QueryAsync(new() { Kind = nameof(OperationProfilingKind.HttpRequest) });
+        requests.IsSuccess.ShouldBeTrue();
+        requests.Value.TotalCount.ShouldBe(0);
     }
 
     /// <summary>The example's default Testing environment disables capture and dashboard mapping without changing its business endpoint.</summary>

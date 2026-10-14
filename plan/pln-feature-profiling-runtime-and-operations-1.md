@@ -2,7 +2,7 @@
 goal: Implement unified Runtime and Operation Profiling with an HTTP Request adapter
 version: 1.0
 date_created: 2026-10-07
-last_updated: 2026-10-11
+last_updated: 2026-10-14
 owner: bITdevKit maintainers
 status: Completed
 tags: [feature, profiling, architecture, persistence, dashboard]
@@ -15,6 +15,10 @@ tags: [feature, profiling, architecture, persistence, dashboard]
 Implement [Runtime and Operation Profiling](../docs/specs/spec-profiling-runtime-and-requests.md), including generic operation recording, aggregated segments, periodic provider persistence, the HTTP adapter, feature behaviors, and Runtime/Operations/Requests dashboard views. Preserve Runtime Broadcast behavior. Replace the unused profiling API and storage names without final compatibility aliases.
 
 This is an execution plan, not implementation evidence. All tasks start incomplete. Repository paths and extension points were inspected at commit `224904465`. Resolve paths from the repository root. The renamed specification is authoritative; the former `pln-feature-profiling-runtime-and-requests-1.md` is not an input. Here, implementation phases are work packages; the product's timed work is always called a **Segment**.
+
+## Final closeout — 2026-10-14
+
+All 82 planned tasks remain complete. The subsequent storage behaviors, Timeline and Insights views, MCP diagnostics and coding guidance, independent dashboard business recording, filtered deletion, append paging and live tailing are implemented and documented. The final solution build passed with zero warnings/errors, and eight selected suites passed **1,375 tests**, without failures or skips. Closeout repaired a concurrent Broadcasting shutdown race and updated the WeatherFiesta authorization test to verify independent Requester recordings from its overview while dashboard HTTP capture stays excluded. The [final closeout evidence](pln-feature-profiling-runtime-and-operations-1-evidence.md#final-closeout-2026-10-14) records commands, coverage and limits. No further profiling implementation task was identified.
 
 ## Execution checkpoint — 2026-10-09 UTC
 

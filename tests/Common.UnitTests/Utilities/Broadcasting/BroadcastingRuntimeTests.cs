@@ -13,6 +13,65 @@ public class BroadcastingRuntimeTests
 {
     private static readonly TimeSpan HandlerTimeout = TimeSpan.FromSeconds(10);
 
+    /// <summary>Concurrent shutdown calls tolerate a canceled waiter without disposing the same cancellation source twice.</summary>
+    /// <example><code>await tests.StopAsync_ConcurrentCalls_CompleteSafely(true);</code></example>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public async Task StopAsync_ConcurrentCalls_CompleteSafely(bool cancelFirst)
+    {
+        // Arrange
+        var entered = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var release = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var registrations = new BroadcastingRegistrationState();
+        registrations.AddHandler<TestBroadcast, TestBroadcastHandler>();
+        using var provider = new ServiceCollection().BuildServiceProvider();
+        var sut = new BroadcastLocalDispatcher(
+            new BroadcastingOptions { Enabled = true },
+            registrations,
+            provider.GetRequiredService<IServiceScopeFactory>()
+        );
+        var registration = registrations.Handlers.Single() with
+        {
+            InvokeAsync = async (_, _, _, _) =>
+            {
+                entered.SetResult();
+                await release.Task;
+            }
+        };
+        var now = DateTimeOffset.UtcNow;
+        await sut.StartAsync(CancellationToken.None);
+        sut.TryDispatch(new AcceptedBroadcast(
+            registration,
+            new TestBroadcast("shutdown"),
+            new BroadcastContext(Guid.NewGuid(), [], now, now.AddMinutes(1), null)
+        )).ShouldBeTrue();
+        await entered.Task.WaitAsync(HandlerTimeout);
+
+        // Act
+        using var shutdown = new CancellationTokenSource();
+        var first = sut.StopAsync(shutdown.Token);
+        var second = sut.StopAsync(CancellationToken.None);
+        try
+        {
+            first.IsCompleted.ShouldBeFalse();
+            second.IsCompleted.ShouldBeFalse();
+            if (cancelFirst)
+            {
+                shutdown.Cancel();
+                await first.WaitAsync(HandlerTimeout);
+            }
+        }
+        finally
+        {
+            release.TrySetResult();
+        }
+
+        // Assert
+        await Task.WhenAll(first, second).WaitAsync(HandlerTimeout);
+        await sut.StopAsync(CancellationToken.None);
+    }
+
     [Fact]
     public async Task PublishAsync_WithoutScopes_RegistersAndTargetsDefaultScope()
     {

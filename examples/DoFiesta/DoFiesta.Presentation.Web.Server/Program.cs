@@ -104,17 +104,10 @@ builder.Services.AddNotificationService<EmailMessage>(builder.Configuration, o =
 
 builder.Services.AddMapping().WithMapster();
 
-// Register the purge queue as a singleton
-builder.Services.AddScoped<ILogEntryService, LogEntryService<CoreDbContext>>();
-builder.Services.AddSingleton<LogEntryMaintenanceQueue>();
-if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration())
-{
-    builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
-}
-
-builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
-
-// logging services and endpoints
+// Register log services and endpoints
+builder.Services.AddLogEntryServices<CoreDbContext>(o => o
+        .Enabled(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration()))
+    .AddEndpoints(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
 
 // Startup Tasks ==============================
 builder.Services.AddStartupTasks(o => o

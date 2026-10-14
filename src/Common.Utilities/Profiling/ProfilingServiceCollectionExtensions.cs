@@ -120,7 +120,8 @@ public static class ProfilingServiceCollectionExtensions
 
         state.OperationDescriptors.Clear();
         var before = services.ToHashSet();
-        if (state.Options.Enabled)
+        var skipHostedServices = EnvironmentExtensions.IsBuildTimeOpenApiGeneration(); // avoid hosted services during build-time openapi generation
+        if (state.Options.Enabled && !skipHostedServices)
         {
             services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, ProfilingMaintenanceService>());
         }
@@ -128,9 +129,12 @@ public static class ProfilingServiceCollectionExtensions
         if (state.Options.OperationEnabled)
         {
             services.TryAddSingleton<OperationProfilingWriterService>();
-            services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<OperationProfilingWriterService>());
-            // Reverse host stop ordering closes live capture before the writer's bounded drain.
-            services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, OperationProfilingCleanupService>());
+            if (!skipHostedServices)
+            {
+                services.AddSingleton<IHostedService>(provider => provider.GetRequiredService<OperationProfilingWriterService>());
+                // Reverse host stop ordering closes live capture before the writer's bounded drain.
+                services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, OperationProfilingCleanupService>());
+            }
         }
 
         state.OperationDescriptors.AddRange(services.Where(descriptor => !before.Contains(descriptor)));
@@ -200,7 +204,12 @@ public static class ProfilingServiceCollectionExtensions
         services.TryAddSingleton<RuntimeProfilingActiveSessionContext>();
         services.TryAddSingleton<RuntimeProfilingSegmentContext>();
         services.TryAddSingleton<IRuntimeProfilingNodeRegistrationAdapter, RuntimeProfilingNodeRegistrationAdapter>();
-        services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, RuntimeProfilingNodeRegistrationHostedService>());
+        var skipHostedServices = EnvironmentExtensions.IsBuildTimeOpenApiGeneration(); // avoid hosted services during build-time openapi generation
+        if (!skipHostedServices)
+        {
+            services.TryAddEnumerable(ServiceDescriptor.Singleton<IHostedService, RuntimeProfilingNodeRegistrationHostedService>());
+        }
+
         services.TryAddSingleton<
             IRuntimeProfilingContextFactory,
             RuntimeProfilingContextFactory
@@ -249,12 +258,16 @@ public static class ProfilingServiceCollectionExtensions
                 provider.GetService<TimeProvider>() ?? TimeProvider.System
             )
         );
-        services.TryAddEnumerable(
-            ServiceDescriptor.Singleton<IHostedService, RuntimeProfilingCollectorHostedService>()
-        );
-        services.TryAddEnumerable(
-            ServiceDescriptor.Singleton<IHostedService, RuntimeProfilingCustomMetricHostedService>()
-        );
+        if (!skipHostedServices)
+        {
+            services.TryAddEnumerable(
+                ServiceDescriptor.Singleton<IHostedService, RuntimeProfilingCollectorHostedService>()
+            );
+            services.TryAddEnumerable(
+                ServiceDescriptor.Singleton<IHostedService, RuntimeProfilingCustomMetricHostedService>()
+            );
+        }
+
         services.TryAddSingleton<IRuntimeProfilingStressService>(provider => new RuntimeProfilingStressService(
             provider.GetService<ILogger<RuntimeProfilingStressService>>(),
             provider.GetService<IRuntimeProfilingMeasurementService>()

@@ -191,14 +191,9 @@ builder.Services.AddDashboard(o => o
 
 // ===============================================================================================
 // Register log services and endpoints
-if (!EnvironmentExtensions.IsBuildTimeOpenApiGeneration()) // TODO: provide fluent configuration builder extension
-{
-    builder.Services.AddScoped<ILogEntryService, LogEntryService<CoreDbContext>>();
-    builder.Services.AddSingleton<LogEntryMaintenanceQueue>();
-    builder.Services.AddHostedService<LogEntryMaintenanceService<CoreDbContext>>();
-    builder.Services.AddEndpoints<LogEntryEndpoints>(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
-    builder.Services.TryAddBackgroundServiceHealthCheck<LogEntryMaintenanceService<CoreDbContext>>(nameof(LogEntryMaintenanceService<>), tags: ["background", "jobs"]);
-}
+builder.Services.AddLogEntryServices<CoreDbContext>(o => o
+    .Enabled(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration()));
+    //.AddEndpoints(builder.Environment.IsDevelopment() || EnvironmentExtensions.IsBuildTimeOpenApiGeneration());
 
 // ===============================================================================================
 // Configure Metrics and Telemetry

@@ -6,6 +6,10 @@
 @{
     var dashboardOptions = HttpContext.RequestServices.GetService<DashboardEndpointsOptions>() ?? new DashboardEndpointsOptions();
     var dashboardTitle = string.IsNullOrWhiteSpace(Model.ProductName) ? dashboardOptions.Title : Model.ProductName;
+    var dashboardBrandTitle = string.Equals(dashboardTitle, "BDK", StringComparison.OrdinalIgnoreCase)
+        ? string.Empty
+        : dashboardTitle?.StartsWith("BDK ", StringComparison.OrdinalIgnoreCase) == true ? dashboardTitle[4..] : dashboardTitle;
+    var dashboardLogoUrl = "data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMTI4IDEyOCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNlNDBiMzA7fS5jbHMtMSwuY2xzLTJ7c3Ryb2tlLXdpZHRoOjBweDt9LmNscy0ye2ZpbGw6I2IxY2ZlNTt9PC9zdHlsZT48L2RlZnM+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQxLjM3OSA2OC42NzUgMjUuNzYgNjAuMTc5IDI1LjcwNyA4OC44ODcgNDEuMzI2IDk3LjM4MyA0MS4zNzkgNjguNjc1Ii8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuMTgyLDU5LjQ0MWwxNC45ODYsOC4xNTIsMTcuMDM0LTIuMzk0LjAwOC00LjEyMS0xNy4xMjcsMi40MDdjLS4wMzEuMDA1LS4wNjIuMDA2LS4wOTMuMDA2LS4wOTksMC0uMTkzLS4wMjktLjI4MS0uMDcxLS4wMTEtLjAwNS0uMDI1LS4wMDMtLjAzNi0uMDA5bC04Ljc3Ny00Ljc3NC01LjcxNC44MDNaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNTkuMjQ0LDc4LjA5M2MwLS4wMjQuMDE1LS4wNDMuMDE4LS4wNjcuMDAyLS4wMTgtLjAxLS4wMzMtLjAwNy0uMDUxLjAwNi0uMDMuMDMyLS4wNDguMDQxLS4wNzYuMDI2LS4wODEuMDYyLS4xNTEuMTE2LS4yMTYuMDMtLjAzNy4wNTgtLjA2Ny4wOTUtLjA5Ny4wMjQtLjAxOS4wMzYtLjA0OC4wNjMtLjA2NC4wNTEtLjAzLjEwOS0uMDMxLjE2NC0uMDQ2LjAzLS4wMDkuMDUtLjAzNi4wODItLjA0bDUuOTIzLS44MzItNi4yMDMtMy4zNzVjLS4yMTQtLjExNS0uMzQ3LS4zNC0uMzQ3LS41ODRsLjAxMS02LjEwNS0xNi40OTQsMi4zMTgtLjA1MywyOC44NzcsMTYuNTYtMi4zMjcuMDMyLTE3LjMxNloiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iNDEuMzI4IDYxLjcxMiA0MS4zNzkgMzQuMzQ3IDQwLjI1NCAzMi4zOTYgMjUuNzYyIDI0LjUxMyAyNS43MSA1My4yMTcgNDEuMzI4IDYxLjcxMiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTM4Ljk4NSwzMC4xOTVsLS41MjEtLjkwNGMtLjAxMS0uMDE4LS4wMDMtLjA0LS4wMTItLjA1OS0uMDMzLS4wNzEtLjA2OC0uMTQxLS4wNzUtLjIyMS0uMDAyLS4wMjguMDEzLS4wNTIuMDE0LS4wOC4wMDItLjA0Mi4wMTEtLjA3OC4wMjEtLjExOS4wMjItLjA5MS4wNjEtLjE3LjExOC0uMjQ1LjAxNi0uMDIxLjAxNS0uMDUxLjAzNC0uMDcuMDEtLjAxLjAyNi0uMDA5LjAzNy0uMDE5LjAxNC0uMDEzLjAyLS4wMzMuMDM2LS4wNDVsMTAuMDctNy42ODItMjEuNTIzLDMuMDI0LDExLjgwMSw2LjQyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTU5LjIxNyw1Ny4zMDNsLTYuNTQ3LTMuNTYyYy0uMTA4LS4wNTgtLjE5Ny0uMTQ1LS4yNTgtLjI1MWwtOS43MDktMTYuODQ2LS4wNDcsMjUuNDIsMTYuNTU3LTIuMzI3LjAwNC0yLjQzNFoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iNTMuNDY5IDUyLjY2NCA1OS4yMiA1NS43OTMgNTkuMjQgNDUuMTU0IDU1LjUwMyAzOC42NzEgNDYuMjkxIDMzLjY2MSA0MC43OSAzMC42NjggNTMuNDY5IDUyLjY2NCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSI0MC4yNTcgMjguODY3IDU1LjkyNCAzNy4zODkgNzkuMDM5IDE5Ljc1NyA2My4zNzIgMTEuMjM0IDQwLjI1NyAyOC44NjciLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik01Ni44NTEsMzguMzUxbDIuMzkzLDQuMTUydi0uMDc2YzAtLjAyNC4wMTUtLjA0My4wMTgtLjA2Ny4wMDItLjAxOC0uMDEtLjAzMy0uMDA3LS4wNTEuMDA2LS4wMy4wMzItLjA0OC4wNDEtLjA3Ni4wMjYtLjA4MS4wNjItLjE1MS4xMTYtLjIxNi4wMy0uMDM3LjA1OC0uMDY3LjA5NS0uMDk3LjAyNC0uMDE5LjAzNi0uMDQ4LjA2My0uMDY0LjA1MS0uMDMuMTEtLjAzMS4xNjUtLjA0Ny4wMjktLjAwOS4wNDktLjAzNS4wODEtLjAzOWwyNy45OTItMy45MzRjLjE0LS4wMjMuMjg1LjAwNi40MS4wNzRsMi42MTMsMS40MjEtMTAuNzczLTE4LjY4Mi0yMy4yMDcsMTcuNzAxWiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI3Ni4xODkgODcuNzA2IDYwLjU3IDc5LjIxIDYwLjUxNyAxMDcuOTE4IDc2LjEzNiAxMTYuNDE0IDc2LjE4OSA4Ny43MDYiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik03Ni44OSw4Mi41MjJjLS4wMzEuMDA1LS4wNjIuMDA2LS4wOTMuMDA2LS4wOTksMC0uMTkzLS4wMjktLjI4MS0uMDcxLS4wMTEtLjAwNS0uMDI1LS4wMDMtLjAzNi0uMDA5bC04Ljc4My00Ljc3OS01LjcwNi44MDIsMTQuOTg2LDguMTUyLDI1Ljc4NC0zLjYyNC02LjAwOS0zLjI2OS0xOS44NjMsMi43OTJaIi8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9Ijc3LjUxNyA4Ny44ODkgNzcuNDYzIDExNi43NjYgMTA0LjEyNyAxMTMuMDE4IDEwNC4xODEgODQuMTQxIDc3LjUxNyA4Ny44ODkiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iNzYuMTM2IDgwLjc0OSA3Ni4xODkgNTIuMDQxIDYwLjU3IDQzLjU0NSA2MC41MTcgNzIuMjUzIDc2LjEzNiA4MC43NDkiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iODcuNzc2IDM5LjE4MyA2MS45OTIgNDIuODA3IDc2Ljk3OCA1MC45NTggMTAyLjc2MiA0Ny4zMzQgODcuNzc2IDM5LjE4MyIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI3Ny41MTcgNTIuMjI0IDc3LjQ2MyA4MS4xMDEgMTA0LjEyNyA3Ny4zNTMgMTA0LjE4MSA0OC40NzYgNzcuNTE3IDUyLjIyNCIvPjwvc3ZnPg==";
     var pageTitle = string.IsNullOrWhiteSpace(Model.Title) ? dashboardTitle : Model.Title;
     var detachedView = string.Equals(HttpContext.Request.Query["dashboardView"].ToString(), "window", StringComparison.OrdinalIgnoreCase);
     var hideSideBar = Model.HideSideBar || detachedView;
@@ -442,7 +446,7 @@
         };
     </script>
     @* Favicon source: docs/assets/bITDevKit_Icon.svg *@
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiBlbmNvZGluZz0iVVRGLTgiPz48c3ZnIGlkPSJFYmVuZV8xIiB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIxMjgiIGhlaWdodD0iMTI4IiB2aWV3Qm94PSIwIDAgMTI4IDEyOCI+PGRlZnM+PHN0eWxlPi5jbHMtMXtmaWxsOiNlNDBiMzA7fS5jbHMtMSwuY2xzLTJ7c3Ryb2tlLXdpZHRoOjBweDt9LmNscy0ye2ZpbGw6I2IxY2ZlNTt9PC9zdHlsZT48L2RlZnM+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9IjQxLjM3OSA2OC42NzUgMjUuNzYgNjAuMTc5IDI1LjcwNyA4OC44ODcgNDEuMzI2IDk3LjM4MyA0MS4zNzkgNjguNjc1Ii8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNMjcuMTgyLDU5LjQ0MWwxNC45ODYsOC4xNTIsMTcuMDM0LTIuMzk0LjAwOC00LjEyMS0xNy4xMjcsMi40MDdjLS4wMzEuMDA1LS4wNjIuMDA2LS4wOTMuMDA2LS4wOTksMC0uMTkzLS4wMjktLjI4MS0uMDcxLS4wMTEtLjAwNS0uMDI1LS4wMDMtLjAzNi0uMDA5bC04Ljc3Ny00Ljc3NC01LjcxNC44MDNaIi8+PHBhdGggY2xhc3M9ImNscy0yIiBkPSJNNTkuMjQ0LDc4LjA5M2MwLS4wMjQuMDE1LS4wNDMuMDE4LS4wNjcuMDAyLS4wMTgtLjAxLS4wMzMtLjAwNy0uMDUxLjAwNi0uMDMuMDMyLS4wNDguMDQxLS4wNzYuMDI2LS4wODEuMDYyLS4xNTEuMTE2LS4yMTYuMDMtLjAzNy4wNTgtLjA2Ny4wOTUtLjA5Ny4wMjQtLjAxOS4wMzYtLjA0OC4wNjMtLjA2NC4wNTEtLjAzLjEwOS0uMDMxLjE2NC0uMDQ2LjAzLS4wMDkuMDUtLjAzNi4wODItLjA0bDUuOTIzLS44MzItNi4yMDMtMy4zNzVjLS4yMTQtLjExNS0uMzQ3LS4zNC0uMzQ3LS41ODRsLjAxMS02LjEwNS0xNi40OTQsMi4zMTgtLjA1MywyOC44NzcsMTYuNTYtMi4zMjcuMDMyLTE3LjMxNloiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iNDEuMzI4IDYxLjcxMiA0MS4zNzkgMzQuMzQ3IDQwLjI1NCAzMi4zOTYgMjUuNzYyIDI0LjUxMyAyNS43MSA1My4yMTcgNDEuMzI4IDYxLjcxMiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTM4Ljk4NSwzMC4xOTVsLS41MjEtLjkwNGMtLjAxMS0uMDE4LS4wMDMtLjA0LS4wMTItLjA1OS0uMDMzLS4wNzEtLjA2OC0uMTQxLS4wNzUtLjIyMS0uMDAyLS4wMjguMDEzLS4wNTIuMDE0LS4wOC4wMDItLjA0Mi4wMTEtLjA3OC4wMjEtLjExOS4wMjItLjA5MS4wNjEtLjE3LjExOC0uMjQ1LjAxNi0uMDIxLjAxNS0uMDUxLjAzNC0uMDcuMDEtLjAxLjAyNi0uMDA5LjAzNy0uMDE5LjAxNC0uMDEzLjAyLS4wMzMuMDM2LS4wNDVsMTAuMDctNy42ODItMjEuNTIzLDMuMDI0LDExLjgwMSw2LjQyWiIvPjxwYXRoIGNsYXNzPSJjbHMtMiIgZD0iTTU5LjIxNyw1Ny4zMDNsLTYuNTQ3LTMuNTYyYy0uMTA4LS4wNTgtLjE5Ny0uMTQ1LS4yNTgtLjI1MWwtOS43MDktMTYuODQ2LS4wNDcsMjUuNDIsMTYuNTU3LTIuMzI3LjAwNC0yLjQzNFoiLz48cG9seWdvbiBjbGFzcz0iY2xzLTEiIHBvaW50cz0iNTMuNDY5IDUyLjY2NCA1OS4yMiA1NS43OTMgNTkuMjQgNDUuMTU0IDU1LjUwMyAzOC42NzEgNDYuMjkxIDMzLjY2MSA0MC43OSAzMC42NjggNTMuNDY5IDUyLjY2NCIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMSIgcG9pbnRzPSI0MC4yNTcgMjguODY3IDU1LjkyNCAzNy4zODkgNzkuMDM5IDE5Ljc1NyA2My4zNzIgMTEuMjM0IDQwLjI1NyAyOC44NjciLz48cGF0aCBjbGFzcz0iY2xzLTEiIGQ9Ik01Ni44NTEsMzguMzUxbDIuMzkzLDQuMTUydi0uMDc2YzAtLjAyNC4wMTUtLjA0My4wMTgtLjA2Ny4wMDItLjAxOC0uMDEtLjAzMy0uMDA3LS4wNTEuMDA2LS4wMy4wMzItLjA0OC4wNDEtLjA3Ni4wMjYtLjA4MS4wNjItLjE1MS4xMTYtLjIxNi4wMy0uMDM3LjA1OC0uMDY3LjA5NS0uMDk3LjAyNC0uMDE5LjAzNi0uMDQ4LjA2My0uMDY0LjA1MS0uMDMuMTEtLjAzMS4xNjUtLjA0Ny4wMjktLjAwOS4wNDktLjAzNS4wODEtLjAzOWwyNy45OTItMy45MzRjLjE0LS4wMjMuMjg1LjAwNi40MS4wNzRsMi42MTMsMS40MjEtMTAuNzczLTE4LjY4Mi0yMy4yMDcsMTcuNzAxWiIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI3Ni4xODkgODcuNzA2IDYwLjU3IDc5LjIxIDYwLjUxNyAxMDcuOTE4IDc2LjEzNiAxMTYuNDE0IDc2LjE4OSA4Ny43MDYiLz48cGF0aCBjbGFzcz0iY2xzLTIiIGQ9Ik03Ni44OSw4Mi41MjJjLS4wMzEuMDA1LS4wNjIuMDA2LS4wOTMuMDA2LS4wOTksMC0uMTkzLS4wMjktLjI4MS0uMDcxLS4wMTEtLjAwNS0uMDI1LS4wMDMtLjAzNi0uMDA5bC04Ljc4My00Ljc3OS01LjcwNi44MDIsMTQuOTg2LDguMTUyLDI1Ljc4NC0zLjYyNC02LjAwOS0zLjI2OS0xOS44NjMsMi43OTJaIi8+PHBvbHlnb24gY2xhc3M9ImNscy0yIiBwb2ludHM9Ijc3LjUxNyA4Ny44ODkgNzcuNDYzIDExNi43NjYgMTA0LjEyNyAxMTMuMDE4IDEwNC4xODEgODQuMTQxIDc3LjUxNyA4Ny44ODkiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iNzYuMTM2IDgwLjc0OSA3Ni4xODkgNTIuMDQxIDYwLjU3IDQzLjU0NSA2MC41MTcgNzIuMjUzIDc2LjEzNiA4MC43NDkiLz48cG9seWdvbiBjbGFzcz0iY2xzLTIiIHBvaW50cz0iODcuNzc2IDM5LjE4MyA2MS45OTIgNDIuODA3IDc2Ljk3OCA1MC45NTggMTAyLjc2MiA0Ny4zMzQgODcuNzc2IDM5LjE4MyIvPjxwb2x5Z29uIGNsYXNzPSJjbHMtMiIgcG9pbnRzPSI3Ny41MTcgNTIuMjI0IDc3LjQ2MyA4MS4xMDEgMTA0LjEyNyA3Ny4zNTMgMTA0LjE4MSA0OC40NzYgNzcuNTE3IDUyLjIyNCIvPjwvc3ZnPg==">
+    <link rel="icon" type="image/svg+xml" href="@dashboardLogoUrl" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
     @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme>())
@@ -676,6 +680,7 @@
             color: var(--bs-body-color);
             align-items: center;
             display: inline-flex;
+            gap: .5rem;
             padding-top: .35rem;
             padding-bottom: .35rem;
             font-size: 1rem;
@@ -688,7 +693,24 @@
             text-align: left;
             text-overflow: ellipsis;
             white-space: nowrap;
-            direction: rtl;
+            direction: ltr;
+        }
+
+        .dashboard-brand-logo {
+            width: 2rem;
+            height: 2rem;
+            flex-shrink: 0;
+            fill: var(--dashboard-info-text);
+        }
+
+        .dashboard-brand-logo .dashboard-brand-logo-accent {
+            fill: var(--dashboard-danger-text);
+        }
+
+        .dashboard-brand-name {
+            min-width: 0;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .navbar-brand:hover,
@@ -726,7 +748,7 @@
 
         .dashboard-navbar-title {
             align-items: center;
-            color: var(--bs-body-color);
+            color: var(--dashboard-info-text);
             display: inline-flex;
             font-size: .86rem;
             font-weight: 700;
@@ -747,20 +769,22 @@
         }
 
         .dashboard-theme-picker {
-            margin-right: .35rem;
+            margin-right: 0;
             position: relative;
         }
 
         .theme-toggle {
-            min-width: 6.75rem;
-            padding: .22rem .5rem;
+            min-width: 2rem;
+            width: 2rem;
+            height: 1.6rem;
+            padding: 0;
             background: transparent;
             border: 1px solid var(--bs-border-color);
             border-radius: .1rem;
             color: var(--bs-body-color);
             font-size: .74rem;
             line-height: 1.2;
-            text-align: left;
+            text-align: center;
         }
 
             .theme-toggle:hover {
@@ -773,56 +797,80 @@
                 font-size: .85rem;
             }
 
-        .dashboard-window-toggle i,
-        .dashboard-texture-toggle i,
-        .dashboard-signout-toggle i,
         .sidebar-toggle i {
             color: var(--dashboard-nav-icon);
         }
 
-        .dashboard-texture-toggle,
-        .dashboard-signout-toggle {
+        .dashboard-header-actions {
+            gap: .35rem;
+        }
+
+        .dashboard-header-tooltip {
+            --bs-tooltip-bg: var(--dashboard-surface-inset);
+            --bs-tooltip-color: var(--bs-body-color);
+            --bs-tooltip-opacity: 1;
+            --bs-tooltip-border-radius: .1rem;
+            font-family: inherit;
+        }
+
+        .dashboard-header-tooltip .tooltip-inner {
+            border: 1px solid var(--bs-border-color);
+        }
+
+        .dashboard-header-actions > .dashboard-theme-picker,
+        .dashboard-header-actions > form {
+            display: flex;
+            align-items: center;
+        }
+
+        .dashboard-header-action {
+            box-sizing: border-box;
+            min-width: 2rem;
             width: 2rem;
             height: 1.6rem;
             display: inline-flex;
             align-items: center;
             justify-content: center;
             padding: 0;
+            margin: 0;
+            flex-shrink: 0;
+            font-size: 1rem;
+            line-height: 1;
             color: var(--bs-secondary-color);
             background: transparent;
             border: 1px solid var(--bs-border-color);
             border-radius: .1rem;
         }
 
-        .dashboard-texture-toggle:hover,
-        .dashboard-texture-toggle:focus,
-        .dashboard-texture-toggle[aria-pressed="true"],
-        .dashboard-signout-toggle:hover,
-        .dashboard-signout-toggle:focus {
+        .dashboard-header-action:hover,
+        .dashboard-header-action:focus-visible,
+        .dashboard-header-action[aria-pressed="true"] {
             color: var(--dashboard-active-fg);
             background: var(--dashboard-active-bg);
             border-color: var(--dashboard-panel-border-hover);
         }
 
-        .dashboard-window-toggle {
-            width: 2rem;
-            height: 1.6rem;
+        .dashboard-header-action > .bi {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            padding: 0;
-            margin-right: .35rem;
-            color: var(--bs-secondary-color);
-            background: transparent;
-            border: 1px solid var(--bs-border-color);
-            border-radius: .1rem;
+            width: 1.25rem;
+            height: 1.25rem;
+            font-size: 1rem;
+            line-height: 1;
+            color: var(--dashboard-nav-icon);
         }
 
-        .dashboard-window-toggle:hover,
-        .dashboard-window-toggle:focus {
-            color: var(--dashboard-active-fg);
-            background: var(--dashboard-active-bg);
-            border-color: var(--dashboard-panel-border-hover);
+        .dashboard-header-action > .bi::before {
+            display: block;
+            vertical-align: 0;
+        }
+
+        .dashboard-header-action [data-theme-selected-swatch] {
+            box-sizing: border-box;
+            width: 1.25rem;
+            height: 1rem;
+            flex-shrink: 0;
         }
 
         .dashboard-theme-picker .dropdown-menu {
@@ -1031,25 +1079,19 @@
             }
 
             .theme-toggle {
-                min-width: 2.15rem;
-                width: 2.15rem;
+                min-width: 2rem;
+                width: 2rem;
                 justify-content: center;
                 padding-left: 0;
                 padding-right: 0;
             }
 
-            .theme-toggle [data-theme-label] {
-                display: none;
-            }
 
             .dashboard-theme-picker .dropdown-menu {
                 min-width: 9.25rem;
                 right: 0;
             }
 
-            .dashboard-texture-toggle {
-                width: 1.85rem;
-            }
 
             .table-responsive {
                 margin-left: -.15rem;
@@ -1503,33 +1545,39 @@
     @(await RenderPartialAsync<_DashboardDialogs>())
     <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
         <div class="dashboard-navbar-heading">
-            <a class="navbar-brand me-0 px-3" href="@dashboardHomePath" title="@dashboardTitle">@dashboardTitle</a>
+            <a class="navbar-brand me-0 px-3" href="@dashboardHomePath" title="@dashboardTitle" aria-label="@dashboardTitle">
+                @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo>())
+                <span class="dashboard-brand-name">@dashboardBrandTitle</span>
+            </a>
             <div class="dashboard-navbar-title" title="@pageTitle">@pageTitle</div>
         </div>
         @if (!hideSideBar)
         {
-            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation" title="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
         }
 
         <div class="navbar-nav">
-            <div class="nav-item text-nowrap d-flex align-items-center">
+            <div class="nav-item dashboard-header-actions text-nowrap d-flex align-items-center">
                 <span id="dashboard-connection-indicator" class="badge rounded-pill text-bg-warning d-none me-2" title="Dashboard connection issue">
                     <i class="bi bi-wifi-off me-1"></i>Offline
                 </span>
-                <button class="btn dashboard-window-toggle" type="button" aria-label="Open current dashboard page in a new window" title="Open in new window">
+                <a class="btn dashboard-header-action dashboard-docs-link" href="https://bridgingit-gmbh.github.io/bITdevKit/" target="_blank" rel="noopener noreferrer" aria-label="Open documentation" title="Documentation">
+                    <i class="bi bi-book" aria-hidden="true"></i>
+                </a>
+                <button class="btn dashboard-header-action dashboard-window-toggle" type="button" aria-label="Open current dashboard page in a new window" title="Open in new window">
                     <i class="bi bi-box-arrow-up-right"></i>
                 </button>
                 @(await RenderPartialAsync<BridgingIT.DevKit.Presentation.Web.Pages._DashboardThemePicker>())
-                <button class="btn dashboard-texture-toggle" type="button" aria-label="Toggle terminal texture" aria-pressed="false" title="Toggle terminal texture">
+                <button class="btn dashboard-header-action dashboard-texture-toggle" type="button" aria-label="Toggle terminal texture" aria-pressed="false" title="Toggle terminal texture">
                     <i class="bi bi-grid-3x3-gap"></i>
                 </button>
                 @if (isAuthenticated)
                 {
-                    <form method="post" action="@signOutPath" class="m-0 ms-2">
+                    <form method="post" action="@signOutPath" class="m-0">
                         <input type="hidden" name="returnUrl" value="@currentDashboardUrl" />
-                        <button class="btn dashboard-signout-toggle" type="submit" aria-label="Sign out of dashboard" title="Sign out">
+                        <button class="btn dashboard-header-action dashboard-signout-toggle" type="submit" aria-label="Sign out of dashboard" title="Sign out">
                             <i class="bi bi-box-arrow-right"></i>
                         </button>
                     </form>
@@ -1691,6 +1739,16 @@
                     trigger: 'hover focus',
                     container: 'body'
                 });
+            });
+            document.querySelectorAll('header .dashboard-header-action, header .navbar-toggler').forEach(element => {
+                const tooltip = bootstrap.Tooltip.getOrCreateInstance(element, {
+                    trigger: 'hover focus',
+                    container: 'body',
+                    placement: 'bottom',
+                    customClass: 'dashboard-header-tooltip',
+                    title: () => element.getAttribute('data-bs-original-title') || element.getAttribute('title')
+                });
+                element.addEventListener('click', () => tooltip.hide());
             });
             syncSidebarTooltips();
         }

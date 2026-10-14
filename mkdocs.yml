@@ -138,12 +138,6 @@ theme:
       toggle:
         icon: material/palette
         name: Use Tokyo Night theme
-    - scheme: matte-black
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/palette
-        name: Use Matte Black theme
     - scheme: catppuccin
       primary: custom
       accent: custom
@@ -192,6 +186,12 @@ theme:
       toggle:
         icon: material/palette
         name: Use Vantablack theme
+    - scheme: matte-black
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/palette
+        name: Use Matte Black theme
     - scheme: ristretto
       primary: custom
       accent: custom
@@ -222,12 +222,6 @@ theme:
       toggle:
         icon: material/palette
         name: Use White theme
-    - scheme: system
-      primary: custom
-      accent: custom
-      toggle:
-        icon: material/brightness-auto
-        name: Use System theme
 
 plugins:
   - search

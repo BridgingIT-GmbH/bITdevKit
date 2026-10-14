@@ -13,5 +13,34 @@
         "diagnostics,operations,admin"
       ]
     }
+  },
+  "bdk": {
+    "type": "local",
+    "command": "dotnet",
+    "args": [
+      "tool",
+      "run",
+      "bdk",
+      "mcp"
+    ],
+    "tools": [
+      "*"
+    ]
+  },
+  "bdk_local": {
+    "type": "local",
+    "command": "dotnet",
+    "args": [
+      "run",
+      "--project",
+      "src/Presentation.Cli/Presentation.Cli.csproj",
+      "--",
+      "mcp",
+      "--toolset",
+      "diagnostics,operations,admin"
+    ],
+    "tools": [
+      "*"
+    ]
   }
 }

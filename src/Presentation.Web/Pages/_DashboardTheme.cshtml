@@ -4,13 +4,6 @@
     (() => {
         // White keeps every palette slot monochrome.
         const palettes = Object.freeze({
-            "matte-black": Object.freeze({ label: "Matte Black",
-                mode: "dark", accent: "#e68e0d", selection: "#2a2a2a", muted: "#333333",
-                background: "#121212", dark_background: "#0d0d0d", darker_background: "#090909", lighter_background: "#1e1e1e",
-                foreground: "#bebebe", dark_foreground: "#555555", light_foreground: "#8a8a8d", bright_foreground: "#bebebe",
-                red: "#D35F5F", yellow: "#b91c1c", orange: "#c63d3d", green: "#FFC107", cyan: "#bebebe", blue: "#e68e0d", magenta: "#D35F5F", brown: "#631e1e",
-                bright_red: "#B91C1C", bright_yellow: "#b90a0a", bright_green: "#FFC107", bright_cyan: "#eaeaea", bright_blue: "#f59e0b", bright_magenta: "#B91C1C"
-            }),
             "tokyo-night": Object.freeze({ label: "Tokyo Night",
                 mode: "dark", accent: "#7aa2f7", selection: "#292e42", muted: "#414868",
                 background: "#1a1b26", dark_background: "#13141c", darker_background: "#0e0e14", lighter_background: "#24283b",
@@ -74,6 +67,13 @@
                 red: "#a4a4a4", yellow: "#cecece", orange: "#b9b9b9", green: "#b6b6b6", cyan: "#b0b0b0", blue: "#8d8d8d", magenta: "#9b9b9b", brown: "#5c5c5c",
                 bright_red: "#a4a4a4", bright_yellow: "#cecece", bright_green: "#b6b6b6", bright_cyan: "#b0b0b0", bright_blue: "#8d8d8d", bright_magenta: "#9b9b9b"
             }),
+            "matte-black": Object.freeze({ label: "Matte Black",
+                mode: "dark", accent: "#e68e0d", selection: "#2a2a2a", muted: "#333333",
+                background: "#121212", dark_background: "#0d0d0d", darker_background: "#090909", lighter_background: "#1e1e1e",
+                foreground: "#bebebe", dark_foreground: "#555555", light_foreground: "#8a8a8d", bright_foreground: "#bebebe",
+                red: "#D35F5F", yellow: "#b91c1c", orange: "#c63d3d", green: "#FFC107", cyan: "#bebebe", blue: "#e68e0d", magenta: "#D35F5F", brown: "#631e1e",
+                bright_red: "#B91C1C", bright_yellow: "#b90a0a", bright_green: "#FFC107", bright_cyan: "#eaeaea", bright_blue: "#f59e0b", bright_magenta: "#B91C1C"
+            }),
             "ristretto": Object.freeze({ label: "Ristretto",
                 mode: "dark", accent: "#f38d70", selection: "#403e41", muted: "#72696a",
                 background: "#2c2525", dark_background: "#211b1b", darker_background: "#181414", lighter_background: "#3d2f2a",
@@ -110,10 +110,10 @@
                 bright_red: "#2a2a2a", bright_yellow: "#4a4a4a", bright_green: "#3a3a3a", bright_cyan: "#3e3e3e", bright_blue: "#1a1a1a", bright_magenta: "#2e2e2e"
             }),
         });
-        const themes = Object.freeze({ ...Object.fromEntries(Object.keys(palettes).map(name => [name, name])), dark: 'matte-black', light: 'white', system: 'system' });
+        const themes = Object.freeze({ ...Object.fromEntries(Object.keys(palettes).map(name => [name, name])), dark: 'matte-black', light: 'white' });
         const defaultTheme = themes['tokyo-night'];
-        const labels = Object.freeze({ ...Object.fromEntries(Object.entries(palettes).map(([name, palette]) => [name, palette.label])), system: 'System' });
-        const themeValues = [...Object.keys(palettes), themes.system];
+        const labels = Object.freeze(Object.fromEntries(Object.entries(palettes).map(([name, palette]) => [name, palette.label])));
+        const themeValues = Object.keys(palettes);
         const legacyThemes = Object.freeze({ dark: 'matte-black', light: 'white', tokionights: 'tokyo-night', darkforest: 'osaka-jade', carbon: 'catppuccin', matrix: 'hackerman' });
 
         const readPreference = (key, fallback) => {
@@ -224,12 +224,6 @@
             palettes,
             initialized: false,
 
-            getSystemTheme() {
-                return window.matchMedia('(prefers-color-scheme: dark)').matches
-                    ? themes.dark
-                    : themes.light;
-            },
-
             normalizeTheme(theme) {
                 return themeValues.includes(theme) ? theme : Object.hasOwn(legacyThemes, theme) ? legacyThemes[theme] : defaultTheme;
             },
@@ -243,9 +237,7 @@
 
             applyTheme(theme, persist = true) {
                 const selectedTheme = this.normalizeTheme(theme);
-                const effectiveTheme = selectedTheme === themes.system
-                    ? this.getSystemTheme()
-                    : selectedTheme;
+                const effectiveTheme = selectedTheme;
 
                 const palette = palettes[effectiveTheme];
                 for (const [key, value] of Object.entries(themeVariables(palette))) document.documentElement.style.setProperty(key, value);
@@ -292,7 +284,7 @@
                     const options = picker.querySelector('[data-theme-options]');
                     if (options) {
                         for (const name of themeValues) {
-                            const palette = palettes[name] || palettes[this.getSystemTheme()];
+                            const palette = palettes[name];
                             const item = document.createElement('li');
                             const option = document.createElement('button');
                             option.type = 'button';
@@ -331,8 +323,19 @@
             },
 
             updateThemePickers(theme) {
-                document.querySelectorAll('[data-theme-label]').forEach(label => {
-                    label.textContent = labels[theme] || labels[defaultTheme];
+                const label = labels[theme] || labels[defaultTheme];
+                const palette = palettes[theme] || palettes[defaultTheme];
+                document.querySelectorAll('.dashboard-theme-picker').forEach(picker => {
+                    const toggle = picker.querySelector('.theme-toggle');
+                    toggle?.setAttribute('aria-label', 'Select global theme: ' + label);
+                    const titleAttribute = toggle?.hasAttribute('data-bs-original-title') ? 'data-bs-original-title' : 'title';
+                    toggle?.setAttribute(titleAttribute, 'Theme: ' + label);
+                    const swatch = picker.querySelector('[data-theme-selected-swatch]');
+                    if (swatch) {
+                        swatch.style.setProperty('--theme-bg', palette.background);
+                        swatch.style.setProperty('--theme-swatch', palette.foreground);
+                        swatch.style.setProperty('--theme-accent', palette.accent);
+                    }
                 });
 
                 document.querySelectorAll('[data-theme-option]').forEach(option => {
@@ -366,11 +369,6 @@
                 document.addEventListener('keydown', event => {
                     if (event.key === 'Escape') {
                         this.closeThemePickers();
-                    }
-                });
-                window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-                    if (this.getCurrentTheme() === themes.system) {
-                        this.applyTheme(themes.system, false);
                     }
                 });
                 window.addEventListener('storage', event => {
@@ -575,15 +573,17 @@
     }
 
     .theme-toggle {
-        min-width: 6.75rem;
-        padding: .22rem .5rem;
+        min-width: 2rem;
+        width: 2rem;
+        height: 1.6rem;
+        padding: 0;
         background: transparent;
         border: 1px solid var(--bs-border-color);
         border-radius: .1rem;
         color: var(--bs-body-color);
         font-size: .74rem;
         line-height: 1.2;
-        text-align: left;
+        text-align: center;
     }
 
     .theme-toggle:hover,
@@ -646,15 +646,12 @@
 
     @@media (max-width: 575.98px) {
         .theme-toggle {
-            min-width: 2.15rem;
-            width: 2.15rem;
+            min-width: 2rem;
+            width: 2rem;
             justify-content: center;
             padding-left: 0;
             padding-right: 0;
         }
 
-        .theme-toggle [data-theme-label] {
-            display: none;
-        }
     }
 </style>

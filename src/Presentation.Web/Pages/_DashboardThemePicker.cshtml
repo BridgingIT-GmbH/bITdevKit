@@ -1,9 +1,8 @@
 @inherits RazorSlice
 
 <div class="dropdown dashboard-theme-picker">
-    <button class="btn theme-toggle d-inline-flex align-items-center gap-2" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Select global theme">
-        <i class="bi bi-terminal" aria-hidden="true"></i>
-        <span data-theme-label>Tokyo Night</span>
+    <button class="btn dashboard-header-action theme-toggle d-inline-flex align-items-center justify-content-center" type="button" aria-haspopup="true" aria-expanded="false" aria-label="Select global theme: Tokyo Night" title="Theme: Tokyo Night">
+        <span class="dashboard-theme-swatch" data-theme-selected-swatch aria-hidden="true"></span>
     </button>
     <ul class="dropdown-menu dropdown-menu-end" data-theme-options></ul>
 </div>

@@ -30,17 +30,22 @@ public class TimeoutMessageHandlerBehavior(ILoggerFactory loggerFactory) : Messa
         var options = (handler as ITimeoutMessageHandler)?.Options;
         if (options is not null)
         {
-            var timeoutPolicy = Policy.TimeoutAsync(options.Timeout,
-                TimeoutStrategy.Pessimistic,
-                async (context, timeout, task) =>
+            var pipeline = new ResiliencePipelineBuilder()
+                .AddTimeout(new TimeoutStrategyOptions
                 {
-                    await Task.Run(() =>
+                    Timeout = options.Timeout,
+                    OnTimeout = args =>
+                    {
                         this.Logger.LogError(
-                            $"{{LogKey}} message handler behavior timeout (timeout={timeout.Humanize()}, type={this.GetType().Name})",
-                            Constants.LogKey));
-                });
+                            $"{{LogKey}} message handler behavior timeout (timeout={args.Timeout.Humanize()}, type={this.GetType().Name})",
+                            Constants.LogKey);
+                        return default;
+                    }
+                })
+                .Build();
 
-            await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
+            // WaitAsync abandons a handler that ignores cancellation, so the timeout is enforced pessimistically
+            await pipeline.ExecuteAsync(async token => await next().WaitAsync(token).AnyContext(), cancellationToken);
         }
         else
         {

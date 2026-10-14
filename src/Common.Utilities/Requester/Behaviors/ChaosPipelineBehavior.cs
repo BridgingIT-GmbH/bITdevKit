@@ -8,8 +8,9 @@ namespace BridgingIT.DevKit.Common;
 using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using Polly.Contrib.Simmy;
-using Polly.Contrib.Simmy.Outcomes;
+using Polly;
+using Polly.Simmy;
+using Polly.Simmy.Fault;
 
 /// <summary>
 ///     Injects configured chaos exceptions into matching request-handler executions.
@@ -65,12 +66,16 @@ public class ChaosPipelineBehavior<TRequest, TResponse>(
 
         this.Logger.LogDebug("[{LogKey}] applying chaos behavior with injection rate {InjectionRate} (type={BehaviorType})", LogKey, injectionRate.Value, this.GetType().Name);
 
-        var policy = MonkeyPolicy.InjectException(with =>
-            with.Fault(new ChaosException("Chaos injection triggered"))
-                .InjectionRate(injectionRate.Value)
-                .Enabled(enabled.Value));
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddChaosFault(new ChaosFaultStrategyOptions
+            {
+                FaultGenerator = static _ => new ValueTask<Exception>(new ChaosException("Chaos injection triggered")),
+                InjectionRate = injectionRate.Value,
+                Enabled = enabled.Value
+            })
+            .Build();
 
-        return await policy.Execute(async context => await next().AnyContext(), cancellationToken).AnyContext();
+        return await pipeline.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken).AnyContext();
     }
 
     /// <summary>

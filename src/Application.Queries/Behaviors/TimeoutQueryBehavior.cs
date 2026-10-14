@@ -37,17 +37,23 @@ public class TimeoutQueryBehavior<TRequest, TResponse>(ILoggerFactory loggerFact
             return await next().AnyContext();
         }
 
-        var timeoutPolicy = Policy.TimeoutAsync(instance.Options.Timeout,
-            TimeoutStrategy.Pessimistic,
-            async (context, timeout, task) =>
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddTimeout(new TimeoutStrategyOptions
             {
-                await Task.Run(() => this.Logger.LogError(
-                    "[{LogKey}] query timeout behavior (timeout={Timeout}, type={BehaviorType})",
-                    Constants.LogKey,
-                    timeout.Humanize(),
-                    this.GetType().Name));
-            });
+                Timeout = instance.Options.Timeout,
+                OnTimeout = args =>
+                {
+                    this.Logger.LogError(
+                        "[{LogKey}] query timeout behavior (timeout={Timeout}, type={BehaviorType})",
+                        Constants.LogKey,
+                        args.Timeout.Humanize(),
+                        this.GetType().Name);
+                    return default;
+                }
+            })
+            .Build();
 
-        return await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
+        // WaitAsync abandons a handler that ignores cancellation, so the timeout is enforced pessimistically
+        return await pipeline.ExecuteAsync(async token => await next().WaitAsync(token).AnyContext(), cancellationToken);
     }
 }

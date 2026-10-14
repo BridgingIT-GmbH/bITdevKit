@@ -6,8 +6,9 @@
 namespace BridgingIT.DevKit.Application.Jobs;
 
 using BridgingIT.DevKit.Common;
-using Polly.Contrib.Simmy;
-using Polly.Contrib.Simmy.Outcomes;
+using Polly;
+using Polly.Simmy;
+using Polly.Simmy.Fault;
 
 /// <summary>
 /// Injects chaos exceptions into job execution for failure-path testing.
@@ -25,11 +26,16 @@ public sealed class ChaosExceptionJobBehavior : IJobBehavior
             return await next().ConfigureAwait(false);
         }
 
-        var policy = MonkeyPolicy.InjectException(with =>
-            with.Fault(instance.Options.Fault ?? new ChaosException())
-                .InjectionRate(instance.Options.InjectionRate)
-                .Enabled());
+        var fault = instance.Options.Fault ?? new ChaosException();
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddChaosFault(new ChaosFaultStrategyOptions
+            {
+                FaultGenerator = _ => new ValueTask<Exception>(fault),
+                InjectionRate = instance.Options.InjectionRate,
+                Enabled = true
+            })
+            .Build();
 
-        return await policy.Execute(async _ => await next().ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
+        return await pipeline.ExecuteAsync(async _ => await next().ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
     }
 }

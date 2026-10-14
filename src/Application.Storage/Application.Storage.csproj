@@ -13,8 +13,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Diagnostics.HealthChecks" />
-    <PackageReference Include="Polly" />
-    <PackageReference Include="Polly.Contrib.Simmy" />
+    <PackageReference Include="Microsoft.Extensions.Resilience" />
     <PackageReference Include="Scrutor" />
     <PackageReference Include="SharpCompress" />
     <PackageReference Include="System.Threading.RateLimiting" />

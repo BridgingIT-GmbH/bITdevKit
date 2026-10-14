@@ -6,8 +6,9 @@
 namespace BridgingIT.DevKit.Common;
 
 using Microsoft.Extensions.Logging;
-using Polly.Contrib.Simmy;
-using Polly.Contrib.Simmy.Outcomes;
+using Polly;
+using Polly.Simmy;
+using Polly.Simmy.Fault;
 
 /// <summary>
 ///     Randomly injects configured exceptions while executing startup tasks that opt into chaos behavior.
@@ -26,11 +27,18 @@ public class ChaosExceptionStartupTaskBehavior(ILoggerFactory loggerFactory) : S
         var options = (task as IChaosExceptionStartupTask)?.Options;
         if (options?.InjectionRate > 0)
         {
-            // https://github.com/Polly-Contrib/Simmy#Inject-exception
-            var policy = MonkeyPolicy.InjectException(with =>
-                with.Fault(options.Fault ?? new ChaosException()).InjectionRate(options.InjectionRate).Enabled());
+            // https://www.pollydocs.org/chaos/fault.html
+            var fault = options.Fault ?? new ChaosException();
+            var pipeline = new ResiliencePipelineBuilder()
+                .AddChaosFault(new ChaosFaultStrategyOptions
+                {
+                    FaultGenerator = _ => new ValueTask<Exception>(fault),
+                    InjectionRate = options.InjectionRate,
+                    Enabled = true
+                })
+                .Build();
 
-            await policy.Execute(async _ => await next().AnyContext(), cancellationToken);
+            await pipeline.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken);
         }
         else
         {

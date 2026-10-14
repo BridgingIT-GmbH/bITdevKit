@@ -9,6 +9,7 @@ using BridgingIT.DevKit.Common;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Polly;
+using Polly.Retry;
 
 /// <summary>
 /// A behavior that retries failed file storage operations with exponential backoff, wrapping an IFileStorageProvider.
@@ -45,21 +46,29 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
     private async Task<Result<T>> ExecuteWithRetryAsync<T>(Func<Task<Result<T>>> operation, string operationName, string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogRetryStart(this.logger, Constants.LogKey, this.type, operationName, path, this.options.MaxRetries);
-        var retryPolicy = Policy
-            .HandleResult<Result<T>>(r => r.IsFailure && this.IsRetryableError(r.Errors))
-            .WaitAndRetryAsync(this.options.MaxRetries, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (del, timeSpan, retryCount, context) =>
+        var retryPipeline = this.options.MaxRetries > 0
+            ? new ResiliencePipelineBuilder<Result<T>>()
+                .AddRetry(new RetryStrategyOptions<Result<T>>
                 {
-                    if (del.Result.IsFailure)
+                    ShouldHandle = new Polly.PredicateBuilder<Result<T>>().HandleResult(r => r.IsFailure && this.IsRetryableError(r.Errors)),
+                    MaxRetryAttempts = this.options.MaxRetries,
+                    DelayGenerator = args => new ValueTask<TimeSpan?>(TimeSpan.FromSeconds(Math.Pow(2, args.AttemptNumber + 1))),
+                    OnRetry = args =>
                     {
-                        this.logger.LogError("[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}", Constants.LogKey, retryCount, this.options.MaxRetries, operationName, path, del.Result.Errors.LastOrDefault()?.Message);
-                        context["LastError"] = del;
+                        if (args.Outcome.Result.IsFailure)
+                        {
+                            this.logger.LogError("[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}", Constants.LogKey, args.AttemptNumber + 1, this.options.MaxRetries, operationName, path, args.Outcome.Result.Errors.LastOrDefault()?.Message);
+                        }
+
+                        return default;
                     }
-                });
+                })
+                .Build()
+            : ResiliencePipeline<Result<T>>.Empty;
 
         try
         {
-            var result = await retryPolicy.ExecuteAsync(async () =>
+            var result = await retryPipeline.ExecuteAsync(async _ =>
             {
                 var opResult = await operation();
                 if (opResult.IsFailure && !this.IsRetryableError(opResult.Errors))
@@ -67,8 +76,8 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                     throw new InvalidOperationException($"Non-retryable error occurred: {opResult.Errors.LastOrDefault()?.Message}");
                 }
 
-                return opResult.Value;
-            });
+                return opResult;
+            }, cancellationToken);
 
             this.logger.LogInformation("[{LogKey}] file storage: successfully completed {Operation} on '{Path}'", Constants.LogKey, operationName, path);
             return result;
@@ -83,22 +92,29 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
     private async Task<Result> ExecuteWithRetryAsync(Func<Task<Result>> operation, string operationName, string path, CancellationToken cancellationToken = default)
     {
         TypedLogger.LogRetryStart(this.logger, Constants.LogKey, this.type, operationName, path, this.options.MaxRetries);
-        var retryPolicy = Policy
-            .HandleResult<Result>(r => r.IsFailure && this.IsRetryableError(r.Errors))
-            .WaitAndRetryAsync(this.options.MaxRetries, retryAttempt => TimeSpan.FromSeconds(Math.Pow(2, retryAttempt)),
-                (del, timeSpan, retryCount, context) =>
+        var retryPipeline = this.options.MaxRetries > 0
+            ? new ResiliencePipelineBuilder<Result>()
+                .AddRetry(new RetryStrategyOptions<Result>
                 {
-                    if (del.Result.IsFailure)
+                    ShouldHandle = new Polly.PredicateBuilder<Result>().HandleResult(r => r.IsFailure && this.IsRetryableError(r.Errors)),
+                    MaxRetryAttempts = this.options.MaxRetries,
+                    DelayGenerator = args => new ValueTask<TimeSpan?>(TimeSpan.FromSeconds(Math.Pow(2, args.AttemptNumber + 1))),
+                    OnRetry = args =>
                     {
-                        this.logger.LogError("[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}",
-                            Constants.LogKey, retryCount, this.options.MaxRetries, operationName, path, del.Result.Errors.LastOrDefault()?.Message);
-                        context["LastError"] = del;
+                        if (args.Outcome.Result.IsFailure)
+                        {
+                            this.logger.LogError("[{LogKey}] file storage: retry {RetryCount}/{MaxRetries} for {Operation} on '{Path}' due to: {Error}", Constants.LogKey, args.AttemptNumber + 1, this.options.MaxRetries, operationName, path, args.Outcome.Result.Errors.LastOrDefault()?.Message);
+                        }
+
+                        return default;
                     }
-                });
+                })
+                .Build()
+            : ResiliencePipeline<Result>.Empty;
 
         try
         {
-            var result = await retryPolicy.ExecuteAsync(async () =>
+            var result = await retryPipeline.ExecuteAsync(async _ =>
             {
                 var opResult = await operation();
                 if (opResult.IsFailure && !this.IsRetryableError(opResult.Errors))
@@ -107,7 +123,7 @@ public partial class RetryFileStorageBehavior(IFileStorageProvider innerProvider
                 }
 
                 return opResult;
-            });
+            }, cancellationToken);
 
             this.logger.LogInformation("[{LogKey}] file storage: successfully completed {Operation} on '{Path}' after {Retries} retries", Constants.LogKey, operationName, path, 0/*retryPolicy.State.Value.RetryCount*/);
             return result;

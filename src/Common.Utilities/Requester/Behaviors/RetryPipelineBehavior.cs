@@ -9,6 +9,7 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
+using Polly.Retry;
 
 /// <summary>
 ///     Retries exceptions from request handlers according to handler policy and default retry settings.
@@ -56,16 +57,28 @@ public class RetryPipelineBehavior<TRequest, TResponse>(
             throw new InvalidOperationException("HandlerRetryAttribute.Count and Delay must be provided or default values must be configured via RetryOptions.");
         }
 
-        var delay = TimeSpan.FromMilliseconds(delayMs.Value);
+        if (retryCount.Value <= 0)
+        {
+            return await next();
+        }
 
-        var policy = Policy<TResponse>
-            .Handle<Exception>()
-            .WaitAndRetryAsync(
-                retryCount.Value,
-                retryAttempt => delay,
-                (exception, timespan, retryAttempt, context) => this.Logger.LogWarning("[{LogKey}] retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs} ms due to {ExceptionMessage}", LogKey, retryAttempt, retryCount, handlerType.Name, timespan.TotalMilliseconds, exception.Exception?.Message));
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                MaxRetryAttempts = retryCount.Value,
+                Delay = TimeSpan.FromMilliseconds(delayMs.Value),
+                BackoffType = DelayBackoffType.Constant,
+                UseJitter = false,
+                OnRetry = args =>
+                {
+                    this.Logger.LogWarning("[{LogKey}] retry behavior attempt {RetryAttempt} of {RetryCount} for {HandlerType} after {DelayMs} ms due to {ExceptionMessage}", LogKey, args.AttemptNumber + 1, retryCount, handlerType.Name, args.RetryDelay.TotalMilliseconds, args.Outcome.Exception?.Message);
+                    return default;
+                }
+            })
+            .Build();
 
-        return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+        return await pipeline.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken).AnyContext();
     }
 
     /// <inheritdoc/>

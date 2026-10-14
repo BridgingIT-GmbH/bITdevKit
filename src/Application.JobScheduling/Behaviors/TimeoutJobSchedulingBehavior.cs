@@ -22,18 +22,23 @@ public class TimeoutJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSch
         if (options is not null)
         {
             var jobTypeName = context.JobDetail.JobType.FullName;
-            var timeoutPolicy = Policy.TimeoutAsync(options.Timeout,
-                TimeoutStrategy.Pessimistic,
-                async (context, timeout, task) =>
+            var pipeline = new ResiliencePipelineBuilder()
+                .AddTimeout(new TimeoutStrategyOptions
                 {
-                    await Task.Run(() =>
+                    Timeout = options.Timeout,
+                    OnTimeout = args =>
+                    {
                         this.Logger.LogError("[{LogKey}] job timeout behavior (timeout={Timeout}, type={JobType})",
                             Constants.LogKey,
-                            timeout.Humanize(),
-                            jobTypeName));
-                });
+                            args.Timeout.Humanize(),
+                            jobTypeName);
+                        return default;
+                    }
+                })
+                .Build();
 
-            await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), context.CancellationToken);
+            // WaitAsync abandons a job that ignores cancellation, so the timeout is enforced pessimistically
+            await pipeline.ExecuteAsync(async token => await next().WaitAsync(token).AnyContext(), context.CancellationToken);
         }
         else
         {

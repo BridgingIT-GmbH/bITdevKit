@@ -5,8 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Messaging;
 
-using Polly.Contrib.Simmy;
-using Polly.Contrib.Simmy.Outcomes;
+using Polly;
+using Polly.Simmy;
+using Polly.Simmy.Fault;
 
 /// <summary>
 /// Provides chaos exception message handler behavior.
@@ -30,11 +31,18 @@ public class ChaosExceptionMessageHandlerBehavior(ILoggerFactory loggerFactory)
         var options = (handler as IChaosExceptionMessageHandler)?.Options;
         if (options?.InjectionRate > 0)
         {
-            // https://github.com/Polly-Contrib/Simmy#Inject-exception
-            var policy = MonkeyPolicy.InjectException(with =>
-                with.Fault(options.Fault ?? new ChaosException()).InjectionRate(options.InjectionRate).Enabled());
+            // https://www.pollydocs.org/chaos/fault.html
+            var fault = options.Fault ?? new ChaosException();
+            var pipeline = new ResiliencePipelineBuilder()
+                .AddChaosFault(new ChaosFaultStrategyOptions
+                {
+                    FaultGenerator = _ => new ValueTask<Exception>(fault),
+                    InjectionRate = options.InjectionRate,
+                    Enabled = true
+                })
+                .Build();
 
-            await policy.Execute(async context => await next().AnyContext(), cancellationToken);
+            await pipeline.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken);
         }
         else
         {

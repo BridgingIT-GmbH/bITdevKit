@@ -27,51 +27,33 @@ public class RetryJobSchedulingBehavior(ILoggerFactory loggerFactory) : JobSched
                 options.Attempts = 1;
             }
 
-            var attempts = 1;
             var jobTypeName = context.JobDetail.JobType.FullName;
-            AsyncRetryPolicy retryPolicy;
-            if (!options.BackoffExponential)
-            {
-                retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
-                            ? options.Backoff.Milliseconds
-                            : 0),
-                        (ex, wait) =>
-                        {
-                            Activity.Current?.AddEvent(
-                                new ActivityEvent($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
-                            this.Logger.LogError(ex,
-                                $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}",
-                                Constants.LogKey,
-                                attempts,
-                                wait.Humanize(),
-                                jobTypeName);
-                            attempts++;
-                        });
-            }
-            else
-            {
-                retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
-                            ? options.Backoff.Milliseconds
-                            : 0 * Math.Pow(2, attempt)),
-                        (ex, wait) =>
-                        {
-                            Activity.Current?.AddEvent(
-                                new ActivityEvent($"Retry (attempt=#{attempts}, type={jobTypeName}) {ex.Message}"));
-                            this.Logger.LogError(ex,
-                                $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {ex.Message}",
-                                Constants.LogKey,
-                                attempts,
-                                wait.Humanize(),
-                                jobTypeName);
-                            attempts++;
-                        });
-            }
+            var pipeline = new ResiliencePipelineBuilder()
+                .AddRetry(new RetryStrategyOptions
+                {
+                    ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                    MaxRetryAttempts = options.Attempts,
+                    Delay = options.Backoff,
+                    BackoffType = options.BackoffExponential ? DelayBackoffType.Exponential : DelayBackoffType.Constant,
+                    UseJitter = false,
+                    OnRetry = args =>
+                    {
+                        var attempt = args.AttemptNumber + 1;
+                        var message = args.Outcome.Exception?.Message;
+                        Activity.Current?.AddEvent(
+                            new ActivityEvent($"Retry (attempt=#{attempt}, type={jobTypeName}) {message}"));
+                        this.Logger.LogError(args.Outcome.Exception,
+                            $"{{LogKey}} job retry behavior (attempt=#{{RetryAttempts}}, wait={{RetryWait}}, type={{JobType}}) {message}",
+                            Constants.LogKey,
+                            attempt,
+                            args.RetryDelay.Humanize(),
+                            jobTypeName);
+                        return default;
+                    }
+                })
+                .Build();
 
-            await retryPolicy.ExecuteAsync(async context => await next().AnyContext(), context.CancellationToken);
+            await pipeline.ExecuteAsync(async _ => await next().AnyContext(), context.CancellationToken);
         }
         else
         {

@@ -57,16 +57,20 @@ public class TimeoutPipelineBehavior<TRequest, TResponse>(
         }
 
         var timeout = TimeSpan.FromMilliseconds(durationMs.Value);
-        var policy = Policy.TimeoutAsync<TResponse>(
-            timeout,
-            TimeoutStrategy.Pessimistic,
-            (context, timespan, task, exception) =>
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddTimeout(new TimeoutStrategyOptions
             {
-                this.Logger.LogWarning("[{LogKey}] timeout behavior triggered (timeout={TimeoutMs} ms, type={BehaviorType})", LogKey, timespan.TotalMilliseconds, this.GetType().Name);
-                return Task.CompletedTask;
-            });
+                Timeout = timeout,
+                OnTimeout = args =>
+                {
+                    this.Logger.LogWarning("[{LogKey}] timeout behavior triggered (timeout={TimeoutMs} ms, type={BehaviorType})", LogKey, args.Timeout.TotalMilliseconds, this.GetType().Name);
+                    return default;
+                }
+            })
+            .Build();
 
-        return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+        // WaitAsync abandons a handler that ignores cancellation, so the timeout is enforced pessimistically
+        return await pipeline.ExecuteAsync(async token => await next().WaitAsync(token).AnyContext(), cancellationToken).AnyContext();
     }
 
     /// <summary>

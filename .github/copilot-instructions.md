@@ -13,7 +13,7 @@
 # Key Packages Used
 - MediatR: For CQS and mediator pattern.
 - FluentValidation: For model validation.
-- Polly: For resilience and transient-fault handling.
+- Microsoft.Extensions.Resilience: For resilience and transient-fault handling (do not reference Polly directly).
 - Serilog: For structured logging.
 - Scrutor: For DI registration via assembly scanning.
 - Shouldly: For expressive test assertions.
@@ -60,7 +60,7 @@ public void CalculateTotal_ShouldReturnCorrectSum()
 
 # Validation and Resilience
 - Use FluentValidation for input and model validation.
-- Use Polly for retry, circuit breaker, and other resilience patterns.
+- Use Microsoft.Extensions.Resilience (resilience pipelines) for retry, circuit breaker, and other resilience patterns; do not add a direct Polly package reference.
 
 # Logging and Observability
 - Use Serilog for structured logging but use the dotnet logging ILogger.

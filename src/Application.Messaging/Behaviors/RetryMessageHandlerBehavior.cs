@@ -36,46 +36,30 @@ public class RetryMessageHandlerBehavior(ILoggerFactory loggerFactory) : Message
                 options.Attempts = 1;
             }
 
-            var attempts = 1;
-            AsyncRetryPolicy retryPolicy;
-            if (!options.BackoffExponential)
-            {
-                retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
-                            ? options.Backoff.Milliseconds
-                            : 0),
-                        (ex, wait) =>
-                        {
-                            Activity.Current?.AddEvent(
-                                new ActivityEvent(
-                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                            this.Logger.LogError(ex,
-                                $"{{LogKey}} message handler retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
-                                Constants.LogKey);
-                            attempts++;
-                        });
-            }
-            else
-            {
-                retryPolicy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(options.Attempts,
-                        attempt => TimeSpan.FromMilliseconds(options.Backoff != TimeSpan.Zero
-                            ? options.Backoff.Milliseconds
-                            : 0 * Math.Pow(2, attempt)),
-                        (ex, wait) =>
-                        {
-                            Activity.Current?.AddEvent(
-                                new ActivityEvent(
-                                    $"Retry (attempt=#{attempts}, type={this.GetType().Name}) {ex.Message}"));
-                            this.Logger.LogError(ex,
-                                $"{{LogKey}} message handler retry behavior (attempt=#{attempts}, wait={wait.Humanize()}, type={this.GetType().Name}) {ex.Message}",
-                                Constants.LogKey);
-                            attempts++;
-                        });
-            }
+            var pipeline = new ResiliencePipelineBuilder()
+                .AddRetry(new RetryStrategyOptions
+                {
+                    ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                    MaxRetryAttempts = options.Attempts,
+                    Delay = options.Backoff,
+                    BackoffType = options.BackoffExponential ? DelayBackoffType.Exponential : DelayBackoffType.Constant,
+                    UseJitter = false,
+                    OnRetry = args =>
+                    {
+                        var attempt = args.AttemptNumber + 1;
+                        var message = args.Outcome.Exception?.Message;
+                        Activity.Current?.AddEvent(
+                            new ActivityEvent(
+                                $"Retry (attempt=#{attempt}, type={this.GetType().Name}) {message}"));
+                        this.Logger.LogError(args.Outcome.Exception,
+                            $"{{LogKey}} message handler retry behavior (attempt=#{attempt}, wait={args.RetryDelay.Humanize()}, type={this.GetType().Name}) {message}",
+                            Constants.LogKey);
+                        return default;
+                    }
+                })
+                .Build();
 
-            await retryPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
+            await pipeline.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken);
         }
         else
         {

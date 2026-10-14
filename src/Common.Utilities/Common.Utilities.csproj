@@ -18,8 +18,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
     <PackageReference Include="Microsoft.Extensions.Options" />
     <PackageReference Include="NewId" />
-    <PackageReference Include="Polly" />
-    <PackageReference Include="Polly.Contrib.Simmy" />
+    <PackageReference Include="Microsoft.Extensions.Resilience" />
   </ItemGroup>
 
   <ItemGroup>

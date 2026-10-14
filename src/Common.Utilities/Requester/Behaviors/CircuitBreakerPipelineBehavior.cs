@@ -9,6 +9,8 @@ using System.Collections.Concurrent;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Polly;
+using Polly.CircuitBreaker;
+using Polly.Retry;
 
 /// <summary>
 ///     Applies retry and circuit-breaker policies configured for a request handler.
@@ -25,6 +27,7 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
     where TRequest : class
     where TResponse : IResult
 {
+    private static readonly TimeSpan MinBreakDuration = TimeSpan.FromMilliseconds(500);
     private readonly ConcurrentDictionary<Type, PolicyConfig> policyCache = policyCache ?? throw new ArgumentNullException(nameof(policyCache));
     private readonly CircuitBreakerOptions circuitBreakerOptions = options?.Value ?? new CircuitBreakerOptions();
 
@@ -64,35 +67,48 @@ public class CircuitBreakerPipelineBehavior<TRequest, TResponse>(
         var backoff = TimeSpan.FromMilliseconds(backoffMilliseconds.Value);
         var attemptCounter = 1;
 
-        var retryPolicy = backoffExponential.Value
-            ? Policy.Handle<Exception>()
-                .WaitAndRetryForeverAsync(
-                    attempt => TimeSpan.FromMilliseconds(backoff.Milliseconds * Math.Pow(2, attempt)),
-                    (ex, wait) =>
-                    {
-                        this.Logger.LogError(ex, "[{LogKey}] circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attemptCounter, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
-                        attemptCounter++;
-                    })
-            : Policy.Handle<Exception>()
-                .WaitAndRetryForeverAsync(
-                    attempt => backoff,
-                    (ex, wait) =>
-                    {
-                        this.Logger.LogError(ex, "[{LogKey}] circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attemptCounter, wait.TotalMilliseconds, this.GetType().Name, ex.Message);
-                        attemptCounter++;
-                    });
+        // Polly v8 has no consecutive-failure breaker: a failure ratio of 100% over a sampling window
+        // spanning the whole execution breaks after N consecutive failures within this execution
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddRetry(new RetryStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                MaxRetryAttempts = int.MaxValue,
+                Delay = backoff,
+                BackoffType = backoffExponential.Value ? DelayBackoffType.Exponential : DelayBackoffType.Constant,
+                UseJitter = false,
+                OnRetry = args =>
+                {
+                    this.Logger.LogError(args.Outcome.Exception, "[{LogKey}] circuit breaker behavior (attempt=#{Attempts}, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, attemptCounter, args.RetryDelay.TotalMilliseconds, this.GetType().Name, args.Outcome.Exception?.Message);
+                    attemptCounter++;
+                    return default;
+                }
+            })
+            .AddCircuitBreaker(new CircuitBreakerStrategyOptions
+            {
+                ShouldHandle = new PredicateBuilder().Handle<Exception>(),
+                FailureRatio = 1.0,
+                MinimumThroughput = Math.Max(2, attempts.Value),
+                SamplingDuration = TimeSpan.FromDays(1),
+                BreakDuration = breakDuration < MinBreakDuration ? MinBreakDuration : breakDuration,
+                OnOpened = args =>
+                {
+                    this.Logger.LogError(args.Outcome.Exception, "[{LogKey}] circuit breaker behavior (circuit=open, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, args.BreakDuration.TotalMilliseconds, this.GetType().Name, args.Outcome.Exception?.Message);
+                    return default;
+                },
+                OnClosed = args =>
+                {
+                    this.Logger.LogDebug("[{LogKey}] circuit breaker behavior (circuit=closed, type={BehaviorType})", LogKey, this.GetType().Name);
+                    return default;
+                },
+                OnHalfOpened = args =>
+                {
+                    this.Logger.LogDebug("[{LogKey}] circuit breaker behavior (circuit=halfopen, type={BehaviorType})", LogKey, this.GetType().Name);
+                    return default;
+                }
+            })
+            .Build();
 
-        var circuitBreakerPolicy = Policy
-            .Handle<Exception>()
-            .CircuitBreakerAsync(
-                attempts.Value,
-                breakDuration,
-                (ex, wait) => this.Logger.LogError(ex, "[{LogKey}] circuit breaker behavior (circuit=open, wait={WaitMs} ms, type={BehaviorType}) {ErrorMessage}", LogKey, wait.TotalMilliseconds, this.GetType().Name, ex.Message),
-                () => this.Logger.LogDebug("[{LogKey}] circuit breaker behavior (circuit=closed, type={BehaviorType})", LogKey, this.GetType().Name),
-                () => this.Logger.LogDebug("[{LogKey}] circuit breaker behavior (circuit=halfopen, type={BehaviorType})", LogKey, this.GetType().Name));
-
-        var policy = Policy.WrapAsync(retryPolicy, circuitBreakerPolicy);
-
-        return await policy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken).AnyContext();
+        return await pipeline.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken).AnyContext();
     }
 }

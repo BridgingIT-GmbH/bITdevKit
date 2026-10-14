@@ -27,7 +27,7 @@ builder.Logging.AddFilter("Microsoft.AspNetCore.Components.WebAssembly.Authentic
 builder.Services.AddLocalization();
 //builder.Services.AddHttpClient("backend-api")
 //    .ConfigureHttpClient(c => c.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
-//    .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));
+//    .AddResilienceHandler("timeout", resilience => resilience.AddTimeout(TimeSpan.FromSeconds(30)));
 builder.Services.AddHttpClient("backend-api",
     client => client.BaseAddress = new Uri(builder.HostEnvironment.BaseAddress))
     .AddHttpMessageHandler(sp =>
@@ -37,7 +37,7 @@ builder.Services.AddHttpClient("backend-api",
                 authorizedUrls: [builder.HostEnvironment.BaseAddress],
                 scopes: ["openid", "profile", "email", "roles", "offline_access"]);
     })
-    .AddPolicyHandler(Policy.TimeoutAsync<HttpResponseMessage>(TimeSpan.FromSeconds(30)));
+    .AddResilienceHandler("timeout", resilience => resilience.AddTimeout(TimeSpan.FromSeconds(30)));
 builder.Services.AddScoped(sp => HttpClientFactory(sp, configuration));
 
 // Kiota: use the named client "backend-api" (has OIDC AuthorizationMessageHandler)

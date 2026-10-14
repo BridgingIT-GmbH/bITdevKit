@@ -142,7 +142,7 @@ The best entry point into the current documentation set is the
 - [FluentValidation](https://github.com/FluentValidation/FluentValidation)
 - [FluentAssertions](https://github.com/fluentassertions/fluentassertions)
 - [Humanizer](https://github.com/Humanizr/Humanizer)
-- [Polly](https://github.com/App-vNext/Polly)
+- [Microsoft.Extensions.Resilience](https://learn.microsoft.com/en-us/dotnet/core/resilience/) (Polly)
 - [Scrutor](https://github.com/khellang/Scrutor)
 - [Serilog](https://github.com/serilog/serilog)
 - [Quartz](https://github.com/quartz-scheduler/quartz)

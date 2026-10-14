@@ -5,8 +5,9 @@
 
 namespace BridgingIT.DevKit.Application.Queries;
 
-using Polly.Contrib.Simmy;
-using Polly.Contrib.Simmy.Outcomes;
+using Polly;
+using Polly.Simmy;
+using Polly.Simmy.Fault;
 
 /// <summary>
 /// Provides chaos exception query behavior.
@@ -41,12 +42,17 @@ public class ChaosExceptionQueryBehavior<TRequest, TResponse>(ILoggerFactory log
             return await next().AnyContext();
         }
 
-        // https://github.com/Polly-Contrib/Simmy#Inject-exception
-        var policy = MonkeyPolicy.InjectException(with =>
-            with.Fault(instance.Options.Fault ?? new ChaosException())
-                .InjectionRate(instance.Options.InjectionRate)
-                .Enabled());
+        // https://www.pollydocs.org/chaos/fault.html
+        var fault = instance.Options.Fault ?? new ChaosException();
+        var pipeline = new ResiliencePipelineBuilder()
+            .AddChaosFault(new ChaosFaultStrategyOptions
+            {
+                FaultGenerator = _ => new ValueTask<Exception>(fault),
+                InjectionRate = instance.Options.InjectionRate,
+                Enabled = true
+            })
+            .Build();
 
-        return await policy.Execute(async context => await next().AnyContext(), cancellationToken);
+        return await pipeline.ExecuteAsync(async _ => await next().AnyContext(), cancellationToken);
     }
 }

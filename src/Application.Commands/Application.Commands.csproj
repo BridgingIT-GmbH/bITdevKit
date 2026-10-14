@@ -12,8 +12,7 @@
     <PackageReference Include="MediatR"/>
     <PackageReference Include="Microsoft.Extensions.Caching.Abstractions"/>
     <PackageReference Include="Humanizer.Core"/>
-    <PackageReference Include="Polly"/>
-    <PackageReference Include="Polly.Contrib.Simmy"/>
+    <PackageReference Include="Microsoft.Extensions.Resilience"/>
   </ItemGroup>
 
   <ItemGroup>

@@ -29,22 +29,24 @@ public class TimeoutStartupTaskBehavior(ILoggerFactory loggerFactory) : StartupT
         var options = (task as ITimeoutStartupTask)?.Options;
         if (options is not null)
         {
-            var timeoutPolicy = Policy.TimeoutAsync(options.Timeout,
-                TimeoutStrategy.Pessimistic,
-                async (context, timeout, task) =>
+            var pipeline = new ResiliencePipelineBuilder()
+                .AddTimeout(new TimeoutStrategyOptions
                 {
-                    await Task.Run(() =>
-                        {
-                            Activity.Current?.AddEvent(new ActivityEvent($"Timout (took={timeout.Humanize()}, task={taskName})"));
-                            this.Logger.LogError(
-                                $"{{LogKey}} startup task timeout behavior (timeout={timeout.Humanize()}, task={{StartupTaskType}})",
-                                "UTL",
-                                taskName);
-                        },
-                        cancellationToken).ConfigureAwait(false);
-                });
+                    Timeout = options.Timeout,
+                    OnTimeout = args =>
+                    {
+                        Activity.Current?.AddEvent(new ActivityEvent($"Timout (took={args.Timeout.Humanize()}, task={taskName})"));
+                        this.Logger.LogError(
+                            $"{{LogKey}} startup task timeout behavior (timeout={args.Timeout.Humanize()}, task={{StartupTaskType}})",
+                            "UTL",
+                            taskName);
+                        return default;
+                    }
+                })
+                .Build();
 
-            await timeoutPolicy.ExecuteAsync(async context => await next().AnyContext(), cancellationToken);
+            // WaitAsync abandons a task that ignores cancellation, so the timeout is enforced pessimistically
+            await pipeline.ExecuteAsync(async token => await next().WaitAsync(token).AnyContext(), cancellationToken);
         }
         else
         {

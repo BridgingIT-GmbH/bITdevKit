@@ -1,0 +1,18 @@
+<Project>
+
+  <!--
+    Microsoft.Extensions.Resilience (Polly) transitively brings in Microsoft.Extensions.Telemetry.Abstractions, which replaces
+    the standard [LoggerMessage] source generator with the stricter Microsoft.Gen.Logging one. Keep the standard generator.
+  -->
+  <PropertyGroup>
+    <DisableMicrosoftExtensionsLoggingSourceGenerator>false</DisableMicrosoftExtensionsLoggingSourceGenerator>
+  </PropertyGroup>
+
+  <Target Name="RemoveTelemetryAbstractionsAnalyzers" AfterTargets="ResolveReferences">
+    <ItemGroup>
+      <_TelemetryAbstractionsAnalyzer Include="@(Analyzer)" Condition="'%(Analyzer.NuGetPackageId)' == 'Microsoft.Extensions.Telemetry.Abstractions'" />
+      <Analyzer Remove="@(_TelemetryAbstractionsAnalyzer)" />
+    </ItemGroup>
+  </Target>
+
+</Project>

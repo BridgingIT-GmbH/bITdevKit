@@ -173893,6 +173893,18 @@ references:
   fullName.vb: BridgingIT.DevKit.Common.OperationProfilingQuery.New
   nameWithType: OperationProfilingQuery.OperationProfilingQuery
   nameWithType.vb: OperationProfilingQuery.New
+- uid: BridgingIT.DevKit.Common.OperationProfilingQuery.AfterCommitWatermark
+  name: AfterCommitWatermark
+  href: obj/api/BridgingIT.DevKit.Common.OperationProfilingQuery.html#BridgingIT_DevKit_Common_OperationProfilingQuery_AfterCommitWatermark
+  commentId: P:BridgingIT.DevKit.Common.OperationProfilingQuery.AfterCommitWatermark
+  fullName: BridgingIT.DevKit.Common.OperationProfilingQuery.AfterCommitWatermark
+  nameWithType: OperationProfilingQuery.AfterCommitWatermark
+- uid: BridgingIT.DevKit.Common.OperationProfilingQuery.AfterCommitWatermark*
+  name: AfterCommitWatermark
+  href: obj/api/BridgingIT.DevKit.Common.OperationProfilingQuery.html#BridgingIT_DevKit_Common_OperationProfilingQuery_AfterCommitWatermark_
+  commentId: Overload:BridgingIT.DevKit.Common.OperationProfilingQuery.AfterCommitWatermark
+  fullName: BridgingIT.DevKit.Common.OperationProfilingQuery.AfterCommitWatermark
+  nameWithType: OperationProfilingQuery.AfterCommitWatermark
 - uid: BridgingIT.DevKit.Common.OperationProfilingQuery.ApplicationRequestId
   name: ApplicationRequestId
   href: obj/api/BridgingIT.DevKit.Common.OperationProfilingQuery.html#BridgingIT_DevKit_Common_OperationProfilingQuery_ApplicationRequestId
@@ -286325,6 +286337,147 @@ references:
   commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptions.StartupDelay
   fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptions.StartupDelay
   nameWithType: LogEntryMaintenanceServiceOptions.StartupDelay
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder
+  name: LogEntryMaintenanceServiceOptionsBuilder
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.#ctor
+  name: LogEntryMaintenanceServiceOptionsBuilder()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder__ctor
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.LogEntryMaintenanceServiceOptionsBuilder()
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.New()
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.LogEntryMaintenanceServiceOptionsBuilder()
+  nameWithType.vb: LogEntryMaintenanceServiceOptionsBuilder.New()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.#ctor*
+  name: LogEntryMaintenanceServiceOptionsBuilder
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.LogEntryMaintenanceServiceOptionsBuilder
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.New
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.LogEntryMaintenanceServiceOptionsBuilder
+  nameWithType.vb: LogEntryMaintenanceServiceOptionsBuilder.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays(System.Int32)
+  name: CleanupArchiveOlderThanDays(int)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupArchiveOlderThanDays_System_Int32_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays(System.Int32)
+  name.vb: CleanupArchiveOlderThanDays(Integer)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays(int)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays(Integer)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays(int)
+  nameWithType.vb: LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays(Integer)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays*
+  name: CleanupArchiveOlderThanDays
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupArchiveOlderThanDays_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupArchiveOlderThanDays
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize(System.Int32)
+  name: CleanupBatchSize(int)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupBatchSize_System_Int32_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize(System.Int32)
+  name.vb: CleanupBatchSize(Integer)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize(int)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize(Integer)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize(int)
+  nameWithType.vb: LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize(Integer)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize*
+  name: CleanupBatchSize
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupBatchSize_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupBatchSize
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays(System.Int32)
+  name: CleanupDeleteOlderThanDays(int)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupDeleteOlderThanDays_System_Int32_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays(System.Int32)
+  name.vb: CleanupDeleteOlderThanDays(Integer)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays(int)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays(Integer)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays(int)
+  nameWithType.vb: LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays(Integer)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays*
+  name: CleanupDeleteOlderThanDays
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupDeleteOlderThanDays_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupDeleteOlderThanDays
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval(System.TimeSpan)
+  name: CleanupInterval(TimeSpan)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupInterval_System_TimeSpan_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval(System.TimeSpan)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval(System.TimeSpan)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval(TimeSpan)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval*
+  name: CleanupInterval
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_CleanupInterval_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.CleanupInterval
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Disabled
+  name: Disabled()
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_Disabled
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Disabled
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Disabled()
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.Disabled()
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Disabled*
+  name: Disabled
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_Disabled_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Disabled
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Disabled
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.Disabled
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Enabled(System.Boolean)
+  name: Enabled(bool)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_Enabled_System_Boolean_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Enabled(System.Boolean)
+  name.vb: Enabled(Boolean)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Enabled(bool)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Enabled(Boolean)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.Enabled(bool)
+  nameWithType.vb: LogEntryMaintenanceServiceOptionsBuilder.Enabled(Boolean)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Enabled*
+  name: Enabled
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_Enabled_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Enabled
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.Enabled
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.Enabled
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval(System.TimeSpan)
+  name: ProcessingInterval(TimeSpan)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_ProcessingInterval_System_TimeSpan_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval(System.TimeSpan)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval(System.TimeSpan)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval(TimeSpan)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval*
+  name: ProcessingInterval
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_ProcessingInterval_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.ProcessingInterval
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(System.String)
+  name: StartupDelay(string)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_StartupDelay_System_String_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(System.String)
+  name.vb: StartupDelay(String)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(string)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(String)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(string)
+  nameWithType.vb: LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(String)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(System.TimeSpan)
+  name: StartupDelay(TimeSpan)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_StartupDelay_System_TimeSpan_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(System.TimeSpan)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(System.TimeSpan)
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.StartupDelay(TimeSpan)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay*
+  name: StartupDelay
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptionsBuilder_StartupDelay_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptionsBuilder.StartupDelay
+  nameWithType: LogEntryMaintenanceServiceOptionsBuilder.StartupDelay
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceService`1
   name: LogEntryMaintenanceService<TContext>
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceService-1.html
@@ -286535,6 +286688,54 @@ references:
   fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryService(Of TContext).SubscribeAsync
   nameWithType: LogEntryService<TContext>.SubscribeAsync
   nameWithType.vb: LogEntryService(Of TContext).SubscribeAsync
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext
+  name: LogEntryServicesBuilderContext
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.html
+  commentId: T:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext
+  nameWithType: LogEntryServicesBuilderContext
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.#ctor(Microsoft.Extensions.DependencyInjection.IServiceCollection,BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptions)
+  name: LogEntryServicesBuilderContext(IServiceCollection, LogEntryMaintenanceServiceOptions)
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryServicesBuilderContext__ctor_Microsoft_Extensions_DependencyInjection_IServiceCollection_BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryMaintenanceServiceOptions_
+  commentId: M:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.#ctor(Microsoft.Extensions.DependencyInjection.IServiceCollection,BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptions)
+  name.vb: New(IServiceCollection, LogEntryMaintenanceServiceOptions)
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.LogEntryServicesBuilderContext(Microsoft.Extensions.DependencyInjection.IServiceCollection, BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptions)
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.New(Microsoft.Extensions.DependencyInjection.IServiceCollection, BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryMaintenanceServiceOptions)
+  nameWithType: LogEntryServicesBuilderContext.LogEntryServicesBuilderContext(IServiceCollection, LogEntryMaintenanceServiceOptions)
+  nameWithType.vb: LogEntryServicesBuilderContext.New(IServiceCollection, LogEntryMaintenanceServiceOptions)
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.#ctor*
+  name: LogEntryServicesBuilderContext
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryServicesBuilderContext__ctor_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.LogEntryServicesBuilderContext
+  fullName.vb: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.New
+  nameWithType: LogEntryServicesBuilderContext.LogEntryServicesBuilderContext
+  nameWithType.vb: LogEntryServicesBuilderContext.New
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Options
+  name: Options
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryServicesBuilderContext_Options
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Options
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Options
+  nameWithType: LogEntryServicesBuilderContext.Options
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Options*
+  name: Options
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryServicesBuilderContext_Options_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Options
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Options
+  nameWithType: LogEntryServicesBuilderContext.Options
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Services
+  name: Services
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryServicesBuilderContext_Services
+  commentId: P:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Services
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Services
+  nameWithType: LogEntryServicesBuilderContext.Services
+- uid: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Services*
+  name: Services
+  href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.html#BridgingIT_DevKit_Infrastructure_EntityFramework_LogEntryServicesBuilderContext_Services_
+  commentId: Overload:BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Services
+  fullName: BridgingIT.DevKit.Infrastructure.EntityFramework.LogEntryServicesBuilderContext.Services
+  nameWithType: LogEntryServicesBuilderContext.Services
 - uid: BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging
   name: BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging
   href: obj/api/BridgingIT.DevKit.Infrastructure.EntityFramework.Messaging.html
@@ -319779,18 +319980,6 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingOptions.ObserveRequestBodyBytes
   fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptions.ObserveRequestBodyBytes
   nameWithType: RequestProfilingOptions.ObserveRequestBodyBytes
-- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptions.OperationCapturePatterns
-  name: OperationCapturePatterns
-  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptions.html#BridgingIT_DevKit_Presentation_RequestProfilingOptions_OperationCapturePatterns
-  commentId: P:BridgingIT.DevKit.Presentation.RequestProfilingOptions.OperationCapturePatterns
-  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptions.OperationCapturePatterns
-  nameWithType: RequestProfilingOptions.OperationCapturePatterns
-- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptions.OperationCapturePatterns*
-  name: OperationCapturePatterns
-  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptions.html#BridgingIT_DevKit_Presentation_RequestProfilingOptions_OperationCapturePatterns_
-  commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingOptions.OperationCapturePatterns
-  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptions.OperationCapturePatterns
-  nameWithType: RequestProfilingOptions.OperationCapturePatterns
 - uid: BridgingIT.DevKit.Presentation.RequestProfilingOptions.RedactedQueryParameters
   name: RedactedQueryParameters
   href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptions.html#BridgingIT_DevKit_Presentation_RequestProfilingOptions_RedactedQueryParameters
@@ -319866,6 +320055,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingOptions.Validate
   fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptions.Validate
   nameWithType: RequestProfilingOptions.Validate
+- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptions.WhitelistPatterns
+  name: WhitelistPatterns
+  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptions.html#BridgingIT_DevKit_Presentation_RequestProfilingOptions_WhitelistPatterns
+  commentId: P:BridgingIT.DevKit.Presentation.RequestProfilingOptions.WhitelistPatterns
+  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptions.WhitelistPatterns
+  nameWithType: RequestProfilingOptions.WhitelistPatterns
+- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptions.WhitelistPatterns*
+  name: WhitelistPatterns
+  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptions.html#BridgingIT_DevKit_Presentation_RequestProfilingOptions_WhitelistPatterns_
+  commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingOptions.WhitelistPatterns
+  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptions.WhitelistPatterns
+  nameWithType: RequestProfilingOptions.WhitelistPatterns
 - uid: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder
   name: RequestProfilingOptionsBuilder
   href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html
@@ -319890,21 +320091,6 @@ references:
   fullName.vb: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.New
   nameWithType: RequestProfilingOptionsBuilder.RequestProfilingOptionsBuilder
   nameWithType.vb: RequestProfilingOptionsBuilder.New
-- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths(System.String[])
-  name: AllowOperationsForBlacklistedPaths(params string[])
-  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html#BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_AllowOperationsForBlacklistedPaths_System_String___
-  commentId: M:BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths(System.String[])
-  name.vb: AllowOperationsForBlacklistedPaths(ParamArray String())
-  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths(params string[])
-  fullName.vb: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths(ParamArray String())
-  nameWithType: RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths(params string[])
-  nameWithType.vb: RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths(ParamArray String())
-- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths*
-  name: AllowOperationsForBlacklistedPaths
-  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html#BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_AllowOperationsForBlacklistedPaths_
-  commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths
-  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths
-  nameWithType: RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths
 - uid: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Blacklist(System.String[])
   name: Blacklist(params string[])
   href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html#BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Blacklist_System_String___
@@ -319980,6 +320166,21 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.StripPathPrefix
   fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.StripPathPrefix
   nameWithType: RequestProfilingOptionsBuilder.StripPathPrefix
+- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist(System.String[])
+  name: Whitelist(params string[])
+  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html#BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Whitelist_System_String___
+  commentId: M:BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist(System.String[])
+  name.vb: Whitelist(ParamArray String())
+  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist(params string[])
+  fullName.vb: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist(ParamArray String())
+  nameWithType: RequestProfilingOptionsBuilder.Whitelist(params string[])
+  nameWithType.vb: RequestProfilingOptionsBuilder.Whitelist(ParamArray String())
+- uid: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist*
+  name: Whitelist
+  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html#BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Whitelist_
+  commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist
+  fullName: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist
+  nameWithType: RequestProfilingOptionsBuilder.Whitelist
 - uid: BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.WithSampling(System.Action{BridgingIT.DevKit.Presentation.RequestProfilingSamplingBuilder})
   name: WithSampling(Action<RequestProfilingSamplingBuilder>)
   href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html#BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_WithSampling_System_Action_BridgingIT_DevKit_Presentation_RequestProfilingSamplingBuilder__
@@ -320157,18 +320358,6 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingRuntime.MaximumKeyLength
   fullName: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.MaximumKeyLength
   nameWithType: RequestProfilingRuntime.MaximumKeyLength
-- uid: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.OperationCaptureMatcher
-  name: OperationCaptureMatcher
-  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingRuntime.html#BridgingIT_DevKit_Presentation_RequestProfilingRuntime_OperationCaptureMatcher
-  commentId: P:BridgingIT.DevKit.Presentation.RequestProfilingRuntime.OperationCaptureMatcher
-  fullName: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.OperationCaptureMatcher
-  nameWithType: RequestProfilingRuntime.OperationCaptureMatcher
-- uid: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.OperationCaptureMatcher*
-  name: OperationCaptureMatcher
-  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingRuntime.html#BridgingIT_DevKit_Presentation_RequestProfilingRuntime_OperationCaptureMatcher_
-  commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingRuntime.OperationCaptureMatcher
-  fullName: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.OperationCaptureMatcher
-  nameWithType: RequestProfilingRuntime.OperationCaptureMatcher
 - uid: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.Options
   name: Options
   href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingRuntime.html#BridgingIT_DevKit_Presentation_RequestProfilingRuntime_Options
@@ -320217,6 +320406,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingRuntime.Validate
   fullName: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.Validate
   nameWithType: RequestProfilingRuntime.Validate
+- uid: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.WhitelistMatcher
+  name: WhitelistMatcher
+  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingRuntime.html#BridgingIT_DevKit_Presentation_RequestProfilingRuntime_WhitelistMatcher
+  commentId: P:BridgingIT.DevKit.Presentation.RequestProfilingRuntime.WhitelistMatcher
+  fullName: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.WhitelistMatcher
+  nameWithType: RequestProfilingRuntime.WhitelistMatcher
+- uid: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.WhitelistMatcher*
+  name: WhitelistMatcher
+  href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingRuntime.html#BridgingIT_DevKit_Presentation_RequestProfilingRuntime_WhitelistMatcher_
+  commentId: Overload:BridgingIT.DevKit.Presentation.RequestProfilingRuntime.WhitelistMatcher
+  fullName: BridgingIT.DevKit.Presentation.RequestProfilingRuntime.WhitelistMatcher
+  nameWithType: RequestProfilingRuntime.WhitelistMatcher
 - uid: BridgingIT.DevKit.Presentation.RequestProfilingSamplingBuilder
   name: RequestProfilingSamplingBuilder
   href: obj/api/BridgingIT.DevKit.Presentation.RequestProfilingSamplingBuilder.html
@@ -331754,6 +331955,42 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemOverviewContent.Create
   fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.SystemOverviewContent.Create
   nameWithType: SystemOverviewContent.Create
+- uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs
+  name: _DashboardDialogs
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs
+  fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs
+  nameWithType: _DashboardDialogs
+- uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.#ctor
+  name: _DashboardDialogs()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.html#BridgingIT_DevKit_Presentation_Web_Dashboard_Pages__DashboardDialogs__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs._DashboardDialogs()
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.New()
+  nameWithType: _DashboardDialogs._DashboardDialogs()
+  nameWithType.vb: _DashboardDialogs.New()
+- uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.#ctor*
+  name: _DashboardDialogs
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.html#BridgingIT_DevKit_Presentation_Web_Dashboard_Pages__DashboardDialogs__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs._DashboardDialogs
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.New
+  nameWithType: _DashboardDialogs._DashboardDialogs
+  nameWithType.vb: _DashboardDialogs.New
+- uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.Create
+  name: Create()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.html#BridgingIT_DevKit_Presentation_Web_Dashboard_Pages__DashboardDialogs_Create
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.Create
+  fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.Create()
+  nameWithType: _DashboardDialogs.Create()
+- uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.Create*
+  name: Create
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.html#BridgingIT_DevKit_Presentation_Web_Dashboard_Pages__DashboardDialogs_Create_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.Create
+  fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardDialogs.Create
+  nameWithType: _DashboardDialogs.Create
 - uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardFooterLinks
   name: _DashboardFooterLinks
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages._DashboardFooterLinks.html
@@ -349143,6 +349380,42 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.Pages.SidebarItem.Url
   fullName: BridgingIT.DevKit.Presentation.Web.Pages.SidebarItem.Url
   nameWithType: SidebarItem.Url
+- uid: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo
+  name: _DashboardLogo
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo
+  fullName: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo
+  nameWithType: _DashboardLogo
+- uid: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.#ctor
+  name: _DashboardLogo()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.html#BridgingIT_DevKit_Presentation_Web_Pages__DashboardLogo__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo._DashboardLogo()
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.New()
+  nameWithType: _DashboardLogo._DashboardLogo()
+  nameWithType.vb: _DashboardLogo.New()
+- uid: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.#ctor*
+  name: _DashboardLogo
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.html#BridgingIT_DevKit_Presentation_Web_Pages__DashboardLogo__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo._DashboardLogo
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.New
+  nameWithType: _DashboardLogo._DashboardLogo
+  nameWithType.vb: _DashboardLogo.New
+- uid: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.Create
+  name: Create()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.html#BridgingIT_DevKit_Presentation_Web_Pages__DashboardLogo_Create
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.Create
+  fullName: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.Create()
+  nameWithType: _DashboardLogo.Create()
+- uid: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.Create*
+  name: Create
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.html#BridgingIT_DevKit_Presentation_Web_Pages__DashboardLogo_Create_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.Create
+  fullName: BridgingIT.DevKit.Presentation.Web.Pages._DashboardLogo.Create
+  nameWithType: _DashboardLogo.Create
 - uid: BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme
   name: _DashboardTheme
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Pages._DashboardTheme.html
@@ -350568,6 +350841,42 @@ references:
   commentId: N:BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages
   fullName: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages
   nameWithType: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages
+- uid: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog
+  name: ActionDialog
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.html
+  commentId: T:BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog
+  fullName: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog
+  nameWithType: ActionDialog
+- uid: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.#ctor
+  name: ActionDialog()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.html#BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_Pages_ActionDialog__ctor
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.ActionDialog()
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.New()
+  nameWithType: ActionDialog.ActionDialog()
+  nameWithType.vb: ActionDialog.New()
+- uid: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.#ctor*
+  name: ActionDialog
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.html#BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_Pages_ActionDialog__ctor_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.ActionDialog
+  fullName.vb: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.New
+  nameWithType: ActionDialog.ActionDialog
+  nameWithType.vb: ActionDialog.New
+- uid: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.Create
+  name: Create()
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.html#BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_Pages_ActionDialog_Create
+  commentId: M:BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.Create
+  fullName: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.Create()
+  nameWithType: ActionDialog.Create()
+- uid: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.Create*
+  name: Create
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.html#BridgingIT_DevKit_Presentation_Web_Profiling_Dashboard_Pages_ActionDialog_Create_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.Create
+  fullName: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.ActionDialog.Create
+  nameWithType: ActionDialog.Create
 - uid: BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content
   name: Content
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Profiling.Dashboard.Pages.Content.html

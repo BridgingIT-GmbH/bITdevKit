@@ -89,7 +89,7 @@ Class RequestProfilingOptionsBuilder
   </h1>
 
   <div class="facts text-secondary">
-    <dl><dt>Namespace</dt><dd>BridgingIT.DevKit.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
+    <dl><dt>Namespace</dt><dd><span class="xref">BridgingIT</span>.<span class="xref">DevKit</span>.<a class="xref" href="BridgingIT.DevKit.Presentation.html">Presentation</a></dd></dl>
   <dl><dt>Assembly</dt><dd>BridgingIT.DevKit.Presentation.Web.dll</dd></dl>
   </div>
 
@@ -303,46 +303,6 @@ Class RequestProfilingOptionsBuilder
 </h2>
 
 
-  <a id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_AllowOperationsForBlacklistedPaths_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths*"></a>
-
-  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_AllowOperationsForBlacklistedPaths_System_String___" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.AllowOperationsForBlacklistedPaths(System.String[])">
-  AllowOperationsForBlacklistedPaths(params string[])
-  
-  </h3>
-
-  <div class="markdown level1 summary"><p>Allows business operation capture for matching blacklisted paths while leaving their HTTP requests excluded. Does not override sampling rejection or explicit suppression.</p>
-</div>
-  <div class="markdown level1 conceptual"></div>
-
-  <div class="codewrapper">
-    <pre><code class="lang-csharp hljs">public RequestProfilingOptionsBuilder AllowOperationsForBlacklistedPaths(params string[] patterns)</code></pre>
-  </div>
-
-  <h4 class="section">Parameters</h4>
-  <dl class="parameters">
-    <dt><code>patterns</code> <span class="xref">string</span>[]</dt>
-    <dd></dd>
-  </dl>
-
-  <h4 class="section">Returns</h4>
-  <dl class="parameters">
-    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html">RequestProfilingOptionsBuilder</a></dt>
-    <dd></dd>
-  </dl>
-
-
-
-
-
-
-  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_AllowOperationsForBlacklistedPaths_System_String____examples">Examples</h4>
-  <pre><code class="lang-csharp">requests.AllowOperationsForBlacklistedPaths("/_bdk/dashboard/storage/*/actions/**");</code></pre>
-
-
-
-
-
-
   <a id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Blacklist_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Blacklist*"></a>
 
   <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Blacklist_System_String___" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Blacklist(System.String[])">
@@ -541,6 +501,46 @@ Class RequestProfilingOptionsBuilder
 
   <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_StripPathPrefix_System_String__examples">Examples</h4>
   <pre><code class="lang-csharp">requests.StripPathPrefix("/api");</code></pre>
+
+
+
+
+
+
+  <a id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Whitelist_" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist*"></a>
+
+  <h3 id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Whitelist_System_String___" data-uid="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.Whitelist(System.String[])">
+  Whitelist(params string[])
+  
+  </h3>
+
+  <div class="markdown level1 summary"><p>Replaces the HTTP whitelist. Matching paths override blacklist exclusions but still follow sampling. An empty list clears the whitelist; business operation capture is independent.</p>
+</div>
+  <div class="markdown level1 conceptual"></div>
+
+  <div class="codewrapper">
+    <pre><code class="lang-csharp hljs">public RequestProfilingOptionsBuilder Whitelist(params string[] patterns)</code></pre>
+  </div>
+
+  <h4 class="section">Parameters</h4>
+  <dl class="parameters">
+    <dt><code>patterns</code> <span class="xref">string</span>[]</dt>
+    <dd></dd>
+  </dl>
+
+  <h4 class="section">Returns</h4>
+  <dl class="parameters">
+    <dt><a class="xref" href="BridgingIT.DevKit.Presentation.RequestProfilingOptionsBuilder.html">RequestProfilingOptionsBuilder</a></dt>
+    <dd></dd>
+  </dl>
+
+
+
+
+
+
+  <h4 class="section" id="BridgingIT_DevKit_Presentation_RequestProfilingOptionsBuilder_Whitelist_System_String____examples">Examples</h4>
+  <pre><code class="lang-csharp">requests.Whitelist("/_bdk/dashboard/app/core/**");</code></pre>
 
 
 

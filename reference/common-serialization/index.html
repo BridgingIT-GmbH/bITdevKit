@@ -128,7 +128,7 @@
 
 <script>
   (() => {
-    const schemes = ["tokyo-night", "matte-black", "catppuccin", "lumon", "ethereal", "everforest", "hackerman", "osaka-jade", "kanagawa", "vantablack", "ristretto", "retro-82", "flexoki-light", "catppuccin-latte", "white", "system"];
+    const schemes = ["tokyo-night", "catppuccin", "lumon", "ethereal", "everforest", "hackerman", "osaka-jade", "kanagawa", "vantablack", "matte-black", "ristretto", "retro-82", "flexoki-light", "catppuccin-latte", "white"];
     const legacy = {
       dark: "matte-black", light: "white", tokionights: "tokyo-night",
       darkforest: "osaka-jade", carbon: "catppuccin", matrix: "hackerman"
@@ -183,10 +183,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="matte-black"
+      data-md-color-scheme="catppuccin"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Matte Black theme"
+      aria-label="Use Catppuccin theme"
       type="radio"
       name="__palette"
       id="__palette_1"
@@ -205,10 +205,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="catppuccin"
+      data-md-color-scheme="lumon"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Catppuccin theme"
+      aria-label="Use Lumon theme"
       type="radio"
       name="__palette"
       id="__palette_2"
@@ -227,10 +227,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="lumon"
+      data-md-color-scheme="ethereal"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Lumon theme"
+      aria-label="Use Ethereal theme"
       type="radio"
       name="__palette"
       id="__palette_3"
@@ -249,10 +249,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="ethereal"
+      data-md-color-scheme="everforest"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Ethereal theme"
+      aria-label="Use Everforest theme"
       type="radio"
       name="__palette"
       id="__palette_4"
@@ -271,10 +271,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="everforest"
+      data-md-color-scheme="hackerman"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Everforest theme"
+      aria-label="Use Hackerman theme"
       type="radio"
       name="__palette"
       id="__palette_5"
@@ -293,10 +293,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="hackerman"
+      data-md-color-scheme="osaka-jade"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Hackerman theme"
+      aria-label="Use Osaka Jade theme"
       type="radio"
       name="__palette"
       id="__palette_6"
@@ -315,10 +315,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="osaka-jade"
+      data-md-color-scheme="kanagawa"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Osaka Jade theme"
+      aria-label="Use Kanagawa theme"
       type="radio"
       name="__palette"
       id="__palette_7"
@@ -337,10 +337,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="kanagawa"
+      data-md-color-scheme="vantablack"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Kanagawa theme"
+      aria-label="Use Vantablack theme"
       type="radio"
       name="__palette"
       id="__palette_8"
@@ -359,10 +359,10 @@
     <input
       class="md-option"
       data-md-color-media=""
-      data-md-color-scheme="vantablack"
+      data-md-color-scheme="matte-black"
       data-md-color-primary="custom"
       data-md-color-accent="custom"
-      aria-label="Use Vantablack theme"
+      aria-label="Use Matte Black theme"
       type="radio"
       name="__palette"
       id="__palette_9"
@@ -480,28 +480,6 @@
     
     <label
       class="bdk-theme-picker__native"
-      for="__palette_15"
-      hidden
-      aria-hidden="true"
-    ></label>
-  
-    
-    
-    
-    <input
-      class="md-option"
-      data-md-color-media=""
-      data-md-color-scheme="system"
-      data-md-color-primary="custom"
-      data-md-color-accent="custom"
-      aria-label="Use System theme"
-      type="radio"
-      name="__palette"
-      id="__palette_15"
-    >
-    
-    <label
-      class="bdk-theme-picker__native"
       for="__palette_0"
       hidden
       aria-hidden="true"
@@ -521,49 +499,49 @@
           <span data-bdk-theme-name>Tokyo Night</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="matte-black" role="radio" tabindex="0">
-          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-matte-black-bg);--theme-primary:var(--bdk-swatch-matte-black-primary);--theme-accent:var(--bdk-swatch-matte-black-accent)"></span>
-          <span data-bdk-theme-name>Matte Black</span>
-        </label>
-      
-        <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_1" data-bdk-theme-option="catppuccin" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-catppuccin-bg);--theme-primary:var(--bdk-swatch-catppuccin-primary);--theme-accent:var(--bdk-swatch-catppuccin-accent)"></span>
           <span data-bdk-theme-name>Catppuccin</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="lumon" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_2" data-bdk-theme-option="lumon" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-lumon-bg);--theme-primary:var(--bdk-swatch-lumon-primary);--theme-accent:var(--bdk-swatch-lumon-accent)"></span>
           <span data-bdk-theme-name>Lumon</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="ethereal" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_3" data-bdk-theme-option="ethereal" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-ethereal-bg);--theme-primary:var(--bdk-swatch-ethereal-primary);--theme-accent:var(--bdk-swatch-ethereal-accent)"></span>
           <span data-bdk-theme-name>Ethereal</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="everforest" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_4" data-bdk-theme-option="everforest" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-everforest-bg);--theme-primary:var(--bdk-swatch-everforest-primary);--theme-accent:var(--bdk-swatch-everforest-accent)"></span>
           <span data-bdk-theme-name>Everforest</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="hackerman" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_5" data-bdk-theme-option="hackerman" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-hackerman-bg);--theme-primary:var(--bdk-swatch-hackerman-primary);--theme-accent:var(--bdk-swatch-hackerman-accent)"></span>
           <span data-bdk-theme-name>Hackerman</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="osaka-jade" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_6" data-bdk-theme-option="osaka-jade" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-osaka-jade-bg);--theme-primary:var(--bdk-swatch-osaka-jade-primary);--theme-accent:var(--bdk-swatch-osaka-jade-accent)"></span>
           <span data-bdk-theme-name>Osaka Jade</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_8" data-bdk-theme-option="kanagawa" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_7" data-bdk-theme-option="kanagawa" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-kanagawa-bg);--theme-primary:var(--bdk-swatch-kanagawa-primary);--theme-accent:var(--bdk-swatch-kanagawa-accent)"></span>
           <span data-bdk-theme-name>Kanagawa</span>
         </label>
       
-        <label class="bdk-theme-picker__option" for="__palette_9" data-bdk-theme-option="vantablack" role="radio" tabindex="0">
+        <label class="bdk-theme-picker__option" for="__palette_8" data-bdk-theme-option="vantablack" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-vantablack-bg);--theme-primary:var(--bdk-swatch-vantablack-primary);--theme-accent:var(--bdk-swatch-vantablack-accent)"></span>
           <span data-bdk-theme-name>Vantablack</span>
+        </label>
+      
+        <label class="bdk-theme-picker__option" for="__palette_9" data-bdk-theme-option="matte-black" role="radio" tabindex="0">
+          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-matte-black-bg);--theme-primary:var(--bdk-swatch-matte-black-primary);--theme-accent:var(--bdk-swatch-matte-black-accent)"></span>
+          <span data-bdk-theme-name>Matte Black</span>
         </label>
       
         <label class="bdk-theme-picker__option" for="__palette_10" data-bdk-theme-option="ristretto" role="radio" tabindex="0">
@@ -589,11 +567,6 @@
         <label class="bdk-theme-picker__option" for="__palette_14" data-bdk-theme-option="white" role="radio" tabindex="0">
           <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-white-bg);--theme-primary:var(--bdk-swatch-white-primary);--theme-accent:var(--bdk-swatch-white-accent)"></span>
           <span data-bdk-theme-name>White</span>
-        </label>
-      
-        <label class="bdk-theme-picker__option" for="__palette_15" data-bdk-theme-option="system" role="radio" tabindex="0">
-          <span class="bdk-theme-swatch" aria-hidden="true" style="--theme-bg:var(--bdk-swatch-system-bg);--theme-primary:var(--bdk-swatch-system-primary);--theme-accent:var(--bdk-swatch-system-accent)"></span>
-          <span data-bdk-theme-name>System</span>
         </label>
       
     </div>

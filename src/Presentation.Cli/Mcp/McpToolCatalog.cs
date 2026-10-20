@@ -99,7 +99,7 @@ public sealed class McpToolCatalog
         Tool("bdk_api_search", "Searches bounded official DevKit API reference symbols.", ApiSearchSchema()),
         Tool("bdk_api_get", "Gets bounded DevKit API reference content by symbol uid.", new { type = "object", additionalProperties = false, required = new[] { "uid" }, properties = new { uid = String("DocFX API reference symbol uid."), maxChars = Integer("Maximum characters to return.") } }),
         Tool("bdk_guidance_list", "Lists curated DevKit agentic coding guidance topics.", EmptySchema),
-        Tool("bdk_guidance_get", "Gets curated DevKit agentic coding guidance. Use when the user asks for guidance, how to implement, add, create or build DevKit jobs, messaging, queueing, orchestration, storage, pipelines, dashboards or project dashboard pages.", GuidanceSchema()),
+        Tool("bdk_guidance_get", "Gets curated DevKit agentic coding guidance. Use when the user asks for guidance, how to implement, add, create or build DevKit jobs, messaging, queueing, orchestration, storage, pipelines, dashboards, project dashboard pages or project-owned MCP tools.", GuidanceSchema()),
         Tool("bdk_project_summary", "Summarizes the selected runtime, advertised project shape, MCP capabilities, and suggested next calls.", EmptySchema),
         Tool("bdk_project_operations", "Lists project-owned MCP operations advertised by the selected runtime.", EmptySchema),
         Tool("bdk_project_call", "Invokes a project-owned MCP operation by name.", new { type = "object", additionalProperties = false, required = new[] { "operation" }, properties = new { operation = String("Project operation name."), toolset = String("Required toolset: diagnostics, operations, or admin. Defaults to diagnostics."), arguments = new { type = "object", additionalProperties = true } } })
@@ -180,7 +180,8 @@ public sealed class McpToolCatalog
                     "file_storage",
                     "monitoring",
                     "dashboard",
-                    "project_dashboard_page"),
+                    "project_dashboard_page",
+                    "project_mcp_tools"),
                 query = String("Natural-language guidance request, for example 'how to implement a new job that triggers an orchestration'.")
             }
         };

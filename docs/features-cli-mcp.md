@@ -435,6 +435,7 @@ The current guidance topics cover the major DevKit feature areas:
 - `monitoring`
 - `dashboard`
 - `project_dashboard_page`
+- `project_mcp_tools`
 
 Each guidance response includes a summary, linked official docs, implementation steps, recommended MCP tools and a prompt the agent can use to continue. This sits between raw docs and live runtime diagnostics: it tells the agent how to approach the work before it edits files.
 
@@ -475,6 +476,18 @@ Additional examples:
   "query": "give me guidance for blob storage uploads and downloads"
 }
 ```
+
+### Project-owned MCP tools guidance
+
+Call `bdk_guidance_get` with `topic="project_mcp_tools"` before adding application-specific MCP operations:
+
+```json
+{
+  "topic": "project_mcp_tools"
+}
+```
+
+The guide covers when a project-owned operation fits, client-safe operation names, `McpCapability` metadata and argument schemas, toolset selection, bounded `McpResponse` results, registration through `AddMcp(...)`, tests, and verification with `bdk_project_operations` and `bdk_project_call`. Its `examples` array contains a handler, the builder registration and the discovery/call payloads. Queries such as "how do I add project specific MCP tools" infer this topic.
 
 ### Operation profiling guidance
 

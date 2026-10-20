@@ -1371,6 +1371,43 @@ public sealed class CliFoundationTests
     }
 
     [Fact]
+    public void McpGuidanceTools_WhenTopicIsProjectMcpTools_ReturnsHandlerGuidance()
+    {
+        // Arrange
+        var sut = new McpGuidanceTools();
+        var arguments = JsonDocument.Parse("{\"topic\":\"project_mcp_tools\"}").RootElement;
+
+        // Act
+        var response = sut.Get(arguments);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        var json = JsonSerializer.Serialize(response.Data);
+        json.ShouldContain("IMcpHandler");
+        json.ShouldContain("WithHandler");
+        json.ShouldContain("bdk_project_call");
+        json.ShouldContain("features-cli-mcp.md");
+    }
+
+    [Theory]
+    [InlineData("how do I add project specific mcp tools to bdk mcp")]
+    [InlineData("give me guidance for adding a custom MCP tool")]
+    [InlineData("implement an IMcpHandler for project-owned operations")]
+    public void McpGuidanceTools_WhenQueryMentionsProjectMcpTools_ReturnsHandlerGuidance(string query)
+    {
+        // Arrange
+        var sut = new McpGuidanceTools();
+        var arguments = JsonSerializer.SerializeToElement(new { query });
+
+        // Act
+        var response = sut.Get(arguments);
+
+        // Assert
+        response.Available.ShouldBeTrue();
+        JsonSerializer.Serialize(response.Data).ShouldContain("project_mcp_tools");
+    }
+
+    [Fact]
     public void McpGuidanceTools_WhenTopicIsUnknown_ReturnsAvailableTopicsHint()
     {
         // Arrange

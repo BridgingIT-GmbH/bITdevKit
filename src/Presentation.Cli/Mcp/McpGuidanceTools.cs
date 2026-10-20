@@ -587,7 +587,107 @@ public sealed class McpGuidanceTools
                     "bdk_docs_get",
                     "bdk_project_summary"
                 ],
-                "Use docs to follow dashboard conventions and keep the page scoped to project diagnostics.")
+                "Use docs to follow dashboard conventions and keep the page scoped to project diagnostics."),
+            ["project_mcp_tools"] = new(
+                "project_mcp_tools",
+                "Add project-owned MCP operations to the DevKit bdk mcp server through app-side IMcpHandler implementations, without changing the CLI tool catalog.",
+                "docs/features-cli-mcp.md",
+                [
+                    "Read the Project-owned operations section of the MCP documentation (bdk_docs_get with source docs/features-cli-mcp.md). Project tools are not new bdk_* tools and are not dynamic MCP tools: the CLI catalog stays stable and agents reach them through bdk_project_operations and bdk_project_call.",
+                    "Confirm a project-owned operation fits. Use it for bounded local-development inspection, validation, explanation, investigation or controlled workflows owned by one application or module. Do not mirror the normal application API (no CRUD) and do not add a stable bdk_* tool; that is reserved for DevKit-owned features.",
+                    "Implement IMcpHandler in the presentation layer of the owning module. Inject existing application services such as IRequester instead of touching databases or HTTP endpoints. The handler runs inside the application process, and the contracts (IMcpHandler, McpCapability, McpRequest, McpResponse, McpArgumentReader) need no MCP SDK package.",
+                    "Choose client-safe operation names: lowercase letters, digits, underscores or hyphens only, prefixed by the project or module (for example commerce_inspect_customer). Do not use the reserved bdk_ prefix, dots or camelCase; bdk_project_call rejects such names and MCP clients cache them.",
+                    "Advertise each operation as a McpCapability(name, toolset, \"project\", description) with Owner, Category and an ArgumentSchema (type object, additionalProperties false, described properties) so agents and the dashboard can discover the arguments. Pick the least powerful toolset: diagnostics for read-only, operations for controlled actions, admin for destructive work that also requires explicit confirm arguments inside arguments.",
+                    "In HandleAsync match request.Operation and return McpResponse.Unavailable(McpErrorCode.FeatureUnavailable, ...) for unknown operations. Read and validate arguments with McpArgumentReader and return McpErrorCode.OperationFailed for missing or invalid input. Return McpResponse.Success with a short summary and compact structured data.",
+                    "Keep results bounded and agent-oriented: enforce limits, set truncated when data is cut, add hints or next calls, and never return secrets, HTML, Razor models or unbounded payloads.",
+                    "Register handlers on the host builder: DevKitWebApplication.CreateBuilder(args)...AddMcp(mcp => mcp.WithHandler<THandler>()) or WithHandlersFromAssembly<TModuleMarker>() when a module owns several. Registration follows the host's local MCP decision, so handlers are development-only; use Enabled(true) or Enabled(false) only for a deliberate override. Alternatively services.AddMcpHandler<THandler>() works in explicit registrations.",
+                    "Add unit tests for capability metadata (name, toolset, feature project, owner, schema), unknown-operation handling, argument validation and the success data shape using fakes or substitutes for the injected services.",
+                    "Run the app in Development and verify with bdk_project_summary, bdk_project_operations and bdk_project_call (operation, toolset and arguments). Start bdk mcp with --toolset diagnostics,operations (or admin) when the operation needs more than diagnostics. The dashboard MCP page lists handlers, operations and argument schemas."
+                ],
+                [
+                    "bdk_docs_search",
+                    "bdk_docs_get",
+                    "bdk_api_search",
+                    "bdk_project_summary",
+                    "bdk_capabilities_get",
+                    "bdk_project_operations",
+                    "bdk_project_call"
+                ],
+                "Read the project-owned operations docs, confirm the operation is bounded local-development tooling, implement an IMcpHandler with a client-safe operation name, capability and argument schema in the owning module, register it with AddMcp, add focused tests, then verify with bdk_project_operations and bdk_project_call while the app runs.",
+                [
+                    new("Project-owned handler with a capability, argument schema and bounded result", """
+                        public sealed class CommerceMcpHandler(IRequester requester) : IMcpHandler
+                        {
+                            private const string InspectCustomerOperation = "commerce_inspect_customer";
+
+                            public IReadOnlyCollection<McpCapability> Capabilities { get; } =
+                            [
+                                new(InspectCustomerOperation, McpToolset.Diagnostics, "project", "Inspects customer profile and recent order state.")
+                                {
+                                    Owner = "commerce",
+                                    Category = "customers",
+                                    ArgumentSchema = new
+                                    {
+                                        type = "object",
+                                        additionalProperties = false,
+                                        required = new[] { "customerNumber" },
+                                        properties = new
+                                        {
+                                            customerNumber = new { type = "string", description = "Customer number to inspect." }
+                                        }
+                                    }
+                                }
+                            ];
+
+                            public async ValueTask<McpResponse> HandleAsync(McpRequest request, CancellationToken cancellationToken)
+                            {
+                                if (!string.Equals(request.Operation, InspectCustomerOperation, StringComparison.Ordinal))
+                                {
+                                    return McpResponse.Unavailable(
+                                        McpErrorCode.FeatureUnavailable,
+                                        $"Operation '{request.Operation}' is not supported.");
+                                }
+
+                                var customerNumber = McpArgumentReader.GetString(request.Arguments, "customerNumber");
+                                if (string.IsNullOrWhiteSpace(customerNumber))
+                                {
+                                    return McpResponse.Unavailable(McpErrorCode.OperationFailed, "customerNumber is required.");
+                                }
+
+                                // Query an existing application use case; return a bounded read model, not entities.
+                                var result = await requester.SendAsync(new CustomerSummaryQuery(customerNumber), cancellationToken: cancellationToken);
+
+                                return result.IsSuccess
+                                    ? McpResponse.Success($"Inspected customer '{customerNumber}'.", new { customerNumber, summary = result.Value })
+                                    : McpResponse.Failure(McpErrorCode.OperationFailed, $"Customer '{customerNumber}' could not be inspected.");
+                            }
+                        }
+                        """),
+                    new("Register project handlers on the DevKit web host builder", """
+                        var builder = DevKitWebApplication.CreateBuilder(args)
+                            .AddConfiguration()
+                            .AddLogging()
+                            .AddModules(modules => modules
+                                .WithModule<CommerceModule>())
+                            .AddMcp(mcp => mcp
+                                .WithHandler<CommerceMcpHandler>());
+
+                        // Or register every IMcpHandler in the module assembly:
+                        // .AddMcp(mcp => mcp.WithHandlersFromAssembly<CommerceModule>());
+                        """),
+                    new("Discover and call the operation through the stable bdk tools", """
+                        { "name": "bdk_project_operations", "arguments": {} }
+
+                        {
+                          "name": "bdk_project_call",
+                          "arguments": {
+                            "operation": "commerce_inspect_customer",
+                            "toolset": "diagnostics",
+                            "arguments": { "customerNumber": "CUST-10042" }
+                          }
+                        }
+                        """)
+                ])
         };
 
     private static readonly IReadOnlyList<GuidanceTopicAlias> TopicAliases =
@@ -619,6 +719,7 @@ public sealed class McpGuidanceTools
         new("blob_storage", ["blob storage", "blobstore", "blob store", "blobs", "binary storage", "binary content"]),
         new("file_storage", ["file storage", "filestorage", "file store", "files"]),
         new("monitoring", ["monitoring", "storage monitoring", "file monitoring", "watcher", "watchers", "file watcher"]),
+        new("project_mcp_tools", ["project mcp", "project mcp tool", "project mcp tools", "project mcp operation", "project mcp operations", "project owned operation", "project owned operations", "project operation", "project operations", "project specific mcp", "custom mcp tool", "custom mcp tools", "custom mcp operation", "mcp handler", "mcp handlers", "imcphandler", "mcpcapability", "bdk project call", "bdk project operations"]),
         new("project_dashboard_page", ["project dashboard", "project dashboard page", "module dashboard"]),
         new("dashboard", ["dashboard", "dashboard page", "razor dashboard", "developer dashboard"])
     ];

@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
-using BenchmarkDotNet.Running;
-
 [UnitTest("Common")]
 public class JsonNetSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
@@ -46,20 +44,6 @@ public class JsonNetSerializerTests(ITestOutputHelper output) : SerializerTestsB
         base.CanRoundTripString_Test();
     }
 
-    [Fact(Skip = "Skip benchmarks for now")]
-    public virtual void RunBenchmarks()
-    {
-        _ = BenchmarkRunner.Run<JsonNetSerializerBenchmark>();
-    }
-
-    protected override ISerializer GetSerializer()
-    {
-        return new JsonNetSerializer();
-    }
-}
-
-public class JsonNetSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
-{
     protected override ISerializer GetSerializer()
     {
         return new JsonNetSerializer();

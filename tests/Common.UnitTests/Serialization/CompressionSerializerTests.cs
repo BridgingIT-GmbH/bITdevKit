@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
-using BenchmarkDotNet.Running;
-
 [UnitTest("Common")]
 public class CompressionSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
@@ -46,20 +44,6 @@ public class CompressionSerializerTests(ITestOutputHelper output) : SerializerTe
         base.CanRoundTripString_Test();
     }
 
-    [Fact(Skip = "Skip benchmarks for now")]
-    public virtual void RunBenchmarks()
-    {
-        _ = BenchmarkRunner.Run<JsonNetSerializerBenchmark>();
-    }
-
-    protected override ISerializer GetSerializer()
-    {
-        return new CompressionSerializer(new JsonNetSerializer());
-    }
-}
-
-public class CompressionSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
-{
     protected override ISerializer GetSerializer()
     {
         return new CompressionSerializer(new JsonNetSerializer());

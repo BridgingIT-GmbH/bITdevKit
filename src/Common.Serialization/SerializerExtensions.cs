@@ -45,6 +45,11 @@ public static class SerializerExtensions
             return null;
         }
 
+        if (source is IBufferSerializer { SupportsDirectBuffers: true } buffered)
+        {
+            return buffered.SerializeToBytes(input);
+        }
+
         using var stream = new MemoryStream();
         source.Serialize(input, stream);
 
@@ -68,6 +73,11 @@ public static class SerializerExtensions
     /// <param name="input">The input.</param>
     public static T Deserialize<T>(this ISerializer source, byte[] input)
     {
+        if (input is not null && source is IBufferSerializer { SupportsDirectBuffers: true } buffered)
+        {
+            return (T)buffered.Deserialize(input, typeof(T));
+        }
+
         using var stream = new MemoryStream(input);
 
         return (T)source.Deserialize(stream, typeof(T));
@@ -81,6 +91,11 @@ public static class SerializerExtensions
     /// <param name="type">The type.</param>
     public static object Deserialize(this ISerializer source, byte[] input, Type type)
     {
+        if (input is not null && source is IBufferSerializer { SupportsDirectBuffers: true } buffered)
+        {
+            return buffered.Deserialize(input, type);
+        }
+
         using var stream = new MemoryStream(input);
 
         return source.Deserialize(stream, type);
@@ -107,9 +122,7 @@ public static class SerializerExtensions
             bytes = Convert.FromBase64String(input);
         }
 
-        using var stream = new MemoryStream(bytes);
-
-        return (T)source.Deserialize(stream, typeof(T));
+        return source.Deserialize<T>(bytes);
     }
 
     /// <summary>
@@ -134,8 +147,6 @@ public static class SerializerExtensions
             bytes = Convert.FromBase64String(input);
         }
 
-        using var stream = new MemoryStream(bytes);
-
-        return source.Deserialize(stream, type);
+        return source.Deserialize(bytes, type);
     }
 }

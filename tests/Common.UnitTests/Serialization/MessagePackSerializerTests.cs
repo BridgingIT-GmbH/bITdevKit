@@ -5,8 +5,6 @@
 
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
-using BenchmarkDotNet.Running;
-
 [UnitTest("Common")]
 public class MessagePackSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
 {
@@ -46,20 +44,6 @@ public class MessagePackSerializerTests(ITestOutputHelper output) : SerializerTe
         base.CanRoundTripString_Test();
     }
 
-    [Fact(Skip = "Skip benchmarks for now")]
-    public virtual void RunBenchmarks()
-    {
-        _ = BenchmarkRunner.Run<MessagePackSerializerBenchmark>();
-    }
-
-    protected override ISerializer GetSerializer()
-    {
-        return new MessagePackSerializer();
-    }
-}
-
-public class MessagePackSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
-{
     protected override ISerializer GetSerializer()
     {
         return new MessagePackSerializer();

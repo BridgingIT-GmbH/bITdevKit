@@ -6,7 +6,6 @@
 namespace BridgingIT.DevKit.Common.UnitTests.Serialization;
 
 using System.Text.Json.Serialization;
-using BenchmarkDotNet.Running;
 
 [UnitTest("Common")]
 public class SystemTextJsonSerializerTests(ITestOutputHelper output) : SerializerTestsBase(output)
@@ -47,12 +46,6 @@ public class SystemTextJsonSerializerTests(ITestOutputHelper output) : Serialize
         base.CanRoundTripString_Test();
     }
 
-    [Fact(Skip = "Skip benchmarks for now")]
-    public virtual void RunBenchmarks()
-    {
-        _ = BenchmarkRunner.Run<SystemTextJsonSerializerBenchmark>();
-    }
-
     protected override ISerializer GetSerializer()
     {
         return new SystemTextJsonSerializer();
@@ -75,14 +68,6 @@ public class SystemTextJsonSerializerTests(ITestOutputHelper output) : Serialize
         actual.Name.ShouldBe(value.Name);
         actual.Email.ShouldNotBeNull();
         actual.Email.Value.ShouldBe(value.Email.Value);
-    }
-}
-
-public class SystemTextJsonSerializerBenchmark(ITestOutputHelper output) : SerializerBenchmarkBase(output)
-{
-    protected override ISerializer GetSerializer()
-    {
-        return new SystemTextJsonSerializer();
     }
 }
 

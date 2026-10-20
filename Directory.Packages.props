@@ -123,6 +123,7 @@
     <PackageVersion Include="System.ComponentModel.Annotations" Version="5.0.0" />
     <PackageVersion Include="System.Data.SQLite" Version="2.0.4" />
     <PackageVersion Include="System.Diagnostics.PerformanceCounter" Version="10.0.13" />
+    <PackageVersion Include="System.Formats.Cbor" Version="10.0.13" />
     <PackageVersion Include="System.IdentityModel.Tokens.Jwt" Version="8.23.0" />
     <PackageVersion Include="System.Linq.Dynamic.Core" Version="1.7.4" />
     <PackageVersion Include="System.Threading.RateLimiting" Version="10.0.13" />
@@ -146,7 +147,8 @@
     <PackageVersion Include="Testcontainers.MsSql" Version="4.16.0" />
     <PackageVersion Include="Testcontainers.RabbitMq" Version="4.16.0" />
     <PackageVersion Include="Testcontainers.PostgreSql" Version="4.16.0" />
-    <PackageVersion Include="xunit" Version="2.9.3" /><!-- legacy -->
+    <PackageVersion Include="xunit" Version="2.9.3" />
+    <!-- legacy -->
     <PackageVersion Include="xunit.abstractions" Version="2.0.3" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="4.0.1" />
     <PackageVersion Include="Xunit.SkippableFact" Version="1.5.85" />

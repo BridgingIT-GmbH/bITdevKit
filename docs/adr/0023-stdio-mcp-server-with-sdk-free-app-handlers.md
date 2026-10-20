@@ -81,6 +81,12 @@ The official MCP .NET SDK is not used in the initial implementation. It remains 
 - **Host MCP inside the ASP.NET Core application**
   - Rejected because the specification requires the only MCP server to be the `bdk mcp` STDIO process.
 
+- **Use `Microsoft.Extensions.AI` or Semantic Kernel**
+  - Rejected because `bdk mcp` is an MCP server: an LLM client calls into it, and it never calls a model itself.
+  - `Microsoft.Extensions.AI` is a client-side abstraction for calling models (`IChatClient`, embeddings) and does not implement the MCP server protocol.
+  - Semantic Kernel is an orchestration framework for LLM-driven applications (plugins, planners, agents). It is a heavier dependency and does not address the STDIO JSON-RPC server boundary.
+  - The only package relevant to the server side is the official MCP .NET SDK, which is deferred as described above.
+
 ## Related Decisions
 
 - [ADR-0021](0021-bdk-cli-local-development-tooling.md): BDK CLI local development tooling

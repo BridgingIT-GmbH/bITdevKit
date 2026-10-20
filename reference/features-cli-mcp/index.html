@@ -2838,6 +2838,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#project-owned-mcp-tools-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project-owned MCP tools guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#operation-profiling-guidance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -4762,6 +4773,17 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#project-owned-mcp-tools-guidance" class="md-nav__link">
+    <span class="md-ellipsis">
+      
+        Project-owned MCP tools guidance
+      
+    </span>
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#operation-profiling-guidance" class="md-nav__link">
     <span class="md-ellipsis">
       
@@ -5056,6 +5078,7 @@
 </ul>
 </li>
 <li><a href="#curated-guidance">Curated guidance</a><ul>
+<li><a href="#project-owned-mcp-tools-guidance">Project-owned MCP tools guidance</a></li>
 <li><a href="#operation-profiling-guidance">Operation profiling guidance</a></li>
 </ul>
 </li>
@@ -5517,6 +5540,7 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 <li><code>monitoring</code></li>
 <li><code>dashboard</code></li>
 <li><code>project_dashboard_page</code></li>
+<li><code>project_mcp_tools</code></li>
 </ul>
 <p>Each guidance response includes a summary, linked official docs, implementation steps, recommended MCP tools and a prompt the agent can use to continue. This sits between raw docs and live runtime diagnostics: it tells the agent how to approach the work before it edits files.</p>
 <p>Example:</p>
@@ -5543,6 +5567,13 @@ bdk<span class="w"> </span>mcp<span class="w"> </span>--host<span class="w"> </s
 <span class="w">  </span><span class="nt">&quot;query&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;give me guidance for blob storage uploads and downloads&quot;</span>
 <span class="p">}</span>
 </code></pre></div>
+<h3 id="project-owned-mcp-tools-guidance">Project-owned MCP tools guidance<a class="headerlink" href="#project-owned-mcp-tools-guidance" title="Permanent link">&para;</a></h3>
+<p>Call <code>bdk_guidance_get</code> with <code>topic="project_mcp_tools"</code> before adding application-specific MCP operations:</p>
+<div class="highlight"><pre><span></span><code><span class="p">{</span>
+<span class="w">  </span><span class="nt">&quot;topic&quot;</span><span class="p">:</span><span class="w"> </span><span class="s2">&quot;project_mcp_tools&quot;</span>
+<span class="p">}</span>
+</code></pre></div>
+<p>The guide covers when a project-owned operation fits, client-safe operation names, <code>McpCapability</code> metadata and argument schemas, toolset selection, bounded <code>McpResponse</code> results, registration through <code>AddMcp(...)</code>, tests, and verification with <code>bdk_project_operations</code> and <code>bdk_project_call</code>. Its <code>examples</code> array contains a handler, the builder registration and the discovery/call payloads. Queries such as "how do I add project specific MCP tools" infer this topic.</p>
 <h3 id="operation-profiling-guidance">Operation profiling guidance<a class="headerlink" href="#operation-profiling-guidance" title="Permanent link">&para;</a></h3>
 <p>Call <code>bdk_guidance_get</code> with <code>topic="profiling"</code> for coding help before an application is running:</p>
 <div class="highlight"><pre><span></span><code><span class="p">{</span>

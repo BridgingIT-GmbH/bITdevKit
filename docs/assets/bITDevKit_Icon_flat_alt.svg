@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="bdk-flat-alt-title">
+  <title id="bdk-flat-alt-title">bITdevKit alternate flat icon</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="11" width="7" height="7" rx="1" />
+    <rect x="4" y="21" width="7" height="7" rx="1" />
+    <rect x="21" y="11" width="7" height="7" rx="1" />
+    <rect x="21" y="21" width="7" height="7" rx="1" />
+  </g>
+  <g fill="var(--dashboard-primary-text, #7da4f7)" stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="10.75" y="3.75" width="10.5" height="10.5" rx="1.5" transform="rotate(45 16 9)" />
+  </g>
+</svg>

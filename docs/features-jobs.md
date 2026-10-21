@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/jobs.svg" width="32" height="32" alt="" align="right">
+
 # Jobs
 
 > Schedule durable background work through devkit-owned jobs, triggers, batches, leases, history, and source-level integrations.
@@ -243,7 +245,7 @@ services.AddJobScheduler()
 
 This pattern is useful when a host, a shared module, and an integration feature all need to contribute jobs without centralizing every registration in one file.
 
-### Scheduler instance and worker pool
+### <img class="bdk-doc-icon" src="assets/features/job-workers.svg" width="24" height="24" alt=""> Scheduler instance and worker pool
 
 Hosted background execution can be aligned explicitly to a stable scheduler instance id and tuned through the top-level builder.
 
@@ -294,7 +296,7 @@ Handler notes:
 - failures raised by the hosted scheduler loop use `JobSchedulerExceptionSource.BackgroundService`
 - normal `Result` failures, validation errors, retries, and other handled scheduler outcomes do not flow through this last-chance exception surface
 
-### Scheduler instance targeting
+### <img class="bdk-doc-icon" src="assets/features/job-instance-targeting.svg" width="24" height="24" alt=""> Scheduler instance targeting
 
 Jobs can constrain execution to specific scheduler instances. Set a default target list on the job or override it on an individual trigger.
 
@@ -648,7 +650,7 @@ Use the same core runtime for different operational patterns:
 - outbound integration jobs through `WithRequestSendJob(...)` or `WithRequesterJob(...)`, `WithNotificationPublishJob(...)` or `WithNotifierJob(...)`, `WithMessagingPublishJob(...)` or `WithMessagePublishJob(...)`, `WithQueueingSendJob(...)` or `WithQueueSendJob(...)`, `WithPipelineExecuteJob(...)`, and `WithOrchestrationExecuteJob(...)`
 - event-triggered jobs through accepted-event ingress and scheduler sweeps
 
-### Calendar triggers
+### <img class="bdk-doc-icon" src="assets/features/job-calendar.svg" width="24" height="24" alt=""> Calendar triggers
 
 Use calendar triggers when cron syntax is the wrong abstraction and the business schedule is expressed in dates, weekdays, exclusions, or month-end rules.
 
@@ -676,7 +678,7 @@ Calendar trigger guidance:
 - use `.TimeZone(...)` or `.InTimeZone(...)` when the recurring local time is not UTC
 - combine calendar rules with normal trigger properties, retry policy, timeout, and chaining rules
 
-### Event triggers
+### <img class="bdk-doc-icon" src="assets/features/job-events.svg" width="24" height="24" alt=""> Event triggers
 
 Event triggers let accepted outbound or messaging activity materialize normal scheduler occurrences. The trigger definition stays code-first, while the adapter converts a published notification, broker message, or queue message into a durable accepted-event row that the scheduler sweep turns into an occurrence.
 
@@ -720,7 +722,7 @@ Adapter notes:
 - Messaging and Queueing adapters require `AddJobScheduler()` to be configured before `UseJobSchedulerEventTriggers()` so the event-source registry exists
 - Accepted events are materialized during scheduler sweeps, not inline with the publishing call
 
-### Custom triggers
+### <img class="bdk-doc-icon" src="assets/features/job-triggers.svg" width="24" height="24" alt=""> Custom triggers
 
 Use a custom trigger when the schedule source is neither cron, calendar, manual, nor accepted events. A custom trigger provider keeps the scheduler core provider-neutral while still letting a job materialize occurrences from an external rule or state source.
 
@@ -1200,7 +1202,7 @@ The maintenance surface covers:
 
 ## Examples
 
-### Database cleanup
+### <img class="bdk-doc-icon" src="assets/features/job-maintenance.svg" width="24" height="24" alt=""> Database cleanup
 
 Built-in maintenance jobs are normal jobs. Register them once and dispatch them explicitly when needed:
 
@@ -1231,7 +1233,7 @@ await scheduler.DispatchAndWaitAsync<JobsPurgeHistoryJob>(
 
 Maintenance job options such as retention windows, batch sizes, dry-run mode, and target filters are passed as typed dispatch data. They are not read from appsettings; code remains the source of truth for what a maintenance run is allowed to do.
 
-### Purging retained occurrences
+### <img class="bdk-doc-icon" src="assets/features/job-maintenance.svg" width="24" height="24" alt=""> Purging retained occurrences
 
 Use the maintenance service when you want provider-neutral purge behavior from application code or support tooling.
 
@@ -1251,7 +1253,7 @@ var result = await maintenance.PurgeOccurrencesAsync(new JobPurgeOccurrencesRequ
 Console.WriteLine($"Purged {result.ProcessedCount} occurrence(s).");
 ```
 
-### Batch processing
+### <img class="bdk-doc-icon" src="assets/features/job-batches.svg" width="24" height="24" alt=""> Batch processing
 
 Use batch APIs for grouped dispatch and targeted retry of failed children:
 
@@ -1275,7 +1277,7 @@ if (batch.IsSuccess)
 }
 ```
 
-### Chaining
+### <img class="bdk-doc-icon" src="assets/features/job-chains.svg" width="24" height="24" alt=""> Chaining
 
 Use `.Then(...)` to express occurrence prerequisites while keeping each step as a normal job occurrence:
 

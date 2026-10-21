@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/specifications.svg" width="32" height="32" alt="" align="right">
+
 # Domain Specifications
 
 > Model reusable business criteria as composable specifications for queries and in-memory evaluation.

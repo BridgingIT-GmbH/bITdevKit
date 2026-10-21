@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="aggregates-title">
+  <title id="aggregates-title">Aggregate roots</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 10v6M16 16H6v6M16 16h10v6" />
+    <rect x="2" y="22" width="8" height="7" rx="2" />
+    <rect x="22" y="22" width="8" height="7" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="11" y="2" width="10" height="8" rx="2" />
+  </g>
+</svg>

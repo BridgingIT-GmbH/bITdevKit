@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="correlation-ids-title">
+  <title id="correlation-ids-title">Correlation IDs</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="16" r="3" />
+    <circle cx="26" cy="16" r="3" />
+    <path d="M9 16h14" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 6 11 26M21 6l-3 20M10 11h13M9 21h13" />
+  </g>
+</svg>

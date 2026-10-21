@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/storage-files.svg" width="32" height="32" alt="" align="right">
+
 # File Storage
 
 > Read, write, move, and monitor files through extensible storage providers and behaviors.
@@ -763,7 +765,7 @@ copyErrorResult.Messages.ShouldContain(m => m.Contains("Copied 0/1 files, 1 fail
 - **Do Not Expect Notifications from EF Storage**: The Entity Framework provider is fully usable for file operations, but it reports `SupportsNotifications = false`.
 - **Test Across Providers**: Verify functionality with `InMemoryFileStorageProvider`, `LocalFileStorageProvider`, and custom providers to ensure compatibility, especially for cross-provider operations.
 
-## Appendix A: FileMonitoring
+## <img class="bdk-doc-icon" src="assets/features/storage-monitoring.svg" width="24" height="24" alt=""> Appendix A: FileMonitoring
 
 ### Overview
 
@@ -908,7 +910,7 @@ eventsAfterResume.First().EventType.ShouldBe(FileEventType.Changed);
 - **Handle Progress**: Use `IProgress<FileScanProgress>` to monitor scan progress.
 - **Test with InMemory**: Use `InMemoryFileStorageProvider` and `InMemoryLocationHandler` for unit testing.
 
-## Appendix B: FileMonitoringLocationScanJob
+## <img class="bdk-doc-icon" src="assets/features/storage-cleanup.svg" width="24" height="24" alt=""> Appendix B: FileMonitoringLocationScanJob
 
 ### Overview
 

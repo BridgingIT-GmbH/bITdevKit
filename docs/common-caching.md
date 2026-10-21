@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/caching.svg" width="32" height="32" alt="" align="right">
+
 # Common Caching
 
 > Provide a small, shared caching abstraction with a default in-memory provider and optional persistent document storage providers.

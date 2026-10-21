@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/options-builders.svg" width="32" height="32" alt="" align="right">
+
 # Common Options Builders
 
 > Use a lightweight fluent builder convention for feature-specific configuration objects.

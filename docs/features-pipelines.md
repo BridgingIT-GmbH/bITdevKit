@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/pipelines.svg" width="32" height="32" alt="" align="right">
+
 # Pipelines
 
 > Build structured, observable multi-step workflows with low-friction defaults.
@@ -491,7 +493,7 @@ sequenceDiagram
     Runtime-->>Caller: Result / PipelineExecutionHandle
 ```
 
-## Step authoring
+## <img class="bdk-doc-icon" src="assets/features/pipeline-steps.svg" width="24" height="24" alt=""> Step authoring
 
 ### Class-based steps
 
@@ -560,7 +562,7 @@ Continue to the next step, or complete normally if this is the last step.
 return PipelineControl.Continue(result.WithMessage("Validation passed."));
 ```
 
-### Retry
+### <img class="bdk-doc-icon" src="assets/features/retry.svg" width="24" height="24" alt=""> Retry
 
 Retry the same step immediately, bounded by `MaxRetryAttemptsPerStep`.
 
@@ -615,7 +617,7 @@ flowchart TD
 
 ## Hooks and behaviors
 
-### Hooks
+### <img class="bdk-doc-icon" src="assets/features/pipeline-hooks.svg" width="24" height="24" alt=""> Hooks
 
 Hooks observe lifecycle events. They do not wrap execution.
 
@@ -639,7 +641,7 @@ public class PipelineAuditHook : PipelineHook<PipelineContextBase>
 }
 ```
 
-### Behaviors
+### <img class="bdk-doc-icon" src="assets/features/behaviors.svg" width="24" height="24" alt=""> Behaviors
 
 Behaviors wrap execution around:
 
@@ -860,7 +862,7 @@ The Pipelines feature integrates especially well with:
 Together, these features support explicit flow control, rich validation, and consistent outcome
 handling without introducing a heavyweight orchestration framework.
 
-## Appendix A: Pipeline code generation
+## <img class="bdk-doc-icon" src="assets/features/source-generation.svg" width="24" height="24" alt=""> Appendix A: Pipeline code generation
 
 The Pipelines feature also offers an optional source-generation layer for packaged pipelines. It is
 meant to remove repetitive authoring boilerplate, while still using the same runtime, the same

@@ -610,11 +610,17 @@
             line-height: 1.15;
         }
 
-        .sidebar .nav-link i {
-            width: 1.15rem;
-            flex: 0 0 1.15rem;
+        .sidebar .nav-link i,
+        .sidebar .nav-link .dashboard-feature-icon {
+            width: 1.35rem;
+            flex: 0 0 1.35rem;
             text-align: center;
             color: var(--dashboard-nav-icon);
+        }
+
+        .sidebar .nav-link .dashboard-feature-icon {
+            height: 1.35rem;
+            fill: none;
         }
 
             .sidebar .nav-link:hover,
@@ -656,7 +662,8 @@
             padding-right: .35rem;
         }
 
-        .sidebar-collapsed .nav-link i {
+        .sidebar-collapsed .nav-link i,
+        .sidebar-collapsed .nav-link .dashboard-feature-icon {
             margin-right: 0 !important;
         }
 
@@ -1644,6 +1651,7 @@
                 {
                     pageSidebarItems.Add(new DashboardSidebarItem(page.Title, page.Icon, page.Url)
                     {
+                        Key = page.Key,
                         Group = page.Group,
                         GroupOrder = page.GroupOrder,
                         Order = page.Order,

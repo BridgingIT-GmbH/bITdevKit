@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/serialization.svg" width="32" height="32" alt="" align="right">
+
 # Common Serialization
 
 > Serialize object instances as JSON, MessagePack, CBOR, or CSV through one shared contract.
@@ -30,7 +32,7 @@ This package matters because many higher-level features depend on consistent ser
 
 ## Built-in serializers
 
-### `SystemTextJsonSerializer`
+### <img class="bdk-doc-icon" src="assets/features/format-json.svg" width="24" height="24" alt=""> `SystemTextJsonSerializer`
 
 The System.Text.Json-based serializer for application-facing JSON work. Use this when you want:
 
@@ -38,15 +40,15 @@ The System.Text.Json-based serializer for application-facing JSON work. Use this
 - integration with the devkit's JSON defaults
 - good compatibility with HTTP APIs and internal app models
 
-### `JsonNetSerializer`
+### <img class="bdk-doc-icon" src="assets/features/format-json.svg" width="24" height="24" alt=""> `JsonNetSerializer`
 
 A Newtonsoft.Json-based alternative for scenarios that need its contract model or compatibility surface. This is the fallback when you need JSON.NET-specific behavior rather than the standard devkit JSON path.
 
-### `MessagePackSerializer`
+### <img class="bdk-doc-icon" src="assets/features/format-messagepack.svg" width="24" height="24" alt=""> `MessagePackSerializer`
 
 A binary serializer for internal payloads. `DefaultSerializer.Create` is a shared `MessagePackSerializer` instance, so the package's static default is binary rather than human-readable.
 
-### `CborSerializer`
+### <img class="bdk-doc-icon" src="assets/features/format-cbor.svg" width="24" height="24" alt=""> `CborSerializer`
 
 A binary serializer for [Concise Binary Object Representation (CBOR)](https://www.rfc-editor.org/rfc/rfc8949), implemented directly with Microsoft's `System.Formats.Cbor` package. Object instances map to CBOR without an intermediate JSON document or Base64 conversion. Reflection discovers each type's members and constructors, and compiled accessors and collection codecs are cached for subsequent operations.
 
@@ -96,15 +98,15 @@ CBOR carries no CLR type names. Reads targeting `object` produce natural scalar 
 
 `SerializeToBytes` returns CBOR bytes. `SerializeToString` returns Base64 of the complete CBOR payload because the extension returns text. Use streams or byte arrays to keep transport and storage binary.
 
-### `CsvSerializer`
+### <img class="bdk-doc-icon" src="assets/features/format-csv.svg" width="24" height="24" alt=""> `CsvSerializer`
 
 A CSV-oriented serializer for tabular data scenarios. This is useful when the consuming feature naturally works with rows and flat data rather than object graphs.
 
-### `CompressionSerializer`
+### <img class="bdk-doc-icon" src="assets/features/compression.svg" width="24" height="24" alt=""> `CompressionSerializer`
 
 A decorator that wraps another serializer and adds compression. Use this when payload size matters more than raw readability and you want to keep the underlying serialization format unchanged.
 
-## Shared codecs
+## <img class="bdk-doc-icon" src="assets/features/codecs.svg" width="24" height="24" alt=""> Shared codecs
 
 ### `Base64UrlHelper`
 

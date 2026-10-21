@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/mcp-clients.svg" width="32" height="32" alt="" align="right">
+
 # BDK MCP Client Configuration
 
 [TOC]

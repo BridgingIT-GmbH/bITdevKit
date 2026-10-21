@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/notifications.svg" width="32" height="32" alt="" align="right">
+
 # Notifications
 
 > Send and queue application notifications through transport-agnostic contracts with clear delivery boundaries.
@@ -157,7 +159,7 @@ public sealed record WelcomeNotificationRequest(string Email);
 
 On success, the endpoint returns HTTP 200 with `Welcome notification sent.`. A failed SMTP operation returns a problem response containing the collected error messages.
 
-## Fake SMTP
+## <img class="bdk-doc-icon" src="assets/features/provider-smtp.svg" width="24" height="24" alt=""> Fake SMTP
 
 For local verification or tests, the feature can use `FakeSmtpClient` instead of a real SMTP server.
 
@@ -208,7 +210,7 @@ public sealed class WelcomeService(INotificationService<EmailMessage> notificati
 
 `QueueAsync(...)` is intended for outbox-backed processing. Without an outbox configuration, queueing does not persist work and only logs a warning. In practice, that means `QueueAsync(...)` should be used together with a persistent storage provider and `WithOutbox<TContext>(...)`.
 
-## Outbox processing
+## <img class="bdk-doc-icon" src="assets/features/outbox.svg" width="24" height="24" alt=""> Outbox processing
 
 The outbox integration is added by the infrastructure package and turns queued notifications into a background delivery pipeline.
 

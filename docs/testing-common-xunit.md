@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/testing.svg" width="32" height="32" alt="" align="right">
+
 # Testing Common XUnit
 
 > Reuse shared xUnit test helpers for setup, web hosts, fake time, traits, and Result assertions.
@@ -39,7 +41,7 @@ This factory is meant for integration tests that run the app through `WebApplica
 - it can register extra services through a callback
 - it can enable fake authentication automatically for test runs
 
-### `KestrelWebApplicationFactoryFixture<TEntryPoint>`
+### <img class="bdk-doc-icon" src="assets/features/test-fixtures.svg" width="24" height="24" alt=""> `KestrelWebApplicationFactoryFixture<TEntryPoint>`
 
 This fixture is for end-to-end scenarios that need a real Kestrel listener instead of only `TestServer`.
 
@@ -48,7 +50,7 @@ This fixture is for end-to-end scenarios that need a real Kestrel listener inste
 - it resets module registration state before bootstrapping the test server
 - it can attach xUnit output logging
 
-## Fake Time
+## <img class="bdk-doc-icon" src="assets/features/fake-time.svg" width="24" height="24" alt=""> Fake Time
 
 `Common.Utilities.Xunit` includes a test helper for `TimeProvider`.
 
@@ -58,7 +60,7 @@ This fixture is for end-to-end scenarios that need a real Kestrel listener inste
 
 That makes time-dependent code deterministic in tests without special setup in the application code.
 
-## Result Assertions
+## <img class="bdk-doc-icon" src="assets/features/test-assertions.svg" width="24" height="24" alt=""> Result Assertions
 
 `ShouldBeResultExtensions` adds focused assertions for `Result`-style values.
 
@@ -70,7 +72,7 @@ That makes time-dependent code deterministic in tests without special setup in t
 
 These helpers are intentionally small and map cleanly to the devkit result model instead of introducing a separate assertion vocabulary.
 
-## Traits
+## <img class="bdk-doc-icon" src="assets/features/test-traits.svg" width="24" height="24" alt=""> Traits
 
 The package defines xUnit trait attributes so test discovery can be filtered by category.
 

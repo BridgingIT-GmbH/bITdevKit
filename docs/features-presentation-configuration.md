@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/configuration.svg" width="32" height="32" alt="" align="right">
+
 # Presentation Configuration
 
 > Compose JSON, Azure, and environment-variable configuration providers in the devkit host order.

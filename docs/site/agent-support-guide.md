@@ -2,6 +2,8 @@
 title: AI Agent Support Guide
 ---
 
+<img class="bdk-doc-icon" src="assets/features/mcp.svg" width="32" height="32" alt="" align="right">
+
 # AI Agent Support Guide
 
 This guide describes the DevKit MCP context model, runtime connection, tool catalog, prompt patterns, project-owned diagnostics, and safety controls.

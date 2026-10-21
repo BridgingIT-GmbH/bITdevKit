@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/log-entries.svg" width="32" height="32" alt="" align="right">
+
 # Log Entries
 
 > Query, stream, export, and manage persisted application logs through a stable application API.

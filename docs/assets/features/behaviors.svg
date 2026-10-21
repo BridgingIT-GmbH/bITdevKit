@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="behaviors-title">
+  <title id="behaviors-title">Pipeline behaviors</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h26M3 26h26" />
+    <rect x="8" y="11" width="16" height="10" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 2v8m-3-3 3 3 3-3M16 22v8" />
+  </g>
+</svg>

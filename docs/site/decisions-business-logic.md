@@ -2,6 +2,8 @@
 title: Where to Put Business Logic
 ---
 
+<img class="bdk-doc-icon" src="assets/features/domain.svg" width="32" height="32" alt="" align="right">
+
 # Where to Put Business Logic
 
 Business logic includes domain rules and application workflows. Put a rule in the Domain layer when it defines valid business state. Put coordination in the Application layer when it executes a use case.

@@ -2,6 +2,8 @@
 title: Pipeline or Orchestration
 ---
 
+<img class="bdk-doc-icon" src="assets/features/pipelines.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/orchestrations.svg" width="32" height="32" alt="" align="right">
+
 # Pipeline or Orchestration
 
 Both features compose work from steps. The key question is whether the process needs persisted business state between executions.

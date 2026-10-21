@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/job-scheduling.svg" width="32" height="32" alt="" align="right">
+
 # JobScheduling
 
 > Legacy Quartz-backed scheduler. For new development, prefer [Jobs](./features-jobs.md). Migration is source-level only; Quartz tables and trigger records are not reused by `Application.Jobs`.

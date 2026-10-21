@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/active-entity.svg" width="32" height="32" alt="" align="right">
+
 # ActiveEntity
 
 > Add CRUD and query operations to an entity while a configured provider handles persistence.
@@ -560,7 +562,7 @@ if (serviceResult.IsFailure)
 }
 ```
 
-### Run a transaction with `WithTransactionAsync`
+### <img class="bdk-doc-icon" src="assets/features/transactions.svg" width="24" height="24" alt=""> Run a transaction with `WithTransactionAsync`
 
 Use `WithTransactionAsync` when the configured provider returns an `IDatabaseTransaction` and several operations must succeed or fail together. The helper commits when the delegate returns success and rolls back when the delegate returns failure. Pass the supplied context to every ActiveEntity operation in the delegate.
 

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/commands-queries.svg" width="32" height="32" alt="" align="right">
+
 # Application Commands and Queries
 
 > Separate application writes and reads into focused handlers with shared behaviors and clear boundaries.
@@ -133,7 +135,7 @@ Created customer 5f6b5ba2-85d5-44bb-87a7-f876a65cdb09
 
 ## Command and query reference
 
-### Defining a command
+### <img class="bdk-doc-icon" src="assets/features/commands.svg" width="24" height="24" alt=""> Defining a command
 
 Commands modify state and return `Result<Unit>` or `Result<T>`.
 
@@ -211,7 +213,7 @@ public partial class CustomerImportCommand
 }
 ```
 
-### Defining a query
+### <img class="bdk-doc-icon" src="assets/features/queries.svg" width="24" height="24" alt=""> Defining a query
 
 Queries retrieve data and return `Result<T>`.
 

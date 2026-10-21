@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/entity-permissions.svg" width="32" height="32" alt="" align="right">
+
 # Entity Permissions
 
 > Enforce fine-grained, entity-level authorization with fluent configuration and runtime evaluation.

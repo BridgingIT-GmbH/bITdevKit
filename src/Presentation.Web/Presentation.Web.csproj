@@ -15,6 +15,33 @@
   </ItemGroup>
 
   <ItemGroup>
+    <EmbeddedResource Include="../../docs/assets/features/dashboard.svg;
+                               ../../docs/assets/features/system.svg;
+                               ../../docs/assets/features/metrics.svg;
+                               ../../docs/assets/features/profiling.svg;
+                               ../../docs/assets/features/profiling-operations.svg;
+                               ../../docs/assets/features/profiling-requests.svg;
+                               ../../docs/assets/features/health.svg;
+                               ../../docs/assets/features/identity.svg;
+                               ../../docs/assets/features/log-entries.svg;
+                               ../../docs/assets/features/errors.svg;
+                               ../../docs/assets/features/streams.svg;
+                               ../../docs/assets/features/console-commands.svg;
+                               ../../docs/assets/features/mcp.svg;
+                               ../../docs/assets/features/broadcasting.svg;
+                               ../../docs/assets/features/jobs.svg;
+                               ../../docs/assets/features/orchestrations.svg;
+                               ../../docs/assets/features/messaging.svg;
+                               ../../docs/assets/features/queueing.svg;
+                               ../../docs/assets/features/storage-files.svg;
+                               ../../docs/assets/features/storage-documents.svg;
+                               ../../docs/assets/features/storage-blobs.svg;
+                               ../../docs/assets/features/storage-permalinks.svg;
+                               ../../docs/assets/features/change-history.svg"
+                      LogicalName="BridgingIT.DevKit.Presentation.Web.Dashboard.Icons.%(Filename)%(Extension)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
   </ItemGroup>
 

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/repositories.svg" width="32" height="32" alt="" align="right">
+
 # Domain Repositories
 
 > Access aggregates through type-safe repositories with rich querying, paging, and loading options.
@@ -263,7 +265,7 @@ var customerNames = await repository.ProjectAllAsync(
     cancellationToken);
 ```
 
-### Bulk updates and deletes
+### <img class="bdk-doc-icon" src="assets/features/repository-bulk.svg" width="24" height="24" alt=""> Bulk updates and deletes
 
 Use `UpdateSetAsync` and `DeleteSetAsync` for set-based operations that run directly in the repository provider without loading each entity instance first.
 
@@ -348,7 +350,7 @@ var deleted = await repository.DeleteSetAsync(filter, cancellationToken: cancell
 - Other repository implementations expose the same API for consistency but currently throw `NotImplementedException`.
 - With Entity Framework, set-based operations execute directly in the database and do not synchronize already tracked entities in the current `DbContext`. If you need the updated database state immediately afterwards, re-query using `NoTracking` or use a fresh context/repository instance.
 
-### Explicit provider bulk inserts
+### <img class="bdk-doc-icon" src="assets/features/repository-bulk.svg" width="24" height="24" alt=""> Explicit provider bulk inserts
 
 `IEntityBulkInserter<TEntity>` is a Domain-owned, infrastructure-implemented preview capability for high-volume root-row ingestion. It is deliberately independent of `IGenericRepository<TEntity>.InsertSetAsync`: normal repository insertion remains the right choice when callers need EF tracking, graph cascades, or database-generated values returned to input objects.
 
@@ -499,7 +501,7 @@ To add PostgreSQL, SQLite, or another relational provider without modifying the 
 5. Add a derived options type only when native options are needed; derive it from `EntityBulkInsertOptions` and keep the shared options provider-neutral.
 6. Add terminal contract tests plus provider integration tests for mappings, value conversion, generated values, transactions, identities, native options, and registration.
 
-## Appendix A: Optimistic concurrency support
+## <img class="bdk-doc-icon" src="assets/features/concurrency.svg" width="24" height="24" alt=""> Appendix A: Optimistic concurrency support
 
 ### Concurrency overview
 
@@ -609,7 +611,7 @@ conflict, reloading current state, and deciding whether to retry or merge change
 
 ---
 
-## Appendix B: Sequence number generation support
+## <img class="bdk-doc-icon" src="assets/features/sequences.svg" width="24" height="24" alt=""> Appendix B: Sequence number generation support
 
 ### Sequence overview
 

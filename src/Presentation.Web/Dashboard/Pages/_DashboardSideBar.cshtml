@@ -1,3 +1,4 @@
+@using BridgingIT.DevKit.Presentation.Web.Dashboard
 @using BridgingIT.DevKit.Presentation.Web.Dashboard.Pages
 @inherits RazorSlice<DashboardSidebarItem[]>
 
@@ -37,9 +38,17 @@
             {
                 var isActive = ReferenceEquals(item, activeItem);
                 var tooltip = string.IsNullOrWhiteSpace(item.Tooltip) ? item.Title : item.Tooltip;
+                var featureIcon = DashboardFeatureIcons.GetSvg(item.Key);
                 <li class="nav-item">
                     <a class="nav-link @(isActive ? "active" : "")" href="@item.Url" aria-label="@tooltip" data-bs-toggle="tooltip" data-bs-placement="right" data-bs-title="@tooltip">
-                        <i class="bi bi-@(item.Icon) me-2"></i>
+                        @if (featureIcon is not null)
+                        {
+                            @featureIcon
+                        }
+                        else
+                        {
+                            <i class="bi bi-@(item.Icon) me-2" aria-hidden="true"></i>
+                        }
                         <span class="nav-link-title">@item.Title</span>
                         @if (item.HasBadge && item.BadgeCount.HasValue)
                         {

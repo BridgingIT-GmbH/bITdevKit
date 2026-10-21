@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/storage-monitoring.svg" width="32" height="32" alt="" align="right">
+
 # Storage Monitoring
 
 > Detect file changes and process storage events through configurable monitoring pipelines.
@@ -118,7 +120,7 @@ The first `POST /monitoring/scan` detects `orders.csv`, runs `FileLoggerProcesso
 
 ## Core concepts
 
-### Locations
+### <img class="bdk-doc-icon" src="assets/features/storage-locations.svg" width="24" height="24" alt=""> Locations
 
 A monitored location combines:
 

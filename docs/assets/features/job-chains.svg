@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="job-chains-title">
+  <title id="job-chains-title">Job chains</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="12" width="7" height="8" rx="2" />
+    <rect x="23" y="12" width="7" height="8" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 16h14m-5-4 4 4-4 4" />
+  </g>
+</svg>

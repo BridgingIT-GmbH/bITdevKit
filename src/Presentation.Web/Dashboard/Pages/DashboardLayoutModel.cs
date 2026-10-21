@@ -67,6 +67,16 @@ public class DashboardSidebarItem
     public string Group { get; init; } = "bdk";
 
     /// <summary>
+    /// Gets or sets the dashboard page key used to select its built-in feature icon.
+    /// </summary>
+    /// <example>
+    /// <code>
+    /// var item = new DashboardSidebarItem("Jobs", "calendar2-check", "/_bdk/dashboard/jobs") { Key = "jobs" };
+    /// </code>
+    /// </example>
+    public string Key { get; init; }
+
+    /// <summary>
     /// Gets or sets the title.
     /// </summary>
     public string Title { get; init; }

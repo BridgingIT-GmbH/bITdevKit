@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/correlation-ids.svg" width="32" height="32" alt="" align="right">
+
 # Presentation Correlation ID
 
 > Correlate one application use case across inbound HTTP requests, asynchronous execution, logs,

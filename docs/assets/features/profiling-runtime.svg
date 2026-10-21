@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="profiling-runtime-title">
+  <title id="profiling-runtime-title">Runtime profiling</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="7" y="7" width="18" height="18" rx="3" />
+    <path d="M11 3v4M21 3v4M11 25v4M21 25v4M3 11h4M3 21h4M25 11h4M25 21h4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 18h3l2-6 3 9 2-3" />
+  </g>
+</svg>

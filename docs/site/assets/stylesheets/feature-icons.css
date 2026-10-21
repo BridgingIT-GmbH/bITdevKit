@@ -1,0 +1,96 @@
+/* Keep the SVGs on the documentation's existing contrast-adjusted palette. */
+[data-md-color-scheme] {
+  --dashboard-primary-text: var(--bdk-primary);
+  --dashboard-info-text: var(--bdk-info);
+  --dashboard-analysis-text: var(--bdk-secondary);
+  --dashboard-danger-text: var(--bdk-danger);
+}
+
+.hero-brand .dashboard-brand-logo {
+  display: block;
+  width: 8.5rem;
+  height: 8.5rem;
+  max-width: 100%;
+  fill: var(--dashboard-info-text);
+}
+
+.hero-brand .dashboard-brand-logo-accent {
+  fill: var(--dashboard-danger-text);
+}
+
+.bdk-feature-icon {
+  display: inline-flex;
+  width: var(--bdk-feature-icon-size, 1.2em);
+  height: var(--bdk-feature-icon-size, 1.2em);
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  vertical-align: -.2em;
+}
+
+.bdk-feature-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  fill: none;
+}
+
+.md-typeset h1 .bdk-feature-icon,
+.md-typeset h2 .bdk-feature-icon,
+.md-typeset h3 .bdk-feature-icon {
+  margin-right: .2em;
+}
+
+.md-nav__link > .bdk-feature-icon {
+  margin-top: .05em;
+}
+
+/* Material truncates its label inside the flex link; the icon keeps its width. */
+.md-nav__link > .bdk-feature-icon + .bdk-feature-icon {
+  margin-left: -.25rem;
+}
+
+.bdk-icon-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9rem, 1fr));
+  gap: .6rem;
+  margin: 1rem 0 2rem;
+}
+
+.bdk-icon-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  align-items: center;
+  gap: .55rem;
+  padding: 1rem .6rem .75rem;
+  border: 1px solid var(--bdk-panel-border);
+  border-radius: var(--bdk-radius);
+  background: var(--bdk-surface);
+  text-align: center;
+}
+
+.bdk-icon-card > .bdk-feature-icon {
+  --bdk-feature-icon-size: 40px;
+  margin: .25rem 0;
+}
+
+.bdk-icon-card > a:first-of-type {
+  font-size: .75rem;
+}
+
+.bdk-icon-parent,
+.bdk-icon-download {
+  font-size: .6rem;
+  color: var(--bdk-muted);
+}
+
+.bdk-icon-download {
+  margin-top: auto;
+}
+
+@media (max-width: 480px) {
+  .bdk-icon-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}

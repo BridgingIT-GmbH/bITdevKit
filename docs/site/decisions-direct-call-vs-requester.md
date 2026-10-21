@@ -2,6 +2,8 @@
 title: Direct Call or Requester
 ---
 
+<img class="bdk-doc-icon" src="assets/features/requester.svg" width="32" height="32" alt="" align="right">
+
 # Direct Call or Requester
 
 A direct call invokes a service or domain operation explicitly. Requester dispatches a typed request to its registered handler and wraps that handler with configured behaviors. Both run in the current process.

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/cli.svg" width="32" height="32" alt="" align="right">
+
 # DevKit CLI
 
 > Use `bdk` as the repository-local command-line surface for DevKit local-development workflows, host discovery, host Console Command forwarding and MCP diagnostics.

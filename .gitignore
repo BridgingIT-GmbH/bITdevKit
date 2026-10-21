@@ -60,6 +60,7 @@ BenchmarkDotNet.Artifacts/
 .github/pages/
 docs/site/reference/
 docs/site/assets/dashboard/
+docs/site/assets/features/
 
 # .NET Core
 project.lock.json

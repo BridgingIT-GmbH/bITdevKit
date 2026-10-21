@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="temporary-files-title">
+  <title id="temporary-files-title">Temporary files</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H5v25h12M19 3v8h8V11L19 3Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="23" cy="23" r="7" />
+    <path d="M23 19v4l3 2" />
+  </g>
+</svg>

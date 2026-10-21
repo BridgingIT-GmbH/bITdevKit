@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="messaging-title">
+  <title id="messaging-title">Messaging</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 16h3V8a2 2 0 0 1 2-2h2M22 16v8a2 2 0 0 0 2 2h2" />
+    <circle cx="28" cy="6" r="1.8" />
+    <circle cx="28" cy="26" r="1.8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="9" width="16" height="14" rx="2" />
+    <path d="m3.5 10 6.3 5a2 2 0 0 0 2.4 0l6.3-5" />
+  </g>
+</svg>

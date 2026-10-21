@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/metrics.svg" width="32" height="32" alt="" align="right">
+
 # Metrics
 
 > Record devkit and application measurements through the standard .NET metrics runtime.

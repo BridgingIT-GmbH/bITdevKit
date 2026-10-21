@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="storage-transforms-title">
+  <title id="storage-transforms-title">Storage transforms</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 8h7M21 24h7" />
+    <rect x="11" y="10" width="10" height="12" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 24h4l14-16h4m-4-4 4 4-4 4" />
+  </g>
+</svg>

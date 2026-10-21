@@ -2,11 +2,13 @@
 title: Messaging or Queueing
 ---
 
+<img class="bdk-doc-icon" src="assets/features/messaging.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/queueing.svg" width="32" height="32" alt="" align="right">
+
 # Messaging or Queueing
 
 `Messaging` and `Queueing` are related, but they solve different problems.
 
-## Choose Messaging when
+## <img class="bdk-doc-icon" src="assets/features/messaging.svg" width="24" height="24" alt=""> Choose Messaging when
 
 - one event should fan out to multiple handlers
 - producers should not care which consumers react
@@ -15,7 +17,7 @@ title: Messaging or Queueing
 
 For details, see [Messaging](reference/features-messaging.md).
 
-## Choose Queueing when
+## <img class="bdk-doc-icon" src="assets/features/queueing.svg" width="24" height="24" alt=""> Choose Queueing when
 
 - one work item should be handled by one logical consumer
 - retries, waiting-for-handler behavior, or durable work dispatch matter

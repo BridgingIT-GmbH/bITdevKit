@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/application-events.svg" width="32" height="32" alt="" align="right">
+
 # Application Events
 
 > Publish and handle application-layer events through `INotifier` with explicit `Result`-based outcomes.

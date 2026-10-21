@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/host.svg" width="32" height="32" alt="" align="right">
+
 # Presentation Host
 
 > Configure web and generic host applications through DevKit application builders and package-owned starter extensions.
@@ -94,7 +96,7 @@ Use the packages that match the startup features your host needs.
 
 ## Core concepts
 
-### DevKitWebApplication
+### <img class="bdk-doc-icon" src="assets/features/web-host.svg" width="24" height="24" alt=""> DevKitWebApplication
 
 `DevKitWebApplication` is the web host entry point for new DevKit-aware applications.
 
@@ -104,7 +106,7 @@ var builder = DevKitWebApplication.CreateBuilder(args);
 
 Internally this still creates a normal ASP.NET Core `WebApplicationBuilder`, so existing web setup remains familiar.
 
-### DevKitApplication
+### <img class="bdk-doc-icon" src="assets/features/console-host.svg" width="24" height="24" alt=""> DevKitApplication
 
 `DevKitApplication` is the generic host entry point for non-web DevKit applications.
 

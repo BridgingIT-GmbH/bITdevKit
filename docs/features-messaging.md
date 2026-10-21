@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/messaging.svg" width="32" height="32" alt="" align="right">
+
 # Messaging
 
 > Decouple producers and consumers with resilient asynchronous messaging and outbox-backed delivery.
@@ -177,7 +179,7 @@ public sealed record UserRegistrationRequest(string Email);
 
 A successful request returns HTTP 202. With the in-process broker, the handler writes `Welcome email scheduled for ...` to the application log before `Publish` completes. Message validation or cancellation exceptions are left to the application's standard exception handling rather than being treated as a successful publish.
 
-## Outbox reliability
+## <img class="bdk-doc-icon" src="assets/features/outbox.svg" width="24" height="24" alt=""> Outbox reliability
 
 Use the transactional outbox for "at least once" delivery. The same transaction persists the domain changes and the outbox record. A background worker publishes the message from the outbox until a handler processes it.
 

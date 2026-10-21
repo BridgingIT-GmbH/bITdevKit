@@ -62,77 +62,77 @@ The best entry point into the current documentation set is the
 
 ### Common Infrastructure
 
-- [Common Extensions](./docs/common-extensions.md)
-- [Common Utilities](./docs/common-utilities.md)
-- [Common Serialization](./docs/common-serialization.md)
-- [Common Options Builders](./docs/common-options-builders.md)
-- [Common Mapping](./docs/common-mapping.md)
-- [Common Caching](./docs/common-caching.md)
-- [Common Observability Tracing](./docs/common-observability-tracing.md)
-- [Metrics](./docs/features-metrics.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/common-extensions.svg" width="20" height="20" alt=""> [Common Extensions](./docs/common-extensions.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/common-utilities.svg" width="20" height="20" alt=""> [Common Utilities](./docs/common-utilities.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/serialization.svg" width="20" height="20" alt=""> [Common Serialization](./docs/common-serialization.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/options-builders.svg" width="20" height="20" alt=""> [Common Options Builders](./docs/common-options-builders.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/mapping.svg" width="20" height="20" alt=""> [Common Mapping](./docs/common-mapping.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/caching.svg" width="20" height="20" alt=""> [Common Caching](./docs/common-caching.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/tracing.svg" width="20" height="20" alt=""> [Common Observability Tracing](./docs/common-observability-tracing.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/metrics.svg" width="20" height="20" alt=""> [Metrics](./docs/features-metrics.md)
 
 ### Core Domain and Application
 
-- [Domain](./docs/features-domain.md)
-- [Domain Events](./docs/features-domain-events.md)
-- [Event Sourcing](./docs/features-event-sourcing.md)
-- [Domain Repositories](./docs/features-domain-repositories.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/domain.svg" width="20" height="20" alt=""> [Domain](./docs/features-domain.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/domain-events.svg" width="20" height="20" alt=""> [Domain Events](./docs/features-domain-events.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/event-sourcing.svg" width="20" height="20" alt=""> [Event Sourcing](./docs/features-event-sourcing.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/repositories.svg" width="20" height="20" alt=""> [Domain Repositories](./docs/features-domain-repositories.md)
   - Includes the preview Domain-owned entity bulk-insert capability, explicit decorators, and transaction/outbox guidance.
-- [Domain Specifications](./docs/features-domain-specifications.md)
-- [ActiveEntity](./docs/features-domain-activeentity.md)
-- [Domain Policies](./docs/features-domain-policies.md)
-- [Rules](./docs/features-rules.md)
-- [Results](./docs/features-results.md)
-- [Application Commands and Queries](./docs/features-application-commands-queries.md)
-- [Application Events](./docs/features-application-events.md)
-- [DataPorter](./docs/features-application-dataporter.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/specifications.svg" width="20" height="20" alt=""> [Domain Specifications](./docs/features-domain-specifications.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/active-entity.svg" width="20" height="20" alt=""> [ActiveEntity](./docs/features-domain-activeentity.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/policies.svg" width="20" height="20" alt=""> [Domain Policies](./docs/features-domain-policies.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/rules.svg" width="20" height="20" alt=""> [Rules](./docs/features-rules.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/results.svg" width="20" height="20" alt=""> [Results](./docs/features-results.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/commands-queries.svg" width="20" height="20" alt=""> [Application Commands and Queries](./docs/features-application-commands-queries.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/application-events.svg" width="20" height="20" alt=""> [Application Events](./docs/features-application-events.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/dataporter.svg" width="20" height="20" alt=""> [DataPorter](./docs/features-application-dataporter.md)
 
 ### Execution, Messaging and Modularity
 
-- [Requester and Notifier](./docs/features-requester-notifier.md)
-- [Messaging](./docs/features-messaging.md)
-- [Queueing](./docs/features-queueing.md)
-- [Broadcasting](./docs/features-broadcasting.md)
-- [Notifications](./docs/features-notifications.md)
-- [Modules](./docs/features-modules.md)
-- [Pipelines](./docs/features-pipelines.md)
-- [Filtering](./docs/features-filtering.md)
-- [Extensions](./docs/features-extensions.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/requester.svg" width="20" height="20" alt=""> <img class="bdk-doc-icon" src="docs/assets/features/notifier.svg" width="20" height="20" alt=""> [Requester and Notifier](./docs/features-requester-notifier.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/messaging.svg" width="20" height="20" alt=""> [Messaging](./docs/features-messaging.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/queueing.svg" width="20" height="20" alt=""> [Queueing](./docs/features-queueing.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/broadcasting.svg" width="20" height="20" alt=""> [Broadcasting](./docs/features-broadcasting.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/notifications.svg" width="20" height="20" alt=""> [Notifications](./docs/features-notifications.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/modules.svg" width="20" height="20" alt=""> [Modules](./docs/features-modules.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/pipelines.svg" width="20" height="20" alt=""> [Pipelines](./docs/features-pipelines.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/filtering.svg" width="20" height="20" alt=""> [Filtering](./docs/features-filtering.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/extensions.svg" width="20" height="20" alt=""> [Extensions](./docs/features-extensions.md)
 
 ### Security and Access
 
-- [Presentation Authentication](./docs/features-presentation-authentication.md)
-- [Entity Permissions](./docs/features-entitypermissions.md)
-- [Fake Identity Provider](./docs/features-identityprovider.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/authentication.svg" width="20" height="20" alt=""> [Presentation Authentication](./docs/features-presentation-authentication.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/entity-permissions.svg" width="20" height="20" alt=""> [Entity Permissions](./docs/features-entitypermissions.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/identity-provider.svg" width="20" height="20" alt=""> [Fake Identity Provider](./docs/features-identityprovider.md)
 
 ### Presentation and Host
 
-- [Presentation Host](./docs/features-presentation.md)
-- [Presentation Configuration](./docs/features-presentation-configuration.md)
-- [Presentation Logging](./docs/features-presentation-logging.md)
-- [Presentation Correlation IDs](./docs/features-presentation-correlationid.md)
-- [Presentation Endpoints](./docs/features-presentation-endpoints.md)
-- [DevKit CLI](./docs/features-cli.md)
-- [DevKit MCP](./docs/features-cli-mcp.md)
-- [Console Commands](./docs/features-presentation-console-commands.md)
-- [CORS Configuration](./docs/features-presentation-cors.md)
-- [Exception Handling](./docs/features-presentation-exception-handling.md)
-- [AppState](./docs/features-presentation-appstate.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/host.svg" width="20" height="20" alt=""> [Presentation Host](./docs/features-presentation.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/configuration.svg" width="20" height="20" alt=""> [Presentation Configuration](./docs/features-presentation-configuration.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/logging.svg" width="20" height="20" alt=""> [Presentation Logging](./docs/features-presentation-logging.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/correlation-ids.svg" width="20" height="20" alt=""> [Presentation Correlation IDs](./docs/features-presentation-correlationid.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/endpoints.svg" width="20" height="20" alt=""> [Presentation Endpoints](./docs/features-presentation-endpoints.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/cli.svg" width="20" height="20" alt=""> [DevKit CLI](./docs/features-cli.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/mcp.svg" width="20" height="20" alt=""> [DevKit MCP](./docs/features-cli-mcp.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/console-commands.svg" width="20" height="20" alt=""> [Console Commands](./docs/features-presentation-console-commands.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/cors.svg" width="20" height="20" alt=""> [CORS Configuration](./docs/features-presentation-cors.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/exception-handling.svg" width="20" height="20" alt=""> [Exception Handling](./docs/features-presentation-exception-handling.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/app-state.svg" width="20" height="20" alt=""> [AppState](./docs/features-presentation-appstate.md)
 
 ### Storage, Scheduling and Utilities
 
-- [StartupTasks](./docs/features-startuptasks.md)
-- [Jobs](./docs/features-jobs.md)
-- [JobScheduling](./docs/features-jobscheduling.md) (legacy Quartz-backed feature)
-- [DocumentStorage](./docs/features-storage-documents.md) - typed documents with concurrency, integrity, transforms, expiration/retention, and managed provider resources
-- [FileStorage](./docs/features-storage-files.md)
-- [Storage Monitoring](./docs/features-storage-monitoring.md)
-- [Log Entries](./docs/features-log-entries.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/startup-tasks.svg" width="20" height="20" alt=""> [StartupTasks](./docs/features-startuptasks.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/jobs.svg" width="20" height="20" alt=""> [Jobs](./docs/features-jobs.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/job-scheduling.svg" width="20" height="20" alt=""> [JobScheduling](./docs/features-jobscheduling.md) (legacy Quartz-backed feature)
+- <img class="bdk-doc-icon" src="docs/assets/features/storage-documents.svg" width="20" height="20" alt=""> [DocumentStorage](./docs/features-storage-documents.md) - typed documents with concurrency, integrity, transforms, expiration/retention, and managed provider resources
+- <img class="bdk-doc-icon" src="docs/assets/features/storage-files.svg" width="20" height="20" alt=""> [FileStorage](./docs/features-storage-files.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/storage-monitoring.svg" width="20" height="20" alt=""> [Storage Monitoring](./docs/features-storage-monitoring.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/log-entries.svg" width="20" height="20" alt=""> [Log Entries](./docs/features-log-entries.md)
 
 ### Testing and Test Utilities
 
-- [Fake Authentication for Integration Tests](./docs/testing-fake-authentication.md)
-- [Testing Common XUnit](./docs/testing-common-xunit.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/fake-authentication.svg" width="20" height="20" alt=""> [Fake Authentication for Integration Tests](./docs/testing-fake-authentication.md)
+- <img class="bdk-doc-icon" src="docs/assets/features/testing.svg" width="20" height="20" alt=""> [Testing Common XUnit](./docs/testing-common-xunit.md)
 
 ## Libraries used (excerpt):
 

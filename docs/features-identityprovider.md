@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/identity-provider.svg" width="32" height="32" alt="" align="right">
+
 # Fake Identity Provider
 
 > A lightweight OAuth 2.0 and OpenID Connect identity provider with configured users and clients for development and testing.

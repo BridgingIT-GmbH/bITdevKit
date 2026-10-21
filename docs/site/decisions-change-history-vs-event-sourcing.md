@@ -2,6 +2,8 @@
 title: Change History or Event Sourcing
 ---
 
+<img class="bdk-doc-icon" src="assets/features/change-history.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/event-sourcing.svg" width="32" height="32" alt="" align="right">
+
 # Change History or Event Sourcing
 
 Change History records changes beside ordinary entity persistence. Event Sourcing makes the aggregate event stream the source of truth and reconstructs state from that stream.

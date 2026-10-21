@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/orchestrations.svg" width="32" height="32" alt="" align="right">
+
 # Orchestrations
 
 > Define durable, stateful workflows in code with explicit states, activities, signals, timers, persisted history, and operational query endpoints.
@@ -295,7 +297,7 @@ Or non-generic when only the signal name matters:
 
 - `WaitForSignal("CallDialed", ...)`
 
-### State surface
+### <img class="bdk-doc-icon" src="assets/features/orchestration-states.svg" width="24" height="24" alt=""> State surface
 
 The core state DSL is intentionally small. A state can declare:
 
@@ -519,7 +521,7 @@ public static IOrchestrationStateBuilder<OrderApprovalData> ReservePayment(
 
 That keeps the runtime model unchanged while making orchestration definitions more expressive.
 
-### Built-in activity helpers
+### <img class="bdk-doc-icon" src="assets/features/orchestration-parallel.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/orchestration-children.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/orchestration-compensation.svg" width="24" height="24" alt=""> Built-in activity helpers
 
 A focused set of authoring helpers on top of the base state DSL is available.
 
@@ -1004,7 +1006,7 @@ Durable orchestration combines durable timers with durable signals.
 
 The important point is that the orchestration does not rely on in-memory sleeps, polling loops, or a continuously running workflow object. It persists its current state, decides what it is waiting for next, and then resumes only when one of the durable wake-up conditions becomes true.
 
-### Durable timers
+### <img class="bdk-doc-icon" src="assets/features/orchestration-timers.svg" width="24" height="24" alt=""> Durable timers
 
 When orchestration logic determines that nothing should happen yet, it can return a waiting outcome with a delay or an absolute next moment to resume for. The runtime then persists a timer record instead of keeping the instance active in memory.
 
@@ -1026,7 +1028,7 @@ The result is that long waits are cheap and restart-safe when background executi
 
 Due-timer pickup is poll-based and lease-protected. That means continuation happens at or shortly after the due time, not necessarily on the exact due timestamp.
 
-### Durable signals
+### <img class="bdk-doc-icon" src="assets/features/orchestration-signals.svg" width="24" height="24" alt=""> Durable signals
 
 Signals are the complementary mechanism. A signal is a persisted external input correlated to a specific orchestration instance.
 
@@ -1061,7 +1063,7 @@ Because both timers and signals are persisted artifacts, they are inspectable an
 
 The engine records why an instance is paused and which event or time boundary will resume it. This persisted state lets long-running workflows survive process restarts.
 
-## Starting and controlling instances
+## <img class="bdk-doc-icon" src="assets/features/orchestration-instances.svg" width="24" height="24" alt=""> Starting and controlling instances
 
 The runtime surface is built around `IOrchestrationService`.
 

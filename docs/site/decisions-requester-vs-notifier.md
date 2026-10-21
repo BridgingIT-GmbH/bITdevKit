@@ -2,11 +2,13 @@
 title: Requester or Notifier
 ---
 
+<img class="bdk-doc-icon" src="assets/features/requester.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/notifier.svg" width="32" height="32" alt="" align="right">
+
 # Requester or Notifier
 
 Requester sends a command or query to one handler. Notifier publishes a notification to all matching handlers. Both execute through configurable in-process behavior pipelines.
 
-## Choose Requester when
+## <img class="bdk-doc-icon" src="assets/features/requester.svg" width="24" height="24" alt=""> Choose Requester when
 
 - one handler owns the operation
 - the caller needs a value or an explicit success or failure result
@@ -15,7 +17,7 @@ Requester sends a command or query to one handler. Notifier publishes a notifica
 
 Use `IRequester.SendAsync(...)`. Request handlers return `Result<TResponse>`, including `Result<Unit>` for commands without a response value.
 
-## Choose Notifier when
+## <img class="bdk-doc-icon" src="assets/features/notifier.svg" width="24" height="24" alt=""> Choose Notifier when
 
 - a notification announces a fact or change to interested handlers
 - several handlers can react without the publisher choosing them

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="app-state-history-title">
+  <title id="app-state-history-title">Undo and redo</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 11h10M3 11V2M3 11a12 12 0 0 1 23-1" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M29 21H19M29 21v9M29 21A12 12 0 0 1 6 22" />
+  </g>
+</svg>

@@ -2,6 +2,8 @@
 title: Guides
 ---
 
+<img class="bdk-doc-icon" src="assets/features/diagrams.svg" width="32" height="32" alt="" align="right">
+
 # Guides
 
 These guides explain how to use `bITdevKit` features and apply common application patterns. Each guide includes practical examples and links to the feature documentation.

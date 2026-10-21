@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/storage-blobs.svg" width="32" height="32" alt="" align="right">
+
 # Blob Storage
 
 > Store binary content through Result-native, stream-first, provider-neutral blob clients.
@@ -203,7 +205,7 @@ services.AddBlobStorage()
 
 All seven client methods join an existing operation or create a `BlobStorage` operation with key `blobstorage:{operation}`. Dimensions are `blobstorage.store`, `blobstorage.container` and `blobstorage.operation`. Container names come from the key, upload, property update or listing query; blob names, prefixes, tokens and content are omitted. Returned download streams retain caller ownership, and timing ends when the download method returns. See [Storage profiling behaviors](features-profiling.md#storage-behaviors) for optional registration, classification and dimension comparisons.
 
-## High-volume uploads
+## <img class="bdk-doc-icon" src="assets/features/storage-uploads.svg" width="24" height="24" alt=""> High-volume uploads
 
 Use the optional upload-concurrency behavior when bursts must not open an unbounded number of provider operations, contexts, transactions, or database connections. Admission is shared by every DI scope in one process and isolated by case-insensitive named store.
 
@@ -331,7 +333,7 @@ Open Blobs at `/_bdk/dashboard/storage/blobs`. Choose a store and container, the
 
 Use Upload to add a file. Select a row's information button to edit properties and expiration, or download its content. Permalink download and copy actions appear for clients decorated with `WithPermalinks()`. Use Previous and Next when the query returns continuation pages. See the [shared dashboard setup](features-presentation-dashboard.md) for plugin discovery and authorization.
 
-## Compression and encryption behaviors
+## <img class="bdk-doc-icon" src="assets/features/compression.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/encryption.svg" width="24" height="24" alt=""> Compression and encryption behaviors
 
 Blob Storage can transparently transform content with provider-neutral client behaviors. These behaviors do not change `IBlobStoreClient` or provider contracts.
 
@@ -531,7 +533,7 @@ services.AddSingleton<IContinuationTokenProtector>(
 
 When protection is configured, unsigned, modified, incorrectly signed, and wrong-purpose tokens are rejected. Without a protector, Blob Storage emits unsigned opaque tokens.
 
-## Upload
+## <img class="bdk-doc-icon" src="assets/features/storage-uploads.svg" width="24" height="24" alt=""> Upload
 
 ```csharp
 using BridgingIT.DevKit.Common;
@@ -565,7 +567,7 @@ var mimeType = info.ContentType?.MimeType();
 
 Blob Storage reads from the supplied stream but does not dispose it.
 
-## Expiration and retention
+## <img class="bdk-doc-icon" src="assets/features/storage-retention.svg" width="24" height="24" alt=""> Expiration and retention
 
 Set `BlobUpload.ExpiresAt` when a blob should be automatically deleted after a UTC timestamp. Providers normalize non-UTC `DateTimeOffset` values to UTC before storing metadata. The timestamp is returned through `BlobInfo.ExpiresAt`, can be replaced or cleared through `BlobPropertiesUpdate.ExpiresAt`, and is provider-neutral.
 
@@ -632,7 +634,7 @@ var uploadResult = await blobs.UploadAsync(
 
 The expected value must use `sha256:<lowercase-64-character-hex>`. A mismatch returns `BlobStoreIntegrityError` and does not commit partial content.
 
-## Download
+## <img class="bdk-doc-icon" src="assets/features/storage-downloads.svg" width="24" height="24" alt=""> Download
 
 ```csharp
 var downloadResult = await blobs.DownloadAsync(
@@ -648,7 +650,7 @@ if (downloadResult.IsSuccess)
 
 The caller owns and disposes the returned `BlobDownload`, which disposes the returned content stream.
 
-## Verified download
+## <img class="bdk-doc-icon" src="assets/features/storage-integrity.svg" width="24" height="24" alt=""> Verified download
 
 Use `DownloadVerifiedToAsync` when the destination should only be considered valid after the downloaded bytes match the stored SHA-256 content hash.
 
@@ -1014,7 +1016,7 @@ var deleteResult = await blobs.DeleteAsync(
 
 An ETag mismatch returns `BlobStoreConflictError` and leaves the current blob unchanged.
 
-## Copy, move, and prefix delete
+## <img class="bdk-doc-icon" src="assets/features/storage-transfers.svg" width="24" height="24" alt=""> Copy, move, and prefix delete
 
 Blob-to-blob transfer helpers are extension methods over the public `IBlobStoreClient` contract. They can copy or move between different providers because they only depend on download, upload, and delete operations.
 
@@ -1057,7 +1059,7 @@ var deleteResult = await blobs.DeleteByPrefixAsync(
 
 Prefix delete requires a non-empty prefix unless `AllowFullScan` is explicitly set. Use dry runs before scheduled cleanup jobs.
 
-## Health checks
+## <img class="bdk-doc-icon" src="assets/features/storage-health.svg" width="24" height="24" alt=""> Health checks
 
 When Blob Storage is enabled and at least one named client is registered, the package registers one aggregate health check named `BlobStorage`. The check probes every registered client with a non-mutating `ExistsAsync` probe. Missing probe blobs are healthy; provider failures make the aggregate health check unhealthy and identify failed client names in readable health-check data.
 
@@ -1103,7 +1105,7 @@ Use bdk MCP to inspect Blob Storage clients. Call bdk_blobs_summary first, then 
 
 The MCP operations use the same `IBlobStorageDiagnosticsService` as application diagnostics. They run non-mutating `ExistsAsync` probes against a reserved health probe key and treat a missing probe blob as healthy.
 
-## Maintenance jobs
+## <img class="bdk-doc-icon" src="assets/features/storage-cleanup.svg" width="24" height="24" alt=""> Maintenance jobs
 
 `Application.Storage.Jobs` includes `BlobDeletePrefixMaintenanceJob` for deleting blobs by prefix through a named blob client.
 

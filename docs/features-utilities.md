@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/utilities.svg" width="32" height="32" alt="" align="right">
+
 # Utilities
 
 > Group small but essential application-layer support services and contracts in one lightweight package.
@@ -96,7 +98,7 @@ See [Log Entries](./features-log-entries.md) for the full feature documentation.
 
 The remaining direct utility feature is the `AddTimeProvider(...)` registration API, which connects .NET's `TimeProvider` with the devkit's ambient `TimeProviderAccessor`.
 
-## Time providers
+## <img class="bdk-doc-icon" src="assets/features/time-provider.svg" width="24" height="24" alt=""> Time providers
 
 ### Why it exists
 

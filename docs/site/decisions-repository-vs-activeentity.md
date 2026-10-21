@@ -2,6 +2,8 @@
 title: Repository or ActiveEntity
 ---
 
+<img class="bdk-doc-icon" src="assets/features/repositories.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/active-entity.svg" width="32" height="32" alt="" align="right">
+
 # Repository or ActiveEntity
 
 `bITdevKit` supports repositories and ActiveEntity. Repositories expose persistence through an injected dependency. ActiveEntity exposes entity-scoped persistence methods backed by a configured provider.

@@ -2,6 +2,8 @@
 title: Developer Dashboards
 ---
 
+<img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="32" height="32" alt="" align="right">
+
 # Developer Dashboards
 
 `bITdevKit` includes a server-rendered dashboard for inspecting local and internal application hosts. Developers, support engineers, and coding agents can use it to inspect registered features and runtime state.

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/app-state.svg" width="32" height="32" alt="" align="right">
+
 # AppState
 
 > Manage Blazor application state with persistence, history, and change notifications.
@@ -352,7 +354,7 @@ protected override async Task OnInitializedAsync()
 }
 ```
 
-### 5. Using undo and redo
+### <img class="bdk-doc-icon" src="assets/features/app-state-history.svg" width="24" height="24" alt=""> 5. Using undo and redo
 
 Enable history in the `AppStateOptions` to support undo/redo operations.
 

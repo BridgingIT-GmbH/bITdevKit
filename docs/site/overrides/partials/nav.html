@@ -28,7 +28,7 @@
     </li>
     {% for nav_item in nav.items %}
       {% set path = "__nav_" ~ loop.index %}
-      {{ item.render(nav_item, path, 1) }}
+      {{ item.render(nav_item, path, 1) | bdk_feature_navigation(page.url if page else '') }}
     {% endfor %}
   </ul>
 </nav>

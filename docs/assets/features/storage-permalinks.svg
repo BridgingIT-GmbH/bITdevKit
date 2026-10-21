@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="storage-permalinks-title">
+  <title id="storage-permalinks-title">Storage permalinks</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 11 5-5a6 6 0 0 1 8 8l-5 5M19 21l-5 5a6 6 0 0 1-8-8l5-5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m11 21 10-10" />
+  </g>
+</svg>

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/mcp.svg" width="32" height="32" alt="" align="right">
+
 # DevKit MCP
 
 > Use `bdk mcp` to give local coding agents official DevKit documentation plus a safe, workspace-aware diagnostics and operations surface for running DevKit applications.

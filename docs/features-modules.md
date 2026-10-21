@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/modules.svg" width="32" height="32" alt="" align="right">
+
 # Modules
 
 > Structure modular monoliths as independently configurable feature modules within one host.

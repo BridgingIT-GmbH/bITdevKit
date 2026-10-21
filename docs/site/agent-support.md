@@ -2,6 +2,8 @@
 title: AI Agent Support
 ---
 
+<img class="bdk-doc-icon" src="assets/features/mcp.svg" width="32" height="32" alt="" align="right">
+
 # AI Agent Support
 
 Connect an MCP-capable coding agent to official DevKit documentation and a local DevKit application with `bdk mcp`.

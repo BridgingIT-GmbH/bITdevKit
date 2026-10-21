@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/dataporter.svg" width="32" height="32" alt="" align="right">
+
 # DataPorter
 
 > Import and export structured data through a flexible, format-agnostic data transfer framework.
@@ -86,7 +88,7 @@ services.AddDataPorter(configuration)
 
 For import and export calls, DataPorter supports both the regular options objects and a fluent builder lambda. The examples below prefer the fluent builder syntax.
 
-### Basic export
+### <img class="bdk-doc-icon" src="assets/features/data-export.svg" width="24" height="24" alt=""> Basic export
 
 ```csharp
 public class MyService
@@ -144,7 +146,7 @@ if (result.IsSuccess)
 }
 ```
 
-### Basic import
+### <img class="bdk-doc-icon" src="assets/features/data-import.svg" width="24" height="24" alt=""> Basic import
 
 ```csharp
 public async Task<IEnumerable<Order>> ImportOrdersAsync(Stream input)
@@ -239,7 +241,7 @@ HTTP transport compression is a separate concern:
 - in that mode, DataPorter still reads and writes the plain CSV/JSON/XML stream
 - use DataPorter compression only when the artifact itself should be downloadable or uploadable as `.gz` or `.zip`
 
-### Template generation
+### <img class="bdk-doc-icon" src="assets/features/data-templates.svg" width="24" height="24" alt=""> Template generation
 
 `IDataExporter` can generate annotated import templates through dedicated template-generation methods and `TemplateOptions`.
 
@@ -611,7 +613,7 @@ public class ProductDto
 | `[DataPorterConverter]` | Property | Specifies a custom value converter |
 | `[DataPorterValidation]` | Property | Adds validation rules |
 
-### Profile-based configuration
+### <img class="bdk-doc-icon" src="assets/features/data-profiles.svg" width="24" height="24" alt=""> Profile-based configuration
 
 Use profiles for complex scenarios with full control:
 
@@ -705,7 +707,7 @@ services.AddDataPorter(configuration)
 
 ## Format providers
 
-### Excel provider
+### <img class="bdk-doc-icon" src="assets/features/format-excel.svg" width="24" height="24" alt=""> Excel provider
 
 Uses [ClosedXML](https://github.com/ClosedXML/ClosedXML) for Excel file handling.
 
@@ -721,7 +723,7 @@ services.AddDataPorter()
     });
 ```
 
-### Typed-row CSV provider
+### <img class="bdk-doc-icon" src="assets/features/format-csv.svg" width="24" height="24" alt=""> Typed-row CSV provider
 
 Uses [CsvHelper](https://joshclose.github.io/CsvHelper/) with a typed-rows schema for hierarchical object graphs in a single CSV file.
 
@@ -802,7 +804,7 @@ PreviousAddress,person-2,prev-3,person-2,PreviousAddresses,0,,,,,,,,Cobol Lane 1
 - Bounded grouped streaming import when rows for each `RootId` are contiguous.
 - Validation at the reconstructed aggregate boundary.
 
-### CSV provider
+### <img class="bdk-doc-icon" src="assets/features/format-csv.svg" width="24" height="24" alt=""> CSV provider
 
 Uses CsvHelper for CSV file handling.
 
@@ -868,7 +870,7 @@ Export behavior:
 
 When `UseNesting` is disabled, nested structured properties without explicit converters are ignored for CSV export/import. This is useful when only scalar columns should participate.
 
-### JSON provider
+### <img class="bdk-doc-icon" src="assets/features/format-json.svg" width="24" height="24" alt=""> JSON provider
 
 Uses [System.Text.Json](https://learn.microsoft.com/en-us/dotnet/api/system.text.json?view=net-10.0) for JSON handling.
 
@@ -892,7 +894,7 @@ Behavior:
 - malformed JSON after earlier valid items produces earlier successes first and then a failed result
 - `ImportAsync(...)` and `ValidateAsync(...)` use the same incremental item-processing pipeline
 
-### XML provider
+### <img class="bdk-doc-icon" src="assets/features/format-xml.svg" width="24" height="24" alt=""> XML provider
 
 Uses [System.Xml](https://learn.microsoft.com/en-us/dotnet/api/system.xml?view=net-10.0) for XML handling.
 
@@ -918,7 +920,7 @@ Behavior:
 - malformed XML after earlier valid items produces earlier successes first and then a failed result
 - `ImportAsync(...)` and `ValidateAsync(...)` use the same incremental item-processing pipeline
 
-### PDF provider (export only)
+### <img class="bdk-doc-icon" src="assets/features/format-pdf.svg" width="24" height="24" alt=""> PDF provider (export only)
 
 Uses [PDFsharp-MigraDoc](https://www.pdfsharp.com/) for PDF generation (MIT licensed).
 
@@ -965,7 +967,7 @@ The PDF provider now uses a platform-aware font resolver so exports can work on 
 
 ## Advanced features
 
-### Streaming APIs
+### <img class="bdk-doc-icon" src="assets/features/data-streaming.svg" width="24" height="24" alt=""> Streaming APIs
 
 For large files or export sources produced asynchronously, use the async APIs to process items incrementally:
 
@@ -993,7 +995,7 @@ await foreach (var result in importer.ImportAsyncEnumerable<Order>(stream, optio
 
 Advanced usage samples such as HTTP streaming endpoints, background file processing, and scheduled partner-feed exports are collected in the appendix so the main flow can stay focused on the core dataporter concepts.
 
-### Validation without import
+### <img class="bdk-doc-icon" src="assets/features/data-validation.svg" width="24" height="24" alt=""> Validation without import
 
 Validate data without actually importing:
 
@@ -1046,7 +1048,7 @@ var dataSets = new[]
 await exporter.ExportAsync(dataSets, stream, o => o.AsJson());
 ```
 
-### Custom value converters
+### <img class="bdk-doc-icon" src="assets/features/data-converters.svg" width="24" height="24" alt=""> Custom value converters
 
 Create custom converters for complex transformations:
 

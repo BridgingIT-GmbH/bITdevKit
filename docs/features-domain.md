@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/domain.svg" width="32" height="32" alt="" align="right">
+
 # Domain Model
 
 > Build domain models with the core tactical patterns of DDD, from aggregates to typed ids and value objects.
@@ -99,7 +101,7 @@ Output:
 Grace Hopper
 ```
 
-## Appendix A: Smart enumerations
+## <img class="bdk-doc-icon" src="assets/features/enumerations.svg" width="24" height="24" alt=""> Appendix A: Smart enumerations
 
 ### Overview
 
@@ -177,7 +179,7 @@ Smart Enumerations turn enumerated values into domain types with data and behavi
 
 This approach keeps enumeration-specific data and behavior with the domain concept it describes.
 
-## Appendix B: Strongly typed entity IDs
+## <img class="bdk-doc-icon" src="assets/features/typed-ids.svg" width="24" height="24" alt=""> Appendix B: Strongly typed entity IDs
 
 ### Overview
 
@@ -288,7 +290,7 @@ public class TodoItemEntityTypeConfiguration : IEntityTypeConfiguration<TodoItem
 
 The TypedEntityId pattern transforms primitive identifiers into first-class domain concepts, making code both safer and more expressive. It prevents a whole class of bugs while better communicating domain intent through the type system.
 
-## Appendix C: Fluent aggregate updates
+## <img class="bdk-doc-icon" src="assets/features/entity-changes.svg" width="24" height="24" alt=""> Appendix C: Fluent aggregate updates
 
 ### Overview
 

@@ -2,6 +2,8 @@
 title: Repository or Document Storage
 ---
 
+<img class="bdk-doc-icon" src="assets/features/repositories.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/storage-documents.svg" width="32" height="32" alt="" align="right">
+
 # Repository or Document Storage
 
 Choose based on the application model and access pattern. Repositories persist entities through entity-oriented contracts. Document Storage reads and writes typed documents through a storage client.

@@ -2,6 +2,8 @@
 title: "Result&lt;T&gt; or plain return type"
 ---
 
+<img class="bdk-doc-icon" src="assets/features/results.svg" width="32" height="32" alt="" align="right">
+
 # `Result<T>` or plain return type
 
 Use `Result<T>` when an operation returns a value and has expected failures that the caller needs to handle explicitly. Keep a plain value when the operation does not need that outcome contract.

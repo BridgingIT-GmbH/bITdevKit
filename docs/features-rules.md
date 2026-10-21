@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/rules.svg" width="32" height="32" alt="" align="right">
+
 # Rules
 
 > Express business rules as composable validations with consistent Result-based outcomes.

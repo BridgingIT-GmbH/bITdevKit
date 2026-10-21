@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/fake-authentication.svg" width="32" height="32" alt="" align="right">
+
 # Fake Authentication for Integration Tests
 
 > Simulate authenticated ASP.NET Core requests in integration tests with a lightweight fake-auth scheme.

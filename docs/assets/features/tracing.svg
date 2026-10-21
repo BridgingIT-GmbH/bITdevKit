@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="tracing-title">
+  <title id="tracing-title">Tracing</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 9v14M10 6h12M10 26h12" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7" cy="6" r="3" />
+    <circle cx="25" cy="6" r="3" />
+    <circle cx="7" cy="26" r="3" />
+    <circle cx="25" cy="26" r="3" />
+  </g>
+</svg>

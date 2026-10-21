@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/tracing.svg" width="32" height="32" alt="" align="right">
+
 # Common Observability Tracing
 
 > Add lightweight `Activity`-based tracing around services without pulling in a full observability framework.

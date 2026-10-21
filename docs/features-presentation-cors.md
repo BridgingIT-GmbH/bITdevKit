@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/cors.svg" width="32" height="32" alt="" align="right">
+
 # CORS Configuration
 
 > Configure browser cross-origin access through fluent, settings-driven CORS policies.

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/requester.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/notifier.svg" width="32" height="32" alt="" align="right">
+
 # Requester and Notifier
 
 > Dispatch requests and notifications through handler pipelines with reusable cross-cutting behaviors.
@@ -270,7 +272,7 @@ Request and notification completed.
 
 ---
 
-## Part 1: Requester
+## <img class="bdk-doc-icon" src="assets/features/requester.svg" width="24" height="24" alt=""> Part 1: Requester
 
 ### Basic usage
 
@@ -895,7 +897,7 @@ else
 
 ---
 
-## Part 2: Notifier
+## <img class="bdk-doc-icon" src="assets/features/notifier.svg" width="24" height="24" alt=""> Part 2: Notifier
 
 ### Notifier overview
 
@@ -1234,7 +1236,7 @@ cancellation token must remain valid long enough for scheduled handlers that obs
 
 ---
 
-## Part 3: pipeline behaviors
+## <img class="bdk-doc-icon" src="assets/features/behaviors.svg" width="24" height="24" alt=""> Part 3: pipeline behaviors
 
 ### Basic usage
 
@@ -1720,7 +1722,7 @@ var result = await notifier.PublishAsync(userNotification); // Logs: "Handled: u
 
 ---
 
-## Appendix D: Source-generated commands, queries, and events
+## <img class="bdk-doc-icon" src="assets/features/source-generation.svg" width="24" height="24" alt=""> Appendix D: Source-generated commands, queries, and events
 
 The source-generated authoring model lets you write a command, query, or event as a single partial type. This is a convenient way to define simple request/notification flows without needing separate message and handler classes. The source generators create the necessary boilerplate code, allowing you to focus on the business logic.
 

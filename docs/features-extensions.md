@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/extensions.svg" width="32" height="32" alt="" align="right">
+
 # LINQ Extensions
 
 > Apply null-aware value operations and cancellation-aware asynchronous sequence operators.
@@ -554,7 +556,7 @@ value.SelectAsync(async v => await ProcessAsync(v), ct).Result;
 
 ---
 
-## Async enumerable extensions
+## <img class="bdk-doc-icon" src="assets/features/async-sequences.svg" width="24" height="24" alt=""> Async enumerable extensions
 
 The async enumerable extensions provide LINQ-like operations for `IAsyncEnumerable<T>` sequences with cancellation-aware iteration and transformation.
 

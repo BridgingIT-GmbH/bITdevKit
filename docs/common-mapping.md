@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/mapping.svg" width="32" height="32" alt="" align="right">
+
 # Common Mapping
 
 > Keep boundary mapping explicit and testable through a small mapper abstraction with Mapster integration.

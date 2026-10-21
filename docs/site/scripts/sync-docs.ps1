@@ -171,6 +171,9 @@ function Transform-ImportedContent {
         [string] $SourceFileName
     )
 
+    # Source guides use ordinary images on GitHub. MkDocs inlines the same SVGs.
+    $Content = [regex]::Replace($Content, '(?<prefix>src=")[.]?/?assets/features/', '${prefix}../assets/features/')
+
     if ($SourceFileName -eq 'INDEX.md') {
         $Content = [regex]::Replace($Content, '^#\s+Documentation Index\s*$', '# Overview', 'Multiline')
     }

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="compression-title">
+  <title id="compression-title">Compression</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 5h26M3 27h26M8 3v5M24 24v5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 4v8m-4-4 4 4 4-4M16 28V20m-4 4 4-4 4 4M8 16h16" />
+  </g>
+</svg>

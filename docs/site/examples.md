@@ -2,6 +2,8 @@
 title: Examples
 ---
 
+<img class="bdk-doc-icon" src="assets/features/source-generation.svg" width="32" height="32" alt="" align="right">
+
 # Examples
 
 Use these applications to trace `bITdevKit` features through working code.

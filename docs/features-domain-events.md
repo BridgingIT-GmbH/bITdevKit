@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/domain-events.svg" width="32" height="32" alt="" align="right">
+
 # Domain Events
 
 > Capture business-significant events in aggregates and publish side effects outside the domain model.
@@ -158,7 +160,7 @@ services.AddEntityFrameworkRepository<Customer, CoreDbContext>()
     .WithBehavior<RepositoryDomainEventPublisherBehavior<Customer>>();
 ```
 
-### Outbox publication
+### <img class="bdk-doc-icon" src="assets/features/outbox.svg" width="24" height="24" alt=""> Outbox publication
 
 `RepositoryOutboxDomainEventBehavior<TEntity, TContext>` persists each registered domain event into an outbox table. A hosted background service later triggers the worker, which claims eligible rows, deserializes the events, and publishes them through the notifier.
 

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="job-cron-title">
+  <title id="job-cron-title">Cron schedules</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="6" width="24" height="22" rx="2" />
+    <path d="M4 12h24M10 3v6M22 3v6" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18h14M9 23h14M13 16v9M19 16v9" />
+  </g>
+</svg>

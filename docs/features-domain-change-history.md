@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/change-history.svg" width="32" height="32" alt="" align="right">
+
 # Change History
 
 > Record property-level entity changes, query grouped change sets, and restore selected values through explicit domain-safe policies.
@@ -800,7 +802,7 @@ Default endpoint routes are grouped under `/_bdk/api/change-history`:
 
 Read and restore policies can be configured globally through `ChangeHistoryOptions` or per endpoint registration through `ChangeHistoryEndpointsOptions`.
 
-## Restore
+## <img class="bdk-doc-icon" src="assets/features/change-restore.svg" width="24" height="24" alt=""> Restore
 
 Restore is explicit opt-in per property. A captured value is restoreable only when the property has a restore policy and the stored values are available.
 

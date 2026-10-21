@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/storage-documents.svg" width="32" height="32" alt="" align="right">
+
 # Document Storage
 
 [TOC]
@@ -190,7 +192,7 @@ Continuation tokens are opaque and bind the normalized client name, document typ
 
 See [Document Storage Paging Specification](./specs/spec-application-storage-documents-paging.md).
 
-## Size and integrity
+## <img class="bdk-doc-icon" src="assets/features/storage-integrity.svg" width="24" height="24" alt=""> Size and integrity
 
 `DocumentStoreOptions.MaxDocumentSize` defaults to `ByteSize.Megabytes(1)` and is enforced against logical serialized bytes before provider I/O. A provider may advertise a lower stored-size limit.
 
@@ -201,7 +203,7 @@ Every write computes:
 
 `DocumentWriteOptions.ExpectedContentHash` can enforce the caller's expected logical hash. Reads verify the stored hash before reversing transforms and verify the logical hash before deserialization. Mismatches return `DocumentStoreIntegrityError`.
 
-## Properties and transforms
+## <img class="bdk-doc-icon" src="assets/features/storage-transforms.svg" width="24" height="24" alt=""> Properties and transforms
 
 Properties are scalar `PropertyBag` values. Supported values include null, strings, Boolean and numeric primitives, `Guid`, date/time values, `TimeSpan`, and byte arrays. Providers use `PropertyBagScalarCodec` where text persistence is required.
 
@@ -216,7 +218,7 @@ services.AddDocumentStorage()
 
 The encryption transform requires a registered `IEncryptionKeyProvider`. Standard provider registrations resolve the configured `ISerializer`, `TimeProvider`, `IContinuationTokenProtector`, and transforms from dependency injection.
 
-## Expiration and retention
+## <img class="bdk-doc-icon" src="assets/features/storage-retention.svg" width="24" height="24" alt=""> Expiration and retention
 
 Writes use `ExpirationChange`:
 
@@ -285,23 +287,23 @@ Every typed client method is measured, including count, key-only paging, propert
 
 ## Providers
 
-### In-memory
+### <img class="bdk-doc-icon" src="assets/features/provider-inmemory.svg" width="24" height="24" alt=""> In-memory
 
 Process-local provider for tests and ephemeral use. It stores copied bytes in private synchronized state and returns cloned records.
 
-### Entity Framework
+### <img class="bdk-doc-icon" src="assets/features/provider-entityframework.svg" width="24" height="24" alt=""> Entity Framework
 
 Annotation-mapped `StorageDocument` persistence with indexed hashes for type/partition/row identity, a concurrency version, Unix-millisecond expiration, payload/transform metadata, and provider-owned contexts. SQL Server, PostgreSQL, and SQLite run the same provider contract.
 
-### Azure Blob
+### <img class="bdk-doc-icon" src="assets/features/provider-azure-blob.svg" width="24" height="24" alt=""> Azure Blob
 
 Requires only `BlobServiceClient` or an account connection string. The provider derives `bdk-doc-{hash}` from normalized client name and document type, creates/reuses it through `CreateIfNotExistsAsync`, and never deletes it on disposal. Logical keys are independent Base64Url path segments, so reserved characters round-trip.
 
-### Azure Table
+### <img class="bdk-doc-icon" src="assets/features/provider-azure-table.svg" width="24" height="24" alt=""> Azure Table
 
 Requires only `TableServiceClient` or an account connection string. The provider derives `BdkDoc{hash}`, creates/reuses it, chunks payload bytes into 60 KiB `bdk_content_####` properties, and validates the complete entity against Azure Table's 1 MiB limit. All provider metadata uses `bdk_` keys.
 
-### Cosmos DB
+### <img class="bdk-doc-icon" src="assets/features/provider-cosmosdb.svg" width="24" height="24" alt=""> Cosmos DB
 
 Uses provider-owned database/container initialization through `CosmosSqlProvider`, enables per-item TTL, persists provider continuation state inside document tokens, and applies logical expiration filtering while native deletion remains eventual.
 

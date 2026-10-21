@@ -2,6 +2,8 @@
 title: Packages
 ---
 
+<img class="bdk-doc-icon" src="assets/features/modules.svg" width="32" height="32" alt="" align="right">
+
 # Packages
 
 This page groups selected source projects by role. It is a guide to the package layout, not an exhaustive inventory.

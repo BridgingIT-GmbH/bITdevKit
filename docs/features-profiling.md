@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/profiling.svg" width="32" height="32" alt="" align="right">
+
 # Profiling
 
 > Investigate process behavior with Runtime snapshots and application bottlenecks with independent Operation segments.
@@ -125,7 +127,7 @@ app.Run();
 
 Calling `POST /dev/profiling/sample` returns the readable session key and a terminal state. The session remains available in the in-memory store until retention removes it or the process exits.
 
-## Operation and Request setup
+## <img class="bdk-doc-icon" src="assets/features/profiling-operations.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/profiling-requests.svg" width="24" height="24" alt=""> Operation and Request setup
 
 Enable each capture capability explicitly. The overarching feature uses the in-memory provider by default:
 
@@ -433,7 +435,7 @@ The Profiling landing page is `/_bdk/dashboard/profiling` under the default dash
 
 The screenshots show recorded sample activity. Select an image to open it at full size. Their timings and resource values illustrate the views rather than benchmark application performance.
 
-### Runtime snapshots and analysis
+### <img class="bdk-doc-icon" src="assets/features/profiling-runtime.svg" width="24" height="24" alt=""> Runtime snapshots and analysis
 
 A selected Runtime session and node can be shared with readable eight-character keys:
 
@@ -499,7 +501,7 @@ The charts use Plotly's standard interaction controls, including area-selection 
 
 Profiling dashboard routes inherit the dashboard's authentication and authorization policy. Do not expose the dashboard anonymously. There is intentionally no evaluation export, copy, or download route.
 
-### Operation timeline
+### <img class="bdk-doc-icon" src="assets/features/profiling-timeline.svg" width="24" height="24" alt=""> Operation timeline
 
 The **Timeline** tab shows retained operations by their **start time**, with one colored lane per kind. Each box represents one execution or a count of executions close together in time. Select a single-execution box to open the usual execution details dialog. Select a count box to choose an execution from a paged list, then open its details. A red outline indicates that the bucket contains failed, canceled, aborted or incomplete executions.
 
@@ -513,7 +515,7 @@ Counts include every matching retained operation, regardless of outcome or the l
 
 `IOperationProfilingQueryService.TimelineAsync(...)` provides the same admitted, deadline-bounded view programmatically. Set `StartedWithin = true` on the query. The dashboard-only `/profiling/timeline/data` and `/profiling/timeline/executions` routes inherit the dashboard's authorization and configured prefix.
 
-### Operation insights
+### <img class="bdk-doc-icon" src="assets/features/profiling-insights.svg" width="24" height="24" alt=""> Operation insights
 
 The **Insights** tab ranks logical operations by **p95 duration**, **Total**, **Frequency** or **Failure rate**. HTTP methods remain separate under the same route template. UTC dates, kind, key-contains and node filters select retained executions by their start time. Empty dates select the last 15 minutes up to now. The clock icon fills the editable minute inputs; leaving To UTC empty keeps the end current on refresh. Filters, ranking, row count and refresh interval are saved separately from the other views. Refresh is off by default.
 

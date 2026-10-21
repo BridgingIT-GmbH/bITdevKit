@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/filtering.svg" width="32" height="32" alt="" align="right">
+
 # Filtering
 
 > Simplify complex entity queries with a unified filtering solution.

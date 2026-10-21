@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/policies.svg" width="32" height="32" alt="" align="right">
+
 # Domain Policies
 
 > Encapsulate domain decisions as reusable, context-aware policy objects.

@@ -2,6 +2,8 @@
 title: Retry or Compensation
 ---
 
+<img class="bdk-doc-icon" src="assets/features/retry.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/orchestration-compensation.svg" width="32" height="32" alt="" align="right">
+
 # Retry or Compensation
 
 Retry attempts the same action again. Compensation performs another business action to counteract work that already succeeded. A workflow can need both.

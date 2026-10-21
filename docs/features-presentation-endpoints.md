@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/endpoints.svg" width="32" height="32" alt="" align="right">
+
 # Presentation Endpoints
 
 > Define minimal API endpoints as modular classes with automatic discovery and mapping.

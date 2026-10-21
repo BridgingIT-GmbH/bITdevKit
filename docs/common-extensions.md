@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/common-extensions.svg" width="32" height="32" alt="" align="right">
+
 # Common Extensions
 
 > Reuse shared extensions for collections, asynchronous flows, date and time values, configuration, and reflection.

@@ -2,6 +2,8 @@
 title: Queueing or Jobs
 ---
 
+<img class="bdk-doc-icon" src="assets/features/queueing.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/jobs.svg" width="32" height="32" alt="" align="right">
+
 # Queueing or Jobs
 
 Queueing dispatches work items to a logical consumer. Jobs manages job definitions, triggers, occurrences, and execution attempts. Both can run background work.

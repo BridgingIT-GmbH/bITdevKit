@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/common-utilities.svg" width="32" height="32" alt="" align="right">
+
 # Common Utilities Documentation
 
 > Use shared utilities for resiliency, composition, diagrams, calendars, metrics, storage, and runtime support.
@@ -26,7 +28,7 @@ This includes:
 
 Some of those areas also have higher-level feature docs elsewhere in `docs/`. This page focuses on the shared utilities available across the devkit and gives a short usage example for each main utility family.
 
-## Business calendars
+## <img class="bdk-doc-icon" src="assets/features/business-calendars.svg" width="24" height="24" alt=""> Business calendars
 
 Business calendars provide culture-aware working-day calculations for due dates, planning windows, and date ranges.
 
@@ -268,7 +270,7 @@ var text = TimeSpan.FromMinutes(3).ToDurationText(
     new RelativeTimeFormatOptions { Culture = CultureInfo.GetCultureInfo("sv-SE") });
 ```
 
-## Date and time ranges
+## <img class="bdk-doc-icon" src="assets/features/date-ranges.svg" width="24" height="24" alt=""> Date and time ranges
 
 The range types use half-open `[start, end)` semantics and support one open boundary:
 
@@ -456,7 +458,7 @@ var contracts = await db.Contracts
 
 Use ISO interval strings for API filters, query strings, exports, or logs. For normal relational persistence, separate boundary columns are easier to query and index.
 
-## Composition
+## <img class="bdk-doc-icon" src="assets/features/composition.svg" width="24" height="24" alt=""> Composition
 
 `Common.Utilities.Composition` adds low-level service composition building blocks for developers who want explicit, fluent DI-driven composition without repeatedly hand-writing wrapper registration code.
 
@@ -520,7 +522,7 @@ var notificationStrategies = provider.GetRequiredService<IStrategyResolver<INoti
 var defaultSender = notificationStrategies.ResolveDefault();
 ```
 
-### Decorator
+### <img class="bdk-doc-icon" src="assets/features/decorator.svg" width="24" height="24" alt=""> Decorator
 
 Decorator pattern: wrap a service with one or more same-contract classes so you can add behavior before or after the inner implementation.
 
@@ -550,7 +552,7 @@ public sealed class LoggingNotificationSender(INotificationSender inner, ILogger
 }
 ```
 
-### Adapter
+### <img class="bdk-doc-icon" src="assets/features/adapter.svg" width="24" height="24" alt=""> Adapter
 
 Adapter pattern: translate one API or contract into another contract that the rest of the application expects.
 
@@ -589,7 +591,7 @@ var client = new LegacyMailClient();
 var sender = adapterFactory.Adapt<LegacyMailClient, INotificationSender>(client);
 ```
 
-### Interception
+### <img class="bdk-doc-icon" src="assets/features/interception.svg" width="24" height="24" alt=""> Interception
 
 Interception pattern: surround method calls on the same contract so cross-cutting concerns can run around the invocation pipeline.
 
@@ -664,7 +666,7 @@ Decorators
 -> Concrete implementation
 ```
 
-### Strategy
+### <img class="bdk-doc-icon" src="assets/features/strategy.svg" width="24" height="24" alt=""> Strategy
 
 Strategy pattern: register multiple implementations for the same contract and choose one by key at runtime.
 
@@ -705,7 +707,7 @@ public sealed class WebhookNotificationSender : INotificationSender
 }
 ```
 
-### Composite
+### <img class="bdk-doc-icon" src="assets/features/composite.svg" width="24" height="24" alt=""> Composite
 
 Composite pattern: combine several implementations behind one contract so callers interact with one service while the composite coordinates its children.
 
@@ -739,7 +741,7 @@ public sealed class BroadcastNotificationSender(IEnumerable<INotificationSender>
 }
 ```
 
-### Chain
+### <img class="bdk-doc-icon" src="assets/features/chain.svg" width="24" height="24" alt=""> Chain
 
 Chain of responsibility pattern: pass a request through ordered handlers until one handles it or the chain completes without a handler taking responsibility.
 
@@ -799,7 +801,7 @@ public sealed class CsvImportHandler : IImportHandler
 - The composition package does not include caching interception behavior.
 - Configuration is intentionally explicit and fluent. It does not rely on source generation or attribute-first setup.
 
-## Diagrams
+## <img class="bdk-doc-icon" src="assets/features/diagrams.svg" width="24" height="24" alt=""> Diagrams
 
 The shared diagrams utilities provide a lightweight, deterministic way to build reusable diagram documents and render them without bringing in external graph or diagram packages.
 
@@ -850,11 +852,11 @@ var svg = factory.Render(
     .GetText();
 ```
 
-## Resiliency helpers
+## <img class="bdk-doc-icon" src="assets/features/resilience.svg" width="24" height="24" alt=""> Resiliency helpers
 
 The strongest concentration of reusable behavior here is the resiliency set.
 
-### Retryer
+### <img class="bdk-doc-icon" src="assets/features/retry.svg" width="24" height="24" alt=""> Retryer
 
 `Retryer` reruns an asynchronous operation a configured number of times with a fixed or exponential delay.
 
@@ -888,7 +890,7 @@ await retryer.ExecuteAsync(
     cancellationToken);
 ```
 
-### Debouncer and SimpleDebouncer
+### <img class="bdk-doc-icon" src="assets/features/debounce.svg" width="24" height="24" alt=""> Debouncer and SimpleDebouncer
 
 `Debouncer` delays execution until no new call arrived during the configured interval. It is useful for noisy inputs such as UI typing, file-change bursts, or repeated refresh triggers.
 
@@ -920,7 +922,7 @@ using var simpleDebouncer = new SimpleDebouncer(
 simpleDebouncer.Debounce();
 ```
 
-### Throttler
+### <img class="bdk-doc-icon" src="assets/features/throttle.svg" width="24" height="24" alt=""> Throttler
 
 `Throttler` lets calls happen immediately and then suppresses repeated execution until the throttle interval expires.
 
@@ -945,7 +947,7 @@ using var throttler = new ThrottlerBuilder(
 await throttler.ThrottleAsync(cancellationToken);
 ```
 
-### CircuitBreaker
+### <img class="bdk-doc-icon" src="assets/features/circuit-breaker.svg" width="24" height="24" alt=""> CircuitBreaker
 
 `CircuitBreaker` protects callers from repeatedly invoking a failing dependency.
 
@@ -978,7 +980,7 @@ await circuitBreaker.ExecuteAsync(
     cancellationToken);
 ```
 
-### TimeoutHandler
+### <img class="bdk-doc-icon" src="assets/features/timeout.svg" width="24" height="24" alt=""> TimeoutHandler
 
 `TimeoutHandler` wraps an async operation with a maximum allowed duration.
 
@@ -1003,7 +1005,7 @@ await timeout.ExecuteAsync(
     cancellationToken);
 ```
 
-### Bulkhead
+### <img class="bdk-doc-icon" src="assets/features/bulkhead.svg" width="24" height="24" alt=""> Bulkhead
 
 `Bulkhead` limits concurrency using a semaphore and isolates pressure from one workload from starving the rest of the process.
 
@@ -1028,7 +1030,7 @@ await bulkhead.ExecuteAsync(
     cancellationToken);
 ```
 
-### RateLimiter
+### <img class="bdk-doc-icon" src="assets/features/rate-limiter.svg" width="24" height="24" alt=""> RateLimiter
 
 `RateLimiter` enforces a maximum number of operations inside a time window.
 
@@ -1053,7 +1055,7 @@ await rateLimiter.ExecuteAsync(
     cancellationToken);
 ```
 
-### BackgroundWorker
+### <img class="bdk-doc-icon" src="assets/features/background-worker.svg" width="24" height="24" alt=""> BackgroundWorker
 
 `BackgroundWorker` is a lightweight helper for running cancellable background work with progress reporting.
 
@@ -1494,7 +1496,7 @@ services.AddHttpClient<IWeatherClient, WeatherClient>()
 
 ## Reflection and expression helpers
 
-### PredicateBuilder
+### <img class="bdk-doc-icon" src="assets/features/predicates.svg" width="24" height="24" alt=""> PredicateBuilder
 
 `PredicateBuilder<T>` is a fluent builder for dynamic LINQ predicates.
 
@@ -1526,7 +1528,7 @@ var predicate = new PredicateBuilder<Customer>()
 var customers = dbContext.Customers.Where(predicate);
 ```
 
-### ReflectionHelper and PrivateReflection
+### <img class="bdk-doc-icon" src="assets/features/reflection.svg" width="24" height="24" alt=""> ReflectionHelper and PrivateReflection
 
 `ReflectionHelper` provides cached reflection access and helpers for:
 
@@ -1618,7 +1620,7 @@ foreach (var tag in tags.AsEnumerable())
 }
 ```
 
-### PropertyBag
+### <img class="bdk-doc-icon" src="assets/features/property-bag.svg" width="24" height="24" alt=""> PropertyBag
 
 `PropertyBag` stores flexible named values with typed reads and optional typed keys. It works well for metadata, context, ad-hoc attributes, and extension points.
 
@@ -1774,7 +1776,7 @@ Set `Placeholder` to an empty string when the shortened representation must not 
 
 Segment-based strategies always fit the configured budget. When parent-segment abbreviation is still too long, `OverflowTruncation` selects the fallback: `Left` (the default) preserves the final filename or identifier, while `Right` preserves the beginning of the abbreviated path.
 
-### Content types
+### <img class="bdk-doc-icon" src="assets/features/content-types.svg" width="24" height="24" alt=""> Content types
 
 The content-type helpers define a `ContentType` model plus extension methods for:
 
@@ -1793,7 +1795,7 @@ var mimeType = contentType.MimeType();
 var isBinary = contentType.IsBinary();
 ```
 
-### CompressionHelper
+### <img class="bdk-doc-icon" src="assets/features/compression.svg" width="24" height="24" alt=""> CompressionHelper
 
 `CompressionHelper` compresses and decompresses:
 
@@ -1836,7 +1838,7 @@ await decompressor.CopyToAsync(target, cancellationToken);
 
 `CompressionHelper` also provides single-entry ZIP stream helpers for workflows that need ZIP container compatibility.
 
-### EncryptionHelper
+### <img class="bdk-doc-icon" src="assets/features/encryption.svg" width="24" height="24" alt=""> EncryptionHelper
 
 `EncryptionHelper` encrypts and decrypts:
 
@@ -1915,7 +1917,7 @@ var historical = await keys.GetKeyAsync("2026-01", cancellationToken);
 
 Keep old key ids available until no persisted encrypted value references them.
 
-### Stream operations and temporary files
+### <img class="bdk-doc-icon" src="assets/features/streams.svg" width="24" height="24" alt=""> <img class="bdk-doc-icon" src="assets/features/temporary-files.svg" width="24" height="24" alt=""> Stream operations and temporary files
 
 `StreamHelper` is the shared location for stream operations. Its `CopyAsync` method performs pooled asynchronous copies while optionally enforcing a maximum byte count and calculating an incremental hash. It leaves caller streams open and throws `StreamSizeLimitExceededException` before writing bytes beyond the configured limit.
 
@@ -1974,7 +1976,7 @@ var restored = OpaqueContinuationTokenCodec.Deserialize<MyPayload>(token, "blob-
 
 Use a distinct stable purpose for each feature and keep the HMAC secret consistent across application instances that exchange continuation tokens.
 
-### HashHelper
+### <img class="bdk-doc-icon" src="assets/features/hashing.svg" width="24" height="24" alt=""> HashHelper
 
 `HashHelper` computes lowercase hexadecimal hashes for:
 
@@ -2005,7 +2007,7 @@ or serializer changes.
 For persisted storage content, prefer `ContentHashHelper`. It produces and validates the canonical
 `sha256:<lowercase-hex>` representation and can calculate the hash while copying a stream.
 
-### CloneHelper and CloneHelperNew
+### <img class="bdk-doc-icon" src="assets/features/cloning.svg" width="24" height="24" alt=""> CloneHelper and CloneHelperNew
 
 `CloneHelper` clones through Newtonsoft.Json with non-public constructor support and type metadata. `CloneHelperNew` uses System.Text.Json with reference preservation, field inclusion, and runtime discovery of derived types.
 
@@ -2023,7 +2025,7 @@ var snapshot = CloneHelper.Clone(order);
 var snapshot2 = CloneHelperNew.Clone(order);
 ```
 
-## ID and key helpers
+## <img class="bdk-doc-icon" src="assets/features/identifiers.svg" width="24" height="24" alt=""> ID and key helpers
 
 The generators serve different purposes:
 
@@ -2068,7 +2070,7 @@ Generated names and operational IDs can collide and should not be used as databa
 guarantees without a constraint and collision-handling strategy. Random keys should still be stored and
 transported according to the application's secret-management requirements.
 
-## Factory helpers
+## <img class="bdk-doc-icon" src="assets/features/factories.svg" width="24" height="24" alt=""> Factory helpers
 
 `Factory<T>` and the non-generic `Factory` provide dynamic construction helpers. These are useful in framework-style code, plugin scenarios, or places where types are resolved dynamically and you want the call site to stay terse.
 
@@ -2084,7 +2086,7 @@ var customer = Factory<Customer>.Create(new Dictionary<string, object>
 var handler = Factory.Create(typeof(MyHandler), serviceProvider);
 ```
 
-## Validation helpers
+## <img class="bdk-doc-icon" src="assets/features/validation.svg" width="24" height="24" alt=""> Validation helpers
 
 The devkit includes `FluentValidatorExtensions`, including `AddRangeRule<T>(...)`.
 
@@ -2198,7 +2200,7 @@ public sealed class CleanupService(IHostApplicationLifetime lifetime, TimeProvid
 }
 ```
 
-## Broadcasting
+## <img class="bdk-doc-icon" src="assets/features/broadcasting.svg" width="24" height="24" alt=""> Broadcasting
 
 Use Broadcasting for immediate, best-effort control notifications to every currently registered node
 in a deployment scope. It is intended for short-lived operational or developer actions, not durable

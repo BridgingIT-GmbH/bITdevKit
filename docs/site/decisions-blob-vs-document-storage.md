@@ -2,6 +2,8 @@
 title: Blob Storage or Document Storage
 ---
 
+<img class="bdk-doc-icon" src="assets/features/storage-blobs.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/storage-documents.svg" width="32" height="32" alt="" align="right">
+
 # Blob Storage or Document Storage
 
 Choose based on how application code reads and writes the content. Blob Storage exposes streams. Document Storage serializes and reads typed documents.

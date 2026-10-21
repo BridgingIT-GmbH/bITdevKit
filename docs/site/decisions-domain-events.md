@@ -2,6 +2,8 @@
 title: When to Use Domain Events
 ---
 
+<img class="bdk-doc-icon" src="assets/features/domain-events.svg" width="32" height="32" alt="" align="right">
+
 # When to Use Domain Events
 
 A domain event records a business fact that already happened inside an aggregate. Use events when other parts of the application need to react after the aggregate is persisted.

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/logging.svg" width="32" height="32" alt="" align="right">
+
 # Presentation Logging
 
 > Configure Serilog once for a devkit host and change its global minimum level at runtime.

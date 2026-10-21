@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/event-sourcing.svg" width="32" height="32" alt="" align="right">
+
 # Event Sourcing
 
 > Persist aggregates as immutable event streams and rebuild state through replay and snapshots.
@@ -198,7 +200,7 @@ The typical event-sourced flow looks like this:
 
 That means the event stream is the source of truth and projections or read models are downstream consumers.
 
-## Outbox support
+## <img class="bdk-doc-icon" src="assets/features/outbox.svg" width="24" height="24" alt=""> Outbox support
 
 Event sourcing has its own outbox path, separate from the classic `RepositoryOutboxDomainEventBehavior` used by regular repositories.
 
@@ -218,7 +220,7 @@ services.AddEfOutboxWorker();
 `DoWorkAsync()` from a scheduled job or another application-owned trigger. Each run processes
 unhandled messages and marks a message as processed after the configured downstream actions succeed.
 
-## Snapshots
+## <img class="bdk-doc-icon" src="assets/features/snapshots.svg" width="24" height="24" alt=""> Snapshots
 
 Snapshots are an optimization, not the primary source of truth. The canonical history remains the aggregate event stream.
 

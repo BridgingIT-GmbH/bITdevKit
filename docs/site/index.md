@@ -19,7 +19,7 @@ hide:
     </div>
   </div>
   <div class="hero-brand">
-    <img src="assets/images/bITDevKit_Icon.svg" alt="" />
+    <!-- bdk:brand-logo -->
   </div>
 </section>
 
@@ -40,19 +40,19 @@ The template creates `./projects/SolutionName/SolutionName.slnx` with applicatio
 
 <div class="capability-grid capability-grid--home">
   <a class="capability-card" href="docs/#model-a-domain">
-    <h3>Domain modeling</h3>
+    <h3><img class="bdk-doc-icon" src="assets/features/domain.svg" width="28" height="28" alt=""> Domain modeling</h3>
     <p>Aggregates, value objects, rules, policies, specifications, repositories, and domain events.</p>
   </a>
   <a class="capability-card" href="docs/#handle-requests-and-workflows">
-    <h3>Application flow</h3>
+    <h3><img class="bdk-doc-icon" src="assets/features/requester.svg" width="28" height="28" alt=""> Application flow</h3>
     <p>Commands, queries, results, requester pipelines, events, and durable orchestrations.</p>
   </a>
   <a class="capability-card" href="docs/#integrate-storage-and-messaging">
-    <h3>Infrastructure integration</h3>
+    <h3><img class="bdk-doc-icon" src="assets/features/storage.svg" width="28" height="28" alt=""> <img class="bdk-doc-icon" src="assets/features/messaging.svg" width="28" height="28" alt=""> Infrastructure integration</h3>
     <p>Messaging, queueing, files, blobs, documents, databases, and scheduled work.</p>
   </a>
   <a class="capability-card" href="docs/#operate-and-diagnose-an-application">
-    <h3>Operations and tooling</h3>
+    <h3><img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="28" height="28" alt=""> <img class="bdk-doc-icon" src="assets/features/metrics.svg" width="28" height="28" alt=""> Operations and tooling</h3>
     <p>Dashboards, health, logs, metrics, startup tasks, CLI commands, and MCP diagnostics.</p>
   </a>
 </div>

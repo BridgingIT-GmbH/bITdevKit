@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/queueing.svg" width="32" height="32" alt="" align="right">
+
 # Queueing
 
 > Process single-consumer work items through in-process or durable queue brokers with retained-message inspection, retry/archive controls, and queue/type pause-resume control.
@@ -92,7 +94,7 @@ Use Queueing for commands to background workers, document generation, import job
 
 ## Basic Usage
 
-### In-process broker
+### <img class="bdk-doc-icon" src="assets/features/provider-inmemory.svg" width="24" height="24" alt=""> In-process broker
 
 ```csharp
 builder.Services.AddQueueing(builder.Configuration)
@@ -105,7 +107,7 @@ builder.Services.AddQueueing(builder.Configuration)
   .AddEndpoints();
 ```
 
-### Entity Framework broker
+### <img class="bdk-doc-icon" src="assets/features/provider-entityframework.svg" width="24" height="24" alt=""> Entity Framework broker
 
 ```csharp
 builder.Services.AddDbContext<AppDbContext>(...);
@@ -121,7 +123,7 @@ builder.Services.AddQueueing(builder.Configuration)
   .AddEndpoints(options => options.RequireAuthorization());
 ```
 
-### Azure Service Bus broker
+### <img class="bdk-doc-icon" src="assets/features/provider-servicebus.svg" width="24" height="24" alt=""> Azure Service Bus broker
 
 ```csharp
 builder.Services.AddQueueing(builder.Configuration)
@@ -137,7 +139,7 @@ builder.Services.AddQueueing(builder.Configuration)
   .AddEndpoints(options => options.RequireAuthorization());
 ```
 
-### Azure Queue Storage broker
+### <img class="bdk-doc-icon" src="assets/features/provider-azure-queue.svg" width="24" height="24" alt=""> Azure Queue Storage broker
 
 ```csharp
 builder.Services.AddQueueing(builder.Configuration)
@@ -361,7 +363,7 @@ The Entity Framework broker maps queue semantics to a SQL-backed durable store u
 - `GetMessagesAsync`, `GetSummaryAsync`, `GetMessageStatsAsync`, retry, archive, lease release, pause/resume, and purge are all backed by the database.
 - Unlike the in-memory brokers, tracked history survives application restarts.
 
-### RabbitMQ semantics
+### <img class="bdk-doc-icon" src="assets/features/provider-rabbitmq.svg" width="24" height="24" alt=""> RabbitMQ semantics
 
 The RabbitMQ queue broker maps queue semantics to RabbitMQ work queues using the **default exchange** and **manual acknowledgement**.
 

@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/broadcasting.svg" width="32" height="32" alt="" align="right">
+
 # Broadcasting
 
 > Send a short-lived typed notification to every active application node in one or more scopes.

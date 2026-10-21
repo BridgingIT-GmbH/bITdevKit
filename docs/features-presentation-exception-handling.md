@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/exception-handling.svg" width="32" height="32" alt="" align="right">
+
 # Exception Handler Configuration
 
 > Convert exceptions into consistent Problem Details responses with configurable handlers and mappings.

@@ -2,6 +2,8 @@
 title: Jobs or Startup Tasks
 ---
 
+<img class="bdk-doc-icon" src="assets/features/jobs.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/startup-tasks.svg" width="32" height="32" alt="" align="right">
+
 # Jobs or Startup Tasks
 
 Use Startup Tasks for initialization tied to a host start. Use Jobs when the application needs scheduling, retained execution state, or operational control.

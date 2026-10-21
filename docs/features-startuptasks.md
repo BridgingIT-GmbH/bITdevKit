@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/startup-tasks.svg" width="32" height="32" alt="" align="right">
+
 # Startup Tasks
 
 > Run application startup work after the host reports that it has started.

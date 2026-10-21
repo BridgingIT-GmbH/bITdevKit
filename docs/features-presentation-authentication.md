@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/authentication.svg" width="32" height="32" alt="" align="right">
+
 # Presentation Authentication
 
 > Authenticate ASP.NET Core requests with JWT bearer tokens and expose the current principal through a devkit abstraction.
@@ -160,7 +162,7 @@ Open Identity at `/_bdk/dashboard/identity` to inspect the current dashboard req
 
 If the authentication handler saved tokens, the page also has collapsible token entries with copy and JWT-inspection controls. Token values remain collapsed in this image. The page describes the signed-in dashboard user; it is not a directory of all application users or a view of another client's principal. See [dashboard authorization](features-presentation-dashboard.md#authentication-and-authorization) for dashboard-owned and host-owned sign-in options.
 
-## Role and policy metadata
+## <img class="bdk-doc-icon" src="assets/features/roles.svg" width="24" height="24" alt=""> Role and policy metadata
 
 `AuthorizeRolesAttribute` joins its role names with commas. ASP.NET Core treats the roles in one attribute as alternatives:
 

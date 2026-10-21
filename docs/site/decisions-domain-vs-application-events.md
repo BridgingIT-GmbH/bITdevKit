@@ -2,6 +2,8 @@
 title: Domain Events or Application Events
 ---
 
+<img class="bdk-doc-icon" src="assets/features/domain-events.svg" width="32" height="32" alt="" align="right"> <img class="bdk-doc-icon" src="assets/features/application-events.svg" width="32" height="32" alt="" align="right">
+
 # Domain Events or Application Events
 
 Choose based on who owns the fact. A domain event records a meaningful aggregate transition. An application event announces something the application workflow decided to publish.

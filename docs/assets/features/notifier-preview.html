@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Notifier · bITdevKit icon study</title>
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; background: var(--bs-body-bg); color: var(--bs-body-color); font: 14px/1.5 ui-monospace, monospace; }
+    main { max-width: 1120px; margin: auto; padding: 40px 32px; }
+    header { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 28px; }
+    .eyebrow { color: var(--dashboard-info-text); font-size: 11px; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 4px 0 8px; font-size: 30px; font-weight: 600; letter-spacing: -.05em; }
+    p { margin: 0; color: var(--bs-secondary-color); }
+    label { display: grid; gap: 6px; color: var(--bs-secondary-color); font-size: 11px; }
+    select { background: var(--dashboard-surface); color: var(--bs-body-color); border: 1px solid var(--dashboard-panel-border); border-radius: 5px; font: inherit; padding: 8px 12px; }
+    .study { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .panel { background: var(--dashboard-surface); border: 1px solid var(--dashboard-panel-border); border-radius: 6px; padding: 28px; }
+    .hero { min-height: 260px; display: grid; place-items: center; }
+    .details { display: flex; flex-direction: column; justify-content: space-between; gap: 24px; }
+    .nav-sample { display: flex; align-items: center; gap: 12px; }
+    .sizes { display: flex; align-items: end; gap: 22px; }
+    figure { margin: 0; display: grid; justify-items: center; gap: 12px; }
+    figcaption { color: var(--bs-secondary-color); font-size: 10px; }
+    .tone-note { font-size: 11px; }
+    h2 { margin: 28px 0 14px; font-size: 12px; font-weight: 500; color: var(--bs-secondary-color); }
+    .themes { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+    .theme { background: var(--dashboard-surface); color: var(--bs-body-color); border: 1px solid var(--dashboard-panel-border); border-radius: 6px; min-height: 112px; padding: 16px 8px 12px; display: grid; justify-items: center; gap: 12px; }
+    .theme span { font-size: 10px; }
+    footer { margin-top: 22px; font-size: 10px; color: var(--bs-secondary-color); }
+    @media (max-width: 700px) { main { padding: 24px 16px; } header { align-items: start; flex-direction: column; } .study { grid-template-columns: 1fr; } .themes { grid-template-columns: repeat(3, 1fr); } .sizes { gap: 18px; } }
+    @media (max-width: 380px) { .themes { grid-template-columns: repeat(2, 1fr); } .sizes { gap: 12px; } .panel { padding: 20px; } }
+  </style>
+</head>
+<body>
+  <main>
+    <header>
+      <div><div class="eyebrow">bITdevKit / feature icons / 05</div><h1>Notifier</h1><p>One notification. Multiple handlers.</p></div>
+      <label for="theme">Preview theme<select id="theme"></select></label>
+    </header>
+    <div class="study">
+      <div class="panel hero" id="hero"></div>
+      <div class="panel details">
+        <div class="nav-sample" id="nav"></div>
+        <div class="sizes" id="sizes"></div>
+        <p class="tone-note">Publisher · info<br>Notifications · primary<br>32 × 32 grid · 1.6 unit stroke</p>
+      </div>
+    </div>
+    <h2>Dashboard palettes</h2>
+    <div class="themes" id="themes"></div>
+    <footer>Palette values generated from _DashboardTheme.cshtml. Inline SVG inherits theme variables; image embeds use fallback colors.</footer>
+  </main>
+  <template id="icon"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="notifier-title">
+  <title id="notifier-title">Notifier</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 16h19m-4-4 4 4-4 4" />
+    <path d="M8.2 13.8 24 6m-4-1 4 1-1 4M8.2 18.2 24 26m-4 1 4-1-1-4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="16" r="3" />
+  </g>
+</svg>
+</template>
+  <script>
+    const themes = [{"id":"tokyo-night","label":"Tokyo Night","vars":{"--bs-body-bg":"#1a1b26","--bs-body-color":"#a9b1d6","--bs-secondary-color":"#b4bee6","--dashboard-surface":"#24283b","--dashboard-panel-border":"rgba(169,177,214,.18)","--dashboard-info-text":"#62adb8","--dashboard-primary-text":"#7da4f7"}},{"id":"catppuccin","label":"Catppuccin","vars":{"--bs-body-bg":"#1e1e2e","--bs-body-color":"#cdd6f4","--bs-secondary-color":"#bac2de","--dashboard-surface":"#313244","--dashboard-panel-border":"rgba(205,214,244,.18)","--dashboard-info-text":"#94e2d5","--dashboard-primary-text":"#8bb6fa"}},{"id":"lumon","label":"Lumon","vars":{"--bs-body-bg":"#16242d","--bs-body-color":"#d6e2ee","--bs-secondary-color":"#d6e2ee","--dashboard-surface":"#1b2d40","--dashboard-panel-border":"rgba(214,226,238,.18)","--dashboard-info-text":"#b4e4f6","--dashboard-primary-text":"#8bc9eb"}},{"id":"ethereal","label":"Ethereal","vars":{"--bs-body-bg":"#060B1E","--bs-body-color":"#ffcead","--bs-secondary-color":"#c9b8a6","--dashboard-surface":"#131a3a","--dashboard-panel-border":"rgba(255,206,173,.18)","--dashboard-info-text":"#a3bfd1","--dashboard-primary-text":"#898ddc"}},{"id":"everforest","label":"Everforest","vars":{"--bs-body-bg":"#2d353b","--bs-body-color":"#d3c6aa","--bs-secondary-color":"#b0bab3","--dashboard-surface":"#343f44","--dashboard-panel-border":"rgba(211,198,170,.18)","--dashboard-info-text":"#99cba6","--dashboard-primary-text":"#99c9c2"}},{"id":"hackerman","label":"Hackerman","vars":{"--bs-body-bg":"#0B0C16","--bs-body-color":"#ddf7ff","--bs-secondary-color":"#b5c5db","--dashboard-surface":"#151828","--dashboard-panel-border":"rgba(221,247,255,.18)","--dashboard-info-text":"#7cf8f7","--dashboard-primary-text":"#82FB9C"}},{"id":"osaka-jade","label":"Osaka Jade","vars":{"--bs-body-bg":"#111c18","--bs-body-color":"#C1C497","--bs-secondary-color":"#D6D5BC","--dashboard-surface":"#23372B","--dashboard-panel-border":"rgba(193,196,151,.18)","--dashboard-info-text":"#2DD5B7","--dashboard-primary-text":"#85b49e"}},{"id":"kanagawa","label":"Kanagawa","vars":{"--bs-body-bg":"#1f1f28","--bs-body-color":"#dcd7ba","--bs-secondary-color":"#c8c093","--dashboard-surface":"#223249","--dashboard-panel-border":"rgba(220,215,186,.18)","--dashboard-info-text":"#91b1a8","--dashboard-primary-text":"#dcd7ba"}},{"id":"vantablack","label":"Vantablack","vars":{"--bs-body-bg":"#000000","--bs-body-color":"#ffffff","--bs-secondary-color":"#ececec","--dashboard-surface":"#1a1a1a","--dashboard-panel-border":"rgba(255,255,255,.18)","--dashboard-info-text":"#b0b0b0","--dashboard-primary-text":"#929292"}},{"id":"matte-black","label":"Matte Black","vars":{"--bs-body-bg":"#121212","--bs-body-color":"#bebebe","--bs-secondary-color":"#959597","--dashboard-surface":"#1e1e1e","--dashboard-panel-border":"rgba(190,190,190,.18)","--dashboard-info-text":"#bebebe","--dashboard-primary-text":"#e68e0d"}},{"id":"ristretto","label":"Ristretto","vars":{"--bs-body-bg":"#2c2525","--bs-body-color":"#e6d9db","--bs-secondary-color":"#c3b7b8","--dashboard-surface":"#3d2f2a","--dashboard-panel-border":"rgba(230,217,219,.18)","--dashboard-info-text":"#85dacc","--dashboard-primary-text":"#f4987e"}},{"id":"retro-82","label":"Retro 82","vars":{"--bs-body-bg":"#05182e","--bs-body-color":"#f6dcac","--bs-secondary-color":"#a7c9c6","--dashboard-surface":"#0a2540","--dashboard-panel-border":"rgba(246,220,172,.18)","--dashboard-info-text":"#8cbfb8","--dashboard-primary-text":"#faa968"}},{"id":"flexoki-light","label":"Flexoki Light","vars":{"--bs-body-bg":"#FFFCF0","--bs-body-color":"#100F0F","--bs-secondary-color":"#403E3C","--dashboard-surface":"#E6E4D9","--dashboard-panel-border":"rgba(16,15,15,.18)","--dashboard-info-text":"#236761","--dashboard-primary-text":"#1e589c"}},{"id":"catppuccin-latte","label":"Catppuccin Latte","vars":{"--bs-body-bg":"#eff1f5","--bs-body-color":"#4c4f69","--bs-secondary-color":"#55586f","--dashboard-surface":"#dce0e8","--dashboard-panel-border":"rgba(76,79,105,.18)","--dashboard-info-text":"#106368","--dashboard-primary-text":"#1750bf"}},{"id":"white","label":"White","vars":{"--bs-body-bg":"#ffffff","--bs-body-color":"#000000","--bs-secondary-color":"#000000","--dashboard-surface":"#c0c0c0","--dashboard-panel-border":"rgba(0,0,0,.18)","--dashboard-info-text":"#3e3e3e","--dashboard-primary-text":"#464646"}}];
+    const template = document.querySelector('#icon');
+    const icon = size => {
+      const element = template.content.firstElementChild.cloneNode(true);
+      element.removeAttribute('aria-labelledby');
+      element.setAttribute('aria-hidden', 'true');
+      element.removeAttribute('role');
+      element.querySelector('title').remove();
+      element.setAttribute('width', size);
+      element.setAttribute('height', size);
+      return element;
+    };
+    const apply = (target, theme) => {
+      for (const [key, value] of Object.entries(theme.vars)) target.style.setProperty(key, value);
+    };
+    document.querySelector('#hero').append(icon(160));
+    document.querySelector('#nav').append(icon(24), document.createTextNode('Notifier'));
+    for (const size of [16, 20, 24, 32, 48]) {
+      const sample = document.createElement('figure');
+      const caption = document.createElement('figcaption');
+      caption.textContent = size + ' px';
+      sample.append(icon(size), caption);
+      document.querySelector('#sizes').append(sample);
+    }
+    for (const theme of themes) {
+      const option = document.createElement('option');
+      option.value = theme.id;
+      option.textContent = theme.label;
+      document.querySelector('#theme').append(option);
+      const tile = document.createElement('div');
+      tile.className = 'theme';
+      tile.dataset.theme = theme.id;
+      apply(tile, theme);
+      const label = document.createElement('span');
+      label.textContent = theme.label;
+      tile.append(icon(40), label);
+      document.querySelector('#themes').append(tile);
+    }
+    const select = document.querySelector('#theme');
+    select.value = 'tokyo-night';
+    select.addEventListener('change', () => apply(document.documentElement, themes.find(theme => theme.id === select.value)));
+    apply(document.documentElement, themes.find(theme => theme.id === select.value));
+  </script>
+</body>
+</html>

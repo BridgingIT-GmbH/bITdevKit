@@ -1,4 +1,6 @@
 
+<img class="bdk-doc-icon" src="assets/features/dashboard.svg" width="32" height="32" alt="" align="right">
+
 # Presentation Dashboard
 
 > Host developer dashboard pages as a modular shell with pluggable RazorSlice pages, grouped navigation, and live-updating dashboard cards.
@@ -455,23 +457,23 @@ Logs, Errors, Change History, Operations and Requests offer a **Quick range** cl
 
 Comparison dialogs have a separate picker for each side; select **Compare** after choosing their ranges. An empty comparison end resolves to one shared current UTC instant when you select Compare. Saved profiling filters retain the fixed start and empty end when you return. To move the start forward, select the preset again.
 
-### System
+### <img class="bdk-doc-icon" src="assets/features/system.svg" width="24" height="24" alt=""> System
 
 System at `/_bdk/dashboard/system` shows process CPU, memory, traffic, thread-pool and GC observations. Its trend charts collect recent samples, while route and database sections provide the current operational context. Refresh manually or choose an interval to watch changes. These process snapshots complement [Profiling](features-profiling.md); they do not attribute resource usage to one operation.
 
 [![System dashboard with process pressure, traffic and runtime trend charts](assets/dashboard/03-system-system.png)](assets/dashboard/03-system-system.png)
 
-### Metrics
+### <img class="bdk-doc-icon" src="assets/features/metrics.svg" width="24" height="24" alt=""> Metrics
 
 The metrics page is server-rendered and reads in-process snapshot services directly. It does not call the metrics JSON endpoints. The page has its own content fragment endpoint and refresh controls for updating only the metrics body.
 
 Metrics remain optional. Registering the dashboard does not automatically register metrics; applications opt into metrics separately.
 
-### Profiling
+### <img class="bdk-doc-icon" src="assets/features/profiling.svg" width="24" height="24" alt=""> Profiling
 
 Runtime, Operations, Requests, Timeline and Insights share the Profiling page. Insights ranks operations by completed p95 latency, accumulated completed time, frequency or root failure rate. It separates latency samples from other outcomes and opens segment bottlenecks, execution details and comparisons in dialogs. Rankings cover the complete bounded selection before applying the row limit. Timeline provides a moving kind-by-time overview with persisted 15-minute/30-minute/hour/12-hour/day/week/month windows, UTC date bounds, kind/key/node filters, count boxes for dense activity, and the existing execution details dialog. Operations and Requests can compare executions of the same operation under different UTC ranges, nodes, application versions or dimension values. A group action opens the comparison dialog with that operation selected; results and segment differences stay inside the dialog. See the [Profiling dashboard guide](features-profiling.md#dashboard) for screenshots and the comparison workflow. Dimension controls discover recorded names and typed values, filter executions, and split operation groups by a dimension. Group counts, median and p95 use the retained selection. A recorded group's conditions can seed either side of the comparison dialog. Execution details also provide dimension actions; segment filters explicitly select their full path.
 
-### Health
+### <img class="bdk-doc-icon" src="assets/features/health.svg" width="24" height="24" alt=""> Health
 
 The health page is server-rendered and invokes the registered ASP.NET Core health checks through `HealthCheckService` from `Microsoft.Extensions.Diagnostics.HealthChecks`. It does not call a `/healthz` endpoint.
 
@@ -490,17 +492,17 @@ If `AddHealthChecks()` is not registered, the page and card show an unavailable 
 
 Inspect individual checks to distinguish a database-readiness issue from a background-service or provider failure. The page reports the registered checks; registering the dashboard does not add feature-specific checks by itself.
 
-### Identity
+### <img class="bdk-doc-icon" src="assets/features/identity.svg" width="24" height="24" alt=""> Identity
 
 The identity page displays the current principal, roles, claims and saved authentication tokens. See the [Identity dashboard guide](features-presentation-authentication.md#dashboard-identity) for inspecting the signed-in user's authentication context.
 
-### Document Storage
+### <img class="bdk-doc-icon" src="assets/features/storage-documents.svg" width="24" height="24" alt=""> Document Storage
 
 The document storage page is contributed by `Presentation.Web.Storage` and is shown only when `AddDocumentStorage(...)` is active and at least one typed document client is registered. The page is server-rendered and uses the existing `IDocumentStoreClient<T>` instances for the selected document type.
 
 The page lets operators switch between registered document clients on the fly, page through document keys with selectable page sizes of 25, 50, 100, 250, or 500 items remembered in browser storage, filter by partition and row key, reset filters, create a new document from keyed pasted or written JSON, download a document from the table, open exact documents in a details dialog, edit payload JSON with syntax validation, and delete one or more checked documents after a browser confirmation alert that includes the affected keys. New-document creation checks the selected client first and reports a conflict instead of overwriting an existing key. Paging, filtering, and reset actions clear row selections so stale checked rows are not reused. It does not expose a separate REST admin API; dashboard-local fragment and form-action routes serve the rendered page workflow.
 
-### Blob Storage
+### <img class="bdk-doc-icon" src="assets/features/storage-blobs.svg" width="24" height="24" alt=""> Blob Storage
 
 The blob storage page is contributed by `Presentation.Web.Storage` and is shown only when `AddBlobStorage(...)` is active and at least one named blob client is registered. The page is server-rendered and uses `IBlobStoreClientFactory`, so the dashboard stays provider-neutral across in-memory, Entity Framework Core, Azure Blob Storage, and decorated clients.
 
@@ -686,6 +688,8 @@ The dashboard catches page provider/card failures and keeps rendering the rest o
 ## Sidebar grouping
 
 The sidebar groups pages by `DashboardPage.Group`. Groups are visually separated. Built-in bITdevKit pages use the `bdk` group. Application pages should use an application-specific group such as `Application`, `Catalog`, `Operations`, or the module name.
+
+Built-in navigation items use the [feature SVG icons](../docs/assets/features/README.md), selected by `DashboardPage.Key`. Their colors follow the selected dashboard theme in both expanded and collapsed navigation. Custom pages and legacy navigation items use their configured Bootstrap `Icon` value as a fallback.
 
 Use `GroupOrder` to place groups predictably:
 

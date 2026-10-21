@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="notifications-title">
+  <title id="notifications-title">Notifications</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 23h20l-3-5v-6a7 7 0 0 0-14 0v6l-3 5Z M13 27a3 3 0 0 0 6 0" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="25" cy="7" r="4" />
+  </g>
+</svg>

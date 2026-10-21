@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/storage-permalinks.svg" width="32" height="32" alt="" align="right">
+
 # Storage Permalinks
 
 Storage Permalinks provide stable, opaque download URLs for resources managed by Blob Storage, Document Storage, and File Storage. The registry owns the stable identifier and maps it to the resource's current storage kind, configured registration, and location. Storage providers remain unaware of permalinks.

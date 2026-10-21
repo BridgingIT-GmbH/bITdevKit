@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/results.svg" width="32" height="32" alt="" align="right">
+
 # Results
 
 > Represent success, failure, messages, and errors explicitly with immutable Result types.
@@ -892,7 +894,7 @@ This example demonstrates:
    - Structured error handling
    - Structured logging
 
-## Result operation scope
+## <img class="bdk-doc-icon" src="assets/features/result-scopes.svg" width="24" height="24" alt=""> Result operation scope
 
 ### Overview
 
@@ -1836,7 +1838,7 @@ IResult<User> interfaceResult = GetUser();
 Result<User> result4 = interfaceResult;
 ```
 
-## Appendix D: `Either<T1, T2>`
+## <img class="bdk-doc-icon" src="assets/features/either.svg" width="24" height="24" alt=""> Appendix D: `Either<T1, T2>`
 
 ### Overview
 

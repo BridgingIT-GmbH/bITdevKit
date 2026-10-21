@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="outbox-title">
+  <title id="outbox-title">Outbox</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 19h8l2 4h6l2-4h8M3 19v8h26v-8M3 19l4-9h5M29 19l-4-9h-5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 17V3m-4 4 4-4 4 4" />
+  </g>
+</svg>

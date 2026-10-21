@@ -1,3 +1,5 @@
+<img class="bdk-doc-icon" src="assets/features/console-commands.svg" width="32" height="32" alt="" align="right">
+
 # Console Commands
 
 > Expose operational and administrative actions through discoverable console commands and an interactive shell.

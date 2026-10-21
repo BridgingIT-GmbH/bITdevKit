@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="profiling-requests-title">
+  <title id="profiling-requests-title">Request profiling</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="16" r="13" />
+    <ellipse cx="16" cy="16" rx="6" ry="13" />
+    <path d="M3 16h26" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 16v-5M16 16l5 3" />
+  </g>
+</svg>

@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="format-excel-title">
+  <title id="format-excel-title">Excel</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 3h11v26H17M21 9h7M21 16h7M21 23h7" />
+    <rect x="3" y="7" width="16" height="18" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m7 12 7 8M14 12l-7 8" />
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="caching-title">
+  <title id="caching-title">Caching</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 12a11 11 0 1 0 0 10M27 4v9h-9" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m17 10-6 9h6l-2 8 8-12h-7l1-5" />
+  </g>
+</svg>

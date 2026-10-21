@@ -1,0 +1,1732 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+<symbol id="feature-messaging" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 16h3V8a2 2 0 0 1 2-2h2M22 16v8a2 2 0 0 0 2 2h2" />
+    <circle cx="28" cy="6" r="1.8" />
+    <circle cx="28" cy="26" r="1.8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="9" width="16" height="14" rx="2" />
+    <path d="m3.5 10 6.3 5a2 2 0 0 0 2.4 0l6.3-5" />
+  </g>
+</symbol>
+<symbol id="feature-queueing" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="16" height="6" rx="2" />
+    <rect x="3" y="13" width="16" height="6" rx="2" />
+    <rect x="3" y="21" width="16" height="6" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 8h10m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-requester" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 5h6a2 2 0 0 1 2 2v18a2 2 0 0 1-2 2h-6" />
+    <path d="M3 11h17m-4-4 4 4-4 4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 21H3m4-4-4 4 4 4" />
+  </g>
+</symbol>
+<symbol id="feature-notifier" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 16h19m-4-4 4 4-4 4" />
+    <path d="M8.2 13.8 24 6m-4-1 4 1-1 4M8.2 18.2 24 26m-4 1 4-1-1-4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="16" r="3" />
+  </g>
+</symbol>
+<symbol id="feature-broadcasting" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 15v14M12 29h8" />
+    <circle cx="16" cy="11" r="3" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 5a9 9 0 0 0 0 12M22 5a9 9 0 0 1 0 12M6 2a14 14 0 0 0 0 18M26 2a14 14 0 0 1 0 18" />
+  </g>
+</symbol>
+<symbol id="feature-notifications" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M6 23h20l-3-5v-6a7 7 0 0 0-14 0v6l-3 5Z M13 27a3 3 0 0 0 6 0" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="25" cy="7" r="4" />
+  </g>
+</symbol>
+<symbol id="feature-email" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="7" width="26" height="19" rx="2" />
+    <path d="m4 9 10 8a3 3 0 0 0 4 0l10-8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 3h6m-3-2 3 2-3 2" />
+  </g>
+</symbol>
+<symbol id="feature-outbox" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 19h8l2 4h6l2-4h8M3 19v8h26v-8M3 19l4-9h5M29 19l-4-9h-5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 17V3m-4 4 4-4 4 4" />
+  </g>
+</symbol>
+<symbol id="feature-subscriptions" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="12" width="8" height="8" rx="2" />
+    <path d="M11 16h8V6h5M19 16v10h5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="27" cy="6" r="2" />
+    <circle cx="27" cy="16" r="2" />
+    <circle cx="27" cy="26" r="2" />
+  </g>
+</symbol>
+<symbol id="feature-handlers" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h9m-4-4 4 4-4 4" />
+    <rect x="16" y="6" width="13" height="20" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m20 16 3 3 3-6" />
+  </g>
+</symbol>
+<symbol id="feature-jobs" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 27H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6M3 12h20M8 4v5M18 4v5M8 17h5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="23" cy="23" r="6" />
+    <path d="m22 20.5 3.5 2.5-3.5 2.5z" fill="var(--dashboard-primary-text, #7da4f7)" stroke="none" />
+  </g>
+</symbol>
+<symbol id="feature-startup-tasks" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 23V9h7M20 9h7v14H5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 20V3m-5 5 5-5 5 5M10 28h12" />
+  </g>
+</symbol>
+<symbol id="feature-job-scheduling" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="6" width="24" height="22" rx="2" />
+    <path d="M4 12h24M10 3v6M22 3v6" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 18 3-3 3 3-3 5-3-5Z" />
+  </g>
+</symbol>
+<symbol id="feature-job-triggers" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 7h9M4 16h9M4 25h9M13 7l6 9-6 9" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 16h10m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-job-cron" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="6" width="24" height="22" rx="2" />
+    <path d="M4 12h24M10 3v6M22 3v6" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18h14M9 23h14M13 16v9M19 16v9" />
+  </g>
+</symbol>
+<symbol id="feature-job-calendar" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="6" width="24" height="22" rx="2" />
+    <path d="M4 12h24M10 3v6M22 3v6" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m11 20 3 3 7-7" />
+  </g>
+</symbol>
+<symbol id="feature-job-delay" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="17" r="11" />
+    <path d="M16 10v7l5 3" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h6V1M3 6a16 16 0 0 1 8-4" />
+  </g>
+</symbol>
+<symbol id="feature-job-events" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="16" r="6" />
+    <path d="M15 16h5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m24 6-5 10h5l-3 10 8-14h-5l3-6Z" />
+  </g>
+</symbol>
+<symbol id="feature-job-manual" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="26" height="24" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 10 9 6-9 6Z" />
+  </g>
+</symbol>
+<symbol id="feature-job-batches" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="9" height="9" rx="2" />
+    <rect x="3" y="19" width="9" height="9" rx="2" />
+    <rect x="18" y="4" width="11" height="9" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 23h11m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-job-chains" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="12" width="7" height="8" rx="2" />
+    <rect x="23" y="12" width="7" height="8" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 16h14m-5-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-job-workers" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7" cy="7" r="3" />
+    <circle cx="25" cy="7" r="3" />
+    <circle cx="16" cy="24" r="3" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 10v5h18v-5M16 15v6" />
+  </g>
+</symbol>
+<symbol id="feature-job-history" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12a12 12 0 1 1-1 9M3 6v7h7" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 9v8l5 3" />
+  </g>
+</symbol>
+<symbol id="feature-job-maintenance" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 7h24M9 7V4h14v3M7 7l2 22h14l2-22" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 12v11M19 12v11" />
+  </g>
+</symbol>
+<symbol id="feature-pipelines" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="11" width="7" height="10" rx="2" />
+    <rect x="23" y="11" width="7" height="10" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 16h14" />
+    <circle cx="16" cy="16" r="3" />
+  </g>
+</symbol>
+<symbol id="feature-pipeline-steps" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="8" height="8" rx="2" />
+    <rect x="21" y="21" width="8" height="8" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 7h10v18m-4-4 4 4 4-4" />
+  </g>
+</symbol>
+<symbol id="feature-pipeline-hooks" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h26M16 8v13a6 6 0 0 0 12 0v-4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m24 21 4-4 3 4" />
+    <circle cx="16" cy="8" r="3" />
+  </g>
+</symbol>
+<symbol id="feature-behaviors" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h26M3 26h26" />
+    <rect x="8" y="11" width="16" height="10" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 2v8m-3-3 3 3 3-3M16 22v8" />
+  </g>
+</symbol>
+<symbol id="feature-orchestrations" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="12" width="7" height="8" rx="2" />
+    <rect x="23" y="3" width="7" height="8" rx="2" />
+    <rect x="23" y="21" width="7" height="8" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 16h7V7h7M16 16v9h7" />
+    <circle cx="16" cy="16" r="2" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-states" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="8" cy="8" r="4" />
+    <circle cx="24" cy="24" r="4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 8h12v12m-4-4 4 4 4-4" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-signals" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="19" y="6" width="10" height="20" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m3 16 5-8 5 16 5-8h5" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-timers" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3h18M7 29h18M9 3v7l7 6-7 6v7M23 3v7l-7 6 7 6v7" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 25h8M12 7h8" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-compensation" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M27 23V12a6 6 0 0 0-6-6H6m5-5L6 6l5 5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 25h13m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-instances" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="19" height="19" rx="2" />
+    <path d="M8 27h17a3 3 0 0 0 3-3V9" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="4" />
+  </g>
+</symbol>
+<symbol id="feature-modules" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 12 7-12 7-12-7 12-7Z M4 10v13l12 7 12-7V10M16 17v13" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10 6 12 7" />
+  </g>
+</symbol>
+<symbol id="feature-source-generation" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10 9-7 7 7 7M22 9l7 7-7 7" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m18 3-5 26M21 4h8M25 1v7" />
+  </g>
+</symbol>
+<symbol id="feature-storage" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="16" cy="7" rx="11" ry="4" />
+    <path d="M5 7v18c0 5 22 5 22 0V7M5 16c0 5 22 5 22 0" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 21h8" />
+  </g>
+</symbol>
+<symbol id="feature-storage-files" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 11V8a2 2 0 0 1 2-2h7l3 4h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 16h12M10 21h7" />
+  </g>
+</symbol>
+<symbol id="feature-storage-blobs" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 3s-10 11-10 17a10 10 0 0 0 20 0C26 14 16 3 16 3Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 22a5 5 0 0 0 5 3" />
+  </g>
+</symbol>
+<symbol id="feature-storage-documents" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 16-3 3 3 3M20 16l3 3-3 3" />
+  </g>
+</symbol>
+<symbol id="feature-storage-permalinks" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 11 5-5a6 6 0 0 1 8 8l-5 5M19 21l-5 5a6 6 0 0 1-8-8l5-5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m11 21 10-10" />
+  </g>
+</symbol>
+<symbol id="feature-storage-monitoring" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 11V8a2 2 0 0 1 2-2h7l3 4h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 19h4l3-5 4 10 3-5h5" />
+  </g>
+</symbol>
+<symbol id="feature-storage-locations" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M25 12c0 7-9 17-9 17S7 19 7 12a9 9 0 0 1 18 0Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="12" r="3" />
+  </g>
+</symbol>
+<symbol id="feature-storage-transforms" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 8h7M21 24h7" />
+    <rect x="11" y="10" width="10" height="12" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 24h4l14-16h4m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-storage-retention" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h18M5 6v21h16M7 3h10" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="23" cy="19" r="7" />
+    <path d="M23 15v4l3 2" />
+  </g>
+</symbol>
+<symbol id="feature-storage-integrity" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m11 16 4 4 7-8" />
+  </g>
+</symbol>
+<symbol id="feature-storage-transfers" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9h25m-5-5 5 5-5 5M29 23H4m5-5-5 5 5 5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 14v4M29 14v4" />
+  </g>
+</symbol>
+<symbol id="feature-storage-uploads" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 21v7h24v-7" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 23V3m-6 6 6-6 6 6" />
+  </g>
+</symbol>
+<symbol id="feature-storage-downloads" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 21v7h24v-7" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 3v20m-6-6 6 6 6-6" />
+  </g>
+</symbol>
+<symbol id="feature-domain" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 12 7v13l-12 7-12-7V10l12-7Z M4 10l12 7 12-7M16 17v13" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="10" r="2" />
+  </g>
+</symbol>
+<symbol id="feature-entities" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="4" width="22" height="24" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="12" r="3" />
+    <path d="M10 21h12" />
+  </g>
+</symbol>
+<symbol id="feature-aggregates" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 10v6M16 16H6v6M16 16h10v6" />
+    <rect x="2" y="22" width="8" height="7" rx="2" />
+    <rect x="22" y="22" width="8" height="7" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="11" y="2" width="10" height="8" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-value-objects" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m3 16 8-9 8 9-8 9-8-9Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 16 8-9 8 9-8 9-8-9Z" />
+  </g>
+</symbol>
+<symbol id="feature-typed-ids" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="8" width="26" height="16" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 5 8 27M21 5l-3 22M6 13h19M5 20h19" />
+  </g>
+</symbol>
+<symbol id="feature-enumerations" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 7h17M12 16h17M12 25h17" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="5" cy="7" r="2" />
+    <circle cx="5" cy="16" r="2" />
+    <circle cx="5" cy="25" r="2" />
+  </g>
+</symbol>
+<symbol id="feature-entity-changes" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 4H6a2 2 0 0 0-2 2v22h20v-8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 21 3-7L26 4l4 4-10 10-7 3Z M23 7l4 4" />
+  </g>
+</symbol>
+<symbol id="feature-domain-events" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m5 10 8-5 8 5v11l-8 5-8-5V10Z M5 10l8 5v11M13 15l8-5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M23 16h7m-3-3 3 3-3 3" />
+  </g>
+</symbol>
+<symbol id="feature-application-events" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="22" height="22" rx="2" />
+    <path d="M3 11h22" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 15-3 6h5l-2 8 9-11h-6l3-3" />
+  </g>
+</symbol>
+<symbol id="feature-repositories" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h26v20H3V8Z M3 8l4-5h18l4 5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 14h10v7H11Z M14 24h4" />
+  </g>
+</symbol>
+<symbol id="feature-specifications" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10 17 2 2 3-4M18 17h4M10 24h12" />
+  </g>
+</symbol>
+<symbol id="feature-active-entity" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6" width="21" height="21" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m21 3-7 12h7l-4 13L29 11h-8l3-8" />
+  </g>
+</symbol>
+<symbol id="feature-policies" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 12h12M10 17h7M10 22h10" />
+  </g>
+</symbol>
+<symbol id="feature-rules" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 7h10M4 16h10M4 25h10" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m20 6 3 3 6-6m-9 12 3 3 6-6m-9 12 3 3 6-6" />
+  </g>
+</symbol>
+<symbol id="feature-results" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m11 16 4 4 7-8" />
+  </g>
+</symbol>
+<symbol id="feature-result-scopes" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 3H3v26h7M22 3h7v26h-7" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m11 16 4 4 7-8" />
+  </g>
+</symbol>
+<symbol id="feature-either" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h8l10-10M11 16l10 10" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="25" cy="6" r="3" />
+    <rect x="22" y="23" width="6" height="6" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-event-sourcing" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 7h26M3 16h26M3 25h26" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="7" r="3" />
+    <circle cx="16" cy="16" r="3" />
+    <circle cx="23" cy="25" r="3" />
+  </g>
+</symbol>
+<symbol id="feature-event-streams" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 16h28m-4-4 4 4-4 4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7" cy="16" r="3" />
+    <circle cx="17" cy="16" r="3" />
+  </g>
+</symbol>
+<symbol id="feature-snapshots" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9h7l2-4h8l2 4h7v18H3V9Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="18" r="6" />
+  </g>
+</symbol>
+<symbol id="feature-change-history" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 6h18v23H9V6Z M14 11h8M14 17h8M14 23h5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 3v23M2 6h6M2 16h6" />
+  </g>
+</symbol>
+<symbol id="feature-change-restore" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 3H6v26h20V13M18 3v10h8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 14l-4 4 4 4M8 18h9a4 4 0 0 1 0 8" />
+  </g>
+</symbol>
+<symbol id="feature-commands-queries" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h11v16H3V8Z M19 8h10v16H19" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m7 13 4 3-4 3M21 15h5M21 20h3" />
+  </g>
+</symbol>
+<symbol id="feature-commands" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m9 11 6 5-6 5M18 21h5" />
+  </g>
+</symbol>
+<symbol id="feature-queries" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="13" cy="13" r="9" />
+    <path d="m20 20 9 9" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 10h8M9 15h5" />
+  </g>
+</symbol>
+<symbol id="feature-dataporter" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="10" y="3" width="12" height="26" rx="2" />
+    <path d="M10 10h12M10 22h12" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 16h9m-4-4 4 4-4 4M22 16h8m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-data-import" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 3h10v26H15M19 8h3M19 24h3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 16h19m-5-5 5 5-5 5" />
+  </g>
+</symbol>
+<symbol id="feature-data-export" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 3H7v26h10M10 8h3M10 24h3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 16h18m-5-5 5 5-5 5" />
+  </g>
+</symbol>
+<symbol id="feature-data-streaming" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 10h5M3 22h5M12 10h5M12 22h5M21 10h5M21 22h5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h26m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-data-profiles" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="26" height="26" rx="2" />
+    <path d="M3 11h26M12 3v26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 17h7M17 23h4" />
+  </g>
+</symbol>
+<symbol id="feature-data-validation" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 5h19v22H4V5Z M4 12h19M11 5v22" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m17 23 4 4 9-10" />
+  </g>
+</symbol>
+<symbol id="feature-serialization" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 5H8v8l-4 3 4 3v8h3M21 5h3v8l4 3-4 3v8h-3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M15 9h2M15 16h2M15 23h2" />
+  </g>
+</symbol>
+<symbol id="feature-format-json" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4H8v9l-4 3 4 3v9h4M20 4h4v9l4 3-4 3v9h-4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="12" r="1" />
+    <circle cx="16" cy="20" r="1" />
+  </g>
+</symbol>
+<symbol id="feature-format-csv" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+    <path d="M3 12h26M3 20h26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 5v22M21 5v22" />
+  </g>
+</symbol>
+<symbol id="feature-format-excel" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 3h11v26H17M21 9h7M21 16h7M21 23h7" />
+    <rect x="3" y="7" width="16" height="18" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m7 12 7 8M14 12l-7 8" />
+  </g>
+</symbol>
+<symbol id="feature-format-xml" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10 7-7 9 7 9M22 7l7 9-7 9" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m19 4-6 24" />
+  </g>
+</symbol>
+<symbol id="feature-format-pdf" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 24c7-15 4-13 4-8s7 5 8 3-7 0-12 5Z" />
+  </g>
+</symbol>
+<symbol id="feature-format-messagepack" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 11v10M13 11v4M18 11v10M23 11v4M13 19v2M23 19v2" />
+  </g>
+</symbol>
+<symbol id="feature-format-cbor" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 12 7v12l-12 7-12-7V10l12-7Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 12h5v8h-5v-8ZM20 12v3M20 19v1" />
+  </g>
+</symbol>
+<symbol id="feature-mapping" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="8" height="8" rx="2" />
+    <rect x="21" y="21" width="8" height="8" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 7h8a6 6 0 0 1 6 6v8m-4-4 4 4 4-4" />
+  </g>
+</symbol>
+<symbol id="feature-caching" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M26 12a11 11 0 1 0 0 10M27 4v9h-9" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m17 10-6 9h6l-2 8 8-12h-7l1-5" />
+  </g>
+</symbol>
+<symbol id="feature-compression" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 5h26M3 27h26M8 3v5M24 24v5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 4v8m-4-4 4 4 4-4M16 28V20m-4 4 4-4 4 4M8 16h16" />
+  </g>
+</symbol>
+<symbol id="feature-encryption" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="13" width="22" height="16" rx="2" />
+    <path d="M10 13V8a6 6 0 0 1 12 0v5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="20" r="2" />
+    <path d="M16 22v3" />
+  </g>
+</symbol>
+<symbol id="feature-hashing" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 3 8 29M24 3l-4 26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 12h25M3 21h25" />
+  </g>
+</symbol>
+<symbol id="feature-codecs" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6h8v20H4V6Z M20 6h8v20h-8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 11 4 5-4 5M9 11v10M23 11h2M23 16h2M23 21h2" />
+  </g>
+</symbol>
+<symbol id="feature-metrics" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 4v24h26" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 23v-8M16 23V7M23 23V12" />
+  </g>
+</symbol>
+<symbol id="feature-profiling" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 25a14 14 0 1 1 22 0H5Z M6 16h3M16 3v4M26 16h3" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 20 7-10" />
+    <circle cx="16" cy="20" r="2" />
+  </g>
+</symbol>
+<symbol id="feature-profiling-runtime" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="7" y="7" width="18" height="18" rx="3" />
+    <path d="M11 3v4M21 3v4M11 25v4M21 25v4M3 11h4M3 21h4M25 11h4M25 21h4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 18h3l2-6 3 9 2-3" />
+  </g>
+</symbol>
+<symbol id="feature-profiling-operations" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="18" r="11" />
+    <path d="M12 2h8M16 2v5M25 9l3-3" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 11v7l5 3" />
+  </g>
+</symbol>
+<symbol id="feature-profiling-requests" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="16" r="13" />
+    <ellipse cx="16" cy="16" rx="6" ry="13" />
+    <path d="M3 16h26" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 16v-5M16 16l5 3" />
+  </g>
+</symbol>
+<symbol id="feature-profiling-timeline" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 3v26h25M9 8h12M14 15h14M9 22h8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 5v6M19 12v6M13 19v6" />
+  </g>
+</symbol>
+<symbol id="feature-profiling-insights" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 25V7M8 25V14M13 25V4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="23" cy="17" r="6" />
+    <path d="m27 22 3 6" />
+  </g>
+</symbol>
+<symbol id="feature-tracing" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 9v14M10 6h12M10 26h12" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="7" cy="6" r="3" />
+    <circle cx="25" cy="6" r="3" />
+    <circle cx="7" cy="26" r="3" />
+    <circle cx="25" cy="26" r="3" />
+  </g>
+</symbol>
+<symbol id="feature-logging" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 6h19M10 16h19M10 26h19" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h2M3 16h2M3 26h2" />
+  </g>
+</symbol>
+<symbol id="feature-log-entries" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 15h12M10 20h12M10 25h7" />
+  </g>
+</symbol>
+<symbol id="feature-errors" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 14 25H2L16 3Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 12v7M16 23v1" />
+  </g>
+</symbol>
+<symbol id="feature-health" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 28 4 16C-2 7 8 0 16 8 24 0 34 7 28 16L16 28Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h7l3-5 5 10 3-5h8" />
+  </g>
+</symbol>
+<symbol id="feature-system" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="26" height="19" rx="2" />
+    <path d="M16 23v6M10 29h12" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 17h4l3-6 4 8 3-5h4" />
+  </g>
+</symbol>
+<symbol id="feature-correlation-ids" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="16" r="3" />
+    <circle cx="26" cy="16" r="3" />
+    <path d="M9 16h14" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 6 11 26M21 6l-3 20M10 11h13M9 21h13" />
+  </g>
+</symbol>
+<symbol id="feature-authentication" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 12a3 3 0 1 0 0 6M16 18v5M16 12a3 3 0 1 1 0 6" />
+  </g>
+</symbol>
+<symbol id="feature-authorization" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 16h10M16 11v10" />
+  </g>
+</symbol>
+<symbol id="feature-entity-permissions" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="19" height="23" rx="2" />
+    <path d="M8 8h9M8 13h5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="16" y="17" width="13" height="12" rx="2" />
+    <path d="M19 17v-3a3.5 3.5 0 0 1 7 0v3" />
+  </g>
+</symbol>
+<symbol id="feature-identity" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="12" cy="13" r="3" />
+    <path d="M7 22a5 5 0 0 1 10 0M22 11h3M22 17h3" />
+  </g>
+</symbol>
+<symbol id="feature-identity-provider" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 12V5h22v7M5 22v5h22v-5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="12" r="4" />
+    <path d="M8 25a8 8 0 0 1 16 0M2 16h6M24 16h6" />
+  </g>
+</symbol>
+<symbol id="feature-roles" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10" cy="9" r="4" />
+    <path d="M3 26v-3a7 7 0 0 1 14 0v3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m24 12 2 5 5 1-4 3 1 5-4-3-4 3 1-5-4-3 5-1 2-5Z" />
+  </g>
+</symbol>
+<symbol id="feature-host" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="26" height="26" rx="2" />
+    <path d="M3 11h26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 20h12M16 14v12" />
+  </g>
+</symbol>
+<symbol id="feature-web-host" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="2" y="4" width="28" height="24" rx="2" />
+    <path d="M2 10h28" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="19" r="6" />
+    <path d="M10 19h12M16 13v12" />
+  </g>
+</symbol>
+<symbol id="feature-console-host" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+    <path d="m8 12 4 4-4 4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 20h7M8 9h1" />
+  </g>
+</symbol>
+<symbol id="feature-configuration" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3v26M16 3v26M25 3v26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="8" width="6" height="5" rx="2" />
+    <rect x="13" y="20" width="6" height="5" rx="2" />
+    <rect x="22" y="5" width="6" height="5" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-options-builders" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 26h26M7 26V16h6v10M19 26V6h6v20" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 10h12M10 4v12" />
+  </g>
+</symbol>
+<symbol id="feature-endpoints" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h12M15 16V6h8M15 16v10h8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="23" y="3" width="6" height="6" rx="2" />
+    <rect x="23" y="23" width="6" height="6" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-cli" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+    <path d="m8 12 4 4-4 4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M17 20h7M8 2v6" />
+  </g>
+</symbol>
+<symbol id="feature-console-commands" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+    <path d="m8 12 4 4-4 4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M18 12h6M18 16h4M18 20h6" />
+  </g>
+</symbol>
+<symbol id="feature-mcp" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="5" y="9" width="22" height="19" rx="3" />
+    <path d="M16 9V6M5 15H2v6h3M27 15h3v6h-3" />
+    <circle cx="16" cy="4" r="1.8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 16v3M21 16v3M12 23h8" />
+  </g>
+</symbol>
+<symbol id="feature-mcp-clients" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="17" height="14" rx="2" />
+    <path d="M11 17v5M6 22h10" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="21" y="18" width="8" height="11" rx="2" />
+    <path d="M20 10h5v8" />
+  </g>
+</symbol>
+<symbol id="feature-dashboard" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="26" height="26" rx="2" />
+    <path d="M3 10h26M11 10v19" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 23v-5M21 23v-9M26 23v-3" />
+  </g>
+</symbol>
+<symbol id="feature-cors" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 5h9v22H4V5Z M19 5h9v22h-9" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 11h14m-3-3 3 3-3 3M23 21H9m3-3-3 3 3 3" />
+  </g>
+</symbol>
+<symbol id="feature-exception-handling" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 4v14a10 10 0 0 0 20 0V4M1 4h6M21 4h6" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m17 4-6 11h6l-3 9 9-14h-6l2-6" />
+  </g>
+</symbol>
+<symbol id="feature-app-state" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="4" width="24" height="24" rx="2" />
+    <path d="M4 12h24" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 19h5M9 24h10" />
+    <circle cx="23" cy="20" r="2" />
+  </g>
+</symbol>
+<symbol id="feature-app-state-history" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 11h10M3 11V2M3 11a12 12 0 0 1 23-1" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M29 21H19M29 21v9M29 21A12 12 0 0 1 6 22" />
+  </g>
+</symbol>
+<symbol id="feature-common-extensions" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h11v7h4V8h11v16H18v-5h-4v5H3V8Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 3v10M3 8h10" />
+  </g>
+</symbol>
+<symbol id="feature-common-utilities" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 4 4 11l5 5-5 11 3 3 11-11 5 5 7-7-8-2-3-7-3 5-5-1Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 17 5-5" />
+  </g>
+</symbol>
+<symbol id="feature-utilities" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="26" height="17" rx="2" />
+    <path d="M11 11V5h10v6" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 18h26M13 15v6h6v-6" />
+  </g>
+</symbol>
+<symbol id="feature-extensions" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 6h8v20H4V6Z M20 6h8v20h-8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 16h16m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-async-sequences" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h5M12 8h5M21 8h5M3 24h5M12 24h5M21 24h5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 16h23m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-filtering" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 5h26L20 16v9l-8 4V16L3 5Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 10h14" />
+  </g>
+</symbol>
+<symbol id="feature-sorting" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 7h14M3 15h10M3 23h6" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 4v24m-4-4 4 4 4-4" />
+  </g>
+</symbol>
+<symbol id="feature-paging" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="22" rx="2" />
+    <path d="M11 5v22M21 5v22" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m6 13-2 3 2 3M25 13l2 3-2 3" />
+  </g>
+</symbol>
+<symbol id="feature-business-calendars" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="4" y="6" width="24" height="22" rx="2" />
+    <path d="M4 12h24M10 3v6M22 3v6" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18h4v5H9ZM19 18h4v5h-4Z" />
+  </g>
+</symbol>
+<symbol id="feature-date-ranges" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 9v14M28 9v14M4 16h24" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="8" y="12" width="16" height="8" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-time-provider" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="17" r="11" />
+    <path d="M16 10v7l5 3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 3h6M3 3v6M29 29h-6M29 29v-6" />
+  </g>
+</symbol>
+<symbol id="feature-composition" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 4h10v10H3V4Z M19 18h10v10H19V18Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 9h6v14M3 23h10M8 18v10" />
+  </g>
+</symbol>
+<symbol id="feature-decorator" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="26" height="26" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="10" y="10" width="12" height="12" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-adapter" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 9h9v14H3M20 6h9v20h-9" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 12h4l4-3M12 20h4l4 3" />
+  </g>
+</symbol>
+<symbol id="feature-interception" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h9M20 16h9m-4-4 4 4-4 4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="12" y="5" width="8" height="22" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-strategy" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h10M13 16l10-9M13 16l10 9" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 4h8v8M20 28h8v-8" />
+  </g>
+</symbol>
+<symbol id="feature-composite" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="11" y="2" width="10" height="8" rx="2" />
+    <path d="M16 10v7H5v5M16 17h11v5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="5" cy="26" r="3" />
+    <circle cx="16" cy="26" r="3" />
+    <circle cx="27" cy="26" r="3" />
+    <path d="M16 17v6" />
+  </g>
+</symbol>
+<symbol id="feature-chain" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 11 5-5a6 6 0 0 1 8 8l-5 5M19 21l-5 5a6 6 0 0 1-8-8l5-5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 16h6" />
+  </g>
+</symbol>
+<symbol id="feature-resilience" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 15a6 6 0 1 1 1 7M9 12v6h6" />
+  </g>
+</symbol>
+<symbol id="feature-retry" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M27 13a12 12 0 1 0 0 8M28 4v10h-10" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 11 8 5-8 5Z" />
+  </g>
+</symbol>
+<symbol id="feature-debounce" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 23V9h4v14h3V9h4v14h4V9h4v14h7" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 5h5v14" />
+  </g>
+</symbol>
+<symbol id="feature-throttle" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h26M3 24h26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 12v8M16 12v8M25 12v8" />
+  </g>
+</symbol>
+<symbol id="feature-circuit-breaker" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 21h7M23 21h7" />
+    <circle cx="11" cy="21" r="2" />
+    <circle cx="21" cy="21" r="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 19 10-13" />
+  </g>
+</symbol>
+<symbol id="feature-timeout" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="17" r="11" />
+    <path d="M16 10v7l5 3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m7 6 3-3M26 26l4 4M30 26l-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-bulkhead" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="26" height="24" rx="2" />
+    <path d="M16 4v24" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 11h3M8 17h3M8 23h3M21 15h3M21 21h3" />
+  </g>
+</symbol>
+<symbol id="feature-rate-limiter" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 5h9M3 16h9M3 27h9M20 3v26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 16h15m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-background-worker" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="22" height="19" rx="2" />
+    <path d="M8 27h12M14 22v5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="25" cy="24" r="5" />
+    <path d="M25 21v3l2 1" />
+  </g>
+</symbol>
+<symbol id="feature-diagrams" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="9" height="7" rx="2" />
+    <rect x="20" y="22" width="9" height="7" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 6h12v16M7 10v15h13" />
+  </g>
+</symbol>
+<symbol id="feature-predicates" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 7h8l9 9-9 9H3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M20 16h9M25 12l4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-reflection" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="15" height="19" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="21" cy="20" r="7" />
+    <path d="m26 25 4 4M7 8h7M7 13h5" />
+  </g>
+</symbol>
+<symbol id="feature-property-bag" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 9h22l2 20H3L5 9Z M11 9V6a5 5 0 0 1 10 0v3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 16h3M18 16h4M10 22h3M18 22h4" />
+  </g>
+</symbol>
+<symbol id="feature-identifiers" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10" cy="12" r="6" />
+    <path d="m14 17 12 12M22 25l4-4M18 21l4-4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="9" cy="11" r="1.5" />
+  </g>
+</symbol>
+<symbol id="feature-factories" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 29V15l9-5v7l9-5v17H3Z M24 29V3h5v26" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 23h2M15 23h2" />
+  </g>
+</symbol>
+<symbol id="feature-validation" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 4H5v25h22V4h-5" />
+    <rect x="10" y="2" width="12" height="6" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10 18 4 4 8-9" />
+  </g>
+</symbol>
+<symbol id="feature-cloning" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="11" y="11" width="18" height="18" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-content-types" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 16h4v7h-4v-7ZM19 16h3M19 20h3M19 24h3" />
+  </g>
+</symbol>
+<symbol id="feature-streams" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8c6-8 20 8 26 0M3 24c6-8 20 8 26 0" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h26m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-temporary-files" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H5v25h12M19 3v8h8V11L19 3Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="23" cy="23" r="7" />
+    <path d="M23 19v4l3 2" />
+  </g>
+</symbol>
+<symbol id="feature-provider-inmemory" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="7" y="7" width="18" height="18" rx="3" />
+    <path d="M11 3v4M21 3v4M11 25v4M21 25v4M3 11h4M3 21h4M25 11h4M25 21h4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 11h10v10H11Z" />
+  </g>
+</symbol>
+<symbol id="feature-provider-entityframework" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="16" cy="7" rx="11" ry="4" />
+    <path d="M5 7v18c0 5 22 5 22 0V7M5 16c0 5 22 5 22 0" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 11v10h5M20 12v10M18 16h5" />
+  </g>
+</symbol>
+<symbol id="feature-provider-filesystem" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 11V8a2 2 0 0 1 2-2h7l3 4h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V11Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 15h10v8H11Z" />
+  </g>
+</symbol>
+<symbol id="feature-provider-rabbitmq" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="11" width="8" height="10" rx="2" />
+    <rect x="21" y="3" width="8" height="8" rx="2" />
+    <rect x="21" y="21" width="8" height="8" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 16h5V7h5M16 16v9h5" />
+  </g>
+</symbol>
+<symbol id="feature-provider-servicebus" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="6" width="26" height="20" rx="2" />
+    <path d="M8 11v10M24 11v10" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 16h16m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-provider-azure-queue" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h19v5H3V8Z M3 19h19v5H3V19Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M25 5h4v22h-4" />
+  </g>
+</symbol>
+<symbol id="feature-provider-azure-blob" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 25a7 7 0 0 1-1-14 9 9 0 0 1 17 2 6 6 0 0 1 0 12H9Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 14h7v7h-7Z" />
+  </g>
+</symbol>
+<symbol id="feature-provider-azure-table" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="4" width="26" height="24" rx="2" />
+    <path d="M3 12h26M3 20h26" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 4v24M21 4v24" />
+  </g>
+</symbol>
+<symbol id="feature-provider-cosmosdb" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="16" r="8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="16" cy="16" rx="15" ry="5" />
+  </g>
+</symbol>
+<symbol id="feature-provider-smtp" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h18v16H3V8Z M3 8l9 8 9-8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M24 5h5v22h-5M25 11h1M25 21h1" />
+  </g>
+</symbol>
+<symbol id="feature-testing" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 3h10M13 3v10L4 27a2 2 0 0 0 2 3h20a2 2 0 0 0 2-3l-9-14V3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 22h14M13 26h6" />
+  </g>
+</symbol>
+<symbol id="feature-fake-authentication" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 3 11 4v8c0 7-6 11-11 14C11 26 5 22 5 15V7l11-4Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m10 12 5 5-5 5M19 12v10" />
+  </g>
+</symbol>
+<symbol id="feature-test-fixtures" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 12h26v16H3V12Z M7 12V5h18v7" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 19h14M16 15v9" />
+  </g>
+</symbol>
+<symbol id="feature-test-assertions" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="26" height="26" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 10h5M8 14h5m2 7 4 4 7-8" />
+  </g>
+</symbol>
+<symbol id="feature-repository-bulk" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="8" height="8" rx="2" />
+    <rect x="3" y="21" width="8" height="8" rx="2" />
+    <rect x="21" y="3" width="8" height="8" rx="2" />
+    <rect x="21" y="21" width="8" height="8" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 7h5v18h5M11 25h5M16 7h5" />
+  </g>
+</symbol>
+<symbol id="feature-concurrency" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 7h10v18H3M29 7H19v18h10" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 16h16m-4-4 4 4-4 4M12 12l-4 4 4 4" />
+  </g>
+</symbol>
+<symbol id="feature-sequences" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 27h26M5 23v-4h6v-7h7V5h7" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 26v2M18 26v2M25 26v2" />
+  </g>
+</symbol>
+<symbol id="feature-transactions" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 3H3v26h5M24 3h5v26h-5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 11h18m-4-4 4 4-4 4M25 21H7m4-4-4 4 4 4" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-parallel" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h5V6h15v10h6M8 16v10h15V16" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 16h15" />
+    <circle cx="3" cy="16" r="1" />
+    <circle cx="29" cy="16" r="1" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-children" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="18" height="18" rx="2" />
+    <path d="M21 9h8v20H9v-8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="9" y="9" width="12" height="12" rx="2" />
+  </g>
+</symbol>
+<symbol id="feature-orchestration-loops" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 11V6h22v20H5v-5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 16h15m-4-4 4 4-4 4" />
+  </g>
+</symbol>
+<symbol id="feature-job-instance-targeting" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="16" r="10" />
+    <circle cx="16" cy="16" r="4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M16 1v7M16 24v7M1 16h7M24 16h7" />
+  </g>
+</symbol>
+<symbol id="feature-dead-letter" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="18" height="6" rx="2" />
+    <rect x="3" y="14" width="18" height="6" rx="2" />
+    <path d="M3 24h10v5H3v-5Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m23 21 7 7M30 21l-7 7" />
+  </g>
+</symbol>
+<symbol id="feature-queue-control" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="5" width="26" height="6" rx="2" />
+    <rect x="3" y="14" width="12" height="6" rx="2" />
+    <rect x="3" y="23" width="12" height="6" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M21 17v10M27 17v10" />
+  </g>
+</symbol>
+<symbol id="feature-storage-health" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 7v18c0 5 22 5 22 0V7" />
+    <ellipse cx="16" cy="7" rx="11" ry="4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 18h4l3-5 4 10 3-5h4" />
+  </g>
+</symbol>
+<symbol id="feature-storage-cleanup" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 8h15M5 8v19h11M7 4h7v4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m17 19 9-10 4 4-9 10M17 19l-2 8h8l-6-8Z" />
+  </g>
+</symbol>
+<symbol id="feature-data-templates" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M19 3H7a2 2 0 0 0-2 2v22a2 2 0 0 0 2 2h18a2 2 0 0 0 2-2V11L19 3Z M19 3v8h8" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 16h12M16 16v9M12 25h8" />
+  </g>
+</symbol>
+<symbol id="feature-data-converters" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="3" width="9" height="9" rx="2" />
+    <rect x="20" y="20" width="9" height="9" rx="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 7h12v8m-4-4 4 4 4-4M20 25H8v-8m-4 4 4-4 4 4" />
+  </g>
+</symbol>
+<symbol id="feature-fake-time" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="16" cy="17" r="11" />
+    <path d="M16 10v7l5 3" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 12v10M21 12v10" />
+  </g>
+</symbol>
+<symbol id="feature-test-traits" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 4h15l11 12-11 12H3V4Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="10" cy="16" r="3" />
+    <path d="M17 12h4M17 20h4" />
+  </g>
+</symbol>
+<symbol id="feature-metrics-counter" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M5 6v20M11 6v20M17 6v20M23 6v20" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m3 24 25-16" />
+  </g>
+</symbol>
+<symbol id="feature-metrics-histogram" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 28V18h6V8h7v4h7v10h6v6H3Z" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 18v10M16 12v16M23 22v6" />
+  </g>
+</symbol>
+<symbol id="feature-metrics-gauge" viewBox="0 0 32 32" fill="none">
+<g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M4 26a13 13 0 1 1 24 0M5 18h4M16 5v4M23 18h4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m16 21-5-9" />
+    <circle cx="16" cy="21" r="2" />
+  </g>
+</symbol>
+</svg>

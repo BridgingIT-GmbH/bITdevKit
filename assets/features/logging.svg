@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="logging-title">
+  <title id="logging-title">Logging</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M10 6h19M10 16h19M10 26h19" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 6h2M3 16h2M3 26h2" />
+  </g>
+</svg>

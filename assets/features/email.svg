@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="email-title">
+  <title id="email-title">Email delivery</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <rect x="3" y="7" width="26" height="19" rx="2" />
+    <path d="m4 9 10 8a3 3 0 0 0 4 0l10-8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M22 3h6m-3-2 3 2-3 2" />
+  </g>
+</svg>

@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="entity-changes-title">
+  <title id="entity-changes-title">Entity changes</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 4H6a2 2 0 0 0-2 2v22h20v-8" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m13 21 3-7L26 4l4 4-10 10-7 3Z M23 7l4 4" />
+  </g>
+</svg>

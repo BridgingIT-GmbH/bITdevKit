@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="circuit-breaker-title">
+  <title id="circuit-breaker-title">Circuit breaker</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M2 21h7M23 21h7" />
+    <circle cx="11" cy="21" r="2" />
+    <circle cx="21" cy="21" r="2" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 19 10-13" />
+  </g>
+</svg>

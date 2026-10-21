@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="orchestration-parallel-title">
+  <title id="orchestration-parallel-title">Parallel branches</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h5V6h15v10h6M8 16v10h15V16" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M8 16h15" />
+    <circle cx="3" cy="16" r="1" />
+    <circle cx="29" cy="16" r="1" />
+  </g>
+</svg>

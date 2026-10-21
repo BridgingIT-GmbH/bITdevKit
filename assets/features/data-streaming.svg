@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="data-streaming-title">
+  <title id="data-streaming-title">Data streaming</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 10h5M3 22h5M12 10h5M12 22h5M21 10h5M21 22h5" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 16h26m-4-4 4 4-4 4" />
+  </g>
+</svg>

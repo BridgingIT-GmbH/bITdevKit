@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="orchestration-timers-title">
+  <title id="orchestration-timers-title">Durable timers</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M7 3h18M7 29h18M9 3v7l7 6-7 6v7M23 3v7l-7 6 7 6v7" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M12 25h8M12 7h8" />
+  </g>
+</svg>

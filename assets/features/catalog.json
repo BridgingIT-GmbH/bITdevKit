@@ -1,0 +1,2020 @@
+{
+  "schemaVersion": 1,
+  "grid": 32,
+  "strokeWidth": 1.6,
+  "icons": [
+    {
+      "id": "messaging",
+      "title": "Messaging",
+      "group": "Communication",
+      "parent": null,
+      "sources": [
+        "docs/features-messaging.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "queueing",
+      "title": "Queueing",
+      "group": "Communication",
+      "parent": null,
+      "sources": [
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "requester",
+      "title": "Requester",
+      "group": "Communication",
+      "parent": null,
+      "sources": [
+        "docs/features-requester-notifier.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "notifier",
+      "title": "Notifier",
+      "group": "Communication",
+      "parent": null,
+      "sources": [
+        "docs/features-requester-notifier.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "broadcasting",
+      "title": "Broadcasting",
+      "group": "Communication",
+      "parent": null,
+      "sources": [
+        "docs/features-broadcasting.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "notifications",
+      "title": "Notifications",
+      "group": "Communication",
+      "parent": null,
+      "sources": [
+        "docs/features-notifications.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "email",
+      "title": "Email delivery",
+      "group": "Communication",
+      "parent": "notifications",
+      "sources": [
+        "docs/features-notifications.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "outbox",
+      "title": "Outbox",
+      "group": "Communication",
+      "parent": "messaging",
+      "sources": [
+        "docs/features-messaging.md",
+        "docs/features-domain-events.md",
+        "docs/features-notifications.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "subscriptions",
+      "title": "Subscriptions",
+      "group": "Communication",
+      "parent": "messaging",
+      "sources": [
+        "docs/features-messaging.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "handlers",
+      "title": "Message handlers",
+      "group": "Communication",
+      "parent": "messaging",
+      "sources": [
+        "docs/features-messaging.md",
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "jobs",
+      "title": "Jobs",
+      "group": "Execution",
+      "parent": null,
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "startup-tasks",
+      "title": "Startup tasks",
+      "group": "Execution",
+      "parent": null,
+      "sources": [
+        "docs/features-startuptasks.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-scheduling",
+      "title": "Job scheduling \u00b7 legacy",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobscheduling.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-triggers",
+      "title": "Job triggers",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-cron",
+      "title": "Cron schedules",
+      "group": "Execution",
+      "parent": "job-triggers",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-calendar",
+      "title": "Calendar triggers",
+      "group": "Execution",
+      "parent": "job-triggers",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-delay",
+      "title": "Delayed jobs",
+      "group": "Execution",
+      "parent": "job-triggers",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-events",
+      "title": "Event triggers",
+      "group": "Execution",
+      "parent": "job-triggers",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-manual",
+      "title": "Manual triggers",
+      "group": "Execution",
+      "parent": "job-triggers",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-batches",
+      "title": "Job batches",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-chains",
+      "title": "Job chains",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-workers",
+      "title": "Worker pools",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-history",
+      "title": "Job history",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-maintenance",
+      "title": "Job maintenance",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "pipelines",
+      "title": "Pipelines",
+      "group": "Execution",
+      "parent": null,
+      "sources": [
+        "docs/features-pipelines.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "pipeline-steps",
+      "title": "Pipeline steps",
+      "group": "Execution",
+      "parent": "pipelines",
+      "sources": [
+        "docs/features-pipelines.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "pipeline-hooks",
+      "title": "Pipeline hooks",
+      "group": "Execution",
+      "parent": "pipelines",
+      "sources": [
+        "docs/features-pipelines.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "behaviors",
+      "title": "Pipeline behaviors",
+      "group": "Execution",
+      "parent": "pipelines",
+      "sources": [
+        "docs/features-pipelines.md",
+        "docs/features-requester-notifier.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestrations",
+      "title": "Orchestrations",
+      "group": "Execution",
+      "parent": null,
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-states",
+      "title": "Workflow states",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-signals",
+      "title": "Workflow signals",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-timers",
+      "title": "Durable timers",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-compensation",
+      "title": "Compensation",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-instances",
+      "title": "Workflow instances",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "modules",
+      "title": "Modules",
+      "group": "Execution",
+      "parent": null,
+      "sources": [
+        "docs/features-modules.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "source-generation",
+      "title": "Source generation",
+      "group": "Execution",
+      "parent": null,
+      "sources": [
+        "docs/features-requester-notifier.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "storage",
+      "title": "Storage",
+      "group": "Storage",
+      "parent": null,
+      "sources": [
+        "docs/features-storage-blobs.md",
+        "docs/features-storage-documents.md",
+        "docs/features-storage-files.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-files",
+      "title": "File storage",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-files.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-blobs",
+      "title": "Blob storage",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-blobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-documents",
+      "title": "Document storage",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-documents.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-permalinks",
+      "title": "Storage permalinks",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-permalinks.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-monitoring",
+      "title": "Storage monitoring",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-monitoring.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-locations",
+      "title": "Storage locations",
+      "group": "Storage",
+      "parent": "storage-monitoring",
+      "sources": [
+        "docs/features-storage-monitoring.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-transforms",
+      "title": "Storage transforms",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-blobs.md",
+        "docs/features-storage-documents.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-retention",
+      "title": "Storage retention",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-documents.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-integrity",
+      "title": "Storage integrity",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-documents.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-transfers",
+      "title": "Storage transfers",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-blobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-uploads",
+      "title": "Storage uploads",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-blobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-downloads",
+      "title": "Storage downloads",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-blobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "domain",
+      "title": "Domain model",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-domain.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "entities",
+      "title": "Entities",
+      "group": "Domain and application",
+      "parent": "domain",
+      "sources": [
+        "docs/features-domain.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "aggregates",
+      "title": "Aggregate roots",
+      "group": "Domain and application",
+      "parent": "domain",
+      "sources": [
+        "docs/features-domain.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "value-objects",
+      "title": "Value objects",
+      "group": "Domain and application",
+      "parent": "domain",
+      "sources": [
+        "docs/features-domain.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "typed-ids",
+      "title": "Typed identifiers",
+      "group": "Domain and application",
+      "parent": "domain",
+      "sources": [
+        "docs/features-domain.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "enumerations",
+      "title": "Enumerations",
+      "group": "Domain and application",
+      "parent": "domain",
+      "sources": [
+        "docs/features-domain.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "entity-changes",
+      "title": "Entity changes",
+      "group": "Domain and application",
+      "parent": "domain",
+      "sources": [
+        "docs/features-domain.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "domain-events",
+      "title": "Domain events",
+      "group": "Domain and application",
+      "parent": "domain",
+      "sources": [
+        "docs/features-domain-events.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "application-events",
+      "title": "Application events",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-application-events.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "repositories",
+      "title": "Repositories",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-domain-repositories.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "specifications",
+      "title": "Specifications",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-domain-specifications.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "active-entity",
+      "title": "Active Entity",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-domain-activeentity.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "policies",
+      "title": "Domain policies",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-domain-policies.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "rules",
+      "title": "Rules",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-rules.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "results",
+      "title": "Results",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-results.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "result-scopes",
+      "title": "Result scopes",
+      "group": "Domain and application",
+      "parent": "results",
+      "sources": [
+        "docs/features-results.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "either",
+      "title": "Either results",
+      "group": "Domain and application",
+      "parent": "results",
+      "sources": [
+        "docs/features-results.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "event-sourcing",
+      "title": "Event sourcing",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-event-sourcing.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "event-streams",
+      "title": "Event streams",
+      "group": "Domain and application",
+      "parent": "event-sourcing",
+      "sources": [
+        "docs/features-event-sourcing.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "snapshots",
+      "title": "Snapshots",
+      "group": "Domain and application",
+      "parent": "event-sourcing",
+      "sources": [
+        "docs/features-event-sourcing.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "change-history",
+      "title": "Change history",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-domain-change-history.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "change-restore",
+      "title": "Restore changes",
+      "group": "Domain and application",
+      "parent": "change-history",
+      "sources": [
+        "docs/features-domain-change-history.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "commands-queries",
+      "title": "Commands and queries",
+      "group": "Domain and application",
+      "parent": null,
+      "sources": [
+        "docs/features-application-commands-queries.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "commands",
+      "title": "Commands",
+      "group": "Domain and application",
+      "parent": "commands-queries",
+      "sources": [
+        "docs/features-application-commands-queries.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "queries",
+      "title": "Queries",
+      "group": "Domain and application",
+      "parent": "commands-queries",
+      "sources": [
+        "docs/features-application-commands-queries.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "dataporter",
+      "title": "DataPorter",
+      "group": "Data",
+      "parent": null,
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "data-import",
+      "title": "Data import",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "data-export",
+      "title": "Data export",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "data-streaming",
+      "title": "Data streaming",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "data-profiles",
+      "title": "Data profiles",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "data-validation",
+      "title": "Import validation",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "serialization",
+      "title": "Serialization",
+      "group": "Data",
+      "parent": null,
+      "sources": [
+        "docs/common-serialization.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "format-json",
+      "title": "JSON",
+      "group": "Data",
+      "parent": "serialization",
+      "sources": [
+        "docs/common-serialization.md",
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "format-csv",
+      "title": "CSV",
+      "group": "Data",
+      "parent": "serialization",
+      "sources": [
+        "docs/common-serialization.md",
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "format-excel",
+      "title": "Excel",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "format-xml",
+      "title": "XML",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "format-pdf",
+      "title": "PDF export",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "format-messagepack",
+      "title": "MessagePack",
+      "group": "Data",
+      "parent": "serialization",
+      "sources": [
+        "docs/common-serialization.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "format-cbor",
+      "title": "CBOR",
+      "group": "Data",
+      "parent": "serialization",
+      "sources": [
+        "docs/common-serialization.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "mapping",
+      "title": "Object mapping",
+      "group": "Data",
+      "parent": null,
+      "sources": [
+        "docs/common-mapping.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "caching",
+      "title": "Caching",
+      "group": "Data",
+      "parent": null,
+      "sources": [
+        "docs/common-caching.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "compression",
+      "title": "Compression",
+      "group": "Data",
+      "parent": "serialization",
+      "sources": [
+        "docs/common-serialization.md",
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "encryption",
+      "title": "Encryption",
+      "group": "Data",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "hashing",
+      "title": "Hashing",
+      "group": "Data",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "codecs",
+      "title": "Content codecs",
+      "group": "Data",
+      "parent": "serialization",
+      "sources": [
+        "docs/common-serialization.md",
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "metrics",
+      "title": "Metrics",
+      "group": "Observability",
+      "parent": null,
+      "sources": [
+        "docs/features-metrics.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "profiling",
+      "title": "Profiling",
+      "group": "Observability",
+      "parent": null,
+      "sources": [
+        "docs/features-profiling.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "profiling-runtime",
+      "title": "Runtime profiling",
+      "group": "Observability",
+      "parent": "profiling",
+      "sources": [
+        "docs/features-profiling.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "profiling-operations",
+      "title": "Operation profiling",
+      "group": "Observability",
+      "parent": "profiling",
+      "sources": [
+        "docs/features-profiling.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "profiling-requests",
+      "title": "Request profiling",
+      "group": "Observability",
+      "parent": "profiling",
+      "sources": [
+        "docs/features-profiling.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "profiling-timeline",
+      "title": "Profiling timeline",
+      "group": "Observability",
+      "parent": "profiling",
+      "sources": [
+        "docs/features-profiling.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "profiling-insights",
+      "title": "Profiling insights",
+      "group": "Observability",
+      "parent": "profiling",
+      "sources": [
+        "docs/features-profiling.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "tracing",
+      "title": "Tracing",
+      "group": "Observability",
+      "parent": null,
+      "sources": [
+        "docs/common-observability-tracing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "logging",
+      "title": "Logging",
+      "group": "Observability",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-logging.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "log-entries",
+      "title": "Log entries",
+      "group": "Observability",
+      "parent": null,
+      "sources": [
+        "docs/features-log-entries.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "errors",
+      "title": "Errors",
+      "group": "Observability",
+      "parent": "log-entries",
+      "sources": [
+        "docs/features-log-entries.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "health",
+      "title": "Health",
+      "group": "Observability",
+      "parent": "dashboard",
+      "sources": [
+        "docs/features-presentation-dashboard.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "system",
+      "title": "System",
+      "group": "Observability",
+      "parent": "dashboard",
+      "sources": [
+        "docs/features-presentation-dashboard.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "correlation-ids",
+      "title": "Correlation IDs",
+      "group": "Observability",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-correlationid.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "authentication",
+      "title": "Authentication",
+      "group": "Security",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-authentication.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "authorization",
+      "title": "Authorization",
+      "group": "Security",
+      "parent": "authentication",
+      "sources": [
+        "docs/features-presentation-authentication.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "entity-permissions",
+      "title": "Entity permissions",
+      "group": "Security",
+      "parent": null,
+      "sources": [
+        "docs/features-entitypermissions.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "identity",
+      "title": "Identity",
+      "group": "Security",
+      "parent": "dashboard",
+      "sources": [
+        "docs/features-presentation-dashboard.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "identity-provider",
+      "title": "Fake identity provider",
+      "group": "Security",
+      "parent": null,
+      "sources": [
+        "docs/features-identityprovider.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "roles",
+      "title": "Roles",
+      "group": "Security",
+      "parent": "authorization",
+      "sources": [
+        "docs/features-presentation-authentication.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "host",
+      "title": "Application host",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "web-host",
+      "title": "Web host",
+      "group": "Presentation",
+      "parent": "host",
+      "sources": [
+        "docs/features-presentation.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "console-host",
+      "title": "Console host",
+      "group": "Presentation",
+      "parent": "host",
+      "sources": [
+        "docs/features-presentation.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "configuration",
+      "title": "Configuration",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-configuration.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "options-builders",
+      "title": "Options builders",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/common-options-builders.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "endpoints",
+      "title": "Endpoints",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-endpoints.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "cli",
+      "title": "DevKit CLI",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-cli.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "console-commands",
+      "title": "Console commands",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-console-commands.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "mcp",
+      "title": "MCP",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-cli-mcp.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "mcp-clients",
+      "title": "MCP clients",
+      "group": "Presentation",
+      "parent": "mcp",
+      "sources": [
+        "docs/features-cli-mcp-clients.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "dashboard",
+      "title": "Dashboard",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-dashboard.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "cors",
+      "title": "CORS",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-cors.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "exception-handling",
+      "title": "Exception handling",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-exception-handling.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "app-state",
+      "title": "AppState",
+      "group": "Presentation",
+      "parent": null,
+      "sources": [
+        "docs/features-presentation-appstate.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "app-state-history",
+      "title": "Undo and redo",
+      "group": "Presentation",
+      "parent": "app-state",
+      "sources": [
+        "docs/features-presentation-appstate.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "common-extensions",
+      "title": "Common extensions",
+      "group": "Common utilities",
+      "parent": null,
+      "sources": [
+        "docs/common-extensions.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "common-utilities",
+      "title": "Common utilities",
+      "group": "Common utilities",
+      "parent": null,
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "utilities",
+      "title": "Application utilities",
+      "group": "Common utilities",
+      "parent": null,
+      "sources": [
+        "docs/features-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "extensions",
+      "title": "Fluent extensions",
+      "group": "Common utilities",
+      "parent": null,
+      "sources": [
+        "docs/features-extensions.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "async-sequences",
+      "title": "Async sequences",
+      "group": "Common utilities",
+      "parent": "extensions",
+      "sources": [
+        "docs/features-extensions.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "filtering",
+      "title": "Filtering",
+      "group": "Common utilities",
+      "parent": null,
+      "sources": [
+        "docs/features-filtering.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "sorting",
+      "title": "Sorting",
+      "group": "Common utilities",
+      "parent": "filtering",
+      "sources": [
+        "docs/features-filtering.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "paging",
+      "title": "Paging",
+      "group": "Common utilities",
+      "parent": "filtering",
+      "sources": [
+        "docs/features-filtering.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "business-calendars",
+      "title": "Business calendars",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "date-ranges",
+      "title": "Date and time ranges",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "time-provider",
+      "title": "Time providers",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/features-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "composition",
+      "title": "Composition",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "decorator",
+      "title": "Decorator",
+      "group": "Common utilities",
+      "parent": "composition",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "adapter",
+      "title": "Adapter",
+      "group": "Common utilities",
+      "parent": "composition",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "interception",
+      "title": "Interception",
+      "group": "Common utilities",
+      "parent": "composition",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "strategy",
+      "title": "Strategy",
+      "group": "Common utilities",
+      "parent": "composition",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "composite",
+      "title": "Composite",
+      "group": "Common utilities",
+      "parent": "composition",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "chain",
+      "title": "Chain of responsibility",
+      "group": "Common utilities",
+      "parent": "composition",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "resilience",
+      "title": "Resilience",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "retry",
+      "title": "Retry",
+      "group": "Common utilities",
+      "parent": "resilience",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "debounce",
+      "title": "Debouncing",
+      "group": "Common utilities",
+      "parent": "resilience",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "throttle",
+      "title": "Throttling",
+      "group": "Common utilities",
+      "parent": "resilience",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "circuit-breaker",
+      "title": "Circuit breaker",
+      "group": "Common utilities",
+      "parent": "resilience",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "timeout",
+      "title": "Timeout",
+      "group": "Common utilities",
+      "parent": "resilience",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "bulkhead",
+      "title": "Bulkheads",
+      "group": "Common utilities",
+      "parent": "resilience",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "rate-limiter",
+      "title": "Rate limiting",
+      "group": "Common utilities",
+      "parent": "resilience",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "background-worker",
+      "title": "Background workers",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "diagrams",
+      "title": "Diagrams",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "predicates",
+      "title": "Predicates",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "reflection",
+      "title": "Reflection",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "property-bag",
+      "title": "Property bags",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "identifiers",
+      "title": "ID and key generation",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "factories",
+      "title": "Factories",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "validation",
+      "title": "Validation",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "cloning",
+      "title": "Cloning",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "content-types",
+      "title": "Content types",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "streams",
+      "title": "Streams",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "temporary-files",
+      "title": "Temporary files",
+      "group": "Common utilities",
+      "parent": "common-utilities",
+      "sources": [
+        "docs/common-utilities.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "provider-inmemory",
+      "title": "In-memory provider",
+      "group": "Providers",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-documents.md",
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-entityframework",
+      "title": "Entity Framework provider",
+      "group": "Providers",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-documents.md",
+        "docs/features-messaging.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-filesystem",
+      "title": "File system provider",
+      "group": "Providers",
+      "parent": "storage-files",
+      "sources": [
+        "docs/features-storage-files.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-rabbitmq",
+      "title": "RabbitMQ provider",
+      "group": "Providers",
+      "parent": "queueing",
+      "sources": [
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-servicebus",
+      "title": "Azure Service Bus provider",
+      "group": "Providers",
+      "parent": "queueing",
+      "sources": [
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-azure-queue",
+      "title": "Azure Queue provider",
+      "group": "Providers",
+      "parent": "queueing",
+      "sources": [
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-azure-blob",
+      "title": "Azure Blob provider",
+      "group": "Providers",
+      "parent": "storage-blobs",
+      "sources": [
+        "docs/features-storage-blobs.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-azure-table",
+      "title": "Azure Table provider",
+      "group": "Providers",
+      "parent": "storage-documents",
+      "sources": [
+        "docs/features-storage-documents.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-cosmosdb",
+      "title": "Cosmos DB provider",
+      "group": "Providers",
+      "parent": "storage-documents",
+      "sources": [
+        "docs/features-storage-documents.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "provider-smtp",
+      "title": "SMTP provider",
+      "group": "Providers",
+      "parent": "notifications",
+      "sources": [
+        "docs/features-notifications.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "testing",
+      "title": "Testing",
+      "group": "Testing",
+      "parent": null,
+      "sources": [
+        "docs/testing-common-xunit.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "fake-authentication",
+      "title": "Fake authentication",
+      "group": "Testing",
+      "parent": null,
+      "sources": [
+        "docs/testing-fake-authentication.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "test-fixtures",
+      "title": "Test fixtures",
+      "group": "Testing",
+      "parent": "testing",
+      "sources": [
+        "docs/testing-common-xunit.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "test-assertions",
+      "title": "Result assertions",
+      "group": "Testing",
+      "parent": "testing",
+      "sources": [
+        "docs/testing-common-xunit.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "repository-bulk",
+      "title": "Bulk operations",
+      "group": "Domain and application",
+      "parent": "repositories",
+      "sources": [
+        "docs/features-domain-repositories.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "concurrency",
+      "title": "Optimistic concurrency",
+      "group": "Domain and application",
+      "parent": "repositories",
+      "sources": [
+        "docs/features-domain-repositories.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "sequences",
+      "title": "Sequence numbers",
+      "group": "Domain and application",
+      "parent": "repositories",
+      "sources": [
+        "docs/features-domain-repositories.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "transactions",
+      "title": "Transactions",
+      "group": "Domain and application",
+      "parent": "active-entity",
+      "sources": [
+        "docs/features-domain-activeentity.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-parallel",
+      "title": "Parallel branches",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-children",
+      "title": "Child orchestrations",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "orchestration-loops",
+      "title": "Workflow loops",
+      "group": "Execution",
+      "parent": "orchestrations",
+      "sources": [
+        "docs/features-orchestrations.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "job-instance-targeting",
+      "title": "Scheduler targeting",
+      "group": "Execution",
+      "parent": "jobs",
+      "sources": [
+        "docs/features-jobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "dead-letter",
+      "title": "Dead-letter queues",
+      "group": "Communication",
+      "parent": "queueing",
+      "sources": [
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "queue-control",
+      "title": "Queue control",
+      "group": "Communication",
+      "parent": "queueing",
+      "sources": [
+        "docs/features-queueing.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "storage-health",
+      "title": "Storage health",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-blobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "storage-cleanup",
+      "title": "Storage maintenance",
+      "group": "Storage",
+      "parent": "storage",
+      "sources": [
+        "docs/features-storage-blobs.md"
+      ],
+      "tone": "analysis"
+    },
+    {
+      "id": "data-templates",
+      "title": "Import templates",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "data-converters",
+      "title": "Value converters",
+      "group": "Data",
+      "parent": "dataporter",
+      "sources": [
+        "docs/features-application-dataporter.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "fake-time",
+      "title": "Fake time",
+      "group": "Testing",
+      "parent": "testing",
+      "sources": [
+        "docs/testing-common-xunit.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "test-traits",
+      "title": "Test traits",
+      "group": "Testing",
+      "parent": "testing",
+      "sources": [
+        "docs/testing-common-xunit.md"
+      ],
+      "tone": "primary"
+    },
+    {
+      "id": "metrics-counter",
+      "title": "Counters",
+      "group": "Observability",
+      "parent": "metrics",
+      "sources": [
+        "docs/features-metrics.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "metrics-histogram",
+      "title": "Histograms",
+      "group": "Observability",
+      "parent": "metrics",
+      "sources": [
+        "docs/features-metrics.md"
+      ],
+      "tone": "info"
+    },
+    {
+      "id": "metrics-gauge",
+      "title": "Gauges",
+      "group": "Observability",
+      "parent": "metrics",
+      "sources": [
+        "docs/features-metrics.md"
+      ],
+      "tone": "info"
+    }
+  ]
+}

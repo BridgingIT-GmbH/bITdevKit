@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="profiling-insights-title">
+  <title id="profiling-insights-title">Profiling insights</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M3 25V7M8 25V14M13 25V4" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="23" cy="17" r="6" />
+    <path d="m27 22 3 6" />
+  </g>
+</svg>

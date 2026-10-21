@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="provider-entityframework-title">
+  <title id="provider-entityframework-title">Entity Framework provider</title>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="16" cy="7" rx="11" ry="4" />
+    <path d="M5 7v18c0 5 22 5 22 0V7M5 16c0 5 22 5 22 0" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 11v10h5M20 12v10M18 16h5" />
+  </g>
+</svg>

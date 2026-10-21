@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="notifier-title">
+  <title id="notifier-title">Notifier</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M9 16h19m-4-4 4 4-4 4" />
+    <path d="M8.2 13.8 24 6m-4-1 4 1-1 4M8.2 18.2 24 26m-4 1 4-1-1-4" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="6" cy="16" r="3" />
+  </g>
+</svg>

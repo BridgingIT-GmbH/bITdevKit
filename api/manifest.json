@@ -18621,6 +18621,34 @@
     },
     {
       "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.CborConstructorAttribute.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.CborConstructorAttribute.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.CborConstructorAttribute",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.CborConstructorAttribute.yml\" sourcestartlinenumber=\"1\">Selects the constructor used to deserialize a CBOR object.</p>\n"
+    },
+    {
+      "type": "ManagedReference",
+      "source_relative_path": "obj/api/BridgingIT.DevKit.Common.CborSerializer.yml",
+      "output": {
+        ".html": {
+          "relative_path": "obj/api/BridgingIT.DevKit.Common.CborSerializer.html"
+        }
+      },
+      "version": "",
+      "Uid": null,
+      "IsMRef": true,
+      "Title": "BridgingIT.DevKit.Common.CborSerializer",
+      "Summary": "<p sourcefile=\"obj/api/BridgingIT.DevKit.Common.CborSerializer.yml\" sourcestartlinenumber=\"1\">Serializes object instances directly as Concise Binary Object Representation (CBOR).</p>\n"
+    },
+    {
+      "type": "ManagedReference",
       "source_relative_path": "obj/api/BridgingIT.DevKit.Common.ChangeError.yml",
       "output": {
         ".html": {

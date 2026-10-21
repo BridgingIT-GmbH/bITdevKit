@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="jobs-title">
+  <title id="jobs-title">Jobs</title>
+  <g stroke="var(--dashboard-analysis-text, #b295e8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M14 27H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v6M3 12h20M8 4v5M18 4v5M8 17h5" />
+  </g>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <circle cx="23" cy="23" r="6" />
+    <path d="m22 20.5 3.5 2.5-3.5 2.5z" fill="var(--dashboard-primary-text, #7da4f7)" stroke="none" />
+  </g>
+</svg>

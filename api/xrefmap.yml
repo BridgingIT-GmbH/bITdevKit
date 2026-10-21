@@ -126537,6 +126537,90 @@ references:
   commentId: Overload:BridgingIT.DevKit.Common.CategoryDiscoverer.GetTraits
   fullName: BridgingIT.DevKit.Common.CategoryDiscoverer.GetTraits
   nameWithType: CategoryDiscoverer.GetTraits
+- uid: BridgingIT.DevKit.Common.CborConstructorAttribute
+  name: CborConstructorAttribute
+  href: obj/api/BridgingIT.DevKit.Common.CborConstructorAttribute.html
+  commentId: T:BridgingIT.DevKit.Common.CborConstructorAttribute
+  fullName: BridgingIT.DevKit.Common.CborConstructorAttribute
+  nameWithType: CborConstructorAttribute
+- uid: BridgingIT.DevKit.Common.CborConstructorAttribute.#ctor
+  name: CborConstructorAttribute()
+  href: obj/api/BridgingIT.DevKit.Common.CborConstructorAttribute.html#BridgingIT_DevKit_Common_CborConstructorAttribute__ctor
+  commentId: M:BridgingIT.DevKit.Common.CborConstructorAttribute.#ctor
+  name.vb: New()
+  fullName: BridgingIT.DevKit.Common.CborConstructorAttribute.CborConstructorAttribute()
+  fullName.vb: BridgingIT.DevKit.Common.CborConstructorAttribute.New()
+  nameWithType: CborConstructorAttribute.CborConstructorAttribute()
+  nameWithType.vb: CborConstructorAttribute.New()
+- uid: BridgingIT.DevKit.Common.CborConstructorAttribute.#ctor*
+  name: CborConstructorAttribute
+  href: obj/api/BridgingIT.DevKit.Common.CborConstructorAttribute.html#BridgingIT_DevKit_Common_CborConstructorAttribute__ctor_
+  commentId: Overload:BridgingIT.DevKit.Common.CborConstructorAttribute.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Common.CborConstructorAttribute.CborConstructorAttribute
+  fullName.vb: BridgingIT.DevKit.Common.CborConstructorAttribute.New
+  nameWithType: CborConstructorAttribute.CborConstructorAttribute
+  nameWithType.vb: CborConstructorAttribute.New
+- uid: BridgingIT.DevKit.Common.CborSerializer
+  name: CborSerializer
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html
+  commentId: T:BridgingIT.DevKit.Common.CborSerializer
+  fullName: BridgingIT.DevKit.Common.CborSerializer
+  nameWithType: CborSerializer
+- uid: BridgingIT.DevKit.Common.CborSerializer.#ctor(System.Int32)
+  name: CborSerializer(int)
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html#BridgingIT_DevKit_Common_CborSerializer__ctor_System_Int32_
+  commentId: M:BridgingIT.DevKit.Common.CborSerializer.#ctor(System.Int32)
+  name.vb: New(Integer)
+  fullName: BridgingIT.DevKit.Common.CborSerializer.CborSerializer(int)
+  fullName.vb: BridgingIT.DevKit.Common.CborSerializer.New(Integer)
+  nameWithType: CborSerializer.CborSerializer(int)
+  nameWithType.vb: CborSerializer.New(Integer)
+- uid: BridgingIT.DevKit.Common.CborSerializer.#ctor*
+  name: CborSerializer
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html#BridgingIT_DevKit_Common_CborSerializer__ctor_
+  commentId: Overload:BridgingIT.DevKit.Common.CborSerializer.#ctor
+  name.vb: New
+  fullName: BridgingIT.DevKit.Common.CborSerializer.CborSerializer
+  fullName.vb: BridgingIT.DevKit.Common.CborSerializer.New
+  nameWithType: CborSerializer.CborSerializer
+  nameWithType.vb: CborSerializer.New
+- uid: BridgingIT.DevKit.Common.CborSerializer.Deserialize(System.IO.Stream,System.Type)
+  name: Deserialize(Stream, Type)
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html#BridgingIT_DevKit_Common_CborSerializer_Deserialize_System_IO_Stream_System_Type_
+  commentId: M:BridgingIT.DevKit.Common.CborSerializer.Deserialize(System.IO.Stream,System.Type)
+  fullName: BridgingIT.DevKit.Common.CborSerializer.Deserialize(System.IO.Stream, System.Type)
+  nameWithType: CborSerializer.Deserialize(Stream, Type)
+- uid: BridgingIT.DevKit.Common.CborSerializer.Deserialize*
+  name: Deserialize
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html#BridgingIT_DevKit_Common_CborSerializer_Deserialize_
+  commentId: Overload:BridgingIT.DevKit.Common.CborSerializer.Deserialize
+  fullName: BridgingIT.DevKit.Common.CborSerializer.Deserialize
+  nameWithType: CborSerializer.Deserialize
+- uid: BridgingIT.DevKit.Common.CborSerializer.Deserialize``1(System.IO.Stream)
+  name: Deserialize<T>(Stream)
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html#BridgingIT_DevKit_Common_CborSerializer_Deserialize__1_System_IO_Stream_
+  commentId: M:BridgingIT.DevKit.Common.CborSerializer.Deserialize``1(System.IO.Stream)
+  name.vb: Deserialize(Of T)(Stream)
+  fullName: BridgingIT.DevKit.Common.CborSerializer.Deserialize<T>(System.IO.Stream)
+  fullName.vb: BridgingIT.DevKit.Common.CborSerializer.Deserialize(Of T)(System.IO.Stream)
+  nameWithType: CborSerializer.Deserialize<T>(Stream)
+  nameWithType.vb: CborSerializer.Deserialize(Of T)(Stream)
+- uid: BridgingIT.DevKit.Common.CborSerializer.Serialize(System.Object,System.IO.Stream)
+  name: Serialize(object, Stream)
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html#BridgingIT_DevKit_Common_CborSerializer_Serialize_System_Object_System_IO_Stream_
+  commentId: M:BridgingIT.DevKit.Common.CborSerializer.Serialize(System.Object,System.IO.Stream)
+  name.vb: Serialize(Object, Stream)
+  fullName: BridgingIT.DevKit.Common.CborSerializer.Serialize(object, System.IO.Stream)
+  fullName.vb: BridgingIT.DevKit.Common.CborSerializer.Serialize(Object, System.IO.Stream)
+  nameWithType: CborSerializer.Serialize(object, Stream)
+  nameWithType.vb: CborSerializer.Serialize(Object, Stream)
+- uid: BridgingIT.DevKit.Common.CborSerializer.Serialize*
+  name: Serialize
+  href: obj/api/BridgingIT.DevKit.Common.CborSerializer.html#BridgingIT_DevKit_Common_CborSerializer_Serialize_
+  commentId: Overload:BridgingIT.DevKit.Common.CborSerializer.Serialize
+  fullName: BridgingIT.DevKit.Common.CborSerializer.Serialize
+  nameWithType: CborSerializer.Serialize
 - uid: BridgingIT.DevKit.Common.ChangeError
   name: ChangeError
   href: obj/api/BridgingIT.DevKit.Common.ChangeError.html
@@ -331631,6 +331715,18 @@ references:
   commentId: Overload:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Icon
   fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Icon
   nameWithType: DashboardSidebarItem.Icon
+- uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Key
+  name: Key
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.html#BridgingIT_DevKit_Presentation_Web_Dashboard_Pages_DashboardSidebarItem_Key
+  commentId: P:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Key
+  fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Key
+  nameWithType: DashboardSidebarItem.Key
+- uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Key*
+  name: Key
+  href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.html#BridgingIT_DevKit_Presentation_Web_Dashboard_Pages_DashboardSidebarItem_Key_
+  commentId: Overload:BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Key
+  fullName: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Key
+  nameWithType: DashboardSidebarItem.Key
 - uid: BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.Order
   name: Order
   href: obj/api/BridgingIT.DevKit.Presentation.Web.Dashboard.Pages.DashboardSidebarItem.html#BridgingIT_DevKit_Presentation_Web_Dashboard_Pages_DashboardSidebarItem_Order

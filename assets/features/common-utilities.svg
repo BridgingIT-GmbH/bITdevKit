@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" fill="none" role="img" aria-labelledby="common-utilities-title">
+  <title id="common-utilities-title">Common utilities</title>
+  <g stroke="var(--dashboard-primary-text, #7da4f7)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M11 4 4 11l5 5-5 11 3 3 11-11 5 5 7-7-8-2-3-7-3 5-5-1Z" />
+  </g>
+  <g stroke="var(--dashboard-info-text, #62adb8)" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+    <path d="m12 17 5-5" />
+  </g>
+</svg>

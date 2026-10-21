@@ -258,6 +258,7 @@ extra_javascript:
   - assets/javascripts/disable-keyboard-shortcuts.js
   - assets/javascripts/context7-widget.js
   - assets/javascripts/theme-picker.js
+  - assets/javascripts/theme-favicon.js
 
 extra:
   social:

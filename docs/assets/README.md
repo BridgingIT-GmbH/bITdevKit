@@ -2,7 +2,7 @@
 
 [bITDevKit_Icon.svg](bITDevKit_Icon.svg) is the original 3D icon.
 
-The dashboard and documentation home page render its theme-aware geometry from [the shared dashboard logo](../../src/Presentation.Web/Pages/_DashboardLogo.cshtml), using info-colored blocks and a danger-colored accent.
+The dashboard, documentation home page, and documentation favicon use its theme-aware geometry from [the shared dashboard logo](../../src/Presentation.Web/Pages/_DashboardLogo.cshtml), using info-colored blocks and a danger-colored accent. The favicon updates when the documentation theme changes.
 
 [bITDevKit_Icon_flat.svg](bITDevKit_Icon_flat.svg) is the flat variant: four outlined blocks joined by a bridge. [View its dark and light preview](bITDevKit_Icon_flat_preview.png).
 

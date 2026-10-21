@@ -116,8 +116,9 @@ def decorate_navigation(markup, current_url):
 
 
 def on_env(env, config, files):
-    """Decorate the existing nav partial without duplicating Material templates."""
+    """Expose the shared logo and decorate Material's existing nav partial."""
     env.filters["bdk_feature_navigation"] = decorate_navigation
+    env.globals["bdk_brand_logo"] = lambda size=170: Markup(brand_logo_html(size))
     return env
 
 
@@ -153,15 +154,15 @@ def relative_url(current, target):
     return get_relative_url(target, current)
 
 
-def brand_logo_html():
-    """Reuse the dashboard's decorative SVG geometry at the home page's size."""
+def brand_logo_html(size=170):
+    """Reuse the dashboard's decorative SVG geometry at the requested size."""
     source = (ROOT / "src/Presentation.Web/Pages/_DashboardLogo.cshtml").read_text(encoding="utf-8")
     match = re.search(r"<svg\b.*?</svg>", source, re.DOTALL)
     if not match:
         raise ValueError("The dashboard brand logo contains no SVG")
     svg = ET.fromstring(match[0])
-    svg.set("width", "170")
-    svg.set("height", "170")
+    svg.set("width", str(size))
+    svg.set("height", str(size))
     return ET.tostring(svg, encoding="unicode")
 
 

@@ -212,6 +212,16 @@ workflows, and run Copilot in a sandbox.
 | [CI Fault Analysis](./.github/workflows/ci-fault-analysis.md) | failed CI on `main` or `releases/*` | issue with the likely root cause |
 | [Continuous Docs](./.github/workflows/continuous-docs.md) | Wednesdays | draft PR with fixes that keep `docs/` and the mkdocs site in line with the code |
 | [Continuous Test Improvement](./.github/workflows/continuous-test-improvement.md) | Tuesdays and Fridays | draft PR with a few new unit tests for one under-covered class |
+| [Issue Triage](./.github/workflows/issue-triage.md) | new issue | type and area labels, completeness check, next step |
+| [Issue Plan](./.github/workflows/issue-plan.md) | label `ai-plan` | draft `[plan]` PR with an implementation plan in `plan/`, revised on request |
+| [Issue Implementation](./.github/workflows/issue-implement.md) | label `ai-implement` on the plan PR | implementation pushed to the same PR, only when build and unit tests are green |
+| [Issue Review](./.github/workflows/issue-review.md) | after an implementation, or label `ai-review` | comment-only review of the PR against its plan, the architecture rules and code quality |
+
+The four issue workflows form one pipeline with two human gates: a maintainer applies `ai-plan` to an issue
+after triage, reviews the plan in the draft PR, and applies `ai-implement` to sign it off. The implementation
+is then pushed and reviewed against the plan, and if the review finds blocking issues it iterates again, at most
+three times on its own. Everything stays in one draft PR that a person reviews and merges. See
+[Getting started](./.github/workflows/README.md#getting-started) for the one-time setup and the step by step flow.
 
 Guardrails:
 

@@ -8,8 +8,19 @@ This folder contains the repository automation for CI, packaging and documentati
 | --- | --- | --- | --- |
 | CI | `github-actions.yml` | Every push | Calculates version, builds the solution, runs unit tests, optionally packs and pushes NuGet packages. |
 | Pages | `pages.yml` | Pushes to `main` that touch docs/site/API/source inputs, or manual dispatch | Builds and publishes the MkDocs site, DocFX API reference and agent-readable API reference metadata to `gh-pages`. |
+| Weekly Repo Status | `weekly-repo-status.md` (compiled to `weekly-repo-status.lock.yml`) | Mondays 06:00 UTC, or manual dispatch | [GitHub Agentic Workflow](https://github.github.com/gh-aw/) that opens a maintainer status issue (PRs, issues, CI health, dependencies, recommendations) and closes the previous report. |
 
-The two workflows are intentionally separate. CI validates and packages code. Pages owns the documentation site and generated API reference artifacts.
+CI and Pages are intentionally separate. CI validates and packages code. Pages owns the documentation site and generated API reference artifacts.
+
+## Agentic Workflows
+
+`weekly-repo-status.md` is the source of truth. Never edit the `.lock.yml` file by hand.
+
+- Install the CLI once: `gh extension install github/gh-aw`
+- After changing the `.md` file run `gh aw compile` and commit both files.
+- The agent runs read-only; the issue is created through the `create-issue` safe output.
+- Required repository secret: `COPILOT_GITHUB_TOKEN` (a fine-grained PAT with the "Copilot Requests" permission), see [engine setup](https://github.github.com/gh-aw/reference/engines/).
+- To preview without writing anything, temporarily add `staged: true` under `safe-outputs`.
 
 ## CI Workflow
 

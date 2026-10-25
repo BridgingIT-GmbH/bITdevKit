@@ -61,12 +61,31 @@ Update all NuGet packages and dotnet tools of this repository to the latest stab
 ## Process
 
 1. Check for an existing open pull request whose title starts with `[package update]`. If one exists, do not create another one: call the `noop` tool and mention the existing pull request.
-2. Read `.agents/skills/update-packages/SKILL.md` and follow it end to end (preflight, bulk upgrade, restore, build, deprecated check, vulnerability scan, tests, dotnet tools, Kiota regeneration, final check). Its rules take precedence, in particular:
+2. Establish a baseline before changing anything: `dotnet build bITdevKit.slnx` and the unit tests (`dotnet test bITdevKit.slnx --no-build --filter "FullyQualifiedName~UnitTests"`). Re-run any failing test alone; a test that fails consistently on the untouched code is a pre-existing failure. If the baseline is not green, call the `noop` tool listing the failing tests. Do not open a pull request on top of a red baseline.
+3. Read `.agents/skills/update-packages/SKILL.md` and follow it end to end (preflight, bulk upgrade, restore, build, deprecated check, vulnerability scan, tests, dotnet tools, Kiota regeneration, final check). Its rules take precedence, in particular:
    - latest stable only, bracketed pins and ranges in `Directory.Packages.props` stay untouched,
    - every held back or pinned package gets a one-line comment explaining why,
    - run restore, build and test commands one at a time.
-3. If nothing is outdated, call the `noop` tool with a short explanation.
-4. Otherwise create a branch, commit the changes (the repository files changed by the update: `Directory.Packages.props`, `.config/dotnet-tools.json`, `packages.lock.json` files, regenerated Kiota client, and source fixes needed for API breaks) and call `create_pull_request`.
+4. If nothing is outdated, call the `noop` tool with a short explanation.
+5. Apply the green gate below. Only when it is fully met, create a branch, commit the changes (the repository files changed by the update: `Directory.Packages.props`, `.config/dotnet-tools.json`, `packages.lock.json` files, regenerated Kiota client, and source fixes needed for API breaks) and call `create_pull_request`.
+
+## Green gate (mandatory)
+
+A pull request may only be created when, on the final committed state, all of the following were observed in this run:
+
+- `dotnet restore` has no errors.
+- `dotnet build bITdevKit.slnx` has 0 errors and 0 warnings.
+- **All unit tests pass**: zero failed tests. Run the full unit test suite again after the last change, not only the tests you touched.
+- Integration tests that do not need Docker and cover areas touched by a bump or code fix pass.
+- The vulnerability scan (`dotnet list bITdevKit.slnx package --vulnerable --include-transitive`) is empty.
+
+If a test fails:
+
+1. Re-run it alone. If it passes alone it is flaky: it may stay, but name it in the pull request.
+2. Otherwise find the package that caused it (bisect by holding back packages or families one at a time), fix the source if the cause is an API or behavior change that has a legitimate fix, or hold the package back with a comment.
+3. Repeat until the whole suite is green.
+
+Never make tests pass by deleting, skipping, disabling or weakening them (no `[Fact(Skip=...)]`, no loosened assertions, no excluding projects from the run, no `--filter` that hides the failure). Never lower the vulnerability or warning bar. If the suite cannot be made green, call the `noop` tool with the failing tests, the packages involved and what you tried. A red pull request is not an acceptable outcome.
 
 ## Environment notes
 
@@ -81,7 +100,7 @@ Keep the body short and factual:
 - **Updated**: packages and tools that moved (old -> new), grouped by family where sensible.
 - **Held back**: package, version it stays on, and the reason (same text as the comment in `Directory.Packages.props`).
 - **Source changes**: API breaks that required code changes, with file links.
-- **Verification**: restore, build (errors and warnings), unit test result, vulnerability scan result, flaky or skipped tests.
+- **Verification**: restore, build (errors and warnings), unit test totals (passed/failed/skipped, must be 0 failed), integration tests run, vulnerability scan result, flaky or skipped tests.
 - **Generated files**: which ones changed (for example the Kiota client).
 
-If the build or unit tests still fail after reasonable fixes, hold back the offending packages until they pass. If that is not possible, call the `noop` tool and describe the blocker instead of creating a pull request with a broken build.
+The pull request description must state that the green gate was met. If it was not met, there is no pull request.

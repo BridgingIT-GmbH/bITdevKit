@@ -20,7 +20,7 @@ CI and Pages are intentionally separate. CI validates and packages code. Pages o
 - Install the CLI once: `gh extension install github/gh-aw`
 - After changing the `.md` file run `gh aw compile` and commit both files.
 - The agent runs read-only; the issue is created through the `create-issue` safe output.
-- Required repository secret: `COPILOT_GITHUB_TOKEN` (a fine-grained PAT with the "Copilot Requests" permission), see [engine setup](https://github.github.com/gh-aw/reference/engines/).
+- Copilot inference uses the workflow token (`permissions: copilot-requests: write`, centralized Copilot billing). No PAT secret is needed. Without centralized billing, remove that permission and add a `COPILOT_GITHUB_TOKEN` secret (fine-grained PAT with "Copilot Requests"), see [engine setup](https://github.github.com/gh-aw/reference/engines/).
 - To preview without writing anything, temporarily add `staged: true` under `safe-outputs`.
 - `weekly-package-update` follows `.agents/skills/update-packages/SKILL.md`, so change the process there. It creates a draft PR; pull requests created with the default token do not trigger CI, so close and reopen the PR (or push an empty commit) to run CI before merging.
 

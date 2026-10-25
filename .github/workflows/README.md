@@ -11,12 +11,14 @@ This folder contains the repository automation for CI, packaging and documentati
 | Weekly Repo Status | `weekly-repo-status.md` (compiled to `weekly-repo-status.lock.yml`) | Mondays 06:00 UTC, or manual dispatch | [GitHub Agentic Workflow](https://github.github.com/gh-aw/) that opens a maintainer status issue (PRs, issues, CI health, dependencies, recommendations) and closes the previous report. |
 | Weekly Package Update | `weekly-package-update.md` (compiled to `weekly-package-update.lock.yml`) | Mondays 05:00 UTC, or manual dispatch | Agentic workflow that runs the `update-packages` skill (NuGet packages and dotnet tools, build, tests, vulnerability scan) and opens a draft pull request. |
 | CI Fault Analysis | `ci-fault-analysis.md` (compiled to `ci-fault-analysis.lock.yml`) | After a failed `CI` run on `main` or `releases/*`, or manual dispatch | Read-only agentic workflow that reads the failed job logs, classifies the failure (build, test, package, flaky, pipeline) and opens a `[ci failure]` issue, or comments on an existing one for the same cause. |
+| Continuous Docs | `continuous-docs.md` (compiled to `continuous-docs.lock.yml`) | Wednesdays 05:00 UTC, or manual dispatch | Reviews at most three documents per run against the code, checks `mkdocs.yml` navigation and links, and opens a draft `[docs]` PR for fixes. Open suggestions go into the PR body. Progress is kept in the `memory/docs-review` branch. |
+| Continuous Test Improvement | `continuous-test-improvement.md` (compiled to `continuous-test-improvement.lock.yml`) | Tuesdays and Fridays 04:00 UTC, or manual dispatch | Measures coverage of one unit test project per run, adds tests for one under-covered class and opens a draft `[test improvement]` PR. Suspected production bugs become `[suspected bug]` issues. Rotation state is kept in the `memory/test-improvement` branch. |
 
 CI and Pages are intentionally separate. CI validates and packages code. Pages owns the documentation site and generated API reference artifacts.
 
 ## Agentic Workflows
 
-`weekly-repo-status.md`, `weekly-package-update.md` and `ci-fault-analysis.md` are the source of truth. Never edit the `.lock.yml` files by hand.
+`weekly-repo-status.md`, `weekly-package-update.md`, `ci-fault-analysis.md`, `continuous-docs.md` and `continuous-test-improvement.md` are the source of truth. Never edit the `.lock.yml` files by hand.
 
 - Install the CLI once: `gh extension install github/gh-aw`
 - After changing the `.md` file run `gh aw compile` and commit both files.

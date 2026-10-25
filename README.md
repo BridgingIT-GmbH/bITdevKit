@@ -23,6 +23,8 @@
   - [Libraries used (excerpt):](#libraries-used-excerpt)
   - [Example projects](#example-projects)
   - [Performance Benchmarks](#performance-benchmarks)
+  - [CI/CD](#cicd)
+  - [Continuous AI](#continuous-ai)
   - [GitHub Pages](#github-pages)
     - [Source structure](#source-structure)
     - [Which Markdown files get into the site](#which-markdown-files-get-into-the-site)
@@ -181,6 +183,43 @@ dotnet run -c Release --project benchmarks/Common.Benchmarks/Common.Benchmarks.c
 - Guide optimization and architectural decisions.
 
 For more details, see the `Common.Benchmarks` project in the `benchmarks/` folder.
+
+## CI/CD
+
+Builds, tests and releases run on GitHub Actions. Details for each pipeline are in the
+[workflows README](./.github/workflows/README.md).
+
+| Workflow | Runs | Purpose |
+| --- | --- | --- |
+| [CI](./.github/workflows/github-actions.yml) | every push | calculates the version with MinVer, builds, runs the unit tests, and on `main` and `releases/dotnet9` can pack and push the NuGet packages |
+| [Pages](./.github/workflows/pages.yml) | push to `main` | builds and publishes the documentation site, see [GitHub Pages](#github-pages) |
+| [CodeQL](./.github/workflows/codeql-analysis.yml) | push and pull requests to `main`, daily | code scanning |
+
+Dependency updates are configured in [dependabot.yml](./.github/dependabot.yml).
+
+## Continuous AI
+
+Recurring, repetitive repository chores are handled by agentic workflows, an approach GitHub Next calls
+[Continuous AI](https://githubnext.com/projects/continuous-ai/): AI automation for collaboration, next to
+CI/CD and not a replacement for it. The workflows are written in Markdown, compiled with the
+[GitHub Agentic Workflows](https://github.github.com/gh-aw/) CLI (`gh aw compile`) into regular Actions
+workflows, and run Copilot in a sandbox.
+
+| Workflow | Runs | Result |
+| --- | --- | --- |
+| [Weekly Repo Status](./.github/workflows/weekly-repo-status.md) | Mondays | status report issue for maintainers |
+| [Weekly Package Update](./.github/workflows/weekly-package-update.md) | Mondays | draft PR that applies the [update-packages](./.agents/skills/update-packages/SKILL.md) skill, only when build and unit tests are green |
+| [CI Fault Analysis](./.github/workflows/ci-fault-analysis.md) | failed CI on `main` or `releases/*` | issue with the likely root cause |
+| [Continuous Docs](./.github/workflows/continuous-docs.md) | Wednesdays | draft PR with fixes that keep `docs/` and the mkdocs site in line with the code |
+| [Continuous Test Improvement](./.github/workflows/continuous-test-improvement.md) | Tuesdays and Fridays | draft PR with a few new unit tests for one under-covered class |
+
+Guardrails:
+
+- Agents run read-only. Issues and pull requests are created through [safe outputs](https://github.github.com/gh-aw/reference/safe-outputs/), and pull requests are drafts that a human reviews and merges.
+- Each run is capped in AI credits and time. Usage is billed to the organization Copilot plan, see [cost management](https://github.github.com/gh-aw/reference/cost-management/) and check spend with `gh aw logs`.
+- The Markdown file is the source. Edit it, run `gh aw compile`, and commit the generated `.lock.yml` with it.
+
+Further reading: [Automate repository tasks with GitHub Agentic Workflows](https://github.blog/ai-and-ml/automate-repository-tasks-with-github-agentic-workflows/).
 
 ## GitHub Pages
 

@@ -10,12 +10,13 @@ This folder contains the repository automation for CI, packaging and documentati
 | Pages | `pages.yml` | Pushes to `main` that touch docs/site/API/source inputs, or manual dispatch | Builds and publishes the MkDocs site, DocFX API reference and agent-readable API reference metadata to `gh-pages`. |
 | Weekly Repo Status | `weekly-repo-status.md` (compiled to `weekly-repo-status.lock.yml`) | Mondays 06:00 UTC, or manual dispatch | [GitHub Agentic Workflow](https://github.github.com/gh-aw/) that opens a maintainer status issue (PRs, issues, CI health, dependencies, recommendations) and closes the previous report. |
 | Weekly Package Update | `weekly-package-update.md` (compiled to `weekly-package-update.lock.yml`) | Mondays 05:00 UTC, or manual dispatch | Agentic workflow that runs the `update-packages` skill (NuGet packages and dotnet tools, build, tests, vulnerability scan) and opens a draft pull request. |
+| CI Fault Analysis | `ci-fault-analysis.md` (compiled to `ci-fault-analysis.lock.yml`) | After a failed `CI` run on `main` or `releases/*`, or manual dispatch | Read-only agentic workflow that reads the failed job logs, classifies the failure (build, test, package, flaky, pipeline) and opens a `[ci failure]` issue, or comments on an existing one for the same cause. |
 
 CI and Pages are intentionally separate. CI validates and packages code. Pages owns the documentation site and generated API reference artifacts.
 
 ## Agentic Workflows
 
-`weekly-repo-status.md` and `weekly-package-update.md` are the source of truth. Never edit the `.lock.yml` files by hand.
+`weekly-repo-status.md`, `weekly-package-update.md` and `ci-fault-analysis.md` are the source of truth. Never edit the `.lock.yml` files by hand.
 
 - Install the CLI once: `gh extension install github/gh-aw`
 - After changing the `.md` file run `gh aw compile` and commit both files.

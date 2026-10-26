@@ -1,6 +1,10 @@
 name: CI
 
-on: [ push ]
+on:
+  push:
+    paths-ignore:
+      - '.github/workflows/**'
+      - '.github/aw/**'
 
 permissions: # needed for test reporter
   pull-requests: write

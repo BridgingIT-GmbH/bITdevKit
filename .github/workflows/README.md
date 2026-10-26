@@ -6,7 +6,7 @@ This folder contains the repository automation for CI, packaging and documentati
 
 | Workflow | File | Trigger | Purpose |
 | --- | --- | --- | --- |
-| CI | `github-actions.yml` | Every push | Calculates version, builds the solution, runs unit tests, optionally packs and pushes NuGet packages. |
+| CI | `github-actions.yml` | Every push, except pushes that only change `.github/workflows/**` or `.github/aw/**` | Calculates version, builds the solution, runs unit tests, optionally packs and pushes NuGet packages. |
 | Pages | `pages.yml` | Pushes to `main` that touch docs/site/API/source inputs, or manual dispatch | Builds and publishes the MkDocs site, DocFX API reference and agent-readable API reference metadata to `gh-pages`. |
 | Weekly Repo Status | `weekly-repo-status.md` (compiled to `weekly-repo-status.lock.yml`) | Mondays 06:00 UTC, or manual dispatch | [GitHub Agentic Workflow](https://github.github.com/gh-aw/) that opens a maintainer status issue (PRs, issues, CI health, dependencies, recommendations) and closes the previous report. |
 | Weekly Package Update | `weekly-package-update.md` (compiled to `weekly-package-update.lock.yml`) | Mondays 05:00 UTC, or manual dispatch | Agentic workflow that runs the `update-packages` skill (NuGet packages and dotnet tools, build, tests, vulnerability scan) and opens a draft pull request. |
@@ -69,8 +69,9 @@ One time:
      ForEach-Object { gh label create $_ --force }
    ```
 
-2. Optional but recommended: `gh aw secrets set GH_AW_CI_TRIGGER_TOKEN --value "<pat>"` so CI runs on agent pushes.
-3. Make sure the organization allows Copilot CLI to be billed to it (Organization settings, Copilot, Policies).
+2. Allow workflows to create pull requests: Settings, Actions, General, Workflow permissions, enable "Allow GitHub Actions to create and approve pull requests". Without it the plan, implementation, docs, test and package workflows push their branch and open an issue instead of a PR. If the option is greyed out because an organization setting overrides it, use a token instead: `gh aw secrets set GH_AW_GITHUB_TOKEN --value "<pat>"` (fine-grained PAT limited to this repository with `Contents`, `Pull requests` and `Issues` set to read and write). All safe outputs then use that token, the PRs are authored by the token owner, and CI runs on them and on agent pushes. In that case `GH_AW_CI_TRIGGER_TOKEN` below is not needed.
+3. Optional but recommended: `gh aw secrets set GH_AW_CI_TRIGGER_TOKEN --value "<pat>"` so CI runs on agent pushes.
+4. Make sure the organization allows Copilot CLI to be billed to it (Organization settings, Copilot, Policies).
 
 Per issue:
 
@@ -88,7 +89,7 @@ Good to know:
 
 ## CI Workflow
 
-`github-actions.yml` runs on every push.
+`github-actions.yml` runs on every push, except pushes that only change `.github/workflows/**` or `.github/aw/**` (`paths-ignore`). A push that also changes other files still runs CI. Changes to `github-actions.yml` itself are therefore not validated by CI, run it manually or push another file with it.
 
 ### Environment
 
